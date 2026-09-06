@@ -52,12 +52,16 @@
   --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* THE CAHIER IS LIGHT BY DESIGN — pinned, not accidental (6 Sep).
+   create-next-app's starter block used to flip --background/--foreground to
+   near-black on dark-mode phones. Nothing else in the app followed: every
+   surface paints light paper on top, so a dark-scheme learner got a black
+   body coat peeking out at page edges and overscroll, and — without a
+   declared color-scheme — DARK native controls (selects, checkboxes,
+   scrollbars) sitting inside light pages. A real dark cahier is a design
+   project (lighter cards on dark ground, dimmed chips — not two variables);
+   until Dan commissions one, the app declares what it is. */
+:root { color-scheme: light; }
 
 /* The page's BASELINE type (Dan, 2026-08-27: "make sure there is visual
    unity despite the variation of colors, the fonts").
@@ -1464,6 +1468,34 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 :focus-visible {
   outline: 3px solid #2d5bff;
   outline-offset: 2px;
+}
+
+/* FAT-FINGER FLOOR (6 Sep, mobile round of the UI-police audit): a control
+   may DRAW small, but it must CATCH ~44px — measured on the export, the
+   top bar's four buttons caught at 27-34px on every page and the footer's
+   "about" at 31x13. The pad is an invisible ::after that grows the touch
+   area up to 44px in an axis only when the drawn box is under it — the
+   button Dan approved does not change by a pixel. Do not put it on two
+   controls closer than ~10px, or their halos cross. */
+.fluo-hit44 { position: relative; }
+.fluo-hit44::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 44px) / 2));
+  bottom: min(0px, calc((100% - 44px) / 2));
+  left: min(0px, calc((100% - 44px) / 2));
+  right: min(0px, calc((100% - 44px) / 2));
+}
+/* The top bar's small square buttons are the worst repeat offenders —
+   floored as a class so every page inherits it. */
+.cahier-btn-sm { position: relative; }
+.cahier-btn-sm::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 42px) / 2));
+  bottom: min(0px, calc((100% - 42px) / 2));
+  left: min(0px, calc((100% - 42px) / 2));
+  right: min(0px, calc((100% - 42px) / 2));
 }
 
 /* Tap-to-hear lesson zone: every French bit is speakable — show it. */

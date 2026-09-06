@@ -47,10 +47,12 @@ export default function ReglagesPage() {
     <CahierShell tabs={withActive(siteTabs(), "reglages")} active="reglages" band={{ title: "Settings" }}>
       <div className="mx-auto max-w-2xl px-2 pb-8 pt-2">
         {/* « Settings » is the band's now (1 Sep). */}
-        <div className="mt-2 flex gap-2 text-sm font-bold">
-          <Link href="/moi" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">My Progress</Link>
-          <Link href="/leaderboard" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Leaderboard</Link>
-          <Link href="/profil" className="no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Profile</Link>
+        {/* gap-5, not gap-2: these rows are 20px tall, so the fat-finger
+            floor (fluo-hit44) pads them — the halos need room apart. */}
+        <div className="mt-2 flex gap-5 text-sm font-bold">
+          <Link href="/moi" className="fluo-hit44 no-underline text-[color:var(--cahier-accent,#2f4fa8)]">My Progress</Link>
+          <Link href="/leaderboard" className="fluo-hit44 no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Leaderboard</Link>
+          <Link href="/profil" className="fluo-hit44 no-underline text-[color:var(--cahier-accent,#2f4fa8)]">Profile</Link>
         </div>
 
         <section

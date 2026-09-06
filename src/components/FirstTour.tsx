@@ -300,7 +300,7 @@ export default function FirstTour() {
         <button
           type="button"
           onClick={neverAgain}
-          className="mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
+          className="fluo-hit44 mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
         >
           Never offer again
         </button>
