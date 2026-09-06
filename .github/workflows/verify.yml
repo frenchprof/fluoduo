@@ -378,6 +378,11 @@ jobs:
 
       - name: "The 🧰 tools summon in-exercise, and the voice corrects first (5 Sep)"
         run: python3 verify/verify100-ambient-tools.py
+
+      # 101-103 are claimed by in-flight lanes (Color's calendar/menu-hues,
+      # pre-tests' fluidtype/speculearn-cards) — collision scan of 6 Sep.
+      - name: "The chrome a learner is handed stays short (5 Sep)"
+        run: python3 verify/verify104-chrome-concision.py
       - name: "The six families are the six highlighter pens (5 Sep)"
         run: python3 verify/verify96-family-hues.py
 

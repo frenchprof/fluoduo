@@ -618,14 +618,20 @@ export default function Lexicalator({
   // paragraphs under it are rules a player meets as they go — levels, decoys,
   // hard mode — and none of them is needed to make the first move.
   const howToPlay = (
-    <p>Drag a chest down — or just tap a key it needs — then fill its syllables in any order to unlock the French word.</p>
+    <p>Drag a chest down, or tap a key it needs. Fill its syllables in any order.</p>
   );
+  // A LIST, NOT THREE PARAGRAPHS (5 Sep language pass). Same three rules, but
+  // a player looking for one of them can find it without reading the other two
+  // — and "every useful key belongs to a visible chest" went, because "only
+  // decoys cost a life" already says it.
   const help = (
     <>
       {howToPlay}
-      <p className="mt-2">Level 1 deals whole words; levels 2–3 cut them into syllables; from level {SPELL_LEVEL} it&rsquo;s spelling — 2–4 letter chunks. Six words clear a level.</p>
-      <p className="mt-2">Only <b>decoys</b> — fragments that belong to no word on the lane — cost a life. Every useful key belongs to a visible chest.</p>
-      <p className="mt-2"><b>Hard</b> hides how many syllables each word has.</p>
+      <ul className="mt-2 list-inside list-disc space-y-1.5">
+        <li><b>Levels</b> — 1 deals whole words, 2–3 syllables, {SPELL_LEVEL}+ spelling. Six words clear a level.</li>
+        <li><b>Lives</b> — only decoys cost one: fragments belonging to no word on the lane.</li>
+        <li><b>Hard</b> hides how many syllables a word has.</li>
+      </ul>
       {subtitle && <p className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">{title} — {subtitle}</p>}
     </>
   );

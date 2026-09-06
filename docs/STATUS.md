@@ -6,23 +6,105 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 5 Sep evening — SpecuLearn commerces chrome is English (PR #182)
+## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
 
-Sole editor of STATUS.md in this commit: cursor/pre-tests-en-chrome.
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`). Handed to fluoduo-main; not merged here.
 
-Locked copy on `claude/pre-tests-amendments-hndx8r` (Ped/UX/FR REQUEST CHANGES).
-No images touched.
+A day of Dan's rulings, built and measured:
 
-- Deck title in `src/content/collections/commerces.json` is now **Shops & market**.
-  The French subtitle and every FR answer string stay as they were.
-- SpecuLearn instructions: **Pick the right picture.** / **Pick the right word.**
-- The title band no longer wears `lang="fr"` on commerces, so a screen reader
-  does not announce “Shops & market” as French. Other SpecuLearn decks still
-  show their French titles with `lang="fr"`.
+- **Type is relative app-wide.** 316 sizes were hard pixels — 310 Tailwind
+  `text-[NNpx]` utilities, five CSS rules, one inline style. Redefined once in
+  globals.css rather than edited across ~50 files. Phone unchanged, desktop
+  +36%, capped past 1440. `verify106-fluidtype` holds it. (Numbered 106, not
+  102: the colour-review lane claimed 102 forty minutes later — the sixth
+  number collision, cleared from this side.)
+- **A SpecuLearn card has exactly one answer.** commerces mixed shop nouns,
+  whole utterances and untagged words in one option pool, so 📚 could be
+  answered by « Ça fait 5,89 euros. » and 💶 by three different words. A deck
+  now names the columns it plays; distractors never repeat a visual.
+  `verify103-speculearn-cards` holds it for every deck.
+- **Tap to answer, no Check** (`verify20` flipped to pin it; EtuDice keeps
+  its Check, so the shell's grammar is deliberately no longer uniform).
+- **‹ back to the previous question**, redrawn as it was answered; reviewing
+  never re-grades.
+- **Class bag dissolved**, all three mounts. `verify93` kept the half that was
+  never about the bag — no sign-in wall in front of a guess. The Unit-0 page
+  gained a finish panel, since Class bag was all it drew once a run was over.
+- **The languages wear their endonyms** — 中文, हिन्दी, Bahasa Indonesia — as
+  type, sized to their own tile. The languages deck leaves the image brief.
+- Descriptions out of buttons; level chooser two-up; counter first under the
+  strip; "Revisit my errors"; the image brief 160 → 146 with a do-not-generate
+  list; « le prix » / « la monnaie » / « des euros » get their articles.
 
-Open it: Practice → SpecuLearn → Shops & market, or go to
-`/practice/speculearn/commerces`. The pictures and the French options
-(« Je voudrais deux kilos de pommes. ») are unchanged.
+**Two loose ends, deliberate.** Pre-test misses now have no reader — the record
+is intact and `verify40` pins its shape, but showing them in DéjàRevu means
+deciding what DéjàRevu is, and pre-tests are barred from `queueForReview`.
+And SpecuLearn is merged in NAME only: four runners, 2,264 lines, 109 routes,
+with the game paying XP/SRS through the help ladder while the /pretests half is
+forbidden from it. Both are Dan's calls, raised with him.
+
+## 6 Sep — Peers' language pass lands; the rest of #187 was already home
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Peers' 89-commit branch surfaced as PR #187 carrying three pieces. Two were
+already on main via #170 (the ☰ dead-rows z-30 fix + verify94, and the
+first mark + verify95 — since superseded by #184/#185's pink). The third —
+**the language pass on chrome a learner is HANDED** (Dan: "UI 101 says we
+don't want to overwhelm users with too much texts to read") — was new, and
+was lifted onto current main by the integrator: eleven first-run popups
+305→235 words, tour callouts shortened, AuthGate/StopBookmark/ÉcouTexte/
+LexicaLater wordings trimmed. Its check arrived as
+**verify104-chrome-concision** (96 was taken by family-hues meanwhile;
+101–103 are claimed by in-flight lanes — and NOTE, collision #9 brewing:
+Color's branch holds verify102-menu-hues while pre-tests' holds
+verify102-fluidtype; whichever lands second must renumber). One conflict
+resolved in the tour: "Your tabs" (post-#175 truth) beats "Five tabs"
+(true when Peers wrote it). #187 closes in favour of this lift.
+
+## 5–6 Sep — the favicon settles: PINK, transparent, teal binds, thin iPhone rim (#184, #185)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Four rulings from Dan, in order, all shipped:
+
+1. **No ground plate on the tab icon** ("does not need the white background
+   against the dark background"). `src/app/icon.svg` is transparent;
+   `favicon.ico` and the manifest's `icon-192/512` regenerated with real
+   alpha.
+2. **The mark is the PINK one** ("i think i prefer the pink favicon
+   please") — the first cut (24c1c41), which had gone Violet one commit
+   later, restored.
+3. **The binds follow the complement rule** — Dan remembered it and it is
+   66dda59: binds wear the middle-right stack's colour walked down; for
+   pink that stack is TEAL, so binds are `#009d7a` (the pink restore had
+   briefly resurrected the pre-rule pink binds).
+4. **The iPhone tile's plate is a ~4% rim** ("is our plate too thick for
+   that border") — the mark fills apple-touch-icon, paper peeking as the
+   thin border iOS icons wear.
+
+TWO ICONS STAY OPAQUE ON PURPOSE, do not "fix" them: apple-touch (iOS
+fills transparency with BLACK on the home screen) and maskable-512
+(Android's circular crop needs full bleed — verify95's safe-area rule).
+The derived PNGs/ICO are rendered from icon.svg via headless Chromium
+(omitBackground) + Pillow; there is no generator script in the repo yet.
+
+## 5 Sep evening — SpecuLearn commerces chrome is English (new PR from main)
+
+Sole editor of STATUS.md in this commit: ux/en-chrome-speculearn.
+
+#182 is already in main. The English labels could not land on that closed
+pull request, so they sit on a clean branch from `5d06894`:
+`ux/en-chrome-speculearn`. No pictures touched.
+
+- Deck title is **Shops & market**. French subtitle and FR answers stay.
+- Instructions: **Pick the right picture.** / **Pick the right word.**
+- Keyboard hint is **1–4 pick · next · R**, not *choisir* / *suivant*.
+- The title band is not marked `lang="fr"` on commerces.
+
+Open it: Practice → SpecuLearn → Shops & market, or
+`/practice/speculearn/commerces`.
 
 ## 5 Sep evening — SpecuLearn commerces photos are real PNGs
 

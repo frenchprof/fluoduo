@@ -517,7 +517,12 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
           <div>
             <p
               className="min-w-0 truncate text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]"
-              lang={collectionId === "commerces" ? undefined : "fr"}
+              /* Always fr: this line prints the SUBTITLE, which stays
+                 French on every deck (commerces included — « un, une,
+                 des... »). The deck TITLE went English, but it is not
+                 what this element renders; dropping the tag here hands
+                 French to a screen reader's English voice. */
+              lang="fr"
               title={subtitle}
             >
               💡 {subtitle}

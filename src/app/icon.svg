@@ -9,18 +9,22 @@
     </mask>
     <clipPath id="pg"><rect x="16" y="8" width="76" height="84" rx="9"/></clipPath>
   </defs>
-  <rect width="100" height="100" fill="#f5f2e8"/>
+  <!-- No background plate (Dan, 5 Sep: the favicon "does not need the white
+       background against the dark background" — the tab icon floats on
+       whatever chrome the browser has). The OPAQUE ground lives on in
+       apple-touch-icon and maskable-512 only, because iOS fills transparency
+       with black and Android's maskable crop needs full bleed. -->
   <g transform="translate(0 0) scale(1)">
     <g mask="url(#bite)">
       <g clip-path="url(#pg)">
-        <rect x="16" y="8" width="76" height="84" fill="#b17eff"/>
-        <rect x="57" y="8" width="35" height="33" fill="#9832ff"/>
-        <rect x="57" y="41" width="35" height="27" fill="#8ca600"/>
+        <rect x="16" y="8" width="76" height="84" fill="#ff4eb2"/>
+        <rect x="57" y="8" width="35" height="33" fill="#d7008e"/>
+        <rect x="57" y="41" width="35" height="27" fill="#00b28b"/>
       </g>
     </g>
-    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
-    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
-    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
-    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#7d9400"/>
+    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
   </g>
 </svg>

@@ -99,7 +99,11 @@ ok(bool(_res),
    "the gate lost its explicit resolving state")
 # The prompt's heading must be conditional on that state — a heading that
 # always reads "Sign in to …" is the bug, whatever the branch above computes.
-ok("resolving ?" in gate and "Still checking" in gate,
+# 6 Sep: "Still checking your sign-in…" became "Checking your sign-in…" in
+# Peers' language pass (Dan: "clear yet concise and scannable"). The CLAIM is
+# what matters — the heading is conditional on `resolving` and names the
+# checking state — so the pin follows the shorter wording.
+ok("resolving ?" in gate and "Checking your sign-in" in gate,
    "while auth is unresolved the gate says so, and never asserts signed-out",
    "the gate still asserts 'Sign in' while auth is unresolved")
 

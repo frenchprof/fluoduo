@@ -297,7 +297,7 @@ export default function EcouTexte({
     speed: () => (slow ? "Reading at half speed — tap for normal" : "Reading at normal speed — tap for half"),
     voice: () => (voice === "f" ? "A woman is reading — tap for a man" : "A man is reading — tap for a woman"),
     blanks: () =>
-      sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word",
+      sized ? "Blanks sized to each word — tap for equal" : "Blanks all one length — tap to size them",
   };
   const say = (k: keyof typeof hints) => ({
     onMouseEnter: () => setHint(hints[k]()),
@@ -384,7 +384,7 @@ export default function EcouTexte({
             type="button"
             onClick={() => {
               setSized((v) => !v);
-              setHint(!sized ? "Each blank is as long as its word — tap for equal blanks" : "All blanks are the same length — tap to size them to each word");
+              setHint(!sized ? "Blanks sized to each word — tap for equal" : "Blanks all one length — tap to size them");
             }}
             {...say("blanks")}
             aria-pressed={sized}

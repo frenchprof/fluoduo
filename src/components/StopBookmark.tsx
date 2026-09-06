@@ -54,8 +54,8 @@ export default function StopBookmark({
         type="text"
         inputMode="numeric"
         value={draft ?? String(stopNo)}
-        aria-label={`Goal number, 1 to ${SIOS.length} — edit it to bookmark the stop you are working on`}
-        title="Your stop. Edit the number to bookmark where you left off — wandering the map won't move it. Clear it to go back to the computed stop."
+        aria-label={`Your stop, 1 to ${SIOS.length} — edit it to bookmark one`}
+        title="Your stop. Edit it to bookmark where you left off; clear it to go back to automatic."
         onFocus={(e) => {
           setDraft(String(stopNo));
           e.target.select();
