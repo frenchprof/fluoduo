@@ -1444,6 +1444,34 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   outline-offset: 2px;
 }
 
+/* FAT-FINGER FLOOR (6 Sep, mobile round of the UI-police audit): a control
+   may DRAW small, but it must CATCH ~44px — measured on the export, the
+   top bar's four buttons caught at 27-34px on every page and the footer's
+   "about" at 31x13. The pad is an invisible ::after that grows the touch
+   area up to 44px in an axis only when the drawn box is under it — the
+   button Dan approved does not change by a pixel. Do not put it on two
+   controls closer than ~10px, or their halos cross. */
+.fluo-hit44 { position: relative; }
+.fluo-hit44::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 44px) / 2));
+  bottom: min(0px, calc((100% - 44px) / 2));
+  left: min(0px, calc((100% - 44px) / 2));
+  right: min(0px, calc((100% - 44px) / 2));
+}
+/* The top bar's small square buttons are the worst repeat offenders —
+   floored as a class so every page inherits it. */
+.cahier-btn-sm { position: relative; }
+.cahier-btn-sm::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 42px) / 2));
+  bottom: min(0px, calc((100% - 42px) / 2));
+  left: min(0px, calc((100% - 42px) / 2));
+  right: min(0px, calc((100% - 42px) / 2));
+}
+
 /* Tap-to-hear lesson zone: every French bit is speakable — show it. */
 .speak-zone [lang="fr"] { cursor: pointer; }
 .speak-zone li, .speak-zone td { cursor: pointer; }
