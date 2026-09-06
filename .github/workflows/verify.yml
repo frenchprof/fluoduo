@@ -354,8 +354,14 @@ jobs:
       - name: "FluOLinGo wears its own mark, not the starter's (5 Sep)"
         run: python3 verify/verify95-icons.py
 
+      - name: "The map's stops are objects; numbers stay; the embed is clean (6 Sep)"
+        run: python3 verify/verify108-map-depth.py
+
       - name: "No French on a control a beginner must read to act (6 Sep)"
         run: python3 verify/verify105-en-chrome.py
+
+      - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
+        run: python3 verify/verify109-lucky-find.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath

@@ -151,3 +151,69 @@ export function equippedAccent(p: Progress): string {
   const id = p.cosmetics?.equipped?.homeAccent;
   return (id && cosmeticById(id)?.swatch) || DEFAULT_ACCENT;
 }
+
+// ── The lucky find ──────────────────────────────────────────────────────────
+// Dan, 6 Sep, after a breakdown of variable-ratio reward: "Craving — add
+// surprise". The economy above is entirely predictable — 60 for a right
+// answer, 20 for a wrong one, 300 for a SIO, badges at 1/10/25/50 — so nothing
+// in the app has ever been able to surprise a learner.
+//
+// WHY THE FIND PAYS GEMS AND NOT XP, which is the one real decision here. XP
+// drives the level, the rank and the leaderboard, and this file's own rule is
+// that a receipt states the EXACT amount an answer pays. Random XP breaks
+// both: a rank stops meaning work done, and an honest receipt becomes
+// impossible. Gems buy cosmetics and gate nothing (`buyCosmetic`: "the only
+// thing gems ever buy — never learning"), so a random gem changes what a
+// learner FEELS without touching what their score MEANS.
+//
+// FOUR GUARDS, because unguarded variable reward is a slot machine:
+//
+//   SEEDED, NOT ROLLED. The outcome is a hash of (item, day), so re-answering
+//   the same item cannot reroll it. Without this a learner can fish for drops
+//   by repeating one card, which turns craving into grinding — and the SRS
+//   would quietly record all that repetition as study.
+//
+//   A PITY FLOOR. A find is guaranteed by the FIND_PITY-th dry answer. The
+//   surprise is in WHEN, never in WHETHER, so a bad run cannot feel like the
+//   app has stopped noticing you.
+//
+//   A DAILY CAP. Finds stop paying past FIND_DAILY_CAP gems a day, so the
+//   loop cannot become the reason to practise.
+//
+//   NEVER NEGATIVE. There is no bad outcome, no loss, no near-miss. Hearts
+//   were removed from this app for punishing errors; a find that could take
+//   something away would walk that back in a new costume.
+export const FIND_ODDS = 0.12;      // ~1 answer in 8
+export const FIND_SMALL = 2;        // gems
+export const FIND_BIG = 10;         // gems, the rarer one
+export const FIND_BIG_SHARE = 0.08; // of finds, not of answers
+export const FIND_PITY = 12;        // dry answers before one is guaranteed
+export const FIND_DAILY_CAP = 40;   // gems from finds per learner per day
+
+/** A small, stable hash → [0, 1). Same string, same number, every time and on
+ *  every device: the find must not depend on Math.random, or a reload rerolls
+ *  it and the seeding guard above is worthless. */
+function hash01(seed: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return ((h >>> 0) % 100000) / 100000;
+}
+
+/**
+ * Gems this answer finds, if any.
+ *
+ * @param seed      stable per answer — item id + day. NOT random.
+ * @param dry       paying answers since the last find.
+ * @param foundToday gems already found today, for the cap.
+ */
+export function luckyFind(seed: string, dry: number, foundToday: number): number {
+  const room = FIND_DAILY_CAP - Math.max(0, foundToday);
+  if (room <= 0) return 0;
+  const hit = hash01(seed) < FIND_ODDS || dry + 1 >= FIND_PITY;
+  if (!hit) return 0;
+  const size = hash01(`${seed}:size`) < FIND_BIG_SHARE ? FIND_BIG : FIND_SMALL;
+  return Math.min(size, room);
+}
