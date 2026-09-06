@@ -22,9 +22,9 @@
         <rect x="57" y="41" width="35" height="27" fill="#00b28b"/>
       </g>
     </g>
-    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#c1007f"/>
-    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#c1007f"/>
-    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#c1007f"/>
-    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#c1007f"/>
+    <rect x="4" y="18.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="35.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="52.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
+    <rect x="4" y="69.4" width="22" height="7.2" rx="3.6" fill="#009d7a"/>
   </g>
 </svg>
