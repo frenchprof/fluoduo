@@ -880,20 +880,26 @@ body {
 .page-band { position: relative; z-index: 2; }
 .cahier-binding {
   position: absolute;
-  top: 0; bottom: 0; left: 0;
-  width: 38px;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0 7px,
-    var(--cahier-spiral-lo) 7px 8px,
-    var(--cahier-spiral) 8px 15px,
-    var(--cahier-spiral-hi) 15px 18px,
-    var(--cahier-spiral) 18px 25px,
-    var(--cahier-spiral-lo) 25px 26px,
-    transparent 26px 33px
-  );
-  -webkit-mask-image: radial-gradient(circle at right, #000 60%, transparent 61%);
-  mask-image: none;
+  /* 24px LEFT OF THE PAGE (Dan, 6 Sep, after two photos of real coil
+     notebooks: "take away the phone edge and you will see it must go pass
+     the edge"). The strip starts on the desk, crosses the page's 6px
+     family border and its 12px cover-zone extension, and reaches the
+     punched hole on the paper — so each loop visibly wraps the page edge
+     instead of floating on the sheet. The page's overflow is `clip` with
+     a 26px margin exactly so this overhang can paint. */
+  top: 0; bottom: 0; left: -24px;
+  width: 62px;
+  /* REAL RINGS, measured off Dan's photo (140px wide, 17 loops, pitch 56):
+     thin bright wire, flat open loops with air between them, a small dark
+     hole where each pierces the paper, and the loop running PAST the page
+     edge onto the desk. Unit coordinates: local x24 is the page's padding
+     edge; x18-24 is the family border; x8 is where the wire's outer arc
+     turns, out on the desk. The second layer paints the 12px cover zone in
+     the page's family ink, continuing the border the wire crosses. Wire
+     colours are baked in (a data URI cannot read custom properties). */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='62' height='26' viewBox='0 0 62 26'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbfdff'/%3E%3Cstop offset='0.35' stop-color='%23d8dce2'/%3E%3Cstop offset='0.6' stop-color='%239aa0a8'/%3E%3Cstop offset='1' stop-color='%23565b63'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23141820' stop-opacity='0.3'/%3E%3Cstop offset='1' stop-color='%23141820' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='24' y='0' width='16' height='26' fill='url(%23g)'/%3E%3Cellipse cx='49' cy='13.5' rx='5.2' ry='4.2' fill='%231e1a14' opacity='0.88'/%3E%3Cg transform='rotate(-7 29 13)'%3E%3Cellipse cx='29' cy='13.4' rx='21' ry='5.8' fill='none' stroke='%232c2f35' stroke-width='4.4' opacity='0.3'/%3E%3Cellipse cx='29' cy='12.9' rx='21' ry='5.6' fill='none' stroke='url(%23c)' stroke-width='3.1'/%3E%3C/g%3E%3Cellipse cx='50.8' cy='13.4' rx='2.7' ry='2.4' fill='%231e1a14'/%3E%3C/svg%3E"),
+    linear-gradient(to right, transparent 0 24px, var(--fam-ink, #82868f) 24px 36px, transparent 36px);
+  background-repeat: repeat-y;
   pointer-events: none;
 }
 .cahier-binding::after {
@@ -1135,6 +1141,10 @@ body {
   width: 100%;
   border-radius: 4px 16px 16px 4px;
   box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
+  /* Same clip-with-apron as .cahier-page above (the ring binds overhang);
+     this replaces the Tailwind overflow-hidden the drill root used to carry. */
+  overflow: clip;
+  overflow-clip-margin: 26px;
 }
 
 .cahier-page {
@@ -1162,7 +1172,15 @@ body {
   border-radius: 4px 16px 16px 4px;
   box-shadow: 0 12px 34px rgba(34, 40, 80, 0.20);
   color: var(--cahier-ink);
-  overflow: hidden;
+  /* clip, NOT hidden (Dan, 6 Sep: "take away the phone edge and you will
+     see it must go pass the edge"). The ring binds must overhang the page
+     onto the desk, like a real coil wraps a real page — overflow:hidden
+     cut them off at the edge. clip does everything hidden did here (no
+     scroll mechanism, wide content stays contained) while the clip-margin
+     opens a 26px apron the binding is allowed to paint into. Only the
+     binding sits outside the box, so nothing else can leak. */
+  overflow: clip;
+  overflow-clip-margin: 26px;
 }
 /* Page-size hierarchy mirroring the flap tiers: level-2 pages (a deck's
  * activities) sit a step lower and narrower than level-1 site pages; level-3

@@ -80,12 +80,15 @@ export function CahierFrame({
   return (
     <div className="cahier-desk cahier-desk--flip">
       <div className="cahier-deskrow">
-        <main ref={pageRef} className={`cahier-page min-h-screen${famKey ? ` fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}`}>
-          <div className="cahier-binding" aria-hidden />
-
+        <main ref={pageRef} className={`cahier-page flex min-h-screen flex-col${famKey ? ` fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}`}>
           <SiteTopBar active={siteActive} />
           {topBar}
-          <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
+          {/* Coils below the chrome, overhanging the page edge — same move
+              as CahierShell (Dan's 6 Sep coil photos). */}
+          <div className="relative flex-1">
+            <div className="cahier-binding" aria-hidden />
+            <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
+          </div>
         </main>
 
         <nav className="cahier-tabs" aria-label="Views">

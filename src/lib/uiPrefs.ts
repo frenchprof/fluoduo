@@ -9,7 +9,7 @@
  * touching `window` at module scope breaks the build.
  */
 
-import { FAMILIES, type FamilyKey } from "@/content/activities";
+import { type FamilyKey } from "@/content/activities";
 
 const KEY = "fluolingo.ui.v1";
 
