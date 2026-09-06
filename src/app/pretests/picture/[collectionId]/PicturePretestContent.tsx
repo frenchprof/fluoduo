@@ -216,7 +216,9 @@ function PretestRunner({
 
   const score = verdicts.filter((v) => v.correct).length;
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 pb-8 pt-4">
+      {/* The counter first, then the card — same order as the sentence lane
+          (Dan, 5 Sep). */}
       <ProgressBar current={step} total={total} score={score} />
       <QuestionCard
         q={q}

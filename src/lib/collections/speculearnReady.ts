@@ -32,6 +32,81 @@ export const SPECULEARN_READY = [
   "objets-articles",
 ] as const;
 
+/**
+ * WHICH COLUMNS OF A DECK ARE PLAYABLE — category purity, enforced.
+ *
+ * Dan's own rule, first written for transport on 2026-08-24 ("we cannot have
+ * verb phrases alongside prepositional phrases") and broken by commerces ever
+ * since. That deck holds three different things at once:
+ *
+ *   col:un / col:une / col:des   shop nouns      🥖 boulangerie · 📚 librairie
+ *   col:client / col:marchand    whole utterances  « Ça fait combien ? »
+ *   (no column)                  bare words      euros · monnaie · prix ·
+ *                                                voudrais · ceci · voilà
+ *
+ * Drawn from one pool, a card asked 📚 and offered « une librairie », « Ça
+ * fait 5,89 euros. », « Ça fait combien ? » and « euros » — Dan, 5 Sep: "this
+ * question does not have an answer … or rather have the options show other
+ * shops instead". The untagged bag is worse than off-category: those items
+ * carry no article, so they showed as bare « monnaie » and « prix » — "monnaie
+ * cannot be itself lah, nouns need articles!", "same for le prix".
+ *
+ * So a deck may name the columns it plays. Everything outside them stays in
+ * Letris, Flip It and MCQ, where a sentence and a word can sit side by side
+ * without one pretending to answer the other.
+ *
+ * Absent from this map = the whole deck plays, which is the case for the eight
+ * decks that were already one category.
+ */
+export const SPECULEARN_DECK_COLUMNS: Record<string, readonly string[]> = {
+  commerces: ["col:un", "col:une", "col:des"],
+};
+
+/**
+ * THE LANGUAGES WEAR THEIR OWN NAMES — the endonym, not the flag.
+ *
+ * Dan, 31 Aug: "remove the flags for the languages and replace with script and
+ * other linguistic-related elements", settled the same day as the endonym
+ * rule: a language is shown by what it calls ITSELF, in its own script —
+ * « le chinois » is 中文, « le russe » is Русский.
+ *
+ * A flag is a country, not a language: 🇬🇧 for English leaves out most of its
+ * speakers, and Spanish, Arabic and Portuguese each fly a dozen. The endonym
+ * is the language itself, and it is the one thing on the card a learner can
+ * read their way into.
+ *
+ * These are TYPE, not pictures. An image generator asked for हिन्दी or 廣東話
+ * garbles it more often than not, and a word rendered by the browser is
+ * correct at every size on every screen — so the languages deck takes no rows
+ * in the image brief.
+ */
+export const SPECULEARN_ENDONYMS: Record<string, string> = {
+  "languages-01-anglais": "English",
+  "languages-02-chinois": "中文",
+  "languages-03-hindi": "हिन्दी",
+  "languages-04-espagnol": "Español",
+  "languages-05-arabe": "العربية",
+  "languages-06-francais": "Français",
+  "languages-07-portugais": "Português",
+  "languages-08-russe": "Русский",
+  "languages-09-indonesien": "Bahasa Indonesia",
+  "languages-10-allemand": "Deutsch",
+  "languages-11-japonais": "日本語",
+  "languages-12-turc": "Türkçe",
+  "languages-13-tamoul": "தமிழ்",
+  "languages-14-cantonais": "廣東話",
+  "languages-15-vietnamien": "Tiếng Việt",
+  "languages-16-filipino": "Filipino",
+  "languages-17-coreen": "한국어",
+  "languages-18-thai": "ไทย",
+  "languages-19-malais": "Bahasa Melayu",
+};
+
+/** The columns this deck plays, or null when it plays all of them. */
+export function specuLearnColumns(id: string): readonly string[] | null {
+  return SPECULEARN_DECK_COLUMNS[id] ?? null;
+}
+
 export function isSpecuLearnReady(id: string): boolean {
   return (SPECULEARN_READY as readonly string[]).includes(id);
 }
@@ -56,6 +131,13 @@ export const SPECULEARN_EXCLUDED_ITEMS = new Set([
   "commerces-04", // centre commercial — 🛍️ is any shopping at all
   "commerces-11", // boutique — every shop image "can be boutique"
   "commerces-13", // boutiques — and no image shows the plural
+  "commerces-27", // des euros — 💶 is money, not a shop, and the playable
+  //               commerces set is shops (Dan, 5 Sep: "have the options show
+  //               other shops instead"). The col:des tag added the same day
+  //               is for its ARTICLE — "euros should be des euros" — and
+  //               earns it a place in Letris's DES column; it is not an
+  //               invitation back into the picture game, where 💶 answered
+  //               to « euros », « prix » AND « Ça fait combien ? » at once.
   "lieux-letris-28-jardins-publics", // 🌳 already means parc in this deck
   "consignes-07", // Notez — 📝 vs ✍️ (Écrivez) both picture writing, and the
   //               words are near-synonyms: whichever is asked, the other is

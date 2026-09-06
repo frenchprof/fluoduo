@@ -378,18 +378,29 @@ export default function LessonPager({
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
             Choose your level
           </p>
-          <div data-tour="entry" className="flex w-full max-w-sm flex-col gap-2.5">
+          {/* STARS AND NAME, TWO COLUMNS — no sentence inside the button
+              (Dan, 5 Sep: "we dont want the description of those activities in
+              the buttons", and shown this screen, "B"). Each button used to
+              carry its own line — "Complete the sentence — one piece missing"
+              — and to run the full page width, which the no-full-width-control
+              rule forbids. The blurb moves to `title`, where the ladder's
+              detail is still one hover away, and the line under the grid
+              ("Same N cards either way") already holds the thing a learner
+              would otherwise get wrong. */}
+          <div data-tour="entry" className="grid w-full max-w-sm grid-cols-2 gap-2.5">
             {ENTRY_LEVELS.map((lv) => (
               <button
                 key={lv}
                 type="button"
+                title={ENTRY_LABELS[lv].blurb}
                 onClick={() => { setEntry(lv); setAsked(true); setBuildTick((t) => t + 1); }}
-                className="cahier-btn cahier-btn-primary flex-col items-center gap-0.5 py-3"
+                className="cahier-btn cahier-btn-primary py-3"
               >
-                <span className="text-base font-black tracking-wide">
+                {/* One line at every width: ★★★ Difficile wraps at 16px in
+                    a half-width tile on a 390px phone. */}
+                <span className="whitespace-nowrap text-sm font-black tracking-wide sm:text-base">
                   {ENTRY_LABELS[lv].stars} {ENTRY_LABELS[lv].name}
                 </span>
-                <span className="text-xs font-bold opacity-80">{ENTRY_LABELS[lv].blurb}</span>
               </button>
             ))}
           </div>

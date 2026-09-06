@@ -1,7 +1,10 @@
 "use client";
 
 /**
- * Soft-auth for Class bag save / Continue (FINISH_BACKLOG items 2+3).
+ * Soft-auth prompt. Its only caller was Class bag, dissolved 5 Sep; kept
+ * because the pattern — offer sign-in, let them proceed without — is the one
+ * any future save-something-of-mine flow wants, and it is not this lane's to
+ * delete.
  *
  * NOT AuthGate. Never walls a SpecuLearn / pretest guess. EN-only copy is
  * locked in docs/CLASS_BAG.md — do not invent alternate CTAs.

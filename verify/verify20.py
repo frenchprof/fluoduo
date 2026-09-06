@@ -179,9 +179,16 @@ dice = strip_comments(read(CONTENTS["EtuDice"]))
 check("setSelected" in dice and '"Check"' in dice,
       "EtuDice is select-then-commit in the shell",
       "EtuDice still commits on tap in the shell")
-check("setSelected" in specu and '"Check"' in specu,
-      "SpecuLearn is select-then-commit in the shell",
-      "SpecuLearn still commits on tap in the shell")
+# SPECULEARN IS THE EXCEPTION, BY INSTRUCTION. Dan, 5 Sep: "we should remove
+# the Check button" — the same call as the SpecuLearn spec's "Tap to answer,
+# no Check". The option a learner touches IS the answer they mean, and on a
+# guess-before-you-are-taught activity the second tap only stood between the
+# guess and the feedback the whole thing exists to give. EtuDice keeps its
+# Check above; the grammar is no longer uniform across the shell, and that is
+# the ruling, not a drift.
+check('"Check"' not in specu,
+      "SpecuLearn commits on tap — no Check button (Dan, 5 Sep)",
+      "SpecuLearn has a Check button again; a tap is the answer")
 
 # iComplete's help-ladder row is retired with its drill (31 Aug). It asserted
 # that iComplete had the same useHelpLadder/hintsFor state machine as every

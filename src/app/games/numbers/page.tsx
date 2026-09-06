@@ -43,12 +43,18 @@ export default function Page() {
             <Link
               key={g.href}
               href={g.href}
+              title={g.blurb}
               className="flex flex-col items-center gap-2 rounded-2xl border-2 bg-white p-6 text-center shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
               style={{ borderColor: g.hue }}
             >
               <span className="text-5xl" aria-hidden>{g.emoji}</span>
+              {/* NAME AND ICON ONLY — no description inside the button (Dan,
+                  5 Sep: "we dont want the description of those activities in
+                  the buttons"). The hubs had already dropped theirs; these two
+                  tiles were the last controls in the app still carrying a
+                  sentence. The blurbs stay in the data for the title, which is
+                  where a learner who wants the difference can still get it. */}
               <span className="text-lg font-black text-[color:var(--cahier-ink)]">{g.name}</span>
-              <span className="text-sm text-[color:var(--fluo-ink-soft)]">{g.blurb}</span>
             </Link>
           ))}
         </div>
