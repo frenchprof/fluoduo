@@ -109,8 +109,10 @@ game (streak multiplier caps at day 7; loss-framing is banned by
 verify32), and run no variable reward at all. Five options put to him,
 cheapest first: extend the streak ladder past day 7; a "course ends, French
 doesn't" surface after Diplômé; occasional bonus gems on perfect runs;
-"you vs last week"; a Finch-style companion (big, own conversation). **He has
-picked none yet — nothing is to be built from this list without his word.**
+"you vs last week"; a Finch-style companion (big, own conversation).
+[SUPERSEDED the same evening: Dan routed THREE to Color review — the streak
+ladder, the after-Diplômé surface, and "you vs last week"; see the BRIEF FOR
+COLOR REVIEW in THE ROSTER. Bonus gems and the companion stay unapproved.]
 
 Still open from the same afternoon: the landing recapture (bands + family
 captions, authorized), the three-fonts branch awaiting his go, the dark-cahier
@@ -2136,6 +2138,52 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
+### BRIEF FOR COLOR REVIEW — three retention builds (Dan, 6 Sep: "pass three of those 5 to color review pls")
+
+Background: Dan sent a video on the three retention machines consumer apps
+run (unpredictable rewards / the infinite game / social scoreboards). Five
+options were put to him; he routed the three below to your lane. The other
+two (occasional bonus gems on a perfect run; a Finch-style companion) are
+NOT approved — do not build them.
+
+THE ETHICS FLOOR IS LAW on all three: nothing loss-framed (verify32 greps
+for the phrases and fails the build), effort never punished, nothing locked,
+delight never delays a cold guess (UI_POLICE 79-80). These builds add reasons
+to come back, never fear of staying away.
+
+**1 · The streak ladder grows past day 7.** `xpMultiplier` in
+`src/lib/economy.ts` is ×1 → ×1.5 (day 3) → ×2 (day 7) and then flat
+forever: day 40 pays what day 7 pays. Extend it — e.g. ×2.5 at 14 and ×3 at
+30, numbers yours to tune — and make the NEXT milestone visible wherever the
+multiplier already shows (the +XP float prints the arithmetic, `XpFloat.tsx`;
+the streak mark sits in `SiteTopBar.tsx`). Gain-framed only: "day 14 pays
+×2.5", never "don't break it". The 30-day badge (`inarretable`) already
+exists — the ladder step should agree with it.
+
+**2 · "The course ends; the French doesn't."** « Diplômé » at 50/50 is a
+correct terminal state — LAF1201 is a semester course — but nothing tells a
+finished learner that the revise deck is the forever-game (spaced repetition
+generates due work indefinitely). Build the small surface that says so when
+`doneSios.length >= 50`: where Continue would point at a next goal, point at
+revision instead, in the app's own voice. Where it lives (Home hero /
+profile / both) is your call — show Dan renders before wiring, per
+show-don't-describe.
+
+**3 · "You vs last week."** The weekly board resets Monday and the learner's
+own last-week figure dies with it. `progress` carries `weekXp` + `weekKey`
+(`src/lib/dayKey.ts` derives keys); keep one prior week locally and show the
+comparison on the leaderboard page (`LeaderboardList.tsx` renders the
+periods). Self-comparison only — no new social data, no publishing changes,
+`firestore.rules` untouched. If beating last week earns anything, it earns a
+chime-tier moment, not a fanfare (the ladder in `RewardToast.tsx`).
+
+House rules that bite here: counts only where the thing counted is unseen;
+no full-width single controls; English chrome (these are chrome surfaces, not
+decks); relative type sizes; hand over the branch to fluoduo-main explicitly
+when it is ready — files touched, shared files, known collisions. Verify
+numbers: 108+ look free; assertion 4 checks your claim at push time either
+way.
+
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
 Asked directly — "Stamp it, amend it, or drop it?" — Dan chose **Drop
@@ -2148,7 +2196,7 @@ is gone from here; it lives in git history if anyone needs the wording.
 | Agent (session) | Lane | Owns right now |
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
-| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **Gate OPEN** (#100 merged, decision 1 resolved): next Tier-1 batch and the Tier-3 eight |
+| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **NEW, from Dan 6 Sep: the three retention builds** (brief below, "BRIEF FOR COLOR REVIEW") · then the tier pipeline resumes |
 | **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
 | **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
