@@ -98,27 +98,35 @@ export default function Map2DGrid({
   return (
     <div ref={boxRef} className="relative">
       <svg aria-hidden className="pointer-events-none absolute inset-0 z-[1] h-full w-full">
+        {/* THE ROAD HAS A BODY (6 Sep). Between fifty raised stops a 4px flat
+            stroke read as paint on the band rather than something laid on it.
+            Travelled is now a CORD: a dark under-edge one pixel low, the accent
+            over it, and a hairline highlight one pixel high — three strokes, no
+            filter, so it costs nothing to paint fifty times a second while the
+            ResizeObserver redraws. Ahead is a GROOVE cut into the band: the
+            dark dashes sit a pixel high with a white catch-light under them,
+            which is the same light-from-above the stops use. */}
         {route.travelled && (
-          <polyline
-            points={route.travelled}
-            fill="none"
-            stroke={accent ?? "var(--cahier-ink)"}
-            strokeWidth="4"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            opacity="0.85"
-          />
+          <>
+            <polyline points={route.travelled} fill="none" strokeWidth="6"
+              stroke="color-mix(in oklab, var(--cahier-ink) 30%, transparent)"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1.5)" />
+            <polyline points={route.travelled} fill="none" strokeWidth="5"
+              stroke={accent ?? "var(--cahier-ink)"} strokeLinejoin="round" strokeLinecap="round" />
+            <polyline points={route.travelled} fill="none" strokeWidth="1.5"
+              stroke="color-mix(in oklab, white 55%, transparent)"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 -1.5)" />
+          </>
         )}
         {route.ahead && (
-          <polyline
-            points={route.ahead}
-            fill="none"
-            stroke="var(--cahier-line-strong)"
-            strokeWidth="3"
-            strokeDasharray="2 7"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-          />
+          <>
+            <polyline points={route.ahead} fill="none" strokeWidth="3"
+              stroke="color-mix(in oklab, white 75%, transparent)" strokeDasharray="2 7"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1)" />
+            <polyline points={route.ahead} fill="none" strokeWidth="3"
+              stroke="var(--cahier-line-strong)" strokeDasharray="2 7"
+              strokeLinejoin="round" strokeLinecap="round" />
+          </>
         )}
       </svg>
       <div className="space-y-1">
@@ -128,7 +136,7 @@ export default function Map2DGrid({
             id={`unit-band-${unit}`}
             role="group"
             aria-label={UNIT_META[unit]?.label}
-            className="grid grid-cols-5 justify-items-center gap-y-1 rounded-xl px-1.5 py-1"
+            className="fluo-band grid grid-cols-5 justify-items-center gap-y-1 rounded-xl px-1.5 py-1"
             style={{ background: `color-mix(in oklab, ${UNIT_ACCENTS[unit]} 14%, var(--cahier-paper-raised))` }}
           >
             {serpentine(SIOS.filter((s) => s.unit === unit)).map((s) => {
@@ -148,21 +156,49 @@ export default function Map2DGrid({
                   title={`${s.id} · ${s.topic} (${KIND_LABEL[kind]})`}
                   aria-label={`${s.id} · ${s.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                   aria-current={active ? "step" : undefined}
-                  className={`relative z-[2] flex h-11 w-11 items-center justify-center rounded-full border-[3px] text-sm font-black transition hover:-translate-y-0.5 ${active ? "fluo-node-active" : ""}`}
+                  // RAISED when reached, SUNK when still ahead (6 Sep). The
+                  // dashed border is gone: a broken outline read as a hole, and
+                  // forty of the fifty stops wore it. The kind colour moves from
+                  // a `border` to an inset ring inside .fluo-stop, which costs
+                  // no layout — 44px stays 44px, the touch floor holds.
+                  className={`fluo-stop ${done || active || !ahead ? "fluo-stop--reached" : "fluo-stop--ahead"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
                   style={{
-                    borderColor: colour,
-                    borderStyle: ahead && !active ? "dashed" : "solid",
+                    ["--fluo-stop-kind" as string]: colour,
                     background: done || active ? colour : "var(--cahier-paper-raised)",
                     color: done || active ? "var(--cahier-paper-raised)" : "var(--cahier-ink-faint)",
-                    boxShadow: "var(--shadow-card)",
                   }}
                 >
-                  {done ? "✓" : i + 1}
+                  {/* THE NUMBER STAYS, ALWAYS (Dan, 6 Sep: "i do still want the
+                      number to remain on the buttons"). It used to be replaced
+                      by a ✓ the moment a stop was done, so a learner looking for
+                      "stop 12" lost it the moment they finished it — and half a
+                      full map became unnumbered. Done-ness has two other
+                      carriers now: the filled body, and the ✓ badge below. */}
+                  {i + 1}
+                  {done && (
+                    <span
+                      aria-hidden
+                      className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-black"
+                      style={{
+                        background: "var(--cahier-paper-raised)",
+                        color: colour,
+                        boxShadow: "0 1px 3px color-mix(in oklab, var(--cahier-ink) 35%, transparent)",
+                      }}
+                    >
+                      ✓
+                    </span>
+                  )}
+                  {/* THE LEARNER RIDES THE STOP, not the air above it (6 Sep).
+                      At -top-5 the marker sat 20px clear of a 44px node, which
+                      on the compressed grid put it inside the BAND ABOVE — on
+                      a phone it landed on top of another stop. It now sits on
+                      the node's shoulder like the class flag opposite, raised
+                      off it by its own shadow. */}
                   {active && (
                     <span
                       aria-hidden
-                      className="home-map-bob absolute -top-5 left-1/2 -translate-x-1/2 text-base leading-none"
-                      style={{ filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.2))" }}
+                      className="home-map-bob absolute -left-1.5 -top-2 text-base leading-none"
+                      style={{ filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.35))" }}
                     >
                       🧑‍🎓
                     </span>
@@ -188,8 +224,13 @@ export default function Map2DGrid({
             href="/practice/grammarathon/finale"
             title="GramMarathon Final — 50 questions, all lessons, weighted to your weak spots"
             aria-label="GramMarathon Final"
-            className="z-[2] flex h-11 w-11 items-center justify-center rounded-full border-[3px] text-lg transition hover:-translate-y-0.5"
-            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
+            // The door stands PROUDEST of anything on the map — it is the one
+            // node that is a place, and it is what the whole road leads to.
+            className="fluo-stop fluo-stop--reached z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
+            style={{
+              ["--fluo-stop-kind" as string]: "var(--cahier-ink)",
+              background: "var(--cahier-paper-raised)",
+            }}
           >
             🏁
           </Link>
