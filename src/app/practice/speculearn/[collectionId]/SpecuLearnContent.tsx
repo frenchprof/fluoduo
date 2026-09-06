@@ -423,8 +423,14 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
       }
       help={screen === "quiz" && !reviewing ? ladder.help : null}
       secondary={
+        /* SAY WHAT THE BUTTON REPLAYS (Dan, 5 Sep: "what the hell is redo my
+           mistakes"). It read as an instruction to make the mistakes again,
+           and on an activity whose own intro says "a wrong guess costs
+           nothing" it also managed to scold. The (1) goes with it: the score
+           it counts — 4 / 5 — is on the same screen, and a count earns its
+           place only when it describes what you cannot see (Dan, 1 Sep). */
         screen === "end" && wrong.length > 0
-          ? { label: `Redo my mistakes (${[...new Set(wrong)].length})`, onClick: () => again(true) }
+          ? { label: "Just what I missed", onClick: () => again(true) }
           : null
       }
       feedback={
