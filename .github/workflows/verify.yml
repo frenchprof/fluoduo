@@ -357,6 +357,9 @@ jobs:
       - name: "No French on a control a beginner must read to act (6 Sep)"
         run: python3 verify/verify105-en-chrome.py
 
+      - name: "The Finale card joins the colour system — no raw Tailwind (6 Sep)"
+        run: python3 verify/verify110-finale-colours.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).
