@@ -52,12 +52,16 @@
   --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* THE CAHIER IS LIGHT BY DESIGN — pinned, not accidental (6 Sep).
+   create-next-app's starter block used to flip --background/--foreground to
+   near-black on dark-mode phones. Nothing else in the app followed: every
+   surface paints light paper on top, so a dark-scheme learner got a black
+   body coat peeking out at page edges and overscroll, and — without a
+   declared color-scheme — DARK native controls (selects, checkboxes,
+   scrollbars) sitting inside light pages. A real dark cahier is a design
+   project (lighter cards on dark ground, dimmed chips — not two variables);
+   until Dan commissions one, the app declares what it is. */
+:root { color-scheme: light; }
 
 /* The page's BASELINE type (Dan, 2026-08-27: "make sure there is visual
    unity despite the variation of colors, the fonts").
