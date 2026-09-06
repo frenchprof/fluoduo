@@ -17,13 +17,10 @@
  *     names sit under the stops and hide when the map is zoomed out
  *     (< 0.7), a dotted kraft polyline is the road, a legend row closes.
  *
- * Kind → colour, Design's four categories onto the repo's `sioKind()`:
- *   vocab      → "vocabulary"    → --cahier-accent
- *   grammar    → "grammar"       → --tier-weak
- *   phrases    → "expressions"   → --tier-medium   (KIND_LABEL: expressions)
- *   production → "communication" → --tier-good     (KIND_LABEL: communication)
- * (Same colours the 3D view uses — see HomeMap3D; the palette lives in
- * KIND_COLOR below and nowhere else.)
+ * Kind → colour, Design's four categories onto the repo's `sioKind()`. The
+ * muted --cahier-accent / --tier-* set left on 6 Sep for the fluorescent pens
+ * — see KIND_COLOR below, which is where the palette lives and nowhere else.
+ * The 3D view reads the same table.
  *
  * What replaced the old RoadMap's fog: the road is PAVED (solid) up to the
  * class flag 🚩 (CLASS_FLAG_SIO — where the class is this week) and unpaved
@@ -44,12 +41,54 @@ import { sioKind, KIND_LABEL, type SioKind } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { ChalkboardIcon, IdBadgeIcon, GiftIcon, SignpostIcon, BasketIcon } from "@/components/regionIcons";
 
-/** Kind → colour token. The ONE place the map's category palette lives. */
+/**
+ * Kind → pen. The ONE place the map's category palette lives.
+ *
+ * THE FLUORESCENT PENS (Dan, 6 Sep: "can we please use the correct
+ * fluoresecent colors?"). The map had been wearing `--cahier-accent` and the
+ * `--tier-*` set — the muted tokens, not the brand's palette. These four are
+ * `--fam-*` pens, each of which ships as a THREE-SHADE triple in globals.css:
+ * pen (full strength) · wash (pale) · ink (dark).
+ *
+ * THEY ARE THE SAME HEXES AS FOUR OF THE SIX FAMILY PENS, and that is fine —
+ * put to Dan on 6 Sep and ruled: *"it does not matter if they collide since
+ * they are of different categories. so there is no risk of confuison"*. A
+ * family colour answers WHERE you are; a kind colour answers what a stop
+ * teaches. Do not "fix" this by inventing a fifth palette.
+ *
+ * ORANGE, NOT YELLOW, for `phrases` (Dan, 6 Sep: "ok use orange rather than
+ * uyellow"). Yellow was the lightest thing on the map and the worst surface
+ * for a numeral — white on it measured 1.34:1. Orange is 2.26.
+ *
+ * FILL IS THE PEN WHEN REACHED, THE WASH WHEN AHEAD — Dan picked this seeing
+ * all three options at 44px, then chose the numeral seeing three more.
+ *
+ * THE NUMERAL IS WHITE ON THE PEN, WITH A SHADOW, AND THAT IS A KNOWN TRADE.
+ * White on these four measures 2.64 / 3.01 / 2.26 / 1.84 — under the 4.5
+ * floor, and Dan was shown exactly that before choosing. The `.fluo-stop-num`
+ * shadow gives the glyph its own edge so it stops dissolving into the fill;
+ * WCAG scores flat colours and does not count it, so the number stays what it
+ * is. On the pale wash the numeral is page ink at 11.61–12.10, which is why
+ * the two shades differ in type colour at all.
+ *
+ * If this is ever revisited, the fix is NOT to darken the pens — that was
+ * offered and turned down, because it takes the fluorescence out. It is to
+ * move the numeral to page ink, which measures 4.92–8.05 on the same fills.
+ */
 export const KIND_COLOR: Record<SioKind, string> = {
-  vocab: "var(--cahier-accent)",
-  grammar: "var(--tier-weak)",
-  phrases: "var(--tier-medium)",
-  production: "var(--tier-good)",
+  vocab: "var(--fam-review)",       // blue
+  grammar: "var(--fam-svplay)",     // pink
+  phrases: "var(--fam-user)",       // orange
+  production: "var(--fam-goals)",   // green
+};
+
+/** The pale shade of the same four pens — what a stop still ahead is filled
+ *  with, so the two shades carry progress across the whole circle. */
+export const KIND_WASH: Record<SioKind, string> = {
+  vocab: "var(--fam-review-wash)",
+  grammar: "var(--fam-svplay-wash)",
+  phrases: "var(--fam-user-wash)",
+  production: "var(--fam-goals-wash)",
 };
 
 /** The five regions (Design's place names, 17 Aug 2026), one per unit, and

@@ -69,7 +69,12 @@ css = read("src/app/globals.css")
 # --- 1 · stops are objects, raised or sunk, never a dashed hole -------------
 # QUOTED, not bare: a bare substring test passed against `fluo-stop--ahead-X`,
 # because the old name is still inside the new one. Its own break-test caught it.
-check('"fluo-stop--reached"' in grid and '"fluo-stop--ahead"' in grid,
+# Quoted OR followed by a space: the reached branch now carries a second class
+# ("fluo-stop--reached fluo-stop-num"), and requiring the closing quote failed
+# on correct code. Matching name-then-boundary keeps the substring guard that
+# the earlier break-test exposed without pinning what else rides along.
+_cls = lambda n: re.search(r'"' + re.escape(n) + r'(?:[ "])', grid) is not None
+check(_cls("fluo-stop--reached") and _cls("fluo-stop--ahead"),
       "a stop is raised when reached and sunk when still ahead",
       "Map2DGrid no longer uses .fluo-stop--reached / --ahead — the stops have "
       "gone back to being flat")

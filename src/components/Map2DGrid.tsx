@@ -30,7 +30,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SIOS, UNIT_META } from "@/content/sios";
 import { CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, KIND_LABEL } from "@/content/sioKinds";
-import { KIND_COLOR } from "@/components/HomeMap";
+import { KIND_COLOR, KIND_WASH } from "@/components/HomeMap";
 import { UNIT_ACCENTS } from "@/components/siteTabs";
 import { isSioDone, type Progress } from "@/lib/progress";
 
@@ -147,6 +147,15 @@ export default function Map2DGrid({
               const kind = sioKind(s.id);
               const colour = KIND_COLOR[kind];
               const flag = s.id === CLASS_FLAG_SIO;
+              // One name for "not reached yet", used by the fill, the numeral
+              // and the depth so the three cannot disagree.
+              //
+              // `!done` MATTERS. A learner can finish a stop beyond their
+              // current one — the map has never locked anything (Dan, 1 Jul:
+              // "nothing dims, nothing locks"). Without it, a stop you have
+              // completed but walked past would render in the pale wash, i.e.
+              // as "not yet", and your own finished work would disappear.
+              const sunk = ahead && !active && !done;
               return (
                 <button
                   key={s.id}
@@ -161,33 +170,33 @@ export default function Map2DGrid({
                   // forty of the fifty stops wore it. The kind colour moves from
                   // a `border` to an inset ring inside .fluo-stop, which costs
                   // no layout — 44px stays 44px, the touch floor holds.
-                  className={`fluo-stop ${done || active || !ahead ? "fluo-stop--reached" : "fluo-stop--ahead"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
+                  className={`fluo-stop ${sunk ? "fluo-stop--ahead" : "fluo-stop--reached fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
+                  // TWO SHADES OF ONE PEN (Dan, 6 Sep, choosing option B of
+                  // three shown at 44px). Reached stops are filled with the
+                  // pen at full strength; stops still ahead take its wash. The
+                  // numeral is PAGE INK on both — never white (1.34–3.01 on
+                  // these pens) and never the pen's own ink (1.95–4.25). The
+                  // ring is the pen either way, so the hue runs edge to edge.
                   style={{
                     ["--fluo-stop-kind" as string]: colour,
-                    background: done || active ? colour : "var(--cahier-paper-raised)",
-                    color: done || active ? "var(--cahier-paper-raised)" : "var(--cahier-ink-faint)",
+                    background: sunk ? KIND_WASH[kind] : colour,
+                    color: sunk ? "var(--cahier-ink)" : undefined,
                   }}
                 >
                   {/* THE NUMBER STAYS, ALWAYS (Dan, 6 Sep: "i do still want the
                       number to remain on the buttons"). It used to be replaced
                       by a ✓ the moment a stop was done, so a learner looking for
                       "stop 12" lost it the moment they finished it — and half a
-                      full map became unnumbered. Done-ness has two other
-                      carriers now: the filled body, and the ✓ badge below. */}
+                      full map became unnumbered.
+
+                      AND THERE IS NO ✓ AT ALL NOW (Dan, same day, seeing the
+                      fluorescent fills: "Drop it — the fill says it"). The tick
+                      briefly lived as a white disc on the shoulder, which was
+                      drawn for a pale body; against a full-strength pen fifty
+                      of them read as debris. A reached stop is the pen and
+                      everything ahead is its wash, so done-ness is already the
+                      loudest thing on the grid. */}
                   {i + 1}
-                  {done && (
-                    <span
-                      aria-hidden
-                      className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-black"
-                      style={{
-                        background: "var(--cahier-paper-raised)",
-                        color: colour,
-                        boxShadow: "0 1px 3px color-mix(in oklab, var(--cahier-ink) 35%, transparent)",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
                   {/* THE LEARNER RIDES THE STOP, not the air above it (6 Sep).
                       At -top-5 the marker sat 20px clear of a 44px node, which
                       on the compressed grid put it inside the BAND ABOVE — on

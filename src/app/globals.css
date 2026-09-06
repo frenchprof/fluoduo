@@ -2327,6 +2327,24 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 .fluo-stop:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 3px; }
 
+/* THE NUMERAL ON A FLUORESCENT FILL (6 Sep). Dan chose white type on the pen,
+   having been shown the measurements: 2.64 / 3.01 / 2.26 / 1.84 against the
+   4.5 floor, because a fluorescent pen is lighter than white type can clear.
+   The shadow is what makes that survivable — it gives the glyph its own dark
+   edge so it stops dissolving into the fill. WCAG scores flat colours and does
+   not count a shadow, so the ratio is unchanged and this is a deliberate,
+   recorded trade rather than a fix. Page ink on the same fills measures
+   4.92-8.05 if it is ever revisited.
+
+   Two shadows, not one: a tight 1px drop gives the edge, a soft 3px halo
+   separates the glyph from a light fill without printing a visible outline. */
+.fluo-stop-num {
+  color: #fff;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, .55),
+    0 0 3px rgba(0, 0, 0, .45);
+}
+
 /* The unit band is the TRAY the stops sit in — recessed, so raised stops have
    something to be raised out of. One hairline and one soft inner shadow: any
    more and fifty nodes start to swim. */
