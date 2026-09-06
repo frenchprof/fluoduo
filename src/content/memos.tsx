@@ -35,7 +35,11 @@ function Pill({ children, say }: { children: ReactNode; say?: string }) {
       type="button"
       lang="fr"
       onClick={(e) => speak(say ?? e.currentTarget.textContent ?? "", "fr-FR")}
-      className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
+      // `whitespace-nowrap` for the same reason the greeting tiles got it (Dan,
+      // 2026-09-05, on « À demain » breaking in half): a pill IS one phrase, so
+      // « Comment allez-vous ? » must not wrap inside its own outline. The ROW
+      // still wraps — between pills, where it belongs.
+      className="whitespace-nowrap rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 transition hover:border-[color:var(--cahier-gold)] hover:bg-[#fffdf3] active:scale-95"
       title="🔊"
     >
       {children}
@@ -45,7 +49,13 @@ function Pill({ children, say }: { children: ReactNode; say?: string }) {
 
 type PillItem = string | { t: string; say: string };
 
-function PillRow({ label, items }: { label?: ReactNode; items: PillItem[] }) {
+// Exported because a NATIVE LESSON's memo needs the same row, and the two
+// Mémos are not interchangeable: LessonPager resolves `lesson?.memo ??
+// memoForDeck(deck)`, so wherever a deck has an authored lesson the DECK_MEMOS
+// entry never renders. Variant rows written into DECK_MEMOS.salutations were
+// invisible for exactly that reason — they live in salutations.tsx now, and
+// share this row rather than growing a second one that can drift.
+export function PillRow({ label, items }: { label?: ReactNode; items: PillItem[] }) {
   return (
     <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[13px] font-bold text-[color:var(--cahier-ink)]">
       {label != null && <span className="mr-0.5">{label}</span>}
@@ -582,7 +592,7 @@ export const DECK_MEMOS: Record<string, ReactNode> = {
     </Card>
   ),
 
-  /* ---------- Numbers 70-99 (SIO-045A, 2026-07-20: the soixante-dix /
+  /* ---------- Numbers 70-99 (SIO-045, 2026-07-20: the soixante-dix /
      quatre-vingts system — the missing bridge to real market prices) ------ */
   "numbers-70-99": (
     <Card title="70 à 99 — le système change !">

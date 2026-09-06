@@ -40,7 +40,10 @@ import { chromium } from "playwright-core";
 
 const OUT = "out";
 const PORT = 4179;
-const TABS = ["Path", "Idea", "Forms", "Pract."]; // pinned by verify68
+// Relabelled 2026-09-05 (Dan: "we can use those french words"): the strip
+// reads ← 🎯 Goal · 💡 Idée · 📐 Formes · 🏋️ Exercice. A scan that clicks tab
+// names which no longer exist walks one panel and reports the other three clean.
+const TABS = ["Goal", "Idée", "Formes", "Exercice"]; // pinned by verify68
 const PANES = ["The idea", "Q&A", "Traps", "Steps", "Check", "Sum up"];
 
 const MIME = {
@@ -133,7 +136,7 @@ for (const slug of slugs) {
   // hydrated when an instant count() looked, and the scan called an open
   // build a wall build. networkidle is when the network went quiet, not when
   // React finished.
-  const strip = page.getByRole("tab", { name: "Pract." });
+  const strip = page.getByRole("tab", { name: "Exercice" });
   try {
     await strip.first().waitFor({ timeout: 20000 });
   } catch {
@@ -154,7 +157,7 @@ for (const slug of slugs) {
     await page.getByRole("tab", { name: tab }).first().click();
     await page.waitForTimeout(60);
     record(await scan());
-    if (tab !== "Idea") continue;
+    if (tab !== "Idée") continue;
     // Pane names are not exact: a pane button may carry its count ("Traps 3").
     for (const pane of PANES) {
       const b = page.getByRole("button", { name: pane });

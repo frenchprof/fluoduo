@@ -86,6 +86,43 @@ break-tests. One of them exposed a dead assertion: the ComposeIt test matched
 `setFeedback({ reply })` and `setMessages({ text })`, so it passed against the
 reverted code. It now looks for APOLOGY rather than French, since the waiter
 speaks French on purpose and the nudges quote French a learner should type.
+## 6 Sep — SpecuLearn: one answer per card, and type goes relative (PR #191)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`). Handed to fluoduo-main; not merged here.
+
+A day of Dan's rulings, built and measured:
+
+- **Type is relative app-wide.** 316 sizes were hard pixels — 310 Tailwind
+  `text-[NNpx]` utilities, five CSS rules, one inline style. Redefined once in
+  globals.css rather than edited across ~50 files. Phone unchanged, desktop
+  +36%, capped past 1440. `verify106-fluidtype` holds it. (Numbered 106, not
+  102: the colour-review lane claimed 102 forty minutes later — the sixth
+  number collision, cleared from this side.)
+- **A SpecuLearn card has exactly one answer.** commerces mixed shop nouns,
+  whole utterances and untagged words in one option pool, so 📚 could be
+  answered by « Ça fait 5,89 euros. » and 💶 by three different words. A deck
+  now names the columns it plays; distractors never repeat a visual.
+  `verify103-speculearn-cards` holds it for every deck.
+- **Tap to answer, no Check** (`verify20` flipped to pin it; EtuDice keeps
+  its Check, so the shell's grammar is deliberately no longer uniform).
+- **‹ back to the previous question**, redrawn as it was answered; reviewing
+  never re-grades.
+- **Class bag dissolved**, all three mounts. `verify93` kept the half that was
+  never about the bag — no sign-in wall in front of a guess. The Unit-0 page
+  gained a finish panel, since Class bag was all it drew once a run was over.
+- **The languages wear their endonyms** — 中文, हिन्दी, Bahasa Indonesia — as
+  type, sized to their own tile. The languages deck leaves the image brief.
+- Descriptions out of buttons; level chooser two-up; counter first under the
+  strip; "Revisit my errors"; the image brief 160 → 146 with a do-not-generate
+  list; « le prix » / « la monnaie » / « des euros » get their articles.
+
+**Two loose ends, deliberate.** Pre-test misses now have no reader — the record
+is intact and `verify40` pins its shape, but showing them in DéjàRevu means
+deciding what DéjàRevu is, and pre-tests are barred from `queueForReview`.
+And SpecuLearn is merged in NAME only: four runners, 2,264 lines, 109 routes,
+with the game paying XP/SRS through the help ladder while the /pretests half is
+forbidden from it. Both are Dan's calls, raised with him.
 
 ## 6 Sep — Peers' language pass lands; the rest of #187 was already home
 
@@ -212,6 +249,46 @@ Sole editor of STATUS.md in this commit: fluoduo-main.
    grid on every screen now — icon + hand-bold name, no description. This
    OVERRULES the 1 Sep "a blurb per tile helps you choose" position for
    hubs; the blurbs stay in the registry for surfaces that want them.
+## 5 Sep — SIO-045A becomes SIO-045; the spine is 1-50 with no gaps
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan: *"if there is no more 45 but only 45A or 45.5, then make that the 45"*.
+Done. `SIO-045A` -> `SIO-045`, num 45.5 -> 45, in `sios.json`, the v9 CSV, and
+every place in `src/`, `verify/` and `scripts/` that named the id.
+
+**This reverses a decision recorded in the code.** The comment in
+`pretests/index.ts` said 45's number was *"a deliberate permanent gap, not
+renumbered forward"*. The gap outlived its reason — nothing was ever going to
+sit at 45 again, and a lone half-step cost every surface that prints a stop
+number an explanation. The comment now records the reversal rather than being
+deleted.
+
+**The outcome is cleaner than expected**: the spine is now exactly 1-50, no
+missing integers, no halves, no duplicates. Verified against `sios.json` before
+and after. Nothing downstream shifted — 046-050 keep their numbers.
+
+**Two things NOT changed, deliberately.** The pretest FILE names still lie about
+themselves — `u4-sio045.json` holds SIO-043's content, `u4-sio045a-nombres.json`
+holds the new SIO-045's — which has been the documented choice since the July
+re-cut (`src/lib/labels.ts`). And the historical documents were left alone:
+STATUS's own past entries, the 045A numbering report, `CSV_SPEC_REASSIGNMENT`
+and the 23 Aug syllabus audit all still say SIO-045A, because they record what
+was true when they were written.
+
+**Two mistakes made and caught in the doing**, both from a too-broad rename:
+a first pass rewrote those historical docs (reverted), and writing the v9 CSV
+through Python's text mode stripped **51 CRLF line endings** from Dan's own
+source file — the diff showed 53 changed lines for a one-string edit, which is
+what gave it away. Redone in binary: one line changed, bytes otherwise
+identical.
+
+`verify49` needed no logic change — its rule is *num = NNN + 0.5 if a letter
+suffix*, and SIO-045 with no suffix satisfies it at 45. Only its prose moved.
+`check:sios` green, matching the CSV on all 50.
+
+Build, tsc and all 89 checks green.
+
 ## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
 
 Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.

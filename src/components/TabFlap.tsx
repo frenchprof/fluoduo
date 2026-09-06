@@ -30,6 +30,7 @@ export type ShellTab = {
   href?: string; // omit on the active page's own tab
   emoji?: string;
   hue?: string;
+  fill?: string;
   /** Tiny action verb under the name ("browse the cards") — activity names
    *  alone don't tell a first-timer how Flip It differs from Lesson (Dan,
    *  2026-07-05). Navigation text: it points at the right door, so it
@@ -41,21 +42,28 @@ export type ShellTab = {
 
 /** The hue a tab wears: its own if it declares one, else the rail's cycle. */
 export const hueOf = (t: ShellTab, i: number) => t.hue ?? TAB_HUES[i % TAB_HUES.length];
+/** What an ACTIVE flap is filled with. Falls back to the stripe's own colour,
+ *  which is what every flap did before 2026-09-05 — and is why six of the eight
+ *  activity flaps put dark ink on a mid-tone ground at 2.2-4.2:1. A tab that
+ *  declares a `fill` gets its family's wash instead, measured at 8.1-8.5:1. */
+export const fillOf = (t: ShellTab, i: number) => t.fill ?? hueOf(t, i);
 
 export default function TabFlap({
   tab,
   hue,
+  fill,
   active,
   className,
   onNavigate,
 }: {
   tab: ShellTab;
   hue: string;
+  fill?: string;
   active: boolean;
   className: string;
   onNavigate?: () => void;
 }) {
-  const style = { "--tab-hue": hue } as CSSProperties;
+  const style = { "--tab-hue": hue, "--tab-fill": fill ?? hue } as CSSProperties;
   const body = (
     <>
       {tab.emoji && <span aria-hidden>{tab.emoji}</span>}

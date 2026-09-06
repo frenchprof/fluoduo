@@ -5,6 +5,9 @@
  * own items; each situation's distractors are hand-picked so exactly one
  * answer fits (standard greetings work anywhere, casual ones don't).
  */
+import { Fragment } from "react";
+
+import { PillRow } from "@/content/memos";
 import type { NativeLesson } from "./types";
 
 const SITS = [
@@ -23,36 +26,140 @@ const SITS = [
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
 
+
+/**
+ * A row of greetings that never breaks INSIDE one of them.
+ *
+ * Dan, 2026-09-05, looking at the Mémo: *"it looks terrible to have à demain
+ * separated into two lines"*. The tile held « Au revoir ! À demain ! À bientôt !
+ * Bonne journée ! » as one string, so the browser wrapped wherever it ran out of
+ * room — mid-phrase — and « À » sat alone at the end of a line with « demain ! »
+ * underneath. A learner reads a greeting as one thing; the line break said it
+ * was two.
+ *
+ * Splitting on the exclamation mark keeps it, so each phrase stays whole and the
+ * wrap happens BETWEEN greetings, where a wrap belongs.
+ */
+function Greetings({ children }: { children: string }) {
+  // Split after ! or ? — French puts a space BEFORE them, so that space belongs
+  // inside the phrase and must not break either. The space BETWEEN greetings is
+  // rendered outside the nowrap span, or the whole line would become one
+  // unbreakable run and overflow the tile instead of wrapping.
+  const parts = children.split(/(?<=[!?])\s+/);
+  return (
+    <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">
+      {parts.map((g, i) => (
+        <Fragment key={g}>
+          {i > 0 ? " " : null}
+          <span className="whitespace-nowrap">{g}</span>
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
 export const salutationsLesson: NativeLesson = {
   slug: "salutations",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">Les salutations</h2>
-      {/* The FORMS are the heroes of the lesson (Dan, 2026-08-31: "not
+      {/* THE LIST IS BY KIND (Dan, 2026-09-05: *"idée should explain the
+          different types of expressions, and Forms give that list"*). Idée
+          argues that French sorts this job into four kinds rather than one long
+          list; this panel is that list, in the same four. Kinds 1 and 2 are the
+          greetings and stay in the grid they were already in, because the grid
+          is what shows the second axis — who you are talking to — crossing them
+          both.
+
+          The FORMS are the heroes of the lesson (Dan, 2026-08-31: "not
           salient enough — they should be in bold"), so the French is set
           bold-black and the situation labels step back to captions. */}
-      <div className="mt-2 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
+      <p className="fluo-label mt-3 text-[color:var(--cahier-ink-soft)]">
+        Greeting — arriving, and leaving
+      </p>
+      <div className="mt-1 grid grid-cols-2 gap-2 text-[14px] text-[color:var(--cahier-ink)]">
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · anytime</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Bonjour ! Bonsoir ! Enchanté !</p>
+          <Greetings>{"Bonjour ! Bonsoir ! Enchanté !"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">→ arriver · friends</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! Coucou ! Ça va ?</p>
+          <Greetings>{"Salut ! Coucou ! Ça va ?"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · anytime</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Au revoir ! À demain ! À bientôt ! Bonne journée !</p>
+          <Greetings>{"Au revoir ! À demain ! À bientôt !"}</Greetings>
         </div>
         <div className="rounded-xl border border-[color:var(--cahier-rule)] bg-white p-2.5">
           <p className="fluo-label text-[color:var(--cahier-ink-soft)]">partir → · friends</p>
-          <p lang="fr" className="mt-1 text-[15px] font-black text-[color:var(--cahier-ink)]">Salut ! À plus tard ! À plus !</p>
+          <Greetings>{"Salut ! À plus tard ! À plus !"}</Greetings>
         </div>
       </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
-        ⚠️ <i lang="fr">Salut !</i> = hello AND bye — friends only.{" "}
-        <i lang="fr">Bonne nuit !</i> only at bedtime; leaving in the day is <i lang="fr">Bonne journée !</i>
+        {/* « Bonne journée » left this tile and the second half of this warning
+            with it, on the same reasoning: it is a WISH, not a leaving
+            greeting, and the wishing row below now says so with its own note.
+            Having it in the leaving tile contradicted the very sort this panel
+            is built on, and stating the bedtime rule twice on one screen is
+            two answers to one question. */}
+        ⚠️ <i lang="fr">Salut !</i> = hello AND bye — friends only. Every other
+        greeting here goes one way or the other.
       </p>
+
+      {/* KIND 3 · WISHING. Open, not folded, because the ⚠️ directly above it
+          is about this kind and a warning whose subject is behind a chevron is
+          a warning nobody reads. It is also the kind that GENERATES rather than
+          lists: « bonne soirée » is not a phrase to learn once « la soirée » is
+          known, which is the argument Idée makes and this row is the evidence
+          for. */}
+      <p className="fluo-label mt-4 text-[color:var(--cahier-ink-soft)]">
+        Wishing them the time ahead — bon / bonne + a noun
+      </p>
+      <PillRow
+        items={["Bonne journée !", "Bonne soirée !", "Bonne nuit !", "Bon week-end !", "Bon voyage !", "Bon appétit !"]}
+      />
+      <p className="mt-2 text-[13px] text-[color:var(--cahier-ink-soft)]">
+        These are not greetings at all — you hand someone the time they are about to
+        have, so they only work as you <b>leave</b>.
+      </p>
+
+      {/* VARIANTS (Dan, 2026-09-05), and his own test for what counts as one:
+          « Je prends un café » is NOT a variant of « Je voudrais un café » —
+          one orders, the other requests. « Merci / Merci beaucoup / Merci
+          bien » are one act said three ways. Every row below is one act, so
+          tapping across a row is hearing the same thing said differently, not
+          meeting three new things.
+
+          LEAVE-TAKING IS DELIBERATELY ABSENT. The grid above already shows
+          « Au revoir ! À demain ! À bientôt ! Bonne journée ! » in one tile,
+          which IS the variant row for it; a second copy here would be two
+          answers to one question on one screen.
+
+          Folded, per the long-pages rule: the grid and its ⚠️ are the lesson
+          and stay open; this is reference and is consulted. The summary carries
+          the count so a closed fold is not a bare chevron. */}
+      <details className="mt-3 rounded-lg border border-[color:var(--cahier-rule)] bg-white/60 p-2.5">
+        <summary className="cursor-pointer text-[13px] font-black text-[color:var(--cahier-ink)]">
+          Being polite, and asking how they are — 7 rows
+        </summary>
+        <PillRow label="Thanking" items={["Merci", "Merci beaucoup", "Merci bien"]} />
+        <PillRow label="Answering thanks" items={["De rien", "Je vous en prie", "Il n'y a pas de quoi"]} />
+        <PillRow label="Asking how someone is" items={["Ça va ?", "Comment ça va ?", "Comment allez-vous ?"]} />
+        <PillRow label="Answering that" items={["Ça va", "Ça va bien", "Très bien, merci"]} />
+        <PillRow label="Please" items={["S'il vous plaît", "S'il te plaît"]} />
+        <PillRow label="Excuse me" items={["Excusez-moi", "Pardon", "Excuse-moi"]} />
+        <PillRow label="Accepting" items={["Oui, volontiers", "Avec plaisir", "Bien sûr"]} />
+        <p className="mt-3 text-[13px] text-[color:var(--cahier-ink-soft)]">
+          Two rows split on <b>who you are talking to</b>, not on warmth:{" "}
+          <b lang="fr">s&rsquo;il vous plaît</b> and <b lang="fr">excusez-moi</b> go with{" "}
+          <b lang="fr">vous</b>, <b lang="fr">s&rsquo;il te plaît</b> and{" "}
+          <b lang="fr">excuse-moi</b> with <b lang="fr">tu</b>.
+        </p>
+        <p className="mt-2 text-[13px] text-[color:var(--cahier-ink-soft)]">
+          <b lang="fr">Ça va</b> is the only one that answers itself — the same two
+          words are the question and the reply, told apart by the voice alone.
+        </p>
+      </details>
     </div>
   ),
   dice: {
@@ -88,42 +195,58 @@ export const salutationsLesson: NativeLesson = {
   // only at bedtime"), and a second screen repeating it is exactly what the
   // litmus test removes.
   concept: {
-    subtitle: "Why it is bonjour but bonne nuit",
+    // REWRITTEN 2026-09-05. Dan: *"idée should explain the different types of
+    // expressions, and Forms give that list"*.
+    //
+    // What was here argued bon-vs-bonne — a good argument, and the wrong one to
+    // OPEN with: it answers a question about two of these expressions while the
+    // learner is still holding eighteen and no way to sort them. The kinds are
+    // the sort, so they are the claim now, and bon/bonne survives inside as the
+    // rule for one kind — the Steps pane and two of the checks are its old
+    // content, moved rather than dropped.
+    subtitle: "Four kinds of expression",
     contrast: (
       <>
-        English <i>good</i> never changes — good morning, good night, good trip.
-        French has to choose between <i lang="fr">bon</i> and{" "}
-        <i lang="fr">bonne</i>, and it chooses by the noun that follows. So the
-        greeting is not one block to swallow: it is <i lang="fr">bon</i> or{" "}
-        <i lang="fr">bonne</i> agreeing with a word you already know.
+        English gets by on <i>hi</i> and <i>bye</i> — any hour, anyone, coming or
+        going. French splits the same job four ways, and which way you are in
+        decides what you may say.
       </>
     ),
     question: (
       <>
-        Four of these greetings are the same two words. Why{" "}
-        <i lang="fr">bonjour</i> and <i lang="fr">bonsoir</i>, but{" "}
-        <i lang="fr">bonne journ&eacute;e</i> and <i lang="fr">bonne nuit</i>?
+        Why does <i lang="fr">Salut&nbsp;!</i> work as hello AND as goodbye, while{" "}
+        <i lang="fr">Bonjour&nbsp;!</i> only says hello — and{" "}
+        <i lang="fr">Bonne nuit&nbsp;!</i> says neither?
       </>
     ),
     answer: (
       <>
-        Gender. <i lang="fr">Le jour</i> and <i lang="fr">le soir</i> are
-        masculine, so <i lang="fr">bon</i>. <i lang="fr">La journ&eacute;e</i>{" "}
-        and <i lang="fr">la nuit</i> are feminine, so <i lang="fr">bonne</i>.
-        The masculine pair is written as one word; the feminine pair stays two.
-        Once you see it, <i lang="fr">bonne soir&eacute;e</i> is not a new
-        phrase to learn — <i lang="fr">la soir&eacute;e</i> is feminine, so it
-        could not have been anything else.
+        Because they are three different kinds. <i lang="fr">Bonjour</i> GREETS an
+        arrival. <i lang="fr">Salut</i> is the same greeting in the friends&rsquo;
+        register, and a register has no direction, so it serves both ways. And{" "}
+        <i lang="fr">Bonne nuit</i> does not greet at all: it WISHES someone the
+        time ahead — <i lang="fr">bon</i> or <i lang="fr">bonne</i> plus a noun —
+        which is why it belongs to the moment you leave, and only to the night.
       </>
     ),
     pitfall: [
       {
-        label: <><i lang="fr">la nuit</i></>,
+        label: <>leaving in the daytime</>,
+        wrong: <><i lang="fr">Bonne nuit&nbsp;!</i></>,
+        right: <><i lang="fr">Bonne journ&eacute;e&nbsp;!</i></>,
+      },
+      {
+        label: <>greeting your professor</>,
+        wrong: <><i lang="fr">Salut&nbsp;!</i></>,
+        right: <><i lang="fr">Bonjour&nbsp;!</i></>,
+      },
+      {
+        label: <>wishing, and <i lang="fr">la nuit</i> is feminine</>,
         wrong: <><i lang="fr">bon nuit</i></>,
         right: <><i lang="fr">bonne nuit</i></>,
       },
       {
-        label: <><i lang="fr">le voyage</i></>,
+        label: <>wishing, and <i lang="fr">le voyage</i> is masculine</>,
         wrong: <><i lang="fr">bonne voyage</i></>,
         right: <><i lang="fr">bon voyage</i></>,
       },
@@ -134,35 +257,44 @@ export const salutationsLesson: NativeLesson = {
     // page-level overflow check, which was green because the box scrolls
     // inside itself.
     flow: [
-      { depth: 0, text: "Wishing someone a good something?" },
-      { depth: 1, text: "the noun is masculine → bon" },
-      { depth: 2, text: "le jour → bonjour" },
-      { depth: 2, text: "le voyage → bon voyage" },
-      { depth: 1, text: "the noun is feminine → bonne" },
-      { depth: 2, text: "la nuit → bonne nuit" },
-      { depth: 2, text: "la chance → bonne chance" },
+      { depth: 0, text: "Which kind do you need?" },
+      { depth: 1, text: "arriving → Bonjour · Bonsoir · Salut" },
+      { depth: 1, text: "leaving → Au revoir · À demain · Salut" },
+      { depth: 1, text: "wishing them the time ahead → bon / bonne + nom" },
+      { depth: 2, text: "the noun is masculine → bon voyage" },
+      { depth: 2, text: "the noun is feminine → bonne nuit" },
+      { depth: 1, text: "being polite → Merci · S'il vous plaît · Excusez-moi" },
     ],
     check: [
+      {
+        q: <>Which kind is <i lang="fr">&Agrave; demain&nbsp;!</i>?</>,
+        a: (
+          <>
+            A leaving greeting — and one that also fixes when you next meet, which
+            is why it cannot be said on the way in.
+          </>
+        ),
+      },
       {
         q: <>You leave at 18 h and want to wish them a good evening. <i lang="fr">La soir&eacute;e</i> — which?</>,
         a: (
           <>
-            <i lang="fr">Bonne soir&eacute;e !</i> — feminine, like{" "}
+            <i lang="fr">Bonne soir&eacute;e&nbsp;!</i> — feminine, like{" "}
             <i lang="fr">la journ&eacute;e</i>. You have never been taught this
-            phrase; the rule gave it to you.
+            phrase; the kind and its rule gave it to you.
           </>
         ),
       },
       {
         q: <>Someone is about to eat. <i lang="fr">L&rsquo;app&eacute;tit</i> is masculine.</>,
-        a: <><i lang="fr">Bon app&eacute;tit !</i></>,
+        a: <><i lang="fr">Bon app&eacute;tit&nbsp;!</i></>,
       },
     ],
     remember: (
       <>
-        <i lang="fr">Bonjour</i> and <i lang="fr">bonne nuit</i> are not two
-        things to memorise. They are one adjective agreeing with{" "}
-        <i lang="fr">le jour</i> and <i lang="fr">la nuit</i>.
+        Ask which KIND before which word — arriving, leaving, wishing, or being
+        polite. Only the wishing kind then needs a second decision, and{" "}
+        <i lang="fr">bon</i> or <i lang="fr">bonne</i> follows the noun.
       </>
     ),
   },

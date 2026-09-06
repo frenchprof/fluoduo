@@ -322,7 +322,7 @@ export default function FinaleContent() {
               borderRadius: 0,
               background: "rgba(254,240,138,0.7)",
               padding: "0 4px",
-              fontSize: "17px",
+              fontSize: "calc(1.0625rem + var(--fs-step) * 1.06)",
               fontFamily: "inherit",
               color: "inherit",
             }}

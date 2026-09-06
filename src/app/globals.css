@@ -52,12 +52,16 @@
   --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* THE CAHIER IS LIGHT BY DESIGN — pinned, not accidental (6 Sep).
+   create-next-app's starter block used to flip --background/--foreground to
+   near-black on dark-mode phones. Nothing else in the app followed: every
+   surface paints light paper on top, so a dark-scheme learner got a black
+   body coat peeking out at page edges and overscroll, and — without a
+   declared color-scheme — DARK native controls (selects, checkboxes,
+   scrollbars) sitting inside light pages. A real dark cahier is a design
+   project (lighter cards on dark ground, dimmed chips — not two variables);
+   until Dan commissions one, the app declares what it is. */
+:root { color-scheme: light; }
 
 /* The page's BASELINE type (Dan, 2026-08-27: "make sure there is visual
    unity despite the variation of colors, the fonts").
@@ -737,6 +741,26 @@ body {
    Regular and SemiBold of FluOLinGo Hand are loaded, so `italic` would have
    the browser synthesise an oblique of a handwriting face. */
 .fluo-en { font-family: var(--font-fluohand-stack); font-weight: 400; letter-spacing: 0; }
+/* THE FRENCH ON A PRACTICE CARD — the same hand (Dan, 2026-09-05: "what about
+   having FluOLinGo throughout the page, except maybe the single worded
+   choices").
+
+   The English had moved to Dan's hand on 1 Sep and the French had not, so one
+   card carried two faces and the seam ran between the target and its own
+   reference. This closes it: prompt, meta and the sentence being built are all
+   the house hand now, and `.fluo-en` stays Regular under it, so English and
+   French are told apart by WEIGHT within one face rather than by two faces.
+
+   SEMIBOLD, NOT BOLD. Only Regular and SemiBold of FluOLinGo Hand are loaded
+   (layout.tsx); `font-bold` on this face would have the browser synthesise a
+   700 from the 400 and thicken the letterforms unevenly. The elements that
+   take this class drop their `font-bold` for exactly that reason.
+
+   THE SINGLE-WORD CHOICES KEEP THE BODY FACE, which is Dan's exception: a
+   one-word option is a token you pick, not a sentence you read, and the body
+   face's tighter fitting is what makes a grid of them scannable. An option
+   that IS a sentence takes the hand like everything else. */
+.card-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
 .cahier-hl {
   background-color: var(--cahier-hl);
   mix-blend-mode: multiply;
@@ -929,7 +953,13 @@ body {
 .cahier-tab--back2 { margin-right: 36px; }
 .cahier-tab:hover { transform: translateX(-3px); }
 .cahier-tab[data-active="true"] {
-  background: var(--tab-hue, var(--cahier-hl));
+  /* THE FILL, NOT THE STRIPE (2026-09-05). This painted `--tab-hue` — the
+     saturated colour the 6px stripe wants — behind `--cahier-ink`, and measured
+     that way six of the eight activity flaps sat between 2.17:1 and 4.23:1 on
+     the label of the page the learner was standing on. `--tab-fill` is the
+     family's wash and clears 8.1-8.5:1; it falls back to the stripe so a tab
+     that declares no fill renders exactly as it did. */
+  background: var(--tab-fill, var(--tab-hue, var(--cahier-hl)));
   color: var(--cahier-ink);
   font-weight: 900;
   border-color: var(--cahier-ink);
@@ -1438,6 +1468,34 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 :focus-visible {
   outline: 3px solid #2d5bff;
   outline-offset: 2px;
+}
+
+/* FAT-FINGER FLOOR (6 Sep, mobile round of the UI-police audit): a control
+   may DRAW small, but it must CATCH ~44px — measured on the export, the
+   top bar's four buttons caught at 27-34px on every page and the footer's
+   "about" at 31x13. The pad is an invisible ::after that grows the touch
+   area up to 44px in an axis only when the drawn box is under it — the
+   button Dan approved does not change by a pixel. Do not put it on two
+   controls closer than ~10px, or their halos cross. */
+.fluo-hit44 { position: relative; }
+.fluo-hit44::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 44px) / 2));
+  bottom: min(0px, calc((100% - 44px) / 2));
+  left: min(0px, calc((100% - 44px) / 2));
+  right: min(0px, calc((100% - 44px) / 2));
+}
+/* The top bar's small square buttons are the worst repeat offenders —
+   floored as a class so every page inherits it. */
+.cahier-btn-sm { position: relative; }
+.cahier-btn-sm::after {
+  content: "";
+  position: absolute;
+  top: min(0px, calc((100% - 42px) / 2));
+  bottom: min(0px, calc((100% - 42px) / 2));
+  left: min(0px, calc((100% - 42px) / 2));
+  right: min(0px, calc((100% - 42px) / 2));
 }
 
 /* Tap-to-hear lesson zone: every French bit is speakable — show it. */
@@ -2103,11 +2161,11 @@ h3.cahier-display { font-size: var(--fs-h3); }
   width: 24px; height: 24px; flex: 0 0 auto; border-radius: 50%;
   border: 2px solid var(--fam-practice-ink); color: var(--fam-practice-ink);
   background: #fff; display: flex; align-items: center; justify-content: center;
-  font-family: var(--fluo-mono); font-weight: 800; font-size: 14px;
+  font-family: var(--fluo-mono); font-weight: 800; font-size: calc(0.875rem + var(--fs-step) * 0.88);
 }
-.sio-step-emoji { font-size: 17px; line-height: 1; flex: 0 0 auto; }
-.sio-step-name { font-weight: 700; font-size: 14px; line-height: 1.15; color: var(--fluo-ink, var(--cahier-ink)); min-width: 0; }
-.sio-step-end { margin-left: auto; font-weight: 900; font-size: 17px; color: var(--fam-practice-ink); }
+.sio-step-emoji { font-size: calc(1.0625rem + var(--fs-step) * 1.06); line-height: 1; flex: 0 0 auto; }
+.sio-step-name { font-weight: 700; font-size: calc(0.875rem + var(--fs-step) * 0.88); line-height: 1.15; color: var(--fluo-ink, var(--cahier-ink)); min-width: 0; }
+.sio-step-end { margin-left: auto; font-weight: 900; font-size: calc(1.0625rem + var(--fs-step) * 1.06); color: var(--fam-practice-ink); }
 .sio-step.is-done { opacity: 0.55; background: #f4f5ee; box-shadow: none; }
 .sio-step.is-done .sio-step-num { background: var(--fam-practice-ink); color: #fff; }
 .sio-step.is-here {
@@ -2117,7 +2175,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 .sio-step.is-here .sio-step-num { background: var(--fam-practice-ink); color: #fff; }
 .sio-step.is-here .sio-step-name { font-weight: 800; }
-.sio-step.is-here .sio-step-end { font-size: 21px; line-height: 1; }
+.sio-step.is-here .sio-step-end { font-size: calc(1.3125rem + var(--fs-step) * 1.31); line-height: 1; }
 
 /* ── Play's first-visit halo (approved guidance flow, 2026-08-24) ──────────
    A chartreuse pulse ring on the ONE true "start here" button — only while
@@ -2257,4 +2315,45 @@ input.fluo-bookmark:focus,
   outline: none;
   border: none;
   box-shadow: 0 2px 0 0 var(--cahier-le);
+}
+
+
+/* ── THE ARBITRARY SIZES JOIN THE RAMP ────────────────────────────────────
+   Dan, 2026-09-05: "make sure the relative font sizes exist throughout the
+   portal". Counted: 310 `text-[NNpx]` utilities across the app, plus five
+   `font-size: NNpx` rules below and one inline style — about a quarter of the
+   app's type was hard pixels, ignoring both the viewport scale and the
+   learner's own text setting.
+
+   REDEFINED HERE RATHER THAN EDITED IN PLACE. Tailwind compiles `text-[15px]`
+   to a class of exactly that name, and globals.css is imported after Tailwind,
+   so a rule of equal specificity declared here wins — the same ordering that
+   made `font-bold` lose to `.fluo-band-hand` earlier today. Twelve rules
+   replace 310 edits across some fifty files, and touching those files would
+   have pulled each one's existing lint debt into this change for no gain.
+
+   The multiplier is the size in rem, so a 16px thing gains one whole step —
+   the same relation --text-base has. The ramp stays proportional and the
+   phone, where the step is zero, renders exactly as before. */
+:root {
+  .text-\[8px\] { font-size: calc(0.5rem + var(--fs-step) * 0.5); }
+  .text-\[9px\] { font-size: calc(0.5625rem + var(--fs-step) * 0.56); }
+  .text-\[9\.5px\] { font-size: calc(0.5938rem + var(--fs-step) * 0.59); }
+  .text-\[10px\] { font-size: calc(0.625rem + var(--fs-step) * 0.62); }
+  .text-\[11px\] { font-size: calc(0.6875rem + var(--fs-step) * 0.69); }
+  .text-\[11\.5px\] { font-size: calc(0.7188rem + var(--fs-step) * 0.72); }
+  .text-\[12px\] { font-size: calc(0.75rem + var(--fs-step) * 0.75); }
+  .text-\[12\.5px\] { font-size: calc(0.7812rem + var(--fs-step) * 0.78); }
+  .text-\[13px\] { font-size: calc(0.8125rem + var(--fs-step) * 0.81); }
+  .text-\[13\.5px\] { font-size: calc(0.8438rem + var(--fs-step) * 0.84); }
+  .text-\[14px\] { font-size: calc(0.875rem + var(--fs-step) * 0.88); }
+  .text-\[15px\] { font-size: calc(0.9375rem + var(--fs-step) * 0.94); }
+  .text-\[16px\] { font-size: calc(1.0rem + var(--fs-step) * 1.0); }
+  .text-\[17px\] { font-size: calc(1.0625rem + var(--fs-step) * 1.06); }
+  .text-\[19px\] { font-size: calc(1.1875rem + var(--fs-step) * 1.19); }
+  .text-\[22px\] { font-size: calc(1.375rem + var(--fs-step) * 1.38); }
+  .text-\[26px\] { font-size: calc(1.625rem + var(--fs-step) * 1.62); }
+  .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+  .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
+  .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
 }

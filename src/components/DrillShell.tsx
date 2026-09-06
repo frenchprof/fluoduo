@@ -128,6 +128,7 @@ export function NextChip({ step }: { step: NextStep }) {
 
 export default function DrillShell({
   exitHref,
+  back,
   progress,
   right,
   cta,
@@ -141,6 +142,11 @@ export default function DrillShell({
 }: {
   /** The ✕. Always present — a drill you cannot leave is a trap. */
   exitHref: string;
+  /** ‹ Back to the question before. Sits at the left of the bar, where the ✕
+   *  sits on the shells that have no band, so the two never collide.
+   *  null (the default) draws nothing — most drills have nothing to go back
+   *  to. Dan, 5 Sep: "for SpecuLearn we are missing the back button". */
+  back?: { onClick: () => void; disabled?: boolean; label?: string } | null;
   /** null hides the bar (e.g. on a done screen). */
   progress: { done: number; total: number } | null;
   /** Top-right slot: score counter and the like. NOT hearts — see header. */
@@ -239,7 +245,7 @@ export default function DrillShell({
   // reachable so banked answers keep their labels). Without this the row would
   // vanish on exactly those pages and take the only way out with it. "A drill
   // you cannot leave is a trap" is this file's own words, twenty lines up.
-  const barNeeded = !!progress || !!help || !act;
+  const barNeeded = !!progress || !!help || !act || !!back;
   const pct = progress && progress.total > 0
     ? Math.min(100, Math.round((progress.done / progress.total) * 100))
     : 0;
@@ -339,8 +345,16 @@ export default function DrillShell({
           Where progress or help DO exist the row is unchanged, which is most
           of the 28 surfaces mounting this shell: the progress bar is the
           learner's position in the run and the ? ladder is load-bearing. */}
+      {/* THE DASHES ARE THE FREEZE LINE (Dan, 2026-09-05: *"the dotted line
+          needs to be the separation line between the frozen part and the
+          scrollable part"*, then *"the scroll should start below the
+          counter"*). This row already WAS the last frozen thing — it is
+          `shrink-0` and sits before the `overflow-y-auto` panel, so nothing
+          moved; what it lacked was any way to say so. The same dashes mark the
+          same seam under the lesson's tab strip, which is the other view of
+          this shell and the one he drew the line on. */}
       {barNeeded && (
-      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-white/45 px-3 sm:px-5">
+      <div className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-white/45 px-3 sm:px-5">
         {/* Only where there is no band to host it — see `barNeeded`. Two ✕ on
             one screen would be worse than the row this change removes. */}
         {!act && (
@@ -351,6 +365,18 @@ export default function DrillShell({
           >
             ✕
           </Link>
+        )}
+        {back && (
+          <button
+            type="button"
+            onClick={back.onClick}
+            disabled={back.disabled}
+            aria-label={back.label ?? "The question before"}
+            title={back.label ?? "The question before"}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-2xl font-black leading-none text-[color:var(--cahier-ink)]/50 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] disabled:opacity-25"
+          >
+            ‹
+          </button>
         )}
         {progress ? (
           <div

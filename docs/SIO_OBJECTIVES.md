@@ -251,7 +251,7 @@ on either side of the stall: assign each line of the dialogue to *le
 marchand* or *le client*, put the exchange in order, and produce *Je
 voudrais…*, *Ça fait combien ?*, and *Et avec ceci ?*
 
-**SIO-045A · Numbers 70–99** — The learner will count from 70 to 99 following
+**SIO-045 · Numbers 70–99** — The learner will count from 70 to 99 following
 the *soixante-dix* and *quatre-vingts* patterns, and understand and produce
 these numbers in market prices (*Ça fait quatre-vingt-cinq euros.*).
 

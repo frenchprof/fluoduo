@@ -1,5 +1,5 @@
 /**
- * « soixante-quinze » — the generator for SIO-045A.
+ * « soixante-quinze » — the generator for SIO-045.
  *
  * WHY THIS LESSON EXISTS. The can-do is "the numbers from 70 to 99, INCLUDING
  * IN PRICES", and the `numbers-70-99` deck is thirty bare numerals in three

@@ -11,6 +11,7 @@
  * "bring to class" gap report at the end.
  */
 
+import { TAB_ICONS } from "@/content/activities";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CURATED } from "@/content/collections";
@@ -26,8 +27,8 @@ import { shuffle } from "@/lib/shuffle";
 // Cold pre-lesson diagnostic — no Practice-activity links on the rail
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
+  { key: "home", ...TAB_ICONS.home, href: "/" },
+  { key: "pretest", ...TAB_ICONS.pretest },
 ];
 
 type Direction = "fr2pic" | "pic2fr";
@@ -215,7 +216,9 @@ function PretestRunner({
 
   const score = verdicts.filter((v) => v.correct).length;
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 pb-8 pt-4">
+      {/* The counter first, then the card — same order as the sentence lane
+          (Dan, 5 Sep). */}
       <ProgressBar current={step} total={total} score={score} />
       <QuestionCard
         q={q}

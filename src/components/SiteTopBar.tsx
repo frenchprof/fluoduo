@@ -36,7 +36,7 @@ import MenuSplash from "@/components/MenuSplash";
 import RailGroups from "@/components/RailGroups";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
-import TabFlap, { hueOf, type ShellTab } from "@/components/TabFlap";
+import TabFlap, { fillOf, hueOf, type ShellTab } from "@/components/TabFlap";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 
 export default function SiteTopBar({
@@ -208,7 +208,7 @@ export default function SiteTopBar({
                 <TabFlap
                   key={t.key}
                   tab={t}
-                  hue={hueOf(t, i)}
+                  hue={hueOf(t, i)} fill={fillOf(t, i)}
                   active={active === t.key}
                   className="cahier-tab cahier-tab--sm !rounded-md text-left"
                   onNavigate={() => setMenuOpen(false)}
@@ -219,7 +219,7 @@ export default function SiteTopBar({
                 <TabFlap
                   key={t.key}
                   tab={t}
-                  hue={hueOf(t, i)}
+                  hue={hueOf(t, i)} fill={fillOf(t, i)}
                   active={active === t.key}
                   className="cahier-tab cahier-tab--sm !rounded-md text-left"
                   onNavigate={() => setMenuOpen(false)}

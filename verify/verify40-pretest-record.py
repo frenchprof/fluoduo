@@ -115,14 +115,26 @@ check(calls(picture, "recordPretestAnswer"),
 check(calls(unit0, "recordPretestAnswer"),
       "the Unit-0 quiz writes the gap record",
       "the Unit-0 quiz grades but never records — Unit 0 has no gap report")
-# A write with no reader is the Unit-0 hole of 28 Aug, now the U1–4 hole:
-# Recap showed score / retry / Home and never mounted BringToClass, even
-# though the runner already writes misses. Pin the mount on Recap, not
-# the import line — an unused import would stay green.
-recap = solo[solo.find("function Recap("):] if "function Recap(" in solo else ""
-check("<BringToClass" in recap,
-      "the U1–4 recap mounts BringToClass — a miss has a reader",
-      "the U1–4 recap no longer mounts BringToClass — misses are written and never shown")
+# THE READER IS GONE ON PURPOSE, AND THIS IS THE ONE LOOSE END.
+# Until 5 Sep this pinned that the U1–4 recap mounted BringToClass, so a miss
+# had somewhere to be read. Dan dissolved Class bag that day ("dissolve class
+# bag as a concept = we dowan that anymore"), which removed the only reader
+# fluolingo:pretest.v1 has ever had. The writes above are still pinned, so the
+# record survives intact for the reader Dan named on 31 Aug — "it is just for
+# them to revise in DéjàRevue".
+#
+# What CANNOT be done quietly is route a miss into the review queue: section 2
+# below bars queueForReview from every pre-test, deliberately, and lifting that
+# is Dan's call and not a refactor. So this check now pins the store's shape
+# rather than a screen — missesForSio must still exist and still read the key
+# the writers write, or the record is unreachable when Réviser comes for it.
+record = code(open("src/lib/pretestRecord.ts", encoding="utf-8").read())
+check("export function missesForSio" in record,
+      "missesForSio survives Class bag — the record is still readable",
+      "missesForSio is gone: every miss is now written to a store nothing can read")
+check('"fluolingo:pretest.v1"' in record,
+      "the gap record still lives under fluolingo:pretest.v1",
+      "the gap record's key moved — a learner's existing misses are orphaned")
 
 # ---- 2 · nothing pre-lesson is ever scored ---------------------------------
 # The load-bearing assertion. A pretest that reaches any of these is charging

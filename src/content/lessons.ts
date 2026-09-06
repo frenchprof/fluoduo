@@ -40,6 +40,7 @@ export const LESSONS: Record<string, Lesson> = {
   // was already right; only these gallery labels front-ran the book (audit 1.4).
   "questions-oui-non": { slug: "questions-oui-non", title: "Questions : oui ou non",       unit: 3 },
   "mots-interrogatifs":{ slug: "mots-interrogatifs",title: "Les mots interrogatifs",       unit: 3 },
+  "quel-prefere":      { slug: "quel-prefere",      title: "Quel ? Quelle ? Quels ? Quelles ?", unit: 1 },
   "articles-pays":     { slug: "articles-pays",     title: "Les articles des pays",        unit: 1 },
   // SIO-005 / SIO-006, added 2026-08-31 — Unité 0, the two Tier 2 stops that
   // had a deck but no lesson file to hold a concept.
@@ -137,7 +138,7 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   "SIO-038": ["transport"],
   "SIO-013": ["quelle-matiere"],
   "SIO-044": ["au-marche"],
-  "SIO-045A": ["soixante-dix"],
+  "SIO-045": ["soixante-dix"],
   "SIO-017": ["langues-pays"],
   "SIO-018": ["nombres-echanges"],
   "SIO-009": ["salutations"],
@@ -156,7 +157,12 @@ export const LESSONS_BY_SIO: Record<string, string[]> = {
   // avoir-etats FIRST: the SIO's grammar is avoir-vs-être states + age, not
   // the paradigm tables (Dan, 2026-07-08: "the avoir SIO doesn't match").
   "SIO-019": ["avoir-etats", "conjugaison-u1"],
-  "SIO-015": ["articles-pays"],
+  // Dan, 2026-09-05: "the quel lesson in Unit 1 must incorporate…". There
+  // was no quel lesson in Unit 1 — the four forms are taught at SIO-034, in
+  // Unit 3, while a Unit 1 PRE-TEST (u1-sio017) already asks a learner to
+  // choose between them. It goes second here because `quel` agrees with the
+  // article articles-pays teaches, so that lesson is its prerequisite.
+  "SIO-015": ["articles-pays", "quel-prefere"],
   "SIO-034": ["questions-oui-non", "mots-interrogatifs"],
   "SIO-022": ["possessifs"],
   "SIO-023": ["aimer", "aimer-infinitif", "conjugaison-er"],
