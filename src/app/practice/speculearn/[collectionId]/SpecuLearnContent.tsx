@@ -37,6 +37,7 @@ import {
   BUILDING_EMOJI,
   SPECULEARN_EXCLUDED_ITEMS,
   SPECULEARN_ITEM_IMAGES,
+  SPECULEARN_ENDONYMS,
   SPECULEARN_PROMPT_FRAME,
   specuLearnColumns,
 } from "@/lib/collections/speculearnReady";
@@ -50,7 +51,7 @@ import { stopForDeck } from "@/lib/stopTag";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
-type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; s?: number };
+type DevItem = { w: string; tag: string | null; color: string; img?: string; emoji?: string; endonym?: string; s?: number };
 
 type Mode = "mix" | "say-t" | "say-s";
 type Dir = "wi" | "iw" | "say-t" | "say-s";
@@ -127,7 +128,16 @@ function buildItems(collectionId: string): { items: DevItem[]; subtitle: string 
     .map((it) => {
       const w = withArticle(it.fr, it.tags);
       const img = SPECULEARN_ITEM_IMAGES[it.id];
-      return { w, ...tagFromArticle(w), emoji: img ? undefined : (it.emoji as string), img };
+      // A language's picture is its own name (see SPECULEARN_ENDONYMS) — 中文,
+      // Русский — not the flag of one country that speaks it.
+      const endonym = SPECULEARN_ENDONYMS[it.id];
+      return {
+        w,
+        ...tagFromArticle(w),
+        emoji: img || endonym ? undefined : (it.emoji as string),
+        img: endonym ? undefined : img,
+        endonym,
+      };
     });
   return { items, subtitle: deck?.title ?? collectionId };
 }
@@ -158,6 +168,26 @@ type Snap = {
 };
 
 function Visual({ it, className }: { it: DevItem; className: string }) {
+  if (it.endonym) {
+    // Sized by how long the name is: 中文 wants to fill the tile, « Bahasa
+    // Indonesia » wants to fit in it. The stack names the system faces that
+    // actually carry Devanagari, Tamil, Thai, Arabic, Hangul and CJK — the
+    // app's own webfonts are Latin only, and a missing glyph is a box.
+    // Sized by the LONGEST WORD, not the whole string: « Bahasa Indonesia »
+    // wraps after Bahasa and then it is "Indonesia" that has to fit the tile.
+    // Sizing by total length put it at text-2xl and clipped it at the edge.
+    const longest = Math.max(...it.endonym.split(/\s+/).map((w) => w.length));
+    const size =
+      longest <= 3 ? "text-5xl" : longest <= 6 ? "text-3xl" : longest <= 8 ? "text-2xl" : "text-xl";
+    return (
+      <span
+        className={`${className} flex w-full items-center justify-center overflow-hidden break-words bg-white px-2 text-center font-bold leading-tight text-[color:var(--cahier-ink)] ${size}`}
+        style={{ fontFamily: "system-ui, 'Noto Sans', 'Noto Sans CJK SC', 'Noto Sans Devanagari', 'Noto Sans Tamil', 'Noto Sans Thai', 'Noto Sans Arabic', sans-serif" }}
+      >
+        {it.endonym}
+      </span>
+    );
+  }
   return it.img ? (
     // Plain <img> on purpose: output:"export" ships no image optimizer, so
     // next/image adds a runtime wrapper and optimizes nothing here.
@@ -215,7 +245,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   // spent 💶 on both « euros » and « Ça fait combien ? » and 🪙 on both
   // « monnaie » and « Voici votre monnaie » — in the word→image direction
   // that is two identical buttons, one of them marked wrong.
-  const visualOf = (x: DevItem) => x.img ?? x.emoji ?? x.w;
+  const visualOf = (x: DevItem) => x.endonym ?? x.img ?? x.emoji ?? x.w;
   const distractors = (it: DevItem): DevItem[] => {
     const same = pool().filter((x) => x !== it);
     const base = same.length >= 3 ? same : ITEMS.filter((x) => x !== it);
@@ -426,11 +456,12 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
         /* SAY WHAT THE BUTTON REPLAYS (Dan, 5 Sep: "what the hell is redo my
            mistakes"). It read as an instruction to make the mistakes again,
            and on an activity whose own intro says "a wrong guess costs
-           nothing" it also managed to scold. The (1) goes with it: the score
-           it counts — 4 / 5 — is on the same screen, and a count earns its
+           nothing" it also managed to scold. « Revisit my errors » is Dan's
+           own wording, given the same day. The (1) goes with it: the score it
+           counted — 4 / 5 — is on the same screen, and a count earns its
            place only when it describes what you cannot see (Dan, 1 Sep). */
         screen === "end" && wrong.length > 0
-          ? { label: "Just what I missed", onClick: () => again(true) }
+          ? { label: "Revisit my errors", onClick: () => again(true) }
           : null
       }
       feedback={

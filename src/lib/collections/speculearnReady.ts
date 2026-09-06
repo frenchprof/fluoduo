@@ -62,6 +62,46 @@ export const SPECULEARN_DECK_COLUMNS: Record<string, readonly string[]> = {
   commerces: ["col:un", "col:une", "col:des"],
 };
 
+/**
+ * THE LANGUAGES WEAR THEIR OWN NAMES — the endonym, not the flag.
+ *
+ * Dan, 31 Aug: "remove the flags for the languages and replace with script and
+ * other linguistic-related elements", settled the same day as the endonym
+ * rule: a language is shown by what it calls ITSELF, in its own script —
+ * « le chinois » is 中文, « le russe » is Русский.
+ *
+ * A flag is a country, not a language: 🇬🇧 for English leaves out most of its
+ * speakers, and Spanish, Arabic and Portuguese each fly a dozen. The endonym
+ * is the language itself, and it is the one thing on the card a learner can
+ * read their way into.
+ *
+ * These are TYPE, not pictures. An image generator asked for हिन्दी or 廣東話
+ * garbles it more often than not, and a word rendered by the browser is
+ * correct at every size on every screen — so the languages deck takes no rows
+ * in the image brief.
+ */
+export const SPECULEARN_ENDONYMS: Record<string, string> = {
+  "languages-01-anglais": "English",
+  "languages-02-chinois": "中文",
+  "languages-03-hindi": "हिन्दी",
+  "languages-04-espagnol": "Español",
+  "languages-05-arabe": "العربية",
+  "languages-06-francais": "Français",
+  "languages-07-portugais": "Português",
+  "languages-08-russe": "Русский",
+  "languages-09-indonesien": "Bahasa Indonesia",
+  "languages-10-allemand": "Deutsch",
+  "languages-11-japonais": "日本語",
+  "languages-12-turc": "Türkçe",
+  "languages-13-tamoul": "தமிழ்",
+  "languages-14-cantonais": "廣東話",
+  "languages-15-vietnamien": "Tiếng Việt",
+  "languages-16-filipino": "Filipino",
+  "languages-17-coreen": "한국어",
+  "languages-18-thai": "ไทย",
+  "languages-19-malais": "Bahasa Melayu",
+};
+
 /** The columns this deck plays, or null when it plays all of them. */
 export function specuLearnColumns(id: string): readonly string[] | null {
   return SPECULEARN_DECK_COLUMNS[id] ?? null;

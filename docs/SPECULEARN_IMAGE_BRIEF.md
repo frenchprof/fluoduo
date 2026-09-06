@@ -9,13 +9,12 @@ written as optional — an emoji that names its word correctly is still an emoji
 beside a photograph, and the inconsistency is the point he was making. Priority is now
 the ORDER to generate in, not a line between must and might.
 
-The 19 *languages* items remain held back, and not for want of a decision: Dan ruled on
-31 Aug that they lose their flags for "script and other linguistic-related elements", but
-**ten of the nineteen languages are written in the Latin alphabet** — English, Spanish,
-French, Portuguese, German, Indonesian, Turkish, Vietnamese, Filipino, Malay. A picture
-built from script would give those ten the same picture, which is the fault Dan spent
-5 Sep reporting on commerces ("this seemes to have two answers possible"). See the note
-at the foot of this file.
+The 19 *languages* items are **not an image job at all** and take no rows here. Their
+picture is the language's own name for itself, in its own script — « le chinois » is 中文,
+« le russe » is Русский — settled by Dan on 31 Aug and again on 5 Sep. That is TYPE, not a
+render: the browser draws it correctly at every size on every screen, and an image
+generator asked for हिन्दी or 廣東話 garbles it more often than not. It lives in
+`SPECULEARN_ENDONYMS` (`src/lib/collections/speculearnReady.ts`).
 
 ## House style, applied to every prompt
 
@@ -251,29 +250,15 @@ reports; the deck now plays its shop nouns only. Those 14 rows are marked
 
 That leaves commerces with six: the five shops it plays, plus « le prix ».
 
-## The languages deck — the one thing still open
+## The languages deck — settled, and not with pictures
 
-Dan, 31 Aug: "remove the flags for the languages and replace with script and other
-linguistic-related elements." Written as image prompts, that breaks:
+Endonyms, in the language's own script, rendered as type:
 
-    Latin alphabet, 10 of 19   l'anglais · l'espagnol · le français · le portugais ·
-                               l'allemand · l'indonésien · le turc · le vietnamien ·
-                               le filipino · le malais
-    own script, 9 of 19        le chinois 中文 · le hindi हिन्दी · l'arabe العربية ·
-                               le russe русский · le japonais 日本語 · le tamoul தமிழ் ·
-                               le cantonais 廣東話 · le coréen 한국어 · le thaï ไทย
+    English · 中文 · हिन्दी · Español · العربية · Français · Português · Русский ·
+    Bahasa Indonesia · Deutsch · 日本語 · Türkçe · தமிழ் · 廣東話 · Tiếng Việt ·
+    Filipino · 한국어 · ไทย · Bahasa Melayu
 
-A card asking « l'espagnol » against four Latin-alphabet pictures has four answers. The
-same objection retired *nationalities* and *tu-vous* from SpecuLearn in the 14 Jul audit.
-
-Three ways out, for Dan:
-1. **A word, not an alphabet.** Each language shows its own greeting — Hello · Hola ·
-   Bonjour · Olá · Hallo · Halo · Merhaba · Xin chào · Kumusta · Apa khabar · 你好 · नमस्ते
-   · مرحبا · Привет · こんにちは · வணக்கம் · 안녕하세요 · สวัสดี. Different WORDS, so the ten
-   Latin ones stay apart, and it is more linguistic than a flag, not less.
-2. **Keep the flags here only.** They are unmistakable, which is what the game needs.
-3. **Retire languages from SpecuLearn**, as nationalities and tu-vous already are. It
-   keeps its Letris, Flip It and MCQ.
-
-Option 1 needs the word rendered exactly; generators garble text, so each of the 19 has
-to be checked by eye against the string above before it ships.
+A flag was never right for a language: 🇬🇧 for English leaves out most of its speakers, and
+Spanish, Arabic and Portuguese each fly a dozen. Nineteen distinct names, so no two cards
+share a picture, and the tile sizes itself by the longest word — « Bahasa Indonesia » at
+one size, 中文 at another.

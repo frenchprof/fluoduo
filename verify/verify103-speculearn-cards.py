@@ -62,6 +62,8 @@ def block(name, opener, closer):
 READY = re.findall(r'"([a-z0-9\-]+)"', block("SPECULEARN_READY", "[", "] as const"))
 BUILDING = set(x for x in re.findall(r'"([^"]+)"', block("BUILDING_EMOJI", "new Set([", "])")))
 EXCLUDED = set(re.findall(r'"([a-z0-9\-]+)"', block("SPECULEARN_EXCLUDED_ITEMS", "new Set([", "\n])")))
+ENDONYMS = dict(re.findall(r'"([a-z0-9\-]+)":\s*"([^"]+)"',
+                           block("SPECULEARN_ENDONYMS", "= {", "\n};")))
 COLUMNS = {}
 for deck, cols in re.findall(r'(\w[\w\-]*):\s*\[([^\]]*)\]',
                              block("SPECULEARN_DECK_COLUMNS", "= {", "\n};")):
@@ -98,7 +100,9 @@ def playable(deck_id):
             continue
         art = next((COL_ARTICLE[t] for t in tags if t in COL_ARTICLE), "")
         shown = it["fr"] if HAS_ARTICLE.match(it["fr"]) else art + it["fr"]
-        out.append({"id": it["id"], "fr": it["fr"], "shown": shown, "emoji": emoji})
+        # A language's picture is its endonym, not its flag (SPECULEARN_ENDONYMS).
+        out.append({"id": it["id"], "fr": it["fr"], "shown": shown,
+                    "emoji": ENDONYMS.get(it["id"], emoji)})
     return out
 
 def kind(shown):

@@ -26,6 +26,19 @@ export type LetrisTile = {
   displayName?: string;
   meaning?: string;
   emoji?: string;
+  /** Other columns that are ALSO right for this tile.
+   *
+   *  Dan, 5 Sep: "if ever we include le/les prix in the vocabularin, it
+   *  should be allowed to fall into un or into des (unless we specify that we
+   *  mean prix (sg.) or prix (pl.)". « prix » is invariable — un prix, des
+   *  prix — so a single correct column would mark a right answer wrong. Any
+   *  invariable noun (prix, temps, fois, bras) is the same case, as is a word
+   *  that genuinely takes two articles.
+   *
+   *  The tile still BELONGS to `category` — that is where it is listed and
+   *  what a miss is told to aim for; `also` only widens what counts as right.
+   *  Nothing uses it yet: prix is not in the commerces rain today. */
+  also?: string[];
 };
 export type LetrisSet = {
   id: string;
@@ -284,7 +297,10 @@ export default function LetrisGame({
 
   const landTile = useCallback(
     (a: Active) => {
-      const correct = catIndex.get(a.tile.category) === a.col;
+      // Right if it landed in its own column OR in one its `also` names.
+      const correct = [a.tile.category, ...(a.tile.also ?? [])].some(
+        (k) => catIndex.get(k) === a.col,
+      );
       // Every drop is a graded sorting answer — record it (Dan, 2026-07-13:
       // "every question, every attempt"). Direct write, NOT recordItemResult:
       // Letris has its own scoring and must not double-pay XP per tile.
