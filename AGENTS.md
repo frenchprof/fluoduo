@@ -369,11 +369,21 @@ minutes later, and neither knew until both had merged or were ready to. Dan had
 told both sessions, in different words, an hour apart. No merge policy prevents
 that; thirty seconds of looking does.
 
-**Claiming a verify number:** scan EVERY remote branch, never just `main` —
-an in-flight number is precisely what main cannot show you. Four collisions
-have already happened (31, 52 twice, 60):
+**Claiming a verify number: THE BUILD DOES THIS NOW** (6 Sep). `verify-wiring`
+fails if a number your branch ADDS is already claimed on another branch that
+is ahead of `main` and was touched in the last 45 days. You still run the scan
+below to pick a free number up front — it saves a round trip — but you are no
+longer the last line of defence, which is the point:
 
 ```
 for b in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
   git ls-tree --name-only $b verify/; done | grep -o 'verify[0-9]*' | sort -u
 ```
+
+WHY IT STOPPED BEING A HUMAN JOB. Seven collisions (31, 52 twice, 60, 43, then
+96 and 97 on 6 Sep), every one of them by a session that HAD run the scan. The
+scan is a snapshot; someone else can claim the number in the hours between
+your scan and your push, and no amount of care closes that window. So the
+check runs at push time, every time. Only numbers your branch adds are tested,
+so `main` can never go red for someone else's branch, and the branch that
+merges first keeps the number.

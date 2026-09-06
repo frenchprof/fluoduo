@@ -6,6 +6,40 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — the verify-number collision is now the build's job, not a ritual
+
+Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+
+Dan, asked which process change to make first: *"3. yes"* — the number scan.
+
+**Seven collisions** (31, 52 twice, 60, 43, then 96 and 97 on 6 Sep), and
+every one by a session that HAD run the scan AGENTS.md asks for. The scan is
+a snapshot; another session can claim the number in the hours between your
+scan and your push, and care does not close that window. `verify-wiring` gains
+a fourth assertion that runs it at push time instead.
+
+Narrow on purpose: only numbers a branch **adds** are checked (a number on
+`main` is settled, so `main` can never go red for someone else's branch); only
+branches **ahead of `main` and touched in the last 45 days** count as in
+flight (this repo has had branches rot for weeks, and a dead branch must not
+hold a number hostage); the branch that merges first keeps the number. Costs
+1.5 s.
+
+**It found a live one immediately.** `claude/fluolingo-color-review-9thj8x`
+and `claude/pre-tests-amendments-hndx8r` BOTH claim **102** —
+`verify102-menu-hues.py` and `verify102-fluidtype.py`. Neither has merged, so
+whichever lands second will hit exactly the rebase that cost this branch a
+merge today. Reported here rather than fixed: renumbering another session's
+branch is integration work, and neither branch is mine. **fluoduo-main.**
+
+Six break-tests, four of which went GREEN against broken code on the first
+run: the assertion read `git ls-tree HEAD` — the last commit — rather than the
+working tree, so a file renamed onto a taken number passed until it was
+committed, which is the exact moment someone needs telling. It now uses the
+same file list as assertions 1–3. Also proved: `main` itself stays green, a
+developer with no remotes fetched gets a visible skip, and CI with that same
+broken checkout FAILS rather than quietly guarding nothing.
+
 ## 6 Sep — item 7: French off the controls (CLOSED)
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
