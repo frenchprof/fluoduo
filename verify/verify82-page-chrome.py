@@ -280,7 +280,14 @@ for path, want, was in (
     # activity's, not the signed-in name.
     ("src/app/profil/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     ("src/app/moi/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
-    ("src/app/pretests/[id]/PretestContent.tsx", 'title: "Pretest"', "the pre-test's own title"),
+    # « Pretest » became « SpecuLearn » on 5 Sep (Dan: "it is the name for
+    # everything pre-tests (old-speculearn and old-pretests)... because they
+    # learn by speculating wisely based on prior knowledge", and when this
+    # pin went red on the rename: "leave it as Speculearn... they are just
+    # names of activities... and they are clear enough"). The CLAIM is
+    # unchanged — the band opens with the ACTIVITY's name; only the
+    # activity's name changed.
+    ("src/app/pretests/[id]/PretestContent.tsx", 'title: "SpecuLearn"', "the pre-test's own title"),
 ):
     ok(want in code(read(path)),
        f"{os.path.basename(os.path.dirname(path))}'s band opens with the ACTIVITY's name",

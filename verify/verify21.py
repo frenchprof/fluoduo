@@ -101,9 +101,14 @@ check("request.resource.data.term is string" in rules,
 
 # ── 5 · readers default to the current cohort ──────────────────────────────
 board_list = strip_comments(read("src/components/LeaderboardList.tsx"))
-check("isCurrentTerm(r.term)" in board_list,
-      "the learner leaderboard shows the current cohort only",
-      "LeaderboardList does not filter by term")
+# SUPERSEDED 5 Sep (Dan: "there won't be 'classes' of students.
+# participants will be coming from all over, including overseas
+# international ones") — the board shows EVERY participant now. The claim
+# flips: the term must no longer hide rows; it stays written for research.
+check("isCurrentTerm(r.term)" not in board_list,
+      "the learner leaderboard shows every participant — no term filter",
+      "the term filter is back on the board; the 11 Aug cohort model was "
+      "retired by Dan's 5 Sep no-classes ruling")
 
 data = strip_comments(read("src/app/teacher/data.ts"))
 check("currentTerm" in data and "TERM_START_MS" in data and "isCurrentTerm(l.board?.term)" in data,

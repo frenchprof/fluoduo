@@ -457,6 +457,114 @@ stylesheet and enforces the guardrails.
 | 10 | **Tokenise the games' palette** onto the seven roles; lower the ratchet as it falls | proposed |
 | 11 | **Demote the rotating hues** to tinted neutrals | proposed |
 
+## 12 · The realignment, 5 Sep — the six families ARE the six highlighters
+
+Dan: *"can we align these colors with the six standard highlighter colors:
+Pink, Orange, Yellow, Blue, Green, Indigo-Violet-Lilac"*. Done, and the mapping
+turned out to be forced rather than chosen.
+
+Both sets are six points on one hue wheel **in the same rotational order**, so
+matching them in order is the only assignment that neither collides nor sends
+Goals to yellow. Each family moves exactly one notch, and no two paths cross:
+
+| family | was | now | pen |
+|---|---|---|---|
+| 🎯 Goals | green 141° | green 145° | **Green** |
+| 🏋️ Practice | yellow 84° | yellow 100° | **Yellow** |
+| 🎮 Games | magenta 321° | pink 350° | **Pink** |
+| 🔄 Revise | cyan 200° | blue 245° | **Blue** |
+| 💬 Skills | blue 260° | violet 300° | **Indigo-Violet** |
+| 👤 User | coral 20° | orange 55° | **Orange** |
+
+Order preserved is the point: a learner who has learned *Revise is the cool one,
+Games is the hot one* is not being re-taught. The previous scheme — one hue every
+60° from 20° — was derived for colour-blind separation, and the pens keep it: no
+two adjacent families sit closer than **45°**.
+
+The four rungs are still derived, not picked. Worst case across all six, on the
+three surfaces the ink is actually used on: **4.52** on its own wash (the band
+label), **5.52** on white (the pill), **5.12** on paper (body text) — against
+4.53 / 5.54 / 5.14 for the colours these replace.
+
+**Two things this round found that were not about colour choice at all.**
+
+*Nothing pinned the family values.* `verify30` has held the seven dopamine roles
+to the value since 21 August; the six families had the identical risk and no
+guard, so any of twenty-four hexes could have drifted in silence. Changing
+twenty-four unpinned values and leaving them unpinned would have been the wrong
+trade, so `verify96-family-hues.py` lands with the recolour. It holds the values,
+recomputes the three-surface floor, and asserts the **wheel order** — a property
+of the set that no per-value check can see, and the one that would catch someone
+"improving" a single family into a nicer hue and silently swapping two.
+
+*The page-ground comment overstated its own accessibility.* It claimed the soft
+ink cleared above 7:1 and was therefore AAA on the six family grounds.
+`--cahier-ink-soft` (#655c55) measures **6.00–6.13** there: AA, not AAA. The
+claim was false before the realignment as well as after, and three sessions had
+read that block without measuring. Corrected, and `verify96` now recomputes it —
+the same species as Finding H above, a sentence trusted because it was written
+down.
+
+## 13 · The mark — a third palette, kept for posterity
+
+Dan, same day: *"can we put the logo and 24 colors in the repo for posterity"*.
+`src/content/marks.ts` and `src/components/FluoMark.tsx`. **Nothing renders it
+yet**; it is archival, so that the marks survive the session they were designed
+in rather than living only in a chat.
+
+The mark is a spiral notebook whose page is cut into three blocks — an L, a
+top-right block sharing the L's hue, and a middle-right block in the complement.
+Block and top-right fuse into one stroke, so left + bottom + top reads as a **C**,
+and the complement is the gap it opens onto. The C is deliberately unfinished:
+Dan wants a **G** later, which is one extra rect letting the L reach up into the
+mouth from below — no new colour.
+
+Three tones, all kept and all his: `pale` lightens the top block, `deep` darkens
+it, and `mono` (added 5 Sep) drops the complement entirely — one hue in three
+lightness steps with a grey bind, the quiet set. It cannot ship as the app icon
+as things stand: `verify95-icons` demands three distinct saturated hue buckets,
+and four of the six pens rendered at 512 fail that, yellow with one. Dan was
+offered an amendment to the rule and declined — *"not amendment but add on to the
+collection of variants"* — so mono lives as a variant and the guard stands.
+
+On the first two tones: Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
+
+Two tones, both kept and both his: `pale` lightens the top block, `deep` darkens
+it. Not a draft and a fix — the pale set's top stroke measures **1.09–1.48**
+against the Cahier paper, i.e. the faintest thing in every mark while doing
+structural work, and the deep set's measures **1.85–4.60** with a *tighter*
+block-to-tint step. But a deep top bar reads as a drawn stroke that changes tone
+where a pale one reads as a page with a highlight: a different object, not
+merely a better one.
+
+**Twelve of the twenty-four blocks introduce hues the app does not otherwise
+use** — the complements: teal, sky, periwinkle, magenta, amber, olive. That is
+the reason this section exists. Without it, someone finds `#009675` in the repo
+in six months and cannot tell whether it is a family, a role, or a mistake. It is
+none of those: it is brand, and it belongs to no interface surface.
+
+**The ring binds wear the complement** (Dan, 5 Sep: *"we want the ring binds to
+be in the complementary color so it does not look so intense"*). They were the
+block's own ink, which made four dark bars in the mark's own colour and read as
+heavy. Taking the complement at full strength is the literal reading and it
+fails — those land at 1.24–3.16 against the tile and Periwinkle's yellow ring all
+but vanishes — so each ring is the complement's HUE walked down only until it
+clears **3.0 : 1 on the tile**, WCAG's non-text floor, which is the correct floor
+because a ring bind is a shape and not type. All twelve land at 3.00–3.07.
+
+`verify97-highlighter-marks.py` pins the twenty-four sets, asserts the deep set
+stays *derived* from the pale one (so a block or mouth cannot drift between
+them), holds that ring floor, checks the rings still carry the complement's hue
+rather than drifting back to the block's, and turns Dan's geometry brief into
+arithmetic — corners under an eighth of the page
+
+`verify97-brand-marks.py` pins the twenty-four sets, asserts the deep set stays
+*derived* from the pale one (so a block or mouth cannot drift between them), and
+turns Dan's geometry brief into arithmetic — corners under an eighth of the page
+width, the top-left arc finishing above the first ring bind and the bottom-left
+arc starting below the last, and a knockout slot strictly larger than the ring so
+the binds *eat into* the page rather than sitting beside it.
+
 ## Appendix — method
 
 Contrast per WCAG 2.2 relative luminance. OKLCH converted via the standard

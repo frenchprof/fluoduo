@@ -121,7 +121,7 @@ knowing **when** to say it — and the atelier is the *when*.
 | 27 | Telling time | *il est huit heures et quart* | — |
 | 29 | Invitations | *tu veux… ?* / *je veux bien* / *désolé, je ne peux pas* | 30, 50 |
 | 31 | Weather | *il fait beau*, *il pleut* | — |
-| 36 | Directions | *tournez à droite*, *prenez la première rue* | 40 |
+| 36 | Directions | *vous tournez à droite*, *vous prenez la première rue* | 40 |
 | 39 | Wants & needs | *je voudrais…*, *j'ai besoin de…* | 50 |
 
 ### Two ateliers teach phrases no stop ever taught

@@ -27,7 +27,7 @@ import { shuffle } from "@/lib/shuffle";
 // (pre/post boundary, same rule as /pretests/[id]).
 const PRETEST_TABS: ShellTab[] = [
   { key: "home", label: "Home", emoji: "🏠", href: "/" },
-  { key: "pretest", label: "Pretest", emoji: "🧪" },
+  { key: "pretest", label: "SpecuLearn", emoji: "🧪" },
 ];
 
 type Direction = "fr2pic" | "pic2fr";
@@ -314,7 +314,7 @@ function QuestionCard({
   const isPic2Fr = q.direction === "pic2fr";
   const nameOf = (it: Item) => displayMap[it.id] ?? it.fr;
   return (
-    <article className="fluo-card fluo-h-2" data-hue={2}>
+    <article className="fluo-card speculearn-card fluo-h-2" data-hue={2}>
       <div className="text-center text-xs font-extrabold uppercase tracking-wider text-slate-500">
         {isPic2Fr ? "Which French word?" : "Which picture?"}
       </div>
@@ -332,7 +332,7 @@ function QuestionCard({
 
       {/* Choices */}
       <div
-        className={`mt-4 grid gap-2.5 ${
+        className={`speculearn-options mt-4 grid gap-2.5 ${
           isPic2Fr ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-4"
         }`}
       >

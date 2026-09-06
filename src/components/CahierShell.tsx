@@ -28,7 +28,9 @@ import { auth } from "@/lib/firebase/client";
 import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import SiteTopBar from "@/components/SiteTopBar";
-import TabFlap, { hueOf, type ShellTab } from "@/components/TabFlap";
+// Only the TYPE now — the flap rail this file drew is gone (see below).
+// TabFlap itself lives on: SiteTopBar still draws flaps in the ☰ menu.
+import { type ShellTab } from "@/components/TabFlap";
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
@@ -203,17 +205,17 @@ export default function CahierShell({
             note on `nested` above for what that cost the 91 pages it caught. */}
         {page}
 
-        {/* Only the per-deck activity flaps live on the desk now (Dan,
-            2026-08-30: "burger menu left, flaps right"). The six-family rail
-            moved into the ☰ above; what is left is the handful of tabs that
-            belong to THIS page — List / All on a deck, the activity tabs on a
-            drill — which are page furniture rather than site navigation, and
-            which Dan kept as flaps. */}
-        <nav className="cahier-tabs" aria-label="This page">
-          {context.map((t, i) => (
-            <TabFlap key={t.key} tab={t} hue={hueOf(t, i)} active={active === t.key} className="cahier-tab cahier-tab--sm" />
-          ))}
-        </nav>
+        {/* THE FLAPS ARE GONE (Dan, 2026-09-05: "right side flaps should ALL
+            be gone"). A <nav className="cahier-tabs"> of TabFlap links stood
+            here — the per-page activity tabs, hidden below 640px and drawn at
+            every width above it, which is why Dan remembered removing them
+            (they had gone from the phone) and still met them on a desktop.
+
+            Removing them is also what lets the sheet fill the width: that rail
+            was the column reserving the space, and .cahier-page's 980px cap
+            existed to leave room for it. The ☰ has been the navigation at
+            every width since 30 Aug, so nothing here was the only way to
+            anything. */}
         <FirstTour />
       </div>
     </div>

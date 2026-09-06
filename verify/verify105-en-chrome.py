@@ -37,7 +37,7 @@ a badge each sit beside an English line saying how they were earned, and
 in front of any of them. « Jouer » on the only button on the card was a
 different thing entirely.
 
-Run from the repo root:  python3 verify/verify97-en-chrome.py
+Run from the repo root:  python3 verify/verify105-en-chrome.py
 """
 import os
 import re
@@ -122,9 +122,9 @@ for rel in ("src/games/compose/ComposeSolo.tsx", "src/games/compose/ComposeDialo
                 f"When the checker breaks, say so in English.")
 
 if fails:
-    print("verify97-en-chrome: FAIL")
+    print("verify105-en-chrome: FAIL")
     for f in fails:
         print("  - " + f)
     sys.exit(1)
 
-print("verify97-en-chrome: the games hub, history labels, map legend and game errors all speak English.")
+print("verify105-en-chrome: the games hub, history labels, map legend and game errors all speak English.")

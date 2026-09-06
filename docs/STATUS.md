@@ -6,7 +6,7 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 6 Sep — item 7, part 1: French off the controls
+## 6 Sep — item 7: French off the controls (CLOSED)
 
 Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
 
@@ -44,7 +44,7 @@ action is a fault, French that decorates one is the app's character. « Jouer »
 was the only button on the card; a rank sits beside an English line saying how
 it was earned.
 
-`verify97-en-chrome.py` names its four surfaces one by one rather than
+`verify105-en-chrome.py` names its four surfaces one by one rather than
 sweeping — a sweep for "French in src/" would flag every deck and card in the
 course, and the first person to hit that wall would delete the check. Six
 break-tests. One of them exposed a dead assertion: the ComposeIt test matched
@@ -53,39 +53,499 @@ break-tests. One of them exposed a dead assertion: the ComposeIt test matched
 reverted code. It now looks for APOLOGY rather than French, since the waiter
 speaks French on purpose and the nudges quote French a learner should type.
 
-## 5 Sep — language pass on the chrome a learner is HANDED
+## 6 Sep — Peers' language pass lands; the rest of #187 was already home
 
-Sole editor of STATUS.md in this commit: claude/peers-vd2h6h (Peers).
+Sole editor of STATUS.md in this commit: fluoduo-main.
 
-Dan: *"UI 101 says we don't want to overwhelm users with too much texts to
-read. it has be clear yet concise and scannable. redundant sentences or words
-should go in the explanations (not referring to the target language of
-course)."*
+Peers' 89-commit branch surfaced as PR #187 carrying three pieces. Two were
+already on main via #170 (the ☰ dead-rows z-30 fix + verify94, and the
+first mark + verify95 — since superseded by #184/#185's pink). The third —
+**the language pass on chrome a learner is HANDED** (Dan: "UI 101 says we
+don't want to overwhelm users with too much texts to read") — was new, and
+was lifted onto current main by the integrator: eleven first-run popups
+305→235 words, tour callouts shortened, AuthGate/StopBookmark/ÉcouTexte/
+LexicaLater wordings trimmed. Its check arrived as
+**verify104-chrome-concision** (96 was taken by family-hues meanwhile;
+101–103 are claimed by in-flight lanes — and NOTE, collision #9 brewing:
+Color's branch holds verify102-menu-hues while pre-tests' holds
+verify102-fluidtype; whichever lands second must renumber). One conflict
+resolved in the tour: "Your tabs" (post-#175 truth) beats "Five tabs"
+(true when Peers wrote it). #187 closes in favour of this lift.
 
-**Scope, drawn deliberately.** Two surfaces put English in front of a learner
-UNBIDDEN — the first-run popup that opens over an activity, and the guided
-tour's callouts. Those got the pass, plus four wordy controls (ÉcouTexte's
-blank-sizing toggle, StopBookmark's tooltip, AuthGate's two lines,
-LexicaLater's help). Prose someone chose to open — ⋯ → Help, `/guide`,
-`/about` and its citations — was left alone, and so was every word of French:
-the target language is the content, not the chrome.
+## 5–6 Sep — the favicon settles: PINK, transparent, teal binds, thin iPhone rim (#184, #185)
 
-**The eleven popups: 305 words → 235, a 23% cut.** No fact went that the
-screen does not already carry. What went was the second clause — "You have not
-been taught this yet — that is the point" is the title *Guess first* said
-again; "wandering the map won't move it" is a promise nobody doubted. One
-title changed: Revise's *"Nothing to choose here"* → *"What is due today"*,
-because the old one described the empty case and the popup also opens on a
-full page. LexicaLater's three help paragraphs became a three-item list — same
-rules, findable one at a time — and "every useful key belongs to a visible
-chest" went, since "only decoys cost a life" already says it.
+Sole editor of STATUS.md in this commit: fluoduo-main.
 
-`verify96-chrome-concision.py` budgets what arrives unasked: a hint title ≤ 5
-words, a step ≤ 16, ≤ 3 steps, a tour callout ≤ 16. Ceilings, not targets —
-the pass leaves the longest step at 14 and the longest callout at 15, so a
-careful edit has room and creeping prose does not. It found one line this pass
-had missed (a 21-word tour callout). Five break-tests, including the shape of
-`hints.ts` changing and the check going blind.
+Four rulings from Dan, in order, all shipped:
+
+1. **No ground plate on the tab icon** ("does not need the white background
+   against the dark background"). `src/app/icon.svg` is transparent;
+   `favicon.ico` and the manifest's `icon-192/512` regenerated with real
+   alpha.
+2. **The mark is the PINK one** ("i think i prefer the pink favicon
+   please") — the first cut (24c1c41), which had gone Violet one commit
+   later, restored.
+3. **The binds follow the complement rule** — Dan remembered it and it is
+   66dda59: binds wear the middle-right stack's colour walked down; for
+   pink that stack is TEAL, so binds are `#009d7a` (the pink restore had
+   briefly resurrected the pre-rule pink binds).
+4. **The iPhone tile's plate is a ~4% rim** ("is our plate too thick for
+   that border") — the mark fills apple-touch-icon, paper peeking as the
+   thin border iOS icons wear.
+
+TWO ICONS STAY OPAQUE ON PURPOSE, do not "fix" them: apple-touch (iOS
+fills transparency with BLACK on the home screen) and maskable-512
+(Android's circular crop needs full bleed — verify95's safe-area rule).
+The derived PNGs/ICO are rendered from icon.svg via headless Chromium
+(omitBackground) + Pillow; there is no generator script in the repo yet.
+
+## 5 Sep evening — SpecuLearn commerces chrome is English (new PR from main)
+
+Sole editor of STATUS.md in this commit: ux/en-chrome-speculearn.
+
+#182 is already in main. The English labels could not land on that closed
+pull request, so they sit on a clean branch from `5d06894`:
+`ux/en-chrome-speculearn`. No pictures touched.
+
+- Deck title is **Shops & market**. French subtitle and FR answers stay.
+- Instructions: **Pick the right picture.** / **Pick the right word.**
+- Keyboard hint is **1–4 pick · next · R**, not *choisir* / *suivant*.
+- The title band is not marked `lang="fr"` on commerces.
+
+Open it: Practice → SpecuLearn → Shops & market, or
+`/practice/speculearn/commerces`.
+
+## 5 Sep evening — SpecuLearn commerces photos are real PNGs
+
+Sole editor of STATUS.md in this commit: cursor/speculearn-commerces.
+
+The 14 FR-approved market pictures for commerces-15 … commerces-28 now live
+as real PNG files in `public/speculearn/` (each file starts with the PNG
+header, not base64 text). `SPECULEARN_ITEM_IMAGES` points each id at
+`/speculearn/commerces-XX.png`.
+
+Open them: Practice → SpecuLearn → the commerces stop, or go straight to
+`/practice/speculearn/commerces`. Example: « Je voudrais deux kilos de
+pommes. » shows the apple-scale photo, not the 🍎 emoji.
+
+The leftover encoding-test picture and the `docs/_asset_b64/` upload folder
+are gone. PR #182.
+
+## 5 Sep evening — five Dan rulings in one round (claude/reglages-switch)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+1. **Settings are switches whose description states the CURRENT position**
+   (Dan: "settings description should change based on choice… show it as a
+   switch: by default in the off position"). "Icon labels" is now a switch;
+   off says "Tap and hold an icon to view its label.", on says "Icon labels
+   are always shown." The switch is a styled native checkbox
+   (`input.fluo-switch`, globals.css) with `role="switch"`.
+2. **No single control spans the whole page width — PERMANENT RULE, now in
+   AGENTS.md** ("No control spans the whole width"). Dan grants the rare
+   exception per case. First application: the Réglages tab pick-list went
+   from six full-width rows to a two-column grid.
+3. **ChaTutor's greeting greets** (Dan: "The ChaTutor's opening line is WAY
+   TOO LONG !"). The 50-word capability tour is gone; the opening line is
+   « Bonjour ! 👋 "Je peux t'aider ?" ».
+4. **No VoixLà in ÉcouTexte** (Dan: "Voix-Là is for TTS. and it does NOT
+   make any sense to have it im EcouTexte"). ToolSummon takes `tools`;
+   ÉcouTexte passes `["chatutor"]`, and a single-tool 🧰 opens its card
+   directly with no one-row tray. verify100 pins it. RULED later the same
+   evening (Dan: "doesn'T ecouTexte have a standard answer, why does it
+   still beed ChatTutor"): the 🧰 is OUT of ÉcouTexte entirely — a
+   dictation has one right sentence and the marking shows it; the tools
+   live in WorDrill and ComposeIt, where the learner produces French.
+   verify100 now asserts ÉcouTexte carries no ToolSummon.
+5. **Button labels wear the brand hand in heavy bold** (Dan: "use FluoLingo
+   font in heavy bold to disallow the text from overflowing off the
+   buttons"). `FluOlinGoHand-ExtraBold` (36 KB) joins the loaded weights as
+   800; `.fluo-btn-hand` (globals.css) is the class; first application is
+   the Réglages tab tiles, whose "Practice"/"Games" had run to the tile
+   edge in the body face. ROLLED OUT the same evening (Dan: "ensure that
+   elsewhere we also have buttons half way the width of the screen to
+   display in FluOLinGo") to the FamilyHub door tiles and the GameGallery
+   tiles. Weight settled at 800, not Dan's guessed 700 ("i just randomly
+   said 700"): 800 is what he approved on screen and is already loaded.
+   Sizes are rem steps (text-base/text-sm), NOT px and NOT screen-relative
+   (Dan asked): text follows the reader's font setting; a wider screen gets
+   more columns, never bigger letters. NOT applied to French exercise
+   options (MCQ/FlipIt/dice) — the target French stays in the reading face —
+   nor to profile data cards (scores are data, not labels).
+6. **The hub tiles go half-width and lose their blurbs** (Dan, shown the
+   hubs: "why are these still width-occupying buttons. We don't need the
+   desxruption of the acticities, not here"). FamilyHub is a two-column
+   grid on every screen now — icon + hand-bold name, no description. This
+   OVERRULES the 1 Sep "a blurb per tile helps you choose" position for
+   hubs; the blurbs stay in the registry for surfaces that want them.
+## 5 Sep — a third tone: mono, the quiet set (24 marks becomes 36)
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan asked whether a version existed with *"different shades of the same color
+(darker L, lighter everything else) and grey ring bound"*. It did not — this
+session had built pale, deep, and complement binds, never a monochrome. So it was
+drawn, and on his instruction — *"not amendment but add on to the collection of
+variants"* — it was ADDED rather than allowed to displace anything.
+
+Block at L 0.52, top-right at 0.72, mouth at 0.88, binds a warm near-neutral
+`#8d8a85` walked down to the same 3.0 : 1 tile floor the coloured binds hold.
+Twelve of them, one per hue. `MARKS` now addresses three tones and 36 marks.
+
+**Two things worth knowing before anyone reaches for it.**
+
+*The letter loosens.* In pale and deep the block and the top-right share a hue AND
+sit close in lightness, so they fuse into one stroke and the eye reads a C. Two
+lightness steps apart, the top-right detaches: a dark L with two pale tabs. Better
+as a notebook, weaker as the letter that is meant to become a G.
+
+*It cannot ship as the app icon.* `verify95-icons` demands three distinct
+saturated hue buckets per PNG. Rendered at 512 and run through that check's own
+function, four of six pens fail — yellow with ONE bucket, orange, blue and violet
+with two; pink and green reach three only because gamut clipping pushes their
+steps across bucket boundaries, which is luck. That is measured, not predicted:
+the last time this came up I asserted the whole highlighter set would fail the
+same rule and was wrong.
+
+verify97 gained mono's own rules rather than stretching the existing ones — the
+complement assertions would be nonsense applied to a grey. It now pins the twelve
+values, that the bind stays neutral (chroma under 0.02), that it clears the tile
+floor, and that the three lightness steps stay apart. Four break-tests, and the
+separation one had to be isolated: the drift assertion caught the first attempt
+first, so both sides were moved to leave only separation failing.
+
+Build, tsc, eslint and all 87 checks green.
+
+## 5 Sep — the ring binds take the complement, across all 24
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan: *"we want the ring binds to be in the complementary color so it does not
+look so intense"*. Applied to all twenty-four, and to the shipped icon.
+
+**The literal reading fails, so it was not taken literally.** The mouth colour
+itself on the rings lands at **1.24-3.16** against the tile — Periwinkle's yellow
+ring would be all but invisible, Magenta's green weak. So each ring is the
+complement's HUE, walked down only until it clears **3.0 : 1 on the tile**. That
+is WCAG's NON-TEXT floor and it is the right one here: a ring bind is a shape,
+not type. The old rule was 5.1 (the text floor) and holding it would have
+re-darkened exactly what Dan asked to lighten. All twelve land at 3.00-3.07.
+
+verify97 gained a second ring assertion with it: the rings must still carry the
+COMPLEMENT'S hue, not drift back to the block's. Both break-tested — a ring gone
+pale reports "not hardware, it is a smudge"; a ring back on the block hue reports
+180 degrees from the mouth.
+
+The icon regenerated with it: rings #7d9400 (olive) under the violet block,
+where they were #9200fe. Four hue buckets on the 512s and the 180/192, three on
+the maskable — verify95-icons still green, unmodified. The Twelve Marks and
+Deep-Tint artifacts were regenerated too, so the pages and the repo agree.
+
+Build, tsc and all 87 checks green.
+
+## 5 Sep — the highlighter mark becomes the site icon (supersedes the entry below)
+
+**Amended within the hour: Violet, not Pink.** Dan: *"it is nice but can we pick
+the next strongest block"*. Violet is second on block-against-paper (2.67 to
+Pink's 2.79) and FIRST on the top stroke (4.60, the best of all twenty-four), so
+the swap costs 0.12 on one number and gains on the other. Four hue buckets, three
+on the two smaller files — clear of verify95-icons' polychrome floor either way.
+Shipped values: block #b17eff, top stroke #9832ff, mouth #8ca600, rings #9200fe.
+The paragraphs below describe the Pink build; everything in them holds except the
+four colours.
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+**Read this before the next entry.** That one recoloured the F-g mark's shell to
+pink. It was done on a misread: Dan's *"please use the best of those favicons
+variants as the site's main favicon"* meant the twenty-four HIGHLIGHTER marks he
+and this session had spent the afternoon designing — the C that is to become a G
+— not the four shell options of the older drawing. He said so plainly: *"is your
+memory so poor that you forgot we had just discussed the real finally chosen
+logo?"* The shell recolour is superseded by this commit; it is left in history
+rather than rewritten, because the measurements it carries are still true and
+the next person to reach for orange should find out why not.
+
+**Shipped: the deep-tint Pink mark.** `icon.svg`, the four PNGs and
+`favicon.ico`, all generated from `src/content/highlighterMarks.ts`'s own
+geometry rather than drawn again — block #ff4eb2, top stroke #d7008e, mouth
+#00b28b, rings #c1007f.
+
+**Why Pink of the twenty-four.** Strongest block against paper of the whole set
+(2.79:1), top stroke at 4.55:1 in the deep tone, and — the deciding number — it
+carries FIVE distinct saturated hue buckets under `verify95-icons`'s polychrome
+rule, the widest margin of any candidate. Blue fails that rule outright at two
+buckets. I expected the whole set to fail it and was wrong: the fade and the
+anti-aliased edges spread hue across buckets, so five of the six tested pass.
+
+**The maskable icon needed its own inset.** The mark runs nearly edge to edge, so
+the launcher-safe variant is drawn at a 15% inset with the tile colour around it;
+the other three sit at 2%. verify95-icons' safe-area assertion passes on that.
+
+**What was lost, and it should be said.** The F-g drawing carried the brand's
+initials; this mark carries a C awaiting its G. Dan chose it knowing that — the G
+is the stated next step — but a lettered mark was replaced by an unlettered one
+and that is a real trade, not a free swap. Peers' art is recoverable from git.
+
+Build and all 87 checks green, verify95-icons included, unmodified.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — Peers'
+lane, changed here on Dan's direct instruction, twice.
+
+## 5 Sep — the mark's shell goes pink
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+Dan, after seeing the options measured: *"please use the best of those favicons
+variants as the site's main favicon"*. Shell `#ff4b5d` -> `#ff4eb2`, the Games
+pen. Peers' drawing is otherwise untouched.
+
+**Why it needed changing at all, and it was not the register.** Peers flagged
+that the brand red shares a register with *wrong* — true, 7 degrees of hue from
+`--dopa-miss` — but the mark and the miss colour meet on essentially no screen:
+the tab, the home screen, and the install popup, none of which tells a learner
+they were wrong. The real fault was inside the mark. Measured as COLOR_REVIEW's
+appendix does it (Machado deutan/protan, Euclidean sRGB, threshold 0.20), the
+coral shell against the green page it encloses scored **0.166** — under the
+threshold, the same fault Peers moved the LETTER off red to avoid, still sitting
+in the frame. Pink scores **0.334**.
+
+**The trap worth recording.** Coral was `--fam-user` and User is orange after the
+realignment, so re-cutting the shell to orange is what the token table suggests.
+On the real pixels it scores **0.053** at the bottom of the fade — a quarter of
+the threshold, orange and green collapsing into one colour for a protanope. The
+obvious move was the worst of the four. Violet scored best at 0.476 and was
+rejected only because it flips the mark from warm to cool: a different logo
+rather than a corrected one.
+
+**How it was done, because there is no vector source.** The full mark exists in
+the repo only as raster — `src/app/icon.svg` is the flat 16px variant that drops
+the g's counter and the low band. So the four PNGs were recoloured pixel by pixel
+in OKLCH: every red-family pixel keeps its own lightness and chroma and takes the
+new hue, so the App Store vertical fade and every edge survive. `favicon.ico` was
+regenerated at 32px from the recoloured 192. `icon.svg`'s one red fill was
+edited directly.
+
+**Also answered:** the earlier single-hue favicon idea (one colour in several
+shades) is not merely dormant — `verify95-icons` requires at least THREE distinct
+saturated hues in every PNG, so a monochrome mark now fails CI by design. Its
+message calls that "the old single-colour notebook". Reviving the idea means
+changing that check, which is Dan's call and Peers' lane.
+
+verify95-icons green, including its polychrome and maskable-safe-area
+assertions. Build and all 87 checks green.
+
+Shared: `src/app/icon.svg`, `src/app/favicon.ico`, `public/icons/*` — **Peers'
+lane**, changed here on Dan's direct instruction. Peers holds the original
+drawing and should redo this from source if they have one.
+
+## 5 Sep — the 🧰 tools summon mid-exercise, and the voice corrects first (feat/ambient-tools)
+
+Sole editor of STATUS.md in this commit: the ambient-tools lane
+(feat/ambient-tools — pushed for fluoduo-main to QC, not merged).
+
+The AMBIENT TOOLS build, first pass, all as Dan settled it on 5 Sep. A
+floating 🧰 (cahier paper, ink border, above the green 💬 bubble) opens a
+two-row tray — 🔊 VoixLà · 🤖 ChaTutor — and a row slides a BottomSheet card
+up OVER the exercise, which never closes or navigates. Where: the three
+Skills trainers only — ÉcouTexte, WorDrill, ComposeIt (both modes) — mounted
+INSIDE each trainer's own content component; **DrillShell and GameFrame are
+untouched** (verify100 pins that too).
+
+**The panels are extracted, not copied.** tutor/page.tsx and tts/page.tsx are
+now thin shells over `components/tools/ChaTutorPanel` / `VoixLaPanel`; the 🧰
+card mounts the same two components with context props the pages don't pass.
+The trainer hands over what it knows: ChaTutor gets a yellow chip (activity +
+current item — only what the learner can already SEE; ÉcouTexte hands the
+learner's typed attempt, never the hidden sentence) prepended to the
+conversation the backend reads; VoixLà gets the current typed/spoken French
+pre-filled.
+
+**THE CORRECTS-FIRST RULE holds in code shape, not intention.** The card's
+VoixLà runs /api/correct on the handed text FIRST, shows the corrected
+sentence leading with the slip marked beneath, and ▶ voices ONLY the
+corrected form; the 🎧 MP3 renders only the approved form too; checker
+unreachable = the page's existing fallback message and total silence.
+`verify100-ambient-tools.py` asserts the one voice entry has exactly three
+call sites (raw text behind `!correctsFirst`, the approved sentence, the
+fresh checker result) and that corriger() never speaks. Break-tested three
+ways.
+
+Audio ownership: opening a card pauses the exercise's speech
+(pauseSpeech/resumeSpeech, cloud clips included via the registered hooks);
+WorDrill's recognizer is ABANDONED un-graded while a card is open (handlers
+detached first, so half an utterance never scores) and the mic refuses to
+start until the card closes — back to idle, one tap re-arms.
+
+Small renames the checks forced, recorded so nobody re-trips them: the
+context prop is `title`, not `activity` (an `activity:` string literal reads
+as an evidence tag to verify53); the chip wears cahier-hl tokens, not raw
+hexes (verify19b's ratchet counts components).
+
+Green: tsc, NEXT_PUBLIC_OPEN_APP build, all 88 checks, eslint clean on every
+touched file. Shared files for the integrator: `verify.yml` (verify100's line
+sits after verify98's — verify99 belongs to a parallel lane, order to
+reconcile), `SayItContent.tsx`, `EcouTexte.tsx`, both Compose modes,
+`tutor/page.tsx`, `tts/page.tsx`, this file.
+## 5 Sep — the bottom bar is the learner's: pick the tabs, or remove the bar
+
+Sole editor of STATUS.md in this commit: feat/bottombar-pref.
+
+Dan's ruling (recorded below the same day): *"the bottom bar is optional and
+users can opt to remove it or to replace the items there (but there should be
+some defaults)."* Built, on `feat/bottombar-pref`, handed to fluoduo-main:
+
+- **`uiPrefs.bottomNav: FamilyKey[]`** — default derived (FAMILIES minus
+  User), empty = no bar. Réglages gains "Bottom bar — choose your tabs":
+  six wash-coloured checkboxes in FAMILIES order, 👤 User opt-IN for the
+  first time. Membership is the choice; order never is.
+- **BottomBar** filters `ALL_NAV` (new in nav.ts — all six as slots) by the
+  pref, renders null when empty, and withdraws `--bottombar-floor` with it.
+  `BOTTOM_NAV` stays the derived default, so verify19 §3 / verify52 §6 hold
+  unloosened.
+- **The due count survives its slot**: Revise off the bar (or bar gone) puts
+  the count as a badge on ☰ in SiteTopBar — same --dopa-streak pair, never
+  shown in both places.
+- **Hard-coded clearances now read the floor**: DrillShell's 58px spacer and
+  .cahier-page's 56px phone padding both read `var(--bottombar-floor)`, so a
+  removed bar frees its strip. FirstTour already skips an absent bar; its
+  step says "Your tabs", not "the five".
+- **LIVE BUG fixed in the same branch**: `.cahier-bottombar{display:flex}` is
+  unlayered and beat the @layer'd `sm:hidden` — the phone bar rendered on
+  DESKTOP. An unlayered `@media (min-width:640px){display:none}` ends it.
+- `verify99-bottombar-pref.py` pins all of the above (15 assertions), wired
+  after verify98.
+
+Green: tsc, open build, all 88 checks, eslint on touched files. Shared files
+to watch at merge: `globals.css`, `verify.yml`, `STATUS.md` (a parallel lane
+holds verify100).
+
+## 5 Sep — NO CLASSES: participants enrol rolling, worldwide (Dan's ruling)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Dan: *"there won't be 'classes' of students. participants will be coming
+from all over, including overseas international ones."* The app has been
+carrying a one-synchronized-class assumption since the 11 Aug cohort reset.
+What changes NOW (this commit): **the leaderboard drops the current-term
+filter** — every participant shows, whenever they joined; the term field
+stays written for the research pipeline.
+
+What this ruling touches but does NOT change yet — each needs Dan's word:
+- the profile header's « LAF1201 · A1 · WEEK 4 » (a semester week counter);
+- the map's 🚩 « The class is here this week »;
+- the Class bag's "show in class / bring to class" framing (just built);
+- the teacher dashboard's "Class now" and the term-stamping machinery.
+
+Two more rulings recorded the same day:
+- **Official student address: fluolingo.withdrchan.com.**
+- **The bottom bar is optional and its items replaceable** ("users can opt
+  to remove it or to replace the items there (but there should be some
+  defaults)") — defaults stay today's five families; the build brief is the
+  bottom-bar study's option list; when the bar is hidden or Revise removed,
+  the due count defaults to a dot on the ☰ button unless Dan says otherwise.
+
+
+## 5 Sep — the six families become the six highlighters, and the mark lands
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+**The realignment.** Dan: *"can we align these colors with the six standard
+highlighter colors: Pink, Orange, Yellow, Blue, Green, Indigo-Violet-Lilac"*,
+then chose all six. The mapping is forced, not chosen: both sets are six points
+on one hue wheel in the same rotational order, so matching in order is the only
+assignment that neither collides nor sends Goals to yellow. Each family moves one
+notch — Goals to Green and Practice to Yellow barely move; Games to Pink, Revise
+to Blue, Skills to Indigo-Violet, User to Orange. No two paths cross, so nobody
+is re-taught which family is the cool one. 24 values in one block of
+`globals.css`; no component, route or registry key touched (`svplay` is still
+`svplay`).
+
+Worst case on the three surfaces the ink is used on: 4.52 wash / 5.52 white /
+5.12 paper, against 4.53 / 5.54 / 5.14 for the colours replaced.
+
+**Nothing pinned the family values.** `verify30` has held the seven dopamine
+roles since 21 Aug; the six families had identical risk and no guard, so any of
+24 hexes could drift in silence. `verify96-family-hues.py` lands with the
+recolour — values, the three-surface floor recomputed, and the **wheel order**,
+which is a property of the set that no per-value check can see and the assertion
+that would catch someone improving one family into a nicer hue and silently
+swapping two.
+
+**A false accessibility claim, corrected.** The page-ground comment said the soft
+ink cleared above 7:1 and was AAA. `--cahier-ink-soft` (#655c55) measures
+6.00-6.13 on those grounds: AA. False before this change as well as after; three
+sessions had read the block without measuring. verify96 recomputes it.
+
+**The mark, for posterity** (Dan: *"can we put the logo and 24 colors in the repo
+for posterity"*). `src/content/marks.ts` + `src/components/FluoMark.tsx`.
+**Nothing renders it** — archival, so the marks survive the session they were
+designed in rather than living only in a chat. Twelve marks in two tones: `pale`
+lightens the top-right block, `deep` darkens it. Both are Dan's, and they are
+different objects, not a draft and a fix — the pale top stroke measures 1.09-1.48
+against the paper (the faintest thing in every mark while doing structural work),
+the deep one 1.85-4.60 with a tighter block-to-tint step.
+`verify97-brand-marks.py` pins the 24 sets, asserts the deep set stays *derived*
+from the pale one, and turns Dan's geometry brief into arithmetic.
+
+**`verify19b` caught the marks and was right to.** 61 raw hexes arrived in one
+file. Fixed with a named `PALETTE_SOURCES` exemption — a file whose whole job is
+to be colour values cannot obey a rule about reaching for tokens — NOT with
+`--rebaseline`, which would have raised the ceiling for every file in `src/` by
+61 and let the next hard-coded colour slip under a loosened ratchet. The baseline
+was then lowered (505 to 494, 768 to 745) so the exemption left no slack; a
+single stray hex in a component still trips it.
+
+Green: `tsc`, build, all 85 checks, eslint on touched files. Ten break-tests
+across the two new checks, each failing with its own message.
+
+Shared: `globals.css`, `COLOR_REVIEW.md` (sections 12 and 13), `STATUS.md`,
+`verify19b.py`, `visual-baseline.json`, `.github/workflows/verify.yml`.
+**`verify19b.py` and the baseline are the collision risk** — any lane that
+rebaselines will conflict.
+
+## 5 Sep — stops 36/40 keep off the imperative, frames included
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x.
+
+`FINISH_BACKLOG` item 10, first two parts.
+
+**Numbering reconciles with v9, exactly.** `docs/handoff/LAF1201_SIOs_Flashcards_v9.csv`
+and `sios.json` agree on all 50 ids, no extras or duplicates either way, 0 unit
+mismatches. v9 carries **SIO-045A and no SIO-045**, so the 45.5 the app stores is
+Dan's own id, not a repo artefact. (Dan's ruling on how to LABEL it — by position
+everywhere, or 45A everywhere — is still open; nothing was changed for it.)
+
+**The direction guard-rail held where anyone had looked, and leaked where nobody
+had.** Every keyed answer on SIO-036 is an infinitive after « il faut »; the -ez
+forms sit in the distractor lists with a whyWrong naming them as the vous
+imperative — the rail working as designed, and Dan's 1 Sep ruling says a wrong
+answer is allowed to be wrong French. The directions bank shows « Vous tournez »,
+« Vous prenez » on every card.
+
+What leaked was the sentence AROUND the blank. `finale.ts` printed
+`pre: "Prenez la ", post: " rue à droite"` and asked for « première ». No
+imperative is keyed, so the criterion the backlog proposed — *"Directions bank has
+no keyed imperative"* — passes on that line, while the learner reads a bare
+imperative as model French in the stop built to avoid it. v9 is explicit:
+SIO-036 is *"without the imperative, producing vous + present"*. Three frames
+rewritten into the register already shipped in the bank (`SIO-036:1`, `036:3`,
+`040:1`); answers and categories untouched. Same shape as « Bon chance » in
+atelierModel — the wrong form was the MACHINE'S, not the learner's.
+
+`verify98-directions-imperative.py` (renumbered from 95 on 5 Sep when
+Peers' `verify95-icons` landed on main first) pins both halves and leaves distractors free.
+Break-tested four ways: bank card loses its « vous », an imperative gets keyed,
+the imperative distractors get tidied away, a frame prints « Prenez » again.
+
+`docs/SYLLABUS_TIERS.md` line 124 described stop 36's blocks as *tournez à
+droite*, *prenez la première rue* — imperatives, contradicting v9 and the
+shipped content. Corrected to the vous forms.
+
+Not done in item 10: **SUP-CAL-01/02/03** (Optional chips, soft family wash, off
+Continue, SUP-CAL-03's né/née role cue). Untouched.
+
+Shared: `STATUS.md`, `SYLLABUS_TIERS.md`, `.github/workflows/verify.yml`.
 
 ## 5 Sep — the mark ships: icon.svg, favicon.ico, the four PNGs
 
@@ -160,8 +620,18 @@ no semantic one).
 
 Sole editor of STATUS.md in this commit: Pre-tests.
 
-**#157 has become a regression, and it is mine.** The same fault as 17 Aug,
-mirrored, and it is live on the github.io preview now.
+**NOT A REGRESSION FROM #157 — that word was wrong and is corrected here.**
+#157 did not break something that was working: the Pages deployment was already
+broken (or unreachable) before it, and #157 fixed it for the configuration that
+existed at the time. What broke it again was a configuration change afterwards.
+The preview has in fact been unusable since mid-August in one form or the
+other, and no change of mine caused that.
+
+WHAT *IS* MINE, and it is the part worth fixing. `verify91`, as #157 wrote it,
+hard-wired "a CNAME exists, therefore no subpath". So the moment somebody
+cleared the domain, the repo's own check FORBADE the correct fix — it was
+holding the broken state in place. A check that infers a remote setting from a
+local file is the defect, not the base path.
 
 WHAT HAPPENED. #157 dropped `PAGES_BASE_PATH` on the then-correct reading that
 the artifact was served at fluolingo.com's root. Between 2 and 5 Sep somebody
@@ -776,6 +1246,16 @@ Roadmap items recorded, not in this build: a READING activity (ÉcouTexte's
 sibling with the text on screen — the one untrained skill), and AMBIENT
 TOOLS (ChaTutor as a floating consult, VoixLà summonable wherever French is
 typed; the OUTILS row is the address, not the life).
+
+**Amendment to AMBIENT TOOLS (Dan, 5 Sep): the voice corrects FIRST.**
+Shown the hand-off mock (ComposeIt's sentence pre-filled into VoixLà's box),
+Dan: *"the bot should not be made to reinforce grammatically bad or wrongly
+written French to the learner. It has to be corrected first!!"* So the flow
+is check → show the corrected sentence leading, the learner's slip marked
+beneath → ▶ speaks ONLY the corrected form. The uncorrected sentence is
+never voiced. No contradiction with the 1 Sep distractor ruling: wrong
+French may be OFFERED for rejection on a card; it must never be PERFORMED
+for imitation by the app's voice.
 
 Still Pre-tests' surface — this section is the brief, not the build.
 

@@ -136,8 +136,13 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/games/compose/", "Compose It"],
   ["/games/numbourse", "NumBourse"],
   ["/games/numbus", "NumBus"],
-  ["/pretests/picture/", "Picture pretest"],
-  ["/pretests/", "Pretest"],
+  // ONE NAME (Dan, 2026-09-05: "it is the name for everything pre-tests
+  // (old-speculearn and old-pretests) which will now adopt that name
+  // SpecuLearn because they learn by speculating wisely based on prior
+  // knowledge"). Both /pretests routes and /practice/speculearn now resolve to
+  // the same label, so the learner meets one activity rather than two.
+  ["/pretests/picture/", "SpecuLearn"],
+  ["/pretests/", "SpecuLearn"],
   ["/lessons/", "Lesson"],
   ["/decks/", "Deck"],
   ["/conjugaison", "ConjugaZone"],

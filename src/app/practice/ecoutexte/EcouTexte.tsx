@@ -285,6 +285,8 @@ export default function EcouTexte({
   const worked = sentences.filter((_, i) => solvedAt(i)).length;
   const allRevealed = revealed.length > 0 && revealed.every(Boolean);
   const last = at >= sentences.length - 1;
+  /** The learner's own words on the open sentence — the 🧰 hand-off. */
+  const attemptAt = (written[at] ?? []).map((v) => v.trim()).filter(Boolean).join(" ");
 
   const hintLine =
     hint || (playing && !paused ? "Playing — press ⏯ to pause." : "⏯ play · 🐇🐌 speed · ♀♂ who reads");
@@ -579,6 +581,14 @@ export default function EcouTexte({
           ♻️ All heard — start over
         </button>
       )}
+
+      {/* NO 🧰 here — Dan, 5 Sep, in two steps: first "Voix-Là is for TTS.
+          and it does NOT make any sense to have it im EcouTexte" (the
+          exercise already speaks), then "doesn'T ecouTexte have a standard
+          answer, why does it still beed ChatTutor" — a dictation has ONE
+          right sentence and the marking already shows it, so there is
+          nothing left for a chat tool to add. The tools live where the
+          learner PRODUCES French: WorDrill and ComposeIt. */}
     </div>
   );
 

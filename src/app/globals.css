@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* The one fluid step the whole type ramp is built on. Declared HERE and not
+     in @theme, which is `inline`: that inlines its values into the utilities
+     instead of emitting them, so a step declared there would leave every
+     calc() below referring to a variable that does not exist at runtime. */
+  --fs-step: clamp(0rem, calc(-0.61rem + 1.2vw + 0.6vh), 0.36rem);
 }
 
 @theme inline {
@@ -10,6 +15,41 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
+     "fonts can afford to be bigger on the desktop", then "the relative font
+     size thingy should apply FluOLinGo wide, not just here".
+
+     WHY IT LIVES HERE AND NOT IN --fs-*. The obvious place looked like the
+     --fs-* scale below, and it would have been the wrong one: the app's type
+     is 936 Tailwind text-* utilities across 162 files against 105 uses of the
+     tokens. Redefining the tokens would read as an app-wide fix and change
+     almost nothing. Tailwind v4 resolves every text-* utility from these
+     --text-* theme variables, so redefining them here moves all 936 from one
+     place.
+
+     ONE SHARED STEP, so the ramp grows in proportion instead of eight sizes
+     drifting apart. The step is ZERO on a portrait phone — the constant is
+     tuned so 1.2vw + 0.6vh cancels at 390x844 — which is what keeps the phone
+     bit-identical to before this change. Only wider or taller viewports gain.
+
+     BOTH AXES, not vw alone. A landscape phone is wide and short; a width-only
+     clamp reads it as "narrow" and hands it the minimum, which is exactly the
+     bug that made 844x390 render at the same size as 390x844.
+
+     rem, NEVER px, for the floor and the cap. A px floor overrides a learner
+     who has asked for larger text in their accessibility settings — they
+     request bigger and get what everyone else gets. Consequence accepted: past
+     root 20px the floor wins and portrait and landscape converge, because
+     their stated preference outranks our layout preference. */
+  --text-xs:   calc(0.75rem  + var(--fs-step) * 0.6);
+  --text-sm:   calc(0.875rem + var(--fs-step) * 0.75);
+  --text-base: calc(1rem     + var(--fs-step));
+  --text-lg:   calc(1.125rem + var(--fs-step) * 1.15);
+  --text-xl:   calc(1.25rem  + var(--fs-step) * 1.3);
+  --text-2xl:  calc(1.5rem   + var(--fs-step) * 1.6);
+  --text-3xl:  calc(1.875rem + var(--fs-step) * 2);
+  --text-4xl:  calc(2.25rem  + var(--fs-step) * 2.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -673,6 +713,11 @@ body {
    thins; Regular read washed at the stroke ends and Bold started closing the
    counters at 28px. 600 holds the letterforms and gains the presence. */
 .fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
+/* Button labels wear the brand hand in heavy bold (Dan, 5 Sep: "use
+   FluoLingo font in heavy bold to disallow the text from overflowing off
+   the buttons") — the hand face runs narrower than the body face, so a
+   label like "Practice" fits a half-width tile the body face overflowed. */
+.fluo-btn-hand { font-family: var(--font-fluohand-stack); font-weight: 800; letter-spacing: 0; }
 /* THE ENGLISH ON A PRACTICE CARD — the house hand (Dan, 2026-09-01: "the
    English sentences are still too big. Perhaps switch all English sentences to
    the House Font (FluOLinGo)").
@@ -933,6 +978,12 @@ body {
      the 30 Aug mirroring, which moved the coils across with the rail — the
      rail moving left never meant the binding should leave it. */
   padding-left: clamp(8px, 3vw, 44px);
+  /* A RIGHT GUTTER TO MATCH. There was none while the flap rail lived here —
+     the rail WAS the right margin. With the flaps gone (Dan, 2026-09-05:
+     "right side flaps should ALL be gone") a filling sheet would run flush to
+     the screen edge, so the desk shows on both sides now, as it always did on
+     the left. */
+  padding-right: clamp(8px, 3vw, 44px);
 }
 /* A DRILL SITS ON THE SAME DESK (Dan, 2026-09-01: "Ok move all to A", closing
    a sweep of all 134 routes that found the site drawing its heading band at
@@ -980,6 +1031,64 @@ body {
   padding-bottom: 8px;                       /* NOT the desk's 64 — see above */
 }
 /* The page's own radius, now that grey shows on every side to put it against. */
+/* ── A SHORT, WIDE SCREEN GETS TWO COLUMNS ────────────────────────────────
+   Dan, 2026-09-05, on turning the phone sideways. Measured on the live build
+   at 844x390: the page was 761px tall inside a 390px screen and the last two
+   options sat 180px BELOW the bottom of it. A learner who rotated had to
+   scroll to reach half the answers, on every question.
+
+   The card is a vertical stack — stimulus, then a grid of options under it —
+   which is right when height is the plentiful dimension and wrong when it is
+   the scarce one. So past 11:10 the same card becomes two columns: everything
+   that is not the options in the left one, the options in the right.
+
+   WHY THE HEIGHT CLAUSE. The obvious gate is the aspect ratio alone, and it
+   would also catch every desktop — where the fault does not exist: 1440x900
+   has 900px of height and the card fits with room over. Worse, the card sits
+   inside a max-w-3xl (768px) wrapper, so two columns there would be two narrow
+   columns in a wide sheet. The defect being fixed is SHORTNESS, so shortness
+   is what the rule tests for.
+
+   EVERY LENGTH HERE IS RELATIVE, the breakpoint included. `max-height` in em
+   is measured against the browser's DEFAULT font size — the learner's own text
+   setting — so someone reading at 20px switches to the space-saving layout on
+   a taller screen than someone at 16px, which is what they need. A px
+   breakpoint would have ignored them, exactly as a px font floor would.
+
+   Nothing here touches the strip above the card (Skip, TTS) or the ring
+   binding down the gutter — both live outside .speculearn-card and are
+   unaffected by design. Verified in landscape after building. */
+@media (min-aspect-ratio: 11 / 10) and (max-height: 38.75em) {
+  .speculearn-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(0.875rem, 2.5vw, 2.5rem);
+  }
+  /* Everything the card holds stacks in the left column, as it did before … */
+  .speculearn-card > * { grid-column: 1; }
+  /* … except the options, which take the right one and centre against the
+     whole of it, so the two halves read as one row rather than two lists. */
+  .speculearn-card > .speculearn-options {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  /* AND THE CHROME GIVES THE SPACE BACK. Two columns alone did not fix it:
+     measured after the grid landed, a four-option question still had two
+     options below the fold, because the furniture above the card took 290px
+     of a 390px screen — 74% of the display spent before the question began.
+     Each of these is generous on a tall phone and unaffordable on a short
+     one, so each is trimmed here and nowhere else. */
+  .cahier-foolscap { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+  .page-band { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+  .speculearn-stage { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+  .speculearn-stage > header { margin-bottom: 0.5rem; }
+  .speculearn-card { padding: 0.7rem 0.9rem; }
+}
+
 .cahier-drilldesk > .cahier-drill {
   width: 100%;
   border-radius: 4px 16px 16px 4px;
@@ -988,7 +1097,18 @@ body {
 
 .cahier-page {
   position: relative;
-  flex: 0 1 980px;
+  /* FILLS THE WIDTH (Dan, 2026-09-05: "the DESKTOP view should fill up the
+     full width of the screen, not be tied to the left"). `flex: 0 1 980px`
+     capped the sheet at 980 and, because .cahier-deskrow only pads the LEFT,
+     left every spare pixel on the right: measured at 1440 the content started
+     at x=43 and left 417px empty; at 1920, 896px — nearly half the screen.
+     `flex: 1 1 auto` lets it take what the row gives it.
+
+     It is safe to fill because the QUESTION CARD rearranges past 11:10 rather
+     than stretching (see .cahier-drilldesk and the card rules) — a single
+     column at 1876px would be an unreadable line of French. The width is used,
+     not spent. */
+  flex: 1 1 auto;
   min-width: 0;
   background-color: var(--cahier-paper);
   background-image: repeating-linear-gradient(
@@ -1014,7 +1134,7 @@ body {
  * page lies on it as a loose sheet (no coils of its own). */
 .cahier-stack {
   position: relative;
-  flex: 0 1 980px;
+  flex: 1 1 auto;   /* fills, like .cahier-page above */
   min-width: 0;
   border-radius: 4px 16px 16px 4px;
   background: #efede3;
@@ -1396,14 +1516,16 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   --tier-weak: oklch(56% 0.15 25);
   --tier-weak-soft: oklch(93% 0.045 25);
 
-  --fs-display: 2.75rem;
-  --fs-h1: 2.25rem;
-  --fs-h2: 1.75rem;
-  --fs-h3: 1.375rem;
-  --fs-h4: 1.125rem;
-  --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-micro: 0.75rem;
+  /* Fluid on the same step as the Tailwind ramp (see @theme). Phones get the
+     value that was here before; only wider or taller viewports gain. */
+  --fs-display: calc(2.75rem  + var(--fs-step) * 2.4);
+  --fs-h1:      calc(2.25rem  + var(--fs-step) * 2);
+  --fs-h2:      calc(1.75rem  + var(--fs-step) * 1.6);
+  --fs-h3:      calc(1.375rem + var(--fs-step) * 1.3);
+  --fs-h4:      calc(1.125rem + var(--fs-step) * 1.1);
+  --fs-body:    calc(1rem     + var(--fs-step));
+  --fs-small:   calc(0.875rem + var(--fs-step) * 0.8);
+  --fs-micro:   calc(0.75rem  + var(--fs-step) * 0.7);
 
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px; --sp-5: 20px;
   --sp-6: 24px; --sp-8: 32px; --sp-10: 40px; --sp-12: 48px; --sp-16: 64px;
@@ -1470,9 +1592,55 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   border-radius: 6px;
   pointer-events: none;
 }
-/* The bar is fixed, so the last line of every page would sit under it. */
+/* The bar is fixed, so the last line of every page would sit under it. The
+   padding reads the floor the bar itself measures (--bottombar-floor) rather
+   than restating 56px, because since 5 Sep a learner can remove the bar in
+   Réglages — no bar, no floor, and the page gets its bottom edge back. */
 @media (max-width: 639.98px) {
-  .cahier-page { padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  .cahier-page { padding-bottom: max(env(safe-area-inset-bottom, 0px), var(--bottombar-floor, 0px)); }
+}
+/* `display: flex` on .cahier-bottombar above is unlayered CSS, and Tailwind
+   v4 puts its utilities in a @layer — so the element's `sm:hidden` LOSES and
+   the phone bar was rendering on desktop. Hide it here, unlayered too, at the
+   same 640px where the flap rail takes over. */
+@media (min-width: 640px) {
+  .cahier-bottombar { display: none; }
+}
+/* Réglages switches (Dan, 5 Sep: "show it as a switch: by default in the off
+   position", with the description line changing to say what the current
+   position means). A styled NATIVE checkbox — keyboard, label-click and
+   screen readers come free; role="switch" in the markup announces it right. */
+input.fluo-switch {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  border: 2px solid var(--cahier-line-strong);
+  background: var(--cahier-paper);
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+input.fluo-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cahier-ink-soft);
+  transition: left 0.15s ease, background 0.15s ease;
+}
+input.fluo-switch:checked {
+  background: var(--cahier-accent);
+  border-color: var(--cahier-accent);
+}
+input.fluo-switch:checked::after {
+  left: 22px;
+  background: var(--cahier-paper);
 }
 /* Tablet: the page flaps shrink to icons — there are only a few of them now,
    but a deck with five views still needs the room. */
@@ -1772,22 +1940,41 @@ h3.cahier-display { font-size: var(--fs-h3); }
    spine >=3.94 on its band and >=4.55 on paper · band label >=11.80 ·
    pill label >=4.55. verify33 recomputes them from this file. */
 :root {
-  /* THE SIX, EVENLY SPACED (Dan, 2026-08-30: "apply the new dopamine look
-     EVERYWHERE"). One hue every 60° starting at 20°, which of the sixty
-     possible starting points is both the best for a colour-blind reader and,
-     within a degree, the one that moved the six families least from the
-     colours they had. Each family's three tokens are DERIVED, not picked:
-     --fam is the hue at full strength; --fam-wash is it at 92.5% lightness,
-     capped so no hue shouts over the rest; --fam-*-ink is walked down in
-     lightness until it clears 4.5:1 on THREE surfaces at once — its own wash
-     (the band label), white (the pill), and the paper (body text). Worst
-     case across all six: 4.53:1, 5.54:1, 5.17:1. */
-  --fam-user: #ff4b5d;  --fam-user-ink: #c51837;  --fam-user-wash: #ffdbda;         /*  20° coral   */
-  --fam-practice: #ffc330;  --fam-practice-ink: #845e0c;  --fam-practice-wash: #ffe1a7;  /*  80° yellow  */
-  --fam-goals: #31b700;  --fam-goals-ink: #27780d;  --fam-goals-wash: #caf4c0;      /* 140° green   */
-  --fam-review: #00aeb5;  --fam-review-ink: #0e7479;  --fam-review-wash: #a2f8fc;   /* 200° cyan    */
-  --fam-skills: #5495ff;  --fam-skills-ink: #005ae9;  --fam-skills-wash: #d6e7ff;   /* 260° blue    */
-  --fam-svplay: #e237ff;  --fam-svplay-ink: #a81bc3;  --fam-svplay-wash: #fbd8ff;   /* 320° magenta */
+  /* THE SIX HIGHLIGHTERS (Dan, 2026-09-05: "can we align these colors with the
+     six standard highlighter colors: Pink, Orange, Yellow, Blue, Green,
+     Indigo-Violet-Lilac"). They now ARE those six pens.
+
+     THE MAPPING IS FORCED, which is the good news. Both sets are six points on
+     one hue wheel in the same rotational order, so matching them in order is
+     the only assignment that neither collides nor sends Goals to yellow — and
+     it moves each family exactly one notch:
+
+         Goals    green   141° → Green         145°   barely moves
+         Practice yellow   84° → Yellow        100°   barely moves
+         Games    magenta 321° → Pink          350°
+         Revise   cyan    200° → Blue          245°
+         Skills   blue    260° → Indigo-Violet 300°
+         User     coral    20° → Orange         55°
+
+     Order preserved means a learner who has learned "Revise is the cool one,
+     Games is the hot one" is not being re-taught. The previous scheme — one hue
+     every 60° from 20° — was derived for colour-blind separation; the pens keep
+     that separation (no two adjacent families sit closer than 45°) while giving
+     the palette a name a human can say.
+
+     The four rungs are still DERIVED, not picked, by the same recipe: --fam is
+     the hue at the sRGB gamut edge; --fam-wash is it at 92.3% lightness;
+     --fam-*-ink is walked down in lightness until it clears 4.5:1 on THREE
+     surfaces at once — its own wash (the band label), white (the pill), and the
+     paper (body text). Worst case across all six: 4.52:1, 5.52:1, 5.12:1,
+     against 4.53 / 5.54 / 5.14 for the colours these replace.
+     verify96-family-hues.py pins all twenty-four and recomputes the floor. */
+  --fam-user: #ff9037;  --fam-user-ink: #9f5100;  --fam-user-wash: #ffdec9;         /*  55° orange  */
+  --fam-practice: #fcdf00;  --fam-practice-ink: #756700;  --fam-practice-wash: #f2e8a5;  /* 100° yellow  */
+  --fam-goals: #00dd3e;  --fam-goals-ink: #007a1e;  --fam-goals-wash: #c3f5c3;      /* 145° green   */
+  --fam-review: #1ca6ff;  --fam-review-ink: #006baa;  --fam-review-wash: #d0e9ff;   /* 245° blue    */
+  --fam-skills: #b17eff;  --fam-skills-ink: #9200fe;  --fam-skills-wash: #eae0ff;   /* 300° violet  */
+  --fam-svplay: #ff4eb2;  --fam-svplay-ink: #c1007f;  --fam-svplay-wash: #ffdaea;   /* 350° pink    */
 
   /* THE PAGE GROUND (Dan, 2026-08-30: "apply the new dopamine look
      EVERYWHERE"). The same six hues at 97.5% lightness — about a quarter of
@@ -1795,9 +1982,17 @@ h3.cahier-display { font-size: var(--fs-h3); }
      paper with a coloured strip on it. This is the 60 of 60-30-10, and it is
      the level the whole scheme was missing: `--band-wash` was invented for it
      on 26 Aug and never wired to anything.
-     Faint on purpose. Body ink clears 13.6:1 on every one and the soft ink
-     7.1:1 — both AAA — because a ground you read a page of French on has to
-     be quieter than one you glance at. */
+     Faint on purpose, because a ground you read a page of French on has to be
+     quieter than one you glance at. Body ink clears 13.5:1 on every one — well
+     past AAA.
+
+     THIS COMMENT USED TO CLAIM the soft ink cleared above seven to one and was
+     therefore AAA too. It does not, and did not before the highlighter
+     realignment either: --cahier-ink-soft (#655c55) measures 6.00–6.13 on these
+     six grounds, which is AA and short of the 7.0 AAA needs. Corrected 5 Sep by
+     measuring rather than re-reading. The soft ink is fine where it is used —
+     labels and captions, not paragraphs — but nobody should cite seven from
+     here. verify96 recomputes it. */
   /* THE READING PAPER — « le sable beige », the colour already in the colours
      deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
      six family grounds when asked which he wanted under a page of French he
@@ -1810,9 +2005,9 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
   --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
 
-  --fam-user-page: #fff3f2;      --fam-practice-page: #fff5e2;
-  --fam-goals-page: #edfcea;     --fam-review-page: #e2fdfe;
-  --fam-skills-page: #f0f7ff;    --fam-svplay-page: #fff1ff;
+  --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
+  --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
+  --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a

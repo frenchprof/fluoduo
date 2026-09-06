@@ -135,7 +135,10 @@ export default function GameGallery({
                 style={{ borderColor: a }}
               >
                 <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-black leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={e.title}>
+                  {/* Brand hand, heavy bold, on half-width tiles (Dan,
+                      5 Sep) — and it runs narrower, so titles that used
+                      to truncate now mostly fit. */}
+                  <span className="fluo-btn-hand block truncate text-sm leading-tight text-[color:var(--cahier-ink)]" lang="fr" title={e.title}>
                     {e.title}
                   </span>
                   <span className="block text-[11px] font-bold" style={{ color: a }}>

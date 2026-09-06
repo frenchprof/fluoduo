@@ -32,7 +32,7 @@ WHY A CHECK AND NOT A STYLE NOTE. Copy grows one helpful clause at a time, and
 every clause looks reasonable in its own diff. Before this pass, eleven popups
 carried 332 words between them and no single line looked long.
 
-Run from the repo root:  python3 verify/verify96-chrome-concision.py
+Run from the repo root:  python3 verify/verify104-chrome-concision.py
 """
 import os
 import re
@@ -87,7 +87,7 @@ for text in callouts:
         fails.append(f'FirstTour.tsx: a callout is {n} words (max {TOUR_MAX}) — "{text[:90]}"')
 
 if fails:
-    print("verify96-chrome-concision: FAIL")
+    print("verify104-chrome-concision: FAIL")
     for f in fails:
         print("  - " + f)
     sys.exit(1)
@@ -95,5 +95,5 @@ if fails:
 longest_step = max((len(words(s)) for _, _, b in rows
                     for s in re.findall(r'"((?:[^"\\]|\\.)*)"', b)), default=0)
 longest_tour = max((len(words(t)) for t in callouts), default=0)
-print(f"verify96-chrome-concision: {len(rows)} popups (longest step {longest_step}w) "
+print(f"verify104-chrome-concision: {len(rows)} popups (longest step {longest_step}w) "
       f"and {len(callouts)} tour callouts (longest {longest_tour}w) are within budget.")
