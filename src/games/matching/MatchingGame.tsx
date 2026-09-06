@@ -167,7 +167,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
   const help = (
     <>
       <p>Tap a phrase on the left, then its completion on the right.</p>
-      <p className="mt-2">A wrong pair flashes red and stays open; a right one locks with a ✓ and is spoken.</p>
+      <p className="mt-2">Wrong flashes red and stays open. Right locks with a ✓ and is spoken.</p>
     </>
   );
   const record = (

@@ -6,6 +6,25 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep — Peers' language pass lands; the rest of #187 was already home
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Peers' 89-commit branch surfaced as PR #187 carrying three pieces. Two were
+already on main via #170 (the ☰ dead-rows z-30 fix + verify94, and the
+first mark + verify95 — since superseded by #184/#185's pink). The third —
+**the language pass on chrome a learner is HANDED** (Dan: "UI 101 says we
+don't want to overwhelm users with too much texts to read") — was new, and
+was lifted onto current main by the integrator: eleven first-run popups
+305→235 words, tour callouts shortened, AuthGate/StopBookmark/ÉcouTexte/
+LexicaLater wordings trimmed. Its check arrived as
+**verify104-chrome-concision** (96 was taken by family-hues meanwhile;
+101–103 are claimed by in-flight lanes — and NOTE, collision #9 brewing:
+Color's branch holds verify102-menu-hues while pre-tests' holds
+verify102-fluidtype; whichever lands second must renumber). One conflict
+resolved in the tour: "Your tabs" (post-#175 truth) beats "Five tabs"
+(true when Peers wrote it). #187 closes in favour of this lift.
+
 ## 5–6 Sep — the favicon settles: PINK, transparent, teal binds, thin iPhone rim (#184, #185)
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
