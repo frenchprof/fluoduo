@@ -6,6 +6,33 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 5–6 Sep — the favicon settles: PINK, transparent, teal binds, thin iPhone rim (#184, #185)
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+Four rulings from Dan, in order, all shipped:
+
+1. **No ground plate on the tab icon** ("does not need the white background
+   against the dark background"). `src/app/icon.svg` is transparent;
+   `favicon.ico` and the manifest's `icon-192/512` regenerated with real
+   alpha.
+2. **The mark is the PINK one** ("i think i prefer the pink favicon
+   please") — the first cut (24c1c41), which had gone Violet one commit
+   later, restored.
+3. **The binds follow the complement rule** — Dan remembered it and it is
+   66dda59: binds wear the middle-right stack's colour walked down; for
+   pink that stack is TEAL, so binds are `#009d7a` (the pink restore had
+   briefly resurrected the pre-rule pink binds).
+4. **The iPhone tile's plate is a ~4% rim** ("is our plate too thick for
+   that border") — the mark fills apple-touch-icon, paper peeking as the
+   thin border iOS icons wear.
+
+TWO ICONS STAY OPAQUE ON PURPOSE, do not "fix" them: apple-touch (iOS
+fills transparency with BLACK on the home screen) and maskable-512
+(Android's circular crop needs full bleed — verify95's safe-area rule).
+The derived PNGs/ICO are rendered from icon.svg via headless Chromium
+(omitBackground) + Pillow; there is no generator script in the repo yet.
+
 ## 5 Sep evening — SpecuLearn commerces chrome is English (new PR from main)
 
 Sole editor of STATUS.md in this commit: ux/en-chrome-speculearn.
