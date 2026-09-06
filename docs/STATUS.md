@@ -6,6 +6,66 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep, latest — Dan picked a gamification option; the map is tactile; every reward banner is coloured (Peers)
+
+Sole editor of STATUS.md in this commit: Peers.
+
+**Dan picked one of the five.** The entry below says "he has picked none yet";
+he has now. From the video read he chose **"Craving — add surprise"**, and it
+is built. THE LUCKY FIND: a graded answer can now find gems.
+
+- **Gems, NOT XP**, and that is the whole design. XP drives the level, the
+  rank and the leaderboard, and the honest-receipt rule says a receipt states
+  the EXACT amount an answer pays. Random XP breaks both. Gems buy cosmetics
+  and gate nothing.
+- Four guards, all executed in `verify109` against 5000 seeds — **seeded, not
+  rolled** (a hash of item+day, and it rides the same `award` gate as the XP,
+  so a re-attempt cannot fish for a drop), a **pity floor** at 12 dry answers,
+  a **daily cap** of 40 gems, and **never negative** (hearts were removed for
+  punishing errors; a find that could take something away brings them back).
+- `findDry` deliberately does NOT reset at midnight — the floor is a run of
+  bad luck, not a date, or every day would start owing a find.
+- `normalize()` guards `findGems`/`findDry` with `Number.isFinite` because
+  the cap is arithmetic on them: `findGems: "40"` makes the cap NaN and the
+  balance NaN forever, and a spread default cannot catch it.
+
+**TWO COLOUR RULINGS from the same afternoon, both Dan's, both worth keeping:**
+
+1. **The find wears `flow` (teal), and the rule is one colour, one meaning.**
+   It shipped for a day in `joy` — which is this app's XP colour, the +20
+   float and the receipt's XP line — so the banner said "XP" while the code
+   paid gems. Dan: not amber (XP), not magenta (the streak fire), not either
+   red (a find often lands right after a WRONG answer, so the reward would
+   flash in the failure colour). `verify109` reads the roles FROM SOURCE
+   rather than pinning the string "flow", so it survives a re-cut palette.
+
+2. **Every reward banner now carries its role's fill.** Dan: *"The 'You found'
+   tile should be in color ?!"* and *"it looks too fade"*. The banner was
+   hardcoded `bg-white`, so a badge, a level-up, a streak, a finished unit and
+   a find were five white cards differing by a hairline. **The trap for the
+   next session:** on a full fill the text colour is NOT a constant. Page ink
+   works for flow/reward/win/joy and FAILS for streak/focus/miss
+   (3.19–3.28:1); white does the exact opposite. A mock-up of the find, the
+   badge and the level-up all say "use ink" because those three are the light
+   half of the palette — and ink would then ship the STREAK banner, seen
+   daily, unreadable. Each role already declares its answer as
+   `--dopa-X-on`; the banner asks the token instead of choosing.
+
+**The map is tactile** (the Malewicz brief). Stops are objects with a two-sided
+spring, the road has a body (a three-stroke cord travelled, a groove ahead),
+stops wear the fluorescent pens in two shades — pen when reached, wash when
+still ahead — the numeral never disappears (Dan: *"i do still want the number
+to remain"*), and there is no ✓ at all (*"Drop it — the fill says it"*).
+`/map/embed` is a standalone iframe-able map on the same component. `verify108`
+holds it.
+
+**Open, and NOT built:** the Finale card (`FinaleContent.tsx`) is entirely raw
+Tailwind — `amber-300/50/800` on the hint button, `slate-300/700` on check,
+plus `slate-900`, `emerald-500`, `rose-400`, `yellow-100`. The hint button's
+amber is **0.3° of hue from the XP amber**, i.e. the same fault Dan just
+caught on the find banner. Dan has authorized the conversion; it is being done
+on its own branch, not in the batch above.
+
 ## 6 Sep, late — #199 ships: rings that wrap the page edge; work paused for Dan's gamification video
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
