@@ -142,6 +142,58 @@ if os.path.isdir(embed_dir):
           "EmbedBody does not use Map2DGrid — a second copy of the map will "
           "drift from the first, which is what happened to the nav in August")
 
+# --- 7 · THE 3D MAP'S BUTTONS ARE THE SAME BUTTONS -------------------------
+# Dan, 7 Sep: "why are the 3D buttons not on the 3D map?", then "just the
+# buttons, not the map" and "i just need visual unity for the buttons".
+#
+# The tactile pass gave the 2D grid a rule — the pen at full strength when a
+# stop is reached, the pen's own WASH when it is still ahead, the pen as the
+# ring on both, a white numeral on the pen and page ink on the wash — and the
+# 3D map kept its own older answer: a local 55%-with-paper mix for the face
+# (a different pale from the 2D one, and a different amount of different per
+# hue), a near-black ring, and a white numeral on BOTH, which on a pale face
+# all but vanished.
+#
+# The scene is deliberately NOT asserted here. Dan asked for the buttons and
+# not the map, so the road, the pad, the skirt, the camera and the props are
+# none of this check's business; widening it into "the 3D map looks like X"
+# would be re-deciding something he settled.
+three = strip_comments(read("src/components/HomeMap3D.tsx"))
+
+check("KIND_WASH" in three,
+      "the 3D face uses the pen's own wash, the same token the 2D grid uses",
+      "HomeMap3D no longer uses KIND_WASH — its pale shade has drifted back "
+      "to a local mix, so the same stop is two different pales in two views")
+check(re.search(r"const\s+reached\s*=\s*done\s*\|\|\s*active", three),
+      "the 3D map names 'reached' once and drives face, ring and numeral off it",
+      "HomeMap3D has lost its single `reached` test — face, numeral and depth "
+      "can now disagree about whether a stop is done")
+check(re.search(r"const\s+face\s*=\s*reached\s*\?\s*colour\s*:\s*KIND_WASH\[kind\]", three),
+      "reached wears the pen, ahead wears its wash — the 2D rule exactly",
+      "the 3D face no longer follows reached->pen / ahead->wash")
+check(re.search(r"const\s+rim\s*=\s*colour\s*;", three),
+      "the ring is the pen, not a near-black mix",
+      "the 3D ring is not the pen — a dark ring is what made these read as "
+      "badges rather than as the map's buttons")
+
+# The numeral is the one that a screenshot of a REACHED stop hides: white on a
+# pen looks right, and the same white on a wash is the bug. Both branches are
+# asserted, so neither can be dropped quietly.
+num = re.search(r"style=\{reached\s*\?([\s\S]{0,400}?)\}\}", three)
+check(num is not None and "PAPER" in num.group(1),
+      "a reached stop's numeral is paper white",
+      "the reached numeral is no longer white")
+check(num is not None and "--cahier-ink" in three.split("style={reached")[1][:600],
+      "an ahead stop's numeral is page ink, not white on a pale wash",
+      "the ahead numeral is not page ink — white on the wash is the fault this "
+      "was fixed for")
+
+# And they SPRING, like every other key in the app.
+check("fluo-spring" in three,
+      "the 3D stops carry the spring the 2D stops and .neo-key carry",
+      "the 3D stops do not spring — they are drawn as objects and do not "
+      "behave as them, which is the whole point of the tactile pass")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))

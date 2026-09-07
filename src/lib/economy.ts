@@ -44,6 +44,11 @@ export const XP_CONVERSATION = 120; // finishing an AI role-play
 // streak's top badge are the same day, so the two systems tell one story.
 // GAIN-FRAMED ONLY: every surface that names a rung says what the next day
 // PAYS, never what a missed day costs — verify32 greps the loss words out.
+// ×3 IS THE CEILING, on purpose (Peers, PR 207, independently building the
+// same ladder): the multiplier scales every answer, so an open-ended ladder
+// makes a late streak worth more than the work itself — at ×4 a WRONG answer
+// on day 60 (80 XP) outpays a RIGHT one from a learner with no streak (60).
+// The rungs stop where the habit is already established.
 const FIRE_LADDER = [
   { day: 3, mult: 1.5 },
   { day: 7, mult: 2 },

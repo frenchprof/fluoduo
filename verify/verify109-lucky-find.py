@@ -213,8 +213,17 @@ check(re.search(r'type:\s*"find"', prog),
 # wears, or either of the two reds — a find often lands on a WRONG answer, and
 # a reward in the failure colour reads worst exactly when it fires most.
 def role_of(src, kind):
-    m = re.search(r'case\s+"%s":(?:[^;]|\n){0,400}?role:\s*"([a-z]+)"' % kind, src)
-    return m.group(1) if m else None
+    # Everything up to the NEXT `case`, then the role inside it. The first
+    # version of this stopped at the first ";" — which held only while every
+    # arm was a one-line return, and went None the moment the streak arm grew
+    # a `const` (7 Sep). A dead role_of makes three colour assertions vacuous
+    # rather than loud, so the boundary is now the thing that actually bounds
+    # an arm.
+    m = re.search(r'case\s+"%s":((?:(?!\bcase\s+")[\s\S]){0,600})' % kind, src)
+    if not m:
+        return None
+    r = re.search(r'role:\s*"([a-z]+)"', m.group(1))
+    return r.group(1) if r else None
 
 
 find_role = role_of(toast, "find")

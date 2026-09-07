@@ -2201,6 +2201,23 @@ then vanishes into the page**; Green is faint on paper with the palest tint
 called). This supersedes prior icon-colour work where they disagree; Dan's
 words in his own brief to you are the authority on scope.
 
+### The ladder was built TWICE in one evening — the routing whiplash did it (7 Sep)
+
+The routing below moved three times in hours, and the cost arrived on
+schedule: Peers, briefed before the take-back, built the streak ladder on
+their branch (PR 207) while fluoduo-main built it on feat/streak-ladder —
+same rungs, same algorithm, different names. Assertion 4 flagged the
+verify-number half at push time (110 twice); the FUNCTION half no scan can
+see, exactly like blankKeysFor on 31 Aug. Resolved in the PR-207 QC merge:
+main's names stay (`FIRE_LADDER`/`nextFireMilestone`), Peers' ×3-ceiling
+rationale is grafted into the comment, their RewardToast fix is kept — they
+caught that the streak toast's fallback line "Come back tomorrow to keep it"
+is loss-framed (KEEP is a thing you can lose) and verify32's word list had
+missed it — and their 3D-map stops work lands untouched. The lesson is the
+31 Aug lesson again: when a brief moves between lanes mid-evening, the OLD
+assignee must be told to stand down in the same breath — the brief edit
+landed on main before Peers pushed, but nothing pinged them.
+
 ### The three retention builds — ALL TAKEN BY FLUODUO-MAIN (final routing, 7 Sep)
 
 The routing moved three times in one evening, on Dan's word each time, and
