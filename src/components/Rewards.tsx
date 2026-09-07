@@ -14,11 +14,12 @@
  * The ranks themselves are NOT gone from the app — `levelForXp` still names
  * rows on the leaderboard. They are gone from the profile.
  *
- * Nothing here gates learning: gems buy a home accent colour and nothing else
+ * Nothing here gates LEARNING: gems buy colours, the Bouclier, and expert
+ * GAME decks (Dan, 7 Sep) — never a goal, lesson, drill or revision
  * ("nothing is locked", progress.ts).
  */
-import { buyCosmetic, equipCosmetic, type Progress } from "@/lib/progress";
-import { BADGES, COSMETICS, DEFAULT_ACCENT } from "@/lib/economy";
+import { buyCosmetic, buyShield, buyUnlock, equipCosmetic, type Progress } from "@/lib/progress";
+import { BADGES, COSMETICS, DEFAULT_ACCENT, EXPERT_UNLOCKS, SHIELD_COST, SHIELD_MAX } from "@/lib/economy";
 
 const INK = "var(--cahier-ink)";
 const SOFT = "var(--cahier-ink-soft)";
@@ -72,6 +73,45 @@ export default function Rewards({ p, onChange }: { p: Progress; onChange: (p: Pr
               state={state}
               onClick={() => onChange(owned ? equipCosmetic(c.id) : buyCosmetic(c.id))}
             />
+          );
+        })}
+      </div>
+
+      {/* The utility shelf (Dan's 7 Sep rulings): the Bouclier and the expert
+          game decks. Two columns, per the no-full-width rule. The shield's
+          copy never mentions what a miss costs — it is protection bought on a
+          good day, spent silently, celebrated the morning after. */}
+      <div className="grid grid-cols-2 gap-1.5">
+        <button
+          type="button"
+          disabled={(p.shields ?? 0) >= SHIELD_MAX || p.gems < SHIELD_COST}
+          onClick={() => onChange(buyShield())}
+          title={(p.shields ?? 0) >= SHIELD_MAX
+            ? `Bouclier — holding ${p.shields}/${SHIELD_MAX}, the pouch is full`
+            : `Bouclier — 💎 ${SHIELD_COST}. Held in advance; one missed day spends it and the chain holds`}
+          className="flex items-center justify-between rounded-lg border-2 px-2.5 py-2 text-left text-[12px] font-bold disabled:opacity-55"
+          style={{ borderColor: LINE, background: PAPER, color: INK }}
+        >
+          <span>🛡️ Bouclier {(p.shields ?? 0) > 0 && <b>×{p.shields}</b>}</span>
+          <span className="fluo-mono text-[11px]" style={{ color: SOFT }}>
+            {(p.shields ?? 0) >= SHIELD_MAX ? "✓ full" : `💎${SHIELD_COST}`}
+          </span>
+        </button>
+        {EXPERT_UNLOCKS.map((u) => {
+          const owned = (p.unlocks ?? []).includes(u.id);
+          return (
+            <button
+              key={u.id}
+              type="button"
+              disabled={owned || p.gems < u.cost}
+              onClick={() => onChange(buyUnlock(u.id))}
+              title={owned ? `${u.label} — unlocked, find it in the games` : `${u.label} — an expert game deck, 💎 ${u.cost}`}
+              className="flex items-center justify-between rounded-lg border-2 px-2.5 py-2 text-left text-[12px] font-bold disabled:opacity-55"
+              style={{ borderColor: LINE, background: PAPER, color: INK }}
+            >
+              <span>{u.emoji} {u.label}</span>
+              <span className="fluo-mono text-[11px]" style={{ color: SOFT }}>{owned ? "✓" : `💎${u.cost}`}</span>
+            </button>
           );
         })}
       </div>

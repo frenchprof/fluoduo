@@ -99,6 +99,11 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
     // weekly board that inherits last week's total is not a weekly board.
     ...mergeWeek(local, remote),
     ...mergeFind(local, remote),
+    // Shields: max favours the learner (same rule as gems); the cap is
+    // normalize()'s job on read. Unlocks are purchases — union, like owned
+    // cosmetics.
+    shields: Math.max(local.shields ?? 0, remote.shields ?? 0),
+    unlocks: [...new Set([...(remote.unlocks ?? []), ...(local.unlocks ?? [])])],
     lastActiveDay,
     timeZone,
     itemSrs,

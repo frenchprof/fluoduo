@@ -54,6 +54,10 @@ import {
   XP_CONVERSATION,
   FIND_BIG,
   luckyFind,
+  LEVEL_UP_GEMS,
+  SHIELD_COST,
+  SHIELD_MAX,
+  EXPERT_UNLOCKS,
 } from "@/lib/economy";
 import { dayKey, previousDay, learnerZone, weekKey, previousWeek } from "@/lib/dayKey";
 import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
@@ -100,6 +104,13 @@ export type Progress = {
   findDay?: string | null;
   findGems?: number;
   findDry?: number;
+  /** BOUCLIERS held (0..SHIELD_MAX) — bought in advance in the boutique; one
+   *  spends itself silently when exactly one day is missed, and the chain
+   *  holds. Never offered at the moment of loss (economy.ts, 7 Sep). */
+  shields?: number;
+  /** Expert-GAME unlock ids the learner has bought (EXPERT_UNLOCKS). Games
+   *  only — the course spine never appears here. */
+  unlocks?: string[];
 };
 
 /** What rides on `fluolingo:reward`. `size` drives how loud the celebration
@@ -113,7 +124,8 @@ export type RewardDetail =
   | { type: "unit"; size: RewardSize; unit: number; count: number }
   | { type: "mastery"; size: RewardSize; count: number }
   | { type: "perfect"; size: RewardSize; count: number }
-  | { type: "find"; size: RewardSize; gems: number };
+  | { type: "find"; size: RewardSize; gems: number }
+  | { type: "shield"; size: RewardSize; streak: number };
 
 /** chime = a tick of acknowledgement · full = the fanfare, once a unit. */
 export type RewardSize = "chime" | "small" | "big" | "full";
@@ -158,7 +170,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [] };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -181,6 +193,8 @@ function normalize(raw: Partial<Progress>): Progress {
   p.findGems = Number.isFinite(raw.findGems) ? Math.max(0, raw.findGems as number) : 0;
   p.findDry = Number.isFinite(raw.findDry) ? Math.max(0, raw.findDry as number) : 0;
   p.prevWeekXp = Number.isFinite(raw.prevWeekXp) ? Math.max(0, raw.prevWeekXp as number) : 0;
+  p.shields = Number.isFinite(raw.shields) ? Math.max(0, Math.min(SHIELD_MAX, raw.shields as number)) : 0;
+  p.unlocks = Array.isArray(raw.unlocks) ? raw.unlocks.filter((u): u is string => typeof u === "string") : [];
   p.prevWeekKey = typeof raw.prevWeekKey === "string" ? raw.prevWeekKey : null;
   p.findDay = typeof raw.findDay === "string" ? raw.findDay : null;
   return p;
@@ -318,6 +332,11 @@ function finalize(p: Progress): Progress {
   const beforeXp = before.xp;
   const ctx = badgeContext(p);
   let gems = p.gems;
+  // +20 gems per level-up (Dan, 7 Sep: "yes"). Diffed against the persisted
+  // state so the bonus pays exactly once per rung, whichever earning path
+  // crossed it; multiple rungs in one save (a big import) each pay.
+  const levelsUp = levelForXp(p.xp).level - levelForXp(before.xp).level;
+  if (levelsUp > 0) gems += LEVEL_UP_GEMS * levelsUp;
   const badges = [...p.badges];
   const fresh: string[] = [];
   for (const b of BADGES) {
@@ -347,6 +366,13 @@ function finalize(p: Progress): Progress {
         fire({ type: "level", size: "big", level: levelForXp(saved.xp).level });
       }
       for (const id of fresh) fire({ type: "badge", size: "big", id });
+
+      // The Bouclier held: shields went DOWN while the chain went on — say
+      // so, the morning after, as a win ("day N — the chain held"). This is
+      // the only moment the shield is ever mentioned around a missed day.
+      if ((before.shields ?? 0) > (saved.shields ?? 0) && saved.streak > before.streak) {
+        fire({ type: "shield", size: "small", streak: saved.streak });
+      }
 
       // The streak, and the multiplier tier it may have just unlocked.
       if (saved.streak > before.streak) {
@@ -384,8 +410,27 @@ function finalize(p: Progress): Progress {
 function bumpStreakToday(p: Progress): Progress {
   const today = dayKey();
   if (p.lastActiveDay === today) return p;
-  const streak = p.lastActiveDay === previousDay(today) ? p.streak + 1 : 1;
-  return { ...p, streak, lastActiveDay: today, timeZone: learnerZone() };
+  const step = nextStreak(p.lastActiveDay, p.streak, p.shields ?? 0, today);
+  return { ...p, streak: step.streak, shields: step.shields, lastActiveDay: today, timeZone: learnerZone() };
+}
+
+/** The streak decision, PURE so verify116 can execute it (the verify109
+ *  pattern). Consecutive day → +1. Exactly ONE missed day with a Bouclier in
+ *  hand → the shield spends itself and the chain holds (+1); the learner is
+ *  told the morning after, gain-framed, via the shield toast — never warned
+ *  before. Two or more missed days → the chain restarts at 1 and the shield
+ *  is NOT spent: it protects a single slip, and burning it on a gap it
+ *  cannot bridge would be paying for nothing. */
+export function nextStreak(
+  lastActiveDay: string | null,
+  streak: number,
+  shields: number,
+  today: string,
+): { streak: number; shields: number } {
+  if (lastActiveDay === previousDay(today)) return { streak: streak + 1, shields };
+  if (shields > 0 && lastActiveDay === previousDay(previousDay(today)))
+    return { streak: streak + 1, shields: shields - 1 };
+  return { streak: 1, shields };
 }
 
 /**
@@ -440,6 +485,26 @@ export function awardConversationXp(): Progress {
 
 /** Buy a cosmetic with gems and equip it (idempotent; no-op if owned already or
  *  the balance is short). The only thing gems ever buy — never learning. */
+/** Buy a Bouclier IN ADVANCE (never offered after a miss). Caps at
+ *  SHIELD_MAX; a no-op returns state unchanged rather than erroring. */
+export function buyShield(): Progress {
+  const p = loadProgress();
+  if ((p.shields ?? 0) >= SHIELD_MAX || p.gems < SHIELD_COST) return p;
+  return finalize({ ...p, gems: p.gems - SHIELD_COST, shields: (p.shields ?? 0) + 1 });
+}
+
+/** Buy an expert-GAME unlock (EXPERT_UNLOCKS — games only, never the spine). */
+export function buyUnlock(id: string): Progress {
+  const p = loadProgress();
+  const def = EXPERT_UNLOCKS.find((u) => u.id === id);
+  if (!def || (p.unlocks ?? []).includes(id) || p.gems < def.cost) return p;
+  return finalize({ ...p, gems: p.gems - def.cost, unlocks: [...(p.unlocks ?? []), id] });
+}
+
+export function hasUnlock(p: Progress, id: string): boolean {
+  return (p.unlocks ?? []).includes(id);
+}
+
 export function buyCosmetic(id: string): Progress {
   const p = loadProgress();
   const c = cosmeticById(id);
