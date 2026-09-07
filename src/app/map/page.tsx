@@ -1,20 +1,31 @@
-import MapBody from "./MapBody";
 import CahierShell from "@/components/CahierShell";
+import EmbedFrame from "@/components/EmbedFrame";
 
-/** 🗺️ The Map — back inside the cahier (Dan, 2026-08-23: "most pages
- *  (except for games) should have this cahier set to the left of the
- *  screen"). This supersedes the 21 Aug "dedicated map interface" ruling:
- *  the tap-to-use glass in MapBody has since solved the finger-scroll
- *  conflict that motivated it, so the notebook frame costs nothing. The
- *  shell's heading band carries the name; the map keeps its glass. */
+/** 🗺️ The Map — the cahier draws the notebook, the map runs inside it.
+ *
+ *  Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
+ *  PAGES IN IFRAMES (EMBEDDED)"*. The map is where the pattern already existed
+ *  — `/map/embed` has been the map and nothing else since 6 Sep ("can i have it
+ *  as a standalone map which we then embed into our interface on our web") —
+ *  so this page stops mounting the map's body and mounts the embed instead.
+ *
+ *  IT IS THE SAME MAP EITHER WAY. `/map/embed` renders Map2DGrid, the component
+ *  this page used to render directly, so nothing can drift between the two.
+ *  What the page keeps is the notebook: the site bar, the heading band, the
+ *  coils, the bottom bar — drawn once, out here, where the map's own scrolling
+ *  can no longer reach them.
+ *
+ *  The 21 Aug "dedicated map interface" ruling stays superseded (23 Aug: "most
+ *  pages (except for games) should have this cahier set to the left of the
+ *  screen"); this changes how the map is mounted, not whether it wears the
+ *  notebook.
+ */
 export const metadata = { title: "Map of FluOLinGo-land — FluOLinGo" };
 
 export default function MapPage() {
   return (
     <CahierShell active="map" band={{ title: "Map of FluOLinGo-land" }}>
-      <div className="map-full mx-auto max-w-3xl">
-        <MapBody />
-      </div>
+      <EmbedFrame src="/map/embed" title="Map of FluOLinGo-land" />
     </CahierShell>
   );
 }

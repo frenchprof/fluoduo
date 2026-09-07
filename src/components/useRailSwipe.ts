@@ -39,10 +39,10 @@
  * touch position is kept on every move so a claimed gesture is still judged on
  * where the finger actually got to.
  */
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { deckFromPath, railNeighbours, rememberRailDeck, recalledRailDeck } from "@/lib/swipeRail";
+import { RAIL_MESSAGE, deckFromPath, railIndex, railNeighbours, rememberRailDeck, recalledRailDeck } from "@/lib/swipeRail";
 
 /** 60px across, and half again more across than down. */
 const MIN_PX = 60;
@@ -65,6 +65,36 @@ export default function useRailSwipe(): void {
   // trip out to ConjugaZone and back lands on the flashcards of the goal you
   // left rather than on a picker.
   useEffect(() => { rememberRailDeck(deckFromPath(path)); }, [path]);
+
+  /* A FRAMED STATION THAT NAVIGATES OFF ITS OWN STATION HANDS THE APP BACK.
+   *
+   * `<base target="_top">` (layout head) covers every <a>, and that is most of
+   * it — but not the ones that matter most inside a drill. DrillShell's finish
+   * row calls `router.push(next.href)`, which is client-side: « Next › » at the
+   * end of a lesson would load MémoiRecall INSIDE the 720px box, under a
+   * heading band still saying MneMemo. So the frame watches its own path and,
+   * the moment it lands in a DIFFERENT station, posts it up for the page
+   * around it to open properly.
+   *
+   * Same-station changes stay put, and that exclusion is load-bearing: the
+   * goals scroller rewrites the URL to /sio/SIO-0NN on every scroll, and
+   * re-hosting the frame fifty times while a learner flicks through the goals
+   * would be a reload per goal. Station, not path.
+   */
+  const framedStation = useRef<number | null>(null);
+  useEffect(() => {
+    let framed = true;
+    try { framed = window.self !== window.top; } catch { framed = true; }
+    if (!framed) return;
+    const here = railIndex(path);
+    if (framedStation.current === null) {
+      framedStation.current = here;
+      return;
+    }
+    if (here === framedStation.current) return;
+    framedStation.current = here;
+    window.parent.postMessage({ type: RAIL_MESSAGE, href: path }, window.location.origin);
+  }, [path]);
 
   useEffect(() => {
     let from: { x: number; y: number } | null = null;
@@ -94,7 +124,17 @@ export default function useRailSwipe(): void {
       // The deck of the page you are on, or the one you were last working on.
       const { back, forward } = railNeighbours(path, deckFromPath(path) ?? recalledRailDeck());
       const go = dx > 0 ? back : forward;
-      if (go) router.push(go.href);
+      if (!go) return;
+      /* A FRAMED STATION DOES NOT NAVIGATE ITSELF (Dan, 2026-09-07: everything
+         runs inside the cahier in a frame). Pushing here would load the next
+         station INSIDE the box, chrome and all, and the notebook would end up
+         drawn twice with the second copy 400px tall. So the frame posts the
+         destination up and the page around it moves; EmbedFrame listens. */
+      if (window.self !== window.top) {
+        window.parent.postMessage({ type: RAIL_MESSAGE, href: go.href }, window.location.origin);
+        return;
+      }
+      router.push(go.href);
     };
 
     // Passive: this never calls preventDefault — `touch-action` is what decides

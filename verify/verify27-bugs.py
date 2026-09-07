@@ -110,12 +110,21 @@ except Exception as e:  # noqa: BLE001
 # So the assertion moves with the ruling. What is pinned is the thing the old
 # rule was really protecting — that a goal is described in one place — plus the
 # snap, which is the whole of Dan's "the magnet stops it".
+# The goals RUN IN A FRAME since 2026-09-07 (Dan: everything runs in the cahier
+# in an iframe), so the page is the notebook and `/sio/<id>/embed` is the
+# scroller. Both halves are checked: a host with no twin is a page with nothing
+# on it, and the fifty static pages must still build on BOTH — old bookmarks and
+# printed QR codes name the host.
 sio = CODE["src/app/sio/[id]/page.tsx"]
-check("SioScroller" in sio and "generateStaticParams" in sio,
-      "/sio/[id] is the goal itself, and the fifty static pages still build "
-      "(old links, printed QR)",
-      "/sio/[id] no longer renders the goal scroller, or has lost its fifty "
-      "static pages")
+sio_embed = CODE["src/app/sio/[id]/embed/page.tsx"]
+check("EmbedFrame" in sio and "generateStaticParams" in sio,
+      "/sio/[id] is the cahier that hosts the goal, and the fifty static pages "
+      "still build (old links, printed QR)",
+      "/sio/[id] no longer hosts its embed twin, or has lost its fifty static "
+      "pages")
+check("SioScroller" in sio_embed and "generateStaticParams" in sio_embed,
+      "and /sio/[id]/embed is the scroller itself, fifty pages deep",
+      "/sio/[id]/embed no longer renders the goal scroller")
 # THE MAGNET ITSELF MOVED into components/SnapFeed.tsx on 2026-09-07, when the
 # pre-tests needed the same one-item-per-screen behaviour (Dan: *"ONE QUESTION
 # PER PAGE!"*) and it would otherwise have been written out a second time. So

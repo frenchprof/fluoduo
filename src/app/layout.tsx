@@ -7,6 +7,8 @@ import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
+import RailSwipe from "@/components/RailSwipe";
+import TopLevelOnly from "@/components/TopLevelOnly";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
@@ -152,6 +154,32 @@ export default function RootLayout({
       translate="no"
       className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
+      <head>
+        {/* AM I RUNNING INSIDE THE CAHIER? — decided BEFORE the first paint.
+            Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN
+            THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*. A framed station is this
+            same app booted a second time, so it would otherwise draw a second
+            notebook — bar, band, coils and all — inside a 720px box.
+
+            React cannot answer this during render: the export is one HTML file
+            served to both the top-level page and the frame, so a component
+            that branched on it would mismatch on hydration or flash. An inline
+            script runs before anything is painted, and CSS keyed on
+            `html[data-embed]` does the hiding (globals.css) — no flash, no
+            React involved.
+
+            `<base target="_top">` is the other half and matters as much: every
+            <Link> inside a station is a real navigation, and without this each
+            one would load the whole app INSIDE the box. Breaking out is what
+            makes a link inside a frame behave like a link. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(window.self!==window.top){document.documentElement.dataset.embed='1';" +
+              "var b=document.createElement('base');b.target='_top';document.head.appendChild(b);}}catch(e){}",
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         {children}
         {/* Who runs this + what's collected (audit 2026-07-19): the app
@@ -162,15 +190,27 @@ export default function RootLayout({
           FluOLinGo · built by Dr Daniel Chan, NUS Centre for Language Studies · answers and activity are
           recorded for learning analytics · <a href="/about" className="fluo-hit44 underline">about</a>
         </footer>
-        <FeedbackButton />
-        <BetaNotice />
-        <ProgressSync />
-        <PageViewTracker />
-        <KeyNav />
+        {/* ONCE PER PAGE, NOT ONCE PER DOCUMENT. A station runs in a frame
+            since 2026-09-07, and a framed station boots this same layout — so
+            without this, every station opened would log two page views, run
+            two progress syncs and float two of every +20. See
+            components/TopLevelOnly.tsx for the full list and what stays. */}
+        <TopLevelOnly>
+          <FeedbackButton />
+          <BetaNotice />
+          <ProgressSync />
+          <PageViewTracker />
+          <KeyNav />
+          <RewardToast />
+          <XpFloat />
+          <InstallPrompt />
+        </TopLevelOnly>
+        {/* Sideways is Dan's chain, in every document — including a framed
+            station, which is where the finger actually is. See RailSwipe.tsx. */}
+        <RailSwipe />
+        {/* The learner's accent paints the station too, or the frame looks
+            like a different app. */}
         <AccentBar />
-        <RewardToast />
-        <XpFloat />
-        <InstallPrompt />
       </body>
     </html>
   );

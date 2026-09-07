@@ -189,7 +189,15 @@ export const RAIL: RailStation[] = [
  * matched by `startsWith` did not — measured, not reasoned about.
  */
 function normalise(path: string): string {
-  const p = path.replace(/\.html$/, "").replace(/\/+$/, "");
+  const p = path
+    .replace(/\.html$/, "")
+    // Trailing slashes come off FIRST. `/map/embed/` is how a static host
+    // serves that page, and testing for `/embed$` before the slash is gone
+    // matches nothing — measured, the framed map fell off the rail entirely.
+    .replace(/\/+$/, "")
+    // An embedded station is the same station: `/map/embed` sits in the map's
+    // column, not off the rail (Dan, 7 Sep — everything runs in a frame now).
+    .replace(/\/embed$/, "");
   return p === "" ? "/" : p;
 }
 
@@ -239,6 +247,13 @@ export function rememberRailDeck(deck: string | null): void {
 export function recalledRailDeck(): string | null {
   try { return window.sessionStorage.getItem(DECK_KEY); } catch { return null; }
 }
+
+/** What a FRAMED station posts to the cahier page around it when a swipe
+ *  should move the whole app. A finger inside an iframe is a touch in another
+ *  document, so the rail's listener out there never sees it — see
+ *  components/EmbedFrame.tsx. */
+export const RAIL_MESSAGE = "fluolingo:rail";
+export type RailMessage = { type: typeof RAIL_MESSAGE; href: string };
 
 export type RailMove = { href: string; name: string } | null;
 

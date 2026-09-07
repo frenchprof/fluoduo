@@ -99,6 +99,8 @@ body {
    out of content. */
 html, body { overscroll-behavior-x: none; }
 
+
+
 /* ===========================================================================
  *  Neumorphic component primitives
  * =========================================================================== */
@@ -2536,3 +2538,69 @@ input.fluo-bookmark:focus,
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
 }
+
+/* ===========================================================================
+ *  A STATION RUNNING INSIDE THE CAHIER
+ *
+ *  Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
+ *  PAGES IN IFRAMES (EMBEDDED)"*. The page around the frame draws the notebook
+ *  — site bar, heading band, coils, desk, bottom bar. The station inside must
+ *  draw none of it, or the learner meets two notebooks, one 720px tall inside
+ *  the other.
+ *
+ *  `data-embed` is set by an inline script in the layout's <head>, before the
+ *  first paint, because this is a static export: one HTML file is served both
+ *  to the top-level page and to the frame, so nothing rendered by React can
+ *  know which it is without flashing.
+ *
+ *  This hides FURNITURE only. What a station needs to work — its own content
+ *  well, a drill's footer and feedback tray, the accent colour — is untouched.
+ *  The unmounting of the app-level helpers (analytics, sync, toasts) is a
+ *  different job and belongs to components/TopLevelOnly.tsx: hidden is not
+ *  unmounted, and a hidden PageViewTracker still logs.
+ *
+ *  LAST IN THE FILE, and that is load-bearing rather than tidy. verify82 reads
+ *  the desk's own numbers with `re.search(r"\.cahier-drilldesk \{...")` — the
+ *  FIRST match in the stylesheet — so an override written above the canonical
+ *  rule is the one the check measures, and it fails saying the two shells' left
+ *  edges have come apart. They had not; the parser had found an override. Keep
+ *  every `html[data-embed]` rule down here.
+ * =========================================================================== */
+html[data-embed] .cahier-sitebar,
+html[data-embed] .cahier-bottombar,
+html[data-embed] .cahier-binding { display: none !important; }
+
+/* THE BAND IS ONLY FURNITURE ON A PAGE, NOT IN A DRILL. On a CahierShell page
+   it names the family and the page around the frame draws that already, so a
+   second one is a duplicate. Inside a DRILL the same strip carries the ✕, the
+   goal chip and the progress — it is the drill, not decoration — so hiding it
+   there would take a learner's only way out of a run. Hence the child
+   combinator: `.cahier-page > .page-band` is the page's, `.cahier-drill`'s is
+   its own. A host page for a drill therefore passes `band={false}`, or the
+   learner meets two. */
+html[data-embed] .cahier-page > .page-band { display: none !important; }
+
+/* The desk is the grey surround the sheet sits on. Inside a frame the sheet IS
+   the frame, so the surround is wasted width on a phone — measured at 390px,
+   16px a side plus the sheet's own gutter. */
+html[data-embed] .cahier-desk,
+html[data-embed] .cahier-deskrow,
+html[data-embed] .cahier-drilldesk { padding: 0 !important; background: transparent !important; }
+html[data-embed] .cahier-page,
+html[data-embed] .cahier-drill { min-height: 100dvh; border-radius: 0 !important; box-shadow: none !important; }
+/* The coils are gone, so the gutter they were holding open goes with them. */
+html[data-embed] .cahier-foolscap { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+/* AND THE FAMILY SPINE, which is the page's own left edge. The notebook around
+   the frame already draws one; a second, 10px further in, reads as a stray
+   green rule down the middle of the paper — seen on the framed goals before
+   this line existed. The rule that DRAWS it is untouched (verify82 pins it);
+   this only says a station inside a frame is not the page that wears it. */
+html[data-embed] .cahier-page,
+html[data-embed] .cahier-drill { border-left: 0 !important; }
+
+/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well.
+   The station inside paints its own paper, so the well's own 20px top and
+   bottom and its right inset would be a frame around a frame — visible as a
+   band of the host's ruled paper down each side of the drill. The LEFT gutter
+   is kept on purpose: the coils live there, and they are the notebook. */
+.cahier-foolscap:has(.embed-frame) { padding-top: 0; padding-bottom: 0; padding-right: 0; }

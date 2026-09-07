@@ -38,7 +38,6 @@ import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import BottomBar from "@/components/BottomBar";
-import useRailSwipe from "@/components/useRailSwipe";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
 
@@ -152,12 +151,10 @@ export default function CahierShell({
     try { window.localStorage.removeItem("fluolingo:pageWidth"); } catch {}
   }, []);
 
-  // THE RAIL (Dan, 2026-09-06). Sideways is navigation along his chain — Map >
-  // Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games > User — and it
-  // is mounted HERE rather than per page so that every route drawn in this
-  // shell is on the rail, the ones written after today included. Rightwards is
-  // back, leftwards is forward; both ends stop. See lib/swipeRail.ts.
-  useRailSwipe();
+  // THE RAIL MOVED TO THE ROOT LAYOUT on 2026-09-07. It was mounted here so
+  // that every route in this shell was on it; a framed station mounts no shell
+  // at all, so "every route in this shell" stopped being the right set. One
+  // handler per DOCUMENT now — components/RailSwipe.tsx.
 
   const page = (
         <main

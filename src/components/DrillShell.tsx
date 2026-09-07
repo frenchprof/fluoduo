@@ -43,7 +43,6 @@ import type { ReactNode } from "react";
 import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
-import useRailSwipe from "@/components/useRailSwipe";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
@@ -187,9 +186,8 @@ export default function DrillShell({
   children: ReactNode;
 }) {
   const router = useRouter();
-  // THE RAIL (Dan, 2026-09-06) — the same one CahierShell mounts, so a drill is
-  // not an island: sideways walks Dan's chain, vertical belongs to the drill.
-  useRailSwipe();
+  // The rail is the root layout's since 2026-09-07 (RailSwipe.tsx) — one
+  // handler per document, so a framed station has one too.
   /* A ROW FEED SCROLLS BEHIND A FROZEN HEADER, which needs the WINDOW not to
      scroll as well. Measured on the lesson at 390x844: the document is 90px
      taller than the viewport (`.cahier-drilldesk` is a full screen, and the

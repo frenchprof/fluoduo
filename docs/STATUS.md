@@ -6,6 +6,72 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, later — every station runs inside the cahier, in a frame (pre-tests lane)
+
+Dan: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN
+IFRAMES (EMBEDDED)"*.
+
+"Like the map" is a pattern that was already in the repo: `/map/embed` has been
+the map and nothing else since 6 Sep — no notebook, no site bar, no band — a
+page whose whole job is to be dropped into a box. Every station on the rail now
+has one, and the route a learner opens is the notebook that HOSTS it.
+
+    /sio/SIO-011              the cahier: site bar, band, coils, bottom bar
+      └─ /sio/SIO-011/embed   the goals, in their own document
+
+**WHY A FRAME AND NOT A COMPONENT.** A component shares one document with the
+chrome, and that is what has cost this app a fortnight of scrolling bugs: the
+window scrolls when the content does, `scrollIntoView` drags the header off the
+top, `.cahier-page` is `overflow: hidden` so a sticky band inside it never sees
+the scroll. A frame ends all of it by construction — a station cannot scroll the
+page it sits on, because it is not on it.
+
+**The embed twin renders the SAME component**, shell and all. The chrome is
+hidden by CSS in a framed document, so there is no second copy of any screen to
+drift from the first — the fault that made /sio a redirect in patch 25.
+
+### Five things this needed, four of them found by driving it
+
+1. **`html[data-embed]`, set by an inline script in the layout's `<head>`.**
+   React cannot answer "am I in a frame?" during render on a static export —
+   one HTML file is served to both — so a component that branched on it would
+   mismatch on hydration or flash a whole second notebook. A pre-paint script
+   plus CSS has neither problem.
+2. **`<base target="_top">`** in the same script. Every `<Link>` inside a
+   station is a real navigation, and without this each one loads the whole app
+   INSIDE the box.
+3. **`router.push` is not a link.** DrillShell's finish row pushes, so « Next › »
+   at the end of a lesson would load MémoiRecall inside the 720px frame under a
+   band still saying MneMemo. The framed rail now watches its own path and
+   hands the app back when it lands in a DIFFERENT station — station, not path,
+   because the goals scroller rewrites the URL on every scroll and re-hosting
+   fifty times would be a reload per goal.
+4. **A framed document boots the whole layout**, so PageViewTracker logged two
+   views per station and ProgressSync ran twice. `.fluo-embed`'s own note says
+   why CSS cannot fix that — *"scripts still run"*. `TopLevelOnly` unmounts
+   them; RailSwipe and AccentBar deliberately stay.
+5. **The band is furniture on a PAGE and the drill in a DRILL.** Hiding
+   `.page-band` everywhere took the ✕ off every framed drill. The rule is now
+   `\`.cahier-page > .page-band\`` and a drill's host passes `band={false}`.
+
+**And two checks broke on this and were right to.** `verify82` reads the desk's
+numbers with a FIRST-match regex, so an `html[data-embed]` override written
+above the canonical rule became the thing it measured — every `data-embed` rule
+now lives at the END of globals.css, and the block says why. `verify94` looked
+for `className="sticky top-0 z-N"` anchored at the start of the attribute, and
+the bar had gained `cahier-sitebar` so one rule could reach it.
+
+### Still open on this
+
+- **Keyboard focus.** Number keys reach a drill only once the learner has
+  touched inside the frame. A tap does it; a fresh page does not. `focus()` on
+  load is the fix and is not in yet.
+- **Only the seven rail stations are framed.** The games themselves
+  (VocabulaRain, NumBus, LexicaLater), ConjugaZone, ChaTutor, VoixLà, DéjàRevu
+  and the profile pages still draw their own notebook. Same recipe each time.
+- **Unit 0 and the picture pre-tests** are still at `/pretests/...`, unframed
+  and one-question-at-a-time.
+
 ## 7 Sep — the swipes go the right way, and the pre-tests move into SpecuLearn (pre-tests lane)
 
 Sole editor of STATUS.md in this commit: claude/pre-tests-amendments-hndx8r.

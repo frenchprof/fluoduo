@@ -36,7 +36,9 @@
  * a sticky child, so a sticky band inside it never sees the window scroll at
  * all. Both were shipped and measured before the lock was.
  */
-import { Children, forwardRef, useEffect, useImperativeHandle, useLayoutEffect, useRef, type ReactNode } from "react";
+import { Children, forwardRef, useEffect, useImperativeHandle, useRef, type ReactNode } from "react";
+
+import useFillHeight from "@/lib/useFillHeight";
 
 /** What a caller can ask the feed to do. A KEYBOARD needs this and a finger
  *  does not: there is no swipe on a laptop, so "the way on is the gesture"
@@ -77,27 +79,9 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
     return () => { html.style.overflow = prev; };
   }, []);
 
-  /* The height is written to the NODE rather than to state on purpose: a
-     measure-then-setState in an effect is the `set-state-in-effect` fault this
-     repo has 130 of, and it would render twice for a value the DOM already has. */
-  useLayoutEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const fit = () => {
-      el.style.height = "0px"; // collapse first, so this box is not in the sum
-      // The bottom bar is `position: fixed` and `display:none` above sm, so it
-      // overlays rather than adds height — ask it, do not assume.
-      const nav = document.querySelector<HTMLElement>(".cahier-bottombar");
-      const navH = nav && getComputedStyle(nav).display !== "none"
-        ? nav.getBoundingClientRect().height
-        : 0;
-      const top = el.getBoundingClientRect().top + window.scrollY;
-      el.style.height = `${Math.max(240, window.innerHeight - top - navH)}px`;
-    };
-    fit();
-    window.addEventListener("resize", fit);
-    return () => window.removeEventListener("resize", fit);
-  }, []);
+  /* The height is measured, never guessed — see lib/useFillHeight.ts for the
+     three ways a constant went wrong here. */
+  useFillHeight(box);
 
   // Land on the row asked for, without animating every row to get there.
   // `scrollTop`, NOT `scrollIntoView`: that scrolls every ancestor including
