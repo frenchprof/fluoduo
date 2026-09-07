@@ -283,7 +283,7 @@ FluOLinGo hand are untouched — they are his picks too.
 **AND THE TWO BANS CAUGHT EACH OTHER.** The patch that removed Geist pointed
 Tailwind's `--font-sans` at `var(--font-body)` — which *was* Work Sans. One
 banned face was swapped straight for the other, and a check hard-coded to the
-word "Geist" would have passed it. So `verify117-banned-fonts.py` holds a LIST,
+word "Geist" would have passed it. So `verify119-banned-fonts.py` holds a LIST,
 and adding a name to it is the whole job of banning a font. It fails on the
 import, on the `@theme` variables (directly or through a variable), on any font
 stack, and on the name anywhere under `src/`.

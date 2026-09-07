@@ -147,35 +147,25 @@ ok(not hits,
    ". Banned by Dan, 7 Sep. If a new face is genuinely wanted it is Dan's "
    "call, and it goes through layout.tsx and the cahier type system.")
 
-# ---- 5 · THREE FACES, NO MORE — the positive form of the ban --------------
+# ---- 5 · THE POSITIVE FORM LIVES ELSEWHERE, ON PURPOSE --------------------
 #
-# Dan, 2026-09-06: *"FluOLinGo font + Patrick Hand font + Roboto font"*, landed
-# by #213; and 2026-09-07, *"SET THE FONT"*.
+# I wrote a "three faces, no more" assertion here and then found
+# `verify118-three-faces.py` on claude/pre-tests-amendments-hndx8r doing the
+# same job better — measured across eight routes, and catching a case mine did
+# not: `--fluo-serif` named a stack of SYSTEM serifs, so « Choose your level »
+# rendered Iowan on a Mac, Palatino on some Windows machines and Georgia
+# elsewhere. A role resolving to a face the app never loads is invisible to a
+# check that only looks at imports.
 #
-# A ban list is negative: it stops the names we already regret. It cannot stop
-# a FOURTH face arriving, which is how both banned ones got here — nobody added
-# Geist on purpose, it came with the scaffold, and Work Sans was added as a
-# reasonable-looking choice. So this asserts the roster itself.
+# So the roster assertion is theirs and this file stays negative. The two are
+# complementary and both are wanted:
 #
-# Measured across 16 pages of the built app at the time of writing: Roboto 824
-# elements, the FluOLinGo hand 202, Patrick Hand 1, and nothing else. (An
-# earlier count in this session reported 166 elements falling back to a system
-# face — that was the static file server's own directory listing for /decks,
-# which has no index.html, not the app. Corrected by re-measuring the real
-# routes.)
-FACES = {"Roboto": "the workhorse: body, controls, data",
-         "Patrick_Hand": "accent spots, opt-in via .cahier-hand",
-         "localFont": "Dan's own FluOLinGo hand, served from ../fonts"}
-loaded = set(re.findall(r"=\s*(Roboto|Patrick_Hand|localFont)\s*\(", LAYOUT))
-extra = set(re.findall(r"=\s*([A-Z][A-Za-z_]+)\s*\(\{", LAYOUT)) - set(FACES)
-extra = {e for e in extra if e not in {"Metadata", "Viewport"}}
-ok(loaded == set(FACES) and not extra,
-   f"exactly the three faces are loaded — {', '.join(sorted(FACES))}",
-   f"the roster has changed: loaded {sorted(loaded)}"
-   + (f", plus {sorted(extra)}" if extra else "")
-   + ". Dan, 6 Sep: \"FluOLinGo font + Patrick Hand font + Roboto font\" — three, "
-   "no more. A ban list only stops the faces we already regret; a fourth one "
-   "arrives looking reasonable, which is exactly how Work Sans got in.")
+#     theirs   only these three ship, and every role resolves to one of them
+#     this     these NAMES are out, by every route one can return through
+#
+# A roster check alone would not have caught this session's own mistake —
+# pointing --font-sans at var(--font-body) when --font-body WAS Work Sans is a
+# banned face returning while the import count stays at three.
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

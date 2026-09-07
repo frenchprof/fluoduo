@@ -376,10 +376,10 @@ jobs:
         run: python3 verify/verify112-vs-last-week.py
 
       - name: "Every coloured token sits on one of the twelve palette hues (6 Sep)"
-        run: python3 verify/verify118-palette-hues.py
+        run: python3 verify/verify120-palette-hues.py
 
       - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
-        run: python3 verify/verify117-banned-fonts.py
+        run: python3 verify/verify119-banned-fonts.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
