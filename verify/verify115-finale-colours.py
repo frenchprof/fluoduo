@@ -27,7 +27,7 @@ trap on this card is a token that looks right and fails: `--cahier-ink-soft` is
 fine on paper (4.72:1) and only 3.85:1 on the band's wash. A grep for "does it
 use a token" would pass that. A contrast calculation does not.
 
-Run from the repo root:  python3 verify/verify114-finale-colours.py
+Run from the repo root:  python3 verify/verify115-finale-colours.py
 """
 import os, re, sys
 

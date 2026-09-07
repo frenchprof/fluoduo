@@ -363,7 +363,7 @@ jobs:
       - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
         run: python3 verify/verify109-lucky-find.py
       - name: "The Finale card joins the colour system — no raw Tailwind (6 Sep)"
-        run: python3 verify/verify114-finale-colours.py
+        run: python3 verify/verify115-finale-colours.py
       - name: verify113 — the fire ladder past day 7, executed
         run: python3 verify/verify113-streak-ladder.py
       - name: verify114 — level 0-4, exponential, rank-free
