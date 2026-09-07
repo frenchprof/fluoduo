@@ -322,8 +322,8 @@ jobs:
       # The browser half of verify72, LAST on purpose: it replaces out/ with
       # an OPEN export, and the wall build above is the one verify18/18b
       # audit — nothing may read out/ after this line expecting the wall.
-      - name: "Home's two control rows and the map view switch (1 Sep)"
-        run: python3 verify/verify80-home-view-switch.py
+      - name: "Home's postcard: pinned 2D, one bare door, the CTA on it (7 Sep)"
+        run: python3 verify/verify80-home-postcard.py
 
       - name: "The origin animation ends on the NAME — FluOLinGo (1 Sep)"
         run: python3 verify/verify81-fluolingo-origin.py
@@ -427,3 +427,9 @@ jobs:
 
       - name: "Type is relative everywhere — no size nailed to a pixel (5 Sep)"
         run: python3 verify/verify106-fluidtype.py
+
+      - name: "Sideways is Dan's chain, and only the rail reads a finger (6 Sep)"
+        run: python3 verify/verify117-swipe-rail.py
+
+      - name: "Three type families ship: FluOLinGo, Roboto, Patrick in reserve (7 Sep)"
+        run: python3 verify/verify118-three-faces.py

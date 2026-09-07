@@ -139,18 +139,25 @@ ok("min-w-0" in mk and "truncate" in mk and "shrink" in mk,
 # and verify31 exists because things that push the icons off screen keep being
 # added. So the streak is pinned as text: not a <Link>, not a <button>, and
 # shrink-0 like its neighbours so it cannot be the thing that squeezes ☰ out.
-streak = re.search(r"function StreakMark\(\)[\s\S]*?\n\}", nocom_shell)
-sm = streak.group(0) if streak else ""
-ok(bool(sm), "the streak mark exists in the bar", "StreakMark is gone from the top bar")
-ok("<Link" not in sm and "<button" not in sm,
-   "the streak is a reading, not a door — the strip stays destinations only",
-   "the streak became a link or a button; the icon strip's one meaning is that everything in it goes somewhere")
+# THE WELL'S TENANT CHANGED, ITS RULES DID NOT (Dan, 7 Sep: "replace the
+# streak info with the stop info (and make that editable)"). StopMark took
+# StreakMark's slot; every structural claim transfers: it must hold the
+# strip's width, and render nothing before hydration. The one licensed
+# difference: its number is an INPUT (the editable bookmark) — a one-field
+# form, not a door, so the destinations-only rule is kept in spirit: no
+# <Link> and no navigation from the well.
+stop = re.search(r"function StopMark\(\)[\s\S]*?\n\}", nocom_shell)
+sm = stop.group(0) if stop else ""
+ok(bool(sm), "the stop mark exists in the bar", "StopMark is gone from the top bar")
+ok("<Link" not in sm,
+   "the stop mark navigates nowhere — the strip stays destinations-or-readings only",
+   "the stop mark became a link; the icon strip's one meaning is that everything else in it goes somewhere")
 ok("shrink-0" in sm,
-   "the streak cannot be squeezed out of the strip",
-   "the streak is shrinkable: on a narrow phone it would collapse or push ☰ off, which is this file's whole subject")
-ok("streak === null" in sm or "streak == null" in sm,
-   "the streak renders nothing until it is read — no hydration mismatch on 28 pages",
-   "the streak renders a value on the server; localStorage does not exist there and the mismatch would blame the whole bar")
+   "the stop mark cannot be squeezed out of the strip",
+   "the stop mark is shrinkable: on a narrow phone it would collapse or push ☰ off, which is this file's whole subject")
+ok("stopNo === null" in sm or "stopNo == null" in sm,
+   "the stop mark renders nothing until it is read — no hydration mismatch on 28 pages",
+   "the stop mark renders a value on the server; localStorage does not exist there and the mismatch would blame the whole bar")
 
 # ── 3c · the Kallang wave TRAVELS, and stops when asked (1 Sep) ───────────
 # Dan: "the top return link to be in the same FluOLinGo font but with the

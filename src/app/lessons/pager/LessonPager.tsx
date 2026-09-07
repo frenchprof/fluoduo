@@ -374,7 +374,12 @@ export default function LessonPager({
   // Date.now() and ref writes inside build() that it accepts today. Same
   // screen, one return path.
   const chooser = (
-    <div className="flex flex-col items-center gap-5 pt-8 text-center">
+    /* `pt-2`, was `pt-8` (Dan, 2026-09-07: "why is there so much space between
+       the four icons and the choose your level"). Two things were paying for
+       that gap at once — this padding and the panel centring itself in a
+       screenful — and both are gone. The panel supplies the beat below the tab
+       strip now; the chooser does not need a second one. */
+    <div className="flex flex-col items-center gap-4 pt-2 text-center">
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
             Choose your level
           </p>
@@ -387,19 +392,27 @@ export default function LessonPager({
               detail is still one hover away, and the line under the grid
               ("Same N cards either way") already holds the thing a learner
               would otherwise get wrong. */}
-          <div data-tour="entry" className="grid w-full max-w-sm grid-cols-2 gap-2.5">
+          {/* FOUR ACROSS (Dan, 2026-09-07: "Can the choice of difficulty be in
+              four horizontal buttons"). It was two columns of two.
+
+              STACKED, stars over name, for the same reason the lesson's own tab
+              strip stacks its emoji over its word: a quarter of a 390px phone is
+              ~85px, and « ★★★ Difficile » on one line needs about 120. The two
+              ways to fit it in a row were dropping the stars or shortening the
+              names Dan chose; stacking costs ~14px of height and keeps both,
+              and it is what the strip one row below already looks like. */}
+          <div data-tour="entry" className="grid w-full max-w-sm grid-cols-4 gap-1.5">
             {ENTRY_LEVELS.map((lv) => (
               <button
                 key={lv}
                 type="button"
                 title={ENTRY_LABELS[lv].blurb}
                 onClick={() => { setEntry(lv); setAsked(true); setBuildTick((t) => t + 1); }}
-                className="cahier-btn cahier-btn-primary py-3"
+                className="cahier-btn cahier-btn-primary flex-col gap-0 px-1 py-2.5"
               >
-                {/* One line at every width: ★★★ Difficile wraps at 16px in
-                    a half-width tile on a 390px phone. */}
-                <span className="whitespace-nowrap text-sm font-black tracking-wide sm:text-base">
-                  {ENTRY_LABELS[lv].stars} {ENTRY_LABELS[lv].name}
+                <span className="text-xs leading-none">{ENTRY_LABELS[lv].stars}</span>
+                <span className="mt-1 whitespace-nowrap text-[11px] font-black tracking-wide min-[390px]:text-xs">
+                  {ENTRY_LABELS[lv].name}
                 </span>
               </button>
             ))}
@@ -422,7 +435,14 @@ export default function LessonPager({
               <div className="flex flex-col gap-2">
                 {axes.map((ax) => (
                   <label key={ax.key} className="flex items-center justify-between gap-3 text-sm font-bold">
-                    <span className="text-[color:var(--fluo-ink-soft)]">{ax.label}</span>
+                    {/* `whitespace-nowrap`: « Qui ? » and « La phrase » are
+                        two- and three-character labels that have no business
+                        wrapping, and they started to on 2026-09-07 when the
+                        body face became Roboto — it sets a shade wider than
+                        Work Sans at the same size, and the row had no slack.
+                        The select keeps its min width; the label takes what it
+                        needs. */}
+                    <span className="whitespace-nowrap text-[color:var(--fluo-ink-soft)]">{ax.label}</span>
                     <select
                       value={pinned[ax.key] ?? ""}
                       onChange={(e) => setPinned((p) => ({ ...p, [ax.key]: e.target.value }))}
@@ -431,7 +451,15 @@ export default function LessonPager({
                     >
                       {/* "" is a real, useful value: leave it and the generator
                           rolls that axis, which is the pre-selector behaviour. */}
-                      <option value="">au hasard</option>
+                      {/* ENGLISH, because a learner is STUCK in front of it
+                          (Dan, 2026-09-07: "English pls. We don't want au
+                          hasard and La phrase and Qui"). This is the picker's
+                          neutral option — the chrome that says "I have not
+                          chosen" — not French anyone is here to learn. The 6
+                          Sep rule is the test: « Unité 3 » names a place and
+                          nobody is stuck in front of it; a select whose only
+                          value you cannot read is a control you cannot use. */}
+                      <option value="">Any</option>
                       {ax.options.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
@@ -439,6 +467,7 @@ export default function LessonPager({
                   </label>
                 ))}
               </div>
+              <div className="mt-3 flex justify-center">
               <button
                 type="button"
                 onClick={() =>
@@ -451,10 +480,17 @@ export default function LessonPager({
                     ),
                   )
                 }
-                className="cahier-btn mt-3 w-full justify-center"
+                /* NOT `w-full` (Dan, 2026-09-05: "IT HAS BEEN MADE A RULE THAT
+                   WE NEVER WANT TO HAVE A SINGLE BUTTON OCCUPYING THE ENTIRE
+                   WIDTH"). This one sat under two select rows and took the
+                   whole panel for three words. Content-sized and centred in
+                   its own row instead — the same shape the recap's pair of
+                   controls takes. */
+                className="cahier-btn justify-center"
               >
                 🎲 Roll the dice
               </button>
+              </div>
             </div>
           )}
         </div>
@@ -471,6 +507,11 @@ export default function LessonPager({
       activity="lesson"
       deck={collectionId}
       finish={asked ? finish : null}
+      /* THE FRONT MATTER SCROLLS BY ROWS (Dan, 2026-09-07: *"it should swipe
+         vertically - that is the right behaviour"*), and only the front
+         matter: once a level is picked the tabs are gone and the exercise is
+         one card at a time, where a magnet would fight the card flow. */
+      snapRows={!asked}
     >
       {!ready ? null : !asked ? (
         // Dan's six tabs (2026-08-30), as FRONT MATTER only — see LessonTabs.

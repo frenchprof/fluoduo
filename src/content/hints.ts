@@ -59,7 +59,7 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Pick a level, then answer",
     steps: [
-      "★ Facile to ⭐ Bonus: same 12 cards, harder not longer.",
+      "★ Facile to 🎁 Bonus: same 12 cards, harder not longer.",
       "💡 Idea and 📐 Forms are to read. 🏋️ Pract. is where you answer.",
     ],
   },

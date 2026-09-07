@@ -23,6 +23,7 @@ import { SIOS, sioStatement } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import SioModal, { popupActivityTabs } from "./SioModal";
+import { unit0PretestHref } from "@/lib/pretests/routes";
 
 const UNIT0_SIOS = SIOS.filter((s) => s.unit === 0);
 
@@ -96,7 +97,7 @@ export default function Unit0Panel({ openSioId, onSioClosed }: { openSioId?: str
             // so the Pre-Test is a link like every other row. Gated on the BANK,
             // not on isProduction: SIO-010 is an atelier and has questions too.
             (UNIT0_QUESTIONS[openSio.id] ?? []).length > 0
-              ? { inline: false, href: `/pretests/unit0/${openSio.id}` }
+              ? { inline: false, href: unit0PretestHref(openSio.id) }
               : undefined,
           )}
         >

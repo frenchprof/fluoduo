@@ -50,7 +50,12 @@ def z_values(text):
 
 # --- 1. the bar's own number -------------------------------------------------
 src = open(BAR, encoding="utf-8").read()
-m = re.search(r'className="sticky top-0 z-\[?(\d+)\]?', src)
+# `[^"]*?` for the leading class name: the bar gained `cahier-sitebar` on
+# 2026-09-07 so that ONE rule could hide it inside a frame (Dan: everything
+# runs in the cahier in an iframe). The check is about the z-index, not about
+# `sticky` being the first word in the attribute — and anchored as it was, it
+# reported "no sticky wrapper found" for a bar that had one.
+m = re.search(r'className="[^"]*?sticky top-0 z-\[?(\d+)\]?', src)
 if not m:
     fails.append(
         "SiteTopBar.tsx: no `sticky top-0 z-N` wrapper found. The site bar must "

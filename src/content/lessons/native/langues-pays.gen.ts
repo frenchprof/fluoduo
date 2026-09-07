@@ -68,7 +68,7 @@ export function bareLang(l: string): string {
 type Mode = "lang" | "prep";
 
 export const LANGUES_AXES: DiceAxis[] = [
-  { key: "country", label: "Pays", options: PLACES.map((p) => ({ value: p.country, label: p.country })) },
+  { key: "country", label: "Country", options: PLACES.map((p) => ({ value: p.country, label: p.country })) },
   {
     key: "mode",
     label: "Question",

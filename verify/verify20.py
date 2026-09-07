@@ -269,7 +269,7 @@ check("CuratedDeckTable" in deck_content
 # ÉcouTexte: full-screen in the shell; its own Enter (mark a sentence)
 # suppresses the shell CTA via preventDefault, which the shell honours.
 ecout = strip_comments(read("src/app/practice/ecoutexte/EcouTexte.tsx"))
-ecout_page = strip_comments(read("src/app/practice/ecoutexte/page.tsx"))
+ecout_page = strip_comments(read("src/app/practice/ecoutexte/embed/page.tsx"))
 check("DrillShell" in ecout and "CahierShell" not in ecout_page,
       "ÉcouTexte runs in DrillShell",
       "ÉcouTexte is not on DrillShell / its page still wraps CahierShell")
@@ -287,7 +287,7 @@ check("e.defaultPrevented" in shell_code,
 # chrome (band + bottom bar) instead of DrillShell's bare ✕-and-lock, so
 # CahierShell may appear, but ONLY on the REQUIRE_SIGN_IN branch. The drill
 # itself still runs in DrillShell.
-conj = strip_comments(read("src/app/conjugaison/page.tsx"))
+conj = strip_comments(read("src/app/conjugaison/embed/page.tsx"))
 check("DrillShell" in conj,
       "ConjugaZone runs in DrillShell",
       "ConjugaZone is not on DrillShell")

@@ -32,7 +32,7 @@ export function numberFor(n: number, feminine: boolean): string {
 }
 
 export const COMBIEN_AXES: DiceAxis[] = [
-  { key: "number", label: "Combien ?", options: KEYS.map((n) => ({ value: String(n), label: `${n} — ${NUMBERS[n]}` })) },
+  { key: "number", label: "How many", options: KEYS.map((n) => ({ value: String(n), label: `${n} — ${NUMBERS[n]}` })) },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];

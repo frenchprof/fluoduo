@@ -164,10 +164,25 @@ for metric in ("xpEarned", "⏱", "Try again"):
           f"the end card is missing {metric!r}")
 
 # 5 · routes + popup
-for route in ("src/app/lessons/[slug]/page.tsx", "src/app/lessons/deck/[collectionId]/page.tsx"):
-    check("LessonPager" in strip_comments(read(route)),
-          f"{route.split('/')[-2]} route renders the pager",
-          f"{route} does not render LessonPager")
+#
+# THE DECK ROUTE HOSTS THE PAGER RATHER THAN DRAWING IT (2026-09-07). Dan:
+# *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES
+# (EMBEDDED)"* — so `/lessons/deck/<deck>` is the notebook and the pager runs in
+# `/lessons/deck/<deck>/embed`. What this rule protects is unchanged: a learner
+# reaching that URL meets the pager. It now takes two files to say so, and BOTH
+# are checked — a host with no twin, or a twin with no host, is a dead route.
+check("LessonPager" in strip_comments(read("src/app/lessons/[slug]/page.tsx")),
+      "[slug] route renders the pager",
+      "src/app/lessons/[slug]/page.tsx does not render LessonPager")
+deck_host = strip_comments(read("src/app/lessons/deck/[collectionId]/page.tsx"))
+deck_embed = strip_comments(read("src/app/lessons/deck/[collectionId]/embed/page.tsx"))
+check("LessonPager" in deck_embed,
+      "the deck route's embed twin renders the pager",
+      "src/app/lessons/deck/[collectionId]/embed/page.tsx does not render LessonPager")
+check("EmbedFrame" in deck_host and "/embed" in deck_host,
+      "and the deck route hosts that twin in the cahier",
+      "src/app/lessons/deck/[collectionId]/page.tsx no longer hosts its embed "
+      "twin — the lesson would be a page with nothing on it")
 # SUPERSEDED 2026-08-31 by the popup collapse (verify66). Patch 22 took the
 # LESSON out of SioModal's EMBEDDABLE set so its flap navigated to the pager;
 # this asserted that one absence. The collapse removed EMBEDDABLE itself — now
@@ -182,11 +197,11 @@ check("dynamic(" not in modal,
 # 6 · one pretest runner
 runner_ok = os.path.isfile("src/lib/pretests/runner.ts")
 quiz = strip_comments(read("src/app/PretestQuiz.tsx"))
-standalone = strip_comments(read("src/app/pretests/[id]/PretestContent.tsx"))
+standalone = strip_comments(read("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"))
 check(runner_ok,
       "the shared pretest runner exists",
       "src/lib/pretests/runner.ts is missing")
-for name, src in (("PretestQuiz", quiz), ("PretestContent", standalone)):
+for name, src in (("PretestQuiz", quiz), ("PretestFeed", standalone)):
     check("pretests/runner" in src and "judgePretestAnswer" in src,
           f"{name} routes through the shared runner",
           f"{name} still carries its own judge/ledger")

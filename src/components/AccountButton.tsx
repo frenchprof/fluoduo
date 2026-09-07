@@ -133,7 +133,9 @@ export default function AccountButton() {
               return (
                 <div className="mt-2 grid grid-cols-[auto_auto_1fr] items-baseline gap-x-2.5 gap-y-1 px-1">
                   <span aria-hidden title={next ? `Day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : undefined}>🔥</span>
-                  <span className={num}>{progress.streak}{mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}</span>
+                  <span className={num}>{progress.streak}{/* The streak's ROLE INK followed the streak here (7 Sep — the bar's
+                          slot went to the stop). One reading, one colour, wherever it lives. */}
+                      {mult > 1 && <b style={{ color: "var(--dopa-streak-ink)" }}> ×{String(mult).replace(".", ",")}</b>}</span>
                   <span className={word}>day streak</span>
                   <span aria-hidden>⭐</span>
                   <span className={num}>{progress.xp.toLocaleString()}</span>

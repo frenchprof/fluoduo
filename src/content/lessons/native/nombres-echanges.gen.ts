@@ -164,7 +164,7 @@ export const NOMBRES_AXES: DiceAxis[] = [
   },
   {
     key: "number",
-    label: "Nombre",
+    label: "Number",
     options: NUMBER_KEYS.map((n) => ({ value: String(n), label: `${n} — ${NUMBERS[n]}` })),
   },
 ];

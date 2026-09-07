@@ -110,21 +110,33 @@ except Exception as e:  # noqa: BLE001
 # So the assertion moves with the ruling. What is pinned is the thing the old
 # rule was really protecting — that a goal is described in one place — plus the
 # snap, which is the whole of Dan's "the magnet stops it".
+# The goals RUN IN A FRAME since 2026-09-07 (Dan: everything runs in the cahier
+# in an iframe), so the page is the notebook and `/sio/<id>/embed` is the
+# scroller. Both halves are checked: a host with no twin is a page with nothing
+# on it, and the fifty static pages must still build on BOTH — old bookmarks and
+# printed QR codes name the host.
 sio = CODE["src/app/sio/[id]/page.tsx"]
-check("SioScroller" in sio and "generateStaticParams" in sio,
-      "/sio/[id] is the goal itself, and the fifty static pages still build "
-      "(old links, printed QR)",
-      "/sio/[id] no longer renders the goal scroller, or has lost its fifty "
-      "static pages")
+sio_embed = CODE["src/app/sio/[id]/embed/page.tsx"]
+check("EmbedFrame" in sio and "generateStaticParams" in sio,
+      "/sio/[id] is the cahier that hosts the goal, and the fifty static pages "
+      "still build (old links, printed QR)",
+      "/sio/[id] no longer hosts its embed twin, or has lost its fifty static "
+      "pages")
+check("SioScroller" in sio_embed and "generateStaticParams" in sio_embed,
+      "and /sio/[id]/embed is the scroller itself, fifty pages deep",
+      "/sio/[id]/embed no longer renders the goal scroller")
+# THE MAGNET ITSELF MOVED into components/SnapFeed.tsx on 2026-09-07, when the
+# pre-tests needed the same one-item-per-screen behaviour (Dan: *"ONE QUESTION
+# PER PAGE!"*) and it would otherwise have been written out a second time. So
+# what is checked here is that the goals still USE it; the snap classes are
+# verify110's to hold, at the one place they now live.
 scroller = CODE.get("src/app/sio/[id]/SioScroller.tsx", "")
-check("snap-y" in scroller and "snap-mandatory" in scroller and "snap-always" in scroller,
-      "the goals snap one per screen — mandatory, so a flick can only ever "
-      "rest ON a goal",
-      "the SIO scroller is no longer `snap-y snap-mandatory` with `snap-always` "
-      "sections. Dan: *\"it lands like a magnet onto the next goal or previous. "
-      "It should stop rather than continuous scroll\"* — proximity snapping "
-      "lets a flick coast past three goals, which is continuous scrolling with "
-      "a tidy ending.")
+check("SnapFeed" in scroller,
+      "the goals snap one per screen, through the shared feed",
+      "the SIO scroller no longer uses components/SnapFeed. Dan: *\"it lands "
+      "like a magnet onto the next goal or previous. It should stop rather "
+      "than continuous scroll\"* — and a second copy of that mechanism is "
+      "how the two surfaces start behaving differently.")
 # ONE description of a goal ACROSS THE TWO DOORS TO IT. This is the old rule's
 # real content: the /sio page and the lesson's ← 🎯 Goal tab are the same card
 # reached two ways, and hand-writing it twice is how the retired /sio page came

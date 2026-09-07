@@ -150,6 +150,8 @@ export default function FirstTour() {
   const pathname = usePathname() ?? "/";
   const tour = tourFor(pathname);
   const [mode, setMode] = useState<"hidden" | "offer" | "chip" | "tour">("hidden");
+  /** Ticked on the offer sheet: « No thanks » then means never again. */
+  const [never, setNever] = useState(false);
   const [step, setStep] = useState(0);
   // Steps actually VISITED (absent targets get skipped) — Back pops this.
   const [hist, setHist] = useState<number[]>([]);
@@ -289,21 +291,44 @@ export default function FirstTour() {
         <p className="text-sm font-black text-[color:var(--cahier-ink)]">
           ✨ First time here?
         </p>
+        {/* A CHECKBOX, NOT A THIRD BUTTON (Dan, 2026-09-07: *"why is the why
+            never offer again without the check box"*).
+
+            It was a bare underlined line under two buttons, which is the one
+            shape it should not have been: it looked like a caption that had
+            lost its tickbox, and it was in fact a third ACTION sitting where a
+            setting appears to be. The app's other first-run sheet
+            (components/FirstRunHint.tsx) has said « Do not show me again » as a
+            checkbox above its confirm button since 2 Sep, so a learner meets
+            two sheets that ask the same question two ways.
+
+            Now it is the same shape: tick, then « No thanks » honours it. Three
+            controls become two plus a setting, which is also what the three
+            words actually mean.
+
+            The checkbox is a LABEL, so the words are part of the target — an
+            18px box on a phone is not a thing anyone hits on purpose. */}
+        <label className="mt-2 flex cursor-pointer select-none items-center gap-2 text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">
+          <input
+            type="checkbox"
+            checked={never}
+            onChange={(e) => setNever(e.target.checked)}
+            className="h-[16px] w-[16px] shrink-0 accent-[color:var(--cahier-ink)]"
+          />
+          Never offer again
+        </label>
         <div className="mt-2 flex gap-2">
           <button type="button" onClick={startTour} className="cahier-btn cahier-btn-sm cahier-btn-accent font-black">
             Quick tour!
           </button>
-          <button type="button" onClick={finish} className="cahier-btn cahier-btn-sm">
+          <button
+            type="button"
+            onClick={() => (never ? neverAgain() : finish())}
+            className="cahier-btn cahier-btn-sm"
+          >
             No thanks
           </button>
         </div>
-        <button
-          type="button"
-          onClick={neverAgain}
-          className="fluo-hit44 mt-1.5 text-[0.65rem] font-bold text-[color:var(--cahier-ink-soft)] underline-offset-2 hover:underline"
-        >
-          Never offer again
-        </button>
       </div>,
       document.body,
     );

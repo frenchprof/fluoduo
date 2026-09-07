@@ -68,7 +68,7 @@ export const PEOPLE = [
 export const QQC_AXES: DiceAxis[] = [
   {
     key: "kind",
-    label: "Quoi ?",
+    label: "What",
     options: [
       { value: "objet", label: "un objet — Qu'est-ce que c'est ?" },
       { value: "personne", label: "une personne — C'est qui ?" },

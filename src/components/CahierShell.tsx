@@ -31,17 +31,19 @@ import SiteTopBar from "@/components/SiteTopBar";
 // Only the TYPE now — the flap rail this file drew is gone (see below).
 // TabFlap itself lives on: SiteTopBar still draws flaps in the ☰ menu.
 import { type ShellTab } from "@/components/TabFlap";
-import { getPretestForSio } from "@/content/pretests";
-import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
+// `isReadingSurface` is gone with main's colour standardisation (PR 211,
+// 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
+// swipe rail could ask it without a library importing a page shell.
 import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
-import { stopForDeck } from "@/lib/stopTag";
+import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -152,6 +154,11 @@ export default function CahierShell({
     try { window.localStorage.removeItem("fluolingo:pageWidth"); } catch {}
   }, []);
 
+  // THE RAIL MOVED TO THE ROOT LAYOUT on 2026-09-07. It was mounted here so
+  // that every route in this shell was on it; a framed station mounts no shell
+  // at all, so "every route in this shell" stopped being the right set. One
+  // handler per DOCUMENT now — components/RailSwipe.tsx.
+
   const page = (
         <main
           /* EVERY page wears its family's colour, from one place (Dan,
@@ -165,8 +172,13 @@ export default function CahierShell({
              standardise pls, i don't want outliers"). `cahier-page` stays for
              the layout, type and form rules that are genuinely this shell's;
              what a page is COLOURED by is now a single name, so one grep
-             finds every coloured surface in the app. */
-          className={`cahier-page cahier-surface ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} flex min-h-screen flex-col`}
+             finds every coloured surface in the app.
+
+             `touch-pan-y` is this branch's, and the two are unrelated: it
+             declares the vertical pan to be the only gesture the BROWSER owns
+             here, which is what leaves the sideways drag for the swipe rail
+             to read (components/useRailSwipe.ts). */
+          className={`cahier-page cahier-surface touch-pan-y ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} flex min-h-screen flex-col`}
         >
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;
@@ -239,18 +251,11 @@ export default function CahierShell({
   );
 }
 
-/** Where this deck's Pre-Test lives. Null = no pretest.
- *  Units 1–4: the authored page (`/pretests/{id}`).
- *  Unit 0: `/pretests/unit0/{sioId}` — the same route Unit0Panel / StopPopup
- *  already use. `/unit/0#{id}` is the map popup (UnitRedirect), not the quiz. */
-export function pretestHrefForDeck(collectionId: string): string | null {
-  const sio = stopForDeck(collectionId);
-  if (!sio) return null;
-  const pretest = getPretestForSio(sio.id);
-  if (pretest) return `/pretests/${pretest.id}`;
-  if ((UNIT0_QUESTIONS[sio.id] ?? []).length > 0) return `/pretests/unit0/${sio.id}`;
-  return null;
-}
+/** Where this deck's Pre-Test lives — MOVED to lib/pretests/routes.ts on
+ *  2026-09-07, so the swipe rail can ask the same question without a library
+ *  importing a page shell. Re-exported because four callers already take it
+ *  from here. */
+export { pretestHrefForDeck };
 
 /** Visit telemetry for supplement pages (Dan, 2026-07-13: "who went into
  *  these pages"). Supplements are standalone HTML OUTSIDE the app, so the

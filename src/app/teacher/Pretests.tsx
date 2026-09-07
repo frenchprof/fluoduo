@@ -13,6 +13,7 @@ import { CURATED } from "@/content/collections";
 import { getPretest, pretestNumber } from "@/content/pretests";
 import { stemForItem } from "@/lib/pretestRecord";
 import { Section, SectionGroup, TableBox, missColor, useSortedSections, type SortOption } from "./ui";
+import { pretestHref } from "@/lib/pretests/routes";
 
 type ItemAgg = {
   itemId: string;
@@ -125,7 +126,7 @@ function PretestSection({ agg }: { agg: PretestAgg }) {
     <Section
       id={`pre:${agg.pretestId}`}
       title={agg.num ? `${agg.num}. ${agg.title}` : agg.title}
-      href={`/pretests/${agg.pretestId}`}
+      href={pretestHref(agg.pretestId)}
       meta={
         <>
           <span className={`font-black ${missColor(pct)}`}>{pct}% missed</span> · {agg.attempts} answers · {agg.items.length} items

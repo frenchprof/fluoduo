@@ -37,11 +37,19 @@ prog = read("src/lib/progress.ts")
 bar = read("src/components/SiteTopBar.tsx")
 
 # ---- 1 · the mark listens ------------------------------------------------
-mark = bar[bar.find("function StreakMark") :]
+# The bar's well changed tenant on 7 Sep (Dan: the stop replaced the streak),
+# and the stale-mark fault this file exists for transfers whole: a mark that
+# reads once on mount shows the OLD stop after every goal completion and
+# bookmark edit, exactly as the streak once froze. Same claim, new tenant.
+# (The streak itself now reads fresh each time the account card opens.)
+mark = bar[bar.find("function StopMark") :]
 ok('addEventListener("fluolingo:progress-updated"' in mark,
-   "StreakMark subscribes to progress saves",
-   "the mark reads once on mount again — the day's first practice bumps the "
-   "streak in storage and the bar goes on showing nothing until a full reload")
+   "StopMark subscribes to progress saves",
+   "the mark reads once on mount again — finishing a goal would leave the bar "
+   "showing the old stop until a full reload, the streak's 2 Sep fault reborn")
+ok("addEventListener(BOOKMARK_EVENT" in mark,
+   "and to bookmark edits from any surface",
+   "a bookmark edit on the map never reaches the bar's own number")
 ok('removeEventListener("fluolingo:progress-updated"' in mark,
    "and unsubscribes on unmount",
    "the listener leaks — 28 surfaces mount this bar")

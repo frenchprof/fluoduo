@@ -40,8 +40,8 @@ const SUBJECTS: { disp: string; verb: string; key: FormKey; en: string }[] = [
 /** The agreement is the grammar; the country is the vocabulary the learner
  *  may want to drill one of. */
 export const NATIONALITIES_AXES: DiceAxis[] = [
-  { key: "subject", label: "Accord", options: SUBJECTS.map((s) => ({ value: s.disp, label: `${s.disp} ${s.verb}` })) },
-  { key: "country", label: "Pays", options: COUNTRIES.map((c) => ({ value: c.pays, label: c.pays })) },
+  { key: "subject", label: "Agreement", options: SUBJECTS.map((s) => ({ value: s.disp, label: `${s.disp} ${s.verb}` })) },
+  { key: "country", label: "Country", options: COUNTRIES.map((c) => ({ value: c.pays, label: c.pays })) },
 ];
 
 /**

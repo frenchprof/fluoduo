@@ -79,12 +79,16 @@ export function deUncontracted(p: Place): string {
 export const OU_EST_AXES: DiceAxis[] = [
   {
     key: "preposition",
-    label: "Où ?",
+    // « Où ? » and « Quel lieu ? » both mean "where", and translating them
+    // straight gave this lesson two selects with the same name. They ask
+    // different things: one picks the PREPOSITION (devant, sous, à côté de),
+    // the other the PLACE it points at.
+    label: "Preposition",
     options: [...AVEC_DE, ...SANS_DE, ...TOUT_SEUL].map((w) => ({ value: w, label: w })),
   },
   {
     key: "place",
-    label: "Quel lieu ?",
+    label: "Place",
     options: PLACES.map((p) => ({ value: p.fr, label: withArticle(p) })),
   },
 ];
