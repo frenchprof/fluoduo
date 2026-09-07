@@ -147,6 +147,36 @@ ok(not hits,
    ". Banned by Dan, 7 Sep. If a new face is genuinely wanted it is Dan's "
    "call, and it goes through layout.tsx and the cahier type system.")
 
+# ---- 5 · THREE FACES, NO MORE — the positive form of the ban --------------
+#
+# Dan, 2026-09-06: *"FluOLinGo font + Patrick Hand font + Roboto font"*, landed
+# by #213; and 2026-09-07, *"SET THE FONT"*.
+#
+# A ban list is negative: it stops the names we already regret. It cannot stop
+# a FOURTH face arriving, which is how both banned ones got here — nobody added
+# Geist on purpose, it came with the scaffold, and Work Sans was added as a
+# reasonable-looking choice. So this asserts the roster itself.
+#
+# Measured across 16 pages of the built app at the time of writing: Roboto 824
+# elements, the FluOLinGo hand 202, Patrick Hand 1, and nothing else. (An
+# earlier count in this session reported 166 elements falling back to a system
+# face — that was the static file server's own directory listing for /decks,
+# which has no index.html, not the app. Corrected by re-measuring the real
+# routes.)
+FACES = {"Roboto": "the workhorse: body, controls, data",
+         "Patrick_Hand": "accent spots, opt-in via .cahier-hand",
+         "localFont": "Dan's own FluOLinGo hand, served from ../fonts"}
+loaded = set(re.findall(r"=\s*(Roboto|Patrick_Hand|localFont)\s*\(", LAYOUT))
+extra = set(re.findall(r"=\s*([A-Z][A-Za-z_]+)\s*\(\{", LAYOUT)) - set(FACES)
+extra = {e for e in extra if e not in {"Metadata", "Viewport"}}
+ok(loaded == set(FACES) and not extra,
+   f"exactly the three faces are loaded — {', '.join(sorted(FACES))}",
+   f"the roster has changed: loaded {sorted(loaded)}"
+   + (f", plus {sorted(extra)}" if extra else "")
+   + ". Dan, 6 Sep: \"FluOLinGo font + Patrick Hand font + Roboto font\" — three, "
+   "no more. A ban list only stops the faces we already regret; a fourth one "
+   "arrives looking reasonable, which is exactly how Work Sans got in.")
+
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
     print("\n".join("  FAIL  " + m for m in FAIL))
