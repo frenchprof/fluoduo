@@ -41,6 +41,7 @@
  */
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
 import type { Collection } from "@/lib/collections/schema";
@@ -54,11 +55,13 @@ import type { LessonConcept } from "@/content/lessons/native/types";
 // the ⭐ Bonus level of the chooser serves those sentences.
 type TabKey = "parcours" | "concept" | "formes" | "exercice";
 
-/** The sticky strip's height, measured at 390px. It is `scroll-mt-14` on every
- *  row (56px) and the line the highlight is read against — one number, because
- *  a panel that snaps under the tabs and a strip that names the panel above it
- *  are the same 56px being got wrong twice. */
-const STRIP_H = 56;
+/* THE STRIP'S HEIGHT IS NO LONGER A NUMBER ANYONE KEEPS. It used to be 56px in
+   three places — `scroll-mt-14` on every row, the jump's offset and the line the
+   highlight is read against — because the strip was sticky INSIDE the scroller
+   and everything below it had to dodge it. Since 2026-09-07 it sits above the
+   scroller (Dan: "the scrolling is to start only after the : Goal-Idea-Form-
+   Exer"), so the top of the scroller IS the top: no offset, and nothing to keep
+   in step when the strip changes height. */
 
 const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: boolean }[] = [
   // `does` earns the path list its place. Without it that list is the tab
@@ -714,11 +717,13 @@ export default function LessonTabs({
 
        Written as a custom property on this box rather than a Tailwind constant
        because 666 is not a number anyone can write down — it is the screen
-       minus the site bar, the band, the strip and whatever the phone's own
+       minus the site bar, the band, the strip above it and whatever the phone's own
        toolbars are doing this second. `min-h-[60vh]` stays as the fallback for
        the first paint, before this has run. */
     const fitRows = () => {
-      el.style.setProperty("--row-min", `${Math.max(240, root.clientHeight - STRIP_H)}px`);
+      // The scroller's own height IS the row height now: the strip is above it
+      // rather than inside it, so there is nothing left to subtract.
+      el.style.setProperty("--row-min", `${Math.max(240, root.clientHeight)}px`);
     };
     fitRows();
     window.addEventListener("resize", fitRows);
@@ -727,7 +732,7 @@ export default function LessonTabs({
       // +8 rather than exactly the strip's edge: a snapped panel rests with
       // its top ON the line, and floating-point scroll positions land either
       // side of it.
-      const line = root.getBoundingClientRect().top + STRIP_H + 8;
+      const line = root.getBoundingClientRect().top + 8;
       let cur = rows[0];
       for (const r of rows) if (r.getBoundingClientRect().top <= line) cur = r;
       const k = cur?.dataset.tab as TabKey | undefined;
@@ -749,13 +754,34 @@ export default function LessonTabs({
      goals scroller met the same trap on 2026-09-05 and the answer was the
      same: compute the delta and move the one box that should move.
 
-     +STRIP_H lands the panel BELOW the sticky tabs rather than under them —
-     the same 56px `scroll-mt-14` gives the snap. */
+     No offset any more: the strip is above the scroller since 2026-09-07, so
+     the top of the scroller is already below the tabs. */
+  /* THE STRIP LEAVES THE SCROLL BOX (Dan, 2026-09-07: *"the scrolling is to
+     start only after the : Goal-Idea-Form-Exer"*).
+
+     It was `position: sticky` inside the scroller, which LOOKS the same and is
+     not: a sticky element is still in the flow, so a row snapping to the top of
+     the scroller arrives UNDER it — which is why every row carried a
+     `scroll-mt-14` matching the strip's height, a number kept in step by hand
+     and wrong the moment the strip changed. DrillShell renders a slot above the
+     scroller (`[data-subhead]`); the strip goes there.
+
+     A PORTAL rather than a prop, because the strip's state is this file's: it
+     knows which panel the scroll has settled on. Passing that up through the
+     pager only to hand it back down would put the strip and the panels in two
+     places that can disagree about which tab is lit. If the slot is not there —
+     any other shell — it renders inline exactly as before. */
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setSlot(box.current?.closest(".cahier-drill")?.querySelector("[data-subhead]") as HTMLElement | null);
+  }, []);
+  const portal = (node: ReactNode) => (slot ? createPortal(node, slot) : node);
+
   function goTo(k: TabKey, smooth: boolean) {
     const row = box.current?.querySelector<HTMLElement>(`[data-tab="${k}"]`);
     const root = box.current?.closest(".overflow-y-auto") as HTMLElement | null;
     if (!row || !root) return;
-    const delta = row.getBoundingClientRect().top - (root.getBoundingClientRect().top + STRIP_H);
+    const delta = row.getBoundingClientRect().top - root.getBoundingClientRect().top;
     root.scrollTo({ top: root.scrollTop + delta, behavior: smooth ? "smooth" : "instant" });
   }
 
@@ -828,6 +854,7 @@ export default function LessonTabs({
           What was missing was the strip itself and the line. The strip needs an
           opaque ground: it scrolls over ruled paper, and a transparent sticky
           element shows the rules sliding through the tabs. */}
+      {portal(
       <div
         role="tablist"
         aria-label="Lesson sections"
@@ -884,6 +911,7 @@ export default function LessonTabs({
           );
         })}
       </div>
+      )}
 
       {/* ALL FOUR, IN DAN'S ORDER, each a row of the scroll.
           `scroll-mt-14` is the strip's own height: without it a snapped panel
@@ -907,16 +935,16 @@ export default function LessonTabs({
           60vh is the pre-measurement fallback and lives INSIDE the var(): as
           a separate `min-h-[60vh]` it is a second rule of equal specificity,
           emitted later, and it silently won. */}
-      <section data-tab="parcours" className="flex snap-start scroll-mt-14 flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="parcours" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
         <Parcours sio={sio} />
       </section>
-      <section data-tab="concept" className="flex snap-start scroll-mt-14 flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="concept" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
         <Concept c={concept} />
       </section>
-      <section data-tab="formes" className="flex snap-start scroll-mt-14 flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="formes" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
         <Formes memo={memo} deck={deck} lexique={lexique} />
       </section>
-      <section data-tab="exercice" className="flex snap-start scroll-mt-14 flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="exercice" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
         <Panel>{exercise}</Panel>
       </section>
 

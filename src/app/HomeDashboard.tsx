@@ -275,91 +275,28 @@ export default function HomeDashboard() {
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
           is the whole instruction set. */}
-      {/* TWO ROWS, AND DAN SWAPPED THEM (1 Sep: "we swap the positions of the
-          four buttons and the next stop's name: the buttons down and the name
-          of the next stop up").
+      {/* ROW A IS GONE (Dan, 2026-09-07: *"can we squeeze the 1/50 into between
+          2D and Play, but in smaller space of course. Then we can take out the
+          'Next...'."*).
 
-          ROW A — where you are, and where you are going: the counter well and
-          « Next: … », a reading beside a reading.
-          ROW B — what you can do about it: the view switch and the four keys,
-          a control beside four controls.
+          It held two readings — the counter well and « Next: <name> » — on a
+          line of their own above the controls, which is the shape Dan himself
+          asked for on 1 Sep. What changed is that the row cost a whole band of
+          the hero to say two things, and one of them was already said twice:
+          « Next: Introductions » names the stop that the ▶ key opens and that
+          the map below highlights. The counter is the half worth keeping, so it
+          moves down into the control row and the row disappears.
 
-          Before the swap the rows cut across that: keys sat with the counter
-          and the destination's NAME sat with the switch, so each row held one
-          thing to read and one thing to press and neither row had a subject.
-          The switch also moved to the left, under the counter, which is what
-          made the swap possible — it had been sharing its row with the name. */}
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <dl className="flex min-w-0 items-stretch gap-2">
-          {/* WHERE YOU ARE. One figure, and five dots for the five units —
-              the draft's replacement for the ruler it deleted. */}
-          {/* JUST 1/50 (Dan, 1 Sep: "just 1/50 (nothing else)"). The word STOP
-              and the five unit dots are gone. Both were readable and neither
-              was needed: the fraction already says where you are, and the dots
-              said it a second time at a coarser grain — which is exactly what
-              the litmus test removes. The <dt> stays, unseen: a screen reader
-              would otherwise read "1 slash 50" with nothing to say what of. */}
-          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center rounded-2xl px-2 py-2.5 sm:min-w-[80px] sm:px-3">
-            {/* « Goal », not « Stop » (Dan, 1 Sep) — the word a screen
-                reader hears for this counter is the word the bands print. */}
-            <dt className="sr-only">Goal</dt>
-            {/* EDITABLE (Dan, 2 Sep: "For the home page, we can make the stop
-                number indicator editable") — same reading, but now the learner
-                can write it: typing a number bookmarks that stop, clearing the
-                field hands the reading back to the computation. */}
-            <dd className="cahier-hand text-[22px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[26px]">
-              <StopBookmark
-                stopNo={stopNo}
-                totalClassName="text-base text-[color:var(--cahier-ink-soft)]"
-              />
-            </dd>
-          </div>
-          {/* THE STREAK TILE IS GONE — it moved to the top bar, between ⌛ and
-              the account button (Dan, 1 Sep: "move the streak value and emoji
-              up between History and User"). It is not lost, it is PROMOTED:
-              the one reading with a deadline used to live on the page a
-              learner leaves first, and now rides all 28 surfaces including
-              the drill they are in the middle of. See StreakMark in
-              components/SiteTopBar.tsx; verify25 follows it there. */}
-        </dl>
-
-        {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
-            keeps, because a coloured triangle cannot name a destination. Two
-            lines as Dan wrote it ("Next: <br> [title]").
-
-            `short`, NOT `topic`, and that is the whole reason this line works.
-            Topics run to 55 characters ("en / au / aux / à — prepositions for
-            cities & countries"); beside the counter well there are ~165px left
-            on a 320px phone, so a topic can only ever arrive truncated — and
-            the first build of this showed "Introducti…", which is one of the
-            SHORTEST. `short` is the curriculum's own compact name, capped at
-            14 characters by check:short and asserted by verify25b, and it is
-            what every stop on the map is labelled with. So the learner reads
-            the same words here and there, at every width, uncut. The full
-            topic stays as the title attribute. */}
-        {activeSio && (
-          <p
-            title={activeSio.topic}
-            /* flex-1 + min-w-0 + truncate, and every one of the three is load
-               bearing. Without flex-1 the block sizes to its content and simply
-               overflows the page — measured at 320px, the topic ran 11.7px past
-               the right edge while `scrollWidth === clientWidth` reported it
-               unclipped, because nowrap without overflow:hidden grows the box
-               rather than cutting the text. With all three, the row can never
-               overflow at any width. */
-            className="min-w-0 flex-1 truncate text-right text-[12.5px] leading-tight text-[color:var(--cahier-ink-soft)]"
-          >
-            Next:
-            <br />
-            <strong className="font-semibold text-[color:var(--cahier-ink)]">
-              {activeSio.short}
-            </strong>
-          </p>
-        )}
-      </div>
+          `activeSio` lives on — the ▶▶ key still links to its unit. */}
 
       {/* ── ROW B · the controls ─────────────────────────────────────────── */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
+      {/* gap-x-1 below sm, and it is arithmetic rather than taste: the row has
+          297px at 390, four keys at the 44px tap floor are 188, the 2D switch
+          is 72, and the counter Dan asked to squeeze in between them takes 30.
+          That is 286 — the gap is the whole margin, and it was one pixel over
+          at 30px, which is how narrow this is. Above sm
+          there is room to breathe again. */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-1 gap-y-2 sm:gap-x-3">
         <PillSwitch
           label="Map view"
           title="Tap to switch the map's view — the postcard below flips with it"
@@ -395,6 +332,37 @@ export default function HomeDashboard() {
             is allowed to WRAP there — the well takes the first line and the
             keys the second, rather than one of them disappearing. */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* THE COUNTER, BETWEEN THE SWITCH AND THE KEYS (Dan, 2026-09-07:
+              "squeeze the 1/50 into between 2D and Play, but in smaller space
+              of course"). It had a row to itself and a 64px well; here it is 38
+              and the type comes down with it.
+
+              IT SITS INSIDE THE KEY GROUP, not beside it, and that is what
+              makes it survive a narrow phone. The row cannot hold all three on
+              one line at 390: four keys at the 44px tap floor are 188px and the
+              2D switch is 72, which leaves 37 for a counter and its gaps. So
+              the row wraps — as it already did for the old well — and grouping
+              the counter with the keys means it wraps WITH them, reading
+              "2D" then "1/50 ▶ ▶▶ ◀◀ ▦", rather than being marooned on the
+              switch's line with the keys underneath.
+
+              IT IS STILL EDITABLE (Dan, 2 Sep: "we can make the stop number
+              indicator editable") — typing a number bookmarks that stop,
+              clearing the field hands the reading back to the computation.
+              Shrinking it must not quietly turn a control back into a label.
+              The <dt> stays, unseen: a screen reader would otherwise read
+              "1 slash 50" with nothing to say what of. */}
+          <dl className="flex shrink-0 items-stretch">
+            <div className="neo-well flex min-w-[26px] flex-col items-center justify-center rounded-xl px-0.5 py-1.5">
+              <dt className="sr-only">Goal</dt>
+              <dd className="cahier-hand text-[13px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums]">
+                <StopBookmark
+                  stopNo={stopNo}
+                  totalClassName="text-[9px] text-[color:var(--cahier-ink-soft)]"
+                />
+              </dd>
+            </div>
+          </dl>
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}

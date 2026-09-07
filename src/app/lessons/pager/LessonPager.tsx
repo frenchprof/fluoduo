@@ -387,19 +387,27 @@ export default function LessonPager({
               detail is still one hover away, and the line under the grid
               ("Same N cards either way") already holds the thing a learner
               would otherwise get wrong. */}
-          <div data-tour="entry" className="grid w-full max-w-sm grid-cols-2 gap-2.5">
+          {/* FOUR ACROSS (Dan, 2026-09-07: "Can the choice of difficulty be in
+              four horizontal buttons"). It was two columns of two.
+
+              STACKED, stars over name, for the same reason the lesson's own tab
+              strip stacks its emoji over its word: a quarter of a 390px phone is
+              ~85px, and « ★★★ Difficile » on one line needs about 120. The two
+              ways to fit it in a row were dropping the stars or shortening the
+              names Dan chose; stacking costs ~14px of height and keeps both,
+              and it is what the strip one row below already looks like. */}
+          <div data-tour="entry" className="grid w-full max-w-sm grid-cols-4 gap-1.5">
             {ENTRY_LEVELS.map((lv) => (
               <button
                 key={lv}
                 type="button"
                 title={ENTRY_LABELS[lv].blurb}
                 onClick={() => { setEntry(lv); setAsked(true); setBuildTick((t) => t + 1); }}
-                className="cahier-btn cahier-btn-primary py-3"
+                className="cahier-btn cahier-btn-primary flex-col gap-0 px-1 py-2.5"
               >
-                {/* One line at every width: ★★★ Difficile wraps at 16px in
-                    a half-width tile on a 390px phone. */}
-                <span className="whitespace-nowrap text-sm font-black tracking-wide sm:text-base">
-                  {ENTRY_LABELS[lv].stars} {ENTRY_LABELS[lv].name}
+                <span className="text-xs leading-none">{ENTRY_LABELS[lv].stars}</span>
+                <span className="mt-1 whitespace-nowrap text-[11px] font-black tracking-wide min-[390px]:text-xs">
+                  {ENTRY_LABELS[lv].name}
                 </span>
               </button>
             ))}

@@ -6,6 +6,66 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, evening — the goal's torn tag, the lesson's frozen strip, Home's row (pre-tests lane)
+
+Four of Dan's, in one pass.
+
+**1 · THE GOAL'S TAG IS A TORN SCRAP, AND NOTHING MOVES BETWEEN GOALS.** He
+sent a photograph of a torn piece of paper: *"The SIO0xxx Unit ,,, words can
+look they were on piece of paper pasted on? and perpetually at the same height.
+while the icons can just be by themselves below that (also down from the same
+height onwards)"*.
+
+The tear is a `clip-path` — forty points walked round the perimeter with a
+±3.2% wobble, generated once with a fixed seed so the shape is a decision and
+not a lottery on every build. `filter: drop-shadow` on the WRAPPER and the clip
+on the child, in that order: a box-shadow on a clipped element is clipped away
+with everything else, so the scrap would sit flat instead of pasted on.
+
+The second half is the structural one. The tag and the icons are the two things
+all fifty goals share, so on a one-per-screen feed they must land in the same
+place on all fifty. Measured after: **tag at 52px and icons at 473px on every
+goal**. Getting there meant the row pinning to the TOP rather than centring
+(centring puts a two-line can-do in a different place from a four-line one),
+and the words sitting in a box of `min-h-[21rem]` — 336px, which is measured:
+the natural height of all fifty was taken at 390px and the tallest, SIO-006,
+needs 335. If that one goal's wording is ever cut, the number comes down with it.
+
+**2 · THE LESSON'S TAB STRIP LEFT THE SCROLL BOX.** Dan: *"For MneMemo, the
+scrolling is to start only after the : Goal-Idea-Form-Exer."* It was
+`position: sticky` inside the scroller, which looks the same and is not: a
+sticky element is still in the flow, so a row snapping to the top of the
+scroller arrived UNDER it — which is why every row carried a `scroll-mt-14`
+matching the strip's height, in three places, kept in step by hand. DrillShell
+has a `[data-subhead]` slot above the scroller now and the strip PORTALS into
+it. A portal rather than a prop because the strip's state is LessonTabs' — it
+knows which panel the scroll settled on — and lifting that up through the pager
+only to hand it back down puts the strip and the panels somewhere they can
+disagree. The three 56px offsets are gone.
+
+**3 · FOUR DIFFICULTY BUTTONS ACROSS.** *"Can the choice of difficulty be in
+four horizontal buttons"*. Stacked stars over name, for the same reason the tab
+strip one row below stacks emoji over word: a quarter of a 390px phone is ~85px
+and « ★★★ Difficile » on one line needs about 120.
+
+**4 · HOME LOSES A ROW.** *"can we squeeze the 1/50 into between 2D and Play,
+but in smaller space of course. Then we can take out the 'Next...'."* Both
+done. « Next: Introductions » named the stop the ▶ key opens and the map below
+highlights — a third telling — and it cost a whole band of the hero.
+
+The squeeze is unforgiving arithmetic and worth writing down: the row has 297px
+at 390, four keys at the 44px tap floor are 188 and the 2D switch is 72, which
+leaves **37px** for the counter and its gaps. 26 is what fits; at 30 it was one
+pixel over and wrapped. Below 390 the row still wraps, as it has since the four
+keys arrived — the counter sits INSIDE the key group so it wraps WITH the keys
+rather than being marooned on the switch's line.
+
+**Three checks were rewritten onto the new rulings, none weakened**: verify80
+pinned two rows with « Next: … » between the counter and the switch — the 1 Sep
+arrangement Dan has now retired — and pins the single row and the absence of
+« Next: » instead; verify37's well rule was a literal 64/80px and is now the
+arithmetic; verify106 lost two ramp rules whose sizes no longer exist anywhere.
+
 ## 7 Sep, later still — three type families, measured (pre-tests lane)
 
 Dan: *"i can still see a lot of Geist and Work Sans -- it should only be

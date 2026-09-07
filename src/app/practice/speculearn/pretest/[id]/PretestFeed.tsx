@@ -211,7 +211,7 @@ function Run({ pretest }: { pretest: Pretest }) {
         />
       </div>
 
-      <SnapFeed key={run} ref={feed} onIndex={onIndex} sectionClassName="px-0.5 py-2">
+      <SnapFeed key={run} ref={feed} onIndex={onIndex} sectionClassName="justify-center px-0.5 py-2">
         {rows.map((row, i) => (
           <ItemCard
             key={`${run}-${i}`}

@@ -104,28 +104,35 @@ home, mapb, view = code(read(HOME)), code(read(MAPB)), code(read(VIEW))
 pill = code(read(PILL))
 ok(bool(home) and bool(mapb), "Home and the map body exist", f"{HOME} or {MAPB} is missing")
 
-# ---- 1 · the rows, and which control sits in which ------------------------
+# ---- 1 · ONE ROW, AND WHAT SITS WHERE IN IT -------------------------------
+#
+# THIS RULE HAS BEEN REWRITTEN, NOT WEAKENED. It used to pin TWO rows — the
+# counter beside « Next: … » above, the switch beside the keys below — which is
+# the arrangement Dan asked for on 1 Sep ("we swap the positions of the four
+# buttons and the next stop's name").
+#
+# He retired it on 2026-09-07: *"can we squeeze the 1/50 into between 2D and
+# Play, but in smaller space of course. Then we can take out the 'Next...'."*
+# « Next: Introductions » named the stop that the ▶ key opens and that the map
+# below highlights — a third telling — and it cost a whole band of the hero to
+# do it. So row A is gone and the counter moved down between the switch and the
+# keys, which is the order pinned here.
+#
 # Positional, not by name: `<PillSwitch` appearing anywhere in the file says
-# nothing about which row it is in. These indices say it.
-i_dl = home.find("<dl")
-i_next = home.find("Next:")
+# nothing about where it is. These indices say it.
 i_switch = home.find("<PillSwitch")
+i_dl = home.find("<dl")
 i_keys = home.find('aria-label={`Continue')
-ok(min(i_dl, i_next, i_switch, i_keys) > 0,
-   "the counter, « Next: … », the switch and the Continue key are all on the page",
-   "one of the four pieces of the two rows is missing from Home")
-ok(i_dl < i_next < i_switch,
-   "ROW A is the counter then « Next: … », and the switch comes after both",
-   "« Next: … » is no longer between the counter and the switch — the swap Dan asked for has come undone")
-ok(i_switch < i_keys,
-   "ROW B is the switch then the four keys — the switch on the left, under the counter",
-   "the four keys come before the switch; Dan put the switch on the left, under the counter")
-# The two must be SEPARATE rows, or "up" and "down" mean nothing. Row A's
-# container closes before the switch's opens.
-between = home[i_next:i_switch]
-ok(between.count("</div>") >= 1,
-   "the two rows are two containers — row A closes before row B opens",
-   "the counter, the name, the switch and the keys are in one flex row again; nothing is 'up' or 'down'")
+ok(min(i_switch, i_dl, i_keys) > 0,
+   "the switch, the counter and the Continue key are all on the page",
+   "one of the three pieces of the control row is missing from Home")
+ok(i_switch < i_dl < i_keys,
+   "the row reads 2D · 1/50 · the keys — the counter between the switch and Play",
+   "the counter is no longer between the 2D switch and the keys (Dan, 7 Sep)")
+ok("Next:" not in home,
+   "« Next: … » is gone — the ▶ key and the map already name that stop",
+   "« Next: … » is back on Home. Dan took it out on 7 Sep as a third telling of "
+   "the stop the Continue key opens and the map highlights.")
 
 # ---- 2 · the label lives inside the switch --------------------------------
 # GUARDED, because `str.find` returns -1 and a negative slice is non-empty —

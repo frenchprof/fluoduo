@@ -139,6 +139,7 @@ export default function DrillShell({
   deck,
   finish,
   snapRows,
+  subhead,
   children,
 }: {
   /** The ✕. Always present — a drill you cannot leave is a trap. */
@@ -183,6 +184,17 @@ export default function DrillShell({
    *  That is what makes a long lesson panel doom-scroll and a short one
    *  snap. */
   snapRows?: boolean;
+  /** A strip that sits BETWEEN the band and the scroller — frozen, outside the
+   *  scroll box entirely. Dan, 2026-09-07, of the lesson: *"the scrolling is to
+   *  start only after the : Goal-Idea-Form-Exer"*.
+   *
+   *  `position: sticky` inside the scroller was not enough, and the difference
+   *  is real rather than pedantic: a sticky element is IN the flow, so the rows
+   *  below it snap to the top of the SCROLLER and arrive underneath it — which
+   *  is why every row needed a `scroll-mt` equal to the strip's height, a number
+   *  that had to be kept in step by hand. Out here the scroller starts below the
+   *  strip, so a row's top IS the top, and the offset stops existing. */
+  subhead?: ReactNode;
   children: ReactNode;
 }) {
   const router = useRouter();
@@ -484,6 +496,16 @@ export default function DrillShell({
           scrolls inside exactly as before.
           NOT justify-center: Dan ruled that out on 2026-08-11 (a short item
           floated mid-viewport under a header-sized hole). */}
+      {/* OUTSIDE THE SCROLLER, above it. See `subhead` for why sticky was not
+          the same thing. `shrink-0` so a long strip never gets squeezed by the
+          scroller below it.
+          The slot is always rendered — it has no height when empty — because a
+          surface deep inside `children` fills it by PORTAL rather than by prop:
+          the lesson's tab strip is owned by LessonTabs, which knows which panel
+          you are in, and lifting that state up through the pager only to hand
+          it back down would put the strip and the panels in two places that can
+          disagree. `data-subhead` is the address it portals to. */}
+      <div data-subhead className="shrink-0 px-4">{subhead}</div>
       <div className={`flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden${snapRows ? " snap-y snap-mandatory" : ""}`}>
         <div className="mx-auto flex w-full max-w-[600px] flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}

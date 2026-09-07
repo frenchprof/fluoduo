@@ -127,7 +127,14 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
         <section
           key={i}
           data-row={i}
-          className={`flex h-full snap-start snap-always flex-col justify-center ${sectionClassName}`}
+          /* NO `justify-center` HERE. It was the base for both callers until
+             2026-09-07, when Dan asked for the goal's tag and icons to sit
+             "perpetually at the same height" — which centring makes impossible,
+             because a two-line can-do and a four-line one centre differently
+             and everything on the card moves with them. Vertical placement is
+             the CALLER's to state: the pre-test centres its question, the goals
+             pin to the top. */
+          className={`flex h-full snap-start snap-always flex-col ${sectionClassName}`}
         >
           {row}
         </section>
