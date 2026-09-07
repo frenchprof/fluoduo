@@ -13,7 +13,7 @@ import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
 import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { levelForXp, xpMultiplier } from "@/lib/economy";
+import { levelForXp, nextMultiplierStep, xpMultiplier } from "@/lib/economy";
 
 export default function AccountButton() {
   const user = useAuthUser();
@@ -84,6 +84,7 @@ export default function AccountButton() {
             {(() => {
               const lvl = levelForXp(progress.xp);
               const mult = xpMultiplier(progress.streak);
+              const next = nextMultiplierStep(progress.streak);
               const pct = Math.round((lvl.into / lvl.span) * 100);
               return (
                 <>
@@ -101,6 +102,20 @@ export default function AccountButton() {
                     <span>🎖️ {progress.badges?.length ?? 0} badges</span>
                     <StatsHelp />
                   </div>
+                  {/* WHAT THE NEXT DAY BUYS (7 Sep). The ladder used to stop at
+                      day 7 and nothing ever named a rung ahead, so a learner on
+                      day 5 could not tell there was one. This says what a future
+                      day PAYS and never what a lapse costs — the ethics floor
+                      is that nothing is loss-framed, and `nextMultiplierStep`
+                      cannot express a loss: it only ever returns a day you have
+                      not reached. At the top of the ladder it returns null and
+                      this line simply is not there, rather than saying
+                      "maximum", which would read as an ending. */}
+                  {next && (
+                    <p className="mt-1 px-1 text-[11px] font-bold text-[color:var(--cahier-ink-soft)]">
+                      Day {next.day} pays ×{String(next.mult).replace(".", ",")}
+                    </p>
+                  )}
                 </>
               );
             })()}
