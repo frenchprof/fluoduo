@@ -26,6 +26,7 @@ import { nextSioId } from "@/lib/continuer";
 import Unit0Panel from "./Unit0Panel";
 import SioModal, { popupActivityTabs } from "./SioModal";
 import SioDetail from "./SioDetail";
+import { pretestHref } from "@/lib/pretests/routes";
 
 const STORAGE_KEY = "fluolingo:hubCollapse";
 
@@ -33,8 +34,8 @@ function deckAndPretestFor(sio: Sio) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
   const pretest = getPretestForSio(sio.id);
   // Dice fallback only where the deck actually supports dice (has letris columns).
-  const pretestHref = pretest ? `/pretests/${pretest.id}` : deck?.gameConfig?.letris ? `/practice/dice/${deck.id}` : null;
-  return { deck, pretestHref, pretestId: pretest?.id ?? null };
+  const pretestLink = pretest ? pretestHref(pretest.id) : deck?.gameConfig?.letris ? `/practice/dice/${deck.id}` : null;
+  return { deck, pretestHref: pretestLink, pretestId: pretest?.id ?? null };
 }
 
 export default function UnitSection({

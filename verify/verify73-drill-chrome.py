@@ -136,11 +136,12 @@ check(exit_cls is not None and "-my-1" in exit_cls.group(1),
 # a fixed beat below the bar, because a short card under a header-sized hole
 # was wrong. Cutting it at source would reopen that everywhere to tidy one page.
 TABS_SRC = open("src/app/lessons/pager/LessonTabs.tsx", encoding="utf-8").read()
-# The wrapper gained touch handlers on 2026-09-05 (Dan's swipe: "MAP > SIO >
-# MneMemO"), so it is no longer a bare `<div className="…">` on one line. The
-# class list is what this check measures, and it is still the first attribute —
-# match it wherever the tag ends.
-wrap = re.search(r'return \(\s*(?:/\*.*?\*/\s*)?<div\s+className="([^"]*)"[\s\S]*?>\s*\{/\* ONE ROW', TABS_SRC, re.S)
+# The wrapper has picked up attributes twice now — touch handlers on
+# 2026-09-05, then a `ref` on 2026-09-07 when the panels became rows of one
+# scroll and something had to observe them. The class list is what this check
+# measures, so it no longer insists className comes FIRST; that assumption is
+# what made this rule go vacuous rather than fail loudly.
+wrap = re.search(r'return \(\s*(?:/\*.*?\*/\s*)?<div\s+[^>]*?className="([^"]*)"[\s\S]*?>\s*\{/\* ONE ROW', TABS_SRC, re.S)
 check(wrap is not None,
       "the tabs wrapper parsed",
       "could not find the tab strip's wrapper — the assertions below are vacuous")

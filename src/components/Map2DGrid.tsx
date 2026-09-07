@@ -87,12 +87,44 @@ export default function Map2DGrid({
     // The route's points ARE external state — DOM geometry, which cannot be
     // read during render and only exists after layout. The first draw has to
     // run in the effect body or the road appears one resize late; the
-    // ResizeObserver below is the subscription the rule asks for.
+    // observers below are the subscription the rule asks for.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     draw();
+
+    /* A PINCH IS NOT A RESIZE, and that is the whole of this (Dan, 2026-09-07:
+       *"WHEN DRAGGING THE MAP THE LINE JOINING UP THE STOPS GET DETACHED FROM
+       THE STOPS"*, then *"NOT A SCROLLER BUT PINCH GESTURE"*).
+
+       The road is MEASURED — node centres read from the laid-out DOM — and the
+       only thing that re-measured it was a ResizeObserver on this box. A pinch
+       changes the VISUAL viewport, not the layout: the box's width and height
+       in CSS pixels do not move a hair, so the observer never fires and the
+       polyline keeps the coordinates it was given before the pinch while the
+       stops are painted at the new scale. The road stays where the stops used
+       to be, which is exactly what "detached" looks like.
+
+       `visualViewport` is the event nobody thinks of because it is the only one
+       a pinch raises. Both of its events matter: `resize` is the zoom itself
+       and `scroll` is panning around while zoomed in.
+
+       rAF-throttled, because a pinch fires these continuously and each draw
+       reads fifty rects. */
+    let raf = 0;
+    const redraw = () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => { raf = 0; draw(); });
+    };
     const ro = new ResizeObserver(draw);
     if (boxRef.current) ro.observe(boxRef.current);
-    return () => ro.disconnect();
+    const vv = typeof window !== "undefined" ? window.visualViewport : null;
+    vv?.addEventListener("resize", redraw);
+    vv?.addEventListener("scroll", redraw);
+    return () => {
+      ro.disconnect();
+      vv?.removeEventListener("resize", redraw);
+      vv?.removeEventListener("scroll", redraw);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [draw]);
 
   return (
@@ -143,10 +175,12 @@ export default function Map2DGrid({
               const i = SIOS.indexOf(s);
               const done = isSioDone(s.id, progress);
               const active = s.id === activeId;
-              const ahead = activeIdx >= 0 && i > activeIdx;
               const kind = sioKind(s.id);
               const colour = KIND_COLOR[kind];
               const flag = s.id === CLASS_FLAG_SIO;
+              // `ahead` (i > activeIdx) went with `sunk` on 2026-09-07: once
+              // depth and colour both followed COMPLETION rather than position,
+              // nothing asked where the stop sat relative to the current one.
               // One name for "not reached yet", used by the fill, the numeral
               // and the depth so the three cannot disagree.
               //
@@ -155,14 +189,17 @@ export default function Map2DGrid({
               // "nothing dims, nothing locks"). Without it, a stop you have
               // completed but walked past would render in the pale wash, i.e.
               // as "not yet", and your own finished work would disappear.
-              const sunk = ahead && !active && !done;
               // DEPTH FOLLOWS COMPLETION, not position (Dan, 7 Sep: "all
               // buttons are up by default, and as they are completed they get
-              // pressed down"). `sunk` still drives the COLOUR — pen for the
-              // stretch you have walked, wash for what is ahead — because that
-              // is a different question from whether the key is latched. A
-              // stop you have passed but not finished stays UP and coloured,
-              // which is exactly the nudge it should be.
+              // pressed down"), and so does the COLOUR: `done` takes the wash,
+              // everything else the pen.
+              //
+              // `const sunk = ahead && !active && !done` stood here until
+              // 2026-09-07 with a comment saying it "still drives the COLOUR".
+              // It did not — the colour had already moved to `done` — so the
+              // variable was dead and the note beside it described a rule the
+              // file no longer followed. Lint found the variable; the comment
+              // is the part worth removing.
               return (
                 <button
                   key={s.id}

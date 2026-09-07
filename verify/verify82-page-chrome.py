@@ -281,7 +281,7 @@ ok("mx-auto max-w-3xl px-1" not in code(read("src/app/page.tsx")),
 # ---- 7 · no page prints its own name twice --------------------------------
 for path, dup in (
     ("src/app/decks/[id]/mcq/Content.tsx", r"<h1[^>]*>\{collection\.title\}"),
-    ("src/app/pretests/[id]/PretestContent.tsx", r"<h1[^>]*>\{pretest\.title\}"),
+    ("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx", r"<h1[^>]*>\{pretest\.title\}"),
     ("src/app/reglages/page.tsx", r"<h1[^>]*>⚙️ Settings"),
 ):
     ok(re.search(dup, code(read(path))) is None,
@@ -301,8 +301,8 @@ for path, want, was in (
     # on 1 Sep — drawn inside the content well it sat 20px lower than every
     # other band on the site. The claim is unchanged: its first word is the
     # activity's, not the signed-in name.
-    ("src/app/profil/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
-    ("src/app/moi/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    ("src/app/profil/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    ("src/app/moi/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     # « Pretest » became « SpecuLearn » on 5 Sep (Dan: "it is the name for
     # everything pre-tests (old-speculearn and old-pretests)... because they
     # learn by speculating wisely based on prior knowledge", and when this
@@ -310,7 +310,7 @@ for path, want, was in (
     # names of activities... and they are clear enough"). The CLAIM is
     # unchanged — the band opens with the ACTIVITY's name; only the
     # activity's name changed.
-    ("src/app/pretests/[id]/PretestContent.tsx", 'title: "SpecuLearn"', "the pre-test's own title"),
+    ("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx", 'title: "SpecuLearn"', "the pre-test's own title"),
 ):
     ok(want in code(read(path)),
        f"{os.path.basename(os.path.dirname(path))}'s band opens with the ACTIVITY's name",

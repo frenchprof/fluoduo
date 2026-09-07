@@ -19,10 +19,10 @@ export const MOMENTS = [
 ] as const;
 
 export const QUEL_JOUR_AXES: DiceAxis[] = [
-  { key: "jour", label: "Quel jour ?", options: DAYS.map((d) => ({ value: d, label: d })) },
+  { key: "jour", label: "Which day", options: DAYS.map((d) => ({ value: d, label: d })) },
   {
     key: "mode",
-    label: "Quoi ?",
+    label: "What",
     options: [
       { value: "jour", label: "le jour" },
       { value: "moment", label: "le moment" },

@@ -115,7 +115,11 @@ export default function SiteTopBar({
         z-30 clears page content and stays under every scrim (z-40+) and modal.
         verify94 fails the build if page content ever reaches this number. */}
     <div
-      className="sticky top-0 z-30 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
+      /* `cahier-sitebar` names this bar so one rule can reach it. A station
+         running inside the cahier must not draw a second site bar inside the
+         frame (globals.css, html[data-embed]) — and there was no class here to
+         name, only a stack of utilities. */
+      className="cahier-sitebar sticky top-0 z-30 border-b-2 border-[color:var(--cahier-ink)]/15 backdrop-blur"
       style={{ background: "var(--fam-wash, var(--cahier-paper))" }}
     >
       {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs

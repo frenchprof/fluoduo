@@ -102,7 +102,7 @@ ok('background: "var(--fam-ink)", color: "var(--cahier-paper)"' in band,
 ok(re.search(r"\.fam-none\s*\{", css) is not None,
    "a colourless family exists — a stack where every row is coloured has no hierarchy",
    "fam-none is gone; nothing can be deliberately neutral")
-users = [p for p in ["src/app/reviser/page.tsx", "src/components/LeaderboardList.tsx"]
+users = [p for p in ["src/app/reviser/embed/page.tsx", "src/components/LeaderboardList.tsx"]
          if os.path.isfile(p) and "SectionBand" in open(p, encoding="utf-8").read()]
 ok(len(users) >= 2, f"the band is in use ({len(users)} surfaces)",
    "SectionBand has fallen out of use — it would be dead code")

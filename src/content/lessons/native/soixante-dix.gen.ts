@@ -60,8 +60,8 @@ export const BANDS = [
 ] as const;
 
 export const SOIXANTE_AXES: DiceAxis[] = [
-  { key: "band", label: "Quelle dizaine ?", options: BANDS.map((b) => ({ value: b.key, label: b.label })) },
-  { key: "mode", label: "Nombre ou prix ?", options: [
+  { key: "band", label: "Which ten", options: BANDS.map((b) => ({ value: b.key, label: b.label })) },
+  { key: "mode", label: "Number or price", options: [
     { value: "nombre", label: "le nombre" },
     { value: "prix", label: "le prix" },
   ] },

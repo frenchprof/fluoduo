@@ -43,7 +43,10 @@ const PORT = 4179;
 // Relabelled 2026-09-05 (Dan: "we can use those french words"): the strip
 // reads ← 🎯 Goal · 💡 Idée · 📐 Formes · 🏋️ Exercice. A scan that clicks tab
 // names which no longer exist walks one panel and reports the other three clean.
-const TABS = ["Goal", "Idée", "Formes", "Exercice"]; // pinned by verify68
+// The four tab NAMES are no longer clicked (all four panels are in the
+// document at once since 2026-09-07), but the strip is still what this scan
+// waits for as its hydration signal — see the waitFor below. verify68 pins the
+// names themselves against LessonTabs.tsx.
 const PANES = ["The idea", "Q&A", "Traps", "Steps", "Check", "Sum up"];
 
 const MIME = {
@@ -99,8 +102,14 @@ await page.addInitScript(() => {
   }
 });
 
-const scan = () => page.evaluate(() => {
+/** `root` scopes the walk. The whole document is the right answer once per
+ *  page; for the Idée panes, which switch one subtree, walking the other three
+ *  panels again four more times is four times the work for no new text. That
+ *  cost showed up the day the lesson became one scroll with all four panels in
+ *  the document: the run went from ~4 minutes to ~13. */
+const scan = (root = "body") => page.evaluate((sel) => {
   const L = /\p{L}/u;
+  const scope = document.querySelector(sel) ?? document.body;
   const hits = [];
   // The tag list alone lied twice on the first run of this scan: a SPAN
   // styled `block` sits on its own line (the level buttons), and the
@@ -110,7 +119,7 @@ const scan = () => page.evaluate(() => {
     const s = getComputedStyle(el);
     return s.display.startsWith("inline") && (s.position === "static" || s.position === "relative");
   };
-  for (const el of document.querySelectorAll("i,em,b,strong,u,code,abbr,small,span")) {
+  for (const el of scope.querySelectorAll("i,em,b,strong,u,code,abbr,small,span")) {
     if (el.closest('header, nav, [data-jam-ok], [aria-hidden="true"]')) continue;
     if (!inFlow(el)) continue;
     const t = el.textContent ?? "";
@@ -125,12 +134,20 @@ const scan = () => page.evaluate(() => {
     hits.push(`…${(before ?? "").slice(-16)}[${t.slice(0, 30)}]${after.slice(0, 24)}…`);
   }
   return hits;
-});
+}, root);
 
 const faults = new Map(); // slug -> Set of junction strings
 let pages = 0;
 for (const slug of slugs) {
-  await page.goto(`http://localhost:${PORT}/lessons/${slug}`, { waitUntil: "networkidle" });
+  // `domcontentloaded`, NOT `networkidle` — and this script already argued the
+  // point in the next comment down: "networkidle is when the network went
+  // quiet, not when React finished". The readiness signal is the tab strip,
+  // waited for explicitly below, so the network wait was never what kept this
+  // honest. It was what made it slow: once the lesson rendered all four panels
+  // at once (2026-09-07) the page got heavier and networkidle went from a beat
+  // to tens of seconds a page, taking the whole check past twenty minutes.
+  // Same coverage, a fraction of the wall clock.
+  await page.goto(`http://localhost:${PORT}/lessons/${slug}`, { waitUntil: "domcontentloaded" });
   // WAIT for the strip, don't glance at it. The first CI run of this scan on
   // main died here: `aimer` (alphabetically first, so the cold page) had not
   // hydrated when an instant count() looked, and the scan called an open
@@ -147,25 +164,45 @@ for (const slug of slugs) {
     process.exit(2);
   }
   pages++;
+  // SAY WHERE YOU ARE. This scan printed nothing at all until it finished, so
+  // when the lesson became a snap scroller on 2026-09-07 and a click started
+  // fighting the snap, the only symptom was silence — indistinguishable from
+  // slow, and it cost an afternoon to tell the two apart. One line per page is
+  // cheap and makes a stall point at the page it stalled on.
+  process.stderr.write(`  ${String(pages).padStart(2)}/${slugs.length} ${slug}\n`);
   const record = h => {
     if (!h.length) return; // an empty entry here once made 52 clean pages report as jammed
     if (!faults.has(slug)) faults.set(slug, new Set());
     h.forEach(x => faults.get(slug).add(x));
   };
+  // ONE SCAN COVERS ALL FOUR PANELS NOW (2026-09-07). The tab loop that used
+  // to be here existed to REVEAL panels: `tab === "formes" && <Formes/>` meant
+  // three of the four were unmounted at any moment, so the only way to measure
+  // their text was to click each tab in turn. Dan's *"it should swipe
+  // vertically"* put all four in the document at once — they are rows of one
+  // scroll — so a single scan sees every one of them.
+  //
+  // This is not a loosening, it is the same coverage for a quarter of the work:
+  // clicking the tabs after the change re-scanned the same four panels four
+  // times over, and took this check from ~4 minutes to over 20 — long enough
+  // to look like a hang, which is how it was found.
   record(await scan());
-  for (const tab of TABS) {
-    await page.getByRole("tab", { name: tab }).first().click();
-    await page.waitForTimeout(60);
-    record(await scan());
-    if (tab !== "Idée") continue;
-    // Pane names are not exact: a pane button may carry its count ("Traps 3").
-    for (const pane of PANES) {
-      const b = page.getByRole("button", { name: pane });
-      if (await b.count()) {
-        await b.first().click();
-        await page.waitForTimeout(60);
-        record(await scan());
-      }
+  // The Idée panes ARE still switched (The Idea / Q & A / Traps / Check / Sum
+  // up are one panel's tabs, `setPane`), so those still have to be clicked.
+  // Names are not exact: a pane button may carry its count ("Traps 3").
+  for (const pane of PANES) {
+    const b = page.getByRole("button", { name: pane });
+    if (await b.count()) {
+      // `el.click()`, not Playwright's click. Playwright scrolls a target into
+      // view and then waits for it to hold still — and the lesson is a
+      // `snap-mandatory` scroller since 2026-09-07, so its scroll-snap pulls
+      // back against that scrollIntoView and the element never settles. The
+      // run went from four minutes to over twenty with no error, which is what
+      // a hang looks like from outside. The pane is a plain button and this
+      // scan only needs it pressed, not reached.
+      await b.first().evaluate((el) => (el instanceof HTMLElement ? el.click() : undefined));
+      await page.waitForTimeout(60);
+      record(await scan('[data-tab="concept"]'));
     }
   }
 }

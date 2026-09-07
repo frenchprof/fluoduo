@@ -40,8 +40,8 @@
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Fragment, useRef, useState, type ReactNode } from "react";
+import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
 import type { Collection } from "@/lib/collections/schema";
@@ -54,6 +54,14 @@ import type { LessonConcept } from "@/content/lessons/native/types";
 // "bonus" is not here either: #97 parked it under practice the same day —
 // the ⭐ Bonus level of the chooser serves those sentences.
 type TabKey = "parcours" | "concept" | "formes" | "exercice";
+
+/* THE STRIP'S HEIGHT IS NO LONGER A NUMBER ANYONE KEEPS. It used to be 56px in
+   three places — `scroll-mt-14` on every row, the jump's offset and the line the
+   highlight is read against — because the strip was sticky INSIDE the scroller
+   and everything below it had to dodge it. Since 2026-09-07 it sits above the
+   scroller (Dan: "the scrolling is to start only after the : Goal-Idea-Form-
+   Exer"), so the top of the scroller IS the top: no offset, and nothing to keep
+   in step when the strip changes height. */
 
 const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: boolean }[] = [
   // `does` earns the path list its place. Without it that list is the tab
@@ -90,7 +98,7 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
   { key: "concept", emoji: "💡", label: "Idée", does: "why French does it this way" },
   { key: "formes", emoji: "📐", label: "Formes", does: "the forms themselves, and every word" },
-  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — ⭐ Bonus included" },
+  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
 
 /**
@@ -254,12 +262,19 @@ function Parcours({ sio }: { sio?: Sio }) {
           "Planned" for pre-tests that existed. */}
       <GoalCard sio={sio} compact />
 
-      <Link
-        href={`/sio/${sio.id}`}
-        className="mt-4 flex items-center justify-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] px-3 py-2 text-[13px] font-black text-[color:var(--cahier-ink)]"
-      >
-        ← 🎯 {sio.id}
-      </Link>
+      {/* CONTENT-SIZED, NOT THE WHOLE WIDTH (Dan, 2026-09-05: "IT HAS BEEN
+          MADE A RULE THAT WE NEVER WANT TO HAVE A SINGLE BUTTON OCCUPYING THE
+          ENTIRE WIDTH"). A `flex` link is a block, so it took the card's full
+          width for four characters. `inline-flex` in a centred line sizes it
+          to what it says. */}
+      <div className="mt-4 flex justify-center">
+        <Link
+          href={`/sio/${sio.id}`}
+          className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] px-3 py-2 text-[13px] font-black text-[color:var(--cahier-ink)] no-underline"
+        >
+          ← 🎯 {sio.id}
+        </Link>
+      </div>
     </Panel>
   );
 }
@@ -632,59 +647,150 @@ export default function LessonTabs({
   // taps a tab the choice is theirs, and a re-render must not pull them back.
   const [tab, setTab] = useState<TabKey>(open);
 
-  /* ── SWIPE, and the direction rule behind it ────────────────────────────
-     Dan, 2026-09-05: *"so the idea is / MAP > SIO > MneMemO > ..."*, and
-     *"when swipe rightwards to go to the left"*. One rule for the whole app,
-     the phone convention: DRAGGING RIGHTWARDS DRAGS THE PAGE RIGHT, revealing
-     what sits to its left — so rightwards is always back, one level at a time:
+  /* ── COLUMNS SIDEWAYS, ROWS DOWNWARDS ─────────────────────────────────
+     Dan, 2026-09-06, thinking the navigation through: a COLUMN is a station on
+     the chain (Map > Goal > SpecuLearn > MneMemo > MémoiRecall > Skills >
+     Games > User) and you move between columns SIDEWAYS; a ROW is one item
+     inside a station and you move between rows by scrolling DOWN. Then, shown
+     that the lesson did neither: *"it should swipe vertically - that is the
+     right behaviour"*.
 
-         Exercice → Formes → Idée → Goal → the SIO → the map
+     So this file gave up two things and gained one.
 
-     and leftwards is forward. He corrected himself once on this ("i mean
-     rightwards"), so the rule is written out here rather than encoded twice.
+     GONE, SIDEWAYS. The strip used to carry its own swipe handler that walked
+     the four tabs and, off the left end, pushed to the goal — one of only two
+     horizontal gestures in the whole app, each with its own copy of the
+     arithmetic. The chain lives in `lib/swipeRail.ts` now and one handler
+     reads it for every page, so a sideways drag here LEAVES the lesson.
 
-     The tabs are FRONT MATTER — they exist only until a level is picked — so
-     this gesture is the lesson's navigation, never the exercise's. That is the
-     same line patch 22 drew and it is why the handler lives on this element.
+     GONE, ONE-AT-A-TIME. The four panels were `tab === "formes" && <Formes/>`
+     — three of them unmounted at any moment, so there was nothing to scroll
+     to. All four are in the document now, in Dan's order, each marked
+     `snap-start`; DrillShell's own body scroller is the magnet (`snapRows`).
+     Scrolling down runs Goal -> Idée -> Formes -> Exercice.
 
-     TWO GUARDS, both learnt from things that break without them:
-       · a gesture that starts inside something scrolling sideways belongs to
-         that thing. The Formes panel puts the word list and the Mémo's tables
-         in `overflow-x-auto`, and stealing their drag makes them unreadable.
-       · a drag has to be decisively horizontal — 60px across AND half again
-         more across than down — or every flick of a vertical scroll would fire
-         a navigation. */
-  const router = useRouter();
-  const from = useRef<{ x: number; y: number } | null>(null);
+     WHY NOT ONE PANEL PER SCREEN, the way the goals and the pre-test do it: a
+     lesson panel is not one item. Formes measures 2512px against a 516px
+     viewport at 390 wide, so forcing it into a screen would mean a scroller
+     inside a scroller — two boxes fighting over one finger. A snap area
+     LARGER than the snapport imposes no rest position, so a long panel scrolls
+     freely through and the next panel's top is the magnet. Short panel: one
+     swipe, one panel. Long panel: doom-scroll, then a magnet. Both from one
+     rule, which is why there is no height on these sections.
 
-  /** Where the finger got to — kept on every move so a CANCELLED gesture is
-   *  still judged on real movement rather than thrown away. */
-  const last = useRef<{ x: number; y: number } | null>(null);
+     THE STRIP STAYS, as an index rather than a switch. It says which panel you
+     are in (an observer, not a click, so it is right when you arrive by
+     scrolling) and a tap jumps to one. `touch-pan-y` stays too, and matters
+     more now: it declares the vertical to be the browser's and leaves the
+     sideways drag for the rail to read. */
+  const box = useRef<HTMLDivElement | null>(null);
 
-  function endSwipe(t: { clientX: number; clientY: number } | null) {
-    const start = from.current;
-    const end = t ? { x: t.clientX, y: t.clientY } : last.current;
-    from.current = null;
-    last.current = null;
-    if (!start || !end) return;
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    step(dx > 0);
+  /* WHICH PANEL AM I IN — read off the scroll, never off the last tap.
+     A learner who arrives by scrolling never tapped anything, so the strip has
+     to answer this from the scroll position or it lies.
+
+     NOT AN IntersectionObserver, having shipped one and measured it wrong
+     twice. "Which panel is visible" has no single answer — at the bottom of
+     the lesson, Formes and Exercice are both in the top band, and picking the
+     first of them in tab order names the panel you have just LEFT. And a
+     panel taller than the viewport is never mostly visible, so any threshold
+     high enough to disambiguate is one it can never meet.
+
+     "Which panel am I IN" does have a single answer: the LAST one whose top
+     has passed the line under the sticky strip. One rule, no ties, and it is
+     still right at the very bottom of the scroll — where the last panel can
+     never reach its own snap position, because there is not a screenful of
+     content left below it. */
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const root = el.closest(".overflow-y-auto") as HTMLElement | null;
+    if (!root) return;
+    const rows = [...el.querySelectorAll<HTMLElement>("[data-tab]")];
+
+    /* A ROW IS AT LEAST A SCREENFUL, AND THE SCREENFUL IS MEASURED.
+       Without this the LAST panel can never snap to the top: reaching its snap
+       position needs a screenful of content below it, and there is none — so
+       the lesson ended with Exercice sitting 144px down, under the tail of
+       Formes, and the strip (correctly) still said Formes. Measured on a 390px
+       phone: scroller 666 tall, rows 506, and 610 is what the last row needs.
+
+       Written as a custom property on this box rather than a Tailwind constant
+       because 666 is not a number anyone can write down — it is the screen
+       minus the site bar, the band, the strip above it and whatever the phone's own
+       toolbars are doing this second. `min-h-[60vh]` stays as the fallback for
+       the first paint, before this has run. */
+    const fitRows = () => {
+      // The scroller's own height IS the row height now: the strip is above it
+      // rather than inside it, so there is nothing left to subtract.
+      el.style.setProperty("--row-min", `${Math.max(240, root.clientHeight)}px`);
+    };
+    fitRows();
+    window.addEventListener("resize", fitRows);
+
+    const read = () => {
+      // +8 rather than exactly the strip's edge: a snapped panel rests with
+      // its top ON the line, and floating-point scroll positions land either
+      // side of it.
+      const line = root.getBoundingClientRect().top + 8;
+      let cur = rows[0];
+      for (const r of rows) if (r.getBoundingClientRect().top <= line) cur = r;
+      const k = cur?.dataset.tab as TabKey | undefined;
+      if (k) setTab(k);
+    };
+    read();
+    root.addEventListener("scroll", read, { passive: true });
+    return () => {
+      root.removeEventListener("scroll", read);
+      window.removeEventListener("resize", fitRows);
+    };
+  }, []);
+
+  /* MOVE THE SCROLLER, NOT EVERY ANCESTOR.
+     `scrollIntoView` walks up and scrolls each scrollable ancestor including
+     the WINDOW — and this page sits inside a document 90px taller than the
+     viewport, so tapping a tab took the site bar and the ✕ band off the top,
+     which is the opposite of the frozen header the feed is built around. The
+     goals scroller met the same trap on 2026-09-05 and the answer was the
+     same: compute the delta and move the one box that should move.
+
+     No offset any more: the strip is above the scroller since 2026-09-07, so
+     the top of the scroller is already below the tabs. */
+  /* THE STRIP LEAVES THE SCROLL BOX (Dan, 2026-09-07: *"the scrolling is to
+     start only after the : Goal-Idea-Form-Exer"*).
+
+     It was `position: sticky` inside the scroller, which LOOKS the same and is
+     not: a sticky element is still in the flow, so a row snapping to the top of
+     the scroller arrives UNDER it — which is why every row carried a
+     `scroll-mt-14` matching the strip's height, a number kept in step by hand
+     and wrong the moment the strip changed. DrillShell renders a slot above the
+     scroller (`[data-subhead]`); the strip goes there.
+
+     A PORTAL rather than a prop, because the strip's state is this file's: it
+     knows which panel the scroll has settled on. Passing that up through the
+     pager only to hand it back down would put the strip and the panels in two
+     places that can disagree about which tab is lit. If the slot is not there —
+     any other shell — it renders inline exactly as before. */
+  const [slot, setSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setSlot(box.current?.closest(".cahier-drill")?.querySelector("[data-subhead]") as HTMLElement | null);
+  }, []);
+  const portal = (node: ReactNode) => (slot ? createPortal(node, slot) : node);
+
+  function goTo(k: TabKey, smooth: boolean) {
+    const row = box.current?.querySelector<HTMLElement>(`[data-tab="${k}"]`);
+    const root = box.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    if (!row || !root) return;
+    const delta = row.getBoundingClientRect().top - root.getBoundingClientRect().top;
+    root.scrollTo({ top: root.scrollTop + delta, behavior: smooth ? "smooth" : "instant" });
   }
 
-  function step(back: boolean) {
-    const i = TABS.findIndex((t) => t.key === tab);
-    if (back) {
-      if (i > 0) setTab(TABS[i - 1].key);
-      // `/sio/${id}` IS the goal now — the middle level of MAP > SIO > MneMemo
-      // (2026-09-05). It was a redirect stub until today, which is why this
-      // line pointed at Home's popup instead.
-      else if (sio) router.push(`/sio/${sio.id}`);
-      return;
-    }
-    if (i < TABS.length - 1) setTab(TABS[i + 1].key);
-  }
+  /* LAND ON THE PANEL THE CALLER ASKED FOR. The ateliers open on Formes (Dan,
+     2026-08-31); everyone else opens on Exercice. Instant, not smooth — a
+     learner should arrive there, not watch the lesson scroll past. */
+  useEffect(() => {
+    goTo(open, false);
+  }, [open]);
 
   return (
     /* THE TABS SIT WITH THE BAND, not a beat below it (Dan, 2026-08-31, shown
@@ -724,21 +830,7 @@ export default function LessonTabs({
 
        Shipped 5 Sep without ever driving a touch gesture — the handler was
        written, typechecked and never once tried. */
-    <div
-      className="-mt-5 touch-pan-y pt-1 sm:-mt-9"
-      onTouchStart={(e) => {
-        const t = e.touches[0];
-        const inScroller = (e.target as HTMLElement).closest?.(".overflow-x-auto");
-        from.current = inScroller ? null : { x: t.clientX, y: t.clientY };
-        last.current = from.current;
-      }}
-      onTouchMove={(e) => {
-        const t = e.touches[0];
-        if (t) last.current = { x: t.clientX, y: t.clientY };
-      }}
-      onTouchEnd={(e) => endSwipe(e.changedTouches[0])}
-      onTouchCancel={() => endSwipe(null)}
-    >
+    <div ref={box} className="-mt-5 touch-pan-y pt-1 sm:-mt-9">
       {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
           squeeze the four in a row, then why"). The why was 4px: the pills
           kept the padding they wore as six, and 332px of tabs met a 328px
@@ -762,6 +854,7 @@ export default function LessonTabs({
           What was missing was the strip itself and the line. The strip needs an
           opaque ground: it scrolls over ruled paper, and a transparent sticky
           element shows the rules sliding through the tabs. */}
+      {portal(
       <div
         role="tablist"
         aria-label="Lesson sections"
@@ -775,7 +868,7 @@ export default function LessonTabs({
               role="tab"
               type="button"
               aria-selected={on}
-              onClick={() => setTab(t.key)}
+              onClick={() => goTo(t.key, true)}
               className={[
                 // The sub-360 step exists for 320px phones: a column there is
                 // ~61px and "📐 Forms" at 13px is ~63 — the two widest pills
@@ -818,11 +911,47 @@ export default function LessonTabs({
           );
         })}
       </div>
+      )}
 
-      {tab === "parcours" && <Parcours sio={sio} />}
-      {tab === "concept" && <Concept c={concept} />}
-      {tab === "formes" && <Formes memo={memo} deck={deck} lexique={lexique} />}
-      {tab === "exercice" && <Panel>{exercise}</Panel>}
+      {/* ALL FOUR, IN DAN'S ORDER, each a row of the scroll.
+          `scroll-mt-14` is the strip's own height: without it a snapped panel
+          arrives underneath the sticky tabs and its first line is never read.
+          EVERY ROW IS AT LEAST A SCREENFUL, and it was tried the other way
+          first. Letting short panels size to their content removes the blank
+          paper — and breaks the rule that pays for it: with Goal and Idée
+          both short, their tops sit ~350px apart and ONE flick jumps clean
+          past Idée to Formes. Measured. That is continuous scrolling with a
+          tidy ending, which is exactly what Dan ruled out on the goals ("it
+          should stop rather than continuous scroll. the magnet stops it").
+          It is also what lets the LAST row reach the top at all: resting
+          there needs a screenful below it, and Exercice has nothing below it.
+
+          AND IT STARTS AT THE TOP, not centred (Dan, 2026-09-07: *"why is
+          there so much space between the four icons and the choose your
+          level"*). Centring a short panel in a screenful puts half the slack
+          ABOVE it — measured on the Exercice panel at 390px, 250px of ruled
+          paper between the tab strip and « Choose your level », which reads as
+          a page that failed to load rather than as breathing room. The slack
+          all goes to the bottom now, where it is the end of a panel and looks
+          like one. It is also what the goals scroller does since the same day,
+          for the same reason: a learner should find the same thing in the same
+          place on every screen of a feed.
+
+          60vh is the pre-measurement fallback and lives INSIDE the var(): as
+          a separate `min-h-[60vh]` it is a second rule of equal specificity,
+          emitted later, and it silently won. */}
+      <section data-tab="parcours" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Parcours sio={sio} />
+      </section>
+      <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Concept c={concept} />
+      </section>
+      <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Formes memo={memo} deck={deck} lexique={lexique} />
+      </section>
+      <section data-tab="exercice" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Panel>{exercise}</Panel>
+      </section>
 
     </div>
   );

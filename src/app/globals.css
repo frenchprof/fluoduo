@@ -16,7 +16,15 @@
   /* THREE FONTS (Dan, 6 Sep): FluOLinGo Hand + Patrick Hand + Roboto.
      "Geist is OUT" — and Work Sans, unnamed in his roster, went with it. */
   --font-sans: var(--font-readable);
-  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* ROBOTO, NOT ui-monospace (Dan, 2026-09-07: *"For the last time, only
+     FluoLingo Roboto (and Patrick Hand) allowed"*). Main's PR 213 left this as a
+     system mono stack, reasoning that tabular numerals stand in for the retired
+     Geist Mono — but a system stack IS a fourth face, and a different one on
+     every device. Measured after the merge: one run still rendered in
+     `ui-monospace` (« 12 words » on the lesson's word list). Roboto has tabular
+     numerals of its own (`font-variant-numeric`), which is what that reasoning
+     actually needs. */
+  --font-mono: var(--font-readable);
 
   /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
      "fonts can afford to be bigger on the desktop", then "the relative font
@@ -82,6 +90,26 @@ body {
   color: var(--foreground);
   font-family: var(--font-body-stack);
 }
+
+/* SIDEWAYS BELONGS TO THE RAIL, NOT TO THE BROWSER (Dan, 2026-09-06: *"vertical
+   left is not to the browser"*).
+
+   A horizontal drag that reaches the end of a page is an OVERSCROLL, and a
+   browser's default answer to a horizontal overscroll is to go back or forward
+   in history. Driven on the real build, that is exactly what happened: a
+   rightward swipe on ChaTutor left the app for whatever page had been open
+   before it, instead of walking one station left along Dan's chain — and it
+   did so on pages that already declared `touch-action: pan-y`, because
+   touch-action governs panning and this is the browser's gesture ON TOP of it.
+
+   `overscroll-behavior-x: none` turns that off for the whole site in one line.
+   It affects nothing else: vertical overscroll (pull-to-refresh, the rubber
+   band) is untouched, and a horizontal scroller inside the page still scrolls
+   — it just stops handing the gesture to the browser's history when it runs
+   out of content. */
+html, body { overscroll-behavior-x: none; }
+
+
 
 /* ===========================================================================
  *  Neumorphic component primitives
@@ -226,6 +254,11 @@ body {
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
   --fluo-warn-shadow: #cf9600;
+  /* THE SERIF BELOW WAS NEVER SHIPPED, and this branch measured it before main
+     replaced it: `--fluo-serif` named "Iowan Old Style", Palatino, Georgia —
+     SYSTEM fonts, none of them loaded — so « Choose your level » was a
+     different typeface on every device, chosen by nobody. Four text runs across
+     eight routes, and not one in a face this project owns. */
   /* Was a system serif; the display role belongs to Dan's hand now. */
   --fluo-serif: var(--font-fluohand-stack);
   --fluo-mono: var(--font-readable), system-ui, sans-serif;
@@ -2564,4 +2597,120 @@ input.fluo-bookmark:focus,
   .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
+}
+
+/* ===========================================================================
+ *  A STATION RUNNING INSIDE THE CAHIER
+ *
+ *  Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
+ *  PAGES IN IFRAMES (EMBEDDED)"*. The page around the frame draws the notebook
+ *  — site bar, heading band, coils, desk, bottom bar. The station inside must
+ *  draw none of it, or the learner meets two notebooks, one 720px tall inside
+ *  the other.
+ *
+ *  `data-embed` is set by an inline script in the layout's <head>, before the
+ *  first paint, because this is a static export: one HTML file is served both
+ *  to the top-level page and to the frame, so nothing rendered by React can
+ *  know which it is without flashing.
+ *
+ *  This hides FURNITURE only. What a station needs to work — its own content
+ *  well, a drill's footer and feedback tray, the accent colour — is untouched.
+ *  The unmounting of the app-level helpers (analytics, sync, toasts) is a
+ *  different job and belongs to components/TopLevelOnly.tsx: hidden is not
+ *  unmounted, and a hidden PageViewTracker still logs.
+ *
+ *  LAST IN THE FILE, and that is load-bearing rather than tidy. verify82 reads
+ *  the desk's own numbers with `re.search(r"\.cahier-drilldesk \{...")` — the
+ *  FIRST match in the stylesheet — so an override written above the canonical
+ *  rule is the one the check measures, and it fails saying the two shells' left
+ *  edges have come apart. They had not; the parser had found an override. Keep
+ *  every `html[data-embed]` rule down here.
+ * =========================================================================== */
+html[data-embed] .cahier-sitebar,
+html[data-embed] .cahier-bottombar,
+html[data-embed] .cahier-binding,
+/* AND THE SITE FOOTER. It lives in the root layout's <body>, outside the
+   TopLevelOnly guard, because it is markup rather than a mounted helper — so
+   every framed station printed "FluOLinGo · built by Dr Daniel Chan …" inside
+   its own box, under the one the page around it was already showing. Caught by
+   driving the twelve stations, not by reading: it is at the very bottom of a
+   scroller and a screenshot of the top does not have it. */
+html[data-embed] body > footer { display: none !important; }
+
+/* THE BAND IS ONLY FURNITURE ON A PAGE, NOT IN A DRILL. On a CahierShell page
+   it names the family and the page around the frame draws that already, so a
+   second one is a duplicate. Inside a DRILL the same strip carries the ✕, the
+   goal chip and the progress — it is the drill, not decoration — so hiding it
+   there would take a learner's only way out of a run. Hence the child
+   combinator: `.cahier-page > .page-band` is the page's, `.cahier-drill`'s is
+   its own. A host page for a drill therefore passes `band={false}`, or the
+   learner meets two. */
+html[data-embed] .cahier-page > .page-band { display: none !important; }
+
+/* The desk is the grey surround the sheet sits on. Inside a frame the sheet IS
+   the frame, so the surround is wasted width on a phone — measured at 390px,
+   16px a side plus the sheet's own gutter. */
+html[data-embed] .cahier-desk,
+html[data-embed] .cahier-deskrow,
+html[data-embed] .cahier-drilldesk { padding: 0 !important; background: transparent !important; }
+html[data-embed] .cahier-page,
+html[data-embed] .cahier-drill { min-height: 100dvh; border-radius: 0 !important; box-shadow: none !important; }
+/* The coils are gone, so the gutter they were holding open goes with them. */
+html[data-embed] .cahier-foolscap { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+/* AND THE FAMILY SPINE, which is the page's own left edge. The notebook around
+   the frame already draws one; a second, 10px further in, reads as a stray
+   green rule down the middle of the paper — seen on the framed goals before
+   this line existed. The rule that DRAWS it is untouched (verify82 pins it);
+   this only says a station inside a frame is not the page that wears it. */
+html[data-embed] .cahier-page,
+html[data-embed] .cahier-drill { border-left: 0 !important; }
+
+/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well.
+   The station inside paints its own paper, so the well's own 20px top and
+   bottom and its right inset would be a frame around a frame — visible as a
+   band of the host's ruled paper down each side of the drill. The LEFT gutter
+   is kept on purpose: the coils live there, and they are the notebook. */
+.cahier-foolscap:has(.embed-frame) { padding-top: 0; padding-bottom: 0; padding-right: 0; }
+
+/* ===========================================================================
+ *  THE GOAL'S TAG, ON A TORN SCRAP
+ *
+ *  Dan, 2026-09-07, with a photograph of a torn piece of paper: *"The SIO0xxx
+ *  Unit ,,, words can look they were on piece of paper pasted on? and
+ *  perpetually at the same height. while the icons can just be by themselves
+ *  below that (also down from the same height onwards)"*.
+ *
+ *  TWO REQUESTS, and the second is the structural one. « SIO-011 · UNITÉ 1 »
+ *  is the same shape on all fifty goals, so on a feed that shows one goal per
+ *  screen it should not move a pixel between them — a label that drifts as you
+ *  flick reads as fifty different pages rather than one page of fifty. Same for
+ *  the icons: they start at a fixed height, whatever the length of the can-do
+ *  above them. See components/GoalCard.tsx for the heights.
+ *
+ *  THE TEAR IS A CLIP PATH, not an image: forty points walked round the
+ *  perimeter with a random wobble of ±3.2%, generated once with a fixed seed so
+ *  the shape is a decision rather than a lottery on every build. An image would
+ *  be a request, a fixed size and a colour that stops matching the paper.
+ *
+ *  `filter: drop-shadow` on the WRAPPER, `clip-path` on the child, and that
+ *  order is the whole trick: a box-shadow on a clipped element is clipped away
+ *  with everything else outside the path, so the scrap would sit flat. A
+ *  drop-shadow filter follows the clipped silhouette, which is what makes it
+ *  look pasted on rather than printed.
+ * =========================================================================== */
+.goal-scrap {
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.22));
+  /* A hand does not paste anything straight. Small enough that nobody reads it
+     as an error, big enough to be felt. */
+  transform: rotate(-1.1deg);
+}
+.goal-scrap > * {
+  display: inline-block;
+  /* The paper token, not a hex of its own: a scrap torn off this notebook is
+     the same paper as the notebook (verify19b holds the palette to tokens). */
+  background: var(--cahier-paper-raised, var(--cahier-paper));
+  clip-path: polygon(3.2% 3.2%, 11.0% 1.6%, 18.8% 6.0%, 26.6% 0.7%, 34.4% 5.3%, 42.2% 2.0%, 50.0% 6.2%, 57.8% 2.5%, 65.6% 6.4%, 73.4% 2.1%, 81.2% 1.2%, 89.0% 1.4%, 96.8% 3.2%, 95.7% 14.9%, 94.3% 26.6%, 94.2% 38.3%, 95.9% 50.0%, 95.4% 61.7%, 96.4% 73.4%, 98.2% 85.1%, 96.8% 96.8%, 89.0% 94.2%, 81.2% 95.3%, 73.4% 94.5%, 65.6% 95.1%, 57.8% 98.8%, 50.0% 99.3%, 42.2% 98.5%, 34.4% 93.7%, 26.6% 99.7%, 18.8% 94.5%, 11.0% 98.1%, 3.2% 96.8%, 1.4% 85.1%, 0.5% 73.4%, 1.1% 61.7%, 0.1% 50.0%, 4.0% 38.3%, 1.0% 26.6%, 1.0% 14.9%);
+  /* The padding is generous on purpose: the tear eats into the box by up to
+     6% a side, so text set tight to the edge would be bitten. */
+  padding: 0.6rem 1.1rem 0.7rem;
 }

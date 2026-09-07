@@ -107,7 +107,7 @@ GRADING_FILES = {
     "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx": "GramMarathon",
     "src/app/lessons/pager/LessonPager.tsx": "lesson pager",
     "src/app/practice/ecoutexte/EcouTexte.tsx": "ÉcouTexte",
-    "src/app/conjugaison/page.tsx": "ConjugaZone",
+    "src/app/conjugaison/embed/page.tsx": "ConjugaZone",
 }
 for path, who in GRADING_FILES.items():
     src = strip_comments(read(path))

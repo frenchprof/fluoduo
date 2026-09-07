@@ -31,7 +31,7 @@ SPECU = "src/app/practice/speculearn/[collectionId]/page.tsx"
 PRE = "src/app/pretests/[id]/page.tsx"
 U0 = "src/app/pretests/unit0/[sioId]/page.tsx"
 PIC = "src/app/pretests/picture/[collectionId]/page.tsx"
-RECAP = "src/app/pretests/[id]/PretestContent.tsx"
+RECAP = "src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"
 AUTH = "src/lib/authConfig.ts"
 
 for p in (BAG, SOFT, SPECU, PRE, U0, PIC, RECAP, AUTH):

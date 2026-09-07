@@ -104,12 +104,26 @@ for key, name, _emoji, href in FAMILIES:
        f"{name} points at {href}, but {page} does not exist")
 
 # ── 3 · the two hubs render the hub, for the right family ───────────────────
+# Skills and Games RUN IN A FRAME since 2026-09-07 (Dan: *"EVERYTHING (LIKE THE
+# MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*), so the hub
+# itself moved to `<route>/embed` and the route is the notebook around it. The
+# rule is unchanged — that door opens that family's hub — but it now takes two
+# files, and a host without a twin is a page with nothing on it.
 for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.tsx", "skills"),
                    ("src/app/practice/page.tsx", "practice")):
     src = nocomment(read(route))
-    ok("<FamilyHub" in src and f'activeKey="{key}"' in src,
-       f"{route} renders <FamilyHub activeKey=\"{key}\">",
-       f"{route} no longer renders <FamilyHub activeKey=\"{key}\">")
+    embed_path = route.replace("/page.tsx", "/embed/page.tsx")
+    embed = nocomment(read(embed_path)) if os.path.exists(os.path.join(ROOT, embed_path)) else ""
+    where = embed if embed else src
+    ok("<FamilyHub" in where and f'activeKey="{key}"' in where,
+       f"{route} opens <FamilyHub activeKey=\"{key}\">",
+       f"{route} no longer reaches <FamilyHub activeKey=\"{key}\"> — neither the "
+       f"route nor its embed twin renders it")
+    if embed:
+        ok("EmbedFrame" in src and "/embed" in src,
+           f"{route} hosts its embed twin in the cahier",
+           f"{route} has an embed twin but does not host it — the door opens a "
+           f"page with nothing on it")
 
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")

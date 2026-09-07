@@ -138,6 +138,8 @@ export default function DrillShell({
   activity,
   deck,
   finish,
+  snapRows,
+  subhead,
   children,
 }: {
   /** The ✕. Always present — a drill you cannot leave is a trap. */
@@ -169,9 +171,51 @@ export default function DrillShell({
   /** Set on the finished/summary screen: replaces the base CTA row with the
    *  ONE primary « Next › » + the quiet Repeat / Back row. */
   finish?: DrillFinish | null;
+  /** Turn the body's scroller into a MAGNET (Dan, 2026-09-07, of the lesson:
+   *  *"it should swipe vertically - that is the right behaviour"*). The
+   *  children then mark their own rows with `snap-start`, and the scroll may
+   *  only ever rest at the top of one of them.
+   *
+   *  Why here rather than in a feed component of its own: this body IS already
+   *  an `overflow-y-auto`, and a second scroller inside it is two scrollers
+   *  fighting over one finger — the exact fault the goals page was built twice
+   *  to avoid. A row taller than the screen still scrolls freely through,
+   *  because a snap area larger than the snapport imposes no rest position.
+   *  That is what makes a long lesson panel doom-scroll and a short one
+   *  snap. */
+  snapRows?: boolean;
+  /** A strip that sits BETWEEN the band and the scroller — frozen, outside the
+   *  scroll box entirely. Dan, 2026-09-07, of the lesson: *"the scrolling is to
+   *  start only after the : Goal-Idea-Form-Exer"*.
+   *
+   *  `position: sticky` inside the scroller was not enough, and the difference
+   *  is real rather than pedantic: a sticky element is IN the flow, so the rows
+   *  below it snap to the top of the SCROLLER and arrive underneath it — which
+   *  is why every row needed a `scroll-mt` equal to the strip's height, a number
+   *  that had to be kept in step by hand. Out here the scroller starts below the
+   *  strip, so a row's top IS the top, and the offset stops existing. */
+  subhead?: ReactNode;
   children: ReactNode;
 }) {
   const router = useRouter();
+  // The rail is the root layout's since 2026-09-07 (RailSwipe.tsx) — one
+  // handler per document, so a framed station has one too.
+  /* A ROW FEED SCROLLS BEHIND A FROZEN HEADER, which needs the WINDOW not to
+     scroll as well. Measured on the lesson at 390x844: the document is 90px
+     taller than the viewport (`.cahier-drilldesk` is a full screen, and the
+     site footer sits under it), so two swipes took the site bar and the ✕ band
+     off the top while the panels were still snapping underneath — two
+     scrollers, one undoing the other. The goals page met this first and the
+     answer is the same: take the window out of the equation for as long as the
+     feed is up. Only while `snapRows` is on, so the other 27 DrillShell
+     surfaces are untouched. */
+  useEffect(() => {
+    if (!snapRows) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => { html.style.overflow = prev; };
+  }, [snapRows]);
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
   // The band over a drill is coloured by what the drill ASKS, not by which
@@ -268,7 +312,10 @@ export default function DrillShell({
        one shell, this root was the other, and nothing failed loudly.
        `cahier-drill` stays for the layout rules that ARE this shell's. */
     <div className="cahier-drilldesk">
-    <div className={`cahier-drill cahier-surface ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
+    {/* `cahier-surface` is main's one colour class (6 Sep, "i don't want
+        outliers"); `touch-pan-y` is this branch's, and hands the sideways drag
+        to the swipe rail. Unrelated jobs, both wanted. */}
+    <div className={`cahier-drill cahier-surface touch-pan-y ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never
@@ -456,7 +503,17 @@ export default function DrillShell({
           scrolls inside exactly as before.
           NOT justify-center: Dan ruled that out on 2026-08-11 (a short item
           floated mid-viewport under a header-sized hole). */}
-      <div className="flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden">
+      {/* OUTSIDE THE SCROLLER, above it. See `subhead` for why sticky was not
+          the same thing. `shrink-0` so a long strip never gets squeezed by the
+          scroller below it.
+          The slot is always rendered — it has no height when empty — because a
+          surface deep inside `children` fills it by PORTAL rather than by prop:
+          the lesson's tab strip is owned by LessonTabs, which knows which panel
+          you are in, and lifting that state up through the pager only to hand
+          it back down would put the strip and the panels in two places that can
+          disagree. `data-subhead` is the address it portals to. */}
+      <div data-subhead className="shrink-0 px-4">{subhead}</div>
+      <div className={`flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden${snapRows ? " snap-y snap-mandatory" : ""}`}>
         <div className="mx-auto flex w-full max-w-[600px] flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
           {/* HINTS ARE GUIDANCE TOWARD AN UNANSWERED QUESTION (Dan, 2026-08-27:

@@ -29,7 +29,7 @@ export const REPLIES = [
 ] as const;
 
 export const ON_FAIT_AXES: DiceAxis[] = [
-  { key: "reply", label: "Quoi dire ?", options: REPLIES.map((r) => ({ value: r.value, label: r.fr })) },
+  { key: "reply", label: "What to say", options: REPLIES.map((r) => ({ value: r.value, label: r.fr })) },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];

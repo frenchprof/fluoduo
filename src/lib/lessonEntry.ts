@@ -69,5 +69,10 @@ export const ENTRY_LABELS: Record<EntryLevel, { stars: string; name: string; blu
   1: { stars: "★", name: "Facile", blurb: "Sort the words into order — they are all given." },
   2: { stars: "★★", name: "Moyen", blurb: "Complete the sentence — one piece missing." },
   3: { stars: "★★★", name: "Difficile", blurb: "Complete the sentence — two pieces missing." },
-  4: { stars: "⭐", name: "Bonus", blurb: "Translate whole sentences into French." },
+  // 🎁, not ⭐ (Dan, 2026-09-07: "The bonus should a gift emoji"). The other
+  // three count stars — one, two, three — so a fourth star said "four" and
+  // read as one more rung of the same ladder. Bonus is not harder by a step,
+  // it is a different exercise: whole sentences, translated. A gift says
+  // "something else", which a fourth star cannot.
+  4: { stars: "🎁", name: "Bonus", blurb: "Translate whole sentences into French." },
 };

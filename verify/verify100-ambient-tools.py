@@ -65,15 +65,15 @@ ok(bool(voixla) and bool(chatutor),
    "a panel file is missing from src/components/tools/ — the extraction is "
    "the point: one panel, mounted by the page AND the card")
 
-tts_page = read("src/app/tts/page.tsx")
-tutor_page = read("src/app/tutor/page.tsx")
+tts_page = read("src/app/tts/embed/page.tsx")
+tutor_page = read("src/app/tutor/embed/page.tsx")
 ok("<VoixLaPanel" in tts_page and "components/tools/VoixLaPanel" in tts_page,
    "/tts still mounts the extracted VoixLaPanel",
-   "src/app/tts/page.tsx no longer mounts components/tools/VoixLaPanel — the "
+   "src/app/tts/embed/page.tsx no longer mounts components/tools/VoixLaPanel — the "
    "standalone page and the card must share ONE panel")
 ok("<ChaTutorPanel" in tutor_page and "components/tools/ChaTutorPanel" in tutor_page,
    "/tutor still mounts the extracted ChaTutorPanel",
-   "src/app/tutor/page.tsx no longer mounts components/tools/ChaTutorPanel — "
+   "src/app/tutor/embed/page.tsx no longer mounts components/tools/ChaTutorPanel — "
    "the standalone page and the card must share ONE panel")
 ok("<VoixLaPanel" in summon and "<ChaTutorPanel" in summon,
    "the 🧰 card mounts both panels too",

@@ -169,7 +169,10 @@ ok("sm:h-[58px]" in home and 44 <= phone <= 50,
 # The fit-at-320 worry the shrink rule answered is gone with it: the row
 # holds only the keys. The inverse is the claim now — a well creeping back
 # into this row is the regression.
-ok("min-w-[64px]" not in home,
+# (Pre-tests built Dan's earlier "squeeze the 1/50 in between" the same
+# hour — min-w-[26px]. The later ruling moved the stop to the bar, so BOTH
+# shapes of the well are the regression now.)
+ok("min-w-[64px]" not in home and "min-w-[26px]" not in home,
    "no well shares the key row — the stop reading rides the top bar",
    "a well is back beside the keys — the row Dan freed on 7 Sep is crowded again")
 

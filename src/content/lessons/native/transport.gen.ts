@@ -91,7 +91,7 @@ const swapGap = (m: Mode): string =>
 /** The frames as a learner picks them. The two labels are the deck's own
  *  letris column headings, shortened to fit a dropdown. */
 export const TRANSPORT_AXES: DiceAxis[] = [
-  { key: "frame", label: "Cadre", options: [
+  { key: "frame", label: "Setting", options: [
     { value: "en", label: "en — inside it" },
     { value: "à", label: "à — on foot or astride" },
     { value: "prendre", label: "prendre + article" },

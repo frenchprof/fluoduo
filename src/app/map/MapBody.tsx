@@ -187,7 +187,6 @@ export default function MapBody() {
       <p className="fluo-band-hand whitespace-nowrap text-[clamp(13px,4.3vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
         In FluOLinGo-land, there are 50 color-coded goals to conquer:
       </p>
-      <KindLegend />
 
       {/* ONE control row, fixed for both views: switch left, zoom right. */}
       <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
@@ -291,6 +290,18 @@ export default function MapBody() {
             <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
           )}
         </div>
+      </div>
+
+      {/* THE LEGEND SITS UNDER THE MAP (Dan, 2026-09-07: "ON THE MAP. PUT THE
+          COLOR LEGEND AT THE BOTTOM OF THE MAP"). It was between the sentence
+          and the controls, which put a key to the colours ABOVE the colours it
+          keys — you read it before you had anything to read it against, and it
+          pushed the map itself further down a phone screen. Underneath, it is
+          what it actually is: the thing you glance at when a stop's colour
+          asks a question. The sentence stays on top, because that one
+          introduces the map rather than explaining it. */}
+      <div className="mt-2.5">
+        <KindLegend />
       </div>
 
       {openSioObj && (

@@ -19,22 +19,23 @@ import { CURATED } from "@/content/collections";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getPretestForSio } from "@/content/pretests";
 import type { Sio } from "@/content/sios";
+import { pretestHref, unit0PretestHref } from "@/lib/pretests/routes";
 
 export default function StopPopup({ sio, onClose }: { sio: Sio; onClose: () => void }) {
   const deck = sio.collectionId ? CURATED.find((c) => c.id === sio.collectionId) : undefined;
   const unit0Bank = (UNIT0_QUESTIONS[sio.id] ?? []).length > 0;
   const pretest = getPretestForSio(sio.id);
-  const pretestHref = unit0Bank
-    ? `/pretests/unit0/${sio.id}`
+  const guessHref = unit0Bank
+    ? unit0PretestHref(sio.id)
     : pretest
-      ? `/pretests/${pretest.id}`
+      ? pretestHref(pretest.id)
       : deck?.gameConfig?.letris
         ? `/practice/dice/${deck.id}`
         : null;
   const tabs =
     sio.isProduction && !unit0Bank
       ? popupActivityTabs(deck)
-      : popupActivityTabs(deck, pretestHref ? { inline: false, href: pretestHref } : undefined);
+      : popupActivityTabs(deck, guessHref ? { inline: false, href: guessHref } : undefined);
   return (
     <SioModal sio={sio} onClose={onClose} tabs={tabs}>
       <SioDetail sio={sio} />

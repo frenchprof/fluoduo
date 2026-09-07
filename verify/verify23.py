@@ -153,7 +153,7 @@ check("Play again" in ov and ("Back" in ov), "secondary: play again / back", "Ga
 # ── 5 · the queue API is real ──────────────────────────────────────────────
 prog = strip_comments(read("src/lib/progress.ts"))
 rev = strip_comments(read("src/lib/reviser.ts"))
-revpage = strip_comments(read("src/app/reviser/page.tsx"))
+revpage = strip_comments(read("src/app/reviser/embed/page.tsx"))
 check("export function queueForReview" in prog and "intervalDays: 0" in prog.split("export function queueForReview")[1][:600],
       "progress.queueForReview writes itemSrs due-now (what dueForReview reads)", "queueForReview missing or does not write itemSrs")
 check("export function reviserHref" in rev and "REVIEW_FOCUS_PARAM" in rev,
@@ -185,8 +185,8 @@ check(i >= 0 and "sm:block" in lt[max(0, i - 500):i] and "hidden" in lt[max(0, i
 # follows the wording rather than pinning the old language.
 check(bool(gallery) and "▶ Play" in gallery and "Choose another" in gallery and "<BottomSheet" in gallery,
       "GameGallery: ▶ Play card + Choose another → BottomSheet", "GameGallery missing pieces")
-for p in ("src/app/games/vocabularain/page.tsx", "src/app/games/lexicalater/page.tsx",
-          "src/app/games/compose/page.tsx", "src/app/games/matching/page.tsx"):
+for p in ("src/app/games/vocabularain/embed/page.tsx", "src/app/games/lexicalater/embed/page.tsx",
+          "src/app/games/compose/embed/page.tsx", "src/app/games/matching/page.tsx"):
     check("<GameGallery" in read(p), f"{p} renders GameGallery", f"{p} is still a wall of tiles")
 check("itemSrs" in strip_comments(gallery), "the next set comes from the learner's itemSrs", "GameGallery ignores the SRS")
 

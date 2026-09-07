@@ -258,7 +258,14 @@ export default function HomeDashboard() {
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
           is the whole instruction set. */}
-      {/* ROW A IS GONE ENTIRELY (Dan, 7 Sep, in two strokes): the 1/50 well
+      {/* ROW A IS GONE ENTIRELY (Dan, 7 Sep, in three strokes — two lanes
+          heard neighbouring versions the same hour: pre-tests were told
+          "squeeze the 1/50 into between 2D and Play", then this session got
+          the LATER form — the stop to the TOP BAR, the switch retired, the
+          postcard pinned 2D, and finally "remove the name of stop above the
+          red pause button". Resolved to the later word at the QC merge;
+          the squeeze is recorded here so it is not rebuilt.) */}
+      {/* (original note: the 1/50 well
           moved to the TOP BAR as the editable StopMark, and then "pls remove
           the name of stop above the red pause button. we don't need that
           anymore" took the « Next: … » prose with it. Where Continue goes is
@@ -291,6 +298,11 @@ export default function HomeDashboard() {
             is allowed to WRAP there — the well takes the first line and the
             keys the second, rather than one of them disappearing. */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* The squeezed counter well (pre-tests' build of Dan's earlier
+              "squeeze the 1/50 in between" instruction) came out at the QC
+              merge: the editable stop rides the TOP BAR now (StopMark), and
+              two writable copies of one bookmark is the drift the single
+              component exists to prevent. */}
           {/* THE COURSE ENDS; THE FRENCH DOESN'T (Dan, 7 Sep — from the
               retention read). At 50/50 nextSioId returns undefined and this
               key used to simply vanish: the app's loudest door closed on the

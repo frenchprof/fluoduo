@@ -6,6 +6,535 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, after the merge — main landed the fonts too; the map gets its controls back (pre-tests lane)
+
+**MERGED `origin/main` INTO THE BRANCH.** Seven conflicts, and one of them is the
+collision this repo's rules exist for: **main did the font job too** (PR 213,
+"Three fonts, no more"). Two lanes, one instruction, an afternoon apart. Main's
+is the one that landed and the one kept — it is Dan's fuller 6 Sep roster, with
+the DISPLAY role going to his own hand. What this branch contributed and keeps
+is the evidence: the count that showed Roboto rendering on zero text runs while
+loaded on every page, and Iowan Old Style rendering on four.
+
+The other six resolutions, each needing BOTH sides:
+- `CahierShell` / `DrillShell`: main's `cahier-surface` (one colour class) and
+  this branch's `touch-pan-y` (hands the sideways drag to the rail).
+- `HomeDashboard`: this branch's 1/50 counter in the key group AND main's 🎓
+  key for a finished course — unrelated additions to the same row.
+- `games/vocabularain`: main landed the expert-unlock gallery on the file this
+  branch was turning into a host. The gallery is the ACTIVITY, so main's went
+  whole into the embed twin.
+- `globals.css`: main's font declarations, this branch's note on the serif.
+- `STATUS.md`: both histories, line-exactly (the file quotes conflict markers
+  in its own prose, so a naive resolve corrupts it).
+
+**Two more number collisions.** 110 and then 111 were both claimed on main
+while this branch held them; 112 as well. Renumbered to **117** and **118** —
+the ninth and tenth in this repo, every one caught by `verify-wiring` at push
+time rather than by anybody's scan.
+
+### The map, and what framing it had quietly cost
+
+**`MapBody` had no importer left.** Pointing `/map`'s frame at `/map/embed` —
+the deliberately BARE map built on 6 Sep for other people's pages — took the
+2D/3D switch, the zoom and the stop popup off the app's own map. That is the
+exact thing Dan asked to be put ON it on 2 Sep. `/map/embed` renders `MapBody`
+now; the bare one keeps its job at **`/map/standalone`**, where the name says
+which of the two it is.
+
+**The legend moved under the map** (Dan: *"ON THE MAP. PUT THE COLOR LEGEND AT
+THE BOTTOM OF THE MAP"*). It sat between the sentence and the controls — a key
+to the colours ABOVE the colours it keys.
+
+**The road detaches on a PINCH, and that is why nothing caught it.** Dan:
+*"WHEN DRAGGING THE MAP THE LINE JOINING UP THE STOPS GET DETACHED FROM THE
+STOPS"*, then *"NOT A SCROLLER BUT PINCH GESTURE"*. The 2D road is MEASURED —
+fifty node centres read from the laid-out DOM — and the only thing re-measuring
+it was a ResizeObserver. **A pinch changes the visual viewport, not the layout**:
+the box's CSS size does not move a hair, the observer never fires, and the
+polyline keeps pre-pinch coordinates while the stops paint at the new scale.
+`visualViewport`'s `resize` and `scroll` are the only events a pinch raises, and
+the road now redraws on both, rAF-throttled. Driven first with scroll and with a
+real touch flick, which is how the cause was narrowed to the one gesture that
+raises neither of the events it was listening for.
+
+**And a fault that came in on main, flagged rather than left**: `Map2DGrid` had
+a dead `sunk` variable with a comment claiming it "still drives the COLOUR". It
+did not — the colour had moved to `done` — so the note described a rule the file
+no longer followed. Both it and the now-orphaned `ahead` are gone.
+
+## 7 Sep, closing — the last twelve surfaces run in the cahier too (pre-tests lane)
+
+Dan: *"proceed the remaining unframed surfaces (the games, ConjugaZone,
+ChaTutor, VoixLà, DéjàRevu, Profile)"*. All twelve, paired: ConjugaZone,
+ChaTutor, VoixLà, DéjàRevu, Profile, My Progress, ÉcouTexte, WorDrill,
+ComposeIt, Numbers, VocabulaRain, LexicaLater.
+
+Nothing in any of those pages had to change to lose its notebook — the twin
+renders the SAME component and the chrome is hidden by CSS in a framed
+document. Driven at 390px afterwards: all twelve report `data-embed=1`, a
+hidden site bar, real content, and no page errors.
+
+**One duplicate the drive caught and reading would not have.** The site footer
+lives in the root layout's `<body>`, OUTSIDE the `TopLevelOnly` guard, because
+it is markup rather than a mounted helper — so every framed station printed
+« FluOLinGo · built by Dr Daniel Chan … » inside its own box, beneath the one
+the page around it was already showing. It is at the bottom of a scroller, so a
+screenshot of the top does not have it. Hidden now under `html[data-embed]`.
+
+**Nine checks followed the code, none weakened.** verify-grading, verify20,
+verify23, verify30, verify33, verify47, verify53, verify82 and verify100 all
+read `src/app/<route>/page.tsx` for the ACTIVITY, which now lives in the twin.
+Each reads the twin and every assertion is unchanged.
+
+**And the pattern checks itself now.** `verify111` gained a sweep over
+`**/embed/page.tsx`: every twin must have a host beside it that mounts an
+EmbedFrame pointing at it. Either half alone is a broken page — a host with no
+twin is a notebook around a 404, a twin with no host is an activity nobody can
+reach — and neither failure is visible from the other's source. Written as a
+sweep so a station added next month is covered without anyone remembering.
+
+### What is still unframed, and why
+
+- **`/lessons/[slug]`** — the lesson by its old slug, the same content as
+  `/lessons/deck/<deck>` by another door. `jam-scan` drives those 59 pages for
+  text collisions in the top document; framing them means teaching it to look
+  inside the frame, and that check has already cost this branch an afternoon.
+- **Unit 0 and the picture pre-tests**, still at `/pretests/...` — separate
+  runners (547 and 472 lines), unframed and one-question-at-a-time.
+
+## 7 Sep, last — the 50 axis labels in one pass, and the tour's missing tickbox (pre-tests lane)
+
+Dan: *"yes in 1 pass, and why is the why never offer again without the check
+box."*
+
+**THE PASS.** 50 distinct AXIS labels across the 59 lessons, and separating them
+from the 97 raw `label:` strings mattered: an axis label is the picker's
+CATEGORY (« Quel jour ? ») and an option label is the French being chosen
+between (« le client », « négatif »). They are told apart structurally — an
+axis label is the `label:` that follows a `key:` — not by eye, because a wrong
+guess would have translated the content out of the course.
+
+**32 changed, in 20 files.** Kept: already-English (Opener, Place, Question,
+Type, Usage, Situation, Article), number ranges, and the cognates a first-week
+learner reads without being taught — **Sujet, Verbe, Verbes, Forme** — which is
+Dan's own 5 Sep reason for « Idée · Formes · Exercice ».
+
+**One collision the sweep had to be checked for.** « Où ? » and « Quel lieu ? »
+both mean "where", and one lesson (`ou-est`) has both: translating each straight
+gave it two selects with the same name. They ask different things — one picks
+the PREPOSITION (devant, sous, à côté de), the other the PLACE — so they are
+« Preposition » and « Place ». A rerun confirms no lesson has a duplicate axis
+label and no axis label still reads as French.
+
+**THE TOUR'S THIRD OPTION HAD LOST ITS TICKBOX.** « Never offer again » was a
+bare underlined line under two buttons: it looked like a caption that had lost
+its checkbox, and it was in fact a third ACTION sitting where a setting appears
+to be. The app's other first-run sheet (`FirstRunHint`) has asked the same
+question as a checkbox above its confirm button since 2 Sep, so a learner met
+two sheets asking one thing two ways. It is a checkbox now — tick it, and
+« No thanks » honours it.
+
+## 7 Sep, late — English on the picker, a gift for Bonus, and the gap closed (pre-tests lane)
+
+Dan, on the lesson's Exercice panel: *"English pls We don't want au hasard and
+La phrase and Qui (the rest is ok). The bonus should a gift emoji. and why is
+there so much space between the four icons and the choose your level"*.
+
+**« au hasard » → « Any », « Qui ? » → « Who », « La phrase » → « Sentence ».**
+These are the SELECTS a learner must read to pick what to practise, so the 6 Sep
+test settles it: not *"is this French?"* but *"is a learner STUCK in front of
+it?"* A select whose only value you cannot read is a control you cannot use.
+
+**« Sujet », « Verbe » and « Forme » on other lessons stay**, and that is the
+same ruling rather than an exception: they are cognates a first-week learner
+reads without being taught, which is Dan's own reason for keeping « Idée ·
+Formes · Exercice » on the tab strip.
+
+**⭐ → 🎁 for Bonus.** The other three count stars — one, two, three — so a
+fourth star said "four" and read as one more rung of the same ladder. Bonus is
+not harder by a step, it is a different exercise (whole sentences, translated).
+Followed through the two other places the pair is written out: the tab strip's
+`does` line and the first-run hint.
+
+**The gap was TWO things paying at once**, which is why it was 250px of ruled
+paper: the chooser's own `pt-8`, and the panel centring itself in a screenful so
+half the slack went ABOVE it. The panels pin to the top now, like the goals
+scroller since the same day, and the chooser's padding drops to `pt-2`.
+
+### Still French, and Dan has not been shown it
+
+The picker's axis labels are per-lesson content and **97 distinct labels** are
+in use across the 59 lessons. He said *"the rest is ok"* while looking at ONE
+lesson, so only the two he named were changed. The non-cognate ones he has not
+met yet include « Où ? », « Combien ? », « Quel jour ? », « Quel lieu ? »,
+« Pays », « Prénom », « Fréquence », « Cadre », « Public ». They are the same
+kind of label as « Qui ? » and by the same test they should be English — but
+that is 97 content decisions and his to make, not a sweep to run quietly.
+
+## 7 Sep, evening — the goal's torn tag, the lesson's frozen strip, Home's row (pre-tests lane)
+
+Four of Dan's, in one pass.
+
+**1 · THE GOAL'S TAG IS A TORN SCRAP, AND NOTHING MOVES BETWEEN GOALS.** He
+sent a photograph of a torn piece of paper: *"The SIO0xxx Unit ,,, words can
+look they were on piece of paper pasted on? and perpetually at the same height.
+while the icons can just be by themselves below that (also down from the same
+height onwards)"*.
+
+The tear is a `clip-path` — forty points walked round the perimeter with a
+±3.2% wobble, generated once with a fixed seed so the shape is a decision and
+not a lottery on every build. `filter: drop-shadow` on the WRAPPER and the clip
+on the child, in that order: a box-shadow on a clipped element is clipped away
+with everything else, so the scrap would sit flat instead of pasted on.
+
+The second half is the structural one. The tag and the icons are the two things
+all fifty goals share, so on a one-per-screen feed they must land in the same
+place on all fifty. Measured after: **tag at 52px and icons at 473px on every
+goal**. Getting there meant the row pinning to the TOP rather than centring
+(centring puts a two-line can-do in a different place from a four-line one),
+and the words sitting in a box of `min-h-[21rem]` — 336px, which is measured:
+the natural height of all fifty was taken at 390px and the tallest, SIO-006,
+needs 335. If that one goal's wording is ever cut, the number comes down with it.
+
+**2 · THE LESSON'S TAB STRIP LEFT THE SCROLL BOX.** Dan: *"For MneMemo, the
+scrolling is to start only after the : Goal-Idea-Form-Exer."* It was
+`position: sticky` inside the scroller, which looks the same and is not: a
+sticky element is still in the flow, so a row snapping to the top of the
+scroller arrived UNDER it — which is why every row carried a `scroll-mt-14`
+matching the strip's height, in three places, kept in step by hand. DrillShell
+has a `[data-subhead]` slot above the scroller now and the strip PORTALS into
+it. A portal rather than a prop because the strip's state is LessonTabs' — it
+knows which panel the scroll settled on — and lifting that up through the pager
+only to hand it back down puts the strip and the panels somewhere they can
+disagree. The three 56px offsets are gone.
+
+**3 · FOUR DIFFICULTY BUTTONS ACROSS.** *"Can the choice of difficulty be in
+four horizontal buttons"*. Stacked stars over name, for the same reason the tab
+strip one row below stacks emoji over word: a quarter of a 390px phone is ~85px
+and « ★★★ Difficile » on one line needs about 120.
+
+**4 · HOME LOSES A ROW.** *"can we squeeze the 1/50 into between 2D and Play,
+but in smaller space of course. Then we can take out the 'Next...'."* Both
+done. « Next: Introductions » named the stop the ▶ key opens and the map below
+highlights — a third telling — and it cost a whole band of the hero.
+
+The squeeze is unforgiving arithmetic and worth writing down: the row has 297px
+at 390, four keys at the 44px tap floor are 188 and the 2D switch is 72, which
+leaves **37px** for the counter and its gaps. 26 is what fits; at 30 it was one
+pixel over and wrapped. Below 390 the row still wraps, as it has since the four
+keys arrived — the counter sits INSIDE the key group so it wraps WITH the keys
+rather than being marooned on the switch's line.
+
+**Three checks were rewritten onto the new rulings, none weakened**: verify80
+pinned two rows with « Next: … » between the counter and the switch — the 1 Sep
+arrangement Dan has now retired — and pins the single row and the absence of
+« Next: » instead; verify37's well rule was a literal 64/80px and is now the
+arithmetic; verify106 lost two ramp rules whose sizes no longer exist anywhere.
+
+## 7 Sep, later still — three type families, measured (pre-tests lane)
+
+Dan: *"i can still see a lot of Geist and Work Sans -- it should only be
+FluOLinGo, Roboto (and Patrick in reserve)"*.
+
+**What was there, counted before anything was touched** — every visible text
+run on eight routes, asked which family the browser had resolved:
+
+        1180  Work Sans        the whole app, effectively
+         139  Geist Mono       every small caps label
+          24  FluOLinGo Hand   the bands and the wordmark
+           4  Iowan Old Style  a system serif nobody had chosen
+           1  Patrick Hand
+           0  Roboto           loaded on every page, rendering nowhere
+
+Roboto was the one face he asked for and the one that never appeared: it was
+wired to `.fluo-readable`, which four components use. So this was not a swap of
+one font for another — it was the type system finally saying what it was asked
+to say. After: **1319 Roboto · 28 FluOLinGo Hand · 1 Patrick Hand**, and
+nothing else.
+
+**The fourth family was never shipped at all.** `--fluo-serif` named
+`"Iowan Old Style", Palatino, Georgia, …` — system fonts, no load — so
+« Choose your level » was Iowan on a Mac, Palatino on some Windows and Georgia
+elsewhere. It takes the house hand now, which is what Dan already ruled for
+titles on 5 Sep. `--fluo-mono` is a ROLE, not a metric: nothing under it is
+tabular, it is the small caps label, and Roboto draws it with the tracking
+unchanged.
+
+The role NAMES stay (`--font-body`, `--font-display`, `--font-sans`,
+`--font-mono`) even though all four now resolve to Roboto. Collapsing them is
+how a type system loses the ability to change its mind.
+
+`verify112` pins all of it: three imports, no stack naming a face the app does
+not load, and the body stack opening on the readable one.
+
+**Two things the swap moved**, both fixed: Roboto sets a shade wider than Work
+Sans, so « Qui ? » and « La phrase » began wrapping in the lesson's axis rows;
+and the « 🎲 Roll the dice » button was `w-full` — against Dan's 5 Sep rule,
+and now content-sized and centred.
+
+## 7 Sep, later — every station runs inside the cahier, in a frame (pre-tests lane)
+
+Dan: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN
+IFRAMES (EMBEDDED)"*.
+
+"Like the map" is a pattern that was already in the repo: `/map/embed` has been
+the map and nothing else since 6 Sep — no notebook, no site bar, no band — a
+page whose whole job is to be dropped into a box. Every station on the rail now
+has one, and the route a learner opens is the notebook that HOSTS it.
+
+    /sio/SIO-011              the cahier: site bar, band, coils, bottom bar
+      └─ /sio/SIO-011/embed   the goals, in their own document
+
+**WHY A FRAME AND NOT A COMPONENT.** A component shares one document with the
+chrome, and that is what has cost this app a fortnight of scrolling bugs: the
+window scrolls when the content does, `scrollIntoView` drags the header off the
+top, `.cahier-page` is `overflow: hidden` so a sticky band inside it never sees
+the scroll. A frame ends all of it by construction — a station cannot scroll the
+page it sits on, because it is not on it.
+
+**The embed twin renders the SAME component**, shell and all. The chrome is
+hidden by CSS in a framed document, so there is no second copy of any screen to
+drift from the first — the fault that made /sio a redirect in patch 25.
+
+### Five things this needed, four of them found by driving it
+
+1. **`html[data-embed]`, set by an inline script in the layout's `<head>`.**
+   React cannot answer "am I in a frame?" during render on a static export —
+   one HTML file is served to both — so a component that branched on it would
+   mismatch on hydration or flash a whole second notebook. A pre-paint script
+   plus CSS has neither problem.
+2. **`<base target="_top">`** in the same script. Every `<Link>` inside a
+   station is a real navigation, and without this each one loads the whole app
+   INSIDE the box.
+3. **`router.push` is not a link.** DrillShell's finish row pushes, so « Next › »
+   at the end of a lesson would load MémoiRecall inside the 720px frame under a
+   band still saying MneMemo. The framed rail now watches its own path and
+   hands the app back when it lands in a DIFFERENT station — station, not path,
+   because the goals scroller rewrites the URL on every scroll and re-hosting
+   fifty times would be a reload per goal.
+4. **A framed document boots the whole layout**, so PageViewTracker logged two
+   views per station and ProgressSync ran twice. `.fluo-embed`'s own note says
+   why CSS cannot fix that — *"scripts still run"*. `TopLevelOnly` unmounts
+   them; RailSwipe and AccentBar deliberately stay.
+5. **The band is furniture on a PAGE and the drill in a DRILL.** Hiding
+   `.page-band` everywhere took the ✕ off every framed drill. The rule is now
+   `\`.cahier-page > .page-band\`` and a drill's host passes `band={false}`.
+
+**And two checks broke on this and were right to.** `verify82` reads the desk's
+numbers with a FIRST-match regex, so an `html[data-embed]` override written
+above the canonical rule became the thing it measured — every `data-embed` rule
+now lives at the END of globals.css, and the block says why. `verify94` looked
+for `className="sticky top-0 z-N"` anchored at the start of the attribute, and
+the bar had gained `cahier-sitebar` so one rule could reach it.
+
+### Still open on this
+
+- **Keyboard focus.** Number keys reach a drill only once the learner has
+  touched inside the frame. A tap does it; a fresh page does not. `focus()` on
+  load is the fix and is not in yet.
+- **Only the seven rail stations are framed.** The games themselves
+  (VocabulaRain, NumBus, LexicaLater), ConjugaZone, ChaTutor, VoixLà, DéjàRevu
+  and the profile pages still draw their own notebook. Same recipe each time.
+- **Unit 0 and the picture pre-tests** are still at `/pretests/...`, unframed
+  and one-question-at-a-time.
+
+## 7 Sep — the swipes go the right way, and the pre-tests move into SpecuLearn (pre-tests lane)
+
+Sole editor of STATUS.md in this commit: claude/pre-tests-amendments-hndx8r.
+
+Dan, shown thirteen page types driven one direction at a time: *"right now it
+is not at all what i asked for"*. Then, over the afternoon, the chain itself —
+
+    Map > SIO > SpecuLearn > MneMemo > MémoiRecall >
+    Skills (ConjugaZone · ÉcouTexte · WorDrill · VoixLà · ComposeIt · ChaTutor) >
+    Games (NumBus + NumBourse inside · VocabulaRain · LexicaLater) >
+    User (Leaderboard · Profile)
+
+— and the next morning: *"it's a mental map, not a map to be published. we just
+need the swipes to go the right way, but it also means some pages need to be
+reworked into singular pages that can be scrolled downwards."*
+
+### What was actually wrong: a shape, not a bug
+
+Only **two** surfaces in the app had ever been given a horizontal gesture — the
+goals scroller and the lesson's tab strip — each carrying its own copy of the
+same 60px / 1.5x arithmetic and its own private idea of where "forward" went.
+The other eleven page types had none, so a sideways drag on the map, on a game,
+on the leaderboard did nothing at all. No amount of fixing either handler could
+have produced a chain.
+
+So the chain is a list (`src/lib/swipeRail.ts`) and there is now exactly one
+thing in the app that reads a finger (`components/useRailSwipe.ts`), mounted by
+CahierShell and DrillShell. Every route drawn in either shell is on the rail,
+the ones written after today included.
+
+**COLUMNS AND ROWS**, which is how Dan asked for it to be conceived and is the
+sentence to keep: *a column is a station and you move between columns SIDEWAYS;
+a row is one item inside a station and you move between rows by scrolling
+DOWN.* That is why the lesson's tab strip LOST its swipe — its four panels are
+rows of the MneMemo column, so a sideways drag there must leave for SpecuLearn
+or MémoiRecall, not shuffle panels. Nothing became unreachable: the strip is
+sticky and every panel is one tap away.
+
+### Three faults only driving it could find
+
+- Five stations matched their path with `===` and so fell off the rail at
+  `/conjugaison.html` — a real URL on a static export. Paths are normalised.
+- The map's forward swipe was a no-op, because "the goal for no deck" resolved
+  to the map itself. It opens the first goal now.
+- **A rightward swipe on ChaTutor LEFT THE APP.** A horizontal drag that runs
+  out of page is an overscroll, and a browser answers a horizontal overscroll
+  by going back in history — ON TOP of `touch-action`, not governed by it.
+  `html, body { overscroll-behavior-x: none }`, one line, and Dan's *"vertical
+  left is not to the browser"* is true.
+
+Also: a station with nothing for this goal is stepped over rather than landed
+on (41 of the 50 decks have no SpecuLearn). Both ends STOP — Dan has not ruled
+on wrapping, and a rail that stops can be taught to wrap later without anyone
+having learnt a wrong habit.
+
+### The pre-tests moved, and one question is one screen
+
+Dan, the same day: *"the Pre-Tests are still sitting under the SIO. They should
+be moved into the SpecuLearn as separate page - AND ONE QUESTION PER PAGE!"*,
+*"so that we scroll down when one is done"*, *"scroll down = swipe up"*.
+
+- **New address: `/practice/speculearn/pretest/<id>`.** The merger has been
+  settled since 2026-08-10 — the registry has said « Pre-Test folds into
+  SpecuLearn » for a month, the band has read « SpecuLearn » since 1 Sep, the
+  ledger and the labels filed it there all along. Only the URL had not moved.
+  `/pretests/<id>` still answers and forwards (`components/Forward.tsx`), which
+  is what keeps printed QR sheets and a term of bookmarks alive.
+- **The address is written once**, in `lib/pretests/routes.ts`. Making the move
+  meant finding four hand-written copies of `/pretests/${id}` — the stop popup,
+  the unit list, a deck's shell, the teacher dashboard. Four copies of one fact
+  is how they start disagreeing; it is the lesson `stopForDeck` was extracted
+  for, and verify82 caught a fifth copy the same afternoon.
+- **`components/SnapFeed.tsx` is the row mechanism**, extracted from the goals
+  scroller rather than written a second time: measured height, document lock,
+  `snap-y snap-mandatory` with `snap-always` sections, and an imperative
+  `scrollToRow` for the keyboard.
+- **The « Next → » button is gone.** The way on is the gesture; a button beside
+  it is a second answer to the same question and the one nobody finds by feel.
+
+**Two things that only showed up under a driven run, both now fixed and both
+worth remembering:**
+
+1. `useChoiceKeys({ enabled })` gates the WHOLE handler, Enter included. Gating
+   it on "not yet answered" tore the listener down the instant a question was
+   answered, so ↵ never advanced — a ten-question keyboard run ended back at
+   1 / 10. `pick` refuses a second answer on its own; `enabled` must not.
+2. A `flex-wrap` button row IS a stack of full-width buttons at the one width
+   that matters. Two `fluo-btn-lg` controls do not fit side by side on a phone,
+   so the recap wrapped them and broke Dan's 5 Sep rule by accident. A grid
+   cannot wrap.
+
+`verify110` holds all of it: the chain in Dan's order, the direction rule, the
+single handler, the snap classes, the absent Next button, the forwarding stub,
+and the one line of CSS that keeps the browser out of the horizontal.
+
+### Later the same day: the lesson swipes vertically, and the hubs appear
+
+Dan, shown that a vertical swipe inside the lesson did nothing but scroll the
+open panel: *"it should swipe vertically - that is the right behaviour"*. Then
+three more rulings in one message.
+
+**1 · MneMemo doom-scrolls.** The four panels were `tab === "formes" &&
+<Formes/>` — three unmounted at any moment, so there was nothing to scroll TO.
+All four are in the document now, each `snap-start`, and **DrillShell's own
+body scroller is the magnet** (`snapRows`). NOT a SnapFeed inside it: that body
+is already an `overflow-y-auto`, and a second scroller inside it is two
+scrollers fighting over one finger.
+
+Four things this took, each measured rather than reasoned:
+
+- **The strip is an index, not a switch.** It reads the scroll position — "the
+  last row whose top has passed the line under the tabs" — after an
+  IntersectionObserver got it wrong twice. "Which panel is visible" has no
+  single answer (at the bottom, Formes and Exercice are both in the band) and a
+  panel taller than the screen is never *mostly* visible, so no threshold works.
+- **Every row is at least a measured screenful.** Letting short panels size to
+  their content kills the blank paper and breaks the rule that pays for it: Goal
+  and Idée then sit ~350px apart and one flick jumps clean past Idée. That is
+  continuous scrolling with a tidy ending — what Dan ruled out on the goals.
+  `justify-center` is what keeps the slack from reading as a fault.
+- **`scrollIntoView` scrolls the WINDOW too.** Tapping a tab took the site bar
+  and the ✕ band off the top. Same trap the goals scroller hit on 5 Sep, same
+  answer: compute the delta, move the one box that should move.
+- **The document is locked while the feed is up**, and only then — the other 27
+  DrillShell surfaces are untouched. The page sits in a document 90px taller
+  than the viewport, so without it two swipes take the frozen header away.
+
+**1b · The chain ENDS AT GAMES.** Dan, an hour later: *"LEADERBOARD AND
+PROFILE SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. Every station on the
+rail is work on a goal — guess it, read it, drill it, play it — and where you
+stand against the class is not work. Both pages stay reachable through the
+👤 User family in the bottom bar and the ☰; off the rail they simply get no
+horizontal swipe, like Home, the guide and Réglages. Seven stations.
+
+**2 · Skills and Games are HUBS.** Dan: *"when there are multiple destinations
+on the right, we need the hub page, but when we return from one of those back
+to the left, it returns to the hub page. Hub pages are Skills and Games."* So
+the six skills and the three games stop being nine columns of the rail and
+become two. Standing on ChaTutor, rightwards is « Skills », not « ComposeIt ».
+The chain is seven stations:
+
+    Map > Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games
+
+**3 · The goal card's activities are icons only**, three up (*"not in this form
+but the grid of icons only like we saw in the earlier 'HELP'"*). Seven labelled
+pills were seven rows of text under a card that had already said what the goal
+is — the litmus test's own case. The names live in `title` and an `sr-only`
+span, so a screen reader still announces them.
+
+**And SIO-011 is Dan's own wording**: « I can identify stressed pronouns. » /
+« Match subject with stressed pronouns in the relevant sentence structures. »
+
+Renumbered **verify110 -> verify111** — `claude/fluolingo-color-review-9thj8x`
+claimed 110 after this branch did. Eighth collision in the repo, second between
+these same two branches, and the first one the push-time check caught by itself.
+`verify73` was found VACUOUS in the same sweep: its regex insisted `className`
+be the wrapper's first attribute, and a `ref` had moved it.
+
+### Still open, and Dan's to settle
+
+- **Wrap or stop** at the two ends of the rail (past Games, and swiping right
+  off the map). Stopping is what shipped.
+- **Unit 0 and the picture pre-tests** are still at `/pretests/unit0/<sio>` and
+  `/pretests/picture/<deck>`, and still one-at-a-time rather than a feed. They
+  are separate runners (547 and 472 lines) and moving them is the next slice of
+  the same job, not part of this one.
+- **SpecuLearn is still merged in name only**: four runners, ~2,264 lines. The
+  URL move makes them siblings at last, which is the precondition for merging
+  the engines, not the merge itself.
+
+## 7 Sep — ⚠️ COLOR REVIEW, READ FIRST: your remote branch was swept; one push restores it
+
+The approved branch sweep (96 deleted, 124 → 39) had one wrong box:
+`claude/fluolingo-color-review-9thj8x` was listed because its PR (#196) had
+merged — but you had pushed NEW palette-hues work to the same branch after
+the merge, which the vetting (last-PR-state only) could not see. **No
+commits are lost.** Your local copy is complete; run
+
+    git push -u origin claude/fluolingo-color-review-9thj8x
+
+and the remote ref is back exactly as you left it. Do this BEFORE any
+`fetch --prune`. Apologies from fluoduo-main — and the sweep rule gains the
+missing clause: a merged-PR branch whose remote SHA has MOVED since the
+merge is in flight, never deletable. (Also for you: verify numbers — 110 is
+yours and stays yours; 111-116 are taken; 117+ free.)
+
+The rest of the sweep was clean: survivors are main, the working branches,
+Dan's three local-state snapshots, feat/landing-page, the flagged
+closed-unmerged menu-children-dress, and the 33 never-PR'd branches.
+The sweep itself is now reusable tooling: `.github/workflows/branch-sweep.yml`
+(workflow_dispatch, list as input, trunk/snapshots hard-protected).
+The deploy token note, same night: `fluoduo-deploy-mirror` (dckg) gained
+"Workflows: Read and write" and **expires Fri 2 Oct 2026** — regenerate and
+re-paste into LIVE_DEPLOY_TOKEN before that date or deploy-live starts
+failing mid-semester.
+
 ## 7 Sep, early morning — Dan's decision round lands: the gem utilities ship
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
