@@ -69,12 +69,41 @@ export default function Map2DGrid({
     const box = boxRef.current;
     if (!box) return;
     const b = box.getBoundingClientRect();
+
+    /* THE ROAD IS MEASURED IN ONE SPACE AND DRAWN IN ANOTHER, and that is the
+       whole of this bug (Dan, 2026-09-07, shown the postcard on Home: *"The
+       pinching issue is not solved right?"* — it was not).
+       `getBoundingClientRect` answers in POST-zoom CSS pixels; an SVG inside
+       the zoomed subtree consumes its `points` as PRE-zoom user units and is
+       then scaled with everything else. So under a CSS `zoom` the road paints
+       at `zoom x` the stop positions — compressed toward the top-left corner,
+       which is exactly what "detached from the stops" looks like.
+       Measured on the built export, Home's postcard at zoom 0.44:
+           stop 5 centre  x = 247      polyline point 4  x = 247
+           where that point ACTUALLY paints  x = 109   (247 x 0.44)
+       TWO SURFACES CARRY A CSS ZOOM, so this was never only Home's: MapBody
+       wraps this grid in `zoom: zoomPct/100` for its own - / + control, and
+       `usePinchZoom` drives that same number. The 7 Sep fix below listened to
+       `visualViewport` — the BROWSER's pinch — and that was the wrong pinch:
+       the app's own pinch changes CSS zoom, which resizes the box, fires the
+       ResizeObserver, and redraws just as wrongly as before. Dividing here
+       fixes all three at once, and any future zoomed embedding with them.
+       `currentCSSZoom` is the browser's own answer (Chrome 128+); the width
+       ratio is the same number for anything older. */
+    const zoomed = box as HTMLElement & { currentCSSZoom?: number };
+    const k = zoomed.currentCSSZoom
+      ?? (box.offsetWidth > 0 ? b.width / box.offsetWidth : 1);
+    const scale = Number.isFinite(k) && k > 0 ? k : 1;
+
     const pts: { x: number; y: number }[] = [];
     for (const s of SIOS) {
       const el = box.querySelector(`[data-stop="${s.id}"]`);
       if (!el) return;
       const r = el.getBoundingClientRect();
-      pts.push({ x: r.left + r.width / 2 - b.left, y: r.top + r.height / 2 - b.top });
+      pts.push({
+        x: (r.left + r.width / 2 - b.left) / scale,
+        y: (r.top + r.height / 2 - b.top) / scale,
+      });
     }
     const seg = (from: number, to: number) =>
       pts.slice(from, to + 1).map((p) => `${Math.round(p.x)},${Math.round(p.y)}`).join(" ");

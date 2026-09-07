@@ -121,6 +121,44 @@ neither by anyone's scan, which is the whole argument for the check: a scan is
 a snapshot, and today `main` and four branches are all moving inside the same
 hour.
 
+## 7 Sep — the road, reported twice: the first fix was for a pinch that was never broken
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+**Dan, shown Home's postcard: *"The pinching issue is not solved right?"*** No.
+
+The road is MEASURED — fifty stop centres read with `getBoundingClientRect`,
+written into an SVG `<polyline points>`. Those are **two coordinate spaces the
+moment a CSS `zoom` sits above the box**: the rect answers in POST-zoom CSS
+pixels, the polyline's points are consumed as PRE-zoom user units. So the road
+paints at `zoom x` the stop positions, squeezed toward the top-left. Measured
+on the built export, Home's postcard at 0.44:
+
+    stop 5's centre     x = 247
+    polyline point 4    x = 247      the same number
+    where it PAINTS     x = 109      247 x 0.44
+
+**The 7 Sep fix listened to `visualViewport` — the BROWSER's pinch — and that
+case was never broken**: a browser pinch scales the road and the stops together.
+What breaks them apart is the app's OWN pinch, which drives `zoomPct`, which is
+a CSS `zoom`. Three surfaces carry one:
+
+    Home's postcard      zoom: 0.44
+    /map's - / + control zoom: zoomPct / 100
+    /map's pinch         drives that same zoomPct
+
+Dividing the measurement by `currentCSSZoom` fixes all three, and any future
+zoomed embedding with them.
+
+**`verify127-map-road` exists because this was reported twice.** It measures
+where the polyline's points ACTUALLY PAINT (`getScreenCTM`) against where the
+stops paint — the obvious runtime check, comparing the polyline's stored
+numbers with the stops' measured centres, makes a broken road look perfect,
+because both read 247. Sampled at stops 1, 5, 10 and 20: a scale fault grows
+with distance from the origin. Proved by reverting the fix — Home 138px off,
+the + control 110px, a pinch 356px — **and `/map` at 100% passed while broken**,
+which is exactly why two fixes missed it.
+
 ## 7 Sep — the coloured strip becomes a law, and ConjugaZone joins Practice
 
 Sole editor of STATUS.md in this commit: the pre-tests lane.
