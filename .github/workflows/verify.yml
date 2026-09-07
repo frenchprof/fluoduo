@@ -364,7 +364,7 @@ jobs:
         run: python3 verify/verify109-lucky-find.py
 
       - name: "Every coloured token sits on one of the twelve palette hues (6 Sep)"
-        run: python3 verify/verify110-palette-hues.py
+        run: python3 verify/verify112-palette-hues.py
 
       - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
         run: python3 verify/verify111-banned-fonts.py
