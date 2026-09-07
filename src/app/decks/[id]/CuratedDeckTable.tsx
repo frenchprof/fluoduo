@@ -297,9 +297,21 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
     });
   }, [ordered, rowFilter, subsetSize, buckets, selected]);
 
+  // NO SIDE FLAPS — this page draws its own view switch (7 Sep).
+  // VIEW_TABS was passed to CahierFrame AND mapped into the "View & mode" row
+  // below, so on a desktop the same two controls appeared twice on one screen:
+  // « ▦ List · ▤ All » in the row, and the same pair again as flaps off the
+  // right edge of the paper. Both drove the same `setView`. On a phone it
+  // never showed, because the rail collapses into ☰ below the breakpoint —
+  // which is why it survived this long.
+  //
+  // The row is the one Dan designed (2026-07-20: views as short buttons, the
+  // study–test switch beside them, the drill's door first), so the rail is the
+  // copy that goes. Two doors to one control on one screen is the HelpDot
+  // fault.
   return (
     <CahierFrame
-      tabs={VIEW_TABS}
+      tabs={[]}
       active={view}
       onSelect={(k) => setView(k as View)}
       siteActive="flip"

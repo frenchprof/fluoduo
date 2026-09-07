@@ -387,6 +387,9 @@ jobs:
       - name: "The map's road is drawn in the units it is painted in (7 Sep)"
         run: python3 verify/verify123-road-scale.py
 
+      - name: "The desktop pass: one view switch, a postcard that is not a letterbox (7 Sep)"
+        run: python3 verify/verify124-desktop-pass.py
+
       - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
         run: python3 verify/verify125-banned-fonts.py
 

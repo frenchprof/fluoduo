@@ -91,6 +91,11 @@ export function CahierFrame({
           </div>
         </main>
 
+        {/* NO TABS, NO RAIL (7 Sep). A caller that draws its own view switch
+            inside the page passes none, and an empty <nav> would still take
+            the rail's width and leave a bite out of the desk beside the paper.
+            The deck table is that caller — see the note on its CahierFrame. */}
+        {tabs.length > 0 && (
         <nav className="cahier-tabs" aria-label="Views">
           {tabs.map((t, i) => (
             <button
@@ -105,6 +110,7 @@ export function CahierFrame({
             </button>
           ))}
         </nav>
+        )}
       </div>
     </div>
   );
