@@ -12,7 +12,7 @@
  *   🧑‍🎓 Students    roster → per-learner drilldown (progress economy, SRS,
  *                  time-on-task estimate, item responses, event trail)
  *   🕹️ Activities  games / decks / supplements / flashcard reviews
- *   🧪 Pretests    gap report: per item miss rates + top wrong picks
+ *   💡 Pretests    gap report: per item miss rates + top wrong picks
  *   💬 Feedback    the bug-report inbox
  * The events + leaderboard streams are fetched ONCE here and shared by all
  * panels; the per-student stores (answer logs) are fetched ONCE too, through
@@ -50,7 +50,7 @@ const PANELS = [
   { key: "attendance", label: "👣 Attendance" },
   { key: "students", label: "🧑‍🎓 Students" },
   { key: "activities", label: "🕹️ Activities" },
-  { key: "pretests", label: "🧪 Pretests" },
+  { key: "pretests", label: "💡 Pretests" },
   { key: "gaps", label: "🧱 Gaps" },
   { key: "feedback", label: "💬 Feedback" },
 ] as const;

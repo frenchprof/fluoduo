@@ -124,9 +124,14 @@ check(home.count('role="progressbar"') == 0,
 # accident. What SURVIVES the restyle is what these checks now hold: the two
 # essential marks, the three destinations, the due badge, the glyph rule, and
 # the ban on a full-width CTA. verify37-home.py pins the new surfaces.
-check("<dl" in home and "<dt" in home and "<dd" in home,
-      "the readings are still a description list — each figure carries its label",
-      "the readings are not a <dl> of value/label pairs")
+# THE READINGS LEFT HOME (Dan, 7 Sep: "replace the streak info with the stop
+# info ... at the top right ... so we free up the space"). The 1/50 well now
+# rides the top bar as the editable StopMark (verify87 follows it there); the
+# hero keeps prose and keys only, so the old dl claim inverts: a readings
+# row creeping back IS the regression.
+check("<dl" not in home,
+      "no readings row on the hero — the stop rides the top bar",
+      "a readings <dl> is back on Home — the well Dan moved to the bar has returned")
 
 sec_start = home.find("<section")
 sec_end = home.rfind("</section>")
@@ -225,8 +230,11 @@ bar = read("src/components/SiteTopBar.tsx")
 check("progress" in bar and "streak" in bar,
       "the streak is in the top bar, where Dan moved it",
       "the streak is on neither Home nor the top bar — the one reading with a deadline is gone")
-check("xpMultiplier" in bar,
-      "the ×XP multiplier followed the streak into the bar",
+# The streak moved AGAIN on 7 Sep — bar → account card (its bar slot went to
+# the stop) — and the multiplier moved with it, as it did the first time.
+acct = read("src/components/AccountButton.tsx")
+check("xpMultiplier" in acct,
+      "the ×XP multiplier followed the streak onto the account card",
       "the multiplier was dropped in the move — a streak that does not say what it buys is a number")
 check("progress.streak" not in home,
       "the streak is not ALSO on Home — it moved, it did not multiply",

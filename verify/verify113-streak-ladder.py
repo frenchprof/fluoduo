@@ -125,16 +125,19 @@ check(re.search(r"\{\s*day:\s*30\s*,\s*mult:\s*3\s*\}", eco) is not None,
       "the ladder's top rung left day 30 — it must move with the badge or the "
       "two systems tell two stories")
 
-# ── C · the next rung is visible, on both surfaces, gain-framed ────────────
-bar = read("src/components/SiteTopBar.tsx")
+# ── C · the next rung is visible where the fire shows, gain-framed ─────────
+# The streak LEFT the top bar on 7 Sep (Dan: its slot went to the editable
+# stop), so the rung's addresses are the account card and the streak toast.
+# The claim is unchanged: wherever the fire shows, the next rung is named.
 acct = read("src/components/AccountButton.tsx")
-check("nextFireMilestone" in bar,
-      "the top-bar well names the next rung",
-      "the top bar no longer names the next rung — from day 7 the fire would "
-      "again give no reason to look forward")
+toast_src = read("src/components/RewardToast.tsx")
 check("nextFireMilestone" in acct,
-      "the account popover names the next rung",
-      "the account popover no longer names the next rung")
+      "the account card names the next rung",
+      "the account card no longer names the next rung — from day 7 the fire "
+      "would again give no reason to look forward")
+check("nextFireMilestone" in toast_src,
+      "the streak toast names the next rung",
+      "the streak toast no longer names the next rung")
 # NO BAR IN THE POPOVER (Dan, 7 Sep: "we were opting for the minimalist
 # report card look?" — the third surface to shed its progress bar, after the
 # hero on 19 Aug and /moi on 22 Aug). The XP figure is the mark; a bar that
@@ -143,13 +146,13 @@ check("rounded-full border" not in acct or "h-2 overflow-hidden" not in acct,
       "the popover states the XP figure without a bar",
       "a progress bar is back in the account popover — Dan removed these from "
       "the hero (19 Aug), /moi (22 Aug) and here (7 Sep)")
-for name, src in [("SiteTopBar", bar), ("AccountButton", acct)]:
+for name, src in [("AccountButton", acct), ("RewardToast", toast_src)]:
     check("pays" in src,
           f"{name} frames the rung as what the day PAYS",
           f"{name} lost the gain-framing — the rung must be said as a payout")
 banned = [w for w in ["don't lose", "you'll lose", "losing your streak",
                       "streak dies", "last chance", "hurry", "don't break"]
-          if w in (bar + acct).lower()]
+          if w in (acct + toast_src).lower()]
 check(not banned, "no loss words on either surface",
       f"loss-framing found ({', '.join(banned)}) — the ethics floor forbids it")
 

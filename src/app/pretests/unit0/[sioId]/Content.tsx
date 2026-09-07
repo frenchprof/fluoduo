@@ -64,7 +64,7 @@ export default function Unit0PretestPage({ sioId }: { sioId: string }) {
       active="pretest"
       band={{ title: "SpecuLearn", goal: goalNumber(sio), exitHref: `/unit/${sio.unit}` }}
     >
-      <SectionBand family="goals" label="🧪 Can you already do this?">
+      <SectionBand family="goals" label="💡 Can you already do this?">
         {/* The can-do gets the popup's own treatment — a highlighted serif
             line — not SectionBand's `gloss`, which renders inline in
             parentheses at 60% opacity and is built for a short phrase. These

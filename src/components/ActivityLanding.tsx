@@ -168,16 +168,37 @@ function Row({
   isLast: boolean;
 }) {
   const label = (
-    <span className="flex min-w-0 flex-1 items-center gap-2 text-left">
+    <span className="flex min-w-0 flex-1 items-start gap-1.5 text-left">
+      {/* « 1. » NOT « (01) » — Dan, 2026-09-07: *"instead of circle number make
+          it just 1. 2. 3. in bolder font so that we don't waste the left side
+          space on the buttons"*.
+          The circle was 28px wide plus its gap on a cell that is 117px at
+          390px and 84px at 320px, and it was spending that on a decoration:
+          the ring, the tint and the leading zero all drew the eye without
+          telling a learner anything the digit alone does not. What is left is
+          the number, one weight bolder, sized with the title so the two sit on
+          the same line rather than the digit floating beside it. */}
       <span
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[0.7rem] font-black"
-        style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
+        /* THE TITLE'S OWN INK, not an accent. The badge that was here asked for
+           `--fluo-card-accent`, which is only defined inside .fluo-h-0..5 — it
+           is unset on these cells, so the ring rendered in the inherited ink
+           and had been doing so all along. Naming the colour the number
+           actually takes is the honest version, and it is the right one
+           anyway: « 1. Je m'appelle… » reads as one line, which is the point
+           of putting the digit inline. */
+        className="shrink-0 text-[13px] font-black leading-tight tabular-nums text-[color:var(--fluo-ink)]"
       >
-        {String(sio.num).padStart(2, "0")}
+        {sio.num}.
       </span>
+      {/* WRAPS, NEVER TRUNCATES (Dan, 2026-09-07: *"put buttons in two
+          columns"*). At two columns on a 390px phone a cell is 117px wide, and
+          `truncate` turned that into « Je m… », « Tu (t… » — and, worse, made
+          stops 05 and 06 both read « C'est… », two different goals wearing one
+          label. The title is the only thing that says which stop this is, so it
+          wraps onto as many lines as it needs and the cell grows to fit. */}
       <span className="min-w-0">
-        <span lang="fr" className="block truncate text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
-        <span className="block truncate text-[0.7rem] text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
+        <span lang="fr" className="block hyphens-auto break-words text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
+        <span className="block break-words text-[0.7rem] leading-tight text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
       </span>
       {isLast && (
         <span className="fluo-label shrink-0 rounded-full border-2 px-2 py-0.5 text-[0.55rem]"
@@ -188,7 +209,9 @@ function Row({
     </span>
   );
 
-  const base = "flex w-full items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 transition";
+  /* `items-stretch` + `h-full` so both cells in a row are the same height
+     whatever their titles do — a grid of ragged boxes reads as broken. */
+  const base = "flex h-full w-full items-start gap-1.5 rounded-xl border-2 px-2.5 py-2 transition";
   if (!href) {
     return (
       <li>
@@ -212,7 +235,11 @@ function Row({
         style={{ borderColor: isLast ? "var(--fluo-card-accent)" : "var(--fluo-line)" }}
       >
         {label}
-        <span aria-hidden className="shrink-0 text-sm font-black text-[color:var(--fluo-ink)]/35">›</span>
+        {/* The « › » that sat here is gone (7 Sep). The whole cell is the link
+            and says so by being a raised white button; the chevron added
+            nothing a learner needed and cost ~12px of a 117px cell, which is
+            width the title could not spare. Dan's litmus test, applied to a
+            glyph. */}
       </Link>
     </li>
   );

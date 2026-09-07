@@ -77,8 +77,8 @@
    unity despite the variation of colors, the fonts").
    `font-family: Arial, Helvetica, sans-serif` sat here from the day the repo
    was generated — it is create-next-app's boilerplate, never removed. The
-   type system built on top of it (Work Sans body + display, Patrick Hand,
-   Dan's own FluOLinGo Hand, Roboto for readability) was therefore OPT-IN:
+   type system built on top of it (Roboto for body + display + readability,
+   Patrick Hand, Dan's own FluOLinGo Hand) was therefore OPT-IN:
    anything not explicitly given .cahier-body / .fluo-serif / a font class
    fell back to Arial. Measured before this change, 50-83% of the real text
    runs on every page were Arial — including « tes parents » at 30px in the
@@ -119,7 +119,7 @@ html, body { overscroll-behavior-x: none; }
   --neo-bg-hi: #334155;
   --neo-shadow-dark: rgba(0, 0, 0, 0.55);
   --neo-shadow-light: rgba(148, 163, 184, 0.10);
-  --neo-accent: #fbbf24;
+  --neo-accent: #e3cb2a;
 }
 
 .neo-btn {
@@ -237,19 +237,19 @@ html, body { overscroll-behavior-x: none; }
 :root {
   --fluo-bg:        #fce8d4;   /* peach foolscap paper */
   --fluo-rule:      #f1cba0;   /* faint ruled line */
-  --fluo-margin:    #e08b80;   /* red margin rule */
+  --fluo-margin:    #d99363;   /* red margin rule */
   --fluo-hole:      #aab0bb;   /* three-hole-punch grey */
   --fluo-ink:       #22305a;   /* deep navy ink */
   --fluo-ink-soft:  #5d6488;
-  --fluo-line:      #e2caa2;   /* tan borders */
+  --fluo-line:      #e9c6a5;   /* tan borders */
   --fluo-card:      #fffaf0;   /* paper card */
   --fluo-hl:        #d4f24c;   /* chartreuse highlighter / Start */
   --fluo-primary:   #cfe84b;
   --fluo-primary-shadow: #a6c130;
   --fluo-primary-ink:    #22305a;   /* navy text on chartreuse */
   --fluo-primary-soft:   #eef7c0;
-  --fluo-secondary: #2bb6c2;        /* teal */
-  --fluo-secondary-shadow: #1d8b96;
+  --fluo-secondary: #51adde;        /* teal */
+  --fluo-secondary-shadow: #3c84ab;
   --fluo-danger:    #ff5667;
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
@@ -546,7 +546,7 @@ html, body { overscroll-behavior-x: none; }
 }
 
 /* Six rotating accent hues for item cards (paper-tinted). */
-.fluo-h-0 { --fluo-card-accent: #e0567f; --fluo-card-tint: #fbe3ec; }
+.fluo-h-0 { --fluo-card-accent: var(--fam-svplay-ink); --fluo-card-tint: var(--fam-svplay-wash); }
 /* THE FAMILY PENS, derived (Dan, 6 Sep). His spec's /moi exemption was
    OVERRULED by him the same hour: "It is no longer an exception... moi has
    to follow the scheme because it is part of the website, and there must
@@ -709,7 +709,7 @@ html, body { overscroll-behavior-x: none; }
   --cahier-la:         #d11149;   /* feminine (la) + red margin */
   --cahier-hl:         var(--fluo-hl);   /* chartreuse marker */
   --cahier-hl-edge:    #a6c130;
-  --cahier-gold:       #c8a24b;
+  --cahier-gold:       #b9a94d;
   /* drill verdict palette (patch 20–21): correct/wrong is colour with
      meaning, so it lives as tokens — one definition for the shell, every
      drill, and the future GameFrame — and the 19b ratchet can hold. */
@@ -726,7 +726,7 @@ html, body { overscroll-behavior-x: none; }
   --cahier-spiral:     #b9bcc4;
   --cahier-spiral-lo:  #82868f;
   /* six index-tab pastels (match Dan's reference image) */
-  --cahier-t0: #cbb7e6;  --cahier-t1: #8fd3cd;  --cahier-t2: #f3cba0;
+  --cahier-t0: #cbb7e6;  --cahier-t1: #97d3bd;  --cahier-t2: #f3cba0;
   --cahier-t3: #f0d24e;  --cahier-t4: #b6d77f;  --cahier-t5: #e290b6;
 
   /* Course-map region accents (regionIcons.tsx reads these). PROVISIONAL
@@ -1608,10 +1608,10 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   --cahier-line: oklch(90% 0.018 85);
   --cahier-line-strong: oklch(81% 0.025 78);
   --cahier-ink-faint: oklch(60% 0.014 65);
-  --cahier-accent: oklch(46% 0.13 262);
+  --cahier-accent: #015c93;
   --cahier-accent-soft: oklch(92% 0.03 262);
-  --cahier-accent-strong: oklch(36% 0.13 262);
-  --cahier-kraft: oklch(85% 0.045 75);
+  --cahier-accent-strong: #004069;
+  --cahier-kraft: #e3c8b0;
   --cahier-kraft-strong: oklch(65% 0.06 70);
   --cahier-hover: oklch(95% 0.018 262);
 
@@ -2138,7 +2138,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
-@media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
+/* TWO COLUMNS ON A PHONE TOO (Dan, 2026-09-07: *"put buttons in two
+   columns"*, looking at SpecuLearn at 390px). This rule collapsed the grid to
+   one column below 520px, so every phone — the way the course is actually
+   used — saw a single stack of full-width rows, which is also what the
+   no-full-width-control rule forbids. The grid keeps its 6px gap; the rows
+   themselves already truncate rather than overflow. */
 
 /* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
    He sent the palette back — *"i am sorry your colors are very off. these are
@@ -2586,7 +2591,7 @@ input.fluo-bookmark:focus,
   .text-\[11px\] { font-size: calc(0.6875rem + var(--fs-step) * 0.69); }
   .text-\[11\.5px\] { font-size: calc(0.7188rem + var(--fs-step) * 0.72); }
   .text-\[12px\] { font-size: calc(0.75rem + var(--fs-step) * 0.75); }
-    .text-\[13px\] { font-size: calc(0.8125rem + var(--fs-step) * 0.81); }
+  .text-\[13px\] { font-size: calc(0.8125rem + var(--fs-step) * 0.81); }
   .text-\[13\.5px\] { font-size: calc(0.8438rem + var(--fs-step) * 0.84); }
   .text-\[14px\] { font-size: calc(0.875rem + var(--fs-step) * 0.88); }
   .text-\[15px\] { font-size: calc(0.9375rem + var(--fs-step) * 0.94); }
@@ -2594,7 +2599,7 @@ input.fluo-bookmark:focus,
   .text-\[17px\] { font-size: calc(1.0625rem + var(--fs-step) * 1.06); }
   .text-\[19px\] { font-size: calc(1.1875rem + var(--fs-step) * 1.19); }
   .text-\[22px\] { font-size: calc(1.375rem + var(--fs-step) * 1.38); }
-    .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+  .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
 }

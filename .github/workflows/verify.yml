@@ -322,8 +322,8 @@ jobs:
       # The browser half of verify72, LAST on purpose: it replaces out/ with
       # an OPEN export, and the wall build above is the one verify18/18b
       # audit — nothing may read out/ after this line expecting the wall.
-      - name: "Home's two control rows and the map view switch (1 Sep)"
-        run: python3 verify/verify80-home-view-switch.py
+      - name: "Home's postcard: pinned 2D, one bare door, the CTA on it (7 Sep)"
+        run: python3 verify/verify80-home-postcard.py
 
       - name: "The origin animation ends on the NAME — FluOLinGo (1 Sep)"
         run: python3 verify/verify81-fluolingo-origin.py
@@ -375,8 +375,14 @@ jobs:
       - name: verify112 — you vs last week, executed
         run: python3 verify/verify112-vs-last-week.py
 
+      - name: "Every coloured token sits on one of the twelve palette hues (6 Sep)"
+        run: python3 verify/verify120-palette-hues.py
+
       - name: "Games sit in the page; full screen is a key, not the default (7 Sep)"
         run: python3 verify/verify121-embedded-games.py
+
+      - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
+        run: python3 verify/verify125-banned-fonts.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
