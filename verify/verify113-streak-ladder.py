@@ -135,6 +135,14 @@ check("nextFireMilestone" in bar,
 check("nextFireMilestone" in acct,
       "the account popover names the next rung",
       "the account popover no longer names the next rung")
+# NO BAR IN THE POPOVER (Dan, 7 Sep: "we were opting for the minimalist
+# report card look?" — the third surface to shed its progress bar, after the
+# hero on 19 Aug and /moi on 22 Aug). The XP figure is the mark; a bar that
+# repeats the number under it is the exact shape he removed twice already.
+check("rounded-full border" not in acct or "h-2 overflow-hidden" not in acct,
+      "the popover states the XP figure without a bar",
+      "a progress bar is back in the account popover — Dan removed these from "
+      "the hero (19 Aug), /moi (22 Aug) and here (7 Sep)")
 for name, src in [("SiteTopBar", bar), ("AccountButton", acct)]:
     check("pays" in src,
           f"{name} frames the rung as what the day PAYS",
