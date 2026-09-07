@@ -38,7 +38,7 @@ import { isPlayableGap } from "@/lib/collections/gapSentence";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
-import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
+import { TAB_ICONS, activity, bandOf, familyName, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -188,9 +188,21 @@ export default function CahierShell({
           {/* The page's heading band (Dan, 2026-08-23, variant A): every
               family page opens with the same structure the profile page
               established — name on the family's ink, one number right.
-              Home keeps its hero instead; /moi and /profil have no famKey. */}
-          {famKey && active !== "home" && band !== false && (band?.title ?? pageLabel) && (
-            <PageBand title={band?.title ?? pageLabel} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
+              Home keeps its hero instead.
+
+              THE FALLBACK IS LOAD-BEARING (Dan, 2026-09-07: *"we also need to
+              make it a point that pages never lose their coloured strip at the
+              top"*). `bandTitle` used to be `band?.title ?? pageLabel`, and
+              pageLabel is allowed to be undefined — a page whose active key has
+              a family but no flap, no registry entry and no hub silently lost
+              its strip rather than announcing anything. /moi was exactly that:
+              family `user`, no name anywhere, so `famKey && … && undefined`
+              rendered nothing at all and the page opened on bare paper. A page
+              that cannot name itself should say what FAMILY it is in, which is
+              always true and always something; saying nothing is the one answer
+              that is never right. */}
+          {famKey && active !== "home" && band !== false && (
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
                    (globals.css, `.page-band`), so it takes PageBand's own
                    padding like every other band and its ✕ lands in the same
                    place on every page. */ />

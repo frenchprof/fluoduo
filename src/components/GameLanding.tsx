@@ -28,12 +28,21 @@ import { activity } from "@/content/activities";
 
 export default function GameLanding({
   activityKey,
+  title,
   bleed,
   children,
 }: {
   /** Registry key — also CahierShell's `active`, which is what makes the
    *  band name this activity instead of a unit. */
   activityKey: string;
+  /** The name for the band, where the key has no registry row. NumBus and
+   *  NumBourse are both real pages with no row of their own — Dan parked them
+   *  under a Numbers hub on 31 Aug ("park NumBus / NumBourse under a hub-tab
+   *  Numbers") and the rows went with the tiles. Without this the band could
+   *  not name them, so it drew nothing and the page opened with no coloured
+   *  strip, its own heading printing the raw key: « numbus », lowercase.
+   *  (Dan, 2026-09-07: pages never lose their coloured strip at the top.) */
+  title?: string;
   /**
    * Let the child span the page's full text column instead of the landing's
    * reading width. A PLAYING game wants every pixel: measured on a 390px
@@ -45,8 +54,9 @@ export default function GameLanding({
   children: React.ReactNode;
 }) {
   const a = activity(activityKey);
+  const name = title ?? a?.name;
   return (
-    <CahierShell active={activityKey}>
+    <CahierShell active={activityKey} band={name ? { title: name } : undefined}>
       <div className={`mx-auto w-full ${bleed ? "max-w-5xl px-0 pb-8 pt-2 sm:px-4" : "max-w-3xl px-4 pb-24 pt-4"}`}>
         {/* A PLAYING GAME HAS NO HEADER — the litmus test, measured. The
             heading band sits directly above this, already reading
@@ -67,7 +77,9 @@ export default function GameLanding({
             <span className="text-4xl leading-none" aria-hidden>{a?.emoji}</span>
             <div className="min-w-0">
               <h1 className="cahier-hand text-3xl leading-none text-[color:var(--cahier-ink)]">
-                {a?.name ?? activityKey}
+                {/* Never the raw key: /games/numbus printed « numbus » in
+                    lowercase for as long as its registry row has been gone. */}
+                {name ?? activityKey}
               </h1>
               {a?.blurb && (
                 <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">{a.blurb}</p>

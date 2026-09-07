@@ -397,6 +397,11 @@ jobs:
       - name: "The jam scan — every lesson RENDERED, every tab and pane (1 Sep)"
         run: python3 verify/verify79-jam-scan.py
 
+      # Like the jam scan, this one only the RENDERED page knows: the strip goes
+      # missing in four shapes and a grep catches one of them.
+      - name: "Every page wears exactly one coloured strip at the top (7 Sep)"
+        run: python3 verify/verify126-band-strip.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

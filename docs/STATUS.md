@@ -95,6 +95,48 @@ neither by anyone's scan, which is the whole argument for the check: a scan is
 a snapshot, and today `main` and four branches are all moving inside the same
 hour.
 
+## 7 Sep — the coloured strip becomes a law, and ConjugaZone joins Practice
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+**Dan, over a screenshot of a pre-test that opened on bare paper:** *"we also
+need to make it a point that pages never loose their coloured strip at the top,
+which means this should be illegal"*.
+
+**Driving all 58 routes found FOUR shapes of the same fault, not one**, and in
+every one of them each half of the code reads as correct on its own:
+
+| shape | who had it |
+|---|---|
+| host passes `band={false}`, framed page's CahierShell band hidden by `html[data-embed]` | the pre-test — Dan's screenshot |
+| the page cannot name itself, so CahierShell drew no band at all | `/moi` (its name lives under `/profil`) |
+| the registry row was retired, the route kept, so DrillShell's `{act && …}` drew nothing | Diced Practice; `/games/numbus` printed « numbus », lowercase |
+| a game never got wrapped in `GameLanding` | Match It, ComposeIt — the two missed when the other four were wrapped |
+
+**A grep for `band={false}` flags the five CORRECT uses and misses three of the
+four shapes.** So the check is a browser scan: `verify126-band-strip.py` runs
+`scripts/band-scan.mjs` over every route in `src/app`, two instances of each
+dynamic segment, and requires **exactly one** visible `.page-band` across the
+top document and every frame. Two is the same fault from the other side and is
+what a careless fix produces. Four exemptions, each with its reason in the file
+(Home's hero, `/map/standalone`, the two `robots: noindex` demos).
+
+Two structural fallbacks so the class cannot come back: **CahierShell** and
+**DrillShell** now fall back to the family's own name rather than rendering
+nothing. DrillShell already guarded the EXIT on exactly those routes — *"a
+drill you cannot leave is a trap"* — and the band had been going the same way
+unnoticed.
+
+**ConjugaZone is Practice now** (Dan: *"in case you haven't noticed ConjugaZone
+is now part of the Practice series"*). The six skills are things you do WITH
+French; conjugation is the course's own material drilled. `verify29-rail`
+updated. Its icon colour is unchanged — those come from `bandOf`, not family.
+
+**`verify121` widened from four games to six** and now matches the
+`<GameLanding>` TAG rather than an exact string: it pinned prop order, so
+giving NumBus the `title` it needed to stop printing its own key turned a
+correct fix red.
+
 ## 7 Sep — THE PRE-TESTS LANE WENT STRAIGHT ONTO `main`, AT DAN'S WORD. Rebase before you push.
 
 Sole editor of STATUS.md in this commit: the pre-tests lane.

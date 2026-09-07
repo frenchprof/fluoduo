@@ -179,16 +179,36 @@ check(chrome is not None
       "the frame's card chrome is no longer conditional on `full` — a border "
       "and rounded corners round the edge of the whole display")
 
-# 7 ── all four of the games Dan named go through the landing, bleeding.
+# 7 ── every game Dan named goes through the landing, bleeding.
+#
+# SIX NOW, NOT FOUR. Match It and ComposeIt were the two that got missed when
+# the other four were wrapped on 7 Sep, and the strip scan (verify126) found
+# them the same day: both opened on a white game bar carrying ✕ 🔊 ⛶ ⋯, no
+# coloured strip and nothing naming the activity — the exact fault the failure
+# message below describes, sitting on two routes this list did not name.
 GAMES = {
     "src/app/games/vocabularain/[setId]/page.tsx": "vocabularain",
     "src/app/games/lexicalater/[deckId]/page.tsx": "lexicalator",
     "src/app/games/numbus/page.tsx": "numbus",
     "src/app/games/numbourse/page.tsx": "numbourse",
+    "src/app/games/matching/[collectionId]/MatchingContent.tsx": "matching",
+    "src/app/games/compose/[bankId]/page.tsx": "compose",
 }
 for path, key in GAMES.items():
     src = strip_comments(read(path))
-    check(f'<GameLanding activityKey="{key}" bleed>' in src,
+    # MATCHED AS A TAG, NOT AS A LITERAL. This was an exact-string test for
+    # `<GameLanding activityKey="numbus" bleed>`, and it failed the moment
+    # NumBus needed a `title` — its registry row went to the Numbers hub on
+    # 31 Aug, so the landing could not name it and its heading printed the raw
+    # key, « numbus », lowercase. The claim is that the game is inside a
+    # bleeding landing for this activity; the order of the props is not the
+    # claim, and pinning it turns a correct fix into a red build.
+    # ALL the tags, not the first: NumBus renders two — the settings step keeps
+    # its reading margin, the playing board bleeds — and the first one in the
+    # file is the settings one. Asking `re.search` for a single match tested
+    # the wrong tag and failed a page that is correct.
+    tags = re.findall(rf'<GameLanding\b[^>]*activityKey="{re.escape(key)}"[^>]*>', src)
+    check(any("bleed" in t for t in tags),
           f"{key}: the game is wrapped in its own landing shell",
           f"{key}: the game is no longer inside GameLanding — it is back to "
           f"being the whole page, with nothing on screen naming the activity")

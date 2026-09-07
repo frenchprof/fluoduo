@@ -19,13 +19,13 @@ export default function NumBusClient() {
   return (
     <AuthGate what="play">
       {!config ? (
-        <GameLanding activityKey="numbus">
+        <GameLanding activityKey="numbus" title="NumBus">
           <NumBusSetup onStart={setConfig} />
         </GameLanding>
       ) : (
         // The same shell the setup step above already uses, so the band and
         // the spine stay put while you play; ⛶ on the game bar takes it full.
-        <GameLanding activityKey="numbus" bleed>
+        <GameLanding activityKey="numbus" title="NumBus" bleed>
           <NumBus config={config} onQuit={() => setConfig(null)} />
         </GameLanding>
       )}

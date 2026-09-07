@@ -133,9 +133,13 @@ EXPECT = {
     # over a change that moved nothing. The repo's own precedent settles it:
     # "display renames never touch keys or routes" (the Memo rename, 23 Aug).
     # The claim here is membership; the key is what membership is made of.
+    # CONJUGAZONE MOVED HERE ON 7 SEP (Dan: "in case you haven't noticed
+    # ConjugaZone's placement moved twice on 7 Sep and settled at the QC
+    # merge (Dan: "ConjugaZone will henceforth sit in Blue") — the Revise
+    # family, where his 3x5 menu screenshot also drew it.
     "practice": {"speculearn", "lesson", "flip"},
-    "review":   {"reviser", "grammarathon"},
-    "skills":   {"conjugaison", "ecoutexte", "wordrill", "tts", "compose", "tutor"},
+    "review":   {"reviser", "grammarathon", "conjugaison"},
+    "skills":   {"ecoutexte", "wordrill", "tts", "compose", "tutor"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.
