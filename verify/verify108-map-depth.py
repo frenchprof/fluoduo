@@ -486,16 +486,24 @@ check('touchAction: "pan-y"' in mb,
       "the map wrapper takes the pinch off the browser and keeps 1-finger scroll",
       "the map wrapper does not set touch-action, so a pinch zooms the PAGE "
       "instead of the map")
-check('addEventListener("touchmove", onMove, { passive: false })' in mb,
+# THE PINCH MOVED HOUSE on 7 Sep — the swipe-rail law (verify117 §2) says a
+# file that navigates may not also read fingers, and MapBody's stops became
+# doors to /sio/[id]. Same gesture, same three claims, followed to the new
+# owner: lib/usePinchZoom.ts, which MapBody must actually mount.
+pz = read("src/lib/usePinchZoom.ts")
+check("usePinchZoom(mapRef" in mb,
+      "MapBody mounts the pinch hook on the map wrapper",
+      "the pinch hook is not mounted — the map lost its two-finger zoom")
+check('addEventListener("touchmove", onMove, { passive: false })' in pz,
       "the move listener is non-passive, so the gesture can be claimed",
       "the touchmove listener is passive — preventDefault is a no-op and the "
       "browser will zoom the page underneath the map (this is why it is an "
       "effect and not an onTouchMove prop: React attaches those passively)")
-check(re.search(r"setZoom\(baseZoom \* \(gap\(e\.touches\) / baseDist\)\)", mb),
+check(re.search(r"setZoom\(baseZoom \* \(gap\(e\.touches\) / baseDist\)\)", pz),
       "the pinch scales the zoom proportionally from where the fingers landed",
       "the pinch no longer scales from the gesture's own starting distance, so "
       "it will jump rather than track")
-check("zoomRef" in mb and "zoomRef.current = zoomPct" in mb,
+check("zoomRef" in pz and "zoomRef.current = zoomPct" in pz,
       "the live zoom is read through a ref, so the listeners bind once",
       "the pinch listeners close over the zoom and must re-attach on every "
       "change")
