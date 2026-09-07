@@ -11,9 +11,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
-import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { levelForXp, nextMultiplierStep, xpMultiplier } from "@/lib/economy";
+import { levelForXp, nextFireMilestone, xpMultiplier } from "@/lib/economy";
 
 export default function AccountButton() {
   const user = useAuthUser();
@@ -80,64 +79,82 @@ export default function AccountButton() {
           {/* click-away catcher */}
           <div className="fixed inset-0 z-40 bg-black/20" onClick={() => setOpen(false)} aria-hidden />
           <div className="absolute right-0 top-full z-50 mt-1 w-72 rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-2xl">
-            <p className="truncate px-1 text-sm font-black text-[color:var(--cahier-ink)]">{label}</p>
-            {(() => {
-              const lvl = levelForXp(progress.xp);
-              const mult = xpMultiplier(progress.streak);
-              const next = nextMultiplierStep(progress.streak);
-              const pct = Math.round((lvl.into / lvl.span) * 100);
-              return (
-                <>
-                  <p className="mt-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
-                    🎚️ <RankBadge level={lvl.level} name={lvl.name} />
-                  </p>
-                  <div className="mx-1 mt-1 h-2 overflow-hidden rounded-full border border-[color:var(--cahier-ink)]/40 bg-[color:var(--cahier-paper-2,#f4f1e4)]">
-                    <span className="block h-full rounded-full bg-[color:var(--cahier-hl,#eaff00)]" style={{ width: `${Math.max(pct, 3)}%` }} />
-                  </div>
-                  <p className="px-1 pt-0.5 text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
-                  <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-                    <span>🔥 {progress.streak}{mult > 1 && <b className="text-rose-600"> ×{mult}</b>}</span>
-                    <span>⭐ {progress.xp}</span>
-                    <span>💎 {progress.gems}</span>
-                    <span>🎖️ {progress.badges?.length ?? 0} badges</span>
-                    <StatsHelp />
-                  </div>
-                  {/* WHAT THE NEXT DAY BUYS (7 Sep). The ladder used to stop at
-                      day 7 and nothing ever named a rung ahead, so a learner on
-                      day 5 could not tell there was one. This says what a future
-                      day PAYS and never what a lapse costs — the ethics floor
-                      is that nothing is loss-framed, and `nextMultiplierStep`
-                      cannot express a loss: it only ever returns a day you have
-                      not reached. At the top of the ladder it returns null and
-                      this line simply is not there, rather than saying
-                      "maximum", which would read as an ending. */}
-                  {next && (
-                    <p className="mt-1 px-1 text-[11px] font-bold text-[color:var(--cahier-ink-soft)]">
-                      Day {next.day} pays ×{String(next.mult).replace(".", ",")}
-                    </p>
-                  )}
-                </>
-              );
-            })()}
-            {/* Three compact doors (Dan, 2026-07-25): Profile · History → /moi
-                · sign-out as a wave — labels shrunk so the row breathes. */}
-            <div className="mt-3 flex gap-1.5">
-              <Link href="/profil" onClick={() => setOpen(false)} className="cahier-btn cahier-btn-sm flex-1 text-center">
-                🎖️ Profile
-              </Link>
-              <Link href="/moi" onClick={() => setOpen(false)} className="cahier-btn cahier-btn-sm flex-1 text-center">
-                ⌛ History
+            {/* THE CARD'S DOORS ARE ITS OWN PARTS (Dan, 7 Sep: "For profile -
+                click on the name... we dont need history and exit buttons.
+                those are in the user page. And put a on-off button + a
+                setting button to the top right corner"). The button row went:
+                the NAME is the Profile door, the LEVEL row is the history
+                door, and the corner holds ⚙ Settings + the power icon. */}
+            <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
+              <Link
+                href="/reglages"
+                onClick={() => setOpen(false)}
+                aria-label="Settings"
+                title="Settings"
+                className="fluo-hit44 grid h-7 w-7 place-items-center rounded-lg text-[15px]"
+              >
+                ⚙️
               </Link>
               <button
                 type="button"
                 onClick={async () => { setOpen(false); try { await signOut(); } catch {} }}
-                className="cahier-btn cahier-btn-sm"
-                title="Sign out"
                 aria-label="Sign out"
+                title="Sign out"
+                className="fluo-hit44 grid h-7 w-7 place-items-center rounded-lg"
               >
-                🚪➜
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#dc2626" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true">
+                  <path d="M12 3v8" />
+                  <path d="M6.2 6.2a8 8 0 1 0 11.6 0" />
+                </svg>
               </button>
             </div>
+            <Link
+              href="/profil"
+              onClick={() => setOpen(false)}
+              title="Profile"
+              className="block truncate px-1 pr-16 text-sm font-black text-[color:var(--cahier-ink)] underline decoration-[color:var(--cahier-hl,#eaff00)] decoration-[3px] underline-offset-2"
+            >
+              {label}
+            </Link>
+            {(() => {
+              const mult = xpMultiplier(progress.streak);
+              const next = nextFireMilestone(progress.streak);
+              const unit = levelForXp(progress.xp).level;
+              /* THE CARD IS THREE COLUMNS (Dan, 7 Sep: "just a column of
+                 icons a column of numbers and a word or two beside") — his
+                 five quantities, in his order. Level is the 0-4 exponential
+                 XP ladder (economy.ts); only the level NUMBER shows, never
+                 an into/span figure, so exactly one XP figure remains on
+                 this card. The level row inherits the pill's job as the
+                 History door; the fire's next rung lives in its tooltip
+                 (gain-framed, what the next day pays). */
+              const num = "fluo-mono text-sm font-black tabular-nums text-[color:var(--cahier-ink)]";
+              const word = "text-xs font-bold text-[color:var(--cahier-ink-soft)]";
+              return (
+                <div className="mt-2 grid grid-cols-[auto_auto_1fr] items-baseline gap-x-2.5 gap-y-1 px-1">
+                  <span aria-hidden title={next ? `Day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : undefined}>🔥</span>
+                  <span className={num}>{progress.streak}{mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}</span>
+                  <span className={word}>day streak</span>
+                  <span aria-hidden>⭐</span>
+                  <span className={num}>{progress.xp.toLocaleString()}</span>
+                  <span className={word}>XP</span>
+                  <span aria-hidden>💎</span>
+                  <span className={num}>{progress.gems}</span>
+                  <span className={word}>gems</span>
+                  <span aria-hidden>🎖️</span>
+                  <span className={num}>{progress.badges?.length ?? 0}</span>
+                  <span className={word}>badges</span>
+                  <span aria-hidden>🎚️</span>
+                  <span className={num}>{unit}</span>
+                  <span className={word}>
+                    <Link href="/moi" onClick={() => setOpen(false)} title={`Level ${unit} of 4 — History`} className="fluo-hit44 underline decoration-[color:var(--cahier-hl,#eaff00)] decoration-2 underline-offset-2">
+                      level
+                    </Link>
+                    {" "}<StatsHelp />
+                  </span>
+                </div>
+              );
+            })()}
           </div>
         </>
       )}

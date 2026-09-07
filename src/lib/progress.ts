@@ -55,7 +55,7 @@ import {
   FIND_BIG,
   luckyFind,
 } from "@/lib/economy";
-import { dayKey, previousDay, learnerZone, weekKey } from "@/lib/dayKey";
+import { dayKey, previousDay, learnerZone, weekKey, previousWeek } from "@/lib/dayKey";
 import { buildEvidence, type AssistanceLevel } from "@/lib/evidence";
 import { CURRENT_TERM } from "@/lib/term";
 import { SIOS } from "@/content/sios";
@@ -71,6 +71,13 @@ export type Progress = {
   weekXp: number;
   /** The ISO week `weekXp` belongs to ("YYYY-Www"), learner-local. */
   weekKey: string | null;
+  /** LAST week's final figure, stashed when `weekKey` rolls over, so the
+   *  board can say "you vs last week" without publishing anything new —
+   *  self-comparison only, never anyone else's data (Dan, 7 Sep). */
+  prevWeekXp?: number;
+  /** The ISO week `prevWeekXp` belongs to. Only an ADJACENT week reads as
+   *  "last week" on screen; an older stash truthfully shows a 0 last week. */
+  prevWeekKey?: string | null;
   lastActiveDay: string | null; // "YYYY-MM-DD", learner-local, 04:00 rollover
   timeZone?: string; // IANA zone lastActiveDay was computed in
   itemSrs: Record<string, ItemSrs>;
@@ -151,7 +158,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0 };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -173,6 +180,8 @@ function normalize(raw: Partial<Progress>): Progress {
   // catch that — the key IS present, it is just not a number.
   p.findGems = Number.isFinite(raw.findGems) ? Math.max(0, raw.findGems as number) : 0;
   p.findDry = Number.isFinite(raw.findDry) ? Math.max(0, raw.findDry as number) : 0;
+  p.prevWeekXp = Number.isFinite(raw.prevWeekXp) ? Math.max(0, raw.prevWeekXp as number) : 0;
+  p.prevWeekKey = typeof raw.prevWeekKey === "string" ? raw.prevWeekKey : null;
   p.findDay = typeof raw.findDay === "string" ? raw.findDay : null;
   return p;
 }
@@ -271,6 +280,12 @@ function addXp(p: Progress, base: number): Progress {
   const paid = Math.round(base * mult);
   const wk = weekKey();
   const rolled = p.weekKey === wk ? (p.weekXp ?? 0) : 0;
+  // When the week turns, last week's figure is STASHED, not dropped (7 Sep):
+  // the board's "you vs last week" reads it back. An empty old bucket keeps
+  // the earlier stash — a week of silence should not erase the last real one.
+  const stash = p.weekKey !== wk && p.weekKey != null && (p.weekXp ?? 0) > 0;
+  const prevWeekXp = stash ? (p.weekXp ?? 0) : (p.prevWeekXp ?? 0);
+  const prevWeekKey = stash ? p.weekKey : (p.prevWeekKey ?? null);
   try {
     if (typeof window !== "undefined") {
       window.dispatchEvent(new CustomEvent("fluolingo:xp", { detail: { base, mult, paid } }));
@@ -278,7 +293,21 @@ function addXp(p: Progress, base: number): Progress {
   } catch {
     /* the float is decoration; never let it break an award */
   }
-  return { ...p, xp: p.xp + paid, weekXp: rolled + paid, weekKey: wk };
+  return { ...p, xp: p.xp + paid, weekXp: rolled + paid, weekKey: wk, prevWeekXp, prevWeekKey };
+}
+
+/** The two figures the board's self-strip compares (7 Sep). "Last week"
+ *  means exactly the ADJACENT week: an older stash reads as 0, because a
+ *  learner who earned nothing last week genuinely has a 0 to look at.
+ *  Two candidates can hold last week's figure — the rollover stash, and a
+ *  live bucket nothing has rolled yet (no XP earned this week) — so both
+ *  are consulted. Pure, so a check can execute it. */
+export function weekPair(p: Progress, wk: string = weekKey()): { thisWeek: number; lastWeek: number } {
+  const thisWeek = p.weekKey === wk ? (p.weekXp ?? 0) : 0;
+  const prev = previousWeek(wk);
+  let lastWeek = p.prevWeekKey === prev ? (p.prevWeekXp ?? 0) : 0;
+  if (p.weekKey === prev) lastWeek = Math.max(lastWeek, p.weekXp ?? 0);
+  return { thisWeek, lastWeek };
 }
 
 /** Award any newly-earned badges (crediting their gem bounty), then persist.

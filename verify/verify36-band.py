@@ -75,53 +75,74 @@ WHITE = (1.0, 1.0, 1.0)
 PAPER = colour("--cahier-paper")
 BANDS = ["guess", "lesson", "recog", "prod", "create"]
 
-# 1 · every band token resolves, and carries WHITE TEXT — that is what the
-#     band is. It must also hold up if it is ever laid on paper instead.
+# 1 · every band token resolves, is one of the twelve, and carries BLACK TEXT.
+#
+# Dan, 2026-09-06: *"whatever it is, every color on the web can only be one of
+# these"* — the twelve marks in src/content/highlighterMarks.ts — and
+# *"use black ink if you have to - for words"*.
+#
+# BOTH HALVES OF THAT ARE CHECKED HERE, because either alone is a trap. The
+# bands are now the palette's pens at full highlighter strength, so white on
+# them measures 1.84-2.84:1: a future edit that puts white back is unreadable
+# the moment it lands, and nothing else in the repo would notice. And a band
+# that drifts off the palette is the exact fault Dan sent back twice.
+#
+# This REPLACES a white-on-band rule and an ink-on-paper rule. The second is
+# gone rather than relaxed: it asked whether the band colour would work as
+# TEXT on the cahier paper, which was true of the dimmed set and is not the
+# job these do. A band is a ground.
+PALETTE = dict(re.findall(r'block: "(#[0-9a-fA-F]{6})"', read("src/content/highlighterMarks.ts")) and
+               [(m.group(1), m.group(2)) for m in re.finditer(
+                   r'key: "([a-z]+)",\s+name: "[^"]+",\s+hue:\s*\d+,\s+reverseOf: "[a-z]+",\s+block: "(#[0-9a-fA-F]{6})"',
+                   read("src/content/highlighterMarks.ts"))])
+ok(len(PALETTE) == 12,
+   f"the twelve-mark palette is readable from highlighterMarks.ts ({len(PALETTE)} marks)",
+   f"could not read the twelve marks — found {len(PALETTE)}. Every band colour is "
+   "checked against them, so this file is the source and the scrape must hold.")
+BLACK = (0.0, 0.0, 0.0)
+
+
+def as_hex(c):
+    """`colour()` hands back 0-1 RGB; the palette is written in hex."""
+    return "#%02x%02x%02x" % tuple(round(x * 255) for x in c)
 for b in BANDS:
     c = colour(f"--band-{b}")
     if c is None:
         FAIL.append(f"--band-{b} is missing or unresolvable"); continue
-    v = ratio(WHITE, c)
-    ok(v >= 4.5, f"{b}: white on the band {v:.2f}:1", f"{b}: WHITE ON BAND {v:.2f}:1 — under 4.5")
-    v = ratio(c, PAPER)
-    ok(v >= 4.5, f"{b}: the same ink on paper {v:.2f}:1", f"{b}: INK ON PAPER {v:.2f}:1 — under 4.5")
+    ch = as_hex(c)
+    hit = [n for n, h in PALETTE.items() if h.lower() == ch]
+    ok(bool(hit),
+       f"{b}: {ch} is {hit[0] if hit else ''} from the twelve",
+       f"{b}: {ch} IS NOT ONE OF THE TWELVE. Dan, 6 Sep: \"every color on the web "
+       "can only be one of these\" — see highlighterMarks.ts.")
+    v = ratio(BLACK, c)
+    ok(v >= 4.5, f"{b}: black on the band {v:.2f}:1", f"{b}: BLACK ON BAND {v:.2f}:1 — under 4.5")
 
-# 2 · the five must be distinguishable from EACH OTHER, or the axis carries
-#     nothing — and WCAG contrast is the WRONG instrument for that. These all
-#     hold white text, so they are all much the same lightness; what separates
-#     them is hue. Measure it in OKLab, and measure it again through Machado
-#     deuteranopia and protanopia, because the obvious semantic palette for
-#     five learning modes (amber / green / crimson) sits squarely on the axis
-#     red-green colour blindness flattens. A hand-picked set measured 0.038 at
-#     its worst pair; the derived set in globals.css measures 0.120.
-def _oklab(c):
-    r, g, b = (_s2l(x) for x in c)
-    l = (0.4122214708*r + 0.5363325363*g + 0.0514459929*b) ** (1/3)
-    m = (0.2119034982*r + 0.6806995451*g + 0.1073969566*b) ** (1/3)
-    s_ = (0.0883024619*r + 0.2817188376*g + 0.6299787005*b) ** (1/3)
-    return (0.2104542553*l + 0.7936177850*m - 0.0040720468*s_,
-            1.9779984951*l - 2.4285922050*m + 0.4505937099*s_,
-            0.0259040371*l + 0.7827717662*m - 0.8086757660*s_)
-def dE(a, b):
-    return math.sqrt(sum((x - y) ** 2 for x, y in zip(_oklab(a), _oklab(b))))
-DEUT = ((0.367322, 0.860646, -0.227968), (0.280085, 0.672501, 0.047413),
-        (-0.011820, 0.042940, 0.968881))
-PROT = ((0.152286, 1.052583, -0.204868), (0.114503, 0.786281, 0.099216),
-        (-0.003882, -0.048116, 1.051998))
-def simulate(c, M):
-    return tuple(min(1, max(0, sum(M[i][j] * c[j] for j in range(3)))) for i in range(3))
-def separation(a, b):
-    return min(dE(a, b), dE(simulate(a, DEUT), simulate(b, DEUT)),
-               dE(simulate(a, PROT), simulate(b, PROT)))
-
-BAR = 0.10   # below this, two bands read as the same colour to someone
-for i, a in enumerate(BANDS):
-    for b in BANDS[i+1:]:
-        ca, cb = colour(f"--band-{a}"), colour(f"--band-{b}")
-        if None in (ca, cb): continue
-        v = separation(ca, cb)
-        ok(v >= BAR, f"{a} vs {b} separate under deutan/protan (dEok {v:.3f})",
-                     f"{a} vs {b} COLLAPSE (dEok {v:.3f} — under {BAR})")
+# 2 · THE COLOUR-BLINDNESS RULE IS GONE — Dan's call, recorded not buried.
+#
+# What stood here: the five bands had to separate by >= 0.10 dEok in OKLab
+# AND through Machado deuteranopia and protanopia simulation. It was written
+# because the obvious semantic palette for five learning modes (amber / green
+# / crimson) sits squarely on the axis red-green colour blindness flattens; a
+# hand-picked set measured 0.038 at its worst pair and the search-derived
+# replacement measured 0.120.
+#
+# It cannot survive Dan's 6 Sep ruling that *"every color on the web can only
+# be one of these"* — the twelve marks. No five of the twelve pass the bar:
+# they are one hue wheel at one lightness, which is what makes them a set, and
+# lightness is the only channel colour blindness leaves. The best five of all
+# 792 combinations measure 0.073. The current five measure 0.008 at Sky
+# against Magenta.
+#
+# Put to Dan with the simulation and the numbers, and offered the alternative
+# (the same hues dimmed until they separate, at 0.121): *"don't care about
+# color blindness pls"*, *"it is NOT OUR CONCERN"*.
+#
+# So it is deleted rather than loosened to a number nobody chose. What still
+# holds is §2b below, which was always the stronger guarantee: the band prints
+# the activity's name, so no learner navigates by colour alone. Restore this
+# section only on a ruling from Dan, and if you do, note that it and the
+# palette rule in §1 cannot both be satisfied.
 
 # 2b · colour is never the only channel: the band always prints the name.
 pb_src = read("src/components/PageBand.tsx")

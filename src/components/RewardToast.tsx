@@ -27,7 +27,7 @@
  */
 import { useEffect, useState } from "react";
 import { sfx } from "@/games/audio/sfx";
-import { badgeById, nextMultiplierStep } from "@/lib/economy";
+import { badgeById, nextFireMilestone } from "@/lib/economy";
 import type { RewardDetail, RewardSize } from "@/lib/progress";
 
 type Toast = {
@@ -47,7 +47,7 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
   const base = { key: seq, size: d.size };
   switch (d.type) {
     case "level":
-      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "You've ranked up" };
+      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "Your French moved up a level" };
     case "badge": {
       const b = badgeById(d.id);
       return b ? { ...base, icon: b.icon, role: "reward", title: "Badge unlocked!", sub: `${b.label} · 💎 +${b.gems}` } : null;
@@ -63,7 +63,7 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
     // future day PAYS is the same nudge with none of the threat, and on day 1
     // it is also more informative than the line it replaces.
     case "streak": {
-      const next = nextMultiplierStep(d.streak);
+      const next = nextFireMilestone(d.streak);
       const sub = next
         ? `Day ${next.day} pays ×${String(next.mult).replace(".", ",")}`
         : `Everything earns ×${String(d.mult).replace(".", ",")}`;
