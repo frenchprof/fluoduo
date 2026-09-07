@@ -16,16 +16,57 @@
  * zone said Singapore, and the next rollover check ran a day off). Now the
  * zone comes from whichever side supplied the winning lastActiveDay.
  */
-import { weekKey } from "./dayKey.ts";
+import { weekKey, previousWeek } from "./dayKey.ts";
 import type { Progress } from "@/lib/progress";
 
-/** Reconcile the weekly XP bucket across two devices. */
-function mergeWeek(local: Progress, remote: Partial<Progress>): { weekXp: number; weekKey: string | null } {
+/** Reconcile the weekly XP bucket across two devices — and keep LAST week's
+ *  figure alive while doing it (7 Sep, "you vs last week"). Four candidates
+ *  can hold it: either side's stash, and either side's stale bucket that this
+ *  very merge is about to drop. The adjacent week wins; a same-key tie takes
+ *  the larger figure (the usual favours-the-learner rule). */
+function mergeWeek(local: Progress, remote: Partial<Progress>): {
+  weekXp: number; weekKey: string | null; prevWeekXp: number; prevWeekKey: string | null;
+} {
   const now = weekKey();
   const lw = local.weekKey === now ? (local.weekXp ?? 0) : 0;
   const rw = remote.weekKey === now ? (remote.weekXp ?? 0) : 0;
   const best = Math.max(lw, rw);
-  return best > 0 ? { weekXp: best, weekKey: now } : { weekXp: 0, weekKey: now };
+  const prev = previousWeek(now);
+  const candidates: Array<[string | null | undefined, number | undefined]> = [
+    [local.prevWeekKey, local.prevWeekXp],
+    [remote.prevWeekKey, remote.prevWeekXp],
+    [local.weekKey === now ? null : local.weekKey, local.weekXp],
+    [remote.weekKey === now ? null : remote.weekKey, remote.weekXp],
+  ];
+  let prevWeekXp = 0;
+  let prevWeekKey: string | null = null;
+  for (const [k, xp] of candidates) {
+    if (!k || !(xp && xp > 0)) continue;
+    // The adjacent week is the one the board can call "last week"; among
+    // older stashes keep the latest so a future adjacent read stays possible.
+    if (prevWeekKey === null || k > prevWeekKey || (k === prevWeekKey && xp > prevWeekXp)) {
+      prevWeekXp = xp; prevWeekKey = k;
+    }
+    if (k === prev && xp >= prevWeekXp) { prevWeekXp = xp; prevWeekKey = k; }
+  }
+  return { weekXp: best > 0 ? best : 0, weekKey: now, prevWeekXp, prevWeekKey };
+}
+
+/** Reconcile the lucky find's books (PR 202) — dropping them here was a guard
+ *  erosion: a sign-in reset findGems, so the daily cap started over. Same
+ *  learner-day → the TIGHTER book wins on the cap counter and the FURTHER
+ *  pity progress is kept; different days → the later day's books. */
+function mergeFind(local: Progress, remote: Partial<Progress>): {
+  findDay: string | null; findGems: number; findDry: number;
+} {
+  const ld = local.findDay ?? null, rd = remote.findDay ?? null;
+  const lg = local.findGems ?? 0, rg = remote.findGems ?? 0;
+  const ldry = local.findDry ?? 0, rdry = remote.findDry ?? 0;
+  if (ld === rd) return { findDay: ld, findGems: Math.max(lg, rg), findDry: Math.max(ldry, rdry) };
+  const localWins = !!ld && (!rd || ld > rd);
+  return localWins
+    ? { findDay: ld, findGems: lg, findDry: ldry }
+    : { findDay: rd, findGems: rg, findDry: rdry };
 }
 
 export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
@@ -57,6 +98,7 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
     // a bucket from a week neither side is in any more is simply gone. A
     // weekly board that inherits last week's total is not a weekly board.
     ...mergeWeek(local, remote),
+    ...mergeFind(local, remote),
     lastActiveDay,
     timeZone,
     itemSrs,
