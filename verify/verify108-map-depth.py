@@ -204,10 +204,44 @@ check(re.search(r"const press = Math\.max\(", three) and "--n-press" in three,
       "the button has a thickness, handed to CSS as its press travel",
       "the 3D button has no thickness — a press will slide it rather than "
       "bottom it out")
-check("--n-press" in css and "height: capH + press" in three,
-      "the plinth is exactly the cap plus its travel, so the wall closes up",
+# THE PLINTH IS A RECTANGLE (Dan, 7 Sep: "you make them look like they have
+# rounded bottoms, but can we just have regular flat bottom buttons"). It was
+# the cap's own ellipse drawn lower, which is a correct cylinder — and a
+# cylinder's lower silhouette is a curve, so the button read as a blob.
+# Straight sides, flat base.
+# Anchors are CODE, not comment headings — `three` is comment-stripped, so a
+# `re.search("THE PLINTH...")` matches nothing and every assertion under it
+# fails against correct code. Caught by exactly that.
+plinth = re.search(r"height: capH / 2 \+ press,([\s\S]{0,900}?)/>", three)
+check("--n-press" in css and plinth is not None,
+      "the plinth runs from the cap's centre to exactly its travel below the "
+      "cap's edge, so a press bottoms out on the base",
       "the plinth and the press travel have come apart — the cap will stop "
       "short of its own base or sink through it")
+check(plinth is not None and "borderRadius: 0" in plinth.group(1),
+      "the plinth has a flat bottom and straight sides",
+      "the plinth is rounded again — the button reads as a blob with a curved "
+      "underside rather than a flat-bottomed key")
+check(plinth is not None and "linear-gradient(to bottom" in plinth.group(1),
+      "the side wall is lit down its height, not one flat swatch",
+      "the side wall is a flat colour — an extrusion painted in one tone reads "
+      "as a printed outline, not a side")
+
+# A CAST SHADOW ON THE ROAD (Dan, 7 Sep: "THEY ARE JUST LACKING IN SHADOW TO
+# LOOK REAL"). Every earlier pass described the button; none described what
+# the button does to the ground it stands on, and an object with no shadow is
+# a sticker. Wider than the plinth on purpose — a shadow the same size as the
+# thing above it reads as a second disc rather than as shade.
+check("radial-gradient(ellipse at 50% 50%, rgba(0,0,0," in three,
+      "the button casts a soft shadow on the road",
+      "the cast shadow is gone — the buttons sit on the road with nothing "
+      "under them and read as stickers")
+cast_w = re.search(r"width: capW \* (1\.\d+)", three)
+check(cast_w is not None and float(cast_w.group(1)) > 1.1,
+      f"the cast shadow is wider than the button that throws it (x{cast_w.group(1) if cast_w else '?'})",
+      "the cast shadow is no wider than the plinth, so it reads as a second "
+      "disc instead of shade")
+
 # The camera transform has to be COMPOSED with, never replaced: writing a bare
 # translateY in the hover/press rule throws scale() away and every button
 # snaps to full size the moment a pointer touches it.

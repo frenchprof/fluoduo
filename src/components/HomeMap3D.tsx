@@ -976,25 +976,68 @@ export default function HomeMap3D({
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />
-                          {/* THE PLINTH — the button's THICKNESS (Dan, 7 Sep:
-                              "the thickness (height) of the buttons that goes
-                              down with each push like a real 3D button"). It
-                              is the cap's own ellipse in the pen's dark shade,
-                              drawn `press` px lower and that much taller, so
-                              what shows between the two is the button's side
-                              wall. The cap rides `press` px above it; on a
-                              press the cap travels exactly that far DOWN and
-                              the wall closes up, which is a button bottoming
-                              out rather than a picture sliding. */}
+                          {/* THE CAST SHADOW (Dan, 7 Sep: "THEY ARE JUST
+                              LACKING IN SHADOW TO LOOK REAL"). Everything
+                              above this line describes the button; nothing
+                              described what the button DOES TO THE ROAD, and
+                              an object with no shadow is a sticker.
+                              Deliberately WIDER and SOFTER than the plinth and
+                              offset below it, because it is cast by an object
+                              standing off the ground — a shadow the same size
+                              as the thing above it reads as a second disc. */}
                           <span
                             aria-hidden
                             className="absolute rounded-[50%]"
                             style={{
+                              left: baseW / 2 - capW * 0.72,
+                              top: nodeH / 2 + capH / 2 + press - capH * 0.55,
+                              width: capW * 1.44,
+                              height: capH * 1.28,
+                              background:
+                                "radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.26) 46%, rgba(0,0,0,0.10) 70%, rgba(0,0,0,0) 78%)",
+                            }}
+                          />
+                          {/* THE PLINTH — the button's THICKNESS, with a
+                              FLAT BOTTOM (Dan, 7 Sep: "you make them look like
+                              they have rounded bottoms, but can we just have
+                              regular flat bottom buttons").
+
+                              It was the cap's own ellipse drawn lower, which
+                              gives a correct cylinder — and a cylinder's lower
+                              silhouette is a curve, so the button read as a
+                              blob with a rounded underside. It is a plain
+                              RECTANGLE now: straight sides, flat base.
+
+                              It starts at the cap's CENTRE, which is the one
+                              line where the ellipse is exactly `capW` wide, so
+                              the rectangle's top corners meet the cap's widest
+                              point precisely and the join is invisible. Below
+                              that the ellipse narrows and the rectangle does
+                              not — which is the straight side wall.
+
+                              Height is capH/2 + press, so when the cap travels
+                              `press` down on a click its lower edge lands
+                              exactly on the plinth's base: the button bottoms
+                              out, it does not sink through. */}
+                          <span
+                            aria-hidden
+                            className="absolute"
+                            style={{
                               left: baseW / 2 - capW / 2,
-                              top: nodeH / 2 - capH / 2,
+                              top: nodeH / 2,
                               width: capW,
-                              height: capH + press,
-                              background: `color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 62%, black)`,
+                              height: capH / 2 + press,
+                              borderRadius: 0,
+                              // A LIT SIDE WALL, not a flat swatch: bright
+                              // where the cap's edge catches the light, dark
+                              // where it meets the road. One flat colour is
+                              // what makes an extrusion read as a printed
+                              // outline instead of a side.
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 78%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 62%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 34%, black) 100%)`,
+                              // Contact shadow: the road darkens right where
+                              // the button touches it. Without it the plinth
+                              // floats a hair above its own shadow.
+                              boxShadow: `0 ${Math.max(1, Math.round(press * 0.5))}px ${Math.max(2, press)}px rgba(0,0,0,0.38)`,
                             }}
                           />
                           {/* THE CAP — one `.fluo-stop`, scaled by the camera
