@@ -13,7 +13,7 @@ import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
 import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { levelForXp, xpMultiplier } from "@/lib/economy";
+import { levelForXp, nextFireMilestone, xpMultiplier } from "@/lib/economy";
 
 export default function AccountButton() {
   const user = useAuthUser();
@@ -95,7 +95,20 @@ export default function AccountButton() {
                   </div>
                   <p className="px-1 pt-0.5 text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
                   <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-                    <span>🔥 {progress.streak}{mult > 1 && <b className="text-rose-600"> ×{mult}</b>}</span>
+                    {/* The ladder's next rung rides with the fire (2026-09-07):
+                        the streak names what it earns now AND what the next
+                        milestone day pays, so from day 7 there is still a
+                        reason to look forward. Gain-framed only. */}
+                    <span>
+                      🔥 {progress.streak}
+                      {mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}
+                      {(() => {
+                        const next = nextFireMilestone(progress.streak);
+                        return next ? (
+                          <span className="font-bold text-[color:var(--cahier-ink-soft)]"> · day {next.day} pays ×{String(next.mult).replace(".", ",")}</span>
+                        ) : null;
+                      })()}
+                    </span>
                     <span>⭐ {progress.xp}</span>
                     <span>💎 {progress.gems}</span>
                     <span>🎖️ {progress.badges?.length ?? 0} badges</span>

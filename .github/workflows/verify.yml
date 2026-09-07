@@ -362,6 +362,8 @@ jobs:
 
       - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
         run: python3 verify/verify109-lucky-find.py
+      - name: verify110 — the fire ladder past day 7, executed
+        run: python3 verify/verify110-streak-ladder.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath

@@ -2183,7 +2183,10 @@ for the phrases and fails the build), effort never punished, nothing locked,
 delight never delays a cold guess (UI_POLICE 79-80). These builds add reasons
 to come back, never fear of staying away.
 
-**1 · The streak ladder grows past day 7.** `xpMultiplier` in
+**1 · The streak ladder grows past day 7 — TAKEN BY FLUODUO-MAIN**
+(Dan, 7 Sep: "take 2 and pass 2 to peers" — the ladder is the taken one,
+built on `feat/streak-ladder` with `verify110-streak-ladder.py`; items 2
+and 3 below are yours). Kept for the record: `xpMultiplier` in
 `src/lib/economy.ts` is ×1 → ×1.5 (day 3) → ×2 (day 7) and then flat
 forever: day 40 pays what day 7 pays. Extend it — e.g. ×2.5 at 14 and ×3 at
 30, numbers yours to tune — and make the NEXT milestone visible wherever the
@@ -2213,8 +2216,9 @@ House rules that bite here: counts only where the thing counted is unseen;
 no full-width single controls; English chrome (these are chrome surfaces, not
 decks); relative type sizes; hand over the branch to fluoduo-main explicitly
 when it is ready — files touched, shared files, known collisions. Verify
-numbers: 108/109 are Peers' (#202) and 107 is the landing branch's, so 110+
-look free; assertion 4 checks your claim at push time either way.
+numbers: 108/109 are Peers' (#202), 107 is the landing branch's, 110 is the
+streak ladder's, so 111+ look free; assertion 4 checks your claim at push
+time either way.
 
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 

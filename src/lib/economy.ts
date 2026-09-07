@@ -15,7 +15,7 @@
  *             the cosmetic locker (home accent colour). Never gates learning —
  *             "nothing is locked" (progress.ts) is a hard rule, so cosmetics
  *             are the only thing gems buy.
- *   🔥 Fire  — the streak, now a live XP multiplier (×1 → ×1.5 → ×2).
+ *   🔥 Fire  — the streak, a live XP multiplier (×1 → ×1.5 → ×2 → ×2.5 → ×3).
  *   🎖️ Badges — milestone achievements, auto-awarded from signals we already
  *             track (SIOs done, streak, items mastered, level). Each pays gems.
  *   🎚️ Levels — XP thresholds with French rank names. Cosmetic status only.
@@ -37,11 +37,32 @@ export const XP_SIO_BASE = 300; // completing a SIO
 export const XP_SIO_MASTERY = 300; // + up to this, scaled by demonstrated mastery
 export const XP_CONVERSATION = 120; // finishing an AI role-play
 
+// THE LADDER, one place (Dan, 2026-09-07 — from the retention read: the old
+// ladder stopped at day 7, so day 40 paid exactly what day 7 paid and the
+// video's point about compounding was being left on the table). Day 30 agrees
+// with the « Inarrêtable » badge on purpose: the ladder's top rung and the
+// streak's top badge are the same day, so the two systems tell one story.
+// GAIN-FRAMED ONLY: every surface that names a rung says what the next day
+// PAYS, never what a missed day costs — verify32 greps the loss words out.
+const FIRE_LADDER = [
+  { day: 3, mult: 1.5 },
+  { day: 7, mult: 2 },
+  { day: 14, mult: 2.5 },
+  { day: 30, mult: 3 },
+] as const;
+
 /** Fire streak → XP multiplier. Showing up for days in a row earns faster. */
 export function xpMultiplier(streak: number): number {
-  if (streak >= 7) return 2;
-  if (streak >= 3) return 1.5;
-  return 1;
+  let mult = 1;
+  for (const rung of FIRE_LADDER) if (streak >= rung.day) mult = rung.mult;
+  return mult;
+}
+
+/** The next rung above `streak`, so the multiplier can say what it is worth
+ *  keeping on for — or null from the top rung up, where the ladder is done
+ *  climbing and the fire simply burns at full strength. */
+export function nextFireMilestone(streak: number): { day: number; mult: number } | null {
+  return FIRE_LADDER.find((rung) => streak < rung.day) ?? null;
 }
 
 // ── Levels ──────────────────────────────────────────────────────────────────
