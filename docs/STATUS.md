@@ -6,6 +6,117 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep — the swipes go the right way, and the pre-tests move into SpecuLearn (pre-tests lane)
+
+Sole editor of STATUS.md in this commit: claude/pre-tests-amendments-hndx8r.
+
+Dan, shown thirteen page types driven one direction at a time: *"right now it
+is not at all what i asked for"*. Then, over the afternoon, the chain itself —
+
+    Map > SIO > SpecuLearn > MneMemo > MémoiRecall >
+    Skills (ConjugaZone · ÉcouTexte · WorDrill · VoixLà · ComposeIt · ChaTutor) >
+    Games (NumBus + NumBourse inside · VocabulaRain · LexicaLater) >
+    User (Leaderboard · Profile)
+
+— and the next morning: *"it's a mental map, not a map to be published. we just
+need the swipes to go the right way, but it also means some pages need to be
+reworked into singular pages that can be scrolled downwards."*
+
+### What was actually wrong: a shape, not a bug
+
+Only **two** surfaces in the app had ever been given a horizontal gesture — the
+goals scroller and the lesson's tab strip — each carrying its own copy of the
+same 60px / 1.5x arithmetic and its own private idea of where "forward" went.
+The other eleven page types had none, so a sideways drag on the map, on a game,
+on the leaderboard did nothing at all. No amount of fixing either handler could
+have produced a chain.
+
+So the chain is a list (`src/lib/swipeRail.ts`) and there is now exactly one
+thing in the app that reads a finger (`components/useRailSwipe.ts`), mounted by
+CahierShell and DrillShell. Every route drawn in either shell is on the rail,
+the ones written after today included.
+
+**COLUMNS AND ROWS**, which is how Dan asked for it to be conceived and is the
+sentence to keep: *a column is a station and you move between columns SIDEWAYS;
+a row is one item inside a station and you move between rows by scrolling
+DOWN.* That is why the lesson's tab strip LOST its swipe — its four panels are
+rows of the MneMemo column, so a sideways drag there must leave for SpecuLearn
+or MémoiRecall, not shuffle panels. Nothing became unreachable: the strip is
+sticky and every panel is one tap away.
+
+### Three faults only driving it could find
+
+- Five stations matched their path with `===` and so fell off the rail at
+  `/conjugaison.html` — a real URL on a static export. Paths are normalised.
+- The map's forward swipe was a no-op, because "the goal for no deck" resolved
+  to the map itself. It opens the first goal now.
+- **A rightward swipe on ChaTutor LEFT THE APP.** A horizontal drag that runs
+  out of page is an overscroll, and a browser answers a horizontal overscroll
+  by going back in history — ON TOP of `touch-action`, not governed by it.
+  `html, body { overscroll-behavior-x: none }`, one line, and Dan's *"vertical
+  left is not to the browser"* is true.
+
+Also: a station with nothing for this goal is stepped over rather than landed
+on (41 of the 50 decks have no SpecuLearn). Both ends STOP — Dan has not ruled
+on wrapping, and a rail that stops can be taught to wrap later without anyone
+having learnt a wrong habit.
+
+### The pre-tests moved, and one question is one screen
+
+Dan, the same day: *"the Pre-Tests are still sitting under the SIO. They should
+be moved into the SpecuLearn as separate page - AND ONE QUESTION PER PAGE!"*,
+*"so that we scroll down when one is done"*, *"scroll down = swipe up"*.
+
+- **New address: `/practice/speculearn/pretest/<id>`.** The merger has been
+  settled since 2026-08-10 — the registry has said « Pre-Test folds into
+  SpecuLearn » for a month, the band has read « SpecuLearn » since 1 Sep, the
+  ledger and the labels filed it there all along. Only the URL had not moved.
+  `/pretests/<id>` still answers and forwards (`components/Forward.tsx`), which
+  is what keeps printed QR sheets and a term of bookmarks alive.
+- **The address is written once**, in `lib/pretests/routes.ts`. Making the move
+  meant finding four hand-written copies of `/pretests/${id}` — the stop popup,
+  the unit list, a deck's shell, the teacher dashboard. Four copies of one fact
+  is how they start disagreeing; it is the lesson `stopForDeck` was extracted
+  for, and verify82 caught a fifth copy the same afternoon.
+- **`components/SnapFeed.tsx` is the row mechanism**, extracted from the goals
+  scroller rather than written a second time: measured height, document lock,
+  `snap-y snap-mandatory` with `snap-always` sections, and an imperative
+  `scrollToRow` for the keyboard.
+- **The « Next → » button is gone.** The way on is the gesture; a button beside
+  it is a second answer to the same question and the one nobody finds by feel.
+
+**Two things that only showed up under a driven run, both now fixed and both
+worth remembering:**
+
+1. `useChoiceKeys({ enabled })` gates the WHOLE handler, Enter included. Gating
+   it on "not yet answered" tore the listener down the instant a question was
+   answered, so ↵ never advanced — a ten-question keyboard run ended back at
+   1 / 10. `pick` refuses a second answer on its own; `enabled` must not.
+2. A `flex-wrap` button row IS a stack of full-width buttons at the one width
+   that matters. Two `fluo-btn-lg` controls do not fit side by side on a phone,
+   so the recap wrapped them and broke Dan's 5 Sep rule by accident. A grid
+   cannot wrap.
+
+`verify110` holds all of it: the chain in Dan's order, the direction rule, the
+single handler, the snap classes, the absent Next button, the forwarding stub,
+and the one line of CSS that keeps the browser out of the horizontal.
+
+### Still open, and Dan's to settle
+
+- **Wrap or stop** at the two ends of the rail (past Profile, and swiping right
+  off the map). Stopping is what shipped.
+- **Unit 0 and the picture pre-tests** are still at `/pretests/unit0/<sio>` and
+  `/pretests/picture/<deck>`, and still one-at-a-time rather than a feed. They
+  are separate runners (547 and 472 lines) and moving them is the next slice of
+  the same job, not part of this one.
+- **MneMemo does not doom-scroll yet.** Dan named it (*"MneMemo which doom
+  scrolls downward"*); the lesson's four panels are still a tab strip. Doing
+  that touches `LessonTabs.tsx`, which PR #196 also edits — it should land
+  after that one, not race it.
+- **SpecuLearn is still merged in name only**: four runners, ~2,264 lines. The
+  URL move makes them siblings at last, which is the precondition for merging
+  the engines, not the merge itself.
+
 ## 6 Sep, latest — Dan picked a gamification option; the map is tactile; every reward banner is coloured (Peers)
 
 Sole editor of STATUS.md in this commit: Peers.

@@ -41,9 +41,10 @@
 import { SIOS } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
+import { pretestHrefForDeck } from "@/lib/pretests/routes";
 // The deck -> stop lookup lives in ONE place (verify82). A second hand-written
 // `SIOS.find(s => s.collectionId === …)` is how two copies start disagreeing.
-import { stopForDeck } from "@/lib/stopTag";
+import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
 
 export type RailStation = {
   /** Registry key where there is one, so a page can name its station without
@@ -90,13 +91,20 @@ export const RAIL: RailStation[] = [
   },
   {
     key: "speculearn",
+    // SpecuLearn is ONE column with two engines behind it: the game, on the
+    // nine decks that have one, and the pre-test, on the stops that have one.
+    // Dan settled the merger on 2026-08-10 and moved the pre-tests' URL under
+    // it on 2026-09-07; treating them as one station is the same ruling. A
+    // goal with neither is stepped over rather than landed on — swiping left
+    // off it should reach its lesson, not a picker asking which deck you want
+    // when you are already in one.
     name: "SpecuLearn",
     href: (deck) =>
-      deck && isSpecuLearnReady(deck) ? `/practice/speculearn/${deck}` : "/practice/speculearn",
+      (deck && isSpecuLearnReady(deck) && `/practice/speculearn/${deck}`) ||
+      (deck && pretestHrefForDeck(deck)) ||
+      "/practice/speculearn",
     at: (p) => p.startsWith("/practice/speculearn") || p.startsWith("/pretests/"),
-    // Nine of the fifty decks have a SpecuLearn. For the other forty-one the
-    // column is empty and the rail steps over it.
-    has: (deck) => !deck || isSpecuLearnReady(deck),
+    has: (deck) => !deck || isSpecuLearnReady(deck) || !!pretestHrefForDeck(deck),
   },
   {
     key: "lesson",
@@ -162,6 +170,14 @@ export function deckFromPath(path: string): string | null {
     for (let i = 0; i < prefix.length; i++) if (seg[i] !== prefix[i]) return null;
     return seg[prefix.length] ?? null;
   };
+  // A PRE-TEST IS NOT A DECK. `/practice/speculearn/pretest/<id>` has the same
+  // shape as `/practice/speculearn/<deck>`, so reading the third segment as a
+  // deck turned every pre-test into a deck called "pretest" — measured, and it
+  // sent the forward swipe to `/decks/pretest`. The pre-test's id encodes its
+  // stop, which is where the real deck comes from.
+  if (seg[0] === "practice" && seg[1] === "speculearn" && seg[2] === "pretest") {
+    return stopForPretestId(seg[3])?.collectionId ?? null;
+  }
   return (
     after("practice", "speculearn") ??
     after("practice", "flip-it") ??

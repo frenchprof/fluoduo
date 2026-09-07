@@ -75,7 +75,7 @@ if not os.path.isfile("package.json"):
 RUNNER  = "src/lib/pretests/runner.ts"
 STORE   = "src/lib/pretestRecord.ts"
 POPUP   = "src/app/PretestQuiz.tsx"
-SOLO    = "src/app/pretests/[id]/PretestContent.tsx"
+SOLO    = "src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"
 PICTURE = "src/app/pretests/picture/[collectionId]/PicturePretestContent.tsx"
 # The Unit-0 questions left Unit0Panel on 2026-08-31: they now render on their
 # own page as well as in the popup (Dan: "each pre-test to now have its own page

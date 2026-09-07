@@ -31,18 +31,17 @@ import SiteTopBar from "@/components/SiteTopBar";
 // Only the TYPE now — the flap rail this file drew is gone (see below).
 // TabFlap itself lives on: SiteTopBar still draws flaps in the ☰ menu.
 import { type ShellTab } from "@/components/TabFlap";
-import { getPretestForSio } from "@/content/pretests";
-import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
 import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
-import { stopForDeck } from "@/lib/stopTag";
+import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import BottomBar from "@/components/BottomBar";
 import useRailSwipe from "@/components/useRailSwipe";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
 export function hasDicePractice(collectionId: string): boolean {
@@ -240,18 +239,11 @@ export default function CahierShell({
   );
 }
 
-/** Where this deck's Pre-Test lives. Null = no pretest.
- *  Units 1–4: the authored page (`/pretests/{id}`).
- *  Unit 0: `/pretests/unit0/{sioId}` — the same route Unit0Panel / StopPopup
- *  already use. `/unit/0#{id}` is the map popup (UnitRedirect), not the quiz. */
-export function pretestHrefForDeck(collectionId: string): string | null {
-  const sio = stopForDeck(collectionId);
-  if (!sio) return null;
-  const pretest = getPretestForSio(sio.id);
-  if (pretest) return `/pretests/${pretest.id}`;
-  if ((UNIT0_QUESTIONS[sio.id] ?? []).length > 0) return `/pretests/unit0/${sio.id}`;
-  return null;
-}
+/** Where this deck's Pre-Test lives — MOVED to lib/pretests/routes.ts on
+ *  2026-09-07, so the swipe rail can ask the same question without a library
+ *  importing a page shell. Re-exported because four callers already take it
+ *  from here. */
+export { pretestHrefForDeck };
 
 /** Visit telemetry for supplement pages (Dan, 2026-07-13: "who went into
  *  these pages"). Supplements are standalone HTML OUTSIDE the app, so the

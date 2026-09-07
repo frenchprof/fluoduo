@@ -182,11 +182,11 @@ check("dynamic(" not in modal,
 # 6 · one pretest runner
 runner_ok = os.path.isfile("src/lib/pretests/runner.ts")
 quiz = strip_comments(read("src/app/PretestQuiz.tsx"))
-standalone = strip_comments(read("src/app/pretests/[id]/PretestContent.tsx"))
+standalone = strip_comments(read("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"))
 check(runner_ok,
       "the shared pretest runner exists",
       "src/lib/pretests/runner.ts is missing")
-for name, src in (("PretestQuiz", quiz), ("PretestContent", standalone)):
+for name, src in (("PretestQuiz", quiz), ("PretestFeed", standalone)):
     check("pretests/runner" in src and "judgePretestAnswer" in src,
           f"{name} routes through the shared runner",
           f"{name} still carries its own judge/ledger")

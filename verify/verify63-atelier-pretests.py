@@ -66,7 +66,7 @@ if not os.path.isfile("package.json"):
 GEN = "src/content/pretests/ateliers.gen.ts"
 REG = "src/content/pretests/index.ts"
 DIALOGUES = "src/content/ateliers.ts"
-RENDER = "src/app/pretests/[id]/PretestContent.tsx"
+RENDER = "src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"
 STOPS = ["SIO-020", "SIO-030", "SIO-040", "SIO-049", "SIO-050"]
 
 gen_src = read(GEN)

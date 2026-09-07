@@ -26,7 +26,15 @@ WHAT WENT WRONG BEFORE, and what each rule here stops coming back:
     into that state, so a `router.push` fired from a touch handler anywhere but
     `useRailSwipe` fails this check.
 
-3 · SIDEWAYS IS NOT THE BROWSER'S (Dan: *"vertical left is not to the
+3 · A ROW IS A SCREEN. Dan, 7 Sep: *"the Pre-Tests are still sitting under
+    the SIO. They should be moved into the SpecuLearn as separate page - AND
+    ONE QUESTION PER PAGE!"*, *"so that we scroll down when one is done"*,
+    *"scroll down = swipe up"*. The magnet that makes that work is one
+    component (SnapFeed), and the « Next → » button it replaces must not creep
+    back: two ways past a question teaches the one that cannot be found by
+    feel.
+
+4 · SIDEWAYS IS NOT THE BROWSER'S (Dan: *"vertical left is not to the
     browser"*). A horizontal drag that runs out of page is an overscroll, and a
     browser answers a horizontal overscroll by going back in history — measured
     on the real build, a rightward swipe on ChaTutor left the app entirely.
@@ -88,7 +96,51 @@ for f in sorted(SRC.rglob("*.tsx")) + sorted(SRC.rglob("*.ts")):
             "    'forward' is the state Dan found on 6 Sep."
         )
 
-# ── 3 · the browser does not get the horizontal ────────────────────────────
+# ── 3 · a row is a screen ──────────────────────────────────────────────────
+FEED = SRC / "components" / "SnapFeed.tsx"
+if not FEED.exists():
+    fails.append("components/SnapFeed.tsx is gone — nothing makes a row a screen.")
+else:
+    feed = FEED.read_text(encoding="utf-8")
+    for want, why in [
+        ("snap-y", "the vertical snap"),
+        ("snap-mandatory", "MANDATORY, not proximity — proximity lets a flick coast past three items"),
+        ("snap-always", "so a fast flick cannot skip a row"),
+    ]:
+        if want not in feed:
+            fails.append(f"SnapFeed lost `{want}` — {why}.")
+
+for owner in ["app/practice/speculearn/pretest/[id]/PretestFeed.tsx",
+              "app/sio/[id]/SioScroller.tsx"]:
+    f = SRC / owner
+    if not f.exists():
+        fails.append(f"{owner} is gone — a feed surface Dan asked for.")
+        continue
+    text = f.read_text(encoding="utf-8")
+    if "SnapFeed" not in text:
+        fails.append(f"{owner} no longer uses SnapFeed — one item per screen was written twice before.")
+    if re.search(r">\s*(Next|Suivant)\s*(→|›|&rarr;)", text):
+        fails.append(
+            f"{owner} has a Next button again. The way on is the swipe\n"
+            "    (Dan, 7 Sep: \"scroll down = swipe up\"); a button beside it is a\n"
+            "    second answer to the same question, and the undiscoverable one."
+        )
+
+# The pre-test's home is SpecuLearn, and its old address still answers.
+if (SRC / "app" / "pretests" / "[id]" / "PretestContent.tsx").exists():
+    fails.append(
+        "The old /pretests/[id] runner is back. The pre-test moved under\n"
+        "    SpecuLearn on 7 Sep — two runners is how the app came to have\n"
+        "    four of them under one name."
+    )
+old = SRC / "app" / "pretests" / "[id]" / "page.tsx"
+if old.exists() and "Forward" not in old.read_text(encoding="utf-8"):
+    fails.append(
+        "/pretests/[id] no longer forwards. Printed QR sheets and a term of\n"
+        "    bookmarks name that URL — the stub is why the ids are frozen."
+    )
+
+# ── 4 · the browser does not get the horizontal ────────────────────────────
 css = (SRC / "app" / "globals.css").read_text(encoding="utf-8")
 if not re.search(r"html,\s*body\s*\{[^}]*overscroll-behavior-x:\s*none", css):
     fails.append(
@@ -104,4 +156,4 @@ if fails:
     for f in fails:
         print("  ✗ " + f + "\n")
     sys.exit(1)
-print(f"verify110 ok — {len(EXPECTED)} stations in Dan's order, one handler, the browser stays out.")
+print(f"verify110 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")

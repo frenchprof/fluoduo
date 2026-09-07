@@ -157,20 +157,24 @@ for name, src in (("UnitSection", cu), ("Unit0Panel", c0), ("SioDetail", cd)):
            f"{name}'s popup body renders {leak}: {why}")
 
 # ---- 5 · Unit-0 pre-tests open their page --------------------------------
-ok("/pretests/unit0/" in c0,
+ok("unit0PretestHref(" in c0,
    "the Unit-0 popup links its pre-test to that stop's page",
-   "the Unit-0 popup no longer links to /pretests/unit0 — its questions are inline again")
+   "the Unit-0 popup no longer links to the Unit-0 pre-test — its questions are inline again")
 ok(re.search(r"inline:\s*true", c0) is None and re.search(r"inline:\s*true", cu) is None,
    "no popup asks for an inline pre-test any more",
    "a popup still requests inline:true — a pre-test would render in the body again")
 # StopSheet / deck flaps go through pretestHrefForDeck, not the popup. That
 # helper used to return /unit/0#{id}, which UnitRedirect turns into the map
 # popup — the questions never opened. Same route the popup already uses.
-SHELL = "src/components/CahierShell.tsx"
+#
+# It moved out of CahierShell into lib/pretests/routes.ts on 2026-09-07, so the
+# swipe rail could ask the same question without a library importing a page
+# shell. CahierShell re-exports it; this rule follows the implementation.
+SHELL = "src/lib/pretests/routes.ts"
 cs = code(read(SHELL))
-ok("/pretests/unit0/" in cs,
+ok("unit0PretestHref(" in cs,
    "pretestHrefForDeck sends Unit-0 to its page",
-   "pretestHrefForDeck no longer returns /pretests/unit0 — StopSheet would open the map popup")
+   "pretestHrefForDeck no longer returns the Unit-0 pre-test — StopSheet would open the map popup")
 ok("/unit/0#" not in cs,
    "the flap helper does not deep-link the map as a pre-test",
    "pretestHrefForDeck still returns /unit/0# — UnitRedirect opens the map popup")
