@@ -271,6 +271,29 @@ check("KIND_LABEL" in legend,
       "the legend has lost the colour key — fifty stops and nothing says what "
       "a colour means")
 
+# --- 10 · the road has no visible end -------------------------------------
+# Dan, 7 Sep, circling the base of the 3D scene: "the white path is broken in
+# the map at the base". The corridor polygon is sampled from rel = 0, and
+# rel = 0 is the CAMERA'S OWN POSITION — which projects to a y well inside the
+# viewport. So the pale floor simply ended there, mid-scene, with a straight
+# horizontal edge and bank either side of it. Nothing was clipped wrongly and
+# nothing was missing: the road was drawn exactly as far as it was asked for,
+# and a road that ends where you are standing has a visible end.
+#
+# Both near corners are carried on past the bottom of the frame now. The check
+# is that the extension EXISTS and reaches BEYOND vh — a fix that stopped at
+# `vh` exactly would put the seam back on the last row of pixels.
+check("const extend =" in three and "lPts.unshift(extend(" in three
+      and "rPts.push(extend(" in three,
+      "both of the road's near corners are carried past the frame",
+      "the road's near end is no longer extended — the pale floor will end in "
+      "mid-scene with a straight cut, which is the break Dan circled")
+m = re.search(r"vh \* (1\.\d+)\s*-\s*y1", three)
+check(m is not None and float(m.group(1)) > 1.0,
+      f"the extension reaches past the bottom edge (vh x {m.group(1) if m else '?'})",
+      "the road is extended only as far as the frame's own edge, which leaves "
+      "the seam on the last row of pixels")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))

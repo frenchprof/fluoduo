@@ -161,6 +161,36 @@ function PerspectiveBg({
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
+  // THE ROAD RUNS OFF THE BOTTOM OF THE FRAME (Dan, 7 Sep: "the white path is
+  // broken in the map at the base", circled — a hard horizontal cut across the
+  // pale floor with bank either side of it).
+  //
+  // The loop above samples from rel = 0, and rel = 0 is the CAMERA'S OWN
+  // POSITION, which projects to a y well inside the viewport — so the polygon
+  // simply ended there, in mid-scene, with a straight edge. Nothing was
+  // missing and nothing was clipped wrongly: the road was drawn exactly as
+  // far as it was asked for, and a road that ends where you are standing has
+  // a visible end.
+  //
+  // Both near corners are carried on along the direction of their own last
+  // segment until they are below the frame, so the perspective keeps widening
+  // instead of stopping square. The strokes that draw the bank's lip follow
+  // the same path, so the dark lip leaves the frame with the floor rather
+  // than turning across it.
+  const extend = (from: string, toward: string): string => {
+    const [x1, y1] = from.split(" ").map(Number);
+    const [x0, y0] = toward.split(" ").map(Number);
+    const dy = y1 - y0;
+    // Only ever extend DOWNWARD and off-frame; a degenerate or upward segment
+    // (which can happen when the camera sits right on a bend) is left alone
+    // rather than flung to an arbitrary place.
+    if (!(dy > 0.01)) return from;
+    const k = (vh * 1.12 - y1) / dy;
+    if (!(k > 0)) return from;
+    return `${(x1 + (x1 - x0) * k).toFixed(1)} ${(vh * 1.12).toFixed(1)}`;
+  };
+  if (lPts.length > 1) lPts.unshift(extend(lPts[0], lPts[1]));
+  if (rPts.length > 1) rPts.push(extend(rPts[rPts.length - 1], rPts[rPts.length - 2]));
   const corridor = lPts.length > 1 ? `M ${lPts[0]} L ${lPts.slice(1).join(" L ")} L ${rPts.join(" L ")} Z` : "";
   return (
     <svg width={vw} height={vh} className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }} aria-hidden>
