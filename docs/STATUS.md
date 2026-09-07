@@ -6,6 +6,61 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep — the map's buttons, five rounds of it; and TWO STANDING RULES CHANGE (Peers)
+
+Sole editor of STATUS.md in this commit: Peers.
+
+**TWO OF DAN'S OWN EARLIER RULINGS ARE RETIRED HERE.** Both were his call,
+made today, and the next session needs to know they no longer hold:
+
+1. **The 3D view MAY zoom.** On 20 Aug he ruled "zooming in or out should not
+   be allowed" there. Asked where pinch-to-zoom should work, he chose **both
+   views**. Pinch drives the same `zoomPct` the field and steppers drive — the
+   zoom wrapper in `MapBody` contains both the 3D scene and the 2D grid, so
+   there is ONE number and no second scale fighting the camera.
+2. **Depth AND colour mean COMPLETION, not position.** "All buttons are up by
+   default, and as they are completed they get pressed down", then: "when
+   unvisited it is up and DARKER (not lighter) and completed it FADES and
+   lighter depressed." So an untouched stop is FRESH — full pen, standing up;
+   a finished one is WORN — faded to the wash, pressed flat.
+
+   The classes were renamed with the swap: `.fluo-stop--reached`/`--ahead`
+   described a POSITION, and the moment the meaning inverted a class called
+   "reached" was painting not-yet-reached stops. They are `--up`/`--down`.
+
+   I shipped the depth swap alone first and kept colour on position, on the
+   reasoning that they answer different questions. Dan corrected it the same
+   hour, and he was right: with colour on position a FINISHED stop was as loud
+   as an untouched one, and the depth had nothing to agree with. One question
+   drives both halves now, which is what makes a stop read as an object rather
+   than as two overlapping signals.
+
+**THE LESSON OF THE DAY, for whoever touches the 3D map next.** Dan sent the
+stop buttons back five times: they looked unchanged, then like coins on edge,
+then short of shadow, then rounded-bottomed, then upside-down in meaning. The
+first four were the same mistake — the 3D stop was a puck hand-built from its
+own spans, and I kept adjusting its colours to RESEMBLE the 2D `.fluo-stop`.
+It IS a `.fluo-stop` now: same classes, same tokens, same 44px, scaled by the
+camera and squashed into the ground plane, with a plinth (bottom rim + straight
+wall) for thickness. There is one description of that button. Do not
+re-implement it by hand — that is what four rounds of "closer, but no" were.
+
+Also fixed today, and worth knowing because they were both invisible:
+
+- **The zoom field could not take a typed value.** Bound straight to the
+  clamped number, so every KEYSTROKE was clamped and written back under the
+  caret: typing 135 went 1 → 30 → "303" → 200. **There are TWO of these
+  controls** (`HomeMap` and `MapBody`) and the first fix landed on the one Dan
+  was not looking at; `verify108` now asserts both by path.
+- **The 3D road had a visible end.** The corridor is sampled from `rel = 0`,
+  which is the camera's own position — so the pale floor stopped mid-scene
+  with a straight edge. Both near corners run past the frame now.
+- **Hover was unguarded.** There was no `@media (hover: hover)` anywhere in
+  the app; on a phone `:hover` sticks after a tap, so the last stop opened
+  stayed raised, which on this map reads as "you are here". Both maps' lifts
+  are guarded now. **`.neo-key:hover` — every key in the app — is still
+  unguarded**; Dan was told and it is his call.
+
 ## 6 Sep, latest — Dan picked a gamification option; the map is tactile; every reward banner is coloured (Peers)
 
 Sole editor of STATUS.md in this commit: Peers.

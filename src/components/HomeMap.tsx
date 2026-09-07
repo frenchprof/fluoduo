@@ -309,6 +309,22 @@ export default function HomeMap({
   };
 
   const setZoom = (v: number) => setZoomPct(Math.min(200, Math.max(30, Math.round(v))));
+  // WHAT IS IN THE FIELD WHILE YOU TYPE (Dan, 7 Sep: "the field is supposed to
+  // allow me to key in precise values?"). It was, and it did not: the input
+  // was bound straight to the clamped number, so every KEYSTROKE was clamped
+  // and written back under the caret. Typing 135 went 1 -> clamped to 30 ->
+  // the field now reads "30", the next key makes "303" -> clamped to 200, and
+  // the third gives 200. Measured: typing "135" left 200 in the box.
+  //
+  // So the field holds TEXT while it is being typed and only commits a number
+  // when the value is a complete one in range, or on blur/Enter. `null` means
+  // "not being edited" — the field shows the real zoom.
+  const [zoomDraft, setZoomDraft] = useState<string | null>(null);
+  const commitZoom = (text: string) => {
+    const n = parseFloat(text);
+    setZoom(Number.isFinite(n) ? n : 100);
+    setZoomDraft(null);
+  };
 
   // Road segments: travelled (→ current, accent) · paved (→ class flag,
   // solid kraft) · unpaved (dotted, fainter). Nothing beyond is hidden.
@@ -533,12 +549,12 @@ export default function HomeMap({
             type="button"
             aria-label="Zoom out"
             onClick={() => setZoom(zoomPct - 10)}
-            className="h-6 w-6 rounded-md border"
-            style={{
-              borderColor: "var(--cahier-line-strong)",
-              background: "var(--cahier-paper-raised)",
-              color: "var(--cahier-ink)",
-            }}
+            // A KEY, like every other control (Dan, 7 Sep: "the zoom
+            // counter is not showing any 3D depression like the 2D control
+            // is showing"). It was a flat bordered box while the map beside
+            // it was made of keys that rise and press.
+            className="neo-key fluo-spring h-6 w-6 rounded-md"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             −
           </button>
@@ -550,15 +566,23 @@ export default function HomeMap({
             max={200}
             step={5}
             list="fluo-zoom-milestones"
-            value={zoomPct}
-            onChange={(e) => setZoom(parseFloat(e.target.value) || 100)}
-            aria-label="Zoom percent — type a value or pick a milestone"
-            className="h-6 w-12 rounded-md border px-1 text-center text-[11px]"
-            style={{
-              borderColor: "var(--cahier-line-strong)",
-              background: "var(--cahier-paper-raised)",
-              color: "var(--cahier-ink)",
+            value={zoomDraft ?? zoomPct}
+            onChange={(e) => {
+              const text = e.target.value;
+              setZoomDraft(text);
+              // Commit live only when the typed number is already valid, so
+              // the map tracks the field for in-range values and does not
+              // fight the caret for half-typed ones.
+              const n = parseFloat(text);
+              if (Number.isFinite(n) && n >= 30 && n <= 200) setZoom(n);
             }}
+            onBlur={(e) => commitZoom(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") commitZoom((e.target as HTMLInputElement).value); }}
+            aria-label="Zoom percent — type a value or pick a milestone"
+            // A WELL, not a key: the app's word for a value you read and
+            // type into rather than press. Same grammar the streak mark uses.
+            className="neo-well h-6 w-12 rounded-md px-1 text-center text-[11px]"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">
             <option value="50" label="50 — whole course" />
@@ -571,12 +595,12 @@ export default function HomeMap({
             type="button"
             aria-label="Zoom in"
             onClick={() => setZoom(zoomPct + 10)}
-            className="h-6 w-6 rounded-md border"
-            style={{
-              borderColor: "var(--cahier-line-strong)",
-              background: "var(--cahier-paper-raised)",
-              color: "var(--cahier-ink)",
-            }}
+            // A KEY, like every other control (Dan, 7 Sep: "the zoom
+            // counter is not showing any 3D depression like the 2D control
+            // is showing"). It was a flat bordered box while the map beside
+            // it was made of keys that rise and press.
+            className="neo-key fluo-spring h-6 w-6 rounded-md"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             +
           </button>
@@ -587,8 +611,18 @@ export default function HomeMap({
   );
 }
 
-/** Legend shared by both views: colour = kind (primary focus per stop),
- *  🧑‍🎓 you, 🚩 class. `children` sits at the right (the 2D zoom control). */
+/** Legend shared by both views: colour = kind (primary focus per stop).
+ *  `children` sits at the right (the 2D zoom control).
+ *
+ *  🧑‍🎓 YOU AND 🚩 CLASS ARE GONE (Dan, 7 Sep: "we don't need the You and the
+ *  Class in the legend"). They are the one pair on the map that needs no key:
+ *  there is exactly one of each, both are already labelled where they sit
+ *  (the flag carries "The class is here this week" as its own title, and the
+ *  learner marker rides the stop marked `aria-current="step"`), and a mark
+ *  that appears once explains itself the moment you look at it. The colours
+ *  stay keyed because there are fifty of those and nothing on a stop says
+ *  which kind it is. Dan's litmus test, exactly: text whose removal does not
+ *  stop a learner finding the answer is redundant. */
 export function KindLegend({ children }: { children?: ReactNode }) {
   return (
     <div className="fluo-mono mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold" style={{ color: "var(--cahier-ink-soft)" }}>
@@ -598,12 +632,6 @@ export function KindLegend({ children }: { children?: ReactNode }) {
           {KIND_LABEL[k]}
         </span>
       ))}
-      <span className="flex items-center gap-1">
-        <span aria-hidden>🧑‍🎓</span> you
-      </span>
-      <span className="flex items-center gap-1">
-        <span aria-hidden>🚩</span> class
-      </span>
       {children && <span className="flex-1" />}
       {children}
     </div>
