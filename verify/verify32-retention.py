@@ -151,9 +151,13 @@ ok("--fluo-danger" not in home,
 ok("dopa-streak-ink" in read("src/components/AccountButton.tsx"),
    "the streak still takes its own role ink",
    "the streak lost its role colour")
-ok(all(t in home for t in ("--dopa-win", "--dopa-focus", "--dopa-reward")),
-   "the three keys wear the roles that mean what they do",
-   "a key on Home is no longer coloured by its role")
+# The reward-ink ▦ key retired on 7 Sep (Dan: "we can now remove the red
+# button above the map" — the ☰ grid menu carries the activities now), so
+# the hero's keys are win (Continue, Next) and focus (Rewind). The claim
+# is the same: every key wears the role that means what it does.
+ok(all(t in home for t in ("--dopa-win", "--dopa-focus")) and "--dopa-reward" not in home,
+   "the keys wear the roles that mean what they do — and the retired reward key stays retired",
+   "a key on Home is no longer coloured by its role, or the red reward key is back")
 
 # ── ethics ────────────────────────────────────────────────────────────────
 ip = read("src/components/InstallPrompt.tsx")

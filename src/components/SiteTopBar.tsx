@@ -34,15 +34,13 @@ import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
 import MenuSplash from "@/components/MenuSplash";
-import RailGroups from "@/components/RailGroups";
+import MenuGrid from "@/components/MenuGrid";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
-import TabFlap, { fillOf, hueOf, type ShellTab } from "@/components/TabFlap";
-import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
+import { type ShellTab } from "@/components/TabFlap";
 
 export default function SiteTopBar({
   active,
-  tabs = [],
   topRight,
   nested = false,
 }: {
@@ -91,11 +89,9 @@ export default function SiteTopBar({
     };
   }, []);
 
-  const site = tabsWithActive(siteTabs(), active);
-  const tools = tabsWithActive(toolTabs(), active);
-  const context = tabs.filter(
-    (t) => !site.some((s) => s.key === t.key) && !tools.some((s) => s.key === t.key),
-  );
+  // site/tools/context computations retired with RailGroups (7 Sep) — the
+  // grid menu derives nothing from the tab lists, and the desk flaps are
+  // CahierShell's own. The `tabs` prop stays in the type for the callers.
 
   return (
     <>
@@ -180,56 +176,17 @@ export default function SiteTopBar({
             // WIDTH FROM CONTENT (same day: "as long as the longest among
             // them without redundant space at the tails") — w-max lets the
             // longest flap set the column; min-w keeps MENU/Carte legible.
-            <div className="absolute left-0 top-full z-50 mt-1 flex max-h-[75vh] w-max min-w-44 flex-col gap-1 overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-[color:var(--cahier-paper-raised)] p-1.5 shadow-lg">
-              {/* THE GROUPED FAMILIES, not a flat list (Dan,
-                  2026-08-30: the rail "cannot be flaps … they have to
-                  be drop down like in most interfaces"). This dropdown
-                  used to list `site` flat while the desk rail showed
-                  the six families — the one surface that disagreed
-                  with the rail, flagged in STATUS on 19 Aug and left
-                  open because the rail was the real navigation. Now
-                  the dropdown IS the navigation, so it takes the
-                  grouped structure and the disagreement closes. */}
-              <RailGroups activeKey={active} onNavigate={() => setMenuOpen(false)} />
-              <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />
-              <button
-                key="quickguide"
-                type="button"
-                onClick={() => { setQuickGuideOpen(true); setMenuOpen(false); }}
-                className="cahier-tab cahier-tab--sm !rounded-md text-left font-black"
-                style={{ background: "var(--cahier-ink)", borderColor: "var(--cahier-ink)", color: "#d4f24c" }}
-              >
-                <span aria-hidden>▦</span> MENU
-              </button>
-              {/* Only what RailGroups above does NOT already list.
-                  `toolTabs()` is Carte plus every navigable activity, and
-                  the six families cover the activities — rendering it
-                  whole put SpecuLearn and 4Mémoire in this menu twice.
-                  Carte belongs to no family, so it is the one that stays.
-                  Dan, 2026-08-30: "the shortcuts below can be swapped to
-                  something else" — this row is now free for whatever he
-                  wants a standing shortcut to be. */}
-              {tools.filter((t) => t.key === "map").map((t, i) => (
-                <TabFlap
-                  key={t.key}
-                  tab={t}
-                  hue={hueOf(t, i)} fill={fillOf(t, i)}
-                  active={active === t.key}
-                  className="cahier-tab cahier-tab--sm !rounded-md text-left"
-                  onNavigate={() => setMenuOpen(false)}
-                />
-              ))}
-              {context.length > 0 && <hr className="my-0.5 border-[color:var(--cahier-ink)]/15" />}
-              {context.map((t, i) => (
-                <TabFlap
-                  key={t.key}
-                  tab={t}
-                  hue={hueOf(t, i)} fill={fillOf(t, i)}
-                  active={active === t.key}
-                  className="cahier-tab cahier-tab--sm !rounded-md text-left"
-                  onNavigate={() => setMenuOpen(false)}
-                />
-              ))}
+            // THE GRID, AS DAN DREW IT (7 Sep: "replace the burger menu that
+            // comes down like this with this 3x5 grid instead"). RailGroups'
+            // grouped flaps, the ▦ MENU button and the Carte flap all retire
+            // together — the twelve activity tiles + Help/User/Leaderboard
+            // are the whole menu now, and Help carries the quick guide the
+            // ▦ button used to. Paper ground, per the 2 Sep not-white rule.
+            <div className="absolute left-0 top-full z-50 mt-1 max-h-[80vh] overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-[color:var(--cahier-paper-raised)] shadow-lg">
+              <MenuGrid
+                onNavigate={() => setMenuOpen(false)}
+                onHelp={() => setQuickGuideOpen(true)}
+              />
             </div>
           )}
         </div>
