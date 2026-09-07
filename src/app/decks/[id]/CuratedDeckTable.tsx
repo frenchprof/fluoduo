@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { logEvent } from "@/lib/firebase/usage";
 import PageBand from "@/components/PageBand";
+import { activity } from "@/content/activities";
 import PillSwitch from "@/components/PillSwitch";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -157,23 +158,30 @@ export default function CuratedDeckTable({ collection }: { collection: Collectio
 function TopBar({ collectionId }: { collectionId: string }) {
   return (
     <PageBand
-      /* « Deck », which is what this page is (Dan, 1 Sep: "why are there two
-         4Memoires").
+      /* THE ACTIVITY'S OWN NAME, FROM THE REGISTRY (Dan, 7 Sep).
+         He asked why this band said « Deck », and when it was put to him that
+         the two pages are deliberately separate: *"No way José, they are
+         supposed to be one and the same activity!"*
 
-         It said the DECK's title first — the same string the goal tag beside
-         it carries, so the band read « Envies et besoins · GOAL 39/50 ·
-         Envies/besoins ». Fixing that, I took the old hand-written row's
-         wording at face value ("🃏 4Mémoire · {crumb}") and used the registry's
-         name for `flip`. But that row was itself wrong, and putting it in a
-         proper band made the error visible: THIS PAGE IS NOT 4MÉMOIRE. It is
-         the deck's word table — List / All / Cards, notes, a shuffle — and
-         4Mémoire is the drill it LINKS to, with its own page and its own band
-         one tap away. Two pages wearing one name is the same fault as
-         `context[0]?.label` borrowing « Home », which this pass removed.
+         SO: two PAGES, two URLs — `/decks/<id>` is the word table, notes and
+         shuffle; `/practice/flip-it/<id>` is the cards themselves — but ONE
+         ACTIVITY, wearing one name on both. Dan the same day: *"i wanted to
+         keep the pages apart, and in different URL"*. Apart is about the
+         pages, not about what they are called.
 
-         « Deck » is the page's own flap label, which is how every other page
-         in the app names itself. */
-      title="Deck"
+         THIS REVERSES A 1 SEP DECISION, on Dan's word. That day he asked *"why
+         are there two 4Memoires"* and this band was renamed to « Deck » to
+         answer it, on the reasoning that a page is not the drill it links to.
+         The reasoning was wrong about what he meant, and it stood for six
+         days. Recorded so the next session does not restore « Deck » from the
+         earlier note and start the loop again.
+
+         Read from `activity("flip")`, never typed: the name lives once, in
+         FAMILIES/ACTIVITIES, and everything else derives (the Memo-rename
+         precedent — a display rename never touches keys or routes, and this
+         page's key and URL do not move). Typing "MémoiRecall" here is how the
+         band drifts the next time the activity is renamed. */
+      title={activity("flip")?.name ?? "MémoiRecall"}
       goal={goalNumberForDeck(collectionId)}
       /* The ← became the band's ✕ (Dan, 1 Sep: "all strips … with a X"). One
          control on every strip, spelt once in PageBand, rather than a back
