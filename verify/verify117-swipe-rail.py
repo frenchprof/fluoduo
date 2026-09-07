@@ -117,28 +117,87 @@ for gone in ['"/leaderboard"', '"/profil"']:
             "    through the 👤 User family, not by swiping through the course."
         )
 
-# ── 2 · one handler reads a finger ─────────────────────────────────────────
-HANDLER = SRC / "components" / "useRailSwipe.ts"
-if not HANDLER.exists():
-    fails.append("components/useRailSwipe.ts is gone — the rail has no reader.")
+# ── 2 · ONE CHAIN, and only the rail's own handlers may move on it ─────────
+#
+# This used to say "one handler", naming useRailSwipe, and on 7 Sep that
+# wording failed a correct change. Dan, pointing at a news article: *"The
+# scroll is not done right … when u scroll to the end of this page, it
+# automatically goes into the new URL at the start of that page."* Reaching
+# the end of a vertical scroll is a SECOND GESTURE — it reads a different
+# finger from a sideways drag and cannot share its code — so the app now has
+# two readers, `useScrollOn` beside `useRailSwipe`.
+#
+# What was never really about the count is the thing worth keeping: on 6 Sep
+# the app had two handlers with two PRIVATE IDEAS OF WHERE FORWARD WENT, and
+# that is what Dan found. So the rule is sharpened rather than dropped — a
+# handler that navigates off a touch must take its destination from
+# `railNeighbours`, the one list. Two gestures asking one chain cannot drift;
+# two gestures each holding a route is the 6 Sep state by another name.
+HANDLERS = {
+    SRC / "components" / "useRailSwipe.ts": "the sideways drag",
+    SRC / "components" / "useScrollOn.ts": "the end of a vertical scroll",
+}
+for h, what in HANDLERS.items():
+    if not h.exists():
+        fails.append(f"components/{h.name} is gone — the rail has no reader for {what}.")
+        continue
+    if "railNeighbours" not in h.read_text(encoding="utf-8"):
+        fails.append(
+            f"components/{h.name} no longer asks railNeighbours where to go.\n"
+            "    A handler that navigates must read the one chain; a route spelled\n"
+            "    inside a gesture handler is how the app came to have two ideas of\n"
+            "    'forward' on 6 Sep."
+        )
+
+# The end-of-scroll gesture's three guards, each pinned against the failure it
+# was written for. Every one of them was found by DRIVING the built export, and
+# without any of them this feature is worse than the wall it replaces.
+scroll_on = (SRC / "components" / "useScrollOn.ts")
+if scroll_on.exists():
+    text = scroll_on.read_text(encoding="utf-8")
+    for token, why in [
+        ("if (!boxes.length) return false",
+         "GUARD 1 — a page that does not scroll is never at the end of a scroll.\n"
+         "    /skills and /games are shorter than the screen, so every scroller on\n"
+         "    them is trivially at its bottom; without this one flick anywhere\n"
+         "    navigates."),
+        ("startedAtEnd",
+         "GUARD 2 — a gesture only counts if it BEGAN at the end. Measured before\n"
+         "    this existed: reading the pre-test through in one pass landed on the\n"
+         "    lesson, because the notch that ARRIVED at the bottom spent the whole\n"
+         "    threshold on the spot. No threshold alone fixes it — a bigger one just\n"
+         "    means a longer page triggers it."),
+        ("data-no-scroll-on",
+         "GUARD 3 — a pan surface is not a reading flow. The map's 3D box scrolls,\n"
+         "    but dragging it is looking around; without the hatch, reaching its\n"
+         "    bottom throws a learner off the map into SpecuLearn."),
+        ("hidden|clip",
+         "THE LOCKED DOCUMENT. A feed sets html{overflow:hidden}, and a locked\n"
+         "    <html> still reports overflow with scrollTop frozen at 0 — so counting\n"
+         "    it meant 'every scroller at its bottom' was never true on a feed. The\n"
+         "    pre-test sat at 4005 of 4005 and nothing happened."),
+    ]:
+        if token not in text:
+            fails.append(f"useScrollOn lost `{token}`.\n    {why}")
 
 for f in sorted(SRC.rglob("*.tsx")) + sorted(SRC.rglob("*.ts")):
-    if f == HANDLER:
+    if f in HANDLERS:
         continue
     text = f.read_text(encoding="utf-8")
     if "onTouchStart" not in text and "touchstart" not in text:
         continue
     # A surface may track touches for its own purposes (a drag, a canvas). What
     # it may not do is NAVIGATE off one — that is the rail's job, and a second
-    # opinion about where sideways goes is the fault this check exists for.
+    # opinion about where a gesture goes is the fault this check exists for.
     if re.search(r"router\.push|location\.(href|assign|replace)", text):
         rel = f.relative_to(ROOT)
         # The games own their own board gestures and never navigate off them;
         # anything that does both is what we are looking for.
         fails.append(
-            f"{rel} handles touch AND navigates. Sideways belongs to the rail\n"
-            "    (components/useRailSwipe.ts). Two handlers with two ideas of\n"
-            "    'forward' is the state Dan found on 6 Sep."
+            f"{rel} handles touch AND navigates. Moving between stations belongs to\n"
+            "    the rail's own handlers (useRailSwipe, useScrollOn), which both read\n"
+            "    railNeighbours. Two handlers with two ideas of 'forward' is the state\n"
+            "    Dan found on 6 Sep."
         )
 
 # ── 3 · a row is a screen ──────────────────────────────────────────────────
@@ -232,4 +291,4 @@ if fails:
     for f in fails:
         print("  ✗ " + f + "\n")
     sys.exit(1)
-print(f"verify117 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")
+print(f"verify117 ok — {len(EXPECTED)} stations in Dan's order, two gestures on one chain, one row per screen, the browser stays out.")

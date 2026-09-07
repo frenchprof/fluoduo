@@ -42,7 +42,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-import { RAIL_MESSAGE, deckFromPath, railIndex, railNeighbours, rememberRailDeck, recalledRailDeck } from "@/lib/swipeRail";
+import { RAIL_MESSAGE, RAIL_URL_MESSAGE, deckFromPath, railIndex, railNeighbours, rememberRailDeck, recalledRailDeck } from "@/lib/swipeRail";
 
 /** 60px across, and half again more across than down. */
 const MIN_PX = 60;
@@ -91,7 +91,17 @@ export default function useRailSwipe(): void {
       framedStation.current = here;
       return;
     }
-    if (here === framedStation.current) return;
+    if (here === framedStation.current) {
+      /* SAME STATION, NEW ADDRESS — move the bar, do not re-host the frame.
+         This branch used to be a bare `return`, and that is why a learner could
+         flick through all fifty goals with the address bar still reading
+         `/sio/SIO-001`: the scroller's `replaceState` rewrites the FRAME's URL,
+         which is invisible, and the page's own URL never moved. Reload, or
+         Share, and you were back at goal 1. (Dan, 7 Sep, pointing at a news
+         site: scrolling on "automatically goes into the NEW URL".) */
+      window.parent.postMessage({ type: RAIL_URL_MESSAGE, href: path }, window.location.origin);
+      return;
+    }
     framedStation.current = here;
     window.parent.postMessage({ type: RAIL_MESSAGE, href: path }, window.location.origin);
   }, [path]);

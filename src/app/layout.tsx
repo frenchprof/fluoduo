@@ -7,6 +7,7 @@ import FeedbackButton from "@/components/FeedbackButton";
 import ProgressSync from "@/components/ProgressSync";
 import PageViewTracker from "@/components/PageViewTracker";
 import KeyNav from "@/components/KeyNav";
+import RailArrows from "@/components/RailArrows";
 import RailSwipe from "@/components/RailSwipe";
 import TopLevelOnly from "@/components/TopLevelOnly";
 import AccentBar from "@/components/AccentBar";
@@ -204,6 +205,13 @@ export default function RootLayout({
           <RewardToast />
           <XpFloat />
           <InstallPrompt />
+          {/* The two edge triangles (Dan, 7 Sep: *"desktop does not have left
+              right scroll, so we need to provide these accessibility links"*).
+              INSIDE TopLevelOnly on purpose: the frame's edges are not the
+              page's edges, so a framed copy would draw them inset over the
+              paper. RailSwipe below is deliberately outside — the finger is in
+              the frame, the arrows are not. */}
+          <RailArrows />
         </TopLevelOnly>
         {/* Sideways is Dan's chain, in every document — including a framed
             station, which is where the finger actually is. See RailSwipe.tsx. */}

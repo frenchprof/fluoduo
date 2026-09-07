@@ -255,6 +255,39 @@ export function recalledRailDeck(): string | null {
 export const RAIL_MESSAGE = "fluolingo:rail";
 export type RailMessage = { type: typeof RAIL_MESSAGE; href: string };
 
+/** What a framed station posts when its OWN address changed but the station
+ *  did not — the goals scroller rewriting `/sio/SIO-0NN` as the magnet moves.
+ *
+ *  Dan, 2026-09-07, pointing at a news site: *"when u scroll to the end of this
+ *  page, it automatically goes into the NEW URL"*. The address bar is half of
+ *  what he is describing, and ours could not follow: since 7 Sep the goals run
+ *  inside the cahier's iframe, so `history.replaceState` in there rewrites the
+ *  FRAME's address, which nobody can see. A learner could flick through all
+ *  fifty goals and the bar still said `/sio/SIO-001` — reload and you are back
+ *  where you started, and Share sends the wrong goal.
+ *
+ *  Deliberately NOT `RAIL_MESSAGE`: that one calls `router.push` and re-hosts
+ *  the frame. Doing that per goal would be fifty reloads in one flick. This
+ *  moves the address and nothing else. */
+export const RAIL_URL_MESSAGE = "fluolingo:rail-url";
+export type RailUrlMessage = { type: typeof RAIL_URL_MESSAGE; href: string };
+
+/** Move the address to `href` — this document's, and the page's around it.
+ *
+ *  A feed that rewrites its own URL as it scrolls must call THIS rather than
+ *  `history.replaceState` directly. `usePathname()` does not observe a raw
+ *  replaceState, so the effect in useRailSwipe that forwards a same-station
+ *  change never fires for one; the scroller is the only thing that knows the
+ *  address moved, so the scroller is what says so. */
+export function syncScrollUrl(href: string): void {
+  try { window.history.replaceState(null, "", href); } catch {}
+  try {
+    if (window.self !== window.top) {
+      window.parent.postMessage({ type: RAIL_URL_MESSAGE, href }, window.location.origin);
+    }
+  } catch {}
+}
+
 export type RailMove = { href: string; name: string } | null;
 
 /** Where a sideways drag goes from here. `back` is rightwards, `forward` is

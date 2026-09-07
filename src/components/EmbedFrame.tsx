@@ -30,7 +30,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import useFillHeight from "@/lib/useFillHeight";
-import { RAIL_MESSAGE, type RailMessage } from "@/lib/swipeRail";
+import { RAIL_MESSAGE, RAIL_URL_MESSAGE, type RailMessage, type RailUrlMessage } from "@/lib/swipeRail";
 
 export default function EmbedFrame({
   src,
@@ -50,11 +50,22 @@ export default function EmbedFrame({
       // Same document origin only. The embed is our own page on our own host;
       // anything else talking to this window is not ours to obey.
       if (e.origin !== window.location.origin) return;
-      const d = e.data as RailMessage | undefined;
-      if (!d || d.type !== RAIL_MESSAGE || typeof d.href !== "string") return;
+      const d = e.data as RailMessage | RailUrlMessage | undefined;
+      if (!d || typeof d.href !== "string") return;
+      if (d.type !== RAIL_MESSAGE && d.type !== RAIL_URL_MESSAGE) return;
       // A relative path of our own, never an absolute URL — a swipe may not be
       // talked into leaving the app.
       if (!d.href.startsWith("/") || d.href.startsWith("//")) return;
+      /* THE ADDRESS BAR FOLLOWS THE FEED, WITHOUT RELOADING IT. The goals
+         scroller rewrites its path on every goal the magnet lands on; out here
+         that has to move the address and nothing else, or a flick through the
+         fifty would re-host the frame fifty times. `replaceState`, not push:
+         scrolling is not navigation and fifty history entries make Back
+         useless — the same reasoning SioScroller states for its own call. */
+      if (d.type === RAIL_URL_MESSAGE) {
+        try { window.history.replaceState(null, "", d.href); } catch {}
+        return;
+      }
       router.push(d.href);
     };
     window.addEventListener("message", onMessage);
