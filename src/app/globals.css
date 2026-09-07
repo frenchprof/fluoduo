@@ -1810,27 +1810,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
    version: one border, no layout, no per-page markup.
-   BOTH SHELLS, since 1 Sep. This selector named `.cahier-page` alone, and
+   ONE CLASS, BOTH SHELLS (Dan, 2026-09-06: "can you standardise pls, i don't
+   want outliers"). This selector used to name `.cahier-page` alone, and
    DrillShell's root is not one — so every drill (Flip It, Say It,
    GramMarathon, ConjugaZone, the lesson pager, a deck's study run) carried
    the right `fam-` class and drew no spine at all. Dan, 1 Sep: "there are
    pages missing this colored vertical strip on the left in whatever color it
-   should be in." The class the drill root now carries is `cahier-drill`, so
-   the two shells are named rather than matched by shape. */
-:is(.cahier-page, .cahier-drill)[class*="fam-"] {
+   should be in." The first fix listed both shells, `:is(.cahier-page,
+   .cahier-drill)`, which works and leaves the same trap armed: a third shell
+   is a silent no-spine again, and a grep for one name misses half the app.
+   Both roots now wear `cahier-surface`, so the colour is keyed on what a
+   surface IS rather than on which component drew it. */
+.cahier-surface[class*="fam-"] {
   border-left: 6px solid var(--fam-ink, transparent);
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
-/* A page you READ rather than answer takes the sand instead of its family's
-   ground — the strip, the section band and the rail still say which family
-   it belongs to. Wins over the family rule above by being later and equally
-   specific, which is why it is written here and not beside the tokens. */
-.paper-sand,
-:is(.cahier-page, .cahier-drill).paper-sand[class*="fam-"] {
-  background-color: var(--sable-page);
-  --cahier-rule: var(--sable-rule);
-}
+/* THE SAND IS GONE (Dan, 2026-09-06, shown the eleven activity pages side by
+   side: "can you standardise pls, i don't want outliers").
+   It was a real ruling — Dan picked the sand blind on 30 Aug from the six
+   family grounds, for a page you READ rather than answer — and it made the
+   Memo, the guide and the quick guide the only three pages in the app whose
+   ground did not say which family they belong to. Seen next to the other
+   ten, that reads as three pages that forgot rather than three pages with a
+   reason. A reading page still gets its calmer treatment from the type and
+   the width; the paper now says the same thing everywhere.
+   `isReadingSurface` and the --sable-* tokens went with it: they had no
+   other caller, and a dead exemption is how one comes back by accident. */
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -2081,18 +2087,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
      measuring rather than re-reading. The soft ink is fine where it is used —
      labels and captions, not paragraphs — but nobody should cite seven from
      here. verify96 recomputes it. */
-  /* THE READING PAPER — « le sable beige », the colour already in the colours
-     deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
-     six family grounds when asked which he wanted under a page of French he
-     was READING rather than answering.
-     It is not a seventh family: a Memo keeps its family's strip, its section
-     band and its rail. Only the paper changes, because a page you stay on
-     should not be competing with the words. Body ink is derived against the
-     CARD, the darker of the two surfaces, at 7.2:1 — the stricter standard,
-     for prose rather than buttons. */
-  --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
-  --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
-
+  /* THE READING PAPER WAS HERE — « le sable beige », picked blind by Dan on
+     30 Aug for a page you READ rather than answer, and retired 6 Sep when he
+     saw the eleven activity pages side by side: "can you standardise pls, i
+     don't want outliers". It left the Memo, the guide and the quick guide as
+     the only three grounds in the app that did not name a family. Removed
+     with its rule, not merely unwired — see the note by `.cahier-surface`. */
   --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
   --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
   --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
@@ -2122,40 +2122,41 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 @media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
 
-/* ── WHAT THE ACTIVITY ASKS YOU TO DO (Dan, 2026-08-26) ────────────────────
-   The family tells you where an activity LIVES in the menu. This tells you
-   what it DEMANDS of the learner, which is the thing a colour should carry
-   on the activity's own page. Five branches, taken from the ladder already
-   in lib/evidence.ts (recognition -> constrained -> free / productive):
+/* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
+   He sent the palette back — *"i am sorry your colors are very off. these are
+   the correct colors, you need to remedy"* — then the bands themselves,
+   *"these colors are wrrong"*, then the rule that settles it:
+   *"whatever it is, every color on the web can only be one of these"*, with
+   *"use black ink if you have to - for words"*.
 
-     guess   before you are taught     Pre-Test · SpecuLearn
-     lesson  the rule, then practice   Memo — the only door that teaches
-     recog   the answer is in view     4Mémoire · Sorting · Match It ·
-                                       VocabulaRain · LexicaLater
-     prod    retrieve one right answer iComplete · GramMarathon (written)
-                                       WorDrill (spoken — same branch, and
-                                       the only microphone in the app)
-     create  no single right answer    ComposeIt
+   The six family pens already WERE the palette's six pens; these five were a
+   separate hand-picked set matching nothing in it. `highlighterMarks.ts` is
+   the source now, and the two axes are the palette's two halves:
 
-   These are BAND fills carrying white text, so every ink is measured against
-   white AND against --cahier-paper, whichever surface it lands on:
-   guess 5.30 / 5.11 · lesson 4.95 / 4.77 · recog 5.36 / 5.16 ·
-   prod 7.74 / 7.46 · create 7.32 / 7.05. All clear AA at both.
+       the six PENS         -> the six families   (already true)
+       five of the six COMPLEMENTS -> the five phases
 
-   THE HUES ARE DERIVED, NOT PICKED. Five categories is past what hue alone
-   can carry for a red-green colour-blind reader, and the obvious semantic
-   palette is the worst possible one: amber/green/crimson is exactly the axis
-   deuteranopia flattens. A hand-picked set (violet #6d3fc0, amber #a15c00,
-   teal #0f7480, green #2f6b3d, crimson #b32d55) measured dEok 0.038 at its
-   worst pair under Machado deutan/protan simulation — indistinguishable.
-   These five came out of a search over OKLCH at >=45 deg hue separation,
-   white contrast held between 4.5 and 8.0: worst pair 0.120, roughly
-   3x better. Even so, colour is REINFORCEMENT here, never the only channel —
-   PageBand always prints the activity's name on the band. verify36
-   recomputes both the ratios and the simulated separations from this file. */
+       guess   Periwinkle #9398ff      prod    Amber   #e88c00
+       lesson  Olive      #98b300      create  Magenta #f350ff
+       recog   Sky        #00b2f6      (Teal #00c197 is the one left spare)
+
+   TAKEN RAW, at highlighter strength, which is why the words on them are
+   BLACK. White on these measures 1.84-2.84:1 and was unreadable; black
+   measures 8.18, 8.78, 8.70, 8.18 and 7.40 — every one clear. That is Dan's
+   ruling doing the work the old set needed a dimmed, off-palette colour for:
+   the ink moves so the colour does not have to.
+
+   NO COLOUR-BLIND SEPARATION RULE ANY MORE. The set these replace was chosen
+   by a search maximising deutan/protan separation, and no five of the twelve
+   can pass that bar — the palette sits at one lightness by design, so its
+   hues collapse in pairs (Sky/Magenta 0.009, Amber/Olive 0.013). Shown the
+   simulation and the numbers, Dan: *"don't care about color blindness pls"*,
+   *"it is NOT OUR CONCERN"*. Recorded here rather than quietly dropped, and
+   the checks that enforced it are removed in verify36 with the same quote —
+   a rule that is deleted for a reason should say whose reason. */
 :root {
-  --band-guess: #6c50e9;   --band-lesson: #6d7607;  --band-recog: #0e7397;
-  --band-prod: #9d2602;    --band-create: #a7016d;
+  --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
+  --band-prod: #e88c00;    --band-create: #f350ff;
 }
 .band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
 .band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }

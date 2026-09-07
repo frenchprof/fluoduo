@@ -395,6 +395,26 @@ export default function HomeDashboard() {
             is allowed to WRAP there — the well takes the first line and the
             keys the second, rather than one of them disappearing. */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+          {/* THE COURSE ENDS; THE FRENCH DOESN'T (Dan, 7 Sep — from the
+              retention read). At 50/50 nextSioId returns undefined and this
+              key used to simply vanish: the app's loudest door closed on the
+              day a learner finished. Diplome is a real ending — LAF1201 is a
+              semester course — so Continue does not pretend there is a 51st
+              goal; it points at revision, which spaced repetition makes the
+              genuine forever-game: words keep coming due for as long as you
+              want to keep them. Same key, same win hue — it is still the
+              journey — with the graduation cap saying why it moved. */}
+          {!activeSio && doneTotal >= SIOS.length && (
+            <Link
+              href="/reviser"
+              aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
+              title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
+              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
+            >
+              <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
+            </Link>
+          )}
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}

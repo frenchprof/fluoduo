@@ -37,24 +37,19 @@ export const XP_SIO_BASE = 300; // completing a SIO
 export const XP_SIO_MASTERY = 300; // + up to this, scaled by demonstrated mastery
 export const XP_CONVERSATION = 120; // finishing an AI role-play
 
-/**
- * THE STREAK LADDER — the rungs, in one place (7 Sep 2026).
- *
- * It used to stop at day 7, so day 40 paid exactly what day 7 paid: the
- * learner with the best habit in the cohort had nothing left to climb, and
- * the `inarretable` badge at 30 days was rewarding a streak the economy had
- * stopped noticing three weeks earlier. Two rungs added — ×2.5 at 14 and ×3
- * at 30 — so the top of the ladder and the top badge finally agree.
- *
- * ×3 IS THE CEILING, on purpose. The multiplier scales every answer, so an
- * open-ended ladder would make a late streak worth more than the work: at ×4
- * a wrong answer on day 60 (80 XP) outpays a RIGHT one from a learner with no
- * streak (60). The rungs stop where the habit is already established.
- *
- * A list, not a chain of ifs, because three surfaces need to read the NEXT
- * rung and none of them can ask an if-chain what comes after now.
- */
-export const STREAK_LADDER: readonly { day: number; mult: number }[] = [
+// THE LADDER, one place (Dan, 2026-09-07 — from the retention read: the old
+// ladder stopped at day 7, so day 40 paid exactly what day 7 paid and the
+// video's point about compounding was being left on the table). Day 30 agrees
+// with the « Inarrêtable » badge on purpose: the ladder's top rung and the
+// streak's top badge are the same day, so the two systems tell one story.
+// GAIN-FRAMED ONLY: every surface that names a rung says what the next day
+// PAYS, never what a missed day costs — verify32 greps the loss words out.
+// ×3 IS THE CEILING, on purpose (Peers, PR 207, independently building the
+// same ladder): the multiplier scales every answer, so an open-ended ladder
+// makes a late streak worth more than the work itself — at ×4 a WRONG answer
+// on day 60 (80 XP) outpays a RIGHT one from a learner with no streak (60).
+// The rungs stop where the habit is already established.
+const FIRE_LADDER = [
   { day: 3, mult: 1.5 },
   { day: 7, mult: 2 },
   { day: 14, mult: 2.5 },
@@ -64,22 +59,15 @@ export const STREAK_LADDER: readonly { day: number; mult: number }[] = [
 /** Fire streak → XP multiplier. Showing up for days in a row earns faster. */
 export function xpMultiplier(streak: number): number {
   let mult = 1;
-  for (const rung of STREAK_LADDER) if (streak >= rung.day) mult = rung.mult;
+  for (const rung of FIRE_LADDER) if (streak >= rung.day) mult = rung.mult;
   return mult;
 }
 
-/**
- * The next rung, or null once the ladder is topped out.
- *
- * GAIN-FRAMED BY CONSTRUCTION, which is the point of returning the rung
- * rather than a sentence. It can only ever describe a day the learner has
- * NOT reached yet — there is no shape of this value that says "don't break
- * it" or names what a lapse costs. The ethics floor (verify32 greps for
- * loss-framing and fails the build) is then a property of the data, not a
- * thing each of the three call sites has to remember to honour.
- */
-export function nextMultiplierStep(streak: number): { day: number; mult: number } | null {
-  return STREAK_LADDER.find((rung) => streak < rung.day) ?? null;
+/** The next rung above `streak`, so the multiplier can say what it is worth
+ *  keeping on for — or null from the top rung up, where the ladder is done
+ *  climbing and the fire simply burns at full strength. */
+export function nextFireMilestone(streak: number): { day: number; mult: number } | null {
+  return FIRE_LADDER.find((rung) => streak < rung.day) ?? null;
 }
 
 // ── Levels ──────────────────────────────────────────────────────────────────

@@ -13,7 +13,7 @@ import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
 import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
-import { levelForXp, nextMultiplierStep, xpMultiplier } from "@/lib/economy";
+import { levelForXp, nextFireMilestone, xpMultiplier } from "@/lib/economy";
 
 export default function AccountButton() {
   const user = useAuthUser();
@@ -84,7 +84,6 @@ export default function AccountButton() {
             {(() => {
               const lvl = levelForXp(progress.xp);
               const mult = xpMultiplier(progress.streak);
-              const next = nextMultiplierStep(progress.streak);
               const pct = Math.round((lvl.into / lvl.span) * 100);
               return (
                 <>
@@ -96,26 +95,25 @@ export default function AccountButton() {
                   </div>
                   <p className="px-1 pt-0.5 text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
                   <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-                    <span>🔥 {progress.streak}{mult > 1 && <b className="text-rose-600"> ×{mult}</b>}</span>
+                    {/* The ladder's next rung rides with the fire (2026-09-07):
+                        the streak names what it earns now AND what the next
+                        milestone day pays, so from day 7 there is still a
+                        reason to look forward. Gain-framed only. */}
+                    <span>
+                      🔥 {progress.streak}
+                      {mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}
+                      {(() => {
+                        const next = nextFireMilestone(progress.streak);
+                        return next ? (
+                          <span className="font-bold text-[color:var(--cahier-ink-soft)]"> · day {next.day} pays ×{String(next.mult).replace(".", ",")}</span>
+                        ) : null;
+                      })()}
+                    </span>
                     <span>⭐ {progress.xp}</span>
                     <span>💎 {progress.gems}</span>
                     <span>🎖️ {progress.badges?.length ?? 0} badges</span>
                     <StatsHelp />
                   </div>
-                  {/* WHAT THE NEXT DAY BUYS (7 Sep). The ladder used to stop at
-                      day 7 and nothing ever named a rung ahead, so a learner on
-                      day 5 could not tell there was one. This says what a future
-                      day PAYS and never what a lapse costs — the ethics floor
-                      is that nothing is loss-framed, and `nextMultiplierStep`
-                      cannot express a loss: it only ever returns a day you have
-                      not reached. At the top of the ladder it returns null and
-                      this line simply is not there, rather than saying
-                      "maximum", which would read as an ending. */}
-                  {next && (
-                    <p className="mt-1 px-1 text-[11px] font-bold text-[color:var(--cahier-ink-soft)]">
-                      Day {next.day} pays ×{String(next.mult).replace(".", ",")}
-                    </p>
-                  )}
                 </>
               );
             })()}
