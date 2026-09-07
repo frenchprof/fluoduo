@@ -258,62 +258,13 @@ export default function HomeDashboard() {
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
           is the whole instruction set. */}
-      {/* TWO ROWS, AND DAN SWAPPED THEM (1 Sep: "we swap the positions of the
-          four buttons and the next stop's name: the buttons down and the name
-          of the next stop up").
-
-          ROW A — where you are, and where you are going: the counter well and
-          « Next: … », a reading beside a reading.
-          ROW B — what you can do about it: the view switch and the four keys,
-          a control beside four controls.
-
-          Before the swap the rows cut across that: keys sat with the counter
-          and the destination's NAME sat with the switch, so each row held one
-          thing to read and one thing to press and neither row had a subject.
-          The switch also moved to the left, under the counter, which is what
-          made the swap possible — it had been sharing its row with the name. */}
-      <div className="mb-2 flex items-center justify-between gap-2">
-        {/* THE 1/50 WELL IS GONE (Dan, 7 Sep: "replace the streak info with
-            the stop info ... at the top right ... so we free up the space").
-            The editable stop reading now rides the TOP BAR between ⌛ and the
-            account chip — all 28 surfaces, still writable — see StopMark in
-            SiteTopBar.tsx. The hero row keeps only the prose and the keys. */}
-        <div />
-
-        {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
-            keeps, because a coloured triangle cannot name a destination. Two
-            lines as Dan wrote it ("Next: <br> [title]").
-
-            `short`, NOT `topic`, and that is the whole reason this line works.
-            Topics run to 55 characters ("en / au / aux / à — prepositions for
-            cities & countries"); beside the counter well there are ~165px left
-            on a 320px phone, so a topic can only ever arrive truncated — and
-            the first build of this showed "Introducti…", which is one of the
-            SHORTEST. `short` is the curriculum's own compact name, capped at
-            14 characters by check:short and asserted by verify25b, and it is
-            what every stop on the map is labelled with. So the learner reads
-            the same words here and there, at every width, uncut. The full
-            topic stays as the title attribute. */}
-        {activeSio && (
-          <p
-            title={activeSio.topic}
-            /* flex-1 + min-w-0 + truncate, and every one of the three is load
-               bearing. Without flex-1 the block sizes to its content and simply
-               overflows the page — measured at 320px, the topic ran 11.7px past
-               the right edge while `scrollWidth === clientWidth` reported it
-               unclipped, because nowrap without overflow:hidden grows the box
-               rather than cutting the text. With all three, the row can never
-               overflow at any width. */
-            className="min-w-0 flex-1 truncate text-right text-[12.5px] leading-tight text-[color:var(--cahier-ink-soft)]"
-          >
-            Next:
-            <br />
-            <strong className="font-semibold text-[color:var(--cahier-ink)]">
-              {activeSio.short}
-            </strong>
-          </p>
-        )}
-      </div>
+      {/* ROW A IS GONE ENTIRELY (Dan, 7 Sep, in two strokes): the 1/50 well
+          moved to the TOP BAR as the editable StopMark, and then "pls remove
+          the name of stop above the red pause button. we don't need that
+          anymore" took the « Next: … » prose with it. Where Continue goes is
+          told by the map card below and by Continue's own tooltip — the hero
+          holds only the keys now, which is what freeing the space was for.
+          (Supersedes the 1 Sep two-row swap; ROW B is the only row left.) */}
 
       {/* ── ROW B · the controls ─────────────────────────────────────────── */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">

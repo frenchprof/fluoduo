@@ -2553,7 +2553,6 @@ input.fluo-bookmark:focus,
   .text-\[11px\] { font-size: calc(0.6875rem + var(--fs-step) * 0.69); }
   .text-\[11\.5px\] { font-size: calc(0.7188rem + var(--fs-step) * 0.72); }
   .text-\[12px\] { font-size: calc(0.75rem + var(--fs-step) * 0.75); }
-  .text-\[12\.5px\] { font-size: calc(0.7812rem + var(--fs-step) * 0.78); }
   .text-\[13px\] { font-size: calc(0.8125rem + var(--fs-step) * 0.81); }
   .text-\[13\.5px\] { font-size: calc(0.8438rem + var(--fs-step) * 0.84); }
   .text-\[14px\] { font-size: calc(0.875rem + var(--fs-step) * 0.88); }
