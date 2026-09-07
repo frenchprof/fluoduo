@@ -98,7 +98,7 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
   { key: "concept", emoji: "💡", label: "Idée", does: "why French does it this way" },
   { key: "formes", emoji: "📐", label: "Formes", does: "the forms themselves, and every word" },
-  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — ⭐ Bonus included" },
+  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
 
 /**
@@ -926,25 +926,30 @@ export default function LessonTabs({
           It is also what lets the LAST row reach the top at all: resting
           there needs a screenful below it, and Exercice has nothing below it.
 
-          `justify-center` is what keeps that from reading as a mistake. The
-          alternative dumps the slack UNDER a short panel, which is Dan's
-          2026-08-27 complaint word for word ("scroll down past two-thirds of
-          a blank page"); centred, the panel sits in its screen the way a goal
-          sits in the goals scroller.
+          AND IT STARTS AT THE TOP, not centred (Dan, 2026-09-07: *"why is
+          there so much space between the four icons and the choose your
+          level"*). Centring a short panel in a screenful puts half the slack
+          ABOVE it — measured on the Exercice panel at 390px, 250px of ruled
+          paper between the tab strip and « Choose your level », which reads as
+          a page that failed to load rather than as breathing room. The slack
+          all goes to the bottom now, where it is the end of a panel and looks
+          like one. It is also what the goals scroller does since the same day,
+          for the same reason: a learner should find the same thing in the same
+          place on every screen of a feed.
 
           60vh is the pre-measurement fallback and lives INSIDE the var(): as
           a separate `min-h-[60vh]` it is a second rule of equal specificity,
           emitted later, and it silently won. */}
-      <section data-tab="parcours" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="parcours" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Parcours sio={sio} />
       </section>
-      <section data-tab="concept" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Concept c={concept} />
       </section>
-      <section data-tab="formes" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Formes memo={memo} deck={deck} lexique={lexique} />
       </section>
-      <section data-tab="exercice" className="flex snap-start flex-col justify-center [min-height:var(--row-min,60vh)]">
+      <section data-tab="exercice" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Panel>{exercise}</Panel>
       </section>
 

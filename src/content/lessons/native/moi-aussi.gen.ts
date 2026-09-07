@@ -81,12 +81,17 @@ type Mode = "echo" | "cest";
 export const MOI_AUSSI_AXES: DiceAxis[] = [
   {
     key: "person",
-    label: "Qui ?",
+    // English, by the same test (Dan, 2026-09-07). These two label the SELECTS
+    // a learner must read to pick what to practise — they are the control, not
+    // the content. « Sujet », « Verbe » and « Forme » on other lessons stay:
+    // they are cognates a first-week learner reads without being taught, which
+    // is Dan's own 5 Sep ruling for « Idée · Formes · Exercice ».
+    label: "Who",
     options: ASKED.map((a) => ({ value: a.answer, label: `${a.cue} → ${a.answer}` })),
   },
   {
     key: "polarity",
-    label: "La phrase",
+    label: "Sentence",
     options: [
       { value: "aff", label: "affirmative → aussi" },
       { value: "neg", label: "négative → non plus" },

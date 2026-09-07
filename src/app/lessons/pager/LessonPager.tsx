@@ -374,7 +374,12 @@ export default function LessonPager({
   // Date.now() and ref writes inside build() that it accepts today. Same
   // screen, one return path.
   const chooser = (
-    <div className="flex flex-col items-center gap-5 pt-8 text-center">
+    /* `pt-2`, was `pt-8` (Dan, 2026-09-07: "why is there so much space between
+       the four icons and the choose your level"). Two things were paying for
+       that gap at once — this padding and the panel centring itself in a
+       screenful — and both are gone. The panel supplies the beat below the tab
+       strip now; the chooser does not need a second one. */
+    <div className="flex flex-col items-center gap-4 pt-2 text-center">
           <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
             Choose your level
           </p>
@@ -446,7 +451,15 @@ export default function LessonPager({
                     >
                       {/* "" is a real, useful value: leave it and the generator
                           rolls that axis, which is the pre-selector behaviour. */}
-                      <option value="">au hasard</option>
+                      {/* ENGLISH, because a learner is STUCK in front of it
+                          (Dan, 2026-09-07: "English pls. We don't want au
+                          hasard and La phrase and Qui"). This is the picker's
+                          neutral option — the chrome that says "I have not
+                          chosen" — not French anyone is here to learn. The 6
+                          Sep rule is the test: « Unité 3 » names a place and
+                          nobody is stuck in front of it; a select whose only
+                          value you cannot read is a control you cannot use. */}
+                      <option value="">Any</option>
                       {ax.options.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}

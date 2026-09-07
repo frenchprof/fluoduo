@@ -6,6 +6,43 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, late — English on the picker, a gift for Bonus, and the gap closed (pre-tests lane)
+
+Dan, on the lesson's Exercice panel: *"English pls We don't want au hasard and
+La phrase and Qui (the rest is ok). The bonus should a gift emoji. and why is
+there so much space between the four icons and the choose your level"*.
+
+**« au hasard » → « Any », « Qui ? » → « Who », « La phrase » → « Sentence ».**
+These are the SELECTS a learner must read to pick what to practise, so the 6 Sep
+test settles it: not *"is this French?"* but *"is a learner STUCK in front of
+it?"* A select whose only value you cannot read is a control you cannot use.
+
+**« Sujet », « Verbe » and « Forme » on other lessons stay**, and that is the
+same ruling rather than an exception: they are cognates a first-week learner
+reads without being taught, which is Dan's own reason for keeping « Idée ·
+Formes · Exercice » on the tab strip.
+
+**⭐ → 🎁 for Bonus.** The other three count stars — one, two, three — so a
+fourth star said "four" and read as one more rung of the same ladder. Bonus is
+not harder by a step, it is a different exercise (whole sentences, translated).
+Followed through the two other places the pair is written out: the tab strip's
+`does` line and the first-run hint.
+
+**The gap was TWO things paying at once**, which is why it was 250px of ruled
+paper: the chooser's own `pt-8`, and the panel centring itself in a screenful so
+half the slack went ABOVE it. The panels pin to the top now, like the goals
+scroller since the same day, and the chooser's padding drops to `pt-2`.
+
+### Still French, and Dan has not been shown it
+
+The picker's axis labels are per-lesson content and **97 distinct labels** are
+in use across the 59 lessons. He said *"the rest is ok"* while looking at ONE
+lesson, so only the two he named were changed. The non-cognate ones he has not
+met yet include « Où ? », « Combien ? », « Quel jour ? », « Quel lieu ? »,
+« Pays », « Prénom », « Fréquence », « Cadre », « Public ». They are the same
+kind of label as « Qui ? » and by the same test they should be English — but
+that is 97 content decisions and his to make, not a sweep to run quietly.
+
 ## 7 Sep, evening — the goal's torn tag, the lesson's frozen strip, Home's row (pre-tests lane)
 
 Four of Dan's, in one pass.
