@@ -2328,7 +2328,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
   transition-duration: .06s, .06s;
   transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease;
 }
-.fluo-stop--reached {
+/* UP and DOWN, not "reached" and "ahead" (Dan, 7 Sep: "all buttons are up by
+   default, and as they are completed they get pressed down. can we swap").
+   The names describe the LOOK now, because the meaning just inverted once and
+   a class called --reached that paints not-yet-reached stops is a trap laid
+   for the next session. */
+.fluo-stop--up {
   box-shadow:
     -3px -3px 7px color-mix(in oklab, white 92%, transparent),
     3px 5px 10px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
@@ -2336,7 +2341,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -1px -3px 0 color-mix(in oklab, black 18%, transparent),
     inset 0 0 0 2px var(--fluo-stop-kind, transparent);
 }
-.fluo-stop--ahead {
+.fluo-stop--down {
   box-shadow:
     inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 34%, transparent),
     inset 3px 3px 6px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
@@ -2362,7 +2367,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
      very slightly, because a lift alone is nearly invisible against a busy
      scene of trees and buildings. */
   .home-map3d-node:hover .home-map3d-cap {
-    transform: var(--cap-t) translateY(calc(-1 * var(--n-lift, 2px)));
+    transform: var(--cap-t) translateY(calc(var(--cap-rest, 0px) - var(--n-lift, 2px)));
     filter: brightness(1.06);
   }
 }
@@ -2376,7 +2381,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
    hands it in per node), so the cap bottoms out ON its plinth instead of
    sliding an arbitrary distance: it goes down exactly as far as it stands
    proud, and the side wall closes up. */
-.home-map3d-cap { transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
+/* `--cap-rest` is where the cap SITS: 0 for a button still up, its full
+   thickness for one that has been completed and is latched down. `--n-press`
+   is where any button goes while held. Both are absolute positions rather
+   than deltas, so a latched button does not travel twice. */
+.home-map3d-cap { transform: var(--cap-t) translateY(var(--cap-rest, 0px));
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
 .home-map3d-node:active .home-map3d-cap {
   transform: var(--cap-t) translateY(var(--n-press, 3px));
   transition-duration: .06s, .06s;
@@ -2425,7 +2435,8 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
 @media (prefers-reduced-motion: reduce) {
   .home-map3d-cap, .home-map3d-node:hover .home-map3d-cap,
-  .home-map3d-node:active .home-map3d-cap { transform: var(--cap-t); }
+  .home-map3d-node:active .home-map3d-cap {
+    transform: var(--cap-t) translateY(var(--cap-rest, 0px)); }
   .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
   .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
   /* A spring IS motion. Someone who asked for less of it gets the state

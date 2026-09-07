@@ -156,6 +156,13 @@ export default function Map2DGrid({
               // completed but walked past would render in the pale wash, i.e.
               // as "not yet", and your own finished work would disappear.
               const sunk = ahead && !active && !done;
+              // DEPTH FOLLOWS COMPLETION, not position (Dan, 7 Sep: "all
+              // buttons are up by default, and as they are completed they get
+              // pressed down"). `sunk` still drives the COLOUR — pen for the
+              // stretch you have walked, wash for what is ahead — because that
+              // is a different question from whether the key is latched. A
+              // stop you have passed but not finished stays UP and coloured,
+              // which is exactly the nudge it should be.
               return (
                 <button
                   key={s.id}
@@ -170,7 +177,7 @@ export default function Map2DGrid({
                   // forty of the fifty stops wore it. The kind colour moves from
                   // a `border` to an inset ring inside .fluo-stop, which costs
                   // no layout — 44px stays 44px, the touch floor holds.
-                  className={`fluo-stop ${sunk ? "fluo-stop--ahead" : "fluo-stop--reached fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
+                  className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up"} ${sunk ? "" : "fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
                   // TWO SHADES OF ONE PEN (Dan, 6 Sep, choosing option B of
                   // three shown at 44px). Reached stops are filled with the
                   // pen at full strength; stops still ahead take its wash. The
@@ -235,7 +242,7 @@ export default function Map2DGrid({
             aria-label="GramMarathon Final"
             // The door stands PROUDEST of anything on the map — it is the one
             // node that is a place, and it is what the whole road leads to.
-            className="fluo-stop fluo-stop--reached z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
+            className="fluo-stop fluo-stop--up z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
             style={{
               ["--fluo-stop-kind" as string]: "var(--cahier-ink)",
               background: "var(--cahier-paper-raised)",

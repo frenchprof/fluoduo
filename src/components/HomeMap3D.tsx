@@ -842,8 +842,8 @@ export default function HomeMap3D({
                     // The pad's own lift off the road. It used to branch on
                     // `reached` to fake a protruded/depressed difference back
                     // when the stop was a hand-built puck; the key says that
-                    // itself now (`.fluo-stop--reached` is raised,
-                    // `--ahead` is a well), so the pad is just the pad again —
+                    // itself now (`.fluo-stop--up` is raised,
+                    // `--down` is a well), so the pad is just the pad again —
                     // the same spot on the road under every stop.
                     const depthH = Math.max(3, Math.round(sz * 0.28 * scaleY));
                     // The pad is a circular SPOT ON THE ROAD, wider than the
@@ -1065,14 +1065,18 @@ export default function HomeMap3D({
                               // so the hover and press rules can compose their
                               // travel on top of it instead of replacing it.
                               ["--cap-t" as string]: `translate(-50%, -50%) scale(${k}) scaleY(${scaleY})`,
+                              // Where the cap RESTS. A completed stop is a
+                              // latched key: it sits at the bottom of its own
+                              // travel, wall closed, coin flat on the ground.
+                              // Everything not yet done stands up (Dan, 7 Sep).
+                              ["--cap-rest" as string]: `${done ? press : 0}px`,
                               ["--n-press" as string]: `${press}px`,
-                              transform: `translate(-50%, -50%) scale(${k}) scaleY(${scaleY})`,
                             }}
                           >
                             <span
                               // `home-map3d-face` is only the hover/press hook;
                               // every pixel of the look comes from .fluo-stop.
-                              className={`fluo-stop ${reached ? "fluo-stop--reached fluo-stop-num" : "fluo-stop--ahead"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up"} ${reached ? "fluo-stop-num" : ""} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
                               style={{
                                 ["--fluo-stop-kind" as string]: colour,
                                 ["--n-lift" as string]: "2px",

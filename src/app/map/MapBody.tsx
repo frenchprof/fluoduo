@@ -100,6 +100,18 @@ export default function MapBody() {
   };
 
   const setZoom = (v: number) => setZoomPct(Math.min(200, Math.max(30, Math.round(v))));
+  // WHAT IS IN THE FIELD WHILE YOU TYPE (Dan, 7 Sep: "the field is supposed to
+  // allow me to key in precise values?"). It was bound straight to the CLAMPED
+  // number, so every KEYSTROKE was clamped and written back under the caret:
+  // typing 135 goes 1 -> clamped to 30 -> the box now reads "30" -> the next
+  // key makes "303" -> clamped to 200. Driven and measured: typing "135" left
+  // 200 in the field. Only round numbers already in range could ever be typed.
+  const [zoomDraft, setZoomDraft] = useState<string | null>(null);
+  const commitZoom = (text: string) => {
+    const n = parseFloat(text);
+    setZoom(Number.isFinite(n) ? n : 100);
+    setZoomDraft(null);
+  };
   const setView = (v: MapView) => {
     setMapView(v);
     saveMapView(v);
@@ -169,8 +181,8 @@ export default function MapBody() {
             type="button"
             aria-label="Zoom out"
             onClick={() => setZoom(zoomPct - 10)}
-            className="rounded-lg border-2 px-2 py-1 leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            className="neo-key fluo-spring rounded-lg px-2 py-1 leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             −
           </button>
@@ -181,11 +193,21 @@ export default function MapBody() {
             max={200}
             step={10}
             list="fluo-zoom-milestones"
-            value={zoomPct}
+            value={zoomDraft ?? zoomPct}
             aria-label="Zoom percent — type a value or pick a milestone"
-            onChange={(e) => setZoom(Number(e.target.value) || 100)}
-            className="w-[52px] rounded-lg border-2 px-1 py-1 text-center leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            onChange={(e) => {
+              const text = e.target.value;
+              setZoomDraft(text);
+              const n = parseFloat(text);
+              if (Number.isFinite(n) && n >= 30 && n <= 200) setZoom(n);
+            }}
+            onBlur={(e) => commitZoom(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") commitZoom((e.target as HTMLInputElement).value); }}
+            // A WELL: the app's word for a value you read and type into,
+            // rather than a key you press (Dan, 7 Sep: "the zoom counter is
+            // not showing any 3D depression like the 2D control is showing").
+            className="neo-well w-[52px] rounded-lg px-1 py-1 text-center leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">
             <option value="50" />
@@ -198,8 +220,8 @@ export default function MapBody() {
             type="button"
             aria-label="Zoom in"
             onClick={() => setZoom(zoomPct + 10)}
-            className="rounded-lg border-2 px-2 py-1 leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            className="neo-key fluo-spring rounded-lg px-2 py-1 leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             +
           </button>

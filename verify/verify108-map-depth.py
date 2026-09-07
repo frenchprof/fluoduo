@@ -13,8 +13,8 @@ hypothetical:
   1  NO DASHED STOPS. Forty of the fifty stops were a dashed ring on paper. A
      broken outline is a hole, not a thing, so the map's dominant impression
      was absence and nothing on it looked pressable. Reached stops now stand
-     out (.fluo-stop--reached), stops ahead are sunk into the band
-     (.fluo-stop--ahead), and depth carries progress.
+     out (.fluo-stop--up), stops ahead are sunk into the band
+     (.fluo-stop--down), and depth carries progress.
 
   2  THE NUMBER SURVIVES BEING DONE. The glyph was `done ? "✓" : i + 1`, so a
      stop lost its number the moment it was finished — a learner looking for
@@ -67,22 +67,22 @@ grid = strip_comments(read("src/components/Map2DGrid.tsx"))
 css = read("src/app/globals.css")
 
 # --- 1 · stops are objects, raised or sunk, never a dashed hole -------------
-# QUOTED, not bare: a bare substring test passed against `fluo-stop--ahead-X`,
+# QUOTED, not bare: a bare substring test passed against `fluo-stop--down-X`,
 # because the old name is still inside the new one. Its own break-test caught it.
 # Quoted OR followed by a space: the reached branch now carries a second class
-# ("fluo-stop--reached fluo-stop-num"), and requiring the closing quote failed
+# ("fluo-stop--up fluo-stop-num"), and requiring the closing quote failed
 # on correct code. Matching name-then-boundary keeps the substring guard that
 # the earlier break-test exposed without pinning what else rides along.
 _cls = lambda n: re.search(r'"' + re.escape(n) + r'(?:[ "])', grid) is not None
-check(_cls("fluo-stop--reached") and _cls("fluo-stop--ahead"),
+check(_cls("fluo-stop--up") and _cls("fluo-stop--down"),
       "a stop is raised when reached and sunk when still ahead",
-      "Map2DGrid no longer uses .fluo-stop--reached / --ahead — the stops have "
+      "Map2DGrid no longer uses .fluo-stop--up / --ahead — the stops have "
       "gone back to being flat")
 check("dashed" not in grid,
       "no stop is drawn as a dashed outline",
       "a stop is dashed again. A broken outline reads as a hole where an object "
       "should be, and forty of the fifty stops wore it")
-for cls in (".fluo-stop--reached", ".fluo-stop--ahead", ".fluo-band"):
+for cls in (".fluo-stop--up", ".fluo-stop--down", ".fluo-band"):
     check(cls in css, f"{cls} is defined", f"globals.css has lost {cls}")
 
 # --- 2 · the number is unconditional ----------------------------------------
@@ -179,7 +179,7 @@ check(re.search(r"const\s+reached\s*=\s*done\s*\|\|\s*active", three),
 # scaled by the camera — so there is nothing left to match. The check is that
 # it stays that way, because the moment someone re-implements the look by hand
 # the drift starts again.
-check("fluo-stop--reached" in three and "fluo-stop--ahead" in three
+check("fluo-stop--up" in three and "fluo-stop--down" in three
       and "fluo-stop-num" in three,
       "the 3D stop wears the 2D grid's own classes — there is one description "
       "of the button, so the two views cannot drift",
@@ -324,15 +324,30 @@ check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-cap", css),
 # skirt — fifty identical extrusions differing by a few percent of inner
 # shadow. The difference is STRUCTURAL now: a reached stop stands on its
 # skirt, an upcoming one has none at all and sits in the road.
-# PROTRUDED vs DEPRESSED is now the 2D classes' own job — `.fluo-stop--reached`
+# PROTRUDED vs DEPRESSED is now the 2D classes' own job — `.fluo-stop--up`
 # is a raised key and `--ahead` is a well, and both views get it from the same
 # rule. The three assertions that used to pin a hand-built skirt, a branching
 # box-shadow and a gloss blob are gone with the code they described; what is
 # left to hold is that the two states are still TOLD APART here.
-check(re.search(r"reached\s*\?\s*\"fluo-stop--reached", three),
-      "a reached stop takes the raised class and an upcoming one the well",
-      "the 3D stop no longer switches between the raised and sunk classes, so "
-      "every stop looks the same state")
+# UP BY DEFAULT, PRESSED WHEN COMPLETED (Dan, 7 Sep: "all buttons are up by
+# default, and as they are completed they get pressed down. can we swap").
+# The classes were renamed with the swap: `--reached`/`--ahead` described a
+# POSITION on the road, and the moment the meaning inverted a class called
+# "reached" was painting not-yet-reached stops. `--up`/`--down` describe the
+# look, which cannot invert.
+#
+# DEPTH follows `done`; COLOUR still follows `sunk` (the stretch you have
+# walked wears the pen, what is ahead wears the wash). They are different
+# questions, and a stop you have passed but not finished should stay up AND
+# coloured — which is exactly the nudge it should be.
+check(re.search(r"done \? \"fluo-stop--down\" : \"fluo-stop--up\"", three),
+      "a completed stop is latched down; everything else stands up",
+      "depth no longer follows completion — either every stop looks the same "
+      "state, or done-ness is being read off position again")
+check(re.search(r"\[\"--cap-rest\" as string\]: `\$\{done \? press : 0\}px`", three),
+      "a completed coin RESTS at the bottom of its own travel, wall closed",
+      "the cap's resting position no longer depends on completion, so a "
+      "finished stop stands up like an unfinished one")
 check(re.search(r"background:\s*reached\s*\?\s*colour\s*:\s*KIND_WASH\[kind\]", three),
       "reached wears the pen, ahead wears its wash — the 2D rule exactly",
       "the 3D fill no longer follows reached->pen / ahead->wash")
@@ -377,6 +392,39 @@ check(m is not None and float(m.group(1)) > 1.0,
       f"the extension reaches past the bottom edge (vh x {m.group(1) if m else '?'})",
       "the road is extended only as far as the frame's own edge, which leaves "
       "the seam on the last row of pixels")
+
+# --- 11 · the zoom control, and typing a precise value ---------------------
+# Dan, 7 Sep: "the zoom counter is not showing any 3D depression like the 2D
+# control is showing" and "the field is supposed to allow me to key in precise
+# values?"
+#
+# THE FIELD WAS BOUND STRAIGHT TO THE CLAMPED NUMBER, so every KEYSTROKE was
+# clamped and written back under the caret. Typing 135 went 1 -> clamped to 30
+# -> the box read "30" -> the next key made "303" -> clamped to 200. Driven and
+# measured before the fix: typing "135" left 200 in the field, and only round
+# numbers already in range could ever be typed. The field holds TEXT while it
+# is being edited now and commits on blur or Enter.
+#
+# THERE ARE TWO OF THESE CONTROLS — HomeMap's and MapBody's — which is how the
+# first fix landed on the one Dan was not looking at. Both are asserted, by
+# path, so a fix to one can never again look like a fix to both.
+for f in ("src/components/HomeMap.tsx", "src/app/map/MapBody.tsx"):
+    z = strip_comments(read(f))
+    # The BINDING, not the declaration. `"zoomDraft" in z` passed against a
+    # field re-bound to `value={zoomPct}` with the draft state left declared
+    # above it — caught by the break-test.
+    check(re.search(r"value=\{zoomDraft \?\? zoomPct\}", z) and "commitZoom" in z,
+          f"{os.path.basename(f)}: the zoom field shows the draft while you type",
+          f"{os.path.basename(f)}: the zoom field is bound to the clamped "
+          f"number again — every keystroke is clamped and a precise value "
+          f"cannot be typed")
+    check(re.search(r"onBlur=\{\(e\) => commitZoom", z) and "Enter" in z,
+          f"{os.path.basename(f)}: it commits on blur and on Enter",
+          f"{os.path.basename(f)}: nothing commits the typed value")
+    check("neo-key" in z and "neo-well" in z,
+          f"{os.path.basename(f)}: the steppers are keys and the field a well",
+          f"{os.path.basename(f)}: the zoom control is flat again — it sits "
+          f"beside a map made of keys that rise and press")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
