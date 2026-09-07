@@ -100,7 +100,13 @@ export function weekKey(d: Date = new Date(), tz: string = learnerZone()): strin
   const [y, m, day] = dayKey(d, tz).split("-").map(Number);
   // ISO-8601 week number, computed on the key's own calendar date (never on a
   // millisecond offset — same DST reasoning as previousDay).
-  const t = new Date(Date.UTC(y, m - 1, day));
+  return isoWeekOfUTC(new Date(Date.UTC(y, m - 1, day)));
+}
+
+/** The ISO week key of a UTC calendar date. The tail of weekKey, split out so
+ *  previousWeek can run the same arithmetic on a shifted date. */
+function isoWeekOfUTC(t0: Date): string {
+  const t = new Date(t0.getTime());
   const dow = (t.getUTCDay() + 6) % 7; // Monday = 0
   t.setUTCDate(t.getUTCDate() - dow + 3); // the Thursday of this ISO week
   const isoYear = t.getUTCFullYear();
@@ -109,4 +115,27 @@ export function weekKey(d: Date = new Date(), tz: string = learnerZone()): strin
   firstThu.setUTCDate(firstThu.getUTCDate() - firstDow + 3);
   const week = 1 + Math.round((t.getTime() - firstThu.getTime()) / (7 * 86_400_000));
   return `${isoYear}-W${String(week).padStart(2, "0")}`;
+}
+
+/**
+ * The key for the week before a given week key — calendar arithmetic on the
+ * key itself, like previousDay, and for the same reason: a 7-day millisecond
+ * subtraction near the 04:00 boundary in a DST week lands in the wrong week.
+ * ISO year boundaries are the live case ("2026-W01" → "2025-W52"), which is
+ * why this reconstructs the week's Thursday rather than decrementing the
+ * number: some ISO years have 53 weeks and the number alone cannot know.
+ */
+export function previousWeek(key: string): string {
+  const m = key.match(/^(\d{4})-W(\d{2})$/);
+  if (!m) return key;
+  const isoYear = Number(m[1]);
+  const week = Number(m[2]);
+  // Jan 4 is always inside W01; walk to that week's Thursday, then to the
+  // asked-for week's Thursday, then back seven days.
+  const firstThu = new Date(Date.UTC(isoYear, 0, 4));
+  const firstDow = (firstThu.getUTCDay() + 6) % 7;
+  firstThu.setUTCDate(firstThu.getUTCDate() - firstDow + 3);
+  const thu = new Date(firstThu.getTime());
+  thu.setUTCDate(thu.getUTCDate() + (week - 1) * 7 - 7);
+  return isoWeekOfUTC(thu);
 }

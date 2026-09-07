@@ -362,6 +362,18 @@ jobs:
 
       - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
         run: python3 verify/verify109-lucky-find.py
+      - name: "The Finale card joins the colour system — no raw Tailwind (6 Sep)"
+        run: python3 verify/verify115-finale-colours.py
+      - name: verify116 — the gem utilities, shield decision executed
+        run: python3 verify/verify116-gem-utilities.py
+      - name: verify113 — the fire ladder past day 7, executed
+        run: python3 verify/verify113-streak-ladder.py
+      - name: verify114 — level 0-4, exponential, rank-free
+        run: python3 verify/verify114-level-curve.py
+      - name: verify111 — the course ends, the French doesn't
+        run: python3 verify/verify111-forever-french.py
+      - name: verify112 — you vs last week, executed
+        run: python3 verify/verify112-vs-last-week.py
 
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
@@ -411,7 +423,7 @@ jobs:
         run: python3 verify/verify106-fluidtype.py
 
       - name: "Sideways is Dan's chain, and only the rail reads a finger (6 Sep)"
-        run: python3 verify/verify111-swipe-rail.py
+        run: python3 verify/verify117-swipe-rail.py
 
       - name: "Three type families ship: FluOLinGo, Roboto, Patrick in reserve (7 Sep)"
-        run: python3 verify/verify112-three-faces.py
+        run: python3 verify/verify118-three-faces.py

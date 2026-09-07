@@ -1,17 +1,17 @@
 /**
- * /games/vocabularain/embed — VocabulaRain, running inside the cahier rather than drawing one.
+ * /games/vocabularain/embed — VocabulaRain's gallery, running inside the cahier.
  *
- * Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
- * PAGES IN IFRAMES (EMBEDDED)"*, and then *"proceed the remaining unframed
- * surfaces"*. `/games/vocabularain` is the page a learner opens; this is what runs in the
- * frame it holds, and it is the SAME component the page rendered directly
- * before, so the two cannot drift.
+ * Dan, 2026-09-07: everything runs in the cahier in an iframe. `/games/
+ * vocabularain` is the notebook; this is the activity inside it.
  *
- * The chrome is hidden by CSS in a framed document (`html[data-embed]` in
- * globals.css), so nothing here had to change to lose its notebook.
+ * MERGE NOTE (same day): main landed the expert-unlock gallery (PR 216) on the
+ * old `page.tsx` while this branch was turning that file into the host. The
+ * gallery is the ACTIVITY, so main's version is what belongs here — taken
+ * whole, not merged by hand.
  */
 import GameGallery, { type GalleryEntry } from "@/components/GameGallery";
 import { listLetrisSets } from "@/games/letris/sets";
+import { EXPERT_UNLOCKS } from "@/lib/economy";
 import { CURATED } from "@/content/collections";
 import { shortTitle } from "@/lib/shortTitles";
 
@@ -26,5 +26,18 @@ export default function LetrisIndexPage() {
       return { id: s.slug, href: `/games/vocabularain/${s.slug}`, title: shortTitle(s.slug, s.title), unit: deck?.unit ?? null, deckId: deck?.id };
     })
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9));
+  // The expert decks join the sheet as GATES (Dan, 7 Sep: gems "can unlock
+  // difficult parts" — games only). Until bought the tile is a buy button;
+  // the set itself has been in the registry since the content-gap audit,
+  // waiting for exactly this door.
+  for (const u of EXPERT_UNLOCKS) {
+    entries.push({
+      id: u.setSlug,
+      href: `/games/vocabularain/${u.setSlug}`,
+      title: u.label,
+      unit: null,
+      locked: { unlockId: u.id, cost: u.cost, emoji: u.emoji },
+    });
+  }
   return <GameGallery activityKey="vocabularain" emoji="🌧️" name="VocabulaRain" entries={entries} />;
 }

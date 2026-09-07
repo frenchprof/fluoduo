@@ -19,6 +19,37 @@
  *  · Every answer pays through recordItemResult (ids finale:SIO-xxx:n) —
  *    first grading only — so XP, streak, SRS, DéjàRevu and the teacher
  *    dashboard all see the work.
+ *
+ * COLOUR (6 Sep 2026). This card was written before the two colour systems
+ * existed and was still entirely raw Tailwind — slate-900 for the frame,
+ * emerald-500 for a right answer, rose-400 for a wrong one, yellow-100 on
+ * Check, and amber-300/50/800 on the hint chip. Not one token among them.
+ *
+ * Dan caught it the same afternoon he sent the reward banner back for wearing
+ * the XP colour, and it was the same fault one card lower: **amber-300 is
+ * 0.3° of hue from --dopa-joy**, which is this app's XP colour (the +20 float,
+ * the receipt's XP line). The hint button was painted in the colour that means
+ * XP.
+ *
+ * It now answers to docs/COLOR_SYSTEM.md, and which system answers which
+ * question matters:
+ *
+ *   BAND (what you are being asked to do) — the Finale is GramMarathon, so
+ *   `band-prod` sits on the root and everything structural reads var(--band)
+ *   and var(--band-wash) from it: the frame, the progress fill, the two card
+ *   chips, the clue rungs. The band's own rule — "the border and the icon,
+ *   its 12% wash is the fill, and the label stays page ink".
+ *
+ *   FAMILY (where you are) — Practice yellow, on the primary key and on the
+ *   blank in the sentence, which were already yellow by accident.
+ *
+ *   DOPA ROLES (what a thing MEANS) — win for a right answer, miss for a
+ *   wrong one. Those are meanings, not places, so they take neither system.
+ *
+ * The measured trap: page ink on the band's wash is 9.61:1, but --cahier-ink-soft
+ * on that same wash is **3.85:1**. The soft ink is fine on paper (4.72:1) and
+ * fails on the wash, so the clue rungs and the chips take full page ink while
+ * the quiet lines on paper keep the soft one.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
@@ -245,21 +276,23 @@ export default function FinaleContent() {
   }
 
   if (!paper) {
-    return <p className="px-1 py-6 text-sm text-slate-500">Preparing today&rsquo;s marathon…</p>;
+    return <p className="px-1 py-6 text-sm text-[color:var(--cahier-ink-soft)]">Preparing today&rsquo;s marathon…</p>;
   }
 
   if (finished) {
     return (
-      <div className="mx-auto max-w-md py-10 text-center">
+      <div className="band-prod mx-auto max-w-md py-10 text-center">
         <div className="text-5xl">🏁</div>
-        <h2 className="mt-2 text-xl font-bold text-slate-900">Marathon complete!</h2>
-        <p lang="fr" className="mt-2 text-slate-700">
-          Score: <b className="text-emerald-700">{okCount}</b> / {paper.length}
+        <h2 className="mt-2 text-xl font-bold text-[color:var(--cahier-ink)]">Marathon complete!</h2>
+        <p lang="fr" className="mt-2 text-[color:var(--cahier-ink)]">
+          {/* A right answer MEANS a win, which is a dopa role, not a place —
+              so the score keeps the win ink and not the band. */}
+          Score: <b className="text-[color:var(--dopa-win-ink)]">{okCount}</b> / {paper.length}
         </p>
-        <p className="mt-1 text-sm text-slate-500">Every marathon is a fresh draw, weighted to your weak spots.</p>
+        <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">Every marathon is a fresh draw, weighted to your weak spots.</p>
         <div className="mt-4 flex justify-center gap-2">
           <button type="button" onClick={() => setIdx(0)}
-            className="rounded-full border-2 border-slate-900 bg-white px-4 py-1.5 text-sm font-bold text-slate-900">
+            className="rounded-full border-2 border-[color:var(--cahier-line-strong)] bg-[color:var(--cahier-paper-raised)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)]">
             ↺ Review my answers
           </button>
           <button type="button"
@@ -268,7 +301,7 @@ export default function FinaleContent() {
               setTyped({}); setVerdicts({}); setClue({}); setSkipped({}); setIdx(0);
               setIds(drawDaily(Date.now() + ":" + Math.random()));
             }}
-            className="rounded-full border-2 border-slate-900 bg-yellow-100 px-4 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
+            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             🎲 Another marathon!
           </button>
         </div>
@@ -280,26 +313,34 @@ export default function FinaleContent() {
   const v = verdicts[q.id];
 
   return (
-    <div className="pb-8">
+    // `band-prod` is what makes var(--band) / var(--band-wash) resolve below.
+    // Remove it and every band-coloured edge on this card silently falls back
+    // to nothing — it is not decoration on the wrapper, it is the source.
+    <div className="band-prod pb-8">
       {/* progress */}
-      <div className="flex items-center justify-between text-sm font-bold text-slate-900">
+      <div className="flex items-center justify-between text-sm font-bold text-[color:var(--cahier-ink)]">
         <span>🏁 Question {idx + 1} / {paper.length}</span>
-        <span className="text-emerald-700">✓ {okCount}{skipCount > 0 ? <span className="ml-2 text-slate-400">↷ {skipCount}</span> : null}</span>
+        <span className="text-[color:var(--dopa-win-ink)]">✓ {okCount}{skipCount > 0 ? <span className="ml-2 text-[color:var(--cahier-ink-soft)]">↷ {skipCount}</span> : null}</span>
       </div>
-      <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-        <div className="h-full bg-slate-900 transition-all" style={{ width: `${(done / paper.length) * 100}%` }} />
+      <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-[color:var(--cahier-line)]">
+        {/* The travelled part of the paper is a MARK, so it is the band at
+            full strength — the rule's "strong colour outlines and marks". */}
+        <div className="h-full bg-[color:var(--band)] transition-all" style={{ width: `${(done / paper.length) * 100}%` }} />
       </div>
 
       {/* the one question */}
-      <div className={`mt-4 rounded-2xl border-[3px] p-4 shadow-[3px_3px_0_#1f2440] ${v?.ok ? "border-emerald-500 bg-emerald-50/70" : wrongFlash === q.id ? "border-rose-400 bg-rose-50/70" : "border-slate-900 bg-white"}`}>
-        <div className="flex items-center justify-between text-xs font-bold text-slate-400">
+      {/* The frame states WHAT the card asks (the band) until a verdict lands,
+          at which point it states what HAPPENED (a dopa role). Both verdict
+          fills carry page ink at 9.4–10.5:1. */}
+      <div className={`mt-4 rounded-2xl border-[3px] p-4 shadow-[3px_3px_0_var(--cahier-ink)] ${v?.ok ? "border-[color:var(--dopa-win-ink)] bg-[color:var(--dopa-win-wash)]" : wrongFlash === q.id ? "border-[color:var(--dopa-miss-ink)] bg-[color:var(--dopa-miss-wash)]" : "border-[color:var(--band)] bg-[color:var(--cahier-paper-raised)]"}`}>
+        <div className="flex items-center justify-between text-xs font-bold text-[color:var(--cahier-ink-soft)]">
           <span>{q.sio}</span>
           {/* Every question states the contract (Dan, 2026-07-21): ONE word. */}
-          <span lang="fr" className="rounded-full bg-slate-100 px-2 py-0.5">✍️ un seul mot</span>
+          <span lang="fr" className="rounded-full bg-[color:var(--band-wash)] px-2 py-0.5 text-[color:var(--cahier-ink)]">✍️ un seul mot</span>
         </div>
         {/* Inline flow: pre, blank, post are all inline so the blank sits in
             the sentence line and wraps WITH the text, never onto its own. */}
-        <p lang="fr" className="mt-2 text-lg leading-9 text-slate-900">
+        <p lang="fr" className="mt-2 text-lg leading-9 text-[color:var(--cahier-ink)]">
           {q.pre}
           <input
             ref={inputRef}
@@ -318,9 +359,13 @@ export default function FinaleContent() {
               maxWidth: "55vw",
               verticalAlign: "baseline",
               border: "none",
-              borderBottom: "2.5px solid #1f2440",
+              // The blank was already yellow, by accident (`rgba(254,240,138,.7)`
+              // — Tailwind yellow-200 at 70%). It is the Practice family's
+              // wash now, which is the same yellow on purpose. Page ink on it
+              // is 9.84:1.
+              borderBottom: "2.5px solid var(--cahier-ink)",
               borderRadius: 0,
-              background: "rgba(254,240,138,0.7)",
+              background: "var(--fam-wash)",
               padding: "0 4px",
               fontSize: "calc(1.0625rem + var(--fs-step) * 1.06)",
               fontFamily: "inherit",
@@ -329,23 +374,34 @@ export default function FinaleContent() {
           />
           {q.post}
         </p>
+        {/* THE TWO CHIPS, and why they now match each other. They used to be
+            an amber one and a grey one, which implied a hierarchy that does
+            not exist — they are two equal-weight secondary actions on the same
+            card, and the loud one was loud only because it had borrowed the XP
+            colour. Under the two systems, colour encodes WHERE you are and
+            WHAT the activity asks; it does not encode "this one is a hint and
+            that one grades". The icons do that, which is what icons are for. */}
         <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          {!v?.ok && <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-amber-300 bg-amber-50 px-3 py-0.5 text-xs font-bold text-amber-800">💡 a hint</button>}
-          {!v?.ok && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-slate-300 bg-white px-3 py-0.5 text-xs font-bold text-slate-700">✓ check</button>}
+          {!v?.ok && <button type="button" onClick={() => hint(q)} className="rounded-full border-2 border-[color:var(--band)] bg-[color:var(--band-wash)] px-3 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">💡 a hint</button>}
+          {!v?.ok && <button type="button" onClick={() => grade(q)} className="rounded-full border-2 border-[color:var(--band)] bg-[color:var(--band-wash)] px-3 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">✓ check</button>}
         </div>
         {(clue[q.id] ?? 0) > 0 && !v?.ok && (
-          <ul lang="fr" className="mt-2 space-y-1 text-sm text-amber-900">
+          // PAGE INK, not the soft ink. On the band's wash the soft ink is
+          // 3.85:1 — it looks like the right choice for a quiet line and
+          // fails. Full ink on that wash is 9.61:1.
+          <ul lang="fr" className="mt-2 space-y-1 text-sm text-[color:var(--cahier-ink)]">
             {clues(q, clue[q.id] ?? 0).map((c, i) => (
-              <li key={i} className="rounded-lg bg-amber-50 px-2.5 py-1">{c}</li>
+              <li key={i} className="rounded-lg bg-[color:var(--band-wash)] px-2.5 py-1">{c}</li>
             ))}
           </ul>
         )}
         {(clue[q.id] ?? 0) > 0 && !v?.ok && (
-          <p className="mt-1.5 text-xs text-slate-500">Try again — the answer is never revealed: it&rsquo;s yours to find!</p>
+          // This one IS on paper, where the soft ink is 4.72:1 and passes.
+          <p className="mt-1.5 text-xs text-[color:var(--cahier-ink-soft)]">Try again — the answer is never revealed: it&rsquo;s yours to find!</p>
         )}
         {v?.ok && (
           <div className="mt-2 text-[15px]">
-            <span className="font-bold text-emerald-700">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-slate-600"> (also accepted: {v.others.join(", ")})</span>}</span>
+            <span className="font-bold text-[color:var(--dopa-win-ink)]">✓ Bravo !{v.others.length > 0 && <span className="font-normal text-[color:var(--cahier-ink)]"> (also accepted: {v.others.join(", ")})</span>}</span>
           </div>
         )}
       </div>
@@ -353,25 +409,29 @@ export default function FinaleContent() {
       {/* navigation */}
       <div className="mt-4 flex items-center justify-between">
         <button type="button" disabled={idx === 0} onClick={() => setIdx((i) => Math.max(0, i - 1))}
-          className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-600 disabled:opacity-40">
+          className="rounded-full border-2 border-[color:var(--cahier-line-strong)] bg-[color:var(--cahier-paper-raised)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink-soft)] disabled:opacity-40">
           ← Previous
         </button>
         <div className="flex items-center gap-2">
           {!v?.ok && (clue[q.id] ?? 0) >= 2 && (
             <button type="button"
               onClick={() => { setSkipped((k) => ({ ...k, [q.id]: true })); setIdx((i) => i + 1); }}
-              className="rounded-full border-2 border-slate-300 bg-white px-4 py-1.5 text-sm font-bold text-slate-500"
+              className="rounded-full border-2 border-[color:var(--cahier-line-strong)] bg-[color:var(--cahier-paper-raised)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink-soft)]"
               title="The answer stays secret — this question will come back another day!">
               Skip →
             </button>
           )}
+          {/* The primary key keeps the FAMILY, not the band: it is the one
+              control that says where you are rather than what this question
+              asks. It was `bg-yellow-100`, which is Practice yellow by
+              accident; --fam-practice-wash is the same yellow on purpose. */}
           <button type="button" onClick={() => (v?.ok ? setIdx((i) => i + 1) : grade(q))}
-            className="rounded-full border-2 border-slate-900 bg-yellow-100 px-5 py-1.5 text-sm font-bold text-slate-900 shadow-[2px_2px_0_#1f2440]">
+            className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-5 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             {v?.ok ? "Next →" : "✓ Check"}
           </button>
         </div>
       </div>
-      <p className="mt-2 text-center text-xs text-slate-400">Enter = check, then Enter = next question</p>
+      <p className="mt-2 text-center text-xs text-[color:var(--cahier-ink-soft)]">Enter = check, then Enter = next question</p>
     </div>
   );
 }

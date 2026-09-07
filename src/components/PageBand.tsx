@@ -80,7 +80,7 @@ export default function PageBand({
       <Link
         href={exitHref}
         aria-label={exitLabel}
-        className="fluo-hit44 -my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-white/70 no-underline transition hover:bg-white/15 hover:text-white"
+        className="fluo-hit44 -my-1 -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-black/60 no-underline transition hover:bg-black/10 hover:text-black"
       >
         ✕
       </Link>
@@ -104,7 +104,7 @@ export default function PageBand({
             caps at a tight fit reads as a solid block; 0.045em is what
             separates the letters again. */}
         <span
-          className="fluo-band-hand uppercase leading-none tracking-[0.045em] text-white"
+          className="fluo-band-hand uppercase leading-none tracking-[0.045em] text-black"
           /* fontWeight inline, NOT `font-bold`: .fluo-band-hand declares
              font-weight 600 and globals.css is imported after Tailwind, so a
              utility of equal specificity loses to it. Measured: the class

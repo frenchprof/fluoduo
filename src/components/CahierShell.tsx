@@ -35,7 +35,10 @@ import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
 import { isPlayableGap } from "@/lib/collections/gapSentence";
-import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
+// `isReadingSurface` is gone with main's colour standardisation (PR 211,
+// 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
+// swipe rail could ask it without a library importing a page shell.
+import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
@@ -162,8 +165,20 @@ export default function CahierShell({
              2026-08-21: "I WANT COLOR"). familyOf() turns the page's own
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
-             field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page touch-pan-y ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} flex min-h-screen flex-col`}
+             field of paper. Unknown keys stay uncoloured on purpose.
+
+             `cahier-surface` is the ONE class the colour rules key on, worn
+             by this shell and by DrillShell alike (Dan, 2026-09-06: "can you
+             standardise pls, i don't want outliers"). `cahier-page` stays for
+             the layout, type and form rules that are genuinely this shell's;
+             what a page is COLOURED by is now a single name, so one grep
+             finds every coloured surface in the app.
+
+             `touch-pan-y` is this branch's, and the two are unrelated: it
+             declares the vertical pan to be the only gesture the BROWSER owns
+             here, which is what leaves the sideways drag for the swipe rail
+             to read (components/useRailSwipe.ts). */
+          className={`cahier-page cahier-surface touch-pan-y ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""} flex min-h-screen flex-col`}
         >
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;

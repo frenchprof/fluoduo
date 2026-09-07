@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
+
 """
 The swipe rail is Dan's chain, and only the rail reads a finger.
 
-Numbered 111, not 110: claude/fluolingo-color-review-9thj8x claimed 110 for
-verify110-palette-hues.py after this file took it — the eighth such collision
-in this repo, and the second between these same two branches (102, 6 Sep).
-verify-wiring catches them at push time now, which is how this one was found.
+Numbered 117, and the walk here is the point. This file took 110; the colour
+review claimed it the same hour. It took 111; main landed
+verify111-forever-french while this branch held it. Those are the ninth and
+tenth number collisions in this repo, after 102 the day before — and every one
+was found by verify-wiring at push time rather than by anybody's scan, which is
+exactly what that check was added for on 6 Sep.
 
 Dan, 6 Sep 2026, having been shown thirteen page types driven one by one:
 *"right now it is not at all what i asked for"*, then the chain itself:
@@ -50,6 +53,11 @@ WHAT WENT WRONG BEFORE, and what each rule here stops coming back:
     on the real build, a rightward swipe on ChaTutor left the app entirely.
     `overscroll-behavior-x: none` on html/body is what stops it, and it is one
     line that anybody could tidy away without knowing what it holds up.
+
+Numbered 117: 110 and then 111 were both claimed on main while this branch
+held them (verify110-palette-hues, verify111-forever-french). The ninth and
+tenth collisions in this repo; verify-wiring catches them at push time now,
+which is how both were found.
 """
 import pathlib, re, sys
 
@@ -220,8 +228,8 @@ if not re.search(r"html,\s*body\s*\{[^}]*overscroll-behavior-x:\s*none", css):
     )
 
 if fails:
-    print("verify111 — the swipe rail:\n")
+    print("verify117 — the swipe rail:\n")
     for f in fails:
         print("  ✗ " + f + "\n")
     sys.exit(1)
-print(f"verify111 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")
+print(f"verify117 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")

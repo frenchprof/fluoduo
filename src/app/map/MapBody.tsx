@@ -100,6 +100,67 @@ export default function MapBody() {
   };
 
   const setZoom = (v: number) => setZoomPct(Math.min(200, Math.max(30, Math.round(v))));
+  // WHAT IS IN THE FIELD WHILE YOU TYPE (Dan, 7 Sep: "the field is supposed to
+  // allow me to key in precise values?"). It was bound straight to the CLAMPED
+  // number, so every KEYSTROKE was clamped and written back under the caret:
+  // typing 135 goes 1 -> clamped to 30 -> the box now reads "30" -> the next
+  // key makes "303" -> clamped to 200. Driven and measured: typing "135" left
+  // 200 in the field. Only round numbers already in range could ever be typed.
+  const [zoomDraft, setZoomDraft] = useState<string | null>(null);
+  // PINCH TO ZOOM, BOTH VIEWS (Dan, 7 Sep, choosing "Both views" and thereby
+  // retiring his own 20 Aug ruling that the 3D view must not zoom).
+  //
+  // It drives the SAME `zoomPct` the field and the steppers drive — the zoom
+  // wrapper below contains both the 3D scene and the 2D grid, so there is one
+  // number and the field visibly tracks your fingers. A second, separate
+  // pinch scale for 3D would be two scales fighting over one scene.
+  //
+  // `touch-action: pan-y` on the wrapper is what makes the gesture OURS: it
+  // leaves one-finger scrolling to the browser and takes two-finger pinch off
+  // it, so the page does not zoom underneath the map. The move listener has to
+  // be non-passive to call preventDefault, which is why this is an effect and
+  // not an onTouchMove prop — React attaches those passively.
+  const zoomRef = useRef(100);
+  // Mirrored in an effect, not written during render: a ref write during
+  // render is what the repo's lint rule forbids, and there is no reason to
+  // reach for a disable here — the ref only seeds `baseZoom` when two fingers
+  // land, which is always long after the effect has flushed.
+  useEffect(() => { zoomRef.current = zoomPct; }, [zoomPct]);
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+    let baseDist = 0;
+    let baseZoom = 100;
+    const gap = (t: TouchList) =>
+      Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) { baseDist = gap(e.touches); baseZoom = zoomRef.current; }
+    };
+    const onMove = (e: TouchEvent) => {
+      if (e.touches.length !== 2 || baseDist <= 0) return;
+      e.preventDefault();
+      setZoom(baseZoom * (gap(e.touches) / baseDist));
+    };
+    const onEnd = (e: TouchEvent) => { if (e.touches.length < 2) baseDist = 0; };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd, { passive: true });
+    el.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+    // Binds once: the live zoom is read through zoomRef rather than closed
+    // over, so the listeners never need re-attaching.
+  }, []);
+
+  const commitZoom = (text: string) => {
+    const n = parseFloat(text);
+    setZoom(Number.isFinite(n) ? n : 100);
+    setZoomDraft(null);
+  };
   const setView = (v: MapView) => {
     setMapView(v);
     saveMapView(v);
@@ -122,7 +183,6 @@ export default function MapBody() {
       <p className="fluo-band-hand whitespace-nowrap text-[clamp(13px,4.3vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
         In FluOLinGo-land, there are 50 color-coded goals to conquer:
       </p>
-      <KindLegend />
 
       {/* ONE control row, fixed for both views: switch left, zoom right. */}
       <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
@@ -169,8 +229,8 @@ export default function MapBody() {
             type="button"
             aria-label="Zoom out"
             onClick={() => setZoom(zoomPct - 10)}
-            className="rounded-lg border-2 px-2 py-1 leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            className="neo-key fluo-spring rounded-lg px-2 py-1 leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             −
           </button>
@@ -181,11 +241,21 @@ export default function MapBody() {
             max={200}
             step={10}
             list="fluo-zoom-milestones"
-            value={zoomPct}
+            value={zoomDraft ?? zoomPct}
             aria-label="Zoom percent — type a value or pick a milestone"
-            onChange={(e) => setZoom(Number(e.target.value) || 100)}
-            className="w-[52px] rounded-lg border-2 px-1 py-1 text-center leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            onChange={(e) => {
+              const text = e.target.value;
+              setZoomDraft(text);
+              const n = parseFloat(text);
+              if (Number.isFinite(n) && n >= 30 && n <= 200) setZoom(n);
+            }}
+            onBlur={(e) => commitZoom(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") commitZoom((e.target as HTMLInputElement).value); }}
+            // A WELL: the app's word for a value you read and type into,
+            // rather than a key you press (Dan, 7 Sep: "the zoom counter is
+            // not showing any 3D depression like the 2D control is showing").
+            className="neo-well w-[52px] rounded-lg px-1 py-1 text-center leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">
             <option value="50" />
@@ -198,8 +268,8 @@ export default function MapBody() {
             type="button"
             aria-label="Zoom in"
             onClick={() => setZoom(zoomPct + 10)}
-            className="rounded-lg border-2 px-2 py-1 leading-none"
-            style={{ borderColor: "var(--cahier-line-strong)", background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
+            className="neo-key fluo-spring rounded-lg px-2 py-1 leading-none"
+            style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           >
             +
           </button>
@@ -208,7 +278,7 @@ export default function MapBody() {
         </span>
       </div>
 
-      <div ref={mapRef} className="relative scroll-mt-3">
+      <div ref={mapRef} className="relative scroll-mt-3" style={{ touchAction: "pan-y" }}>
         <div data-tour="map" style={{ zoom: zoomPct / 100 }}>
           {mapView === "3d" ? (
             <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
@@ -216,6 +286,18 @@ export default function MapBody() {
             <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
           )}
         </div>
+      </div>
+
+      {/* THE LEGEND SITS UNDER THE MAP (Dan, 2026-09-07: "ON THE MAP. PUT THE
+          COLOR LEGEND AT THE BOTTOM OF THE MAP"). It was between the sentence
+          and the controls, which put a key to the colours ABOVE the colours it
+          keys — you read it before you had anything to read it against, and it
+          pushed the map itself further down a phone screen. Underneath, it is
+          what it actually is: the thing you glance at when a stop's colour
+          asks a question. The sentence stays on top, because that one
+          introduces the map rather than explaining it. */}
+      <div className="mt-2.5">
+        <KindLegend />
       </div>
 
       {openSioObj && (

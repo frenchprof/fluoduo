@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 """
 Three type families ship, and no fourth sneaks in.
 
@@ -36,6 +37,9 @@ Patrick Hand is IN RESERVE, which is a real state and not a synonym for
 unused: it is loaded, it is `--font-hand`, and `.cahier-hand` opts in. One
 text run used it when this was written. That is fine, and it is why rule 1
 counts three imports rather than checking that each is heavily used.
+
+Numbered 118: 112 was claimed on main by verify112-vs-last-week while this
+branch held it.
 """
 import pathlib, re, sys
 
@@ -85,6 +89,20 @@ for m in re.finditer(r"--(?:fluo|font)-[\w-]+:\s*([^;]+);", css):
         elif name not in ALLOWED_FALLBACKS:
             fails.append(f'a font stack names an unknown face "{name}": {m.group(0).strip()[:110]}')
 
+# A GENERIC KEYWORD IS A FOURTH FACE TOO. `ui-monospace` and friends resolve to
+# whatever the device has, which is exactly the fault `--fluo-serif` had — the
+# check missed it at first because it only read QUOTED names, and the merge with
+# main on 7 Sep put one back. A generic is fine as the LAST resort in a stack
+# (it renders only if a real face is missing); it is not fine as the first.
+for m in re.finditer(r"--(?:fluo|font)-[\w-]+:\s*([^;]+);", css):
+    first = m.group(1).split(",")[0].strip()
+    if first in {"ui-monospace", "ui-sans-serif", "ui-serif", "system-ui", "serif", "sans-serif", "monospace", "cursive"}:
+        fails.append(
+            f"a font role opens on the generic `{first}`, so it renders in whatever\n"
+            f"    the device happens to have — a fourth face, and a different one per\n"
+            f"    phone: {m.group(0).strip()[:100]}"
+        )
+
 # ── 3 · the app reads in Roboto ─────────────────────────────────────────────
 body = re.search(r"--font-body-stack:\s*([^;]+);", css)
 if not body:
@@ -98,8 +116,8 @@ elif "var(--font-readable)" not in body.group(1):
     )
 
 if fails:
-    print("verify112 — three type families:\n")
+    print("verify118 — three type families:\n")
     for f in fails:
         print("  ✗ " + f + "\n")
     sys.exit(1)
-print("verify112 ok — FluOLinGo Hand, Roboto, Patrick Hand in reserve; no unshipped face named.")
+print("verify118 ok — FluOLinGo Hand, Roboto, Patrick Hand in reserve; no unshipped face named.")

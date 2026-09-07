@@ -13,11 +13,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* THREE FAMILIES SHIP (Dan, 2026-09-07: "it should only be FluOLinGo, Roboto
-     (and Patrick in reserve)"). Every role below resolves to one of them; the
-     role NAMES stay so a role can be given a different face later without
-     hunting down every rule that used it. */
+  /* THREE FONTS (Dan, 6 Sep): FluOLinGo Hand + Patrick Hand + Roboto.
+     "Geist is OUT" — and Work Sans, unnamed in his roster, went with it. */
   --font-sans: var(--font-readable);
+  /* ROBOTO, NOT ui-monospace (Dan, 2026-09-07: *"For the last time, only
+     FluoLingo Roboto (and Patrick Hand) allowed"*). Main's PR 213 left this as a
+     system mono stack, reasoning that tabular numerals stand in for the retired
+     Geist Mono — but a system stack IS a fourth face, and a different one on
+     every device. Measured after the merge: one run still rendered in
+     `ui-monospace` (« 12 words » on the lesson's word list). Roboto has tabular
+     numerals of its own (`font-variant-numeric`), which is what that reasoning
+     actually needs. */
   --font-mono: var(--font-readable);
 
   /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
@@ -248,26 +254,19 @@ html, body { overscroll-behavior-x: none; }
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
   --fluo-warn-shadow: #cf9600;
-  /* THE SERIF WAS NEVER SHIPPED. This stack named no font the app loads, so
-     « Choose your level » and « ↻ Retry » rendered in Iowan Old Style on a Mac,
-     Palatino on some Windows, Georgia elsewhere — a different typeface per
-     device, chosen by nobody. Measured on 2026-09-07: four text runs across
-     eight routes, and not one of them in a face this project owns.
-     `.fluo-serif` is the EXPRESSIVE display role, so it takes the house hand,
-     which is what Dan already ruled for titles on 5 Sep ("the titles of the
-     pages can afford to be in thick font … use oversized FluOLinGo font"). */
-  --fluo-serif: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
-  /* THE "MONO" IS A ROLE, NOT A METRIC. Nothing here is tabular — it is the
-     small caps label (« SIO-011 · UNITÉ 1 », « PRACTISE SOMETHING SPECIFIC »),
-     carried by uppercase and letter-spacing rather than by fixed advance
-     widths. Geist Mono drew 139 of those runs and was the second-most visible
-     face in the app; Roboto draws them now, tracking unchanged. */
-  --fluo-mono: var(--font-readable), Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* THE SERIF BELOW WAS NEVER SHIPPED, and this branch measured it before main
+     replaced it: `--fluo-serif` named "Iowan Old Style", Palatino, Georgia —
+     SYSTEM fonts, none of them loaded — so « Choose your level » was a
+     different typeface on every device, chosen by nobody. Four text runs across
+     eight routes, and not one in a face this project owns. */
+  /* Was a system serif; the display role belongs to Dan's hand now. */
+  --fluo-serif: var(--font-fluohand-stack);
+  --fluo-mono: var(--font-readable), system-ui, sans-serif;
 }
 
 /* Typography helpers — serif headings, typewriter labels (the Reviser look). */
 .fluo-serif { font-family: var(--fluo-serif); }
-.fluo-mono  { font-family: var(--fluo-mono); }
+.fluo-mono  { font-family: var(--fluo-mono); font-variant-numeric: tabular-nums lining-nums; }
 .fluo-label {
   font-family: var(--fluo-mono);
   text-transform: uppercase;
@@ -748,18 +747,15 @@ html, body { overscroll-behavior-x: none; }
   --region-valley-band:   var(--tier-good-soft);
   --region-downtown-band: var(--tier-medium-soft);
   --region-market-band:   var(--tier-weak-soft);
-  /* `--font-display` and `--font-body` were two loads of Work Sans; both are
-     Roboto now, and both keep their own name because they are different ROLES
-     — a heading and a paragraph — that may not always want the same face. */
-  --font-display-stack: var(--font-readable), Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-fluohand-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
-  --font-body-stack:    var(--font-readable), Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body-stack:    var(--font-readable), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 /* -0.02em, was -0.01em (Dan, 6 Sep, closing the UI-police type round):
    big display text tightens ~2% so it reads as one drawn line. */
-.cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: -0.02em; }
+.cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: 0; }
 .cahier-body    { font-family: var(--font-body-stack); }
 /* Expressive display face. Apply DELIBERATELY to major page titles only. */
 .cahier-hand    { font-family: var(--font-hand-stack); font-weight: 400; letter-spacing: 0; }
@@ -1009,7 +1005,13 @@ html, body { overscroll-behavior-x: none; }
  * exactly like the SIO popup over its page). */
 .cahier-tab--back1 { margin-right: 18px; }
 .cahier-tab--back2 { margin-right: 36px; }
-.cahier-tab:hover { transform: translateX(-3px); }
+/* Guarded like every other hover TRAVEL in this file (Dan, 7 Sep: "apply").
+   A phone has no pointer, so the browser fakes hover at the moment of a TAP
+   and leaves it applied until something else is tapped — the flap you last
+   opened would sit slid out as if it were still under a finger. */
+@media (hover: hover) and (pointer: fine) {
+  .cahier-tab:hover { transform: translateX(-3px); }
+}
 .cahier-tab[data-active="true"] {
   /* THE FILL, NOT THE STRIPE (2026-09-05). This painted `--tab-hue` — the
      saturated colour the 6px stripe wants — behind `--cahier-ink`, and measured
@@ -1594,28 +1596,6 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .fluo-fog:hover, .fluo-fog:focus-within { filter: none; }
 @media (prefers-reduced-motion: reduce) { .fluo-fog { transition: none; } }
 
-/* Level-name badges (Dan, 2026-07-08): the NAME's dressing escalates with the
-   rank — N1 almost invisible, N10 a glowing gold shimmer. Same word, more
-   ceremony. Used by components/RankBadge on every level-name surface. */
-.fluo-rank { display: inline-block; border-radius: 9999px; padding: 0 0.5em; font-weight: 800; line-height: 1.5; white-space: nowrap; }
-.fluo-rank-1 { color: rgba(34, 40, 80, 0.5); font-weight: 600; }
-.fluo-rank-2 { color: rgba(34, 40, 80, 0.7); box-shadow: inset 0 0 0 1px rgba(34, 40, 80, 0.22); }
-.fluo-rank-3 { color: #2a2e6e; background: rgba(123, 191, 46, 0.18); }
-.fluo-rank-4 { color: #1c5e8a; background: #def3f5; box-shadow: inset 0 0 0 1.5px #2bb6c2; }
-.fluo-rank-5 { color: #fff; background: #2bb6c2; }
-.fluo-rank-6 { color: #fff; background: #8a5fd4; }
-.fluo-rank-7 { color: #fff; background: linear-gradient(100deg, #8a5fd4, #e0567f); }
-.fluo-rank-8 { color: #fff; background: linear-gradient(100deg, #e0567f, #e8852e); box-shadow: 0 0 8px rgba(224, 86, 127, 0.55); }
-.fluo-rank-9 { color: #5c4a00; background: linear-gradient(100deg, #ffe9a8, #ffd34d, #ffe9a8); box-shadow: inset 0 0 0 1.5px #e3a700, 0 0 8px rgba(227, 167, 0, 0.5); }
-.fluo-rank-10 {
-  color: #4a3a00;
-  background: linear-gradient(110deg, #ffd34d 0%, #fff3b0 25%, #ffd34d 50%, #fff3b0 75%, #ffd34d 100%);
-  background-size: 220% 100%;
-  animation: fluo-rank-shimmer 2.6s linear infinite;
-  box-shadow: inset 0 0 0 2px #e3a700, 0 0 12px rgba(255, 211, 77, 0.8);
-}
-@keyframes fluo-rank-shimmer { from { background-position: 0% 0; } to { background-position: 220% 0; } }
-@media (prefers-reduced-motion: reduce) { .fluo-rank-10 { animation: none; } }
 
 /* ── Cahier design system — Dan's handoff, 2026-08-10 ─────────────────────
    Tokens from `design_handoff_cahier_dashboard/README.md`, in OKLCH as
@@ -1850,27 +1830,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
    version: one border, no layout, no per-page markup.
-   BOTH SHELLS, since 1 Sep. This selector named `.cahier-page` alone, and
+   ONE CLASS, BOTH SHELLS (Dan, 2026-09-06: "can you standardise pls, i don't
+   want outliers"). This selector used to name `.cahier-page` alone, and
    DrillShell's root is not one — so every drill (Flip It, Say It,
    GramMarathon, ConjugaZone, the lesson pager, a deck's study run) carried
    the right `fam-` class and drew no spine at all. Dan, 1 Sep: "there are
    pages missing this colored vertical strip on the left in whatever color it
-   should be in." The class the drill root now carries is `cahier-drill`, so
-   the two shells are named rather than matched by shape. */
-:is(.cahier-page, .cahier-drill)[class*="fam-"] {
+   should be in." The first fix listed both shells, `:is(.cahier-page,
+   .cahier-drill)`, which works and leaves the same trap armed: a third shell
+   is a silent no-spine again, and a grep for one name misses half the app.
+   Both roots now wear `cahier-surface`, so the colour is keyed on what a
+   surface IS rather than on which component drew it. */
+.cahier-surface[class*="fam-"] {
   border-left: 6px solid var(--fam-ink, transparent);
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
-/* A page you READ rather than answer takes the sand instead of its family's
-   ground — the strip, the section band and the rail still say which family
-   it belongs to. Wins over the family rule above by being later and equally
-   specific, which is why it is written here and not beside the tokens. */
-.paper-sand,
-:is(.cahier-page, .cahier-drill).paper-sand[class*="fam-"] {
-  background-color: var(--sable-page);
-  --cahier-rule: var(--sable-rule);
-}
+/* THE SAND IS GONE (Dan, 2026-09-06, shown the eleven activity pages side by
+   side: "can you standardise pls, i don't want outliers").
+   It was a real ruling — Dan picked the sand blind on 30 Aug from the six
+   family grounds, for a page you READ rather than answer — and it made the
+   Memo, the guide and the quick guide the only three pages in the app whose
+   ground did not say which family they belong to. Seen next to the other
+   ten, that reads as three pages that forgot rather than three pages with a
+   reason. A reading page still gets its calmer treatment from the type and
+   the width; the paper now says the same thing everywhere.
+   `isReadingSurface` and the --sable-* tokens went with it: they had no
+   other caller, and a dead exemption is how one comes back by accident. */
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -2005,8 +1991,6 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* 2 · White on --fluo-secondary measured 2.45:1. Both sites take the teal's
        own ink instead, on its wash — 4.98:1. */
 .fluo-btn-secondary { background: var(--dopa-flow); color: var(--cahier-ink); }
-.fluo-rank-5 { background: var(--dopa-flow-wash); color: var(--dopa-flow-ink);
-  box-shadow: inset 0 0 0 1.5px var(--dopa-flow-ink); }
 
 /* 3 · --cahier-line paints every form-input border at 1.25:1, well under the
        3:1 a control boundary needs. Inputs (and only inputs) take the
@@ -2121,18 +2105,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
      measuring rather than re-reading. The soft ink is fine where it is used —
      labels and captions, not paragraphs — but nobody should cite seven from
      here. verify96 recomputes it. */
-  /* THE READING PAPER — « le sable beige », the colour already in the colours
-     deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
-     six family grounds when asked which he wanted under a page of French he
-     was READING rather than answering.
-     It is not a seventh family: a Memo keeps its family's strip, its section
-     band and its rail. Only the paper changes, because a page you stay on
-     should not be competing with the words. Body ink is derived against the
-     CARD, the darker of the two surfaces, at 7.2:1 — the stricter standard,
-     for prose rather than buttons. */
-  --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
-  --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
-
+  /* THE READING PAPER WAS HERE — « le sable beige », picked blind by Dan on
+     30 Aug for a page you READ rather than answer, and retired 6 Sep when he
+     saw the eleven activity pages side by side: "can you standardise pls, i
+     don't want outliers". It left the Memo, the guide and the quick guide as
+     the only three grounds in the app that did not name a family. Removed
+     with its rule, not merely unwired — see the note by `.cahier-surface`. */
   --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
   --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
   --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
@@ -2162,40 +2140,41 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 @media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
 
-/* ── WHAT THE ACTIVITY ASKS YOU TO DO (Dan, 2026-08-26) ────────────────────
-   The family tells you where an activity LIVES in the menu. This tells you
-   what it DEMANDS of the learner, which is the thing a colour should carry
-   on the activity's own page. Five branches, taken from the ladder already
-   in lib/evidence.ts (recognition -> constrained -> free / productive):
+/* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
+   He sent the palette back — *"i am sorry your colors are very off. these are
+   the correct colors, you need to remedy"* — then the bands themselves,
+   *"these colors are wrrong"*, then the rule that settles it:
+   *"whatever it is, every color on the web can only be one of these"*, with
+   *"use black ink if you have to - for words"*.
 
-     guess   before you are taught     Pre-Test · SpecuLearn
-     lesson  the rule, then practice   Memo — the only door that teaches
-     recog   the answer is in view     4Mémoire · Sorting · Match It ·
-                                       VocabulaRain · LexicaLater
-     prod    retrieve one right answer iComplete · GramMarathon (written)
-                                       WorDrill (spoken — same branch, and
-                                       the only microphone in the app)
-     create  no single right answer    ComposeIt
+   The six family pens already WERE the palette's six pens; these five were a
+   separate hand-picked set matching nothing in it. `highlighterMarks.ts` is
+   the source now, and the two axes are the palette's two halves:
 
-   These are BAND fills carrying white text, so every ink is measured against
-   white AND against --cahier-paper, whichever surface it lands on:
-   guess 5.30 / 5.11 · lesson 4.95 / 4.77 · recog 5.36 / 5.16 ·
-   prod 7.74 / 7.46 · create 7.32 / 7.05. All clear AA at both.
+       the six PENS         -> the six families   (already true)
+       five of the six COMPLEMENTS -> the five phases
 
-   THE HUES ARE DERIVED, NOT PICKED. Five categories is past what hue alone
-   can carry for a red-green colour-blind reader, and the obvious semantic
-   palette is the worst possible one: amber/green/crimson is exactly the axis
-   deuteranopia flattens. A hand-picked set (violet #6d3fc0, amber #a15c00,
-   teal #0f7480, green #2f6b3d, crimson #b32d55) measured dEok 0.038 at its
-   worst pair under Machado deutan/protan simulation — indistinguishable.
-   These five came out of a search over OKLCH at >=45 deg hue separation,
-   white contrast held between 4.5 and 8.0: worst pair 0.120, roughly
-   3x better. Even so, colour is REINFORCEMENT here, never the only channel —
-   PageBand always prints the activity's name on the band. verify36
-   recomputes both the ratios and the simulated separations from this file. */
+       guess   Periwinkle #9398ff      prod    Amber   #e88c00
+       lesson  Olive      #98b300      create  Magenta #f350ff
+       recog   Sky        #00b2f6      (Teal #00c197 is the one left spare)
+
+   TAKEN RAW, at highlighter strength, which is why the words on them are
+   BLACK. White on these measures 1.84-2.84:1 and was unreadable; black
+   measures 8.18, 8.78, 8.70, 8.18 and 7.40 — every one clear. That is Dan's
+   ruling doing the work the old set needed a dimmed, off-palette colour for:
+   the ink moves so the colour does not have to.
+
+   NO COLOUR-BLIND SEPARATION RULE ANY MORE. The set these replace was chosen
+   by a search maximising deutan/protan separation, and no five of the twelve
+   can pass that bar — the palette sits at one lightness by design, so its
+   hues collapse in pairs (Sky/Magenta 0.009, Amber/Olive 0.013). Shown the
+   simulation and the numbers, Dan: *"don't care about color blindness pls"*,
+   *"it is NOT OUR CONCERN"*. Recorded here rather than quietly dropped, and
+   the checks that enforced it are removed in verify36 with the same quote —
+   a rule that is deleted for a reason should say whose reason. */
 :root {
-  --band-guess: #6c50e9;   --band-lesson: #6d7607;  --band-recog: #0e7397;
-  --band-prod: #9d2602;    --band-create: #a7016d;
+  --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
+  --band-prod: #e88c00;    --band-create: #f350ff;
 }
 .band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
 .band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
@@ -2315,7 +2294,16 @@ h3.cahier-display { font-size: var(--fs-h3); }
   border: 0;
   transition: transform .1s ease, box-shadow .1s ease;
 }
-.neo-key:hover { transform: translateY(-3px); }
+@media (hover: hover) and (pointer: fine) {
+  /* THE LIFT IS FOR A POINTER, NOT A TAP (Dan, 7 Sep: "apply"). Unguarded,
+     the last key a learner tapped — the ☰, a zoom stepper, the finish door —
+     stays raised until they tap elsewhere, because a touchscreen applies
+     :hover on tap and has no "moved away" to clear it. On the map that reads
+     as a state; everywhere else it reads as a key stuck down.
+     The disabled reset lives in here too: it exists only to cancel the lift,
+     so outside the guard there is nothing for it to cancel. */
+  .neo-key:hover { transform: translateY(-3px); }
+}
 .neo-key:active {
   transform: translateY(4px);
   box-shadow:
@@ -2368,7 +2356,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
   transition-duration: .06s, .06s;
   transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease;
 }
-.fluo-stop--reached {
+/* UP and DOWN, not "reached" and "ahead" (Dan, 7 Sep: "all buttons are up by
+   default, and as they are completed they get pressed down. can we swap").
+   The names describe the LOOK now, because the meaning just inverted once and
+   a class called --reached that paints not-yet-reached stops is a trap laid
+   for the next session. */
+.fluo-stop--up {
   box-shadow:
     -3px -3px 7px color-mix(in oklab, white 92%, transparent),
     3px 5px 10px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
@@ -2376,7 +2369,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -1px -3px 0 color-mix(in oklab, black 18%, transparent),
     inset 0 0 0 2px var(--fluo-stop-kind, transparent);
 }
-.fluo-stop--ahead {
+.fluo-stop--down {
   box-shadow:
     inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 34%, transparent),
     inset 3px 3px 6px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
@@ -2384,8 +2377,48 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset 0 0 0 2px color-mix(in oklab, var(--fluo-stop-kind, transparent) 45%, transparent);
 }
 /* Lift on hover, press INTO the band on tap — the same affordance the keys
-   use, so a stop behaves like every other control in the app. */
-.fluo-stop:hover { transform: translateY(-2px); }
+   use, so a stop behaves like every other control in the app.
+
+   HOVER IS GUARDED BY THE INPUT, not assumed (Dan, 7 Sep, asking whether the
+   map's buttons could react to mouseover — they could, and the 3D ones did
+   not). On a touchscreen :hover is applied on TAP and then STAYS applied
+   until something else is tapped, so an unguarded lift leaves the last stop a
+   learner opened sitting 2px proud of its neighbours for the rest of the
+   session, looking like the current stop. `hover: hover` and `pointer: fine`
+   together mean a real pointing device; a phone matches neither. */
+@media (hover: hover) and (pointer: fine) {
+  .fluo-stop:hover { transform: translateY(-2px); }
+  /* The 3D map's stops lift by their OWN height, not by a constant. Every
+     number on a node in that scene is scaled by the camera, so a fixed 2px is
+     a nudge on a near stop and a leap on a far one; --n-lift is set per node
+     in HomeMap3D from the same nodeH the shadows use. They also brighten
+     very slightly, because a lift alone is nearly invisible against a busy
+     scene of trees and buildings. */
+  .home-map3d-node:hover .home-map3d-cap {
+    transform: var(--cap-t) translateY(calc(var(--cap-rest, 0px) - var(--n-lift, 2px)));
+    filter: brightness(1.06);
+  }
+}
+/* THE CAP RIDES ITS PLINTH. `--cap-t` carries the node's own
+   `translate/scale/scaleY` so a hover or a press can compose a travel ON TOP
+   of it — writing `transform: translateY(...)` alone here would throw the
+   camera's scale away and every button would snap to full size the moment a
+   pointer touched it.
+
+   The press travel is `--n-press`, the button's own thickness (HomeMap3D
+   hands it in per node), so the cap bottoms out ON its plinth instead of
+   sliding an arbitrary distance: it goes down exactly as far as it stands
+   proud, and the side wall closes up. */
+/* `--cap-rest` is where the cap SITS: 0 for a button still up, its full
+   thickness for one that has been completed and is latched down. `--n-press`
+   is where any button goes while held. Both are absolute positions rather
+   than deltas, so a latched button does not travel twice. */
+.home-map3d-cap { transform: var(--cap-t) translateY(var(--cap-rest, 0px));
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
+.home-map3d-node:active .home-map3d-cap {
+  transform: var(--cap-t) translateY(var(--n-press, 3px));
+  transition-duration: .06s, .06s;
+}
 .fluo-stop:active {
   transform: translateY(2px);
   box-shadow:
@@ -2429,6 +2462,9 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .neo-key:active { transition-duration: .06s, .06s; transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease; }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-map3d-cap, .home-map3d-node:hover .home-map3d-cap,
+  .home-map3d-node:active .home-map3d-cap {
+    transform: var(--cap-t) translateY(var(--cap-rest, 0px)); }
   .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
   .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
   /* A spring IS motion. Someone who asked for less of it gets the state
@@ -2467,7 +2503,13 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
     inset 4px 4px 8px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
     inset -4px -4px 8px color-mix(in oklab, white 90%, transparent);
 }
+/* Left OUTSIDE the guard, and deliberately: moving it inside made it the
+   FIRST `.neo-key[disabled]` rule in the file, and verify37 reads the first
+   one to check a disabled key still carries its ring. It found this one, which
+   has no ring, and went red. A rule's POSITION is load-bearing when something
+   greps for it. */
 .neo-key[disabled]:hover, .neo-key[aria-disabled="true"]:hover { transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .neo-key, .neo-key:hover, .neo-key:active { transition: none; transform: none; }
 }
@@ -2664,7 +2706,9 @@ html[data-embed] .cahier-drill { border-left: 0 !important; }
 }
 .goal-scrap > * {
   display: inline-block;
-  background: #fffdf6;
+  /* The paper token, not a hex of its own: a scrap torn off this notebook is
+     the same paper as the notebook (verify19b holds the palette to tokens). */
+  background: var(--cahier-paper-raised, var(--cahier-paper));
   clip-path: polygon(3.2% 3.2%, 11.0% 1.6%, 18.8% 6.0%, 26.6% 0.7%, 34.4% 5.3%, 42.2% 2.0%, 50.0% 6.2%, 57.8% 2.5%, 65.6% 6.4%, 73.4% 2.1%, 81.2% 1.2%, 89.0% 1.4%, 96.8% 3.2%, 95.7% 14.9%, 94.3% 26.6%, 94.2% 38.3%, 95.9% 50.0%, 95.4% 61.7%, 96.4% 73.4%, 98.2% 85.1%, 96.8% 96.8%, 89.0% 94.2%, 81.2% 95.3%, 73.4% 94.5%, 65.6% 95.1%, 57.8% 98.8%, 50.0% 99.3%, 42.2% 98.5%, 34.4% 93.7%, 26.6% 99.7%, 18.8% 94.5%, 11.0% 98.1%, 3.2% 96.8%, 1.4% 85.1%, 0.5% 73.4%, 1.1% 61.7%, 0.1% 50.0%, 4.0% 38.3%, 1.0% 26.6%, 1.0% 14.9%);
   /* The padding is generous on purpose: the tear eats into the box by up to
      6% a side, so text set tight to the edge would be bitten. */

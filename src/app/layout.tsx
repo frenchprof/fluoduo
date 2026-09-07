@@ -14,44 +14,42 @@ import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
 import InstallPrompt from "@/components/InstallPrompt";
 
-/* GEIST AND WORK SANS ARE GONE (Dan, 2026-09-07: *"i can still see a lot of
-   Geist and Work Sans -- it should only be FluOLinGo, Roboto (and Patrick in
-   reserve)"*).
+/* THREE FONTS, AND THE COUNT THAT SHOWED WHY.
+ *
+ * This block is main's (PR 213, Dan's 6 Sep roster: "FluOLinGo font + Patrick
+ * Hand font + Roboto font", "Geist is OUT"). This branch had reached the same
+ * place from his 7 Sep *"i can still see a lot of Geist and Work Sans"* — two
+ * lanes doing one job, which is what the integration lane exists to catch.
+ * Main's is the one that landed and the one kept; what follows is the half of
+ * mine worth keeping, because it is evidence rather than a second opinion.
+ *
+ * Every visible text run on eight routes, counted before anything was touched,
+ * by asking the browser which family it had resolved:
+ *
+ *     1180  Work Sans        the whole app, effectively
+ *      139  Geist Mono       every small caps label
+ *       24  FluOLinGo Hand   the bands and the wordmark
+ *        4  Iowan Old Style  a system serif nobody had chosen
+ *        1  Patrick Hand
+ *        0  Roboto           loaded on every page, rendering nowhere
+ *
+ * Roboto was the one face Dan asked for and the one that never appeared — it
+ * was wired to `.fluo-readable`, which four components use. And the fourth
+ * family was never SHIPPED at all: `--fluo-serif` named system fonts, so
+ * « Choose your level » was Iowan on a Mac, Palatino on some Windows and
+ * Georgia elsewhere. */
 
-   Measured across eight routes before touching anything, counting the rendered
-   font of every visible text run:
-
-       1180  Work Sans        the whole app, effectively
-        139  Geist Mono       every small caps label
-         24  FluOLinGo Hand   the bands and the wordmark
-          4  Iowan Old Style  a system serif nobody had chosen
-          1  Patrick Hand
-          0  Roboto           loaded on every page, rendering nowhere
-
-   Roboto was the one face Dan asked for and the one face that never appeared:
-   it was wired to `.fluo-readable`, which four components use. So this is not
-   a swap of one font for another, it is the type system finally saying what he
-   asked it to say. Three families ship now, and the fourth — Iowan Old Style —
-   was never shipped at all: it is whatever serif the device happens to have,
-   so « Choose your level » was a different typeface on every phone. */
-
-// ROBOTO IS THE FUNCTIONAL FACE — body, controls, navigation, metrics, data,
-// dense headings, anything accessibility-critical. It was already loaded for
-// `.fluo-readable`, added on 2026-07-01 when Dan said the mono label font was
-// "much much" too hard to read; it now carries the roles Work Sans held, so
-// the app reads in the face that was chosen for reading.
-//
-// ONE FAMILY, FOUR VARIABLES. `--font-body`, `--font-display`, `--font-sans`
-// and `--font-mono` all resolve here. They are kept as separate names on
-// purpose rather than collapsed: each marks a ROLE, and a role can be given a
-// different face later without finding every rule that used it. Collapsing
-// them is how a type system stops being able to change its mind.
+// THREE FONTS, NO MORE (Dan, 6 Sep): "FluOLinGo font + Patrick Hand font +
+// Roboto font", and "Geist is OUT" — Work Sans, unnamed in his roster, goes
+// with it. Roboto is the ONE workhorse now: body, controls, data (tabular
+// numerals stand in for the retired Geist Mono — see --fluo-mono in
+// globals.css). The display role moves to Dan's own hand ("use the FluOLinGo
+// font as far as possible, everywhere, in their different variations");
+// Patrick Hand keeps only the accent spots .cahier-hand already marks.
 const roboto = Roboto({
   variable: "--font-readable",
   subsets: ["latin"],
-  // 300 for the display roles: Roboto at 600 is heavy where Work Sans was
-  // not, and the headings are already carried by size and by the hand face.
-  weight: ["300", "400", "500", "700"],
+  weight: ["400", "500", "700", "900"],
   display: "swap",
 });
 
@@ -154,7 +152,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${roboto.variable} ${patrickHand.variable} ${fluoHand.variable} h-full antialiased`}
+      className={`${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <head>
         {/* AM I RUNNING INSIDE THE CAHIER? — decided BEFORE the first paint.

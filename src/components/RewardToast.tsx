@@ -27,7 +27,7 @@
  */
 import { useEffect, useState } from "react";
 import { sfx } from "@/games/audio/sfx";
-import { badgeById } from "@/lib/economy";
+import { badgeById, nextFireMilestone } from "@/lib/economy";
 import type { RewardDetail, RewardSize } from "@/lib/progress";
 
 type Toast = {
@@ -47,7 +47,7 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
   const base = { key: seq, size: d.size };
   switch (d.type) {
     case "level":
-      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "You've ranked up" };
+      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "Your French moved up a level" };
     case "badge": {
       const b = badgeById(d.id);
       return b ? { ...base, icon: b.icon, role: "reward", title: "Badge unlocked!", sub: `${b.label} · 💎 +${b.gems}` } : null;
@@ -55,8 +55,24 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
     // "1 days in a row" (Dan, 2026-08-27) — and day one is exactly when
     // every learner meets this toast, so the one broken case was the one
     // everybody saw.
-    case "streak":
-      return { ...base, icon: "🔥", role: "streak", title: `${d.streak} ${d.streak === 1 ? "day" : "days"} in a row`, sub: d.mult > 1 ? `Everything earns ×${d.mult}` : "Come back tomorrow to keep it" };
+    // The sub-line names the NEXT rung whenever there is one (7 Sep). It used
+    // to say "Everything earns ×2" and then, for every day after the seventh,
+    // nothing new — the ladder stopped at 7 and so did the sentence. It also
+    // used to fall back to "Come back tomorrow to keep it", which is the one
+    // shape the ethics floor forbids: KEEP is a thing you can lose. What a
+    // future day PAYS is the same nudge with none of the threat, and on day 1
+    // it is also more informative than the line it replaces.
+    case "streak": {
+      const next = nextFireMilestone(d.streak);
+      const sub = next
+        ? `Day ${next.day} pays ×${String(next.mult).replace(".", ",")}`
+        : `Everything earns ×${String(d.mult).replace(".", ",")}`;
+      return { ...base, icon: "🔥", role: "streak", title: `${d.streak} ${d.streak === 1 ? "day" : "days"} in a row`, sub };
+    }
+    // The Bouclier's one appearance (7 Sep): the morning AFTER a missed day,
+    // as a win. No surface ever mentions the shield before a miss.
+    case "shield":
+      return { ...base, icon: "🛡️", role: "streak", title: `Day ${d.streak} — the chain held`, sub: "Your Bouclier did its job" };
     case "multiplier":
       return { ...base, icon: "🔥", role: "streak", title: `×${d.mult} XP, from now on`, sub: `${d.streak} days running — everything you do earns more` };
     case "sio":
