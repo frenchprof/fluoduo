@@ -439,7 +439,12 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   }, []);
   useEffect(() => () => clearTimers(), [clearTimers]);
 
+  /** When the number was last spoken — the repeats space themselves from here,
+   *  so a manual 🔊 also resets the wait rather than being talked over. */
+  const lastSaidAtRef = useRef(0);
+
   const announce = useCallback((text: string, rate = DEFAULT_RATE) => {
+    lastSaidAtRef.current = performance.now();
     setTalking(true);
     setSpeechPaused(false);
     setTypingOpen(false);
@@ -465,10 +470,15 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
   /** Replay without freezing an open countdown — for 🔊/🐌/⏸ mid-round. */
   const repeatSay = useCallback((text: string, rate = DEFAULT_RATE) => {
+    lastSaidAtRef.current = performance.now();
     setTalking(true);
     setSpeechPaused(false);
     speak(text, "fr-FR", { rate, onDone: () => setTalking(false) });
-  }, []);
+    // The same fallback `announce` carries, and for the same reason: a muted
+    // or banked voice never fires onDone, and without this the 🔊 key would
+    // ring on for the rest of the round.
+    after(speechMs(text, rate), () => setTalking(false));
+  }, [after]);
 
   const pullIn = useCallback(() => {
     const next = dealRound(config);
@@ -585,6 +595,34 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
     }, 100);
     return () => window.clearInterval(id);
   }, [stage, round, typingOpen, resolve, voiceOff]);
+
+  // THE ANNOUNCEMENT REPEATS WHILE THE COUNTDOWN RUNS (Dan, 7 Sep). Same fault
+  // as NumBourse's, and worse here: the number was said once and the learner
+  // then had 24 seconds of silence to fill — 36 for a phone number. Dan's own
+  // diagnosis: *"the 8 seconds are meant for all the repeated audio renderings
+  // of the same number, not just 1 x, which was why it sounded sluggish"*.
+  //
+  // The clock is untouched. A station announcement repeats until someone acts,
+  // and this stops the moment the round resolves, so the repeats a learner
+  // actually hears are the ones they still needed. NumBus speaks at 0.48, so a
+  // call runs ~3s and the gap widens to fit rather than talking over itself.
+  useEffect(() => {
+    if (stage !== "asking" || !round || !typingOpen || voiceOff) return;
+    const say = speechMs(round.say, DEFAULT_RATE);
+    const every = Math.max(3000, say + 400);
+    const total = round.seconds * 1000;
+    // COUNTED FROM THE LAST TIME IT WAS SAID, not from when typing opened.
+    // Measured: the announcement lands at 5.0s and typing opens at 10.8s —
+    // the speech itself plus GRACE_MS — so scheduling the first repeat a full
+    // gap after THAT put it at 15.2s and left a ten-second hole in the middle
+    // of the round, which is the very silence this is here to remove.
+    const since = performance.now() - lastSaidAtRef.current;
+    const ids: number[] = [];
+    for (let at = Math.max(0, every - since); at + say + 300 <= total; at += every) {
+      ids.push(window.setTimeout(() => repeatSay(round.say), at));
+    }
+    return () => ids.forEach((id) => window.clearTimeout(id));
+  }, [stage, round, typingOpen, voiceOff, repeatSay]);
 
   useEffect(() => {
     if (stage !== "leaving") return;
