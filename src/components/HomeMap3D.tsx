@@ -990,35 +990,54 @@ export default function HomeMap3D({
                             className="absolute rounded-[50%]"
                             style={{
                               left: baseW / 2 - capW * 0.72,
-                              top: nodeH / 2 + capH / 2 + press - capH * 0.55,
+                              top: nodeH / 2 + press + capH / 2 - capH * 0.64,
                               width: capW * 1.44,
                               height: capH * 1.28,
                               background:
                                 "radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.26) 46%, rgba(0,0,0,0.10) 70%, rgba(0,0,0,0) 78%)",
                             }}
                           />
-                          {/* THE PLINTH — the button's THICKNESS, with a
-                              FLAT BOTTOM (Dan, 7 Sep: "you make them look like
-                              they have rounded bottoms, but can we just have
-                              regular flat bottom buttons").
+                          {/* THE SIDE OF THE COIN (Dan, 7 Sep: "the bases
+                              should be rounded on the edge. by flat i mean
+                              flat on the ground, but the shape should still be
+                              that of a coin").
 
-                              It was the cap's own ellipse drawn lower, which
-                              gives a correct cylinder — and a cylinder's lower
-                              silhouette is a curve, so the button read as a
-                              blob with a rounded underside. It is a plain
-                              RECTANGLE now: straight sides, flat base.
+                              Both of my earlier tries were wrong, in opposite
+                              directions. First I drew ONE ellipse `capH +
+                              press` tall — which is not a cylinder at all, it
+                              is a taller ellipse, and it bulged: the rounded
+                              underside he sent back. Then I replaced it with a
+                              plain rectangle, which gave a flat base and lost
+                              the coin.
 
-                              It starts at the cap's CENTRE, which is the one
-                              line where the ellipse is exactly `capW` wide, so
-                              the rectangle's top corners meet the cap's widest
-                              point precisely and the join is invisible. Below
-                              that the ellipse narrows and the rectangle does
-                              not — which is the straight side wall.
+                              A coin lying flat is the union of two things, and
+                              it needs both:
 
-                              Height is capH/2 + press, so when the cap travels
-                              `press` down on a click its lower edge lands
-                              exactly on the plinth's base: the button bottoms
-                              out, it does not sink through. */}
+                                the BOTTOM RIM — the cap's own ellipse, drawn
+                                `press` lower. Its lower arc is the coin's
+                                rounded edge.
+                                the WALL — a rectangle `press` tall spanning
+                                the one line where the ellipse is exactly capW
+                                wide (the cap's centre), which is what makes
+                                the sides straight between the two rims.
+
+                              Both wear the same lit gradient, so they read as
+                              one side rather than two shapes. On a press the
+                              cap descends exactly `press` and lands on the
+                              bottom rim's centre — the wall closes to nothing
+                              and the coin is flat on the ground. */}
+                          <span
+                            aria-hidden
+                            className="absolute rounded-[50%]"
+                            style={{
+                              left: baseW / 2 - capW / 2,
+                              top: nodeH / 2 + press - capH / 2,
+                              width: capW,
+                              height: capH,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 34%, black) 100%)`,
+                              boxShadow: `0 ${Math.max(1, Math.round(press * 0.5))}px ${Math.max(2, press)}px rgba(0,0,0,0.38)`,
+                            }}
+                          />
                           <span
                             aria-hidden
                             className="absolute"
@@ -1026,18 +1045,9 @@ export default function HomeMap3D({
                               left: baseW / 2 - capW / 2,
                               top: nodeH / 2,
                               width: capW,
-                              height: capH / 2 + press,
+                              height: press,
                               borderRadius: 0,
-                              // A LIT SIDE WALL, not a flat swatch: bright
-                              // where the cap's edge catches the light, dark
-                              // where it meets the road. One flat colour is
-                              // what makes an extrusion read as a printed
-                              // outline instead of a side.
-                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 78%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 62%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 34%, black) 100%)`,
-                              // Contact shadow: the road darkens right where
-                              // the button touches it. Without it the plinth
-                              // floats a hair above its own shadow.
-                              boxShadow: `0 ${Math.max(1, Math.round(press * 0.5))}px ${Math.max(2, press)}px rgba(0,0,0,0.38)`,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 78%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 100%)`,
                             }}
                           />
                           {/* THE CAP — one `.fluo-stop`, scaled by the camera

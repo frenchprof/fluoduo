@@ -209,23 +209,39 @@ check(re.search(r"const press = Math\.max\(", three) and "--n-press" in three,
 # the cap's own ellipse drawn lower, which is a correct cylinder — and a
 # cylinder's lower silhouette is a curve, so the button read as a blob.
 # Straight sides, flat base.
-# Anchors are CODE, not comment headings — `three` is comment-stripped, so a
-# `re.search("THE PLINTH...")` matches nothing and every assertion under it
-# fails against correct code. Caught by exactly that.
-plinth = re.search(r"height: capH / 2 \+ press,([\s\S]{0,900}?)/>", three)
-check("--n-press" in css and plinth is not None,
-      "the plinth runs from the cap's centre to exactly its travel below the "
-      "cap's edge, so a press bottoms out on the base",
-      "the plinth and the press travel have come apart — the cap will stop "
-      "short of its own base or sink through it")
-check(plinth is not None and "borderRadius: 0" in plinth.group(1),
-      "the plinth has a flat bottom and straight sides",
-      "the plinth is rounded again — the button reads as a blob with a curved "
-      "underside rather than a flat-bottomed key")
-check(plinth is not None and "linear-gradient(to bottom" in plinth.group(1),
-      "the side wall is lit down its height, not one flat swatch",
-      "the side wall is a flat colour — an extrusion painted in one tone reads "
-      "as a printed outline, not a side")
+# THE SIDE OF THE COIN (Dan, 7 Sep: "the bases should be rounded on the edge.
+# by flat i mean flat on the ground, but the shape should still be that of a
+# coin"). Two earlier tries were wrong in opposite directions — ONE ellipse
+# `capH + press` tall, which is not a cylinder but a taller ellipse and bulged;
+# then a plain rectangle, which gave a flat base and lost the coin.
+#
+# A coin lying flat is the union of two pieces and needs BOTH, so both are
+# asserted: the bottom RIM (the cap's own ellipse, `press` lower — its lower
+# arc is the rounded edge) and the straight WALL between the two rims, exactly
+# `press` tall. Anchors are CODE, not comment headings: this check reads a
+# COMMENT-STRIPPED copy of the file, so a regex on "THE PLINTH" matches nothing
+# and every assertion under it fails against correct code. That is how the
+# previous version of this block was caught.
+rim = re.search(r"top: nodeH / 2 \+ press - capH / 2,([\s\S]{0,700}?)/>", three)
+check(rim is not None and "height: capH," in rim.group(1),
+      "the coin has a bottom rim — the cap's own ellipse, one travel lower",
+      "the bottom rim is gone: either the base is square (no coin) or it is a "
+      "single stretched ellipse (a bulge, not a cylinder)")
+wall = re.search(r"top: nodeH / 2,\s*\n\s*width: capW,\s*\n\s*height: press,([\s\S]{0,600}?)/>", three)
+check(wall is not None and "borderRadius: 0" in wall.group(1),
+      "the wall between the two rims is straight and exactly one travel tall",
+      "the side wall is not a straight `press`-tall band spanning the ellipse's "
+      "widest line — the coin's sides will bulge or its press will not close")
+check(rim is not None and wall is not None
+      and "linear-gradient(to bottom" in rim.group(1)
+      and "linear-gradient(to bottom" in wall.group(1),
+      "rim and wall wear the same lit gradient, so they read as one side",
+      "rim and wall are not both lit — two flat tones read as two shapes "
+      "stacked, not as the side of one coin")
+check("--n-press" in css,
+      "the travel is handed to CSS as the button's own thickness",
+      "the press travel is no longer the button's thickness, so the cap will "
+      "not land on its own base")
 
 # A CAST SHADOW ON THE ROAD (Dan, 7 Sep: "THEY ARE JUST LACKING IN SHADOW TO
 # LOOK REAL"). Every earlier pass described the button; none described what
