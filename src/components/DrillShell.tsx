@@ -40,7 +40,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { activity as activityInfo, bandOf, familyOf } from "@/content/activities";
+import { activity as activityInfo, bandOf, familyName, familyOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
@@ -346,9 +346,23 @@ export default function DrillShell({
           exit that moves depending on whether a drill happens to show progress
           is worse than one that costs a row. The `pl-12 sm:pl-14` this replaces
           existed to hold that space open. */}
-      {act && (
+      {/* THE STRIP IS NOT CONDITIONAL ANY MORE (Dan, 2026-09-07: *"we also
+          need to make it a point that pages never lose their coloured strip at
+          the top"*). This was `{act && …}`, and `act` is undefined for exactly
+          the routes whose registry row was retired while the route stayed
+          reachable — Sorting (#93) and iComplete (#97), plus Diced Practice,
+          whose key `dice` has a family but no activity row. Those pages drew
+          no band at all: a drill on bare paper with a ✕ floating above it.
+          The file already knew this shape was dangerous — `|| !act` twenty
+          lines up is the guard that keeps the EXIT alive on the same routes,
+          added because "a drill you cannot leave is a trap". The band went
+          missing the same way and nobody had measured it.
+
+          A page that cannot name itself says what family it is in, which is
+          always true; saying nothing is the one answer that is never right. */}
+      {(act || famKey) && (
         <PageBand
-          title={act.name}
+          title={act?.name ?? familyName(famKey!)}
           /* WHICH GOAL THIS IS (Dan, 1 Sep: "there are pages where there is
              no identity tag regarding which stop it belongs to", then, with a
              drawing, "a circle and the related goal number"). A drill named

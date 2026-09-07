@@ -111,7 +111,13 @@ export default function GameGallery({
   );
 
   return (
-    <CahierShell active={activityKey}>
+    /* THE BAND IS TOLD THE NAME (Dan, 2026-09-07: pages never lose their
+       coloured strip at the top). `active="matching"` has no registry row —
+       Match It went off navigation on 10 Aug, keeping its route — so
+       CahierShell could not name the page and drew no band at all: a gallery
+       on bare paper. This component has known the name all along; it simply
+       never passed it. */
+    <CahierShell active={activityKey} band={{ title: name }}>
       <div className="mx-auto max-w-md px-4 pb-6 pt-4">
         <p className="text-center text-4xl" aria-hidden>{emoji}</p>
         {card ? (

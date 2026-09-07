@@ -127,9 +127,13 @@ EXPECT = {
     # over a change that moved nothing. The repo's own precedent settles it:
     # "display renames never touch keys or routes" (the Memo rename, 23 Aug).
     # The claim here is membership; the key is what membership is made of.
-    "practice": {"speculearn", "lesson", "flip"},
+    # CONJUGAZONE MOVED HERE ON 7 SEP (Dan: "in case you haven't noticed
+    # ConjugaZone is now part of the Practice series"). The six skills are
+    # things you do WITH French — listen, say, write, ask; conjugation is the
+    # course's own material drilled, which is what the other three are.
+    "practice": {"speculearn", "lesson", "flip", "conjugaison"},
     "review":   {"reviser", "grammarathon"},
-    "skills":   {"conjugaison", "ecoutexte", "wordrill", "tts", "compose", "tutor"},
+    "skills":   {"ecoutexte", "wordrill", "tts", "compose", "tutor"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.

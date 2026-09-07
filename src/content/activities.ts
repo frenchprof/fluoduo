@@ -170,7 +170,15 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
-  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "skills", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
+  /* CONJUGAZONE IS PRACTICE, NOT SKILLS (Dan, 2026-09-07: *"in case you
+     haven't noticed ConjugaZone is now part of the Practice series"*). It sat
+     with the six skills because it is a drill you go to on its own; but the
+     six skills are things you DO WITH French — listen, say, write, ask — while
+     conjugation is the course's own material practised, which is what
+     SpecuLearn, MneMemo and MémoiRecall are. Moving it changes its hue, its
+     spine, the family its band names, and which hub a rightward swipe returns
+     it to. */
+  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "practice", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
   { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "skills", href: "/practice/ecoutexte", blurb: "Hear a mini-text, fill in the words." },
   { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "skills", href: "/practice/wordrill", blurb: "Say it out loud — the mic grades you." },
   { key: "tts", name: "VoixLà", emoji: "🔊", family: "skills", href: "/tts", blurb: "Type French, hear it back, get it checked." },
@@ -354,6 +362,14 @@ export function familyShort(f: Family): string {
   return f.name.replace(/^FluOLin /, "");
 }
 
+/** The same short name from a KEY rather than the object — what a page has to
+ *  hand when it knows its family but cannot name itself (CahierShell's band
+ *  fallback, 2026-09-07). Kept beside familyShort so the two cannot drift. */
+export function familyName(key: FamilyKey): string {
+  const f = FAMILIES.find((x) => x.key === key);
+  return f ? familyShort(f) : "";
+}
+
 /** Everything in one family, in its authored order. */
 export function activitiesIn(family: FamilyKey): Activity[] {
   return ACTIVITIES.filter((a) => a.family === family);
@@ -406,10 +422,23 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   // Practice. Both were passing keys with no entry, so both drew no spine.
   deck: "goals", dice: "practice",
   games: "svplay", svplay: "svplay",
+  // THE THREE ROUTES WHOSE TILE WAS FOLDED AWAY (Dan, 2026-09-07: pages never
+  // lose their coloured strip at the top). NumBus and NumBourse were parked
+  // under the Numbers hub on 31 Aug and Match It went off navigation on 10 Aug
+  // — in all three cases the registry row went and the ROUTE stayed, which is
+  // deliberate. What was not deliberate: with no family, CahierShell adds no
+  // fam- class, so the page lost its spine, its family ink AND its band, all
+  // three at once. That is the same triple fault the 1 Sep chrome audit found
+  // and fixed for the deck sub-pages, twenty lines up; these three were missed
+  // because nobody opens them from a tile any more.
+  numbus: "svplay", numbourse: "svplay", matching: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",
   skills: "skills",
-  conjugaison: "skills", tts: "skills", tutor: "skills", wordrill: "skills",
+  // conjugaison moved to practice with its activity entry (Dan, 7 Sep) — the
+  // two must agree or the fallback contradicts the registry it backs up.
+  conjugaison: "practice",
+  tts: "skills", tutor: "skills", wordrill: "skills",
   ecoutexte: "skills", compose: "skills",
 };
 
