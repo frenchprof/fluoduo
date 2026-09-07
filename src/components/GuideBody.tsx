@@ -17,7 +17,7 @@ import { FAMILIES, activitiesIn, familyShort } from "@/content/activities";
 
 const STEPS: { hue: number; what: React.ReactNode }[] = [
   { hue: 1, what: <>🏠 <b>Unité 0–4</b> flaps → tap the goal</> },
-  { hue: 3, what: <>🧪 Pre-Test <b className="cahier-hl px-0.5">before</b> it&rsquo;s taught</> },
+  { hue: 3, what: <>💡 Pre-Test <b className="cahier-hl px-0.5">before</b> it&rsquo;s taught</> },
   { hue: 4, what: <>🎲 After class, drill with these</> },
 ];
 

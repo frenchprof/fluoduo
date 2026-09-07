@@ -110,9 +110,15 @@ export default function SectionBand({
       {open && children && (
         <div
           className="px-3.5 py-3.5"
+          /* NO SPINE ON THE BODY (Dan, 2026-09-07, on SpecuLearn: *"pls remove
+             redundant extra brown vertical line"*). The head band above still
+             carries the 7px --fam-ink edge, and that is the identity marker;
+             repeating it down the open body drew a second brown rule the whole
+             height of the list — on SpecuLearn, 975px of it, four columns in
+             from the page's own family spine. Two lines saying the same thing,
+             which is the litmus test applied to a border rather than to text. */
           style={{
             background: "color-mix(in oklab, var(--fam) 6%, transparent)",
-            borderLeft: spine,
             borderBottom: "1px solid var(--cahier-line)",
           }}
         >

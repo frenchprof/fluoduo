@@ -12,7 +12,7 @@ import { siteTabs, tabsWithActive } from "@/components/siteTabs";
 
 const COMMITMENTS: { emoji: string; title: string; hue: number; body: React.ReactNode; refs: number[] }[] = [
   {
-    emoji: "🧪",
+    emoji: "💡",
     title: "Test first, teach second",
     hue: 3,
     body: (
