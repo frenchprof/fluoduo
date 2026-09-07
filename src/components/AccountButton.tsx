@@ -84,16 +84,19 @@ export default function AccountButton() {
             {(() => {
               const lvl = levelForXp(progress.xp);
               const mult = xpMultiplier(progress.streak);
-              const pct = Math.round((lvl.into / lvl.span) * 100);
               return (
                 <>
                   <p className="mt-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
                     🎚️ <RankBadge level={lvl.level} name={lvl.name} />
                   </p>
-                  <div className="mx-1 mt-1 h-2 overflow-hidden rounded-full border border-[color:var(--cahier-ink)]/40 bg-[color:var(--cahier-paper-2,#f4f1e4)]">
-                    <span className="block h-full rounded-full bg-[color:var(--cahier-hl,#eaff00)]" style={{ width: `${Math.max(pct, 3)}%` }} />
-                  </div>
-                  <p className="px-1 pt-0.5 text-right text-[10px] font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
+                  {/* A FIGURE, NOT A BAR (Dan, 7 Sep: "we were opting for the
+                      minimalist report card look?"). He removed progress bars
+                      from the hero on 19 Aug ("no status bar") and from /moi on
+                      22 Aug ("WHY ARE THE SPACE-OCCUPYING PROGRESS BARS BACK
+                      AGAIN??"); this popover's bar had escaped both sweeps and
+                      duplicated the figure printed right under it. The report
+                      card idiom is the number itself. */}
+                  <p className="px-1 pt-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
                   <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
                     {/* The ladder's next rung rides with the fire (2026-09-07):
                         the streak names what it earns now AND what the next
