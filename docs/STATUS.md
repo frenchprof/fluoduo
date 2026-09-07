@@ -6,6 +6,45 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, dawn — the queue is empty; the ledger, corrected in full
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+**Everything in flight has landed.** Tonight's merges through this lane,
+after the deploy Dan called: #220 (the stop takes the bar — editable, all
+28 surfaces; hero keys-only; postcard pinned 2D with the Enter-the-map
+pill; map stops open the /sio/[id] magnet scroller; the pinch moved to
+usePinchZoom under the swipe-rail law), #221 (Color review's twelve-hue
+token redo + the banned-fonts guard + two-column SpecuLearn), #222 (Peers'
+embedded games with the ⛶ key). Production runs b31dba1 (deploy-live run
+23); staging is ahead by tonight's last three merges — the NEXT deploy
+picks them up.
+
+**THE VERIFY-NUMBER LEDGER — this supersedes every earlier count.**
+Claimed on main: everything through 116, then 117 (swipe-rail), 118
+(three-faces), 120 (palette-hues), 121 (embedded-games), 125
+(banned-fonts — landed at 125 after the ELEVENTH collision, 119 claimed
+twice, and the TWELFTH, both lanes renumbering onto 121 in the same
+minute). **Free: 119, 122-124, 126+** — and the real rule, learned twelve
+collisions in: run the scan on a FRESH fetch seconds before you push, and
+when the gate still objects, jump FAR rather than to the next integer.
+
+**Routing lessons of the night, so the next session inherits them:**
+1. When Dan re-routes work between lanes, the losing lane must hear
+   "stop" in its own session — a brief edited on main is not a stand-down
+   (the ladder was built twice; the hero was built twice).
+2. Dan may authorize a lane straight onto main ("push to main for deploy
+   ok") — when that happens, the lane's own STATUS note with gates-run
+   receipts (b31dba1) is the required trace, and open PRs must expect a
+   rebase.
+3. The deploy token (fluoduo-deploy-mirror, dckg) now writes workflows and
+   EXPIRES FRI 2 OCT 2026 — regenerate and re-paste into LIVE_DEPLOY_TOKEN
+   before then.
+
+Still open, no owner blocked: the collapse sweep and the landing recapture
+(fluoduo-main's, next stretch); the term-prize picks (Dan's); the
+never-PR'd 33 branches (Dan's word); the dark-cahier draft (agent).
+
 ## 7 Sep, later — games in the page, and the SECOND same-day collision (Peers)
 
 Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
