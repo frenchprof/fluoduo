@@ -10,9 +10,9 @@
  *
  * THE PICTURE IS THE SPEC, tile for tile — including its two double cells
  * (VoixLà + WorDrill share one, ChaTutor + ComposeIt share one; each half
- * is its own door) and including ConjugaZone sitting on the BLUE row while
- * the registry files it under Skills. That placement is Dan's drawing, kept
- * as drawn and flagged in the PR rather than silently "corrected".
+ * is its own door). ConjugaZone sits on the BLUE row as drawn, and since
+ * "ConjugaZone will henceforth sit in Blue" (Dan, same day) the registry
+ * files it under review too — drawing and registry agree.
  *
  * Colour law: the family PEN is the border, the label stays ink, the tile
  * ground is raised paper — pen never behind text.

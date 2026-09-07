@@ -6,6 +6,32 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, morning — the grid menu, the glass map, and ConjugaZone's LAST move
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+**Two more merges since dawn.** #224 (Dan's screenshot as spec: the ☰ menu is
+a 3×5 grid of family-pen tiles — NumBus by name, Help/User/Leaderboard on the
+last row; Home's postcard is the REAL 2D map under a glassmorphic
+« Enter the map » band, and the red ▦ key above the map is gone). #225 (the
+pre-tests lane's coloured-strip fix, handed to this lane to push — their first
+branch through the hand-to-me flow: SITE_FAMILY entries for
+numbus/numbourse/matching, `familyName()`, `verify126-band-strip` driving the
+built export).
+
+**ConjugaZone sits in BLUE — Dan's last word, same day, superseding his own
+morning move.** The sequence, so nobody relitigates it: skills (old) →
+*"part of the Practice series"* (morning, pre-tests' entry below) →
+**"ConjugaZone will henceforth sit in Blue"** (afternoon, final). Blue is the
+review family. Registry, SITE_FAMILY, verify29's family sets and the MenuGrid
+tile all agree; the band stays `prod` (bands come from `bandOf`, not family).
+
+**Ledger update: 126 is claimed on main** (band-strip, #225). Free: 119,
+122–124, 127+.
+
+Staging is now six merges ahead of production (b31dba1): #220–#225. The next
+deploy word picks them all up.
+
 ## 7 Sep, dawn — the queue is empty; the ledger, corrected in full
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
