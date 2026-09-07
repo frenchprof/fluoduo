@@ -6,7 +6,6 @@
  * understand what it means"). Tap → a small popover naming each icon.
  */
 import { useState } from "react";
-import { FIRE_LADDER } from "@/lib/economy";
 
 export default function StatsHelp() {
   const [open, setOpen] = useState(false);
@@ -25,21 +24,21 @@ export default function StatsHelp() {
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
-          <div className="absolute left-1/2 top-full z-50 mt-1.5 w-72 max-w-[88vw] -translate-x-1/2 rounded-2xl border-2 border-[color:var(--fluo-ink,#222850)] bg-white p-3 text-left shadow-xl">
-            {/* IN THE HOUSE HAND (Dan, 7 Sep: "The content of ? NEEDS TO BE
-                WRITTEN IN FLUOLINGO FONT PLEASE") — card-hand is the app's
-                FluOLinGo Hand class; a step up in size because the hand face
-                runs narrower than the body face at the same box. The fire
-                line renders FROM the ladder itself so this card can never
-                teach rungs the economy stopped paying (it still said "≥ 7 →
-                ×2" a day after day 14 and day 30 shipped). */}
-            <ul className="card-hand space-y-1.5 text-sm text-[color:var(--fluo-ink,#222850)]">
-              <li>🎚️ Level — rises with your ⭐ XP.</li>
-              <li>✓ — objectives marked « done », out of 50.</li>
-              <li>🔥 — days in a row; {FIRE_LADDER.map((r) => `day ${r.day} pays ×${String(r.mult).replace(".", ",")}`).join(" · ")}.</li>
-              <li>⭐ XP — earned on every answer;<br />ranks the 🏆 Leaderboard.</li>
-              <li>💎 Gemmes — paid out by 🎖️ badges;<br />spend them in the Shop.</li>
-            </ul>
+          {/* NO BORDERS, A COLUMN OF ICONS, THE SHORTEST PHRASE (Dan, 7 Sep:
+              "WHY DO WE NEED THE BORDERS AND CAN'T WE JUST HAVE A COLUMN OF
+              ICONS AND THEN ROWS OF SUPER CONCISE MEANING"). The sheet floats
+              on its shadow alone; each row is icon | meaning, litmus-trimmed. */}
+          <div className="absolute left-1/2 top-full z-50 mt-1.5 w-64 max-w-[88vw] -translate-x-1/2 rounded-2xl bg-white p-3 text-left shadow-xl">
+            {/* In the house hand (Dan: "The content of ? NEEDS TO BE WRITTEN
+                IN FLUOLINGO FONT PLEASE"), one line per icon — nothing wraps
+                below (Dan: "WE DON'T NEED THOSE WORDS BELOW THE ICONS"). */}
+            <div className="card-hand grid grid-cols-[auto_1fr] items-baseline gap-x-2.5 gap-y-1 text-sm text-[color:var(--fluo-ink,#222850)]">
+              <span aria-hidden>🎚️</span><span>rises with ⭐</span>
+              <span aria-hidden>✓</span><span>goals done</span>
+              <span aria-hidden>🔥</span><span>days in a row</span>
+              <span aria-hidden>⭐</span><span>earned every answer</span>
+              <span aria-hidden>💎</span><span>spend in the Shop</span>
+            </div>
           </div>
         </>
       )}

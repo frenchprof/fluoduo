@@ -49,7 +49,7 @@ export const XP_CONVERSATION = 120; // finishing an AI role-play
 // makes a late streak worth more than the work itself — at ×4 a WRONG answer
 // on day 60 (80 XP) outpays a RIGHT one from a learner with no streak (60).
 // The rungs stop where the habit is already established.
-export const FIRE_LADDER = [
+const FIRE_LADDER = [
   { day: 3, mult: 1.5 },
   { day: 7, mult: 2 },
   { day: 14, mult: 2.5 },
