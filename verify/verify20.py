@@ -69,9 +69,17 @@ check(re.search(r"\.cahier-drilldesk\s*\{[^}]*height:\s*100dvh", css) is not Non
 check("cahier-drilldesk" in shell_code,
       "DrillShell mounts inside that wrapper",
       "DrillShell no longer renders .cahier-drilldesk — its root is loose in the layout again")
-check(re.search(r"cahier-drill .*h-full .*overflow-hidden", shell_code) is not None,
-      "the drill fills the wrapper and nothing inside it scrolls",
-      "DrillShell's root is not `h-full … overflow-hidden` — it either collapses or scrolls")
+# The clip moved from a Tailwind utility on the root to `.cahier-drill` in
+# globals.css on 6 Sep (the ring binds overhang the page edge, so the page
+# clips with `overflow: clip` + a clip-margin apron rather than `hidden`).
+# The claim is unchanged — the drill fills its wrapper and nothing inside it
+# scrolls — so the check now reads both halves from where each lives.
+check(re.search(r"cahier-drill .*h-full ", shell_code) is not None,
+      "the drill root fills the wrapper (h-full)",
+      "DrillShell's root is not `h-full` — it collapses")
+check(re.search(r"\.cahier-drilldesk\s*>\s*\.cahier-drill\s*\{[^}]*overflow:\s*clip", css) is not None,
+      "the drill clips its overflow (overflow: clip in globals) — nothing inside it scrolls",
+      ".cahier-drill lost overflow: clip — a tall drill would scroll or leak onto the desk")
 check("[&_h1]:hidden" in shell_code,
       "the body slot swallows any <h1> a drill prints",
       "DrillShell does not hide stray <h1>s")

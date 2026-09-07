@@ -49,7 +49,7 @@ import { SIOS, UNIT_META } from "@/content/sios";
 import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
-import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
+import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
@@ -821,8 +821,35 @@ export default function HomeMap3D({
                     // buttons, the capture's register — done/current wear the
                     // kind colour full, upcoming the same colour lightened;
                     // the skirt is always that colour's dark side.
-                    const rim = `color-mix(in oklch, ${colour} 62%, black)`;
-                    const face = done || active ? colour : `color-mix(in oklch, ${colour} 55%, ${PAPER})`;
+                    // VISUAL UNITY WITH THE 2D BUTTONS (Dan, 7 Sep: "why are
+                    // the 3D buttons not on the 3D map?", then "just the
+                    // buttons, not the map" and "i just need visual unity for
+                    // the buttons"). The scene is untouched — road, trees,
+                    // camera, the pad and the skirt all stay. What changes is
+                    // the three things that made a stop here look like a
+                    // different object from the same stop in 2D:
+                    //
+                    //   THE FACE now takes the pen's own KIND_WASH when the
+                    //   stop is still ahead, instead of a local 55% mix with
+                    //   paper. The old comment claimed a flat wash would fight
+                    //   the light model; it does not — the gloss and the inset
+                    //   shading below do the shading, and the mix was simply a
+                    //   different pale blue from the one the 2D grid uses.
+                    //
+                    //   THE RIM was `colour 62% black` — a near-navy ring
+                    //   around a pale face, which is what made these read as
+                    //   badges rather than as the 2D map's buttons. The top
+                    //   face's ring is now the PEN, exactly as `.fluo-stop`'s
+                    //   inset ring is.
+                    //
+                    //   THE SKIRT keeps a darker shade, because it is the
+                    //   extruded SIDE of a solid object and losing it would
+                    //   flatten the 3D — but it is derived from the FACE now,
+                    //   so a pale node gets a pale side instead of a navy one.
+                    const reached = done || active;
+                    const face = reached ? colour : KIND_WASH[kind];
+                    const rim = colour;
+                    const skirt = `color-mix(in oklch, ${face} 68%, black)`;
                     const ring = Math.max(1.5, Math.round(sz * 0.05));
                     return (
                       <div
@@ -851,7 +878,7 @@ export default function HomeMap3D({
                           title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                           aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                           aria-current={active ? "step" : undefined}
-                          className="home-map3d-node relative block"
+                          className="home-map3d-node fluo-spring relative block"
                           style={{ width: baseW, height: totalH, background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
                         >
                           {/* Finger-sized hit halo: the visible button is the
@@ -890,7 +917,7 @@ export default function HomeMap3D({
                           <span
                             aria-hidden
                             className="absolute rounded-[50%]"
-                            style={{ bottom: Math.max(2, baseH * 0.3), left: (baseW - sz) / 2, right: (baseW - sz) / 2, height: nodeH + depthH, background: rim }}
+                            style={{ bottom: Math.max(2, baseH * 0.3), left: (baseW - sz) / 2, right: (baseW - sz) / 2, height: nodeH + depthH, background: skirt }}
                           />
                           {/* top face */}
                           <span
@@ -902,19 +929,45 @@ export default function HomeMap3D({
                               height: nodeH,
                               background: face,
                               border: `${ring}px solid ${rim}`,
-                              boxShadow: `inset 0 -${Math.max(1, nodeH * 0.08)}px ${nodeH * 0.15}px rgba(0,0,0,0.22)`,
+                              // The same light-from-above the 2D stop wears
+                              // (`.fluo-stop--reached` / `--ahead` in
+                              // globals.css): a highlight along the top edge,
+                              // a shadow along the bottom. Written here in px
+                              // rather than borrowed as a class because every
+                              // number on this node is scaled by the camera —
+                              // a fixed 3px inset that reads correctly on a
+                              // near stop is a solid band on a far one.
+                              boxShadow: reached
+                                ? `inset 0 ${Math.max(1, nodeH * 0.09)}px 0 rgba(255,255,255,0.5), inset 0 -${Math.max(1, nodeH * 0.1)}px ${nodeH * 0.18}px rgba(0,0,0,0.24)`
+                                : `inset 0 ${Math.max(1, nodeH * 0.1)}px ${nodeH * 0.18}px rgba(0,0,0,0.16), inset 0 -${Math.max(1, nodeH * 0.09)}px 0 rgba(255,255,255,0.6)`,
                             }}
                           >
                             <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
                             <span
                               className="relative font-black leading-none"
-                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
+                              // WHITE ON THE PEN, INK ON THE WASH — the 2D
+                              // grid's rule (`.fluo-stop-num`), and it was the
+                              // last thing here that disagreed: the numeral was
+                              // paper on BOTH, so an upcoming stop printed
+                              // white on a pale wash and all but vanished.
+                              style={reached
+                                ? { fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)" }
+                                : { fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: "var(--cahier-ink)" }}
                             >
                               {/* The 🧑‍🎓 above already says "you are here", so the
                                   stop shows its number (2026-08-21). It used to
                                   carry a ▶ as well — one stop, two marks for the
-                                  same thing, and the triangle belongs to sound. */}
-                              {done ? "✓" : st.num}
+                                  same thing, and the triangle belongs to sound.
+
+                                  AND THE NUMBER NEVER LEAVES (6 Sep). It was
+                                  `done ? "✓" : st.num`, so a finished stop lost
+                                  its number here exactly as it did in 2D. Dan:
+                                  "i do still want the number to remain on the
+                                  buttons", then "Drop it — the fill says it" of
+                                  the tick. The face already carries done-ness:
+                                  the pen at full strength when reached, its
+                                  wash when still ahead. */}
+                              {st.num}
                             </span>
                           </span>
                           {second && nodeH > 10 && (

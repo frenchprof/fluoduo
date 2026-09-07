@@ -28,7 +28,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { loadProgress } from "@/lib/progress";
-import { xpMultiplier } from "@/lib/economy";
+import { nextFireMilestone, xpMultiplier } from "@/lib/economy";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
@@ -120,7 +120,7 @@ export default function SiteTopBar({
       {/* py-2 + tighter left inset (Dan, 2026-08-21): the wordmark hugs
           the page's top-left corner — just clear of the spiral binding
           (38px), no further. */}
-      <div className={`flex items-center justify-between gap-2 py-2 pl-3 sm:pl-5 ${nested ? "pr-5 sm:pr-7" : "pr-9 sm:pr-11"}`}>
+      <div className={`flex items-center gap-2 py-2 pl-3 sm:pl-5 ${nested ? "pr-5 sm:pr-7" : "pr-9 sm:pr-11"}`}>
         {/* The wordmark is ALWAYS a door home (Dan, 2026-07-25) — on
             the home page it simply arrives where you already are. */}
         {/* THE RULE OF THIS BAR (Dan, 2026-08-21: "the top most row of
@@ -233,7 +233,11 @@ export default function SiteTopBar({
             to a ☰ that did not change. Measured at 320px after the bump — the
             burger and the whole icon strip stay on screen, which is the only
             budget this size is allowed to spend. */}
-        <Link href="/" className="min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+        {/* mr-auto, and the bar no longer justifies-between (Dan, 6 Sep: "The
+            current <-- FluOLinGo in the top should be on the left rather
+            than in the middle"): the wordmark now sits AGAINST the ☰, and
+            everything after it is pushed right by this margin. */}
+        <Link href="/" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
           {active !== "home" && <>← </>}
           {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
               same FluOLinGo font but with the KALLANG wave effect and
@@ -337,6 +341,14 @@ function StreakMark() {
   }, []);
   if (streak === null || streak <= 0) return null;
   const mult = xpMultiplier(streak);
+  // The ladder's next rung, said as what it PAYS (2026-09-07). The old title
+  // named the current multiplier and stopped, so from day 7 the fire never
+  // again gave a reason to look forward. Gain-framed by law: "day 14 pays
+  // ×2,5", never a word about losing anything.
+  const next = nextFireMilestone(streak);
+  const worth = mult > 1 ? `everything earns ×${String(mult).replace(".", ",")}` : "";
+  const ahead = next ? `day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : "";
+  const title = ["Day streak", worth, ahead].filter(Boolean).join(" — ");
   return (
     /* THE NUMBER ABOVE THE FIRE (Dan, 1 Sep: "would it be possible to show 4
        above the fire at the top instead?"). Stacked, not side by side — which
@@ -359,7 +371,7 @@ function StreakMark() {
        Half of it is enough for the ring and costs the bar nothing. */
     <span
       className="neo-well flex shrink-0 flex-col items-center rounded-lg px-1.5 py-0.5 leading-none"
-      title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}
+      title={title}
       aria-label={`Day streak: ${streak}`}
     >
       <span
