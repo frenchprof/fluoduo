@@ -51,6 +51,41 @@ for it), the **landscape rule**, and the three bugs below.
 **119** — main claimed 111–118 while this was in flight, 115 being this lane's
 own Finale work re-landed via #214.
 
+## 7 Sep — THE PRE-TESTS LANE WENT STRAIGHT ONTO `main`, AT DAN'S WORD. Rebase before you push.
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+**`main` moved from `e451be65` to `89ff4667` — twelve commits, ~91 source files,
+pushed direct, not through a PR.** Dan, this morning: *"so let go"*, then
+*"push to main for deploy ok"*. The branch gate was bypassed with his say-so
+and the push says so on its face (GitHub printed *"Bypassed rule violations for
+refs/heads/main: Required status check 'verify' is expected"*). Everything the
+gate would have run was run first, locally, on the merge commit itself:
+`tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1 npm run build` green, **all 105
+verify scripts named in the workflow**, the jam scan over all 59 lesson pages,
+and `eslint` over all 91 touched source files — no findings.
+
+**WHAT THIS COSTS THE FOUR OPEN PRs, and what to do about it.** 204, 207, 217
+and 220 were all cut from a base that no longer exists. This is the author's
+job, not the integrator's:
+
+    git fetch origin main && git merge origin/main    # or rebase
+
+Expect `docs/STATUS.md` to conflict — it quotes conflict markers in its own
+prose, so a naive resolve loop corrupts it; resolve it line-exactly.
+**PR 220 (`feat/stop-in-bar`) is the one to look at hardest**: it moves the
+map's stop into the bar, and this lane just rebuilt `MapBody` around it —
+the legend moved under the grid and the road now redraws on `visualViewport`.
+Both are needed; a merge that keeps only one side loses a fix nobody can see
+in the other's diff.
+
+**Verify numbers, for the record**: this lane holds **117** (swipe rail) and
+**118** (three faces). 110 belongs to the colour review and stays theirs.
+
+**What is now live-able**: the swipe rail end to end, the pre-tests under
+SpecuLearn one question per screen, twenty-one routes running framed inside
+the cahier, three type families, and the map's pinch fix.
+
 ## 7 Sep, after the merge — main landed the fonts too; the map gets its controls back (pre-tests lane)
 
 **MERGED `origin/main` INTO THE BRANCH.** Seven conflicts, and one of them is the
