@@ -69,6 +69,10 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
         : `Everything earns ×${String(d.mult).replace(".", ",")}`;
       return { ...base, icon: "🔥", role: "streak", title: `${d.streak} ${d.streak === 1 ? "day" : "days"} in a row`, sub };
     }
+    // The Bouclier's one appearance (7 Sep): the morning AFTER a missed day,
+    // as a win. No surface ever mentions the shield before a miss.
+    case "shield":
+      return { ...base, icon: "🛡️", role: "streak", title: `Day ${d.streak} — the chain held`, sub: "Your Bouclier did its job" };
     case "multiplier":
       return { ...base, icon: "🔥", role: "streak", title: `×${d.mult} XP, from now on`, sub: `${d.streak} days running — everything you do earns more` };
     case "sio":

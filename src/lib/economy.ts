@@ -11,10 +11,11 @@
  *             the 🔥 fire streak. Drives Levels and the leaderboard. Never
  *             spent. (Absorbs the old "gems == XP" conflation, plus tokens /
  *             points / score.)
- *   💎 Gems  — a SPENDABLE balance, paid out by badges/milestones and spent in
- *             the cosmetic locker (home accent colour). Never gates learning —
- *             "nothing is locked" (progress.ts) is a hard rule, so cosmetics
- *             are the only thing gems buy.
+ *   💎 Gems  — a SPENDABLE balance, paid out by badges/milestones/level-ups
+ *             and spent on cosmetics, the Bouclier, and expert-game unlocks
+ *             (Dan, 7 Sep: "we can unlock difficult parts of the portal" —
+ *             GAMES ONLY; "nothing is locked" stays the hard rule for every
+ *             goal, lesson, drill and revision on the course spine).
  *   🔥 Fire  — the streak, a live XP multiplier (×1 → ×1.5 → ×2 → ×2.5 → ×3).
  *   🎖️ Badges — milestone achievements, auto-awarded from signals we already
  *             track (SIOs done, streak, items mastered, level). Each pays gems.
@@ -148,7 +149,26 @@ export function badgeById(id: string): BadgeDef | undefined {
   return BADGES.find((b) => b.id === id);
 }
 
-// ── Cosmetics (the only thing gems buy — never learning content) ────────────
+// ── What gems buy beyond colours (Dan's rulings, 7 Sep) ─────────────────────
+/** Paid on every level-up (Dan: "yes" to +20). Four level-ups in French 1,
+ *  so the lifetime bonus (80) sits between the Diplome bounty and a badge. */
+export const LEVEL_UP_GEMS = 20;
+
+/** THE BOUCLIER — streak protection bought IN ADVANCE, never sold at the
+ *  moment of loss: the pitch for an after-the-fact repair is loss itself,
+ *  which is the sentence this app is forbidden to say (verify32). Held
+ *  shields spend themselves silently on a single missed day. */
+export const SHIELD_COST = 25;
+export const SHIELD_MAX = 2;
+
+/** Expert-GAME unlocks — dessert, never dinner: each id names an optional
+ *  game deck off the course spine. A learner who needs content to pass
+ *  French 1 must never meet a gem price on it; verify116 holds the line. */
+export const EXPERT_UNLOCKS: { id: string; setSlug: string; label: string; emoji: string; cost: number }[] = [
+  { id: "letris-countries-expert", setSlug: "countries-expert", label: "Expert countries", emoji: "🌐", cost: 30 },
+];
+
+// ── Cosmetics ───────────────────────────────────────────────────────────────
 export type Cosmetic = { id: string; slot: "homeAccent"; label: string; cost: number; swatch: string };
 
 // The default home accent (matches the current hero red) is always owned & free.

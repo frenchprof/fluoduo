@@ -6,6 +6,46 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, early morning — Dan's decision round lands: the gem utilities ship
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+**The decisions, as Dan gave them** ("decision ok" + item-by-item):
+
+1. **+20 gems per level-up** — approved ("yes"); pays in finalize, once per
+   rung crossed, from the same diff that fires the level toast.
+2. **The Bouclier** — approved. 💎25, hold max 2, bought IN ADVANCE in the
+   boutique; one missed day spends it silently and the chain holds; two or
+   more missed days reset WITHOUT spending it. The one mention around a miss
+   is the morning-after toast, framed as a win ("Day N — the chain held").
+   Never sold at the moment of loss — that is the whole ethical difference
+   from a streak-repair product, and verify116 executes all four arms of the
+   decision (`nextStreak`, pure on purpose).
+3. **Expert-game unlocks** — approved, GAMES ONLY. `EXPERT_UNLOCKS` in
+   economy.ts (first entry: the countries-expert Letris set, 💎30, which had
+   sat registry-hidden since the content-gap audit "until an Expert-mode
+   toggle is wired" — this is that wiring). The gallery shows a dashed buy
+   tile until bought. verify116 walks src/app and fails if any page off
+   /games ever consults an unlock: "nothing is locked" holds for the spine.
+4. **Term prizes** — the MECHANISM is approved (teacher-run, end of term,
+   from the dashboard's server-side records, outside the gem economy);
+   the prize items themselves are NOT confirmed ("prizes don't confirm
+   first"). Draft ladder under discussion: atelier-for-two · movie tickets
+   · a real cahier + pen. Nothing in-app; nothing wired to gems, ever —
+   gems are client-forgeable and must stay toy money.
+5. **Three fonts** — merged (#213). 6. **Branch sweep** — the verified
+   89-branch delete command is with Dan (proxy blocks deletes here); the
+   33 never-PR'd branches stay, flagged. 7. **Push live** — Dan's hand.
+
+**VERIFY-NUMBER LEDGER, corrected** (this entry supersedes every earlier
+count): 108/109 Peers (#202) · 110 Color review's palette-hues (in flight)
+· 111-113 retention (#206) · 114 level-curve (#212) · 115 finale-colours
+(#214) · 116 gem-utilities (this branch). **117+ free.** Collisions nine
+and ten were both caught AT THE GATE tonight (palette-hues vs finale; then
+114 already being level-curve's — that one was this session mis-recording
+its own claim as free). The gate works; the ledger still has to be written
+carefully.
+
 ## 7 Sep — the map's buttons, five rounds of it; and TWO STANDING RULES CHANGE (Peers)
 
 Sole editor of STATUS.md in this commit: Peers.
