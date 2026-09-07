@@ -2201,12 +2201,17 @@ then vanishes into the page**; Green is faint on paper with the palest tint
 called). This supersedes prior icon-colour work where they disagree; Dan's
 words in his own brief to you are the authority on scope.
 
-### BRIEF FOR PEERS — three retention builds (re-routed by Dan, 6 Sep: "i don't think color review has time for your three items, can you rope in peers")
+### The three retention builds — ALL TAKEN BY FLUODUO-MAIN (final routing, 7 Sep)
 
-Originally addressed to Color review; Dan moved it to Peers the same evening
-so Color review can focus on the icon-colour redo above. Peers: you built
-the lucky find (#202), so you already know the economy files and the ethics
-floor these three live under.
+The routing moved three times in one evening, on Dan's word each time, and
+this is where it ended: Color review ("no time") → Peers ("rope in peers") →
+Peers is busy, so **fluoduo-main built all three** on `feat/streak-ladder`
+(one PR: the ladder, the forever key, you-vs-last-week; checks verify111, 112,
+113 — the ladder check was born 110 and renumbered at the gate: assertion 4
+caught verify110-finale-colours in flight on Peers' branch, the first live
+catch at push time). Nothing below is anyone's to build any more — it is a record of
+what shipped and why. Color review: verify numbers 111-113 are taken (110 is
+peers-finale-colours'), so 114+ look free.
 
 Background: Dan sent a video on the three retention machines consumer apps
 run (unpredictable rewards / the infinite game / social scoreboards). Five
@@ -2220,7 +2225,7 @@ for the phrases and fails the build), effort never punished, nothing locked,
 delight never delays a cold guess (UI_POLICE 79-80). These builds add reasons
 to come back, never fear of staying away.
 
-**1 · The streak ladder grows past day 7.** `xpMultiplier` in
+**1 · The streak ladder grows past day 7.** Built — `xpMultiplier` in
 `src/lib/economy.ts` is ×1 → ×1.5 (day 3) → ×2 (day 7) and then flat
 forever: day 40 pays what day 7 pays. Extend it — e.g. ×2.5 at 14 and ×3 at
 30, numbers yours to tune — and make the NEXT milestone visible wherever the
@@ -2250,8 +2255,9 @@ House rules that bite here: counts only where the thing counted is unseen;
 no full-width single controls; English chrome (these are chrome surfaces, not
 decks); relative type sizes; hand over the branch to fluoduo-main explicitly
 when it is ready — files touched, shared files, known collisions. Verify
-numbers: 108/109 are Peers' (#202) and 107 is the landing branch's, so 110+
-look free; assertion 4 checks your claim at push time either way.
+numbers: 108/109 are Peers' (#202), 107 is the landing branch's, 110 is
+peers-finale-colours', 111-113 the retention builds', so 114+ look free;
+assertion 4 checks your claim at push time either way.
 
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
@@ -2267,7 +2273,7 @@ is gone from here; it lives in git history if anyone needs the wording.
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
 | **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **The icon-colour REDO** (Dan direct, spec transcribed below) — the retention builds moved to Peers · then the tier pipeline resumes |
 | **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
-| **Peers** | **Features** | #202 landed (`fb63da9`: tactile map, lucky find, banner colours) · **NEW, from Dan 6 Sep: the three retention builds** (see BRIEF FOR PEERS below) |
+| **Peers** | **Features** | #202 landed (`fb63da9`: tactile map, lucky find, banner colours) · retention builds re-taken by fluoduo-main (7 Sep, Dan: "he is now busy") · next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
 ### Rules every session respects
