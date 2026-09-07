@@ -40,6 +40,7 @@ import { isPlayableGap } from "@/lib/collections/gapSentence";
 import { TAB_ICONS, activity, bandOf, familyOf, familyShort, hubFamily, isReadingSurface } from "@/content/activities";
 import { stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
+import useRailSwipe from "@/components/useRailSwipe";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
 
@@ -152,6 +153,13 @@ export default function CahierShell({
     try { window.localStorage.removeItem("fluolingo:pageWidth"); } catch {}
   }, []);
 
+  // THE RAIL (Dan, 2026-09-06). Sideways is navigation along his chain — Map >
+  // Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games > User — and it
+  // is mounted HERE rather than per page so that every route drawn in this
+  // shell is on the rail, the ones written after today included. Rightwards is
+  // back, leftwards is forward; both ends stop. See lib/swipeRail.ts.
+  useRailSwipe();
+
   const page = (
         <main
           /* EVERY page wears its family's colour, from one place (Dan,
@@ -159,7 +167,7 @@ export default function CahierShell({
              `active` key into one of the six, so a route does not have to
              declare a hue — and the whole site stops being one undivided
              field of paper. Unknown keys stay uncoloured on purpose. */
-          className={`cahier-page ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} flex min-h-screen flex-col`}
+          className={`cahier-page touch-pan-y ${famKey ? `fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(active) ? " paper-sand" : ""} flex min-h-screen flex-col`}
         >
           {/* The site bar — ☰ · ← FluOLinGo · icons. It used to be written
               out here, which is exactly why only CahierShell pages had it;

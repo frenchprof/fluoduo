@@ -40,8 +40,7 @@
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Fragment, useRef, useState, type ReactNode } from "react";
+import { Fragment, useState, type ReactNode } from "react";
 
 import GoalCard from "@/components/GoalCard";
 import type { Collection } from "@/lib/collections/schema";
@@ -632,59 +631,25 @@ export default function LessonTabs({
   // taps a tab the choice is theirs, and a re-render must not pull them back.
   const [tab, setTab] = useState<TabKey>(open);
 
-  /* ── SWIPE, and the direction rule behind it ────────────────────────────
-     Dan, 2026-09-05: *"so the idea is / MAP > SIO > MneMemO > ..."*, and
-     *"when swipe rightwards to go to the left"*. One rule for the whole app,
-     the phone convention: DRAGGING RIGHTWARDS DRAGS THE PAGE RIGHT, revealing
-     what sits to its left — so rightwards is always back, one level at a time:
+  /* ── SIDEWAYS IS THE RAIL'S, NOT THIS STRIP'S ─────────────────────────
+     This element used to carry a swipe handler that walked the four tabs and,
+     off the left end, pushed to the goal. It was one of only two horizontal
+     gestures in the whole app, each with its own copy of the arithmetic and
+     its own idea of where forward went.
 
-         Exercice → Formes → Idée → Goal → the SIO → the map
+     Dan settled the shape on 2026-09-06, thinking in COLUMNS AND ROWS: a
+     column is a station on the chain (Map > Goal > SpecuLearn > MneMemo >
+     MémoiRecall > Skills > Games > User) and you move between columns
+     SIDEWAYS; a row is one item inside a station and you move between rows by
+     scrolling DOWN. The lesson IS the MneMemo column, so its four panels are
+     rows: a sideways drag here must leave for SpecuLearn or MémoiRecall, not
+     shuffle the panels of the station you are standing in.
 
-     and leftwards is forward. He corrected himself once on this ("i mean
-     rightwards"), so the rule is written out here rather than encoded twice.
-
-     The tabs are FRONT MATTER — they exist only until a level is picked — so
-     this gesture is the lesson's navigation, never the exercise's. That is the
-     same line patch 22 drew and it is why the handler lives on this element.
-
-     TWO GUARDS, both learnt from things that break without them:
-       · a gesture that starts inside something scrolling sideways belongs to
-         that thing. The Formes panel puts the word list and the Mémo's tables
-         in `overflow-x-auto`, and stealing their drag makes them unreadable.
-       · a drag has to be decisively horizontal — 60px across AND half again
-         more across than down — or every flick of a vertical scroll would fire
-         a navigation. */
-  const router = useRouter();
-  const from = useRef<{ x: number; y: number } | null>(null);
-
-  /** Where the finger got to — kept on every move so a CANCELLED gesture is
-   *  still judged on real movement rather than thrown away. */
-  const last = useRef<{ x: number; y: number } | null>(null);
-
-  function endSwipe(t: { clientX: number; clientY: number } | null) {
-    const start = from.current;
-    const end = t ? { x: t.clientX, y: t.clientY } : last.current;
-    from.current = null;
-    last.current = null;
-    if (!start || !end) return;
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    step(dx > 0);
-  }
-
-  function step(back: boolean) {
-    const i = TABS.findIndex((t) => t.key === tab);
-    if (back) {
-      if (i > 0) setTab(TABS[i - 1].key);
-      // `/sio/${id}` IS the goal now — the middle level of MAP > SIO > MneMemo
-      // (2026-09-05). It was a redirect stub until today, which is why this
-      // line pointed at Home's popup instead.
-      else if (sio) router.push(`/sio/${sio.id}`);
-      return;
-    }
-    if (i < TABS.length - 1) setTab(TABS[i + 1].key);
-  }
+     So the handler is gone and `useRailSwipe` (mounted by DrillShell above
+     this) reads the gesture instead. Nothing became unreachable: the strip is
+     sticky and every panel is one tap away. `touch-pan-y` stays, and matters
+     more now than it did — it is what declares the sideways drag to be nobody
+     native's, so the rail's window listener sees it at all. */
 
   return (
     /* THE TABS SIT WITH THE BAND, not a beat below it (Dan, 2026-08-31, shown
@@ -724,21 +689,7 @@ export default function LessonTabs({
 
        Shipped 5 Sep without ever driving a touch gesture — the handler was
        written, typechecked and never once tried. */
-    <div
-      className="-mt-5 touch-pan-y pt-1 sm:-mt-9"
-      onTouchStart={(e) => {
-        const t = e.touches[0];
-        const inScroller = (e.target as HTMLElement).closest?.(".overflow-x-auto");
-        from.current = inScroller ? null : { x: t.clientX, y: t.clientY };
-        last.current = from.current;
-      }}
-      onTouchMove={(e) => {
-        const t = e.touches[0];
-        if (t) last.current = { x: t.clientX, y: t.clientY };
-      }}
-      onTouchEnd={(e) => endSwipe(e.changedTouches[0])}
-      onTouchCancel={() => endSwipe(null)}
-    >
+    <div className="-mt-5 touch-pan-y pt-1 sm:-mt-9">
       {/* ONE ROW, four equal columns (Dan, 2026-08-31: "it seems we cannot
           squeeze the four in a row, then why"). The why was 4px: the pills
           kept the padding they wore as six, and 332px of tabs met a 328px

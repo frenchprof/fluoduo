@@ -81,6 +81,24 @@ body {
   font-family: var(--font-body-stack);
 }
 
+/* SIDEWAYS BELONGS TO THE RAIL, NOT TO THE BROWSER (Dan, 2026-09-06: *"vertical
+   left is not to the browser"*).
+
+   A horizontal drag that reaches the end of a page is an OVERSCROLL, and a
+   browser's default answer to a horizontal overscroll is to go back or forward
+   in history. Driven on the real build, that is exactly what happened: a
+   rightward swipe on ChaTutor left the app for whatever page had been open
+   before it, instead of walking one station left along Dan's chain — and it
+   did so on pages that already declared `touch-action: pan-y`, because
+   touch-action governs panning and this is the browser's gesture ON TOP of it.
+
+   `overscroll-behavior-x: none` turns that off for the whole site in one line.
+   It affects nothing else: vertical overscroll (pull-to-refresh, the rubber
+   band) is untouched, and a horizontal scroller inside the page still scrolls
+   — it just stops handing the gesture to the browser's history when it runs
+   out of content. */
+html, body { overscroll-behavior-x: none; }
+
 /* ===========================================================================
  *  Neumorphic component primitives
  * =========================================================================== */

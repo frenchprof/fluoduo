@@ -43,6 +43,7 @@ import type { ReactNode } from "react";
 import { activity as activityInfo, bandOf, familyOf, isReadingSurface } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
+import useRailSwipe from "@/components/useRailSwipe";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
@@ -172,6 +173,9 @@ export default function DrillShell({
   children: ReactNode;
 }) {
   const router = useRouter();
+  // THE RAIL (Dan, 2026-09-06) — the same one CahierShell mounts, so a drill is
+  // not an island: sideways walks Dan's chain, vertical belongs to the drill.
+  useRailSwipe();
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
   // The band over a drill is coloured by what the drill ASKS, not by which
@@ -264,7 +268,7 @@ export default function DrillShell({
        root carried `fam-practice` and drew no left edge, which is the fault
        Dan's 1 Sep audit found on every drill in the app. */
     <div className="cahier-drilldesk">
-    <div className={`cahier-drill ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
+    <div className={`cahier-drill touch-pan-y ${famKey ? `fam-${famKey}` : "fam-none"}${bandKey ? ` band-${bandKey}` : ""}${isReadingSurface(activity) ? " paper-sand" : ""} flex h-full min-w-0 flex-col bg-[color:var(--cahier-paper)]`}>
       {/* ── the notebook (2026-08-24, approved flow): drills live INSIDE the
           cahier — the family heading band on top (name from the registry,
           the drill's i/total as the band's ONE chip so the figure is never

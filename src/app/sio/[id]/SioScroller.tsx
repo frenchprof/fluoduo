@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * The fifty goals, one per screen, snapping.
+ * The fifty goals, one per screen, snapping — COLUMN 1 of Dan's chain.
  *
  * Dan, 2026-09-05, describing the middle level of MAP > SIO > MneMemo:
  * *"we are back to the doomscrolling of all the SIOs, one per page, as one
@@ -22,30 +22,24 @@
  * names, and the card it shows is the same `GoalCard` the lesson's Goal tab
  * shows, from one file, so the two cannot drift the way those two did.
  *
- * SWIPING RIGHTWARDS IS BACK, the same rule as the lesson's tabs: rightwards
- * drags the page right and reveals what is to its left, so from here it goes
- * to the map. Leftwards goes forward, into this goal's lesson.
+ * SIDEWAYS IS NOT THIS FILE'S BUSINESS ANY MORE (Dan, 2026-09-06: *"Every
+ * thing needs to be related somehow"*). This page used to carry its own copy
+ * of the 60px / 1.5x swipe arithmetic and its own private idea of where
+ * forward went — one of only two surfaces in the app that had a horizontal
+ * gesture at all. The chain now lives in `lib/swipeRail.ts` and one handler
+ * reads it for every page (`useRailSwipe`, mounted by the shells), so the
+ * goals are a COLUMN on that rail rather than a special case: rightwards is
+ * the map, leftwards is this goal's SpecuLearn.
+ *
+ * WHAT THIS FILE STILL OWNS IS THE VERTICAL — the rows. One goal per screen,
+ * and the magnet stops on each.
  */
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import GoalCard from "@/components/GoalCard";
-import { SIOS, type Sio } from "@/content/sios";
-import { lessonsForDeck } from "@/content/lessons";
-
-/** Where "forward" goes from a goal: its lesson, or its deck if it has none. */
-function forwardHref(sio: Sio): string | null {
-  if (!sio.collectionId) return null;
-  const lesson = lessonsForDeck(sio.collectionId)[0];
-  return lesson ? `/lessons/deck/${sio.collectionId}` : `/decks/${sio.collectionId}`;
-}
+import { SIOS } from "@/content/sios";
 
 export default function SioScroller({ id }: { id: string }) {
-  const router = useRouter();
   const box = useRef<HTMLDivElement | null>(null);
-  const from = useRef<{ x: number; y: number } | null>(null);
-  /** Where the finger got to — so a CANCELLED gesture is still judged on real
-   *  movement rather than dropped. */
-  const last = useRef<{ x: number; y: number } | null>(null);
   const current = useRef(id);
 
   /* THE SCROLL HAPPENS BEHIND A FROZEN HEADER (Dan, 2026-09-05), and that only
@@ -147,49 +141,15 @@ export default function SioScroller({ id }: { id: string }) {
     return () => io.disconnect();
   }, []);
 
-  function endSwipe(t: { clientX: number; clientY: number } | null) {
-    const start = from.current;
-    const end = t ? { x: t.clientX, y: t.clientY } : last.current;
-    from.current = null;
-    last.current = null;
-    if (!start || !end) return;
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
-    // Decisively horizontal, or it is the vertical scroll this page is built
-    // around — the same 60px / 1.5x guard the lesson tabs use.
-    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    if (dx > 0) {
-      router.push("/map");
-      return;
-    }
-    const sio = SIOS.find((x) => x.id === current.current);
-    const href = sio ? forwardHref(sio) : null;
-    if (href) router.push(href);
-  }
-
   return (
     <div
       ref={box}
-      /* `touch-pan-y` and `touchcancel` for the same reason as the lesson tabs
-         (Dan, 2026-09-06: *"none of the swiping seems to be working"*), and
-         this box needs them more than that one does: it IS a vertical scroller
-         with a mandatory snap, so a sideways drag inside it is precisely the
-         gesture a browser is most likely to claim and end with `touchcancel`.
-         Declaring pan-y as the only native gesture leaves the horizontal one
-         to us; tracking the last move means a claimed gesture is still judged
-         on where the finger got to. */
+      /* `touch-pan-y` says the only gesture the BROWSER owns here is the
+         vertical pan — which is what leaves a sideways drag for the rail to
+         read (Dan, 2026-09-06: *"none of the swiping seems to be working"*).
+         A scroller with a mandatory snap is precisely the element a browser is
+         most likely to claim a sideways drag inside. */
       className="h-[calc(100dvh-190px)] touch-pan-y snap-y snap-mandatory overflow-y-auto overscroll-contain"
-      onTouchStart={(e) => {
-        const t = e.touches[0];
-        from.current = { x: t.clientX, y: t.clientY };
-        last.current = from.current;
-      }}
-      onTouchMove={(e) => {
-        const t = e.touches[0];
-        if (t) last.current = { x: t.clientX, y: t.clientY };
-      }}
-      onTouchCancel={() => endSwipe(null)}
-      onTouchEnd={(e) => endSwipe(e.changedTouches[0])}
     >
       {SIOS.map((s) => (
         <section
