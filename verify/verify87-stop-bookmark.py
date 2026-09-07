@@ -60,8 +60,13 @@ for surface, name in ((home, "HomeDashboard"), (mapb, "MapBody")):
        f"a save on the other surface never reaches {name} without a reload")
 
 # ---- 2 · both indicators, the map's left of zoom -------------------------
-ok("<StopBookmark" in home, "Home's hero well is the editable indicator",
-   "Home shows a number that cannot be edited — Dan: 'we can make the stop "
+# THE INDICATOR MOVED UP (Dan, 7 Sep: "replace the streak info with the
+# stop info (and make that editable) at the top right"). Home's hero well is
+# gone; the editable reading rides the TOP BAR (StopMark), so it is on all
+# 28 surfaces instead of one — the claim survives at a better address.
+bar = read("src/components/SiteTopBar.tsx")
+ok("<StopBookmark" in bar, "the top bar's well is the editable indicator",
+   "the bar shows a number that cannot be edited — Dan: 'we can make the stop "
    "number indicator editable'")
 mi = mapb.find("<StopBookmark")
 ok(mi != -1, "the map's control row carries the indicator",

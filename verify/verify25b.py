@@ -113,13 +113,18 @@ check('"2d"' in carte and '"3d"' in carte and "<PillSwitch" in carte
 # `/map?view=` reappearing in Home is the failure this guards, because that is
 # precisely how the promise broke before: Home wrote `?view=2d` by hand on
 # every visit and /map dutifully saved it over the learner's choice.
-raw = re.findall(r'href=\{?[`"]/map[^`"]*[`"]', home)
+# SUPERSEDED 7 Sep (Dan: the postcard is pinned 2D and "Enter the map" is
+# the door): Home's link is now the BARE /map — no ?view at all — so the
+# learner arrives in whatever view they last chose on the map itself. A
+# paramless URL cannot drift from the reader, which is what the mapHref
+# rule was for; the writer stays the law anywhere a view IS spelled.
+raw = re.findall(r'href=\{?[`"]/map\?[^`"]*[`"]', home)
 check(not raw,
-      "Home spells no /map URL of its own — every route goes through mapHref()",
-      f"Home hand-writes {len(raw)} /map link(s): {raw[:2]} — the writer and the reader can now drift apart")
-check(home.count("href={mapHref(") == 1,
-      "the map card is still the one LINK to the map",
-      f"Home has {home.count('href={mapHref(')} map links; the card is meant to be the only one")
+      "Home never spells a ?view of its own — the map keeps the learner's choice",
+      f"Home hand-writes a viewed /map link: {raw[:2]} — the silent view-reset Dan killed on 1 Sep is back")
+check(home.count('href="/map"') == 1 and "mapHref" not in home,
+      "the postcard's stretched link is the one door to the map, bare",
+      "Home's map links changed shape — the card is meant to be the only door, with no view param")
 check(not os.path.isfile("src/components/RoadMap.tsx") and "RoadMap" not in home,
       "RoadMap.tsx is gone and nothing in HomeDashboard renders it",
       "RoadMap is still around / rendered")

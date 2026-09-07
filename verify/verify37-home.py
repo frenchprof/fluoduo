@@ -164,18 +164,17 @@ phone = int(m.group(1)) if m else 0
 ok("sm:h-[58px]" in home and 44 <= phone <= 50,
    f"the keys are {phone}px on a phone and 58px from sm",
    f"the phone key size is {phone or 'missing'}px: below 44 it is under the touch-target floor, above 50 the four keys and the 1/50 well do not fit a 360px row")
-# THE WELL IS ONE SIZE NOW, AND IT IS TINY (Dan, 2026-09-07: *"can we squeeze
-# the 1/50 into between 2D and Play, but in smaller space of course"*). It had
-# a row of its own at 64px on a phone and 80 above; it sits INSIDE the key
-# group now, and the arithmetic is unforgiving: 297px at 390 less 188 for four
-# keys at the touch floor and 72 for the switch leaves 37 for the counter and
-# its gaps. 26 is what fits — measured, and one pixel over at 30.
-m = re.search(r"neo-well[^\"]*min-w-\[(\d+)px\]", home)
-well = int(m.group(1)) if m else 0
-ok(0 < well <= 30,
-   f"the counter's well is {well}px — small enough to ride the control row",
-   f"the counter's well is {well or 'missing'}px: above 30 it will not share a "
-   f"390px row with the four keys and the 2D switch, and the row wraps")
+# THE WELL LEFT THE ROW (Dan, 7 Sep: the editable stop rides the top bar
+# now — "so we free up the space between the play rewind etc buttons").
+# The fit-at-320 worry the shrink rule answered is gone with it: the row
+# holds only the keys. The inverse is the claim now — a well creeping back
+# into this row is the regression.
+# (Pre-tests built Dan's earlier "squeeze the 1/50 in between" the same
+# hour — min-w-[26px]. The later ruling moved the stop to the bar, so BOTH
+# shapes of the well are the regression now.)
+ok("min-w-[64px]" not in home and "min-w-[26px]" not in home,
+   "no well shares the key row — the stop reading rides the top bar",
+   "a well is back beside the keys — the row Dan freed on 7 Sep is crowded again")
 
 # 6b · spent hints do not survive a correct answer (Dan, 2026-08-27: "The red
 #      error stays after you fix it … 'Not that one, pick again' is still
