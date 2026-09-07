@@ -68,7 +68,7 @@ def strip_comments(s):
     s = re.sub(r"/\*.*?\*/", "", s, flags=re.S)
     return re.sub(r"^\s*//.*$", "", s, flags=re.M)
 
-PICKER = strip_comments(read("src/app/practice/wordrill/page.tsx"))
+PICKER = strip_comments(read("src/app/practice/wordrill/embed/page.tsx"))
 SAYIT = strip_comments(read("src/app/practice/say-it/[collectionId]/SayItContent.tsx"))
 METER = strip_comments(read("src/components/SpeechMeter.tsx"))
 MAP = strip_comments(read("src/components/SessionMap.tsx"))

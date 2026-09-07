@@ -6,6 +6,46 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, closing — the last twelve surfaces run in the cahier too (pre-tests lane)
+
+Dan: *"proceed the remaining unframed surfaces (the games, ConjugaZone,
+ChaTutor, VoixLà, DéjàRevu, Profile)"*. All twelve, paired: ConjugaZone,
+ChaTutor, VoixLà, DéjàRevu, Profile, My Progress, ÉcouTexte, WorDrill,
+ComposeIt, Numbers, VocabulaRain, LexicaLater.
+
+Nothing in any of those pages had to change to lose its notebook — the twin
+renders the SAME component and the chrome is hidden by CSS in a framed
+document. Driven at 390px afterwards: all twelve report `data-embed=1`, a
+hidden site bar, real content, and no page errors.
+
+**One duplicate the drive caught and reading would not have.** The site footer
+lives in the root layout's `<body>`, OUTSIDE the `TopLevelOnly` guard, because
+it is markup rather than a mounted helper — so every framed station printed
+« FluOLinGo · built by Dr Daniel Chan … » inside its own box, beneath the one
+the page around it was already showing. It is at the bottom of a scroller, so a
+screenshot of the top does not have it. Hidden now under `html[data-embed]`.
+
+**Nine checks followed the code, none weakened.** verify-grading, verify20,
+verify23, verify30, verify33, verify47, verify53, verify82 and verify100 all
+read `src/app/<route>/page.tsx` for the ACTIVITY, which now lives in the twin.
+Each reads the twin and every assertion is unchanged.
+
+**And the pattern checks itself now.** `verify111` gained a sweep over
+`**/embed/page.tsx`: every twin must have a host beside it that mounts an
+EmbedFrame pointing at it. Either half alone is a broken page — a host with no
+twin is a notebook around a 404, a twin with no host is an activity nobody can
+reach — and neither failure is visible from the other's source. Written as a
+sweep so a station added next month is covered without anyone remembering.
+
+### What is still unframed, and why
+
+- **`/lessons/[slug]`** — the lesson by its old slug, the same content as
+  `/lessons/deck/<deck>` by another door. `jam-scan` drives those 59 pages for
+  text collisions in the top document; framing them means teaching it to look
+  inside the frame, and that check has already cost this branch an afternoon.
+- **Unit 0 and the picture pre-tests**, still at `/pretests/...` — separate
+  runners (547 and 472 lines), unframed and one-question-at-a-time.
+
 ## 7 Sep, last — the 50 axis labels in one pass, and the tour's missing tickbox (pre-tests lane)
 
 Dan: *"yes in 1 pass, and why is the why never offer again without the check

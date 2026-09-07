@@ -39,7 +39,12 @@ WHAT WENT WRONG BEFORE, and what each rule here stops coming back:
     back: two ways past a question teaches the one that cannot be found by
     feel.
 
-4 · SIDEWAYS IS NOT THE BROWSER'S (Dan: *"vertical left is not to the
+4 · EVERY FRAME HAS A HOST, AND EVERY HOST A FRAME. Dan, 7 Sep: *"EVERYTHING
+    (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES
+    (EMBEDDED)"*. The pattern is a pair, and either half alone is a broken page
+    that the other half's source cannot reveal.
+
+5 · SIDEWAYS IS NOT THE BROWSER'S (Dan: *"vertical left is not to the
     browser"*). A horizontal drag that runs out of page is an overscroll, and a
     browser answers a horizontal overscroll by going back in history — measured
     on the real build, a rightward swipe on ChaTutor left the app entirely.
@@ -172,7 +177,38 @@ if old.exists() and "Forward" not in old.read_text(encoding="utf-8"):
         "    bookmarks name that URL — the stub is why the ids are frozen."
     )
 
-# ── 4 · the browser does not get the horizontal ────────────────────────────
+# ── 4 · every frame has a host, and every host has a frame ─────────────────
+#
+# Dan, 7 Sep: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES
+# IN IFRAMES (EMBEDDED)"*. The pattern is a PAIR — `<route>/page.tsx` draws the
+# notebook and mounts a frame; `<route>/embed/page.tsx` is the activity. Either
+# half alone is a broken page and neither failure is visible from the other's
+# source, which is why this is checked as a pair rather than route by route:
+#
+#   a host with no twin   a notebook containing a frame that 404s
+#   a twin with no host   an activity nobody can reach at its own URL
+#
+# Written as a sweep so a station added next month is covered without anyone
+# remembering to add a line here.
+APP = SRC / "app"
+for embed in sorted(APP.rglob("embed/page.tsx")):
+    route_dir = embed.parent.parent
+    host = route_dir / "page.tsx"
+    rel = route_dir.relative_to(APP)
+    if not host.exists():
+        fails.append(f"src/app/{rel}/embed/ has no host page beside it — the activity has no URL.")
+        continue
+    text = host.read_text(encoding="utf-8")
+    if "EmbedFrame" not in text:
+        fails.append(
+            f"src/app/{rel}/page.tsx does not mount EmbedFrame, but an embed twin\n"
+            f"    sits under it. Either the route stopped hosting its station — in which\n"
+            f"    case the twin is unreachable — or the twin is left over."
+        )
+    elif "/embed" not in text:
+        fails.append(f"src/app/{rel}/page.tsx mounts a frame that does not point at its own /embed twin.")
+
+# ── 5 · the browser does not get the horizontal ────────────────────────────
 css = (SRC / "app" / "globals.css").read_text(encoding="utf-8")
 if not re.search(r"html,\s*body\s*\{[^}]*overscroll-behavior-x:\s*none", css):
     fails.append(

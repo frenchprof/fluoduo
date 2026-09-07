@@ -2586,7 +2586,14 @@ input.fluo-bookmark:focus,
  * =========================================================================== */
 html[data-embed] .cahier-sitebar,
 html[data-embed] .cahier-bottombar,
-html[data-embed] .cahier-binding { display: none !important; }
+html[data-embed] .cahier-binding,
+/* AND THE SITE FOOTER. It lives in the root layout's <body>, outside the
+   TopLevelOnly guard, because it is markup rather than a mounted helper — so
+   every framed station printed "FluOLinGo · built by Dr Daniel Chan …" inside
+   its own box, under the one the page around it was already showing. Caught by
+   driving the twelve stations, not by reading: it is at the very bottom of a
+   scroller and a screenshot of the top does not have it. */
+html[data-embed] body > footer { display: none !important; }
 
 /* THE BAND IS ONLY FURNITURE ON A PAGE, NOT IN A DRILL. On a CahierShell page
    it names the family and the page around the frame draws that already, so a

@@ -228,7 +228,7 @@ ok(seen_types == EXPECTED,
 # Called out on its own because it is the single point of failure: no other
 # surface produces spaced retrieval, so losing this one tag costs the store
 # its strongest signal without changing anything a reader can see.
-rev = nocomment(open(os.path.join(ROOT, "src/app/reviser/page.tsx"), encoding="utf-8").read())
+rev = nocomment(open(os.path.join(ROOT, "src/app/reviser/embed/page.tsx"), encoding="utf-8").read())
 m = re.search(r'recordItemResult\([^)]*?,\s*"([^"]+)"\s*\)', rev)
 ok(m is not None and resolve(m.group(1)) == "delayed",
    "the Reviser tags its answers `delayed`",
