@@ -34,6 +34,39 @@ const QUOTA = 6; // trades to close a level
 // Ticket timers pause for a beat while the broker is still shouting.
 const GRACE_MS = 1200;
 
+// THE BROKER CALLS THE NUMBER AGAIN, AND AGAIN, UNTIL THE TICKET DIES.
+//
+// Dan, 7 Sep: *"the numbers are starting way too slowly at the start"*, then,
+// working out why himself: *"the 8 seconds are meant for all the repeated
+// audio renderings of the same number, not just 1 x, which was why it sounded
+// sluggish"*. Exactly right. The level clocks below were always sized to hold
+// several callouts — but `deal()` spoke once and the remaining seconds were
+// silence. At level 1 that is one second of broker and seven of nothing, and
+// the game feels becalmed even though the clock is correct.
+//
+// So no clock changes anywhere. The number simply comes back every 3 seconds
+// for as long as its ticket lives, which is about three hearings at every
+// level, and the shape Dan drew: number — 3 seconds — number — 3 seconds.
+const CALL_GAP_MS = 3000;
+
+/**
+ * How long the broker takes to say it, in ms. CALCULATED, NOT MEASURED — this
+ * container has no speech voices to time, so the figure is derived: French
+ * runs about 5.5 syllables a second, the site speaks at 0.95 × 0.75 = 0.71 of
+ * normal (TTS_CAL in speech.ts), giving ~3.9 syllables a second, and a French
+ * number word averages ~3.2 letters a syllable. Hence ~80ms a letter, plus a
+ * quarter-second of onset and tail.
+ *
+ * IT IS ONLY EVER USED TO SPACE THE REPEATS, never to decide when a ticket
+ * ends — that stays the level's own clock. So an estimate that is wrong by a
+ * second changes how often the broker calls and nothing else; it can never
+ * strand a learner on a ticket that will not expire.
+ */
+function callMs(words: string): number {
+  const letters = words.replace(/[^a-zà-ÿ]/gi, "").length;
+  return Math.max(400, Math.min(6000, 250 + letters * 80));
+}
+
 // The level ladder (Dan, 2026-07-28): 1 single digits · 2 ≤20 · 3 ≤69 ·
 // 4 ≤80 (the soixante-dix zone) · 5 ≤99 (quatre-vingt-dix) · 6 ≤999 ·
 // 7 ≤99 999 · 8 ≤999 999. Seconds per ticket grow with the digit count.
@@ -180,6 +213,30 @@ export default function NumBourse() {
     }, 100);
     return () => window.clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frozen, level, order]);
+
+  // …and the broker calls it again every few seconds until the ticket dies.
+  // `deal()` makes the first call; these are the ones after it. A call is only
+  // made when there is room to FINISH saying it before the ticket expires —
+  // otherwise the last one is chopped off mid-number, which is worse than
+  // silence. The gap never drops below the length of the number itself, so a
+  // six-digit ticket does not talk over its own previous call.
+  useEffect(() => {
+    if (frozen || !order) return;
+    const total = GRACE_MS + LEVELS[level - 1].secs * 1000;
+    const say = callMs(order.words);
+    const every = Math.max(CALL_GAP_MS, say + 400);
+    const ids: number[] = [];
+    for (let at = every; at + say + 300 <= total; at += every) {
+      const wait = at - (performance.now() - dealtAtRef.current);
+      ids.push(
+        window.setTimeout(() => {
+          if (resolvedRef.current) return;
+          speak(order.words, "fr-FR");
+        }, Math.max(0, wait)),
+      );
+    }
+    return () => ids.forEach((id) => window.clearTimeout(id));
   }, [frozen, level, order]);
 
   // The loop starts on the first keypress — a user gesture, so the

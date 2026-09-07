@@ -381,6 +381,9 @@ jobs:
       - name: "Games sit in the page; full screen is a key, not the default (7 Sep)"
         run: python3 verify/verify121-embedded-games.py
 
+      - name: "The broker calls the number again; the clocks are untouched (7 Sep)"
+        run: python3 verify/verify122-number-callouts.py
+
       - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
         run: python3 verify/verify125-banned-fonts.py
 

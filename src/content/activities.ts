@@ -170,15 +170,16 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", blurb: "Gap-fill sprint across a whole deck." },
 
   // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
-  /* CONJUGAZONE IS PRACTICE, NOT SKILLS (Dan, 2026-09-07: *"in case you
-     haven't noticed ConjugaZone is now part of the Practice series"*). It sat
-     with the six skills because it is a drill you go to on its own; but the
-     six skills are things you DO WITH French — listen, say, write, ask — while
-     conjugation is the course's own material practised, which is what
-     SpecuLearn, MneMemo and MémoiRecall are. Moving it changes its hue, its
-     spine, the family its band names, and which hub a rightward swipe returns
-     it to. */
-  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "practice", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
+  /* CONJUGAZONE SITS IN BLUE — the Revise family (Dan, 2026-09-07, his
+     LAST word on a placement that moved twice in one day: "in case you
+     haven't noticed ConjugaZone is now part of the Practice series" in the
+     pre-tests session, then, at the QC merge, "ConjugaZone will henceforth
+     sit in Blue"). Blue is also where his 3x5 menu screenshot drew it, so
+     the grid and the registry agree. The move changes its hue, its spine,
+     the family its band names, and which hub a rightward swipe returns it
+     to; the band (prod, rust) is untouched — band says what is asked,
+     family says where it lives. */
+  { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "review", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
   { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "skills", href: "/practice/ecoutexte", blurb: "Hear a mini-text, fill in the words." },
   { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "skills", href: "/practice/wordrill", blurb: "Say it out loud — the mic grades you." },
   { key: "tts", name: "VoixLà", emoji: "🔊", family: "skills", href: "/tts", blurb: "Type French, hear it back, get it checked." },
@@ -435,9 +436,9 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",
   skills: "skills",
-  // conjugaison moved to practice with its activity entry (Dan, 7 Sep) — the
-  // two must agree or the fallback contradicts the registry it backs up.
-  conjugaison: "practice",
+  // conjugaison sits in BLUE with its activity entry (Dan, 7 Sep, final) —
+  // the two must agree or the fallback contradicts the registry it backs up.
+  conjugaison: "review",
   tts: "skills", tutor: "skills", wordrill: "skills",
   ecoutexte: "skills", compose: "skills",
 };
