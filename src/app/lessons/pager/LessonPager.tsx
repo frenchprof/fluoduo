@@ -422,7 +422,14 @@ export default function LessonPager({
               <div className="flex flex-col gap-2">
                 {axes.map((ax) => (
                   <label key={ax.key} className="flex items-center justify-between gap-3 text-sm font-bold">
-                    <span className="text-[color:var(--fluo-ink-soft)]">{ax.label}</span>
+                    {/* `whitespace-nowrap`: « Qui ? » and « La phrase » are
+                        two- and three-character labels that have no business
+                        wrapping, and they started to on 2026-09-07 when the
+                        body face became Roboto — it sets a shade wider than
+                        Work Sans at the same size, and the row had no slack.
+                        The select keeps its min width; the label takes what it
+                        needs. */}
+                    <span className="whitespace-nowrap text-[color:var(--fluo-ink-soft)]">{ax.label}</span>
                     <select
                       value={pinned[ax.key] ?? ""}
                       onChange={(e) => setPinned((p) => ({ ...p, [ax.key]: e.target.value }))}
@@ -439,6 +446,7 @@ export default function LessonPager({
                   </label>
                 ))}
               </div>
+              <div className="mt-3 flex justify-center">
               <button
                 type="button"
                 onClick={() =>
@@ -451,10 +459,17 @@ export default function LessonPager({
                     ),
                   )
                 }
-                className="cahier-btn mt-3 w-full justify-center"
+                /* NOT `w-full` (Dan, 2026-09-05: "IT HAS BEEN MADE A RULE THAT
+                   WE NEVER WANT TO HAVE A SINGLE BUTTON OCCUPYING THE ENTIRE
+                   WIDTH"). This one sat under two select rows and took the
+                   whole panel for three words. Content-sized and centred in
+                   its own row instead — the same shape the recap's pair of
+                   controls takes. */
+                className="cahier-btn justify-center"
               >
                 🎲 Roll the dice
               </button>
+              </div>
             </div>
           )}
         </div>

@@ -412,3 +412,6 @@ jobs:
 
       - name: "Sideways is Dan's chain, and only the rail reads a finger (6 Sep)"
         run: python3 verify/verify111-swipe-rail.py
+
+      - name: "Three type families ship: FluOLinGo, Roboto, Patrick in reserve (7 Sep)"
+        run: python3 verify/verify112-three-faces.py

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
+import { Patrick_Hand, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
@@ -14,42 +14,44 @@ import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
 import InstallPrompt from "@/components/InstallPrompt";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+/* GEIST AND WORK SANS ARE GONE (Dan, 2026-09-07: *"i can still see a lot of
+   Geist and Work Sans -- it should only be FluOLinGo, Roboto (and Patrick in
+   reserve)"*).
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+   Measured across eight routes before touching anything, counting the rendered
+   font of every visible text run:
 
-// Dan (2026-07-01): the mono "label" font used for SIO circle captions etc. was
-// "much much" too hard to read — swap in Roboto for anywhere that needs to be
-// legible fast (path node captions, grid tile labels), via the .fluo-readable
-// class in globals.css. Not a wholesale font replacement — fluo-mono/fluo-label
-// stay as-is for chrome that isn't a readability complaint.
+       1180  Work Sans        the whole app, effectively
+        139  Geist Mono       every small caps label
+         24  FluOLinGo Hand   the bands and the wordmark
+          4  Iowan Old Style  a system serif nobody had chosen
+          1  Patrick Hand
+          0  Roboto           loaded on every page, rendering nowhere
+
+   Roboto was the one face Dan asked for and the one face that never appeared:
+   it was wired to `.fluo-readable`, which four components use. So this is not
+   a swap of one font for another, it is the type system finally saying what he
+   asked it to say. Three families ship now, and the fourth — Iowan Old Style —
+   was never shipped at all: it is whatever serif the device happens to have,
+   so « Choose your level » was a different typeface on every phone. */
+
+// ROBOTO IS THE FUNCTIONAL FACE — body, controls, navigation, metrics, data,
+// dense headings, anything accessibility-critical. It was already loaded for
+// `.fluo-readable`, added on 2026-07-01 when Dan said the mono label font was
+// "much much" too hard to read; it now carries the roles Work Sans held, so
+// the app reads in the face that was chosen for reading.
+//
+// ONE FAMILY, FOUR VARIABLES. `--font-body`, `--font-display`, `--font-sans`
+// and `--font-mono` all resolve here. They are kept as separate names on
+// purpose rather than collapsed: each marks a ROLE, and a role can be given a
+// different face later without finding every rule that used it. Collapsing
+// them is how a type system stops being able to change its mind.
 const roboto = Roboto({
   variable: "--font-readable",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-// "Le Cahier" type system: characterful serif display, humanist body.
-// No handwriting/cursive font anywhere in the product — Dan's explicit call.
-// Work Sans is the FUNCTIONAL face: body, controls, navigation, metrics,
-// data, dense headings, anything accessibility-critical. It powers both
-// --font-body and --font-display, so the 73 existing .cahier-display uses
-// all become functional headings — correct by default.
-const workSans = Work_Sans({
-  variable: "--font-body",
-  subsets: ["latin"],
-  display: "swap",
-});
-const workSansDisplay = Work_Sans({
-  variable: "--font-display",
-  subsets: ["latin"],
+  // 300 for the display roles: Roboto at 600 is heavy where Work Sans was
+  // not, and the headings are already carried by size and by the hand face.
+  weight: ["300", "400", "500", "700"],
   display: "swap",
 });
 
@@ -152,7 +154,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${roboto.variable} ${patrickHand.variable} ${fluoHand.variable} h-full antialiased`}
     >
       <head>
         {/* AM I RUNNING INSIDE THE CAHIER? — decided BEFORE the first paint.

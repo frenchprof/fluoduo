@@ -13,8 +13,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* THREE FAMILIES SHIP (Dan, 2026-09-07: "it should only be FluOLinGo, Roboto
+     (and Patrick in reserve)"). Every role below resolves to one of them; the
+     role NAMES stay so a role can be given a different face later without
+     hunting down every rule that used it. */
+  --font-sans: var(--font-readable);
+  --font-mono: var(--font-readable);
 
   /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
      "fonts can afford to be bigger on the desktop", then "the relative font
@@ -244,8 +248,21 @@ html, body { overscroll-behavior-x: none; }
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
   --fluo-warn-shadow: #cf9600;
-  --fluo-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-  --fluo-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, "Courier New", monospace;
+  /* THE SERIF WAS NEVER SHIPPED. This stack named no font the app loads, so
+     « Choose your level » and « ↻ Retry » rendered in Iowan Old Style on a Mac,
+     Palatino on some Windows, Georgia elsewhere — a different typeface per
+     device, chosen by nobody. Measured on 2026-09-07: four text runs across
+     eight routes, and not one of them in a face this project owns.
+     `.fluo-serif` is the EXPRESSIVE display role, so it takes the house hand,
+     which is what Dan already ruled for titles on 5 Sep ("the titles of the
+     pages can afford to be in thick font … use oversized FluOLinGo font"). */
+  --fluo-serif: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
+  /* THE "MONO" IS A ROLE, NOT A METRIC. Nothing here is tabular — it is the
+     small caps label (« SIO-011 · UNITÉ 1 », « PRACTISE SOMETHING SPECIFIC »),
+     carried by uppercase and letter-spacing rather than by fixed advance
+     widths. Geist Mono drew 139 of those runs and was the second-most visible
+     face in the app; Roboto draws them now, tracking unchanged. */
+  --fluo-mono: var(--font-readable), Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 /* Typography helpers — serif headings, typewriter labels (the Reviser look). */
@@ -731,10 +748,13 @@ html, body { overscroll-behavior-x: none; }
   --region-valley-band:   var(--tier-good-soft);
   --region-downtown-band: var(--tier-medium-soft);
   --region-market-band:   var(--tier-weak-soft);
-  --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* `--font-display` and `--font-body` were two loads of Work Sans; both are
+     Roboto now, and both keep their own name because they are different ROLES
+     — a heading and a paragraph — that may not always want the same face. */
+  --font-display-stack: var(--font-readable), Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-fluohand-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
-  --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body-stack:    var(--font-readable), Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 /* -0.02em, was -0.01em (Dan, 6 Sep, closing the UI-police type round):

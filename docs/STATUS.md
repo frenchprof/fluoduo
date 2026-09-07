@@ -6,6 +6,47 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, later still — three type families, measured (pre-tests lane)
+
+Dan: *"i can still see a lot of Geist and Work Sans -- it should only be
+FluOLinGo, Roboto (and Patrick in reserve)"*.
+
+**What was there, counted before anything was touched** — every visible text
+run on eight routes, asked which family the browser had resolved:
+
+        1180  Work Sans        the whole app, effectively
+         139  Geist Mono       every small caps label
+          24  FluOLinGo Hand   the bands and the wordmark
+           4  Iowan Old Style  a system serif nobody had chosen
+           1  Patrick Hand
+           0  Roboto           loaded on every page, rendering nowhere
+
+Roboto was the one face he asked for and the one that never appeared: it was
+wired to `.fluo-readable`, which four components use. So this was not a swap of
+one font for another — it was the type system finally saying what it was asked
+to say. After: **1319 Roboto · 28 FluOLinGo Hand · 1 Patrick Hand**, and
+nothing else.
+
+**The fourth family was never shipped at all.** `--fluo-serif` named
+`"Iowan Old Style", Palatino, Georgia, …` — system fonts, no load — so
+« Choose your level » was Iowan on a Mac, Palatino on some Windows and Georgia
+elsewhere. It takes the house hand now, which is what Dan already ruled for
+titles on 5 Sep. `--fluo-mono` is a ROLE, not a metric: nothing under it is
+tabular, it is the small caps label, and Roboto draws it with the tracking
+unchanged.
+
+The role NAMES stay (`--font-body`, `--font-display`, `--font-sans`,
+`--font-mono`) even though all four now resolve to Roboto. Collapsing them is
+how a type system loses the ability to change its mind.
+
+`verify112` pins all of it: three imports, no stack naming a face the app does
+not load, and the body stack opening on the readable one.
+
+**Two things the swap moved**, both fixed: Roboto sets a shade wider than Work
+Sans, so « Qui ? » and « La phrase » began wrapping in the lesson's axis rows;
+and the « 🎲 Roll the dice » button was `w-full` — against Dan's 5 Sep rule,
+and now content-sized and centred.
+
 ## 7 Sep, later — every station runs inside the cahier, in a frame (pre-tests lane)
 
 Dan: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN
