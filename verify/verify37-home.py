@@ -164,9 +164,14 @@ phone = int(m.group(1)) if m else 0
 ok("sm:h-[58px]" in home and 44 <= phone <= 50,
    f"the keys are {phone}px on a phone and 58px from sm",
    f"the phone key size is {phone or 'missing'}px: below 44 it is under the touch-target floor, above 50 the four keys and the 1/50 well do not fit a 360px row")
-ok("sm:min-w-[80px]" in home and "min-w-[64px]" in home,
-   "the wells are narrower on a phone",
-   "the wells do not shrink — the row will not fit 320px")
+# THE WELL LEFT THE ROW (Dan, 7 Sep: the editable stop rides the top bar
+# now — "so we free up the space between the play rewind etc buttons").
+# The fit-at-320 worry the shrink rule answered is gone with it: the row
+# holds only the keys. The inverse is the claim now — a well creeping back
+# into this row is the regression.
+ok("min-w-[64px]" not in home,
+   "no well shares the key row — the stop reading rides the top bar",
+   "a well is back beside the keys — the row Dan freed on 7 Sep is crowded again")
 
 # 6b · spent hints do not survive a correct answer (Dan, 2026-08-27: "The red
 #      error stays after you fix it … 'Not that one, pick again' is still

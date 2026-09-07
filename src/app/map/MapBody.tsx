@@ -30,6 +30,7 @@ import HomeMap3D from "@/components/HomeMap3D";
 import HomePrintSheet from "@/components/HomePrintSheet";
 import { KindLegend } from "@/components/HomeMap";
 import StopPopup from "../StopPopup";
+import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
@@ -42,6 +43,7 @@ import { loadMapView, saveMapView, type MapView } from "@/lib/mapView";
 export default function MapBody() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   const [mapView, setMapView] = useState<MapView>("2d");
+  const router = useRouter();
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const [zoomPct, setZoomPct] = useState(100);
   // The learner's bookmarked stop (Dan, 2 Sep) — null = compute as before.
@@ -90,13 +92,15 @@ export default function MapBody() {
     };
   }, []);
 
+  // A stop is a DOOR to the goal's own page now, not a popup trigger (Dan,
+  // 7 Sep: "WE ARE STILL SEEING THE POPUPS FROM CLICKING THE MAP, WHERE ARE
+  // THE FULL PAGED SIOS"). The page it opens is the middle level of his own
+  // MAP > SIO > MneMemo chain — /sio/[id], the one-goal-per-screen magnet
+  // scroller built to his 5 Sep spec — which existed and was never wired in
+  // here. StopPopup stays for the #SIO-nnn deep links below until every QR
+  // and bookmark in the wild has aged out.
   const openSio = (_unit: number, id: string) => {
-    setOpenSioId(id);
-    try {
-      window.history.replaceState(null, "", `/map#${id}`);
-    } catch {
-      // fine — the popup still opens
-    }
+    router.push(`/sio/${id}`);
   };
 
   const setZoom = (v: number) => setZoomPct(Math.min(200, Math.max(30, Math.round(v))));

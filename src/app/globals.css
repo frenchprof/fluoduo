@@ -2562,7 +2562,6 @@ input.fluo-bookmark:focus,
   .text-\[17px\] { font-size: calc(1.0625rem + var(--fs-step) * 1.06); }
   .text-\[19px\] { font-size: calc(1.1875rem + var(--fs-step) * 1.19); }
   .text-\[22px\] { font-size: calc(1.375rem + var(--fs-step) * 1.38); }
-  .text-\[26px\] { font-size: calc(1.625rem + var(--fs-step) * 1.62); }
   .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }

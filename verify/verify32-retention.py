@@ -143,11 +143,12 @@ ok("--fluo-danger" not in home,
 # draft), so the check is now on the tokens themselves rather than on the
 # shape that used to carry them: the streak keeps its own role ink, and the
 # three keys wear the roles that mean what they do.
-# The streak moved to the TOP BAR on 1 Sep (Dan: "move the streak value and
-# emoji up between History and User"), so its role colour moved with it. The
-# claim is unchanged — the streak wears its own dopamine ink and not body text
-# — only its address is.
-ok("dopa-streak-ink" in read("src/components/SiteTopBar.tsx"),
+# The streak moved to the TOP BAR on 1 Sep, then to the ACCOUNT CARD on
+# 7 Sep (Dan: "replace the streak info with the stop info ... at the top
+# right" — the bar's slot went to the editable stop). The claim is unchanged
+# through both moves — the streak wears its own dopamine ink and not body
+# text — only its address is.
+ok("dopa-streak-ink" in read("src/components/AccountButton.tsx"),
    "the streak still takes its own role ink",
    "the streak lost its role colour")
 ok(all(t in home for t in ("--dopa-win", "--dopa-focus", "--dopa-reward")),

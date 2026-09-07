@@ -28,7 +28,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { loadProgress } from "@/lib/progress";
-import { nextFireMilestone, xpMultiplier } from "@/lib/economy";
+import { loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
+import StopBookmark from "@/components/StopBookmark";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
@@ -297,7 +298,7 @@ export default function SiteTopBar({
               NOT a button: every other item in this strip is a destination
               (verify31's rule) and a streak is a reading. It renders as plain
               text so the icon strip keeps meaning "these go somewhere". */}
-          <StreakMark />
+          <StopMark />
           <AccountButton />
         </div>
       </div>
@@ -308,80 +309,56 @@ export default function SiteTopBar({
 }
 
 /**
- * The day streak, as a reading rather than a door.
+ * The STOP, where the streak was (Dan, 7 Sep: "replace the streak info with
+ * the stop info (and make that editable) at the top right between the
+ * history and the user icon — so we free up the space between the play
+ * rewind etc buttons at the hero"). The streak is not lost: it lives on the
+ * account card, one tap away, wearing its role ink and its next-rung
+ * tooltip. What rides all 28 surfaces now is the reading a learner can ACT
+ * on — which goal they are at — and it is writable right here: typing a
+ * number bookmarks that stop, clearing it hands the reading back to the
+ * computation (the same StopBookmark the hero used to carry).
  *
- * WHY IT READS AFTER MOUNT. `loadProgress()` touches localStorage, which does
- * not exist while the page is being statically exported — and this bar renders
- * on every one of those pages. Reading during render would give the server one
- * number and the first client render another, and React would blame the
- * mismatch on the whole subtree, which here is the entire top bar. So it
- * starts null and renders NOTHING until the real value arrives: a streak that
- * appears a frame late is invisible; a top bar that fails to hydrate is not.
- *
- * Zero stays hidden rather than greyed. On Home the tile could afford to show
- * an unlit 0 beside its label — a column missing from a report card reads as
- * broken. In a five-icon strip there is no row to keep, and « 🔥 0 » next to
- * the account button is a reproach carried onto every screen in the app.
+ * WHY IT READS AFTER MOUNT — unchanged from the streak it replaces:
+ * localStorage does not exist during static export, and this bar renders on
+ * every page, so it starts null and renders NOTHING until the real value
+ * arrives. A stop that appears a frame late is invisible; a bar that fails
+ * to hydrate is not.
  */
-function StreakMark() {
-  const [streak, setStreak] = useState<number | null>(null);
+function StopMark() {
+  const [stopNo, setStopNo] = useState<number | null>(null);
   useEffect(() => {
-    // localStorage cannot be read during render (see above), so the first
-    // read has to happen here.
-    const read = () => setStreak(loadProgress().streak);
+    // First read here (see above) — and it KEEPS reading: goal completions
+    // and bookmark edits on any surface both announce themselves.
+    const read = () => {
+      const p = loadProgress();
+      setStopNo(nextGoalNumber(p, loadBookmark()) ?? null);
+    };
     read();
-    // AND KEEP READING. This mark read once on mount and never again, so the
-    // day's first practice bumped the streak in storage while the bar went on
-    // showing nothing — the fire only ever appeared after a full reload,
-    // which in an SPA is never (Dan, 2026-09-02: "the streaks are not
-    // working yet?"). Every save announces itself on this event; the one
-    // reading with a deadline now hears it.
     window.addEventListener("fluolingo:progress-updated", read);
-    return () => window.removeEventListener("fluolingo:progress-updated", read);
+    window.addEventListener(BOOKMARK_EVENT, read);
+    return () => {
+      window.removeEventListener("fluolingo:progress-updated", read);
+      window.removeEventListener(BOOKMARK_EVENT, read);
+    };
   }, []);
-  if (streak === null || streak <= 0) return null;
-  const mult = xpMultiplier(streak);
-  // The ladder's next rung, said as what it PAYS (2026-09-07). The old title
-  // named the current multiplier and stopped, so from day 7 the fire never
-  // again gave a reason to look forward. Gain-framed by law: "day 14 pays
-  // ×2,5", never a word about losing anything.
-  const next = nextFireMilestone(streak);
-  const worth = mult > 1 ? `everything earns ×${String(mult).replace(".", ",")}` : "";
-  const ahead = next ? `day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : "";
-  const title = ["Day streak", worth, ahead].filter(Boolean).join(" — ");
+  if (stopNo === null) return null;
   return (
-    /* THE NUMBER ABOVE THE FIRE (Dan, 1 Sep: "would it be possible to show 4
-       above the fire at the top instead?"). Stacked, not side by side — which
-       also buys back the width the pair was spending in a strip whose one hard
-       rule is that nothing pushes the ☰ off a 320px screen: two lines of ~13px
-       cost less horizontally than 🔥 and a numeral in a row, and the icons
-       either side are square. */
-    /* IN A DEPRESSED SPACE (Dan, 1 Sep: "can the streak sitting next to the
-       on/off button be within a depressed space"). The right reading, and it
-       settles what the mark IS: every neighbour in this strip is a door that
-       stands out, and a well is the app's word for a value you read rather
-       than press. It now says that in the same vocabulary Home uses for 1/50,
-       ring and all — so a learner meets one grammar of depth everywhere and
-       nothing here offers a press that does nothing.
-
-       py-0.5, not py-1, and that was measured rather than picked: the well needs
-       a little room or its inset ring closes on the numeral, but at py-1 the
-       bar grew from 30.3px to 33 — the streak was making the whole top bar
-       taller on every one of the 28 surfaces to give itself breathing space.
-       Half of it is enough for the ring and costs the bar nothing. */
+    /* The same depressed well the streak wore (Dan, 1 Sep: a well is the
+       app's word for a value you read rather than press) — except this
+       number is also a one-field form. The 🎯 below is the goal family's
+       own icon, so the mark reads as "goal N" without a word. The /50
+       lives in the tooltip: in a strip whose hard rule is that nothing
+       pushes the ☰ off a 320px screen, the total is the half a learner
+       already knows. */
     <span
       className="neo-well flex shrink-0 flex-col items-center rounded-lg px-1.5 py-0.5 leading-none"
-      title={title}
-      aria-label={`Day streak: ${streak}`}
+      title={`Your goal, ${stopNo}/50 — edit the number to bookmark a stop`}
     >
-      <span
-        aria-hidden
-        className="fluo-mono text-[13px] font-black [font-variant-numeric:tabular-nums]"
-        style={{ color: "var(--dopa-streak-ink)" }}
-      >
-        {streak}
+      <span className="fluo-mono text-[13px] font-black leading-none [font-variant-numeric:tabular-nums]">
+        <StopBookmark stopNo={stopNo} totalClassName="hidden" />
       </span>
-      <span aria-hidden className="text-[12px]">🔥</span>
+      <span aria-hidden className="text-[12px]">🎯</span>
     </span>
   );
 }

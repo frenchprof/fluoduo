@@ -28,15 +28,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import StopSheet from "@/components/StopSheet";
 import HomeMap from "@/components/HomeMap";
-import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
-import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
-import { loadMapView, mapHref, saveMapView } from "@/lib/mapView";
-import PillSwitch from "@/components/PillSwitch";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -76,14 +72,6 @@ export default function HomeDashboard() {
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
-  // Which view the map opens in. NOT session-local any more, and the change is
-  // the fix for Dan's "make sure the switch literally takes you the map it
-  // promises to" (1 Sep). It used to start at 2D on every visit and its map
-  // link carried `?view=2d`, which /map then SAVED — so a learner who had
-  // chosen 3D on the map, came Home and went back was silently returned to 2D
-  // by a control that looked like it was only reporting the state. It now
-  // reads and writes the same store the map does (lib/mapView.ts).
-  const [view3d, setView3d] = useState(false);
   // Once the stroke has played, the ink is pinned by class — engines can
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
@@ -104,7 +92,6 @@ export default function HomeDashboard() {
     // Block-disabled: the rule reports only the first setState it meets, and
     // which one that is differs between local and CI eslint.
     /* eslint-disable react-hooks/set-state-in-effect */
-    setView3d(loadMapView() === "3d");
     const refresh = () => {
       const p = loadProgress();
       setProgress(p);
@@ -170,10 +157,6 @@ export default function HomeDashboard() {
   // The accent colour the learner has equipped (drives the hero CTA). The fire
   // multiplier left with the streak tile — it is read where the streak now is,
   // in the top bar.
-  // The stop NUMBER (SIO-007 -> 7). Falls back to the last stop when
-  // everything is done, so the reading never blanks. The unit index went with
-  // the five dots: "just 1/50 (nothing else)".
-  const stopNo = activeSio ? Number(activeSio.id.slice(4, 7)) : SIOS.length;
   const accent = equippedAccent(progress);
 
 
@@ -290,38 +273,12 @@ export default function HomeDashboard() {
           The switch also moved to the left, under the counter, which is what
           made the swap possible — it had been sharing its row with the name. */}
       <div className="mb-2 flex items-center justify-between gap-2">
-        <dl className="flex min-w-0 items-stretch gap-2">
-          {/* WHERE YOU ARE. One figure, and five dots for the five units —
-              the draft's replacement for the ruler it deleted. */}
-          {/* JUST 1/50 (Dan, 1 Sep: "just 1/50 (nothing else)"). The word STOP
-              and the five unit dots are gone. Both were readable and neither
-              was needed: the fraction already says where you are, and the dots
-              said it a second time at a coarser grain — which is exactly what
-              the litmus test removes. The <dt> stays, unseen: a screen reader
-              would otherwise read "1 slash 50" with nothing to say what of. */}
-          <div className="neo-well flex min-w-[64px] flex-col items-center justify-center rounded-2xl px-2 py-2.5 sm:min-w-[80px] sm:px-3">
-            {/* « Goal », not « Stop » (Dan, 1 Sep) — the word a screen
-                reader hears for this counter is the word the bands print. */}
-            <dt className="sr-only">Goal</dt>
-            {/* EDITABLE (Dan, 2 Sep: "For the home page, we can make the stop
-                number indicator editable") — same reading, but now the learner
-                can write it: typing a number bookmarks that stop, clearing the
-                field hands the reading back to the computation. */}
-            <dd className="cahier-hand text-[22px] leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] sm:text-[26px]">
-              <StopBookmark
-                stopNo={stopNo}
-                totalClassName="text-base text-[color:var(--cahier-ink-soft)]"
-              />
-            </dd>
-          </div>
-          {/* THE STREAK TILE IS GONE — it moved to the top bar, between ⌛ and
-              the account button (Dan, 1 Sep: "move the streak value and emoji
-              up between History and User"). It is not lost, it is PROMOTED:
-              the one reading with a deadline used to live on the page a
-              learner leaves first, and now rides all 28 surfaces including
-              the drill they are in the middle of. See StreakMark in
-              components/SiteTopBar.tsx; verify25 follows it there. */}
-        </dl>
+        {/* THE 1/50 WELL IS GONE (Dan, 7 Sep: "replace the streak info with
+            the stop info ... at the top right ... so we free up the space").
+            The editable stop reading now rides the TOP BAR between ⌛ and the
+            account chip — all 28 surfaces, still writable — see StopMark in
+            SiteTopBar.tsx. The hero row keeps only the prose and the keys. */}
+        <div />
 
         {/* WHERE CONTINUE GOES, in words — the one piece of prose the draft
             keeps, because a coloured triangle cannot name a destination. Two
@@ -360,24 +317,12 @@ export default function HomeDashboard() {
 
       {/* ── ROW B · the controls ─────────────────────────────────────────── */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
-        <PillSwitch
-          label="Map view"
-          title="Tap to switch the map's view — the postcard below flips with it"
-          offLabel="2D"
-          onLabel="3D"
-          on={view3d}
-          onFlip={(next) => {
-            setView3d(next);
-            saveMapView(next ? "3d" : "2d");
-            // AND STAY. This navigated to /map for one day (Dan, 1 Sep: "make
-            // sure the switch literally takes you the map it promises to") —
-            // superseded 2 Sep, looking at the hero: "this needs to stay on
-            // screen when users tap 2D>3D>2D and so on. The separate map
-            // interface is for fuller-screen map." The postcard below flips
-            // with it, so the switch now has a visible consequence ON this
-            // page — which was the 1 Sep complaint — without costing the hero.
-          }}
-        />
+        {/* THE SWITCH IS GONE (Dan, 7 Sep: "on the home page we are seeing
+            the wrong map. it should be the tightened 2D" + the Enter-the-map
+            CTA). Supersedes 2 Sep's flip-in-place: the postcard is pinned to
+            the tight 2D grid, and 2D/3D is chosen where it matters — on /map,
+            whose PillSwitch (verify25b/c) is untouched. */}
+        <div />
 
         {/* FOUR pillows since Dan's Next-stop key (1 Sep). The FILL is the
             dopamine role; the depth is the affordance. Rewind sinks to a flat
@@ -535,36 +480,38 @@ export default function HomeDashboard() {
             photo — a surface you scroll PAST, never a control. The mat plus
             `inert` + pointer-events-none below mean no gesture over it can
             ever catch: a finger going down the page glides over. */}
-        <div className="p-2 pb-0" aria-hidden>
+        {/* pb-12, not pb-0: the CTA pill sits in its own apron BELOW the
+            picture — over calm paper, never over the stops (first capture
+            had it punching through circle 28). */}
+        <div className="p-2 pb-12" aria-hidden>
           <div
             inert
             className="pointer-events-none select-none overflow-hidden rounded-xl"
             style={{ boxShadow: "inset 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1.5px var(--cahier-line)" }}
           >
-            {/* The postcard FLIPS with the switch (Dan, 2 Sep: toggling
-                2D>3D>2D stays on this screen) — still inert either way; a
-                tap anywhere is still the door to /map in the shown view. */}
-            {view3d ? (
-              <HomeMap3D progress={progress} activeId={activeId} accent={accent} />
-            ) : (
-              <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
-            )}
+            {/* PINNED 2D (Dan, 7 Sep: "on the home page we are seeing the
+                wrong map. it should be the tightened 2D" — supersedes the
+                2 Sep flip-in-place, whose switch left with it). The postcard
+                is a picture of where you are; the 2D/3D choice lives where
+                it matters, on /map. */}
+            <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
           </div>
-        </div>
-        <span className="flex items-center gap-2 border-t-2 px-4 py-2.5" style={{ borderColor: "var(--cahier-ink)" }}>
-          <span aria-hidden className="text-xl">🗺️</span>
-          <span lang="fr" className="fluo-serif min-w-0 flex-1 text-lg font-black leading-tight text-[color:var(--fluo-ink)]">
-            The Map
-            {/* The switch's visible consequence. Without it the toggle sets
-                something a learner cannot see until after they have tapped
-                away from it. */}
-            {view3d && <span className="fluo-mono ml-1.5 text-sm font-black text-[color:var(--dopa-reward)]"> · 3D</span>}
+          {/* THE DOOR, SAID ON THE PICTURE (Dan, 7 Sep: "Across it we can
+              have the CTA 'Enter the map'"). A content-sized pill, centred —
+              never spanning (the no-full-width rule). Visual only: the
+              stretched link below carries the tap, so the whole card stays
+              one door and the pill needs no second handler. */}
+          <span
+            aria-hidden
+            className="pointer-events-none fluo-btn-hand absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border-2 px-4 py-1.5 text-base"
+            style={{ background: "var(--cahier-hl)", borderColor: "var(--cahier-ink)", color: "var(--cahier-ink)", boxShadow: "0 2px 0 0 var(--cahier-ink)" }}
+          >
+            Enter the map
           </span>
-          <span aria-hidden className="fluo-mono text-xl font-black text-[color:var(--fluo-ink)]">›</span>
-        </span>
+        </div>
         <Link
-          href={mapHref(view3d ? "3d" : "2d")}
-          aria-label={`The Map — open the course map in ${view3d ? "3D" : "2D"}`}
+          href="/map"
+          aria-label="Enter the map — the course map, full screen"
           className="absolute inset-0 z-10"
         />
       </div>
