@@ -16,7 +16,6 @@
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
-import { bandOf } from "@/content/activities";
 import type { Sio } from "@/content/sios";
 
 export default function GoalCard({ sio, compact }: { sio: Sio; compact?: boolean }) {
@@ -32,7 +31,28 @@ export default function GoalCard({ sio, compact }: { sio: Sio; compact?: boolean
       )}
 
       {items.length > 0 && (
-        <div className={`${compact ? "mt-3" : "mt-4"} grid grid-cols-2 gap-1.5`}>
+        /* ICONS ONLY, THREE UP (Dan, 2026-09-07: *"Below grid of 3x3 buttons
+           not in this form but the grid of icons only like we saw in the
+           earlier 'HELP'"*).
+
+           It was a two-column list of labelled pills, and on a goal with seven
+           activities that is seven rows of text under a card that has already
+           said what the goal is — the litmus test's own case: the words
+           « MémoiRecall », « VocabulaRain » repeat what the icon and its
+           colour already carry, and they cost the card most of its height on
+           a screen that now holds exactly one goal.
+
+           The name has not been thrown away, it has moved: `title` on hover,
+           and the `sr-only` span, which is what a screen reader announces —
+           an icon-only link that announces nothing is a link nobody can use.
+           `aria-hidden` stays on the tile itself for the same reason: it is
+           decoration, and the name beside it is the label.
+
+           `w-fit` and centred, not three columns stretched across the card:
+           three tiles spread over 290px of paper read as three separate
+           things a long way apart, which is the opposite of a grid. Dan's
+           reference is the HELP sheet, whose icons sit together. */
+        <ul className={`${compact ? "mt-3" : "mt-4"} mx-auto grid w-fit grid-cols-3 gap-3`}>
           {/* COLOURED BY LEARNING PHASE (Dan, 2026-09-05: *"we need color for
               those items"*), from `bandOf` — the same map the map's stop sheet
               reads, so a Pre-Test is the same colour whichever door a learner
@@ -42,33 +62,22 @@ export default function GoalCard({ sio, compact }: { sio: Sio; compact?: boolean
               outside the map (a supplement) draws no band and falls back to the
               paper, which is the honest answer for "this belongs to no
               phase". */}
-          {items.map((t) => {
-            const band = bandOf(t.key);
-            return (
+          {items.map((t) => (
+            <li key={t.key}>
               <Link
-                key={t.key}
                 href={t.href!}
-                className={`flex items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 text-[13px] font-black no-underline transition${band ? ` band-${band}` : ""}`}
-                /* THE LABEL STAYS INK, and that is measured rather than
-                   preferred. The phase hue on its own 12% wash comes to
-                   4.18:1 for guess, 3.96 for lesson and 4.22 for recog —
-                   three of five under 4.5:1, at 13px. The page ink on those
-                   same washes is 7.7-8.3:1. So the colour is carried by the
-                   border, the ground and the icon, which is also how the
-                   map's stop sheet does it — and the two surfaces agreeing
-                   is the point of reading `bandOf` in the first place. */
-                style={{
-                  borderColor: band ? "var(--band)" : "var(--cahier-rule)",
-                  background: band ? "var(--band-wash)" : "var(--cahier-paper-raised)",
-                  color: "var(--cahier-ink)",
-                }}
+                title={t.label}
+                /* 44px, not the icon's own 40 — PR 192's tap floor. The tile
+                   inside stays 40 and the ring around it takes the rest, so
+                   the target grows without the artwork changing size. */
+                className="grid h-11 w-11 place-items-center rounded-xl no-underline transition hover:scale-110"
               >
                 <ActivityIcon activityKey={t.key} emoji={t.emoji} />
-                <span className="min-w-0 truncate">{t.label}</span>
+                <span className="sr-only">{t.label}</span>
               </Link>
-            );
-          })}
-        </div>
+            </li>
+          ))}
+        </ul>
       )}
     </>
   );

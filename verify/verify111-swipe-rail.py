@@ -2,6 +2,11 @@
 """
 The swipe rail is Dan's chain, and only the rail reads a finger.
 
+Numbered 111, not 110: claude/fluolingo-color-review-9thj8x claimed 110 for
+verify110-palette-hues.py after this file took it — the eighth such collision
+in this repo, and the second between these same two branches (102, 6 Sep).
+verify-wiring catches them at push time now, which is how this one was found.
+
 Dan, 6 Sep 2026, having been shown thirteen page types driven one by one:
 *"right now it is not at all what i asked for"*, then the chain itself:
 
@@ -50,10 +55,14 @@ fails = []
 # ── 1 · the chain, in Dan's order ──────────────────────────────────────────
 rail = (SRC / "lib" / "swipeRail.ts").read_text(encoding="utf-8")
 keys = re.findall(r'key:\s*"([a-z]+)"', rail)
+# Skills and Games are ONE COLUMN EACH (Dan, 7 Sep: *"when there are multiple
+# destinations on the right, we need the hub page, but when we return from one
+# of those back to the left, it returns to the hub page. Hub pages are Skills
+# and Games."*). They were six and three columns for a day, which made a
+# sideways drag on ChaTutor a walk through a list nobody thinks of as ordered.
 EXPECTED = [
     "map", "goals", "speculearn", "lesson", "flip",
-    "conjugaison", "ecoutexte", "wordrill", "tts", "compose", "tutor",
-    "numbers", "vocabularain", "lexicalator",
+    "skills", "svplay",
     "leaderboard", "profil",
 ]
 if keys != EXPECTED:
@@ -64,13 +73,24 @@ if keys != EXPECTED:
     )
 
 # Rightwards is back. The whole app's direction rule, in one function.
-if "back: move(-1)" not in rail or "forward: move(1)" not in rail:
+if "move(-1)" not in rail or "forward: move(1)" not in rail:
     fails.append(
-        "swipeRail.railNeighbours no longer returns back=move(-1), forward=move(1).\n"
-        "    Rightwards drags the page right and reveals what is to its LEFT, so\n"
-        "    rightwards is back. Dan corrected himself once on this and the rule\n"
-        "    has been written down ever since."
+        "swipeRail.railNeighbours no longer walks back with move(-1) and forward\n"
+        "    with move(1). Rightwards drags the page right and reveals what is to\n"
+        "    its LEFT, so rightwards is back. Dan corrected himself once on this\n"
+        "    and the rule has been written down ever since."
     )
+
+# A hub swallows its own doors: standing on one of them, BACK is the hub.
+if "hub" not in rail or "normalise(hub) !== here" not in rail:
+    fails.append(
+        "The hub rule is gone. Dan, 7 Sep: on ChaTutor, rightwards is « Skills »,\n"
+        "    not « ComposeIt » — the six skills are doors off one page, not a row\n"
+        "    of stations, and the way out of a door is back through it."
+    )
+for hub_href in ['hub: "/skills"', 'hub: "/games"']:
+    if hub_href not in rail:
+        fails.append(f"{hub_href} is gone — Dan named both hubs by name.")
 
 # ── 2 · one handler reads a finger ─────────────────────────────────────────
 HANDLER = SRC / "components" / "useRailSwipe.ts"
@@ -152,8 +172,8 @@ if not re.search(r"html,\s*body\s*\{[^}]*overscroll-behavior-x:\s*none", css):
     )
 
 if fails:
-    print("verify110 — the swipe rail:\n")
+    print("verify111 — the swipe rail:\n")
     for f in fails:
         print("  ✗ " + f + "\n")
     sys.exit(1)
-print(f"verify110 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")
+print(f"verify111 ok — {len(EXPECTED)} stations in Dan's order, one handler, one row per screen, the browser stays out.")

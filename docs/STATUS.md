@@ -101,6 +101,63 @@ worth remembering:**
 single handler, the snap classes, the absent Next button, the forwarding stub,
 and the one line of CSS that keeps the browser out of the horizontal.
 
+### Later the same day: the lesson swipes vertically, and the hubs appear
+
+Dan, shown that a vertical swipe inside the lesson did nothing but scroll the
+open panel: *"it should swipe vertically - that is the right behaviour"*. Then
+three more rulings in one message.
+
+**1 · MneMemo doom-scrolls.** The four panels were `tab === "formes" &&
+<Formes/>` — three unmounted at any moment, so there was nothing to scroll TO.
+All four are in the document now, each `snap-start`, and **DrillShell's own
+body scroller is the magnet** (`snapRows`). NOT a SnapFeed inside it: that body
+is already an `overflow-y-auto`, and a second scroller inside it is two
+scrollers fighting over one finger.
+
+Four things this took, each measured rather than reasoned:
+
+- **The strip is an index, not a switch.** It reads the scroll position — "the
+  last row whose top has passed the line under the tabs" — after an
+  IntersectionObserver got it wrong twice. "Which panel is visible" has no
+  single answer (at the bottom, Formes and Exercice are both in the band) and a
+  panel taller than the screen is never *mostly* visible, so no threshold works.
+- **Every row is at least a measured screenful.** Letting short panels size to
+  their content kills the blank paper and breaks the rule that pays for it: Goal
+  and Idée then sit ~350px apart and one flick jumps clean past Idée. That is
+  continuous scrolling with a tidy ending — what Dan ruled out on the goals.
+  `justify-center` is what keeps the slack from reading as a fault.
+- **`scrollIntoView` scrolls the WINDOW too.** Tapping a tab took the site bar
+  and the ✕ band off the top. Same trap the goals scroller hit on 5 Sep, same
+  answer: compute the delta, move the one box that should move.
+- **The document is locked while the feed is up**, and only then — the other 27
+  DrillShell surfaces are untouched. The page sits in a document 90px taller
+  than the viewport, so without it two swipes take the frozen header away.
+
+**2 · Skills and Games are HUBS.** Dan: *"when there are multiple destinations
+on the right, we need the hub page, but when we return from one of those back
+to the left, it returns to the hub page. Hub pages are Skills and Games."* So
+the six skills and the three games stop being nine columns of the rail and
+become two. Standing on ChaTutor, rightwards is « Skills », not « ComposeIt ».
+The chain is nine stations now:
+
+    Map > Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games >
+    Leaderboard > Profile
+
+**3 · The goal card's activities are icons only**, three up (*"not in this form
+but the grid of icons only like we saw in the earlier 'HELP'"*). Seven labelled
+pills were seven rows of text under a card that had already said what the goal
+is — the litmus test's own case. The names live in `title` and an `sr-only`
+span, so a screen reader still announces them.
+
+**And SIO-011 is Dan's own wording**: « I can identify stressed pronouns. » /
+« Match subject with stressed pronouns in the relevant sentence structures. »
+
+Renumbered **verify110 -> verify111** — `claude/fluolingo-color-review-9thj8x`
+claimed 110 after this branch did. Eighth collision in the repo, second between
+these same two branches, and the first one the push-time check caught by itself.
+`verify73` was found VACUOUS in the same sweep: its regex insisted `className`
+be the wrapper's first attribute, and a `ref` had moved it.
+
 ### Still open, and Dan's to settle
 
 - **Wrap or stop** at the two ends of the rail (past Profile, and swiping right
@@ -109,10 +166,6 @@ and the one line of CSS that keeps the browser out of the horizontal.
   `/pretests/picture/<deck>`, and still one-at-a-time rather than a feed. They
   are separate runners (547 and 472 lines) and moving them is the next slice of
   the same job, not part of this one.
-- **MneMemo does not doom-scroll yet.** Dan named it (*"MneMemo which doom
-  scrolls downward"*); the lesson's four panels are still a tab strip. Doing
-  that touches `LessonTabs.tsx`, which PR #196 also edits — it should land
-  after that one, not race it.
 - **SpecuLearn is still merged in name only**: four runners, ~2,264 lines. The
   URL move makes them siblings at last, which is the precondition for merging
   the engines, not the merge itself.

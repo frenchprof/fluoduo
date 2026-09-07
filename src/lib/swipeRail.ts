@@ -56,6 +56,13 @@ export type RailStation = {
   href: (deck: string | null) => string;
   /** Is this pathname at this station? Ordered — first match wins. */
   at: (path: string) => boolean;
+  /** A station with MANY destinations is a hub, and this is its address.
+   *  Dan, 2026-09-07: *"when there are multiple destinations on the right, we
+   *  need the hub page, but when we return from one of those back to the left,
+   *  it returns to the hub page. Hub pages are Skills and Games."* So the six
+   *  skills are not six columns — they are one, and standing on any of them,
+   *  BACK is the hub rather than the skill next door. */
+  hub?: string;
   /** Has this station anything for this goal? A station that has not is
    *  SKIPPED rather than landed on: swiping left off a goal whose deck has no
    *  SpecuLearn should reach its lesson, not a picker asking the learner to
@@ -118,22 +125,40 @@ export const RAIL: RailStation[] = [
     href: (deck) => (deck ? `/practice/flip-it/${deck}` : "/practice/flip-it"),
     at: (p) => p.startsWith("/practice/flip-it"),
   },
-  { key: "conjugaison", name: "ConjugaZone", href: () => "/conjugaison", at: (p) => p === "/conjugaison" },
-  { key: "ecoutexte", name: "ÉcouTexte", href: () => "/practice/ecoutexte", at: (p) => p.startsWith("/practice/ecoutexte") },
-  { key: "wordrill", name: "WorDrill", href: () => "/practice/wordrill", at: (p) => p.startsWith("/practice/wordrill") },
-  { key: "tts", name: "VoixLà", href: () => "/tts", at: (p) => p === "/tts" },
-  { key: "compose", name: "ComposeIt", href: () => "/games/compose", at: (p) => p.startsWith("/games/compose") },
-  { key: "tutor", name: "ChaTutor", href: () => "/tutor", at: (p) => p === "/tutor" },
   {
-    key: "numbers",
-    name: "Numbers",
-    href: () => "/games/numbers",
-    // NumBus and NumBourse are inside Numbers, in Dan's own bracket — they are
-    // rows of this column, not columns of their own.
-    at: (p) => p.startsWith("/games/numbers") || p.startsWith("/games/numbus") || p.startsWith("/games/numbourse"),
+    key: "skills",
+    name: "Skills",
+    // ONE COLUMN, SIX DOORS. ConjugaZone · ÉcouTexte · WorDrill · VoixLà ·
+    // ComposeIt · ChaTutor were six columns for a day, which made a sideways
+    // drag on ChaTutor a walk through a list nobody thinks of as ordered —
+    // and put four screens between MémoiRecall and the games.
+    href: () => "/skills",
+    hub: "/skills",
+    at: (p) =>
+      p === "/skills" ||
+      p === "/conjugaison" ||
+      p === "/tts" ||
+      p === "/tutor" ||
+      p.startsWith("/practice/ecoutexte") ||
+      p.startsWith("/practice/wordrill") ||
+      p.startsWith("/games/compose"),
   },
-  { key: "vocabularain", name: "VocabulaRain", href: () => "/games/vocabularain", at: (p) => p.startsWith("/games/vocabularain") },
-  { key: "lexicalator", name: "LexicaLater", href: () => "/games/lexicalater", at: (p) => p.startsWith("/games/lexicalater") },
+  {
+    key: "svplay",
+    name: "Games",
+    // The same, for Numbers (NumBus + NumBourse inside it, in Dan's own
+    // bracket), VocabulaRain and LexicaLater.
+    href: () => "/games",
+    hub: "/games",
+    at: (p) =>
+      p === "/games" ||
+      p.startsWith("/games/numbers") ||
+      p.startsWith("/games/numbus") ||
+      p.startsWith("/games/numbourse") ||
+      p.startsWith("/games/vocabularain") ||
+      p.startsWith("/games/lexicalater") ||
+      p.startsWith("/games/matching"),
+  },
   { key: "leaderboard", name: "Leaderboard", href: () => "/leaderboard", at: (p) => p === "/leaderboard" },
   { key: "profil", name: "Profile", href: () => "/profil", at: (p) => p === "/profil" || p.startsWith("/moi") },
 ];
@@ -222,5 +247,11 @@ export function railNeighbours(path: string, deck: string | null): { back: RailM
     }
     return null;
   };
-  return { back: move(-1), forward: move(1) };
+  /* INSIDE A HUB, BACK IS THE HUB (Dan, 2026-09-07). Standing on ChaTutor,
+     rightwards is « Skills », not « ComposeIt » — the six are doors off one
+     page, not a row of stations, and the way out of a door is back through it.
+     Forward still leaves the column, so the chain never dead-ends. */
+  const hub = RAIL[i].hub;
+  const back = hub && normalise(hub) !== here ? { href: hub, name: RAIL[i].name } : move(-1);
+  return { back, forward: move(1) };
 }

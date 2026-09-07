@@ -411,4 +411,4 @@ jobs:
         run: python3 verify/verify106-fluidtype.py
 
       - name: "Sideways is Dan's chain, and only the rail reads a finger (6 Sep)"
-        run: python3 verify/verify110-swipe-rail.py
+        run: python3 verify/verify111-swipe-rail.py

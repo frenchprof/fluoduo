@@ -181,8 +181,8 @@
   "cefrMode": "Spoken Production",
   "skill": "production",
   "isProduction": false,
-  "canDo": "I can use the 8 stressed pronouns in the right place.",
-  "competence": "Match each of them to their 8 subject pronouns (je, tu, …) (≥7/8).",
+  "canDo": "I can identify stressed pronouns.",
+  "competence": "Match subject with stressed pronouns in the relevant sentence structures.",
   "collectionId": "stress-pronouns",
   "fr": "Moi, toi, lui, elle…"
  },

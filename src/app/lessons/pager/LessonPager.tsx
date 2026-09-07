@@ -471,6 +471,11 @@ export default function LessonPager({
       activity="lesson"
       deck={collectionId}
       finish={asked ? finish : null}
+      /* THE FRONT MATTER SCROLLS BY ROWS (Dan, 2026-09-07: *"it should swipe
+         vertically - that is the right behaviour"*), and only the front
+         matter: once a level is picked the tabs are gone and the exercise is
+         one card at a time, where a magnet would fight the card flow. */
+      snapRows={!asked}
     >
       {!ready ? null : !asked ? (
         // Dan's six tabs (2026-08-30), as FRONT MATTER only — see LessonTabs.

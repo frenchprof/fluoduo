@@ -139,6 +139,7 @@ export default function DrillShell({
   activity,
   deck,
   finish,
+  snapRows,
   children,
 }: {
   /** The ✕. Always present — a drill you cannot leave is a trap. */
@@ -170,12 +171,41 @@ export default function DrillShell({
   /** Set on the finished/summary screen: replaces the base CTA row with the
    *  ONE primary « Next › » + the quiet Repeat / Back row. */
   finish?: DrillFinish | null;
+  /** Turn the body's scroller into a MAGNET (Dan, 2026-09-07, of the lesson:
+   *  *"it should swipe vertically - that is the right behaviour"*). The
+   *  children then mark their own rows with `snap-start`, and the scroll may
+   *  only ever rest at the top of one of them.
+   *
+   *  Why here rather than in a feed component of its own: this body IS already
+   *  an `overflow-y-auto`, and a second scroller inside it is two scrollers
+   *  fighting over one finger — the exact fault the goals page was built twice
+   *  to avoid. A row taller than the screen still scrolls freely through,
+   *  because a snap area larger than the snapport imposes no rest position.
+   *  That is what makes a long lesson panel doom-scroll and a short one
+   *  snap. */
+  snapRows?: boolean;
   children: ReactNode;
 }) {
   const router = useRouter();
   // THE RAIL (Dan, 2026-09-06) — the same one CahierShell mounts, so a drill is
   // not an island: sideways walks Dan's chain, vertical belongs to the drill.
   useRailSwipe();
+  /* A ROW FEED SCROLLS BEHIND A FROZEN HEADER, which needs the WINDOW not to
+     scroll as well. Measured on the lesson at 390x844: the document is 90px
+     taller than the viewport (`.cahier-drilldesk` is a full screen, and the
+     site footer sits under it), so two swipes took the site bar and the ✕ band
+     off the top while the panels were still snapping underneath — two
+     scrollers, one undoing the other. The goals page met this first and the
+     answer is the same: take the window out of the equation for as long as the
+     feed is up. Only while `snapRows` is on, so the other 27 DrillShell
+     surfaces are untouched. */
+  useEffect(() => {
+    if (!snapRows) return;
+    const html = document.documentElement;
+    const prev = html.style.overflow;
+    html.style.overflow = "hidden";
+    return () => { html.style.overflow = prev; };
+  }, [snapRows]);
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
   // The band over a drill is coloured by what the drill ASKS, not by which
@@ -456,7 +486,7 @@ export default function DrillShell({
           scrolls inside exactly as before.
           NOT justify-center: Dan ruled that out on 2026-08-11 (a short item
           floated mid-viewport under a header-sized hole). */}
-      <div className="flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden">
+      <div className={`flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden${snapRows ? " snap-y snap-mandatory" : ""}`}>
         <div className="mx-auto flex w-full max-w-[600px] flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
           {/* HINTS ARE GUIDANCE TOWARD AN UNANSWERED QUESTION (Dan, 2026-08-27:
