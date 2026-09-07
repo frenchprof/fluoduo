@@ -2344,8 +2344,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset 0 0 0 2px color-mix(in oklab, var(--fluo-stop-kind, transparent) 45%, transparent);
 }
 /* Lift on hover, press INTO the band on tap — the same affordance the keys
-   use, so a stop behaves like every other control in the app. */
-.fluo-stop:hover { transform: translateY(-2px); }
+   use, so a stop behaves like every other control in the app.
+
+   HOVER IS GUARDED BY THE INPUT, not assumed (Dan, 7 Sep, asking whether the
+   map's buttons could react to mouseover — they could, and the 3D ones did
+   not). On a touchscreen :hover is applied on TAP and then STAYS applied
+   until something else is tapped, so an unguarded lift leaves the last stop a
+   learner opened sitting 2px proud of its neighbours for the rest of the
+   session, looking like the current stop. `hover: hover` and `pointer: fine`
+   together mean a real pointing device; a phone matches neither. */
+@media (hover: hover) and (pointer: fine) {
+  .fluo-stop:hover { transform: translateY(-2px); }
+  /* The 3D map's stops lift by their OWN height, not by a constant. Every
+     number on a node in that scene is scaled by the camera, so a fixed 2px is
+     a nudge on a near stop and a leap on a far one; --n-lift is set per node
+     in HomeMap3D from the same nodeH the shadows use. They also brighten
+     very slightly, because a lift alone is nearly invisible against a busy
+     scene of trees and buildings. */
+  .home-map3d-node:hover .home-map3d-face {
+    transform: translateY(calc(-1 * var(--n-lift, 2px)));
+    filter: brightness(1.06);
+  }
+}
+.home-map3d-face { transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
+.home-map3d-node:active .home-map3d-face {
+  transform: translateY(var(--n-lift, 2px));
+  transition-duration: .06s, .06s;
+}
 .fluo-stop:active {
   transform: translateY(2px);
   box-shadow:
@@ -2389,6 +2414,8 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .neo-key:active { transition-duration: .06s, .06s; transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease; }
 
 @media (prefers-reduced-motion: reduce) {
+  .home-map3d-face, .home-map3d-node:hover .home-map3d-face,
+  .home-map3d-node:active .home-map3d-face { transform: none; }
   .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
   .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
   /* A spring IS motion. Someone who asked for less of it gets the state

@@ -921,8 +921,16 @@ export default function HomeMap3D({
                           />
                           {/* top face */}
                           <span
-                            className={`absolute flex items-center justify-center overflow-hidden rounded-[50%] ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                            // `home-map3d-face` is the hover/press target, not
+                            // the button: the button is the whole node INCLUDING
+                            // its road pad and skirt, and lifting those would
+                            // pull the shadow off the road with the ball.
+                            className={`home-map3d-face absolute flex items-center justify-center overflow-hidden rounded-[50%] ${active && !reduce ? "home-map3d-pulse" : ""}`}
                             style={{
+                              // The travel is the node's OWN size, handed to CSS
+                              // per node — a constant 2px is a nudge on a near
+                              // stop and a leap on a far one.
+                              ["--n-lift" as string]: `${Math.max(1.5, nodeH * 0.14)}px`,
                               top: 0,
                               left: (baseW - sz) / 2,
                               right: (baseW - sz) / 2,

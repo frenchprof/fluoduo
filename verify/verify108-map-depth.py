@@ -194,6 +194,45 @@ check("fluo-spring" in three,
       "the 3D stops do not spring — they are drawn as objects and do not "
       "behave as them, which is the whole point of the tactile pass")
 
+# --- 8 · HOVER, AND WHO IS ALLOWED TO HAVE IT ------------------------------
+# Dan, 7 Sep: "could those buttons react to user mouseover?" The 2D stops
+# already lifted; the 3D ones did not, because they were given `.fluo-spring`,
+# which carries the PRESS and not the lift.
+#
+# THE GUARD IS THE POINT, more than the lift. On a touchscreen :hover is
+# applied on TAP and stays applied until something else is tapped — so an
+# unguarded lift leaves the last stop a learner opened sitting proud of its
+# neighbours for the rest of the session, which on this map reads as "you are
+# here". `(hover: hover) and (pointer: fine)` is the pair that means a real
+# pointing device; verified in a real browser, a phone context matches
+# neither.
+hover_blocks = [b for b in re.findall(r"@media[^{]*\{(?:[^{}]|\{[^{}]*\})*\}", css)
+                if "hover: hover" in b.split("{")[0]]
+check(bool(hover_blocks),
+      "hover is guarded by (hover: hover) — a tap on a phone cannot leave a "
+      "stop stuck in the hovered state",
+      "no (hover: hover) guard: on a touchscreen the last stop tapped stays "
+      "lifted, which on this map reads as the current stop")
+guarded = " ".join(hover_blocks)
+check(".fluo-stop:hover" in guarded,
+      "the 2D stop's lift lives inside the guard",
+      "the 2D stop's :hover lift is outside the pointer guard")
+check("home-map3d-node:hover" in guarded,
+      "the 3D stop's lift lives inside the guard too",
+      "the 3D stop has no guarded :hover — it does not answer the mouse, or "
+      "it answers a phone's tap as well")
+
+# The travel is the NODE'S OWN, handed in per node: everything in a
+# perspective scene is scaled by the camera, so one constant is a nudge on a
+# near stop and a leap on a far one.
+check("--n-lift" in css and "--n-lift" in three,
+      "the 3D lift is scaled per node, not a constant",
+      "the 3D lift is a fixed distance — a far stop will leap and a near one "
+      "will barely move")
+check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-face", css),
+      "reduced motion zeroes the 3D lift as well as the 2D one",
+      "prefers-reduced-motion does not zero the 3D face's travel")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))
