@@ -86,35 +86,33 @@ export default function AccountButton() {
               const mult = xpMultiplier(progress.streak);
               return (
                 <>
-                  <p className="mt-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink-soft)]">
-                    🎚️ <RankBadge level={lvl.level} name={lvl.name} />
-                  </p>
-                  {/* A FIGURE, NOT A BAR (Dan, 7 Sep: "we were opting for the
-                      minimalist report card look?"). He removed progress bars
-                      from the hero on 19 Aug ("no status bar") and from /moi on
-                      22 Aug ("WHY ARE THE SPACE-OCCUPYING PROGRESS BARS BACK
-                      AGAIN??"); this popover's bar had escaped both sweeps and
-                      duplicated the figure printed right under it. The report
-                      card idiom is the number itself. */}
-                  <p className="px-1 pt-0.5 text-xs font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</p>
-                  <div className="mt-1 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-                    {/* The ladder's next rung rides with the fire (2026-09-07):
-                        the streak names what it earns now AND what the next
-                        milestone day pays, so from day 7 there is still a
-                        reason to look forward. Gain-framed only. */}
-                    <span>
-                      🔥 {progress.streak}
-                      {mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}
-                      {(() => {
-                        const next = nextFireMilestone(progress.streak);
-                        return next ? (
-                          <span className="font-bold text-[color:var(--cahier-ink-soft)]"> · day {next.day} pays ×{String(next.mult).replace(".", ",")}</span>
-                        ) : null;
-                      })()}
-                    </span>
+                  {/* TWO LINES, PER DAN'S OWN MOCK (7 Sep, after the bar came
+                      out): the rank pill and the level figure share a line,
+                      and the stats compress to one row — fire, XP, gems,
+                      badge count. A figure, not a bar (his 19 Aug and 22 Aug
+                      rulings; the popover was the third surface to shed one).
+                      The word "badges" goes by the litmus test — the medal
+                      says it. The ladder's next rung moves to the fire's
+                      tooltip: still named (gain-framed, what the next day
+                      pays), no longer spending a line the mock does not have;
+                      the top bar and the streak toast still say it in full. */}
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 px-1">
+                    <RankBadge level={lvl.level} name={lvl.name} />
+                    <span className="text-xs font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</span>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
+                    {(() => {
+                      const next = nextFireMilestone(progress.streak);
+                      return (
+                        <span title={next ? `Day streak — day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : "Day streak"}>
+                          🔥 {progress.streak}
+                          {mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}
+                        </span>
+                      );
+                    })()}
                     <span>⭐ {progress.xp}</span>
                     <span>💎 {progress.gems}</span>
-                    <span>🎖️ {progress.badges?.length ?? 0} badges</span>
+                    <span>🎖️ {progress.badges?.length ?? 0}</span>
                     <StatsHelp />
                   </div>
                 </>
