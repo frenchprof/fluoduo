@@ -808,10 +808,25 @@ export default function HomeMap3D({
                     const colour = KIND_COLOR[kind];
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
+                    const reached = done || active;
                     // Round 9 (Dan): a fat skirt under the face — the button's
                     // visible height off the ground, what makes it read as
                     // LYING on the road rather than a coin on edge.
-                    const depthH = Math.max(3, Math.round(sz * 0.3 * scaleY));
+                    //
+                    // PROTRUDED vs DEPRESSED (Dan, 7 Sep: "they are supposed
+                    // to have the protruded and depressed look, that part is
+                    // not quite obvious yet"). It was not obvious because the
+                    // first pass changed only the LIGHTING, and every stop
+                    // still stood on the same tall skirt — so fifty identical
+                    // extrusions differed by a few percent of inner shadow.
+                    // The difference is structural now, exactly as it is in
+                    // 2D: a reached stop STANDS ON its skirt, an upcoming one
+                    // SITS IN the road with NONE AT ALL. Same silhouette
+                    // language as `.fluo-stop--reached` / `--ahead`, in
+                    // perspective.
+                    const depthH = reached
+                      ? Math.max(3, Math.round(sz * 0.34 * scaleY))
+                      : 0;
                     // The pad is a circular SPOT ON THE ROAD, wider than the
                     // ball riding it (Dan's capture, 2026-08-20 round 4).
                     const baseW = Math.round(sz * 1.42);
@@ -846,7 +861,6 @@ export default function HomeMap3D({
                     //   extruded SIDE of a solid object and losing it would
                     //   flatten the 3D — but it is derived from the FACE now,
                     //   so a pale node gets a pale side instead of a navy one.
-                    const reached = done || active;
                     const face = reached ? colour : KIND_WASH[kind];
                     const rim = colour;
                     const skirt = `color-mix(in oklch, ${face} 68%, black)`;
@@ -945,12 +959,27 @@ export default function HomeMap3D({
                               // number on this node is scaled by the camera —
                               // a fixed 3px inset that reads correctly on a
                               // near stop is a solid band on a far one.
+                              // The lighting says the same thing the skirt
+                              // says, so the two cannot disagree. REACHED
+                              // throws a shadow DOWNWARD onto the road and
+                              // catches light along its top edge — it is above
+                              // the surface. AHEAD carries the shadow INSIDE
+                              // its own top rim and the catch-light along its
+                              // inner bottom, which is what a dent looks like:
+                              // light from above lands on the far wall of a
+                              // hole, never on its near lip.
                               boxShadow: reached
-                                ? `inset 0 ${Math.max(1, nodeH * 0.09)}px 0 rgba(255,255,255,0.5), inset 0 -${Math.max(1, nodeH * 0.1)}px ${nodeH * 0.18}px rgba(0,0,0,0.24)`
-                                : `inset 0 ${Math.max(1, nodeH * 0.1)}px ${nodeH * 0.18}px rgba(0,0,0,0.16), inset 0 -${Math.max(1, nodeH * 0.09)}px 0 rgba(255,255,255,0.6)`,
+                                ? `0 ${Math.max(1, nodeH * 0.18)}px ${Math.max(2, nodeH * 0.3)}px rgba(0,0,0,0.34), inset 0 ${Math.max(1, nodeH * 0.13)}px 0 rgba(255,255,255,0.62), inset 0 -${Math.max(1, nodeH * 0.12)}px ${nodeH * 0.2}px rgba(0,0,0,0.3)`
+                                : `inset 0 ${Math.max(2, nodeH * 0.3)}px ${Math.max(3, nodeH * 0.42)}px rgba(0,0,0,0.55), inset 0 ${Math.max(1, nodeH * 0.1)}px 0 rgba(0,0,0,0.35), inset 0 -${Math.max(1.5, nodeH * 0.16)}px 0 rgba(255,255,255,0.95)`,
                             }}
                           >
-                            <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
+                            {/* The gloss is a HIGHLIGHT ON A DOME, so it
+                                belongs only to a stop that protrudes. Left on
+                                a sunk one it puts a second light source inside
+                                the hole and cancels the dent. */}
+                            {reached && (
+                              <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
+                            )}
                             <span
                               className="relative font-black leading-none"
                               // WHITE ON THE PEN, INK ON THE WASH — the 2D

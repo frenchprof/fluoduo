@@ -233,6 +233,44 @@ check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-face", css),
       "reduced motion zeroes the 3D lift as well as the 2D one",
       "prefers-reduced-motion does not zero the 3D face's travel")
 
+# --- 9 · protruded vs depressed, and the legend that stopped explaining ----
+# Dan, 7 Sep: "they are supposed to have the protruded and depressed look,
+# that part is not quite obvious yet". It was not obvious because the first
+# pass changed only the LIGHTING while every stop still stood on the same tall
+# skirt — fifty identical extrusions differing by a few percent of inner
+# shadow. The difference is STRUCTURAL now: a reached stop stands on its
+# skirt, an upcoming one has none at all and sits in the road.
+check(re.search(r"depthH\s*=\s*reached[\s\S]{0,200}?:\s*0\s*;", three),
+      "an upcoming stop has no skirt — it sits IN the road, it does not stand on it",
+      "every stop is back on the same skirt, so protruded and depressed differ "
+      "only by shading, which is what Dan said was not obvious")
+check(re.search(r"boxShadow:\s*reached", three),
+      "the lighting says the same thing the skirt says",
+      "the face's shadow no longer branches on `reached`, so the lighting and "
+      "the silhouette can disagree about whether a stop is done")
+check(re.search(r"\{reached && \(\s*<span aria-hidden[^>]*rgba\(255,255,255,0\.52\)", three),
+      "the dome's gloss belongs only to a stop that protrudes",
+      "the gloss highlight is on sunk stops too — a second light source inside "
+      "a hole cancels the dent")
+
+# The legend keys the fifty colours and nothing else (Dan, 7 Sep: "we don't
+# need the You and the Class in the legend"). There is exactly one 🧑‍🎓 and one
+# 🚩 on the map and both are labelled where they sit, so a key for them is
+# text whose removal costs a learner nothing — the litmus test exactly.
+legend = strip_comments(read("src/components/HomeMap.tsx"))
+legend = legend.split("export function KindLegend")[-1] if "export function KindLegend" in legend else ""
+# The emoji, not the words: `"class" not in legend` matches className on every
+# span in the component, and `"you"` is a substring of plenty. Caught by the
+# assertion failing against a legend that had already been trimmed correctly.
+check(bool(legend) and "🧑‍🎓" not in legend and "🚩" not in legend,
+      "the legend keys the colours only — 🧑‍🎓 and 🚩 explain themselves",
+      "the legend is keying 🧑‍🎓 you / 🚩 class again; there is one of each on "
+      "the map and both are labelled where they sit")
+check("KIND_LABEL" in legend,
+      "the legend still keys the four kinds, which DO need a key",
+      "the legend has lost the colour key — fifty stops and nothing says what "
+      "a colour means")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))

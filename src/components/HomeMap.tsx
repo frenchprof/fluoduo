@@ -587,8 +587,18 @@ export default function HomeMap({
   );
 }
 
-/** Legend shared by both views: colour = kind (primary focus per stop),
- *  🧑‍🎓 you, 🚩 class. `children` sits at the right (the 2D zoom control). */
+/** Legend shared by both views: colour = kind (primary focus per stop).
+ *  `children` sits at the right (the 2D zoom control).
+ *
+ *  🧑‍🎓 YOU AND 🚩 CLASS ARE GONE (Dan, 7 Sep: "we don't need the You and the
+ *  Class in the legend"). They are the one pair on the map that needs no key:
+ *  there is exactly one of each, both are already labelled where they sit
+ *  (the flag carries "The class is here this week" as its own title, and the
+ *  learner marker rides the stop marked `aria-current="step"`), and a mark
+ *  that appears once explains itself the moment you look at it. The colours
+ *  stay keyed because there are fifty of those and nothing on a stop says
+ *  which kind it is. Dan's litmus test, exactly: text whose removal does not
+ *  stop a learner finding the answer is redundant. */
 export function KindLegend({ children }: { children?: ReactNode }) {
   return (
     <div className="fluo-mono mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-bold" style={{ color: "var(--cahier-ink-soft)" }}>
@@ -598,12 +608,6 @@ export function KindLegend({ children }: { children?: ReactNode }) {
           {KIND_LABEL[k]}
         </span>
       ))}
-      <span className="flex items-center gap-1">
-        <span aria-hidden>🧑‍🎓</span> you
-      </span>
-      <span className="flex items-center gap-1">
-        <span aria-hidden>🚩</span> class
-      </span>
       {children && <span className="flex-1" />}
       {children}
     </div>
