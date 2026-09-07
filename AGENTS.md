@@ -249,9 +249,10 @@ What this does NOT cover: things that are not single controls. The bottom
 bar (five controls sharing the width), the heading band, a text input, the
 progress strip — none of these is one button wearing the page's width.
 
-# Geist is banned — permanent (2026-09-07)
+# Geist AND Work Sans are banned — permanent (2026-09-07)
 
-**Dan: *"GEIST HAS BEEN BANNED, WHY IS IT BACK AS A FONT?"***
+**Dan: *"GEIST HAS BEEN BANNED, WHY IS IT BACK AS A FONT?"*, then, an hour
+later: *"we said Geist and Work sans are banned — they are banned everywhere"*.**
 
 It was never back. It was never removed. `Geist` and `Geist_Mono` are what
 `create-next-app` scaffolds into `layout.tsx`; they were in the commit that
@@ -272,10 +273,25 @@ vocabulary/grammar legend and the 2D/3D switch. Measured before removal by
 driving the built app: Geist rendered on **13 of 14 pages** — 28 elements on
 /profil and /moi, 18 on /map.
 
-`verify111-no-geist.py` now fails on the import, on the `@theme` variables, on
-any font stack, and on the name anywhere under `src/`. **The lesson generalises:
-a ban that is not written down and not checked is not a ban.** If Dan rules a
-thing out, it goes here AND into a check in the same patch.
+**WORK SANS WAS BIGGER STILL** — the cahier system's functional face (body,
+controls, navigation, dense headings), measured at **176 of the 194 text
+elements** on SpecuLearn. Roboto carries `--font-body` and `--font-display`
+now: it is the one replacement already chosen by Dan, who asked for it by name
+on 2026-07-01 for anything that must be legible fast. Patrick Hand and the
+FluOLinGo hand are untouched — they are his picks too.
+
+**AND THE TWO BANS CAUGHT EACH OTHER.** The patch that removed Geist pointed
+Tailwind's `--font-sans` at `var(--font-body)` — which *was* Work Sans. One
+banned face was swapped straight for the other, and a check hard-coded to the
+word "Geist" would have passed it. So `verify111-banned-fonts.py` holds a LIST,
+and adding a name to it is the whole job of banning a font. It fails on the
+import, on the `@theme` variables (directly or through a variable), on any font
+stack, and on the name anywhere under `src/`.
+
+**The lesson generalises: a ban that is not written down and not checked is not
+a ban.** If Dan rules a thing out, it goes here AND into a check in the same
+patch — and the check takes a list, because the next ruling will not be about
+this font.
 
 # Start here — every session (2026-08-17)
 

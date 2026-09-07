@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
+import { Patrick_Hand, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
@@ -34,20 +34,33 @@ const roboto = Roboto({
   display: "swap",
 });
 
-// "Le Cahier" type system: characterful serif display, humanist body.
-// No handwriting/cursive font anywhere in the product — Dan's explicit call.
-// Work Sans is the FUNCTIONAL face: body, controls, navigation, metrics,
-// data, dense headings, anything accessibility-critical. It powers both
-// --font-body and --font-display, so the 73 existing .cahier-display uses
-// all become functional headings — correct by default.
-const workSans = Work_Sans({
+// NO WORK SANS EITHER. Dan, 2026-09-07: *"we said Geist and Work sans are
+// banned — they are banned everywhere"*.
+//
+// Work Sans was the FUNCTIONAL face here: body, controls, navigation, metrics,
+// dense headings. Measured on SpecuLearn before this change, it was 176 of the
+// 194 text elements on the page — effectively the whole app.
+//
+// AND REMOVING GEIST HAD JUST MADE IT WORSE: that patch pointed Tailwind's
+// --font-sans at `var(--font-body)`, which WAS Work Sans, so one banned face
+// was swapped for the other. Both are gone now.
+//
+// ROBOTO TAKES BOTH SLOTS, and it is the one choice here that is already Dan's:
+// he asked for it by name on 2026-07-01 for anything that has to be legible
+// fast. It was loaded for --font-readable and now carries --font-body and
+// --font-display as well, so the cahier system keeps its three tiers (body,
+// display, hand) with no new face introduced. The expressive faces are
+// untouched: Patrick Hand and the FluOLinGo hand are Dan's own picks.
+const robotoBody = Roboto({
   variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
-const workSansDisplay = Work_Sans({
+const robotoDisplay = Roboto({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "700"],
   display: "swap",
 });
 
@@ -150,7 +163,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${robotoBody.variable} ${robotoDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

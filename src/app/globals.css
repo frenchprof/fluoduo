@@ -20,7 +20,7 @@
      Sans is already the functional face of the cahier system and powers
      --font-body; the mono falls back to the system stack, which is what
      --fluo-mono listed behind Geist all along. */
-  --font-sans: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;   /* Roboto */
   --font-mono: ui-monospace, "SFMono-Regular", Menlo, "Courier New", monospace;
 
   /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
@@ -74,8 +74,8 @@
    unity despite the variation of colors, the fonts").
    `font-family: Arial, Helvetica, sans-serif` sat here from the day the repo
    was generated — it is create-next-app's boilerplate, never removed. The
-   type system built on top of it (Work Sans body + display, Patrick Hand,
-   Dan's own FluOLinGo Hand, Roboto for readability) was therefore OPT-IN:
+   type system built on top of it (Roboto for body + display + readability,
+   Patrick Hand, Dan's own FluOLinGo Hand) was therefore OPT-IN:
    anything not explicitly given .cahier-body / .fluo-serif / a font class
    fell back to Arial. Measured before this change, 50-83% of the real text
    runs on every page were Arial — including « tes parents » at 30px in the
