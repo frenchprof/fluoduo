@@ -18,12 +18,22 @@ made today, and the next session needs to know they no longer hold:
    views**. Pinch drives the same `zoomPct` the field and steppers drive — the
    zoom wrapper in `MapBody` contains both the 3D scene and the 2D grid, so
    there is ONE number and no second scale fighting the camera.
-2. **Depth means COMPLETION, not position.** "All buttons are up by default,
-   and as they are completed they get pressed down." The classes were renamed
-   with the swap: `.fluo-stop--reached`/`--ahead` described a POSITION, and
-   the moment the meaning inverted a class called "reached" was painting
-   not-yet-reached stops. They are `--up`/`--down` now. COLOUR did not swap —
-   the stretch you have walked keeps the pen, what is ahead keeps the wash.
+2. **Depth AND colour mean COMPLETION, not position.** "All buttons are up by
+   default, and as they are completed they get pressed down", then: "when
+   unvisited it is up and DARKER (not lighter) and completed it FADES and
+   lighter depressed." So an untouched stop is FRESH — full pen, standing up;
+   a finished one is WORN — faded to the wash, pressed flat.
+
+   The classes were renamed with the swap: `.fluo-stop--reached`/`--ahead`
+   described a POSITION, and the moment the meaning inverted a class called
+   "reached" was painting not-yet-reached stops. They are `--up`/`--down`.
+
+   I shipped the depth swap alone first and kept colour on position, on the
+   reasoning that they answer different questions. Dan corrected it the same
+   hour, and he was right: with colour on position a FINISHED stop was as loud
+   as an untouched one, and the depth had nothing to agree with. One question
+   drives both halves now, which is what makes a stop read as an object rather
+   than as two overlapping signals.
 
 **THE LESSON OF THE DAY, for whoever touches the 3D map next.** Dan sent the
 stop buttons back five times: they looked unchanged, then like coins on edge,

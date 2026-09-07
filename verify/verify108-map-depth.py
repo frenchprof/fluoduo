@@ -164,9 +164,19 @@ check("KIND_WASH" in three,
       "the 3D face uses the pen's own wash, the same token the 2D grid uses",
       "HomeMap3D no longer uses KIND_WASH — its pale shade has drifted back "
       "to a local mix, so the same stop is two different pales in two views")
-check(re.search(r"const\s+reached\s*=\s*done\s*\|\|\s*active", three),
-      "the 3D map names 'reached' once",
-      "HomeMap3D has lost its single `reached` test")
+# ONE QUESTION DRIVES BOTH HALVES (Dan, 7 Sep: "when unvisited it is up and
+# DARKER (not lighter) and completed it FADES and lighter depressed"). Depth
+# and colour both answer "is this done?" now. They used to answer different
+# questions — depth said done, colour said position — which left a finished
+# stop as loud as an untouched one and gave the depth nothing to agree with.
+# `reached` is gone with the split it served.
+check("const reached" not in three,
+      "the 3D map has one test, not two: everything follows `done`",
+      "`reached` is back — depth and colour are answering different questions "
+      "again, and a finished stop will be as loud as an untouched one")
+check(re.search(r"const face = done \? KIND_WASH\[kind\] : colour;", three),
+      "untouched stops wear the pen; completed ones fade to its wash",
+      "the 3D fill no longer fades on completion")
 
 # THE ONE THAT REPLACED FOUR (7 Sep). There used to be an assertion each for
 # the face, the ring, the reached numeral and the ahead numeral — four
@@ -301,6 +311,40 @@ guarded = " ".join(hover_blocks)
 check(".fluo-stop:hover" in guarded,
       "the 2D stop's lift lives inside the guard",
       "the 2D stop's :hover lift is outside the pointer guard")
+
+# EVERY hover rule that MOVES something, not just the map's (Dan, 7 Sep:
+# "apply"). A stuck tint is untidy; a stuck TRAVEL is a control frozen in a
+# state it is not in, and on this map raised means "not done yet". So the test
+# is computed from the file rather than listed: find every `:hover` rule whose
+# declaration contains a transform, and require each one to sit inside a
+# pointer guard. A new lift added outside one fails here without anyone having
+# to remember to add it to a list.
+guard_spans = [m.span() for m in re.finditer(
+    r"@media \(hover: hover\)[^{]*\{(?:[^{}]|\{[^{}]*\})*\}", css)]
+in_guard = lambda i: any(a <= i < b for a, b in guard_spans)
+# The selector only: the match can start inside a preceding comment, and a
+# failure that names a comment instead of the rule is a failure nobody can act
+# on. Caught by reading the break-test's own message.
+sel = lambda t: re.sub(r"/\*.*?\*/", "", t.split("{")[0], flags=re.S).strip().splitlines()[-1].strip()
+# A rule whose ONLY transform is `none` cancels movement rather than causing
+# it, so it needs no guard — `.neo-key[disabled]:hover` is exactly that. The
+# first version of this filter said `"transform: none" not in rule OR ":hover"
+# in selector`, and the OR let every :hover rule back in regardless. It flagged
+# the cancel rule, which is the opposite of the point.
+def moves(rule: str) -> bool:
+    body = rule.split("{", 1)[1]
+    return any(v.strip() not in ("none", "") for v in re.findall(r"transform:\s*([^;}]*)", body))
+travellers = [(m.start(), sel(m.group(0)))
+              for m in re.finditer(r"[^{}\n][^{}]*:hover[^{}]*\{[^{}]*transform:[^{}]*\}", css)
+              if moves(m.group(0))]
+loose = [name for i, name in travellers
+         if not in_guard(i) and "prefers-reduced-motion" not in css[max(0, i - 400):i]]
+check(not loose,
+      f"all {len(travellers)} hover rules that move something sit inside a "
+      f"pointer guard",
+      "these hover rules move something and are NOT guarded, so on a phone the "
+      "last control tapped stays in the moved state until something else is "
+      f"tapped: {', '.join(loose)}")
 check("home-map3d-node:hover" in guarded,
       "the 3D stop's lift lives inside the guard too",
       "the 3D stop has no guarded :hover — it does not answer the mouse, or "
@@ -340,7 +384,7 @@ check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-cap", css),
 # walked wears the pen, what is ahead wears the wash). They are different
 # questions, and a stop you have passed but not finished should stay up AND
 # coloured — which is exactly the nudge it should be.
-check(re.search(r"done \? \"fluo-stop--down\" : \"fluo-stop--up\"", three),
+check(re.search(r"done \? \"fluo-stop--down\" : \"fluo-stop--up fluo-stop-num\"", three),
       "a completed stop is latched down; everything else stands up",
       "depth no longer follows completion — either every stop looks the same "
       "state, or done-ness is being read off position again")
@@ -348,9 +392,12 @@ check(re.search(r"\[\"--cap-rest\" as string\]: `\$\{done \? press : 0\}px`", th
       "a completed coin RESTS at the bottom of its own travel, wall closed",
       "the cap's resting position no longer depends on completion, so a "
       "finished stop stands up like an unfinished one")
-check(re.search(r"background:\s*reached\s*\?\s*colour\s*:\s*KIND_WASH\[kind\]", three),
-      "reached wears the pen, ahead wears its wash — the 2D rule exactly",
-      "the 3D fill no longer follows reached->pen / ahead->wash")
+# And the 2D grid says the same thing, from the same test.
+two = strip_comments(read("src/components/Map2DGrid.tsx"))
+check(re.search(r"background: done \? KIND_WASH\[kind\] : colour", two)
+      and re.search(r"done \? \"fluo-stop--down\" : \"fluo-stop--up fluo-stop-num\"", two),
+      "the 2D grid fades and sinks on completion too — one rule, both views",
+      "the 2D grid's fill or depth has drifted from the 3D map's")
 
 # The legend keys the fifty colours and nothing else (Dan, 7 Sep: "we don't
 # need the You and the Class in the legend"). There is exactly one 🧑‍🎓 and one

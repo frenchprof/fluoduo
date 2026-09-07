@@ -969,7 +969,13 @@ body {
  * exactly like the SIO popup over its page). */
 .cahier-tab--back1 { margin-right: 18px; }
 .cahier-tab--back2 { margin-right: 36px; }
-.cahier-tab:hover { transform: translateX(-3px); }
+/* Guarded like every other hover TRAVEL in this file (Dan, 7 Sep: "apply").
+   A phone has no pointer, so the browser fakes hover at the moment of a TAP
+   and leaves it applied until something else is tapped — the flap you last
+   opened would sit slid out as if it were still under a finger. */
+@media (hover: hover) and (pointer: fine) {
+  .cahier-tab:hover { transform: translateX(-3px); }
+}
 .cahier-tab[data-active="true"] {
   /* THE FILL, NOT THE STRIPE (2026-09-05). This painted `--tab-hue` — the
      saturated colour the 6px stripe wants — behind `--cahier-ink`, and measured
@@ -2275,7 +2281,16 @@ h3.cahier-display { font-size: var(--fs-h3); }
   border: 0;
   transition: transform .1s ease, box-shadow .1s ease;
 }
-.neo-key:hover { transform: translateY(-3px); }
+@media (hover: hover) and (pointer: fine) {
+  /* THE LIFT IS FOR A POINTER, NOT A TAP (Dan, 7 Sep: "apply"). Unguarded,
+     the last key a learner tapped — the ☰, a zoom stepper, the finish door —
+     stays raised until they tap elsewhere, because a touchscreen applies
+     :hover on tap and has no "moved away" to clear it. On the map that reads
+     as a state; everywhere else it reads as a key stuck down.
+     The disabled reset lives in here too: it exists only to cancel the lift,
+     so outside the guard there is nothing for it to cancel. */
+  .neo-key:hover { transform: translateY(-3px); }
+}
 .neo-key:active {
   transform: translateY(4px);
   box-shadow:
@@ -2475,7 +2490,13 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
     inset 4px 4px 8px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
     inset -4px -4px 8px color-mix(in oklab, white 90%, transparent);
 }
+/* Left OUTSIDE the guard, and deliberately: moving it inside made it the
+   FIRST `.neo-key[disabled]` rule in the file, and verify37 reads the first
+   one to check a disabled key still carries its ring. It found this one, which
+   has no ring, and went red. A rule's POSITION is load-bearing when something
+   greps for it. */
 .neo-key[disabled]:hover, .neo-key[aria-disabled="true"]:hover { transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .neo-key, .neo-key:hover, .neo-key:active { transition: none; transform: none; }
 }

@@ -838,7 +838,6 @@ export default function HomeMap3D({
                     const colour = KIND_COLOR[kind];
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
-                    const reached = done || active;
                     // The pad's own lift off the road. It used to branch on
                     // `reached` to fake a protruded/depressed difference back
                     // when the stop was a hand-built puck; the key says that
@@ -878,6 +877,16 @@ export default function HomeMap3D({
                     // the buttons, not the map"): the road, the pad each stop
                     // sits on, the camera, the props, the gold ring on the
                     // current stop.
+                    // FRESH AND DARK WHEN UNTOUCHED, FADED WHEN COMPLETED
+                    // (Dan, 7 Sep: "when unvisited it is up and DARKER (not
+                    // lighter) and completed it FADES and lighter depressed").
+                    // Colour used to follow POSITION — the stretch behind you
+                    // wore the pen — which left a finished stop as loud as an
+                    // untouched one and gave the depth nothing to agree with.
+                    // A pressed button is worn: faded and sunk. An unpressed
+                    // one is fresh: full colour, standing up. Both halves say
+                    // the same thing, which is what makes it read as an object.
+                    const face = done ? KIND_WASH[kind] : colour;
                     const DISC = 44;                 // the 2D grid's own size
                     // ...AND IT LIES ON THE ROAD (Dan, 7 Sep: "now they look
                     // like they are coins standing on edge again!"). A perfect
@@ -1034,7 +1043,7 @@ export default function HomeMap3D({
                               top: nodeH / 2 + press - capH / 2,
                               width: capW,
                               height: capH,
-                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 34%, black) 100%)`,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${face} 52%, black) 0%, color-mix(in oklch, ${face} 34%, black) 100%)`,
                               boxShadow: `0 ${Math.max(1, Math.round(press * 0.5))}px ${Math.max(2, press)}px rgba(0,0,0,0.38)`,
                             }}
                           />
@@ -1047,7 +1056,7 @@ export default function HomeMap3D({
                               width: capW,
                               height: press,
                               borderRadius: 0,
-                              background: `linear-gradient(to bottom, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 78%, black) 0%, color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 52%, black) 100%)`,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${face} 78%, black) 0%, color-mix(in oklch, ${face} 52%, black) 100%)`,
                             }}
                           />
                           {/* THE CAP — one `.fluo-stop`, scaled by the camera
@@ -1076,12 +1085,12 @@ export default function HomeMap3D({
                             <span
                               // `home-map3d-face` is only the hover/press hook;
                               // every pixel of the look comes from .fluo-stop.
-                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up"} ${reached ? "fluo-stop-num" : ""} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
                               style={{
                                 ["--fluo-stop-kind" as string]: colour,
                                 ["--n-lift" as string]: "2px",
-                                background: reached ? colour : KIND_WASH[kind],
-                                color: reached ? undefined : "var(--cahier-ink)",
+                                background: face,
+                                color: done ? "var(--cahier-ink)" : undefined,
                               }}
                             >
                               {/* The number never leaves (6 Sep) and there is

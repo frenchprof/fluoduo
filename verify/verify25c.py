@@ -130,9 +130,14 @@ check("sioKind(" in m3 and "sioSecondary(" in m3 and "KIND_COLOR[" in m3, "ring 
 # amount per hue). This pins the THREE STATES being distinguishable, which is
 # the claim, and no longer the arithmetic that happened to produce one of
 # them — pinning the mix is what made a colour fix show up here as a failure.
-check("isSioDone(" in m3 and "reached = done || active" in m3 and "🧑‍🎓" in m3
-      and "home-map-bob" in m3 and "reached ? colour : KIND_WASH[kind]" in m3,
-      "done = the full pen face · current = the bobbing 🧑‍🎓 · to-come the pen's wash",
+# 2026-09-07: the two groups SWAPPED (Dan: "when unvisited it is up and darker
+# (not lighter) and completed it fades and lighter depressed", then "basically
+# just swap the two groups"). An untouched stop is FRESH — full pen, standing
+# up; a finished one is WORN — faded to the wash, pressed flat. `reached` is
+# gone with the split it served: depth and colour now answer the one question.
+check("isSioDone(" in m3 and "const face = done ? KIND_WASH[kind] : colour;" in m3
+      and "🧑‍🎓" in m3 and "home-map-bob" in m3,
+      "done = faded and pressed · current = the bobbing 🧑‍🎓 · to-come the full pen",
       "stop states missing")
 check("{st.num}" in m3 and '{done ? "✓" : st.num}' not in m3,
       "a finished stop keeps its number in 3D, as it does in 2D",
