@@ -11,7 +11,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthUser, signInWithGoogle, signOut } from "@/lib/firebase/auth";
 import StatsHelp from "@/components/StatsHelp";
-import RankBadge from "@/components/RankBadge";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { levelForXp, nextFireMilestone, xpMultiplier } from "@/lib/economy";
 
@@ -84,7 +83,7 @@ export default function AccountButton() {
                 click on the name... we dont need history and exit buttons.
                 those are in the user page. And put a on-off button + a
                 setting button to the top right corner"). The button row went:
-                the NAME is the Profile door, the RANK PILL is the history
+                the NAME is the Profile door, the LEVEL row is the history
                 door, and the corner holds ⚙ Settings + the power icon. */}
             <div className="absolute right-2.5 top-2.5 flex items-center gap-1">
               <Link
@@ -118,42 +117,42 @@ export default function AccountButton() {
               {label}
             </Link>
             {(() => {
-              const lvl = levelForXp(progress.xp);
               const mult = xpMultiplier(progress.streak);
+              const next = nextFireMilestone(progress.streak);
+              const unit = levelForXp(progress.xp).level;
+              /* THE CARD IS THREE COLUMNS (Dan, 7 Sep: "just a column of
+                 icons a column of numbers and a word or two beside") — his
+                 five quantities, in his order. Level is the 0-4 exponential
+                 XP ladder (economy.ts); only the level NUMBER shows, never
+                 an into/span figure, so exactly one XP figure remains on
+                 this card. The level row inherits the pill's job as the
+                 History door; the fire's next rung lives in its tooltip
+                 (gain-framed, what the next day pays). */
+              const num = "fluo-mono text-sm font-black tabular-nums text-[color:var(--cahier-ink)]";
+              const word = "text-xs font-bold text-[color:var(--cahier-ink-soft)]";
               return (
-                <>
-                  {/* TWO LINES, PER DAN'S OWN MOCK (7 Sep, after the bar came
-                      out): the rank pill and the level figure share a line,
-                      and the stats compress to one row — fire, XP, gems,
-                      badge count. A figure, not a bar (his 19 Aug and 22 Aug
-                      rulings; the popover was the third surface to shed one).
-                      The word "badges" goes by the litmus test — the medal
-                      says it. The ladder's next rung moves to the fire's
-                      tooltip: still named (gain-framed, what the next day
-                      pays), no longer spending a line the mock does not have;
-                      the top bar and the streak toast still say it in full. */}
-                  <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 px-1">
-                    <Link href="/moi" onClick={() => setOpen(false)} title="History" className="fluo-hit44">
-                      <RankBadge level={lvl.level} name={lvl.name} />
+                <div className="mt-2 grid grid-cols-[auto_auto_1fr] items-baseline gap-x-2.5 gap-y-1 px-1">
+                  <span aria-hidden title={next ? `Day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : undefined}>🔥</span>
+                  <span className={num}>{progress.streak}{mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}</span>
+                  <span className={word}>day streak</span>
+                  <span aria-hidden>⭐</span>
+                  <span className={num}>{progress.xp.toLocaleString()}</span>
+                  <span className={word}>XP</span>
+                  <span aria-hidden>💎</span>
+                  <span className={num}>{progress.gems}</span>
+                  <span className={word}>gems</span>
+                  <span aria-hidden>🎖️</span>
+                  <span className={num}>{progress.badges?.length ?? 0}</span>
+                  <span className={word}>badges</span>
+                  <span aria-hidden>🎚️</span>
+                  <span className={num}>{unit}</span>
+                  <span className={word}>
+                    <Link href="/moi" onClick={() => setOpen(false)} title={`Level ${unit} of 4 — History`} className="fluo-hit44 underline decoration-[color:var(--cahier-hl,#eaff00)] decoration-2 underline-offset-2">
+                      level
                     </Link>
-                    <span className="text-xs font-bold text-[color:var(--cahier-ink-soft)]">{lvl.into}/{lvl.span} XP</span>
-                  </div>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 px-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-                    {(() => {
-                      const next = nextFireMilestone(progress.streak);
-                      return (
-                        <span title={next ? `Day streak — day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : "Day streak"}>
-                          🔥 {progress.streak}
-                          {mult > 1 && <b className="text-rose-600"> ×{String(mult).replace(".", ",")}</b>}
-                        </span>
-                      );
-                    })()}
-                    <span>⭐ {progress.xp}</span>
-                    <span>💎 {progress.gems}</span>
-                    <span>🎖️ {progress.badges?.length ?? 0}</span>
-                    <StatsHelp />
-                  </div>
-                </>
+                    {" "}<StatsHelp />
+                  </span>
+                </div>
               );
             })()}
           </div>

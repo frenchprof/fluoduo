@@ -18,7 +18,10 @@
  *   🔥 Fire  — the streak, a live XP multiplier (×1 → ×1.5 → ×2 → ×2.5 → ×3).
  *   🎖️ Badges — milestone achievements, auto-awarded from signals we already
  *             track (SIOs done, streak, items mastered, level). Each pays gems.
- *   🎚️ Levels — XP thresholds with French rank names. Cosmetic status only.
+ *   🎚️ Level  — 0-4 for French 1, XP thresholds that DOUBLE per level
+ *             (Dan, 7 Sep: "the XP needed for each level to get harder as
+ *             they level up (exponential)"). The ten French rank names went
+ *             the same day ("i don't know why we need them").
  *
  * One flow: action → XP ×fire → level & leaderboard; milestones → badges →
  * gems → cosmetics.
@@ -71,46 +74,36 @@ export function nextFireMilestone(streak: number): { day: number; mult: number }
 }
 
 // ── Levels ──────────────────────────────────────────────────────────────────
-// French rank names; beyond the list, "Maître · N" keeps climbing.
-const RANKS = [
-  "Débutant",
-  "Apprenti",
-  "Explorateur",
-  "Voyageur",
-  "Bavard",
-  "Complice",
-  "Éloquent",
-  "Virtuose",
-  "Érudit",
-  "Maître",
-] as const;
+// FIVE LEVELS, 0-4, FOR FRENCH 1 (Dan, 7 Sep — "In reality we only need ...
+// Level (0 to 4 for French 1)", then "exponential"). Everyone starts at 0;
+// each level's span DOUBLES, so early levels arrive fast and the last is a
+// term's real work. Calibration: a strong finisher's term lands ~30k XP
+// (50 goals at 300-600 each plus daily practice; legacy totals ran 22-26k),
+// so the cumulative thresholds are 2k / 6k / 14k / 30k and level 4 is the
+// finisher's level. French 2 would extend the doubling, 5-9.
+// The RANK NAMES (Débutant..Maître) went with the recut — level is a bare
+// number now, and the two XP figures that used to argue on the account card
+// (lifetime ⭐ vs into/span) are one figure: the card shows ⭐ and the level
+// NUMBER, nothing else derived from XP.
+const LEVEL_SPANS = [2000, 4000, 8000, 16000] as const; // L0→1, 1→2, 2→3, 3→4
 
 export type LevelInfo = {
-  level: number;
-  name: string;
+  level: number; // 0-4
   into: number; // XP earned into the current level
-  span: number; // XP the current level spans
+  span: number; // XP the current level spans (0 at the top — nothing above)
   floor: number; // cumulative XP at the start of this level
 };
 
-/** Cost to climb from `level` to the next — a gentle ramp (×20 with the
- *  award scale above, so pacing is unchanged). */
-function levelCost(level: number): number {
-  return 600 * level + 400; // L1→2: 1000, L2→3: 1600, L3→4: 2200, …
-}
-
 export function levelForXp(xp: number): LevelInfo {
   const x = Math.max(0, Math.floor(xp || 0));
-  let level = 1;
+  let level = 0;
   let floor = 0;
-  let cost = levelCost(1);
-  while (x >= floor + cost) {
-    floor += cost;
+  for (const span of LEVEL_SPANS) {
+    if (x < floor + span) return { level, into: x - floor, span, floor };
+    floor += span;
     level += 1;
-    cost = levelCost(level);
   }
-  const name = level <= RANKS.length ? RANKS[level - 1] : `${RANKS[RANKS.length - 1]} · ${level}`;
-  return { level, name, into: x - floor, span: cost, floor };
+  return { level, into: x - floor, span: 0, floor };
 }
 
 // ── Badges ──────────────────────────────────────────────────────────────────
@@ -126,11 +119,11 @@ export type BadgeDef = {
 };
 
 /** Cheap derived numbers the badge predicates lean on. */
-export type BadgeCtx = { mastered: number; level: number };
+export type BadgeCtx = { mastered: number };
 
 export function badgeContext(p: Progress): BadgeCtx {
   const mastered = Object.values(p.itemSrs).filter((s) => s.intervalDays > 0).length;
-  return { mastered, level: levelForXp(p.xp).level };
+  return { mastered };
 }
 
 export const BADGES: BadgeDef[] = [
@@ -145,9 +138,10 @@ export const BADGES: BadgeDef[] = [
   // "Savant", not "Érudit" — Érudit is the N9 RANK name; a badge sharing it
   // read as the same thing (Dan, 2026-07-08). Ids stay stable (already earned).
   { id: "erudit", icon: "🦉", label: "Savant", desc: "Master 200 words", gems: 30, earned: (_p, c) => c.mastered >= 200 },
-  // The level badges carry their RANK names so the two systems visibly agree.
-  { id: "niveau-5", icon: "🎚️", label: "Bavard", desc: "Reach level 5 · Bavard", gems: 10, earned: (_p, c) => c.level >= 5 },
-  { id: "niveau-10", icon: "👑", label: "Maître", desc: "Reach level 10 · Maître", gems: 25, earned: (_p, c) => c.level >= 10 },
+  // The two RANK badges (Bavard at N5, Maître at N10) retired with the rank
+  // ladder (7 Sep) — their levels no longer exist on the 0-4 scale. Gems
+  // already paid stay paid; the ids stay reserved. New level badges are
+  // Dan's to commission, not assumed.
 ];
 
 export function badgeById(id: string): BadgeDef | undefined {

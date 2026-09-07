@@ -1554,28 +1554,6 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .fluo-fog:hover, .fluo-fog:focus-within { filter: none; }
 @media (prefers-reduced-motion: reduce) { .fluo-fog { transition: none; } }
 
-/* Level-name badges (Dan, 2026-07-08): the NAME's dressing escalates with the
-   rank — N1 almost invisible, N10 a glowing gold shimmer. Same word, more
-   ceremony. Used by components/RankBadge on every level-name surface. */
-.fluo-rank { display: inline-block; border-radius: 9999px; padding: 0 0.5em; font-weight: 800; line-height: 1.5; white-space: nowrap; }
-.fluo-rank-1 { color: rgba(34, 40, 80, 0.5); font-weight: 600; }
-.fluo-rank-2 { color: rgba(34, 40, 80, 0.7); box-shadow: inset 0 0 0 1px rgba(34, 40, 80, 0.22); }
-.fluo-rank-3 { color: #2a2e6e; background: rgba(123, 191, 46, 0.18); }
-.fluo-rank-4 { color: #1c5e8a; background: #def3f5; box-shadow: inset 0 0 0 1.5px #2bb6c2; }
-.fluo-rank-5 { color: #fff; background: #2bb6c2; }
-.fluo-rank-6 { color: #fff; background: #8a5fd4; }
-.fluo-rank-7 { color: #fff; background: linear-gradient(100deg, #8a5fd4, #e0567f); }
-.fluo-rank-8 { color: #fff; background: linear-gradient(100deg, #e0567f, #e8852e); box-shadow: 0 0 8px rgba(224, 86, 127, 0.55); }
-.fluo-rank-9 { color: #5c4a00; background: linear-gradient(100deg, #ffe9a8, #ffd34d, #ffe9a8); box-shadow: inset 0 0 0 1.5px #e3a700, 0 0 8px rgba(227, 167, 0, 0.5); }
-.fluo-rank-10 {
-  color: #4a3a00;
-  background: linear-gradient(110deg, #ffd34d 0%, #fff3b0 25%, #ffd34d 50%, #fff3b0 75%, #ffd34d 100%);
-  background-size: 220% 100%;
-  animation: fluo-rank-shimmer 2.6s linear infinite;
-  box-shadow: inset 0 0 0 2px #e3a700, 0 0 12px rgba(255, 211, 77, 0.8);
-}
-@keyframes fluo-rank-shimmer { from { background-position: 0% 0; } to { background-position: 220% 0; } }
-@media (prefers-reduced-motion: reduce) { .fluo-rank-10 { animation: none; } }
 
 /* ── Cahier design system — Dan's handoff, 2026-08-10 ─────────────────────
    Tokens from `design_handoff_cahier_dashboard/README.md`, in OKLCH as
@@ -1971,8 +1949,6 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* 2 · White on --fluo-secondary measured 2.45:1. Both sites take the teal's
        own ink instead, on its wash — 4.98:1. */
 .fluo-btn-secondary { background: var(--dopa-flow); color: var(--cahier-ink); }
-.fluo-rank-5 { background: var(--dopa-flow-wash); color: var(--dopa-flow-ink);
-  box-shadow: inset 0 0 0 1.5px var(--dopa-flow-ink); }
 
 /* 3 · --cahier-line paints every form-input border at 1.25:1, well under the
        3:1 a control boundary needs. Inputs (and only inputs) take the

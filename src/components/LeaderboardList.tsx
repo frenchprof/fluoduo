@@ -10,11 +10,9 @@
  */
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
-import { levelForXp } from "@/lib/economy";
 import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
 import { weekKey } from "@/lib/dayKey";
 import { loadProgress, weekPair, type Progress } from "@/lib/progress";
-import RankBadge from "@/components/RankBadge";
 import SectionBand from "@/components/SectionBand";
 
 type BoardRow = {
@@ -192,7 +190,8 @@ export default function LeaderboardList() {
         <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           {rowName(r)}{me && " (you)"}
         </span>
-        <RankBadge level={r.level ?? levelForXp(rowXp(r)).level} name={levelForXp(rowXp(r)).name} />
+        {/* The rank pill left this row with the rank ladder (Dan, 7 Sep:
+            "i don't know why we need them") — the row is name and score. */}
         <span className="fluo-mono w-16 shrink-0 text-right text-sm font-black tabular-nums text-[color:var(--cahier-ink)]">
           {score(r).toLocaleString()}
         </span>
