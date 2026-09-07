@@ -12,55 +12,17 @@ import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
 import InstallPrompt from "@/components/InstallPrompt";
 
-// NO GEIST. Dan, 2026-09-07: *"GEIST HAS BEEN BANNED, WHY IS IT BACK AS A
-// FONT?"* — it was never removed. Geist and Geist Mono are what
-// `create-next-app` scaffolds, they have been in this file since the commit
-// that created it, and nothing ever took them out. They were not merely
-// declared either: `@theme inline` pointed Tailwind's --font-sans and
-// --font-mono at them, and `--fluo-mono` led with Geist Mono, so the .fluo-mono
-// labels — "GOAL", "PICK ONE OF THE FIFTY", the map legend, the 2D/3D switch —
-// rendered in Geist Mono on 13 of the 14 pages driven. Removed at the source
-// here, and verify111 fails if either name comes back.
-
-// Dan (2026-07-01): the mono "label" font used for SIO circle captions etc. was
-// "much much" too hard to read — swap in Roboto for anywhere that needs to be
-// legible fast (path node captions, grid tile labels), via the .fluo-readable
-// class in globals.css. Not a wholesale font replacement — fluo-mono/fluo-label
-// stay as-is for chrome that isn't a readability complaint.
+// THREE FONTS, NO MORE (Dan, 6 Sep): "FluOLinGo font + Patrick Hand font +
+// Roboto font", and "Geist is OUT" — Work Sans, unnamed in his roster, goes
+// with it. Roboto is the ONE workhorse now: body, controls, data (tabular
+// numerals stand in for the retired Geist Mono — see --fluo-mono in
+// globals.css). The display role moves to Dan's own hand ("use the FluOLinGo
+// font as far as possible, everywhere, in their different variations");
+// Patrick Hand keeps only the accent spots .cahier-hand already marks.
 const roboto = Roboto({
   variable: "--font-readable",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-// NO WORK SANS EITHER. Dan, 2026-09-07: *"we said Geist and Work sans are
-// banned — they are banned everywhere"*.
-//
-// Work Sans was the FUNCTIONAL face here: body, controls, navigation, metrics,
-// dense headings. Measured on SpecuLearn before this change, it was 176 of the
-// 194 text elements on the page — effectively the whole app.
-//
-// AND REMOVING GEIST HAD JUST MADE IT WORSE: that patch pointed Tailwind's
-// --font-sans at `var(--font-body)`, which WAS Work Sans, so one banned face
-// was swapped for the other. Both are gone now.
-//
-// ROBOTO TAKES BOTH SLOTS, and it is the one choice here that is already Dan's:
-// he asked for it by name on 2026-07-01 for anything that has to be legible
-// fast. It was loaded for --font-readable and now carries --font-body and
-// --font-display as well, so the cahier system keeps its three tiers (body,
-// display, hand) with no new face introduced. The expressive faces are
-// untouched: Patrick Hand and the FluOLinGo hand are Dan's own picks.
-const robotoBody = Roboto({
-  variable: "--font-body",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-const robotoDisplay = Roboto({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["400", "500", "700", "900"],
   display: "swap",
 });
 
@@ -163,7 +125,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${robotoBody.variable} ${robotoDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

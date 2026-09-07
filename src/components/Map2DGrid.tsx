@@ -156,6 +156,13 @@ export default function Map2DGrid({
               // completed but walked past would render in the pale wash, i.e.
               // as "not yet", and your own finished work would disappear.
               const sunk = ahead && !active && !done;
+              // DEPTH FOLLOWS COMPLETION, not position (Dan, 7 Sep: "all
+              // buttons are up by default, and as they are completed they get
+              // pressed down"). `sunk` still drives the COLOUR — pen for the
+              // stretch you have walked, wash for what is ahead — because that
+              // is a different question from whether the key is latched. A
+              // stop you have passed but not finished stays UP and coloured,
+              // which is exactly the nudge it should be.
               return (
                 <button
                   key={s.id}
@@ -170,17 +177,26 @@ export default function Map2DGrid({
                   // forty of the fifty stops wore it. The kind colour moves from
                   // a `border` to an inset ring inside .fluo-stop, which costs
                   // no layout — 44px stays 44px, the touch floor holds.
-                  className={`fluo-stop ${sunk ? "fluo-stop--ahead" : "fluo-stop--reached fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
+                  className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
                   // TWO SHADES OF ONE PEN (Dan, 6 Sep, choosing option B of
                   // three shown at 44px). Reached stops are filled with the
                   // pen at full strength; stops still ahead take its wash. The
                   // numeral is PAGE INK on both — never white (1.34–3.01 on
                   // these pens) and never the pen's own ink (1.95–4.25). The
                   // ring is the pen either way, so the hue runs edge to edge.
+                  // COLOUR FOLLOWS COMPLETION TOO (Dan, 7 Sep: "when
+                  // unvisited it is up and DARKER (not lighter) and completed
+                  // it FADES and lighter depressed"). It used to follow
+                  // POSITION — the stretch you had walked wore the pen — which
+                  // left a finished stop as loud as an untouched one and gave
+                  // the depth nothing to agree with. A button that has been
+                  // pressed is worn: faded and sunk. One that has not is fresh:
+                  // full colour, standing up. Both halves now say the same
+                  // thing, which is what makes it read as an object.
                   style={{
                     ["--fluo-stop-kind" as string]: colour,
-                    background: sunk ? KIND_WASH[kind] : colour,
-                    color: sunk ? "var(--cahier-ink)" : undefined,
+                    background: done ? KIND_WASH[kind] : colour,
+                    color: done ? "var(--cahier-ink)" : undefined,
                   }}
                 >
                   {/* THE NUMBER STAYS, ALWAYS (Dan, 6 Sep: "i do still want the
@@ -235,7 +251,7 @@ export default function Map2DGrid({
             aria-label="GramMarathon Final"
             // The door stands PROUDEST of anything on the map — it is the one
             // node that is a place, and it is what the whole road leads to.
-            className="fluo-stop fluo-stop--reached z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
+            className="fluo-stop fluo-stop--up z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
             style={{
               ["--fluo-stop-kind" as string]: "var(--cahier-ink)",
               background: "var(--cahier-paper-raised)",

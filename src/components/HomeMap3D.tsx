@@ -49,7 +49,7 @@ import { SIOS, UNIT_META } from "@/content/sios";
 import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
-import { KIND_COLOR, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
+import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
@@ -161,6 +161,36 @@ function PerspectiveBg({
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
+  // THE ROAD RUNS OFF THE BOTTOM OF THE FRAME (Dan, 7 Sep: "the white path is
+  // broken in the map at the base", circled — a hard horizontal cut across the
+  // pale floor with bank either side of it).
+  //
+  // The loop above samples from rel = 0, and rel = 0 is the CAMERA'S OWN
+  // POSITION, which projects to a y well inside the viewport — so the polygon
+  // simply ended there, in mid-scene, with a straight edge. Nothing was
+  // missing and nothing was clipped wrongly: the road was drawn exactly as
+  // far as it was asked for, and a road that ends where you are standing has
+  // a visible end.
+  //
+  // Both near corners are carried on along the direction of their own last
+  // segment until they are below the frame, so the perspective keeps widening
+  // instead of stopping square. The strokes that draw the bank's lip follow
+  // the same path, so the dark lip leaves the frame with the floor rather
+  // than turning across it.
+  const extend = (from: string, toward: string): string => {
+    const [x1, y1] = from.split(" ").map(Number);
+    const [x0, y0] = toward.split(" ").map(Number);
+    const dy = y1 - y0;
+    // Only ever extend DOWNWARD and off-frame; a degenerate or upward segment
+    // (which can happen when the camera sits right on a bend) is left alone
+    // rather than flung to an arbitrary place.
+    if (!(dy > 0.01)) return from;
+    const k = (vh * 1.12 - y1) / dy;
+    if (!(k > 0)) return from;
+    return `${(x1 + (x1 - x0) * k).toFixed(1)} ${(vh * 1.12).toFixed(1)}`;
+  };
+  if (lPts.length > 1) lPts.unshift(extend(lPts[0], lPts[1]));
+  if (rPts.length > 1) rPts.push(extend(rPts[rPts.length - 1], rPts[rPts.length - 2]));
   const corridor = lPts.length > 1 ? `M ${lPts[0]} L ${lPts.slice(1).join(" L ")} L ${rPts.join(" L ")} Z` : "";
   return (
     <svg width={vw} height={vh} className="absolute inset-0" style={{ zIndex: 0, pointerEvents: "none" }} aria-hidden>
@@ -808,26 +838,91 @@ export default function HomeMap3D({
                     const colour = KIND_COLOR[kind];
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
-                    // Round 9 (Dan): a fat skirt under the face — the button's
-                    // visible height off the ground, what makes it read as
-                    // LYING on the road rather than a coin on edge.
-                    const depthH = Math.max(3, Math.round(sz * 0.3 * scaleY));
+                    // The pad's own lift off the road. It used to branch on
+                    // `reached` to fake a protruded/depressed difference back
+                    // when the stop was a hand-built puck; the key says that
+                    // itself now (`.fluo-stop--up` is raised,
+                    // `--down` is a well), so the pad is just the pad again —
+                    // the same spot on the road under every stop.
+                    const depthH = Math.max(3, Math.round(sz * 0.28 * scaleY));
                     // The pad is a circular SPOT ON THE ROAD, wider than the
                     // ball riding it (Dan's capture, 2026-08-20 round 4).
                     const baseW = Math.round(sz * 1.42);
                     const baseH = Math.round(baseW * scaleY * 0.38);
                     const totalH = nodeH + depthH;
-                    // Round 9 (Dan, "the stations' look"): SOLID coloured
-                    // buttons, the capture's register — done/current wear the
-                    // kind colour full, upcoming the same colour lightened;
-                    // the skirt is always that colour's dark side.
-                    const rim = `color-mix(in oklch, ${colour} 62%, black)`;
-                    // Reached = the pen at full strength; still ahead = its
-                    // pale shade. The 2D grid uses the pen's own --fam-*-wash
-                    // token; here the mix stays, because a 3D face is shaded by
-                    // the light model as well and a flat wash would fight it.
-                    const face = done || active ? colour : `color-mix(in oklch, ${colour} 55%, ${PAPER})`;
-                    const ring = Math.max(1.5, Math.round(sz * 0.05));
+                    // THE STOPS ARE THE 2D MAP'S BUTTONS, TO SCALE (Dan,
+                    // 7 Sep: "the buttons on the stops look exactly as they
+                    // were before we began work. I need it to look like the
+                    // ones in the 2D map!").
+                    //
+                    // Three earlier passes recoloured this node — the wash,
+                    // the ring, the numeral, the skirt, the lighting — and he
+                    // was right that none of it landed, because they were all
+                    // corrections to the WRONG OBJECT. The stop here was a
+                    // flattened puck built out of its own spans; the 2D map's
+                    // stop is a round key built by `.fluo-stop` in
+                    // globals.css. Matching one to the other by hand is how
+                    // you get four rounds of "closer, but no".
+                    //
+                    // So it is not matched by hand any more: the disc IS a
+                    // `.fluo-stop`, with the same classes, the same tokens and
+                    // the same 44px the 2D grid uses, and the camera scales
+                    // the whole key with `transform: scale()`. Its ring, its
+                    // raised/sunk shadows and its numeral shrink together, so
+                    // a far stop is a true miniature of the near one and of
+                    // the 2D button — and the two views cannot drift again,
+                    // because there is only one description of the button now.
+                    //
+                    // WHAT STAYS IS THE SCENE, which Dan ruled twice ("just
+                    // the buttons, not the map"): the road, the pad each stop
+                    // sits on, the camera, the props, the gold ring on the
+                    // current stop.
+                    // FRESH AND DARK WHEN UNTOUCHED, FADED WHEN COMPLETED
+                    // (Dan, 7 Sep: "when unvisited it is up and DARKER (not
+                    // lighter) and completed it FADES and lighter depressed").
+                    // Colour used to follow POSITION — the stretch behind you
+                    // wore the pen — which left a finished stop as loud as an
+                    // untouched one and gave the depth nothing to agree with.
+                    // A pressed button is worn: faded and sunk. An unpressed
+                    // one is fresh: full colour, standing up. Both halves say
+                    // the same thing, which is what makes it read as an object.
+                    const face = done ? KIND_WASH[kind] : colour;
+                    const DISC = 44;                 // the 2D grid's own size
+                    // ...AND IT LIES ON THE ROAD (Dan, 7 Sep: "now they look
+                    // like they are coins standing on edge again!"). A perfect
+                    // circle in a ground-plane scene is a coin on its rim —
+                    // which is the exact fault the original flattened puck was
+                    // built to avoid, and I walked straight back into it by
+                    // making the key round and leaving it upright.
+                    //
+                    // So the key is squashed by the SAME 0.58 the scene
+                    // squashes everything else by (projection.ts `scaleY`),
+                    // and it is squashed as a whole — ring, raised/sunk
+                    // shadows and all — so it foreshortens like an object
+                    // lying on the road rather than being redrawn as a
+                    // different shape. It is still one `.fluo-stop`: seen from
+                    // straight on it is the 2D button exactly, and seen from
+                    // this camera it is that button laid down.
+                    //
+                    // THE NUMERAL IS COUNTER-SQUASHED, because a number is not
+                    // part of the object's silhouette — it is a label printed
+                    // on the top face, and a squashed digit reads as a
+                    // rendering fault rather than as perspective.
+                    // 0.86, not 1. `sz` was the width of a FLATTENED face whose
+                    // height was only sz x scaleY, so a round key of diameter
+                    // sz keeps the old width and grows tall — far enough up
+                    // into the scene that the houses and trees begin to clip
+                    // it. Trimming the diameter puts the key back inside the
+                    // band the flat face occupied, and costs nothing: it is
+                    // still the same key, and it still shrinks with distance.
+                    const k = (sz * 0.86) / DISC;    // the camera's scale
+                    const capW = DISC * k;
+                    const capH = DISC * k * scaleY;
+                    // How far the cap stands off its plinth, and therefore how
+                    // far it travels when pressed. Scaled by the camera like
+                    // everything else, with a floor so a far button still has
+                    // somewhere to go.
+                    const press = Math.max(2, Math.round(sz * 0.17 * scaleY));
                     return (
                       <div
                         key={st.id}
@@ -855,7 +950,7 @@ export default function HomeMap3D({
                           title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                           aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                           aria-current={active ? "step" : undefined}
-                          className="home-map3d-node relative block"
+                          className="home-map3d-node fluo-spring relative block"
                           style={{ width: baseW, height: totalH, background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
                         >
                           {/* Finger-sized hit halo: the visible button is the
@@ -890,44 +985,120 @@ export default function HomeMap3D({
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />
-                          {/* side rim */}
+                          {/* THE CAST SHADOW (Dan, 7 Sep: "THEY ARE JUST
+                              LACKING IN SHADOW TO LOOK REAL"). Everything
+                              above this line describes the button; nothing
+                              described what the button DOES TO THE ROAD, and
+                              an object with no shadow is a sticker.
+                              Deliberately WIDER and SOFTER than the plinth and
+                              offset below it, because it is cast by an object
+                              standing off the ground — a shadow the same size
+                              as the thing above it reads as a second disc. */}
                           <span
                             aria-hidden
                             className="absolute rounded-[50%]"
-                            style={{ bottom: Math.max(2, baseH * 0.3), left: (baseW - sz) / 2, right: (baseW - sz) / 2, height: nodeH + depthH, background: rim }}
-                          />
-                          {/* top face */}
-                          <span
-                            className={`absolute flex items-center justify-center overflow-hidden rounded-[50%] ${active && !reduce ? "home-map3d-pulse" : ""}`}
                             style={{
-                              top: 0,
-                              left: (baseW - sz) / 2,
-                              right: (baseW - sz) / 2,
-                              height: nodeH,
-                              background: face,
-                              border: `${ring}px solid ${rim}`,
-                              boxShadow: `inset 0 -${Math.max(1, nodeH * 0.08)}px ${nodeH * 0.15}px rgba(0,0,0,0.22)`,
+                              left: baseW / 2 - capW * 0.72,
+                              top: nodeH / 2 + press + capH / 2 - capH * 0.64,
+                              width: capW * 1.44,
+                              height: capH * 1.28,
+                              background:
+                                "radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.26) 46%, rgba(0,0,0,0.10) 70%, rgba(0,0,0,0) 78%)",
+                            }}
+                          />
+                          {/* THE SIDE OF THE COIN (Dan, 7 Sep: "the bases
+                              should be rounded on the edge. by flat i mean
+                              flat on the ground, but the shape should still be
+                              that of a coin").
+
+                              Both of my earlier tries were wrong, in opposite
+                              directions. First I drew ONE ellipse `capH +
+                              press` tall — which is not a cylinder at all, it
+                              is a taller ellipse, and it bulged: the rounded
+                              underside he sent back. Then I replaced it with a
+                              plain rectangle, which gave a flat base and lost
+                              the coin.
+
+                              A coin lying flat is the union of two things, and
+                              it needs both:
+
+                                the BOTTOM RIM — the cap's own ellipse, drawn
+                                `press` lower. Its lower arc is the coin's
+                                rounded edge.
+                                the WALL — a rectangle `press` tall spanning
+                                the one line where the ellipse is exactly capW
+                                wide (the cap's centre), which is what makes
+                                the sides straight between the two rims.
+
+                              Both wear the same lit gradient, so they read as
+                              one side rather than two shapes. On a press the
+                              cap descends exactly `press` and lands on the
+                              bottom rim's centre — the wall closes to nothing
+                              and the coin is flat on the ground. */}
+                          <span
+                            aria-hidden
+                            className="absolute rounded-[50%]"
+                            style={{
+                              left: baseW / 2 - capW / 2,
+                              top: nodeH / 2 + press - capH / 2,
+                              width: capW,
+                              height: capH,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${face} 52%, black) 0%, color-mix(in oklch, ${face} 34%, black) 100%)`,
+                              boxShadow: `0 ${Math.max(1, Math.round(press * 0.5))}px ${Math.max(2, press)}px rgba(0,0,0,0.38)`,
+                            }}
+                          />
+                          <span
+                            aria-hidden
+                            className="absolute"
+                            style={{
+                              left: baseW / 2 - capW / 2,
+                              top: nodeH / 2,
+                              width: capW,
+                              height: press,
+                              borderRadius: 0,
+                              background: `linear-gradient(to bottom, color-mix(in oklch, ${face} 78%, black) 0%, color-mix(in oklch, ${face} 52%, black) 100%)`,
+                            }}
+                          />
+                          {/* THE CAP — one `.fluo-stop`, scaled by the camera
+                              and laid into the ground plane. Seen straight on
+                              it is the 2D button exactly; seen from this
+                              camera it is that button lying on the road. */}
+                          <span
+                            className="home-map3d-cap absolute"
+                            style={{
+                              left: baseW / 2,
+                              top: nodeH / 2,
+                              width: DISC,
+                              height: DISC,
+                              // The camera's own transform lives in a variable
+                              // so the hover and press rules can compose their
+                              // travel on top of it instead of replacing it.
+                              ["--cap-t" as string]: `translate(-50%, -50%) scale(${k}) scaleY(${scaleY})`,
+                              // Where the cap RESTS. A completed stop is a
+                              // latched key: it sits at the bottom of its own
+                              // travel, wall closed, coin flat on the ground.
+                              // Everything not yet done stands up (Dan, 7 Sep).
+                              ["--cap-rest" as string]: `${done ? press : 0}px`,
+                              ["--n-press" as string]: `${press}px`,
                             }}
                           >
-                            <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
                             <span
-                              className="relative font-black leading-none"
-                              style={{ fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.4)" }}
+                              // `home-map3d-face` is only the hover/press hook;
+                              // every pixel of the look comes from .fluo-stop.
+                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              style={{
+                                ["--fluo-stop-kind" as string]: colour,
+                                ["--n-lift" as string]: "2px",
+                                background: face,
+                                color: done ? "var(--cahier-ink)" : undefined,
+                              }}
                             >
-                              {/* The 🧑‍🎓 above already says "you are here", so the
-                                  stop shows its number (2026-08-21). It used to
-                                  carry a ▶ as well — one stop, two marks for the
-                                  same thing, and the triangle belongs to sound.
-
-                                  AND THE NUMBER NEVER LEAVES (6 Sep). It was
-                                  `done ? "✓" : st.num`, so a finished stop lost
-                                  its number here exactly as it did in 2D. Dan:
-                                  "i do still want the number to remain on the
-                                  buttons", then "Drop it — the fill says it" of
-                                  the tick. The face already carries done-ness:
-                                  the pen at full strength when reached, its
-                                  wash when still ahead. */}
-                              {st.num}
+                              {/* The number never leaves (6 Sep) and there is
+                                  no ✓ — done-ness is the fill, exactly as in
+                                  2D. */}
+                              <span style={{ display: "block", transform: `scaleY(${(1 / scaleY).toFixed(3)})` }}>
+                                {st.num}
+                              </span>
                             </span>
                           </span>
                           {second && nodeH > 10 && (

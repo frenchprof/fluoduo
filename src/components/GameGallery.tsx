@@ -33,7 +33,7 @@ import CahierShell from "@/components/CahierShell";
 import BottomSheet from "@/components/BottomSheet";
 import { UNIT_ACCENTS } from "@/components/siteTabs";
 import { CURATED } from "@/content/collections";
-import { loadProgress } from "@/lib/progress";
+import { loadProgress, buyUnlock } from "@/lib/progress";
 
 export type GalleryEntry = {
   id: string;
@@ -43,6 +43,10 @@ export type GalleryEntry = {
   unit: number | null;
   /** The curated deck behind the set, when there is one — drives "next". */
   deckId?: string;
+  /** An expert-GAME unlock gate (economy.ts EXPERT_UNLOCKS). Games only —
+   *  the course spine never carries this field. Until bought, the tile is a
+   *  buy button; after, an ordinary door. */
+  locked?: { unlockId: string; cost: number; emoji?: string };
 };
 
 function pickNext(entries: GalleryEntry[]): GalleryEntry | undefined {
@@ -83,11 +87,21 @@ export default function GameGallery({
 }) {
   const [next, setNext] = useState<GalleryEntry | undefined>(undefined);
   const [open, setOpen] = useState(false);
+  // Which expert gates are open. Read in an effect (localStorage cannot be
+  // read during render) and re-read on every save so a purchase in the
+  // boutique — or right here — unlocks the tile without a reload.
+  const [unlocked, setUnlocked] = useState<string[]>([]);
+  useEffect(() => {
+    const read = () => setUnlocked(loadProgress().unlocks ?? []);
+    read();
+    window.addEventListener("fluolingo:progress-updated", read);
+    return () => window.removeEventListener("fluolingo:progress-updated", read);
+  }, []);
   useEffect(() => {
     // Deliberate: pickNext reads progress from localStorage, which cannot
     // be read during render — this mount effect has to seed the pick.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setNext(pickNext(entries));
+    setNext(pickNext(entries.filter((e) => !e.locked || (loadProgress().unlocks ?? []).includes(e.locked.unlockId))));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const card = next ?? entries[0];
@@ -132,6 +146,27 @@ export default function GameGallery({
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
           {entries.map((e) => {
             const a = e.unit === null ? "var(--cahier-accent)" : UNIT_ACCENTS[e.unit];
+            if (e.locked && !unlocked.includes(e.locked.unlockId)) {
+              return (
+                <button
+                  key={e.id}
+                  type="button"
+                  onClick={() => buyUnlock(e.locked!.unlockId)}
+                  title={`${e.title} — an expert deck. Unlock for 💎 ${e.locked.cost}`}
+                  className="flex items-center gap-2.5 rounded-xl border-2 border-b-4 border-dashed bg-[color:var(--cahier-paper-raised)] p-2.5 text-left transition hover:-translate-y-0.5"
+                  style={{ borderColor: a }}
+                >
+                  <span className="min-w-0">
+                    <span className="fluo-btn-hand block truncate text-sm leading-tight text-[color:var(--cahier-ink)]" lang="fr">
+                      {e.locked.emoji ?? "🔒"} {e.title}
+                    </span>
+                    <span className="fluo-mono block text-[11px] font-bold" style={{ color: a }}>
+                      💎 {e.locked.cost}
+                    </span>
+                  </span>
+                </button>
+              );
+            }
             return (
               <Link
                 key={e.id}

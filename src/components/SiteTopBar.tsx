@@ -28,7 +28,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { loadProgress } from "@/lib/progress";
-import { xpMultiplier } from "@/lib/economy";
+import { nextFireMilestone, xpMultiplier } from "@/lib/economy";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
@@ -341,6 +341,14 @@ function StreakMark() {
   }, []);
   if (streak === null || streak <= 0) return null;
   const mult = xpMultiplier(streak);
+  // The ladder's next rung, said as what it PAYS (2026-09-07). The old title
+  // named the current multiplier and stopped, so from day 7 the fire never
+  // again gave a reason to look forward. Gain-framed by law: "day 14 pays
+  // ×2,5", never a word about losing anything.
+  const next = nextFireMilestone(streak);
+  const worth = mult > 1 ? `everything earns ×${String(mult).replace(".", ",")}` : "";
+  const ahead = next ? `day ${next.day} pays ×${String(next.mult).replace(".", ",")}` : "";
+  const title = ["Day streak", worth, ahead].filter(Boolean).join(" — ");
   return (
     /* THE NUMBER ABOVE THE FIRE (Dan, 1 Sep: "would it be possible to show 4
        above the fire at the top instead?"). Stacked, not side by side — which
@@ -363,7 +371,7 @@ function StreakMark() {
        Half of it is enough for the ring and costs the bar nothing. */
     <span
       className="neo-well flex shrink-0 flex-col items-center rounded-lg px-1.5 py-0.5 leading-none"
-      title={mult > 1 ? `Day streak — everything earns ×${mult}` : "Day streak"}
+      title={title}
       aria-label={`Day streak: ${streak}`}
     >
       <span
