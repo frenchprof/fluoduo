@@ -72,7 +72,7 @@ function others<T>(a: readonly T[], not: T, n: number): T[] {
 export const SE_PRESENTER_AXES: DiceAxis[] = [
   {
     key: "task",
-    label: "Tâche",
+    label: "Task",
     options: [
       { value: "say", label: "dire son nom" },
       { value: "ask", label: "demander" },

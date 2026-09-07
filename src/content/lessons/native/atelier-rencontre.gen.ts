@@ -74,8 +74,8 @@ export const promptAt = (situationIndex: number, stepIndex: number): string =>
 export const RENCONTRE_AXES: DiceAxis[] = [
   // The audience decides every answer from step 2 on, so it is the axis that
   // matters; `who` is already the two-word face the pre-test's tabs wear.
-  { key: "audience", label: "Public", options: SIO010_SITUATIONS.map((s) => ({ value: s.key, label: s.who })) },
-  { key: "step", label: "Étape", options: ASKABLE.map((s) => ({ value: s.key, label: s.label })) },
+  { key: "audience", label: "Audience", options: SIO010_SITUATIONS.map((s) => ({ value: s.key, label: s.who })) },
+  { key: "step", label: "Step", options: ASKABLE.map((s) => ({ value: s.key, label: s.label })) },
 ];
 
 export function rencontreQuestion(pinned?: Record<string, string>): DiceQuestion {

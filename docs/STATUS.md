@@ -6,6 +6,38 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, last — the 50 axis labels in one pass, and the tour's missing tickbox (pre-tests lane)
+
+Dan: *"yes in 1 pass, and why is the why never offer again without the check
+box."*
+
+**THE PASS.** 50 distinct AXIS labels across the 59 lessons, and separating them
+from the 97 raw `label:` strings mattered: an axis label is the picker's
+CATEGORY (« Quel jour ? ») and an option label is the French being chosen
+between (« le client », « négatif »). They are told apart structurally — an
+axis label is the `label:` that follows a `key:` — not by eye, because a wrong
+guess would have translated the content out of the course.
+
+**32 changed, in 20 files.** Kept: already-English (Opener, Place, Question,
+Type, Usage, Situation, Article), number ranges, and the cognates a first-week
+learner reads without being taught — **Sujet, Verbe, Verbes, Forme** — which is
+Dan's own 5 Sep reason for « Idée · Formes · Exercice ».
+
+**One collision the sweep had to be checked for.** « Où ? » and « Quel lieu ? »
+both mean "where", and one lesson (`ou-est`) has both: translating each straight
+gave it two selects with the same name. They ask different things — one picks
+the PREPOSITION (devant, sous, à côté de), the other the PLACE — so they are
+« Preposition » and « Place ». A rerun confirms no lesson has a duplicate axis
+label and no axis label still reads as French.
+
+**THE TOUR'S THIRD OPTION HAD LOST ITS TICKBOX.** « Never offer again » was a
+bare underlined line under two buttons: it looked like a caption that had lost
+its checkbox, and it was in fact a third ACTION sitting where a setting appears
+to be. The app's other first-run sheet (`FirstRunHint`) has asked the same
+question as a checkbox above its confirm button since 2 Sep, so a learner met
+two sheets asking one thing two ways. It is a checkbox now — tick it, and
+« No thanks » honours it.
+
 ## 7 Sep, late — English on the picker, a gift for Bonus, and the gap closed (pre-tests lane)
 
 Dan, on the lesson's Exercice panel: *"English pls We don't want au hasard and

@@ -65,7 +65,7 @@ function slotsFor(
 
 export const FAIRE_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.disp, label: s.disp })) },
-  { key: "partitive", label: "Partitif", options: [...new Set(ACTIVITIES.map((a) => a.part))].map((p) => ({ value: p, label: p })) },
+  { key: "partitive", label: "Partitive", options: [...new Set(ACTIVITIES.map((a) => a.part))].map((p) => ({ value: p, label: p })) },
   POLARITY_AXIS,
 ];
 

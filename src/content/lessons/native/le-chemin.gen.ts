@@ -100,8 +100,8 @@ export const REPLIES = [
 ] as const;
 
 export const CHEMIN_AXES: DiceAxis[] = [
-  { key: "ask", label: "Comment demander ?", options: ASKS.map((a) => ({ value: a.key, label: a.label })) },
-  { key: "place", label: "Quel lieu ?", options: PLACES.map((p) => ({ value: p.fr, label: withArticle(p) })) },
+  { key: "ask", label: "How to ask", options: ASKS.map((a) => ({ value: a.key, label: a.label })) },
+  { key: "place", label: "Where", options: PLACES.map((p) => ({ value: p.fr, label: withArticle(p) })) },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];

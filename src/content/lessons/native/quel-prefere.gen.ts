@@ -98,7 +98,7 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 export const QUEL_AXES: DiceAxis[] = [
   {
     key: "noun",
-    label: "Nom",
+    label: "Surname",
     options: [
       { value: "pays", label: "le pays / les pays" },
       { value: "ville", label: "la ville / les villes" },
@@ -107,7 +107,7 @@ export const QUEL_AXES: DiceAxis[] = [
   },
   {
     key: "nombre",
-    label: "Nombre",
+    label: "Number",
     options: [
       { value: "sg", label: "singulier — un seul" },
       { value: "pl", label: "pluriel — plusieurs" },

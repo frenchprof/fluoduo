@@ -81,7 +81,7 @@ const PREPS = [...new Set(PLACES.map((p) => p.pre))];
 
 export const ALLER_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.aff, label: s.aff })) },
-  { key: "prep", label: "Préposition", options: PREPS.map((p) => ({ value: p, label: p })) },
+  { key: "prep", label: "Preposition", options: PREPS.map((p) => ({ value: p, label: p })) },
   {
     key: "polarity",
     label: "Forme",

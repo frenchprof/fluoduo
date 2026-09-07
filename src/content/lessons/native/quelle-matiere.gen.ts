@@ -50,8 +50,8 @@ export const PEOPLE = [
 ] as const;
 
 export const MATIERE_AXES: DiceAxis[] = [
-  { key: "person", label: "On demande à qui ?", options: PEOPLE.map((p) => ({ value: p.key, label: p.ask })) },
-  { key: "subject", label: "Quelle matière ?", options: SUBJECTS.map((s) => ({ value: s.fr, label: withArticle(s) })) },
+  { key: "person", label: "Ask whom", options: PEOPLE.map((p) => ({ value: p.key, label: p.ask })) },
+  { key: "subject", label: "Which subject", options: SUBJECTS.map((s) => ({ value: s.fr, label: withArticle(s) })) },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];

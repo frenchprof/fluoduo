@@ -39,7 +39,7 @@ function subjVerb(s: (typeof SUBJECTS)[number], verb: string): string {
 
 export const FREQUENCE_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.disp, label: s.disp })) },
-  { key: "adverb", label: "Fréquence", options: ADV.map((a) => ({ value: a.fr, label: a.fr })) },
+  { key: "adverb", label: "Frequency", options: ADV.map((a) => ({ value: a.fr, label: a.fr })) },
 ];
 
 /**

@@ -71,10 +71,10 @@ export function spelledAloud(letters: readonly string[]): string {
 type Mode = "ask" | "tell";
 
 export const CA_SECRIT_AXES: DiceAxis[] = [
-  { key: "name", label: "Prénom", options: NAMES.map((n) => ({ value: n.name, label: n.name })) },
+  { key: "name", label: "First name", options: NAMES.map((n) => ({ value: n.name, label: n.name })) },
   {
     key: "mode",
-    label: "Rôle",
+    label: "Role",
     options: [
       { value: "ask", label: "demander (ask)" },
       { value: "tell", label: "répondre (answer)" },

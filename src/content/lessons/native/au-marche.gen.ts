@@ -50,13 +50,13 @@ export const PRICES = [
 
 /** The two roles the can-do insists on — the stall has two sides. */
 export const ROLES = [
-  { key: "client", label: "le client", en: "the customer" },
-  { key: "vendeur", label: "le vendeur", en: "the stallholder" },
+  { key: "client", label: "Customer", en: "the customer" },
+  { key: "vendeur", label: "Shopkeeper", en: "the stallholder" },
 ] as const;
 
 export const MARCHE_AXES: DiceAxis[] = [
-  { key: "role", label: "Qui parle ?", options: ROLES.map((r) => ({ value: r.key, label: r.label })) },
-  { key: "good", label: "Quoi ?", options: GOODS.map((g) => ({ value: g.fr, label: g.fr })) },
+  { key: "role", label: "Who speaks", options: ROLES.map((r) => ({ value: r.key, label: r.label })) },
+  { key: "good", label: "What", options: GOODS.map((g) => ({ value: g.fr, label: g.fr })) },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
