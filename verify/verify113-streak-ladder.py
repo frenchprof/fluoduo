@@ -25,7 +25,7 @@ What this check holds, and why each would regress silently:
      ban app-wide; here we hold the two new surfaces to the same floor so a
      rewrite of either cannot slip into "don't lose your ×2".
 
-Run from the repo root:  python3 verify/verify110-streak-ladder.py
+Run from the repo root:  python3 verify/verify113-streak-ladder.py
 """
 import json, os, re, shutil, subprocess, sys
 

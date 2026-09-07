@@ -362,8 +362,8 @@ jobs:
 
       - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
         run: python3 verify/verify109-lucky-find.py
-      - name: verify110 — the fire ladder past day 7, executed
-        run: python3 verify/verify110-streak-ladder.py
+      - name: verify113 — the fire ladder past day 7, executed
+        run: python3 verify/verify113-streak-ladder.py
       - name: verify111 — the course ends, the French doesn't
         run: python3 verify/verify111-forever-french.py
       - name: verify112 — you vs last week, executed

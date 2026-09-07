@@ -2169,10 +2169,12 @@ words in his own brief to you are the authority on scope.
 The routing moved three times in one evening, on Dan's word each time, and
 this is where it ended: Color review ("no time") → Peers ("rope in peers") →
 Peers is busy, so **fluoduo-main built all three** on `feat/streak-ladder`
-(one PR: the ladder, the forever key, you-vs-last-week; checks verify110,
-111, 112). Nothing below is anyone's to build any more — it is a record of
-what shipped and why. Color review: verify numbers 110-112 are taken; 113+
-look free.
+(one PR: the ladder, the forever key, you-vs-last-week; checks verify111, 112,
+113 — the ladder check was born 110 and renumbered at the gate: assertion 4
+caught verify110-finale-colours in flight on Peers' branch, the first live
+catch at push time). Nothing below is anyone's to build any more — it is a record of
+what shipped and why. Color review: verify numbers 111-113 are taken (110 is
+peers-finale-colours'), so 114+ look free.
 
 Background: Dan sent a video on the three retention machines consumer apps
 run (unpredictable rewards / the infinite game / social scoreboards). Five
@@ -2216,9 +2218,9 @@ House rules that bite here: counts only where the thing counted is unseen;
 no full-width single controls; English chrome (these are chrome surfaces, not
 decks); relative type sizes; hand over the branch to fluoduo-main explicitly
 when it is ready — files touched, shared files, known collisions. Verify
-numbers: 108/109 are Peers' (#202), 107 is the landing branch's, 110-112
-are the retention builds', so 113+ look free; assertion 4 checks your claim
-at push time either way.
+numbers: 108/109 are Peers' (#202), 107 is the landing branch's, 110 is
+peers-finale-colours', 111-113 the retention builds', so 114+ look free;
+assertion 4 checks your claim at push time either way.
 
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
