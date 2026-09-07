@@ -189,10 +189,38 @@ check(re.search(r"const\s+DISC\s*=\s*44", three),
       "it is built at the 2D grid's own 44px and scaled",
       "the 3D key is not built at the 2D size, so its ring and shadows are no "
       "longer proportional to the button they copy")
-check(re.search(r"transform:\s*`translate\(-50%, -50%\) scale\(\$\{k\}\)`", three),
-      "the camera scales the whole key, so its shadows shrink with it",
-      "the key is not scaled as a unit — its ring and shadows will read at a "
-      "different weight on a far stop than a near one")
+check(re.search(r"scale\(\$\{k\}\) scaleY\(\$\{scaleY\}\)", three),
+      "the camera scales the whole key AND lays it into the ground plane",
+      "the key is not scaled and squashed as a unit — either its shadows read "
+      "at a different weight on a far stop, or it stands upright and reads as "
+      "a coin on its edge (Dan, 7 Sep)")
+
+# THICKNESS, AND A PRESS THAT USES IT (Dan, 7 Sep: "the thickness (height) of
+# the buttons that goes down with each push like a real 3D button"). The cap
+# stands `press` px off a plinth of its own ellipse; a press travels exactly
+# that far, so the button bottoms out ON something instead of sliding an
+# arbitrary distance.
+check(re.search(r"const press = Math\.max\(", three) and "--n-press" in three,
+      "the button has a thickness, handed to CSS as its press travel",
+      "the 3D button has no thickness — a press will slide it rather than "
+      "bottom it out")
+check("--n-press" in css and "height: capH + press" in three,
+      "the plinth is exactly the cap plus its travel, so the wall closes up",
+      "the plinth and the press travel have come apart — the cap will stop "
+      "short of its own base or sink through it")
+# The camera transform has to be COMPOSED with, never replaced: writing a bare
+# translateY in the hover/press rule throws scale() away and every button
+# snaps to full size the moment a pointer touches it.
+# BOTH rules, checked separately. `"var(--cap-t) translateY" in css` was the
+# first version and it passed against a :active rule with the camera transform
+# stripped out — the hover rule alone satisfied it. Each block is now read on
+# its own, because either one dropping the composition is the same bug.
+for state in ("hover", "active"):
+    blk = re.search(r"\.home-map3d-node:%s \.home-map3d-cap \{([^}]*)\}" % state, css)
+    check(blk is not None and "var(--cap-t)" in blk.group(1),
+          f"the :{state} travel composes on top of the camera transform",
+          f"the :{state} rule replaces the whole transform — the button jumps "
+          f"to full size and stands upright the moment a pointer touches it")
 
 # And they SPRING, like every other key in the app.
 check("fluo-spring" in three,
@@ -235,9 +263,9 @@ check("--n-lift" in css and "--n-lift" in three,
       "the 3D lift is scaled per node, not a constant",
       "the 3D lift is a fixed distance — a far stop will leap and a near one "
       "will barely move")
-check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-face", css),
-      "reduced motion zeroes the 3D lift as well as the 2D one",
-      "prefers-reduced-motion does not zero the 3D face's travel")
+check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-cap", css),
+      "reduced motion stills the cap, leaving it at its camera transform",
+      "prefers-reduced-motion does not still the 3D cap's travel")
 
 # --- 9 · protruded vs depressed, and the legend that stopped explaining ----
 # Dan, 7 Sep: "they are supposed to have the protruded and depressed look,

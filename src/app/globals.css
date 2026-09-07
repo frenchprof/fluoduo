@@ -2361,14 +2361,24 @@ h3.cahier-display { font-size: var(--fs-h3); }
      in HomeMap3D from the same nodeH the shadows use. They also brighten
      very slightly, because a lift alone is nearly invisible against a busy
      scene of trees and buildings. */
-  .home-map3d-node:hover .home-map3d-face {
-    transform: translateY(calc(-1 * var(--n-lift, 2px)));
+  .home-map3d-node:hover .home-map3d-cap {
+    transform: var(--cap-t) translateY(calc(-1 * var(--n-lift, 2px)));
     filter: brightness(1.06);
   }
 }
-.home-map3d-face { transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
-.home-map3d-node:active .home-map3d-face {
-  transform: translateY(var(--n-lift, 2px));
+/* THE CAP RIDES ITS PLINTH. `--cap-t` carries the node's own
+   `translate/scale/scaleY` so a hover or a press can compose a travel ON TOP
+   of it — writing `transform: translateY(...)` alone here would throw the
+   camera's scale away and every button would snap to full size the moment a
+   pointer touched it.
+
+   The press travel is `--n-press`, the button's own thickness (HomeMap3D
+   hands it in per node), so the cap bottoms out ON its plinth instead of
+   sliding an arbitrary distance: it goes down exactly as far as it stands
+   proud, and the side wall closes up. */
+.home-map3d-cap { transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
+.home-map3d-node:active .home-map3d-cap {
+  transform: var(--cap-t) translateY(var(--n-press, 3px));
   transition-duration: .06s, .06s;
 }
 .fluo-stop:active {
@@ -2414,8 +2424,8 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .neo-key:active { transition-duration: .06s, .06s; transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease; }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-map3d-face, .home-map3d-node:hover .home-map3d-face,
-  .home-map3d-node:active .home-map3d-face { transform: none; }
+  .home-map3d-cap, .home-map3d-node:hover .home-map3d-cap,
+  .home-map3d-node:active .home-map3d-cap { transform: var(--cap-t); }
   .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
   .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
   /* A spring IS motion. Someone who asked for less of it gets the state

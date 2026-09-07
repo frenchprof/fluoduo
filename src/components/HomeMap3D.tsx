@@ -879,6 +879,26 @@ export default function HomeMap3D({
                     // sits on, the camera, the props, the gold ring on the
                     // current stop.
                     const DISC = 44;                 // the 2D grid's own size
+                    // ...AND IT LIES ON THE ROAD (Dan, 7 Sep: "now they look
+                    // like they are coins standing on edge again!"). A perfect
+                    // circle in a ground-plane scene is a coin on its rim —
+                    // which is the exact fault the original flattened puck was
+                    // built to avoid, and I walked straight back into it by
+                    // making the key round and leaving it upright.
+                    //
+                    // So the key is squashed by the SAME 0.58 the scene
+                    // squashes everything else by (projection.ts `scaleY`),
+                    // and it is squashed as a whole — ring, raised/sunk
+                    // shadows and all — so it foreshortens like an object
+                    // lying on the road rather than being redrawn as a
+                    // different shape. It is still one `.fluo-stop`: seen from
+                    // straight on it is the 2D button exactly, and seen from
+                    // this camera it is that button laid down.
+                    //
+                    // THE NUMERAL IS COUNTER-SQUASHED, because a number is not
+                    // part of the object's silhouette — it is a label printed
+                    // on the top face, and a squashed digit reads as a
+                    // rendering fault rather than as perspective.
                     // 0.86, not 1. `sz` was the width of a FLATTENED face whose
                     // height was only sz x scaleY, so a round key of diameter
                     // sz keeps the old width and grows tall — far enough up
@@ -887,6 +907,13 @@ export default function HomeMap3D({
                     // band the flat face occupied, and costs nothing: it is
                     // still the same key, and it still shrinks with distance.
                     const k = (sz * 0.86) / DISC;    // the camera's scale
+                    const capW = DISC * k;
+                    const capH = DISC * k * scaleY;
+                    // How far the cap stands off its plinth, and therefore how
+                    // far it travels when pressed. Scaled by the camera like
+                    // everything else, with a floor so a far button still has
+                    // somewhere to go.
+                    const press = Math.max(2, Math.round(sz * 0.17 * scaleY));
                     return (
                       <div
                         key={st.id}
@@ -949,17 +976,50 @@ export default function HomeMap3D({
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />
-                          {/* THE KEY — one `.fluo-stop`, scaled by the
-                              camera. Centred where the old flat face sat, so
-                              the scene's geometry is untouched. */}
+                          {/* THE PLINTH — the button's THICKNESS (Dan, 7 Sep:
+                              "the thickness (height) of the buttons that goes
+                              down with each push like a real 3D button"). It
+                              is the cap's own ellipse in the pen's dark shade,
+                              drawn `press` px lower and that much taller, so
+                              what shows between the two is the button's side
+                              wall. The cap rides `press` px above it; on a
+                              press the cap travels exactly that far DOWN and
+                              the wall closes up, which is a button bottoming
+                              out rather than a picture sliding. */}
                           <span
-                            className="absolute"
-                            style={{ left: baseW / 2, top: nodeH / 2, width: DISC, height: DISC, transform: `translate(-50%, -50%) scale(${k})` }}
+                            aria-hidden
+                            className="absolute rounded-[50%]"
+                            style={{
+                              left: baseW / 2 - capW / 2,
+                              top: nodeH / 2 - capH / 2,
+                              width: capW,
+                              height: capH + press,
+                              background: `color-mix(in oklch, ${reached ? colour : KIND_WASH[kind]} 62%, black)`,
+                            }}
+                          />
+                          {/* THE CAP — one `.fluo-stop`, scaled by the camera
+                              and laid into the ground plane. Seen straight on
+                              it is the 2D button exactly; seen from this
+                              camera it is that button lying on the road. */}
+                          <span
+                            className="home-map3d-cap absolute"
+                            style={{
+                              left: baseW / 2,
+                              top: nodeH / 2,
+                              width: DISC,
+                              height: DISC,
+                              // The camera's own transform lives in a variable
+                              // so the hover and press rules can compose their
+                              // travel on top of it instead of replacing it.
+                              ["--cap-t" as string]: `translate(-50%, -50%) scale(${k}) scaleY(${scaleY})`,
+                              ["--n-press" as string]: `${press}px`,
+                              transform: `translate(-50%, -50%) scale(${k}) scaleY(${scaleY})`,
+                            }}
                           >
                             <span
                               // `home-map3d-face` is only the hover/press hook;
                               // every pixel of the look comes from .fluo-stop.
-                              className={`home-map3d-face fluo-stop ${reached ? "fluo-stop--reached fluo-stop-num" : "fluo-stop--ahead"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              className={`fluo-stop ${reached ? "fluo-stop--reached fluo-stop-num" : "fluo-stop--ahead"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
                               style={{
                                 ["--fluo-stop-kind" as string]: colour,
                                 ["--n-lift" as string]: "2px",
@@ -970,7 +1030,9 @@ export default function HomeMap3D({
                               {/* The number never leaves (6 Sep) and there is
                                   no ✓ — done-ness is the fill, exactly as in
                                   2D. */}
-                              {st.num}
+                              <span style={{ display: "block", transform: `scaleY(${(1 / scaleY).toFixed(3)})` }}>
+                                {st.num}
+                              </span>
                             </span>
                           </span>
                           {second && nodeH > 10 && (
