@@ -47,9 +47,14 @@ for it), the **landscape rule**, and the three bugs below.
 - **The game bar overflowed** once ⛶ joined it: ⋯ half off the right edge. Gaps
   and key sizes tighten below `sm`.
 
-**Number collision, the eleventh.** Written as `verify111`, renumbered to
-**119** — main claimed 111–118 while this was in flight, 115 being this lane's
-own Finale work re-landed via #214.
+**Number collisions, the eleventh AND the twelfth, forty minutes apart.**
+Written as `verify111`; main claimed 111–118 while it was in flight (115 being
+this lane's own Finale work re-landed via #214), so it went to **119** — and
+the colour-review lane claimed 119 and 120 in the minutes between that push
+and CI running. Now **121**. Both were caught by `verify-wiring` at push time,
+neither by anyone's scan, which is the whole argument for the check: a scan is
+a snapshot, and today `main` and four branches are all moving inside the same
+hour.
 
 ## 7 Sep — THE PRE-TESTS LANE WENT STRAIGHT ONTO `main`, AT DAN'S WORD. Rebase before you push.
 

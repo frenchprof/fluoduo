@@ -61,7 +61,7 @@ hypothetical:
      game squeezed to make room for a margin nobody reads. While `bleed` the
      column widens and the side padding goes to zero on a phone.
 
-Run from the repo root:  python3 verify/verify119-embedded-games.py
+Run from the repo root:  python3 verify/verify121-embedded-games.py
 """
 import os
 import re
