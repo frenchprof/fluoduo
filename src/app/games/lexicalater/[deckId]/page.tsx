@@ -1,6 +1,7 @@
 import BackLink from "@/components/BackLink";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
+import GameLanding from "@/components/GameLanding";
 import GameFrame from "@/components/GameFrame";
 import { CURATED } from "@/content/collections";
 import { displayFr, prefixTokens } from "@/lib/collections/display";
@@ -79,7 +80,12 @@ export default async function ConveyorPage({
   const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
   return (
     <AuthGate what="play">
-      <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} deckId={collection.id} />
+      {/* The game sits IN a page (Dan, 7 Sep: "can we have them embedded like
+          the map, (with option to go full screen)") — the band names the
+          activity above the board, and ⛶ on the game bar takes it full. */}
+      <GameLanding activityKey="lexicalator" bleed>
+        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} deckId={collection.id} />
+      </GameLanding>
     </AuthGate>
   );
 }

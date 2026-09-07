@@ -26,7 +26,11 @@ export default function NumBoursePage() {
   return (
     <AuthGate what="play">
       {playing ? (
-        <NumBourse />
+        // The same shell the landing below already uses, so the band and the
+        // spine stay put while you play; ⛶ on the game bar takes it full.
+        <GameLanding activityKey="numbourse" bleed>
+          <NumBourse />
+        </GameLanding>
       ) : (
         <GameLanding activityKey="numbourse">
           <p className="text-sm text-[color:var(--cahier-ink)]">

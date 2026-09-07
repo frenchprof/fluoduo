@@ -23,7 +23,11 @@ export default function NumBusClient() {
           <NumBusSetup onStart={setConfig} />
         </GameLanding>
       ) : (
-        <NumBus config={config} onQuit={() => setConfig(null)} />
+        // The same shell the setup step above already uses, so the band and
+        // the spine stay put while you play; ⛶ on the game bar takes it full.
+        <GameLanding activityKey="numbus" bleed>
+          <NumBus config={config} onQuit={() => setConfig(null)} />
+        </GameLanding>
       )}
     </AuthGate>
   );

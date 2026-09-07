@@ -139,21 +139,58 @@ export default function GameFrame({
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState<BoardSize>({ width: 0, height: 0 });
 
-  // PIN THE VIEWPORT while a game is mounted. The frame is 100dvh, but the
-  // site layout stacks its footer (and the beta notice) UNDER it, so the
-  // page is ~90px taller than the screen — and focusing the keypad scrolls
-  // the GameBar clean off the top. That is how NumBus "lost" its ✕, 🔊 and
-  // ⋯ (Dan, 2026-09-02: "some games are missing the volume button" —
-  // measured: bar at y=-85 with scrollY 85). Locking the page here fixes
-  // every game at once and unlocks on the way out.
+  // EMBEDDED BY DEFAULT, FULL SCREEN ON REQUEST (Dan, 7 Sep: games "embedded
+  // like the map, (with option to go full screen)"). A game used to BE the
+  // page — 100dvh, the site's chrome nowhere — so playing one felt like
+  // leaving FluOLinGo. Boxed, it sits in the page like the map's scene does,
+  // with the heading band above it and a key on the bar to take it full.
+  const [full, setFull] = useState(false);
+
+  // A SIDEWAYS PHONE HAS NO ROOM FOR A PAGE AROUND A GAME (Dan, 7 Sep: "and
+  // remember the landscape modes"). Measured on an 844×390 phone: the top bar
+  // and the heading band take the first 120px, leaving 270; VocabulaRain's
+  // ten rows at their 30px floor plus the 68px puddle row need 368. The
+  // puddles — the four things you tap — came out below the fold. So a short
+  // touchscreen OPENS full and ⤡ boxes it, which is the same two states in
+  // the other order rather than a third behaviour.
+  //
+  // The query names all three conditions on purpose. `pointer: coarse` keeps
+  // a desktop window someone has dragged short out of it — nothing is more
+  // startling than a page going full screen because you resized it — and
+  // `orientation` keeps a tall phone out even at a small zoom.
+  //
+  // An effect, not an initial state: there is no viewport on the server, and
+  // a server-rendered "full" would flash the overlay on every phone.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- matchMedia cannot be read during render; this IS the first measurement.
+    if (window.matchMedia("(max-height: 560px) and (orientation: landscape) and (pointer: coarse)").matches) setFull(true);
+  }, []);
+
+  // PIN THE VIEWPORT, but only while FULL. The frame is 100dvh then, and the
+  // site layout stacks its footer (and the beta notice) UNDER it, so the page
+  // is ~90px taller than the screen — focusing the keypad scrolled the
+  // GameBar clean off the top. That is how NumBus "lost" its ✕, 🔊 and ⋯
+  // (Dan, 2026-09-02: "some games are missing the volume button" — measured:
+  // bar at y=-85 with scrollY 85). Embedded there is nothing to pin: the page
+  // is supposed to scroll, because there is a page again.
+  useEffect(() => {
+    if (!full) return;
     window.scrollTo(0, 0);
     const prev = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
     return () => {
       document.documentElement.style.overflow = prev;
     };
-  }, []);
+  }, [full]);
+
+  // Leaving full screen with Escape, because a fixed overlay with no keyboard
+  // way out is a trap for anyone not using a touchscreen.
+  useEffect(() => {
+    if (!full) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setFull(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [full]);
 
   // Measure the board area and publish it — as CSS vars for stylesheets and
   // as numbers for grids that compute. Layout effect so the first paint of a
@@ -174,14 +211,33 @@ export default function GameFrame({
     return () => ro.disconnect();
   }, []);
 
-  const frameStyle: CSSProperties = {
-    height: "100dvh",
-    background: background ?? "var(--cahier-paper)",
-    paddingBottom: "max(env(safe-area-inset-bottom, 0px), var(--bottombar-floor, 0px))",
-  };
+  const frameStyle: CSSProperties = full
+    ? {
+        position: "fixed",
+        inset: 0,
+        zIndex: 90,
+        height: "100dvh",
+        background: background ?? "var(--cahier-paper)",
+        paddingBottom: "max(env(safe-area-inset-bottom, 0px), var(--bottombar-floor, 0px))",
+      }
+    : {
+        // clamp, not a bare dvh: 78dvh of a phone held SIDEWAYS is about
+        // 300px, which is not a playable board, and 78dvh of a tall desktop
+        // is a board nobody can see the bottom of. The floor keeps landscape
+        // comfortable and the ceiling keeps the desktop sane (Dan, 7 Sep:
+        // "just make sure the layout of items is still comfortable within the
+        // page", and "watch out for the desktop version for all pages").
+        height: "clamp(340px, 74dvh, 640px)",
+        background: background ?? "var(--cahier-paper)",
+      };
 
   return (
-    <div className="game-frame flex flex-col overflow-hidden text-[color:var(--cahier-ink)]" style={frameStyle}>
+    <div
+      className={`game-frame flex flex-col overflow-hidden text-[color:var(--cahier-ink)] ${
+        full ? "" : "rounded-2xl border-2 border-[color:var(--cahier-line-strong)] shadow-[var(--shadow-card)]"
+      }`}
+      style={frameStyle}
+    >
       <GameBar
         exitHref={exitHref}
         onExit={onExit}
@@ -190,6 +246,8 @@ export default function GameFrame({
         score={score}
         onMenu={() => setMenuOpen(true)}
         menuOpen={menuOpen}
+        full={full}
+        onToggleFull={() => setFull((f) => !f)}
       />
 
       <div className="game-frame-body flex min-h-0 flex-1 flex-col lg:flex-row">

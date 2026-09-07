@@ -375,6 +375,9 @@ jobs:
       - name: verify112 — you vs last week, executed
         run: python3 verify/verify112-vs-last-week.py
 
+      - name: "Games sit in the page; full screen is a key, not the default (7 Sep)"
+        run: python3 verify/verify119-embedded-games.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).
