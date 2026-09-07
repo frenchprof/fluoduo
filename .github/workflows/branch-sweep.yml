@@ -1,0 +1,57 @@
+# The branch sweep, as a workflow (7 Sep 2026).
+#
+# WHY THIS EXISTS. Dan approved the merged-branch sweep ("decision ok",
+# item 6) and the ledger's rule is delete-on-Dan's-word only. But neither
+# hand that held the list could pull the trigger: the agent environment's
+# push proxy refuses branch deletions outright, and Dan's own machine spent
+# the evening unable to reach github.com at all. A workflow runs on
+# GitHub's side with the repo's own token, so it needs neither.
+#
+# HOW TO USE IT. Actions tab → branch-sweep → Run workflow → paste the
+# branch names (whitespace-separated). The list is data, not policy: the
+# VERIFIED list still gets built the ledger's way first — every branch
+# cross-checked against its closed PR (docs/STATUS.md records the 7 Sep
+# sweep's method). The PROTECTED set below is the backstop, not the vet.
+name: branch-sweep
+on:
+  workflow_dispatch:
+    inputs:
+      branches:
+        description: "Branch names to delete, whitespace-separated"
+        required: true
+        type: string
+permissions:
+  contents: write
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete the named branches
+        uses: actions/github-script@v7
+        env:
+          BRANCHES: ${{ inputs.branches }}
+        with:
+          script: |
+            // Never deletable, whatever the input says: the trunk, the
+            // sessions' working branches, and Dan's local-state snapshots.
+            const PROTECTED = new Set([
+              "main",
+              "dan-local-24aug", "dan-local-25aug", "live-current-24aug",
+            ]);
+            const names = process.env.BRANCHES.split(/\s+/).filter(Boolean);
+            let gone = 0, kept = 0, missing = 0;
+            for (const name of names) {
+              if (PROTECTED.has(name) || name.startsWith("claude/fluoduo-pr9")) {
+                core.warning(`protected, kept: ${name}`); kept++; continue;
+              }
+              try {
+                await github.rest.git.deleteRef({
+                  owner: context.repo.owner, repo: context.repo.repo,
+                  ref: `heads/${name}`,
+                });
+                core.info(`deleted: ${name}`); gone++;
+              } catch (e) {
+                core.warning(`not deleted (${e.status ?? "?"}): ${name}`); missing++;
+              }
+            }
+            core.notice(`${gone} deleted · ${kept} protected · ${missing} not found/failed`);
