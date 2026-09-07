@@ -168,12 +168,27 @@ function Row({
   isLast: boolean;
 }) {
   const label = (
-    <span className="flex min-w-0 flex-1 items-start gap-2 text-left">
+    <span className="flex min-w-0 flex-1 items-start gap-1.5 text-left">
+      {/* « 1. » NOT « (01) » — Dan, 2026-09-07: *"instead of circle number make
+          it just 1. 2. 3. in bolder font so that we don't waste the left side
+          space on the buttons"*.
+          The circle was 28px wide plus its gap on a cell that is 117px at
+          390px and 84px at 320px, and it was spending that on a decoration:
+          the ring, the tint and the leading zero all drew the eye without
+          telling a learner anything the digit alone does not. What is left is
+          the number, one weight bolder, sized with the title so the two sit on
+          the same line rather than the digit floating beside it. */}
       <span
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[0.7rem] font-black"
-        style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
+        /* THE TITLE'S OWN INK, not an accent. The badge that was here asked for
+           `--fluo-card-accent`, which is only defined inside .fluo-h-0..5 — it
+           is unset on these cells, so the ring rendered in the inherited ink
+           and had been doing so all along. Naming the colour the number
+           actually takes is the honest version, and it is the right one
+           anyway: « 1. Je m'appelle… » reads as one line, which is the point
+           of putting the digit inline. */
+        className="shrink-0 text-[13px] font-black leading-tight tabular-nums text-[color:var(--fluo-ink)]"
       >
-        {String(sio.num).padStart(2, "0")}
+        {sio.num}.
       </span>
       {/* WRAPS, NEVER TRUNCATES (Dan, 2026-09-07: *"put buttons in two
           columns"*). At two columns on a 390px phone a cell is 117px wide, and
