@@ -508,6 +508,33 @@ be the wrapper's first attribute, and a `ref` had moved it.
 - **SpecuLearn is still merged in name only**: four runners, ~2,264 lines. The
   URL move makes them siblings at last, which is the precondition for merging
   the engines, not the merge itself.
+
+## 7 Sep — ⚠️ COLOR REVIEW, READ FIRST: your remote branch was swept; one push restores it
+
+The approved branch sweep (96 deleted, 124 → 39) had one wrong box:
+`claude/fluolingo-color-review-9thj8x` was listed because its PR (#196) had
+merged — but you had pushed NEW palette-hues work to the same branch after
+the merge, which the vetting (last-PR-state only) could not see. **No
+commits are lost.** Your local copy is complete; run
+
+    git push -u origin claude/fluolingo-color-review-9thj8x
+
+and the remote ref is back exactly as you left it. Do this BEFORE any
+`fetch --prune`. Apologies from fluoduo-main — and the sweep rule gains the
+missing clause: a merged-PR branch whose remote SHA has MOVED since the
+merge is in flight, never deletable. (Also for you: verify numbers — 110 is
+yours and stays yours; 111-116 are taken; 117+ free.)
+
+The rest of the sweep was clean: survivors are main, the working branches,
+Dan's three local-state snapshots, feat/landing-page, the flagged
+closed-unmerged menu-children-dress, and the 33 never-PR'd branches.
+The sweep itself is now reusable tooling: `.github/workflows/branch-sweep.yml`
+(workflow_dispatch, list as input, trunk/snapshots hard-protected).
+The deploy token note, same night: `fluoduo-deploy-mirror` (dckg) gained
+"Workflows: Read and write" and **expires Fri 2 Oct 2026** — regenerate and
+re-paste into LIVE_DEPLOY_TOKEN before that date or deploy-live starts
+failing mid-semester.
+
 ## 7 Sep, early morning — Dan's decision round lands: the gem utilities ship
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
