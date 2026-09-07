@@ -165,28 +165,34 @@ check("KIND_WASH" in three,
       "HomeMap3D no longer uses KIND_WASH — its pale shade has drifted back "
       "to a local mix, so the same stop is two different pales in two views")
 check(re.search(r"const\s+reached\s*=\s*done\s*\|\|\s*active", three),
-      "the 3D map names 'reached' once and drives face, ring and numeral off it",
-      "HomeMap3D has lost its single `reached` test — face, numeral and depth "
-      "can now disagree about whether a stop is done")
-check(re.search(r"const\s+face\s*=\s*reached\s*\?\s*colour\s*:\s*KIND_WASH\[kind\]", three),
-      "reached wears the pen, ahead wears its wash — the 2D rule exactly",
-      "the 3D face no longer follows reached->pen / ahead->wash")
-check(re.search(r"const\s+rim\s*=\s*colour\s*;", three),
-      "the ring is the pen, not a near-black mix",
-      "the 3D ring is not the pen — a dark ring is what made these read as "
-      "badges rather than as the map's buttons")
+      "the 3D map names 'reached' once",
+      "HomeMap3D has lost its single `reached` test")
 
-# The numeral is the one that a screenshot of a REACHED stop hides: white on a
-# pen looks right, and the same white on a wash is the bug. Both branches are
-# asserted, so neither can be dropped quietly.
-num = re.search(r"style=\{reached\s*\?([\s\S]{0,400}?)\}\}", three)
-check(num is not None and "PAPER" in num.group(1),
-      "a reached stop's numeral is paper white",
-      "the reached numeral is no longer white")
-check(num is not None and "--cahier-ink" in three.split("style={reached")[1][:600],
-      "an ahead stop's numeral is page ink, not white on a pale wash",
-      "the ahead numeral is not page ink — white on the wash is the fault this "
-      "was fixed for")
+# THE ONE THAT REPLACED FOUR (7 Sep). There used to be an assertion each for
+# the face, the ring, the reached numeral and the ahead numeral — four
+# hand-matched properties, which is exactly how the two views drifted in the
+# first place and why Dan sent this back four times ("the buttons on the stops
+# look exactly as they were before we began work. I need it to look like the
+# ones in the 2D map!").
+#
+# The 3D stop IS a `.fluo-stop` now — same classes, same tokens, same 44px,
+# scaled by the camera — so there is nothing left to match. The check is that
+# it stays that way, because the moment someone re-implements the look by hand
+# the drift starts again.
+check("fluo-stop--reached" in three and "fluo-stop--ahead" in three
+      and "fluo-stop-num" in three,
+      "the 3D stop wears the 2D grid's own classes — there is one description "
+      "of the button, so the two views cannot drift",
+      "the 3D stop no longer uses .fluo-stop: its look is hand-built again, "
+      "which is what made it diverge from the 2D map four times")
+check(re.search(r"const\s+DISC\s*=\s*44", three),
+      "it is built at the 2D grid's own 44px and scaled",
+      "the 3D key is not built at the 2D size, so its ring and shadows are no "
+      "longer proportional to the button they copy")
+check(re.search(r"transform:\s*`translate\(-50%, -50%\) scale\(\$\{k\}\)`", three),
+      "the camera scales the whole key, so its shadows shrink with it",
+      "the key is not scaled as a unit — its ring and shadows will read at a "
+      "different weight on a far stop than a near one")
 
 # And they SPRING, like every other key in the app.
 check("fluo-spring" in three,
@@ -240,18 +246,18 @@ check(re.search(r"prefers-reduced-motion[\s\S]{0,900}?home-map3d-face", css),
 # skirt — fifty identical extrusions differing by a few percent of inner
 # shadow. The difference is STRUCTURAL now: a reached stop stands on its
 # skirt, an upcoming one has none at all and sits in the road.
-check(re.search(r"depthH\s*=\s*reached[\s\S]{0,200}?:\s*0\s*;", three),
-      "an upcoming stop has no skirt — it sits IN the road, it does not stand on it",
-      "every stop is back on the same skirt, so protruded and depressed differ "
-      "only by shading, which is what Dan said was not obvious")
-check(re.search(r"boxShadow:\s*reached", three),
-      "the lighting says the same thing the skirt says",
-      "the face's shadow no longer branches on `reached`, so the lighting and "
-      "the silhouette can disagree about whether a stop is done")
-check(re.search(r"\{reached && \(\s*<span aria-hidden[^>]*rgba\(255,255,255,0\.52\)", three),
-      "the dome's gloss belongs only to a stop that protrudes",
-      "the gloss highlight is on sunk stops too — a second light source inside "
-      "a hole cancels the dent")
+# PROTRUDED vs DEPRESSED is now the 2D classes' own job — `.fluo-stop--reached`
+# is a raised key and `--ahead` is a well, and both views get it from the same
+# rule. The three assertions that used to pin a hand-built skirt, a branching
+# box-shadow and a gloss blob are gone with the code they described; what is
+# left to hold is that the two states are still TOLD APART here.
+check(re.search(r"reached\s*\?\s*\"fluo-stop--reached", three),
+      "a reached stop takes the raised class and an upcoming one the well",
+      "the 3D stop no longer switches between the raised and sunk classes, so "
+      "every stop looks the same state")
+check(re.search(r"background:\s*reached\s*\?\s*colour\s*:\s*KIND_WASH\[kind\]", three),
+      "reached wears the pen, ahead wears its wash — the 2D rule exactly",
+      "the 3D fill no longer follows reached->pen / ahead->wash")
 
 # The legend keys the fifty colours and nothing else (Dan, 7 Sep: "we don't
 # need the You and the Class in the legend"). There is exactly one 🧑‍🎓 and one

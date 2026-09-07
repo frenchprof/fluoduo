@@ -839,62 +839,54 @@ export default function HomeMap3D({
                     const flag = st.id === CLASS_FLAG_SIO;
                     const nodeH = Math.round(sz * scaleY);
                     const reached = done || active;
-                    // Round 9 (Dan): a fat skirt under the face — the button's
-                    // visible height off the ground, what makes it read as
-                    // LYING on the road rather than a coin on edge.
-                    //
-                    // PROTRUDED vs DEPRESSED (Dan, 7 Sep: "they are supposed
-                    // to have the protruded and depressed look, that part is
-                    // not quite obvious yet"). It was not obvious because the
-                    // first pass changed only the LIGHTING, and every stop
-                    // still stood on the same tall skirt — so fifty identical
-                    // extrusions differed by a few percent of inner shadow.
-                    // The difference is structural now, exactly as it is in
-                    // 2D: a reached stop STANDS ON its skirt, an upcoming one
-                    // SITS IN the road with NONE AT ALL. Same silhouette
-                    // language as `.fluo-stop--reached` / `--ahead`, in
-                    // perspective.
-                    const depthH = reached
-                      ? Math.max(3, Math.round(sz * 0.34 * scaleY))
-                      : 0;
+                    // The pad's own lift off the road. It used to branch on
+                    // `reached` to fake a protruded/depressed difference back
+                    // when the stop was a hand-built puck; the key says that
+                    // itself now (`.fluo-stop--reached` is raised,
+                    // `--ahead` is a well), so the pad is just the pad again —
+                    // the same spot on the road under every stop.
+                    const depthH = Math.max(3, Math.round(sz * 0.28 * scaleY));
                     // The pad is a circular SPOT ON THE ROAD, wider than the
                     // ball riding it (Dan's capture, 2026-08-20 round 4).
                     const baseW = Math.round(sz * 1.42);
                     const baseH = Math.round(baseW * scaleY * 0.38);
                     const totalH = nodeH + depthH;
-                    // Round 9 (Dan, "the stations' look"): SOLID coloured
-                    // buttons, the capture's register — done/current wear the
-                    // kind colour full, upcoming the same colour lightened;
-                    // the skirt is always that colour's dark side.
-                    // VISUAL UNITY WITH THE 2D BUTTONS (Dan, 7 Sep: "why are
-                    // the 3D buttons not on the 3D map?", then "just the
-                    // buttons, not the map" and "i just need visual unity for
-                    // the buttons"). The scene is untouched — road, trees,
-                    // camera, the pad and the skirt all stay. What changes is
-                    // the three things that made a stop here look like a
-                    // different object from the same stop in 2D:
+                    // THE STOPS ARE THE 2D MAP'S BUTTONS, TO SCALE (Dan,
+                    // 7 Sep: "the buttons on the stops look exactly as they
+                    // were before we began work. I need it to look like the
+                    // ones in the 2D map!").
                     //
-                    //   THE FACE now takes the pen's own KIND_WASH when the
-                    //   stop is still ahead, instead of a local 55% mix with
-                    //   paper. The old comment claimed a flat wash would fight
-                    //   the light model; it does not — the gloss and the inset
-                    //   shading below do the shading, and the mix was simply a
-                    //   different pale blue from the one the 2D grid uses.
+                    // Three earlier passes recoloured this node — the wash,
+                    // the ring, the numeral, the skirt, the lighting — and he
+                    // was right that none of it landed, because they were all
+                    // corrections to the WRONG OBJECT. The stop here was a
+                    // flattened puck built out of its own spans; the 2D map's
+                    // stop is a round key built by `.fluo-stop` in
+                    // globals.css. Matching one to the other by hand is how
+                    // you get four rounds of "closer, but no".
                     //
-                    //   THE RIM was `colour 62% black` — a near-navy ring
-                    //   around a pale face, which is what made these read as
-                    //   badges rather than as the 2D map's buttons. The top
-                    //   face's ring is now the PEN, exactly as `.fluo-stop`'s
-                    //   inset ring is.
+                    // So it is not matched by hand any more: the disc IS a
+                    // `.fluo-stop`, with the same classes, the same tokens and
+                    // the same 44px the 2D grid uses, and the camera scales
+                    // the whole key with `transform: scale()`. Its ring, its
+                    // raised/sunk shadows and its numeral shrink together, so
+                    // a far stop is a true miniature of the near one and of
+                    // the 2D button — and the two views cannot drift again,
+                    // because there is only one description of the button now.
                     //
-                    //   THE SKIRT keeps a darker shade, because it is the
-                    //   extruded SIDE of a solid object and losing it would
-                    //   flatten the 3D — but it is derived from the FACE now,
-                    //   so a pale node gets a pale side instead of a navy one.
-                    const face = reached ? colour : KIND_WASH[kind];
-                    const rim = colour;
-                    const skirt = `color-mix(in oklch, ${face} 68%, black)`;
-                    const ring = Math.max(1.5, Math.round(sz * 0.05));
+                    // WHAT STAYS IS THE SCENE, which Dan ruled twice ("just
+                    // the buttons, not the map"): the road, the pad each stop
+                    // sits on, the camera, the props, the gold ring on the
+                    // current stop.
+                    const DISC = 44;                 // the 2D grid's own size
+                    // 0.86, not 1. `sz` was the width of a FLATTENED face whose
+                    // height was only sz x scaleY, so a round key of diameter
+                    // sz keeps the old width and grows tall — far enough up
+                    // into the scene that the houses and trees begin to clip
+                    // it. Trimming the diameter puts the key back inside the
+                    // band the flat face occupied, and costs nothing: it is
+                    // still the same key, and it still shrinks with distance.
+                    const k = (sz * 0.86) / DISC;    // the camera's scale
                     return (
                       <div
                         key={st.id}
@@ -957,83 +949,27 @@ export default function HomeMap3D({
                               boxShadow: `0 ${depthH * 0.5}px ${depthH * 1.5}px rgba(0,0,0,0.22)`,
                             }}
                           />
-                          {/* side rim */}
+                          {/* THE KEY — one `.fluo-stop`, scaled by the
+                              camera. Centred where the old flat face sat, so
+                              the scene's geometry is untouched. */}
                           <span
-                            aria-hidden
-                            className="absolute rounded-[50%]"
-                            style={{ bottom: Math.max(2, baseH * 0.3), left: (baseW - sz) / 2, right: (baseW - sz) / 2, height: nodeH + depthH, background: skirt }}
-                          />
-                          {/* top face */}
-                          <span
-                            // `home-map3d-face` is the hover/press target, not
-                            // the button: the button is the whole node INCLUDING
-                            // its road pad and skirt, and lifting those would
-                            // pull the shadow off the road with the ball.
-                            className={`home-map3d-face absolute flex items-center justify-center overflow-hidden rounded-[50%] ${active && !reduce ? "home-map3d-pulse" : ""}`}
-                            style={{
-                              // The travel is the node's OWN size, handed to CSS
-                              // per node — a constant 2px is a nudge on a near
-                              // stop and a leap on a far one.
-                              ["--n-lift" as string]: `${Math.max(1.5, nodeH * 0.14)}px`,
-                              top: 0,
-                              left: (baseW - sz) / 2,
-                              right: (baseW - sz) / 2,
-                              height: nodeH,
-                              background: face,
-                              border: `${ring}px solid ${rim}`,
-                              // The same light-from-above the 2D stop wears
-                              // (`.fluo-stop--reached` / `--ahead` in
-                              // globals.css): a highlight along the top edge,
-                              // a shadow along the bottom. Written here in px
-                              // rather than borrowed as a class because every
-                              // number on this node is scaled by the camera —
-                              // a fixed 3px inset that reads correctly on a
-                              // near stop is a solid band on a far one.
-                              // The lighting says the same thing the skirt
-                              // says, so the two cannot disagree. REACHED
-                              // throws a shadow DOWNWARD onto the road and
-                              // catches light along its top edge — it is above
-                              // the surface. AHEAD carries the shadow INSIDE
-                              // its own top rim and the catch-light along its
-                              // inner bottom, which is what a dent looks like:
-                              // light from above lands on the far wall of a
-                              // hole, never on its near lip.
-                              boxShadow: reached
-                                ? `0 ${Math.max(1, nodeH * 0.18)}px ${Math.max(2, nodeH * 0.3)}px rgba(0,0,0,0.34), inset 0 ${Math.max(1, nodeH * 0.13)}px 0 rgba(255,255,255,0.62), inset 0 -${Math.max(1, nodeH * 0.12)}px ${nodeH * 0.2}px rgba(0,0,0,0.3)`
-                                : `inset 0 ${Math.max(2, nodeH * 0.3)}px ${Math.max(3, nodeH * 0.42)}px rgba(0,0,0,0.55), inset 0 ${Math.max(1, nodeH * 0.1)}px 0 rgba(0,0,0,0.35), inset 0 -${Math.max(1.5, nodeH * 0.16)}px 0 rgba(255,255,255,0.95)`,
-                            }}
+                            className="absolute"
+                            style={{ left: baseW / 2, top: nodeH / 2, width: DISC, height: DISC, transform: `translate(-50%, -50%) scale(${k})` }}
                           >
-                            {/* The gloss is a HIGHLIGHT ON A DOME, so it
-                                belongs only to a stop that protrudes. Left on
-                                a sunk one it puts a second light source inside
-                                the hole and cancels the dent. */}
-                            {reached && (
-                              <span aria-hidden className="pointer-events-none absolute rounded-[50%]" style={{ top: "10%", left: "14%", width: "40%", height: "30%", background: "rgba(255,255,255,0.52)", filter: "blur(1px)" }} />
-                            )}
                             <span
-                              className="relative font-black leading-none"
-                              // WHITE ON THE PEN, INK ON THE WASH — the 2D
-                              // grid's rule (`.fluo-stop-num`), and it was the
-                              // last thing here that disagreed: the numeral was
-                              // paper on BOTH, so an upcoming stop printed
-                              // white on a pale wash and all but vanished.
-                              style={reached
-                                ? { fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: PAPER, textShadow: "0 1px 2px rgba(0,0,0,0.45), 0 0 2px rgba(0,0,0,0.35)" }
-                                : { fontSize: Math.max(7, sz * (active ? 0.34 : 0.3)), color: "var(--cahier-ink)" }}
+                              // `home-map3d-face` is only the hover/press hook;
+                              // every pixel of the look comes from .fluo-stop.
+                              className={`home-map3d-face fluo-stop ${reached ? "fluo-stop--reached fluo-stop-num" : "fluo-stop--ahead"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              style={{
+                                ["--fluo-stop-kind" as string]: colour,
+                                ["--n-lift" as string]: "2px",
+                                background: reached ? colour : KIND_WASH[kind],
+                                color: reached ? undefined : "var(--cahier-ink)",
+                              }}
                             >
-                              {/* The 🧑‍🎓 above already says "you are here", so the
-                                  stop shows its number (2026-08-21). It used to
-                                  carry a ▶ as well — one stop, two marks for the
-                                  same thing, and the triangle belongs to sound.
-
-                                  AND THE NUMBER NEVER LEAVES (6 Sep). It was
-                                  `done ? "✓" : st.num`, so a finished stop lost
-                                  its number here exactly as it did in 2D. Dan:
-                                  "i do still want the number to remain on the
-                                  buttons", then "Drop it — the fill says it" of
-                                  the tick. The face already carries done-ness:
-                                  the pen at full strength when reached, its
-                                  wash when still ahead. */}
+                              {/* The number never leaves (6 Sep) and there is
+                                  no ✓ — done-ness is the fill, exactly as in
+                                  2D. */}
                               {st.num}
                             </span>
                           </span>
