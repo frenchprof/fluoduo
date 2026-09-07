@@ -24,7 +24,7 @@
 // the screen, the vista band and sky squeeze above it; the current station
 // sits fully visible near the bottom edge, never cut.
 export const HORIZON_Y = 0.34; // the road's CREST — stops vanish behind this rounded shoulder
-export const SKYLINE_Y = 0.14; // the true sky line, far above the crest — the distant vista lives between
+export const SKYLINE_Y = 0.29; // the true sky line, far above the crest — the distant vista lives between
 export const CAMERA_Y = 0.97; // the eye line sits just above the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
 // Dan's capture, round 5: the path is FULL of stations — five or six in the

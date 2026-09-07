@@ -120,7 +120,7 @@ function PerspectiveBg({
   const crestBulge = vh * 0.05; // how far the shoulder rises at its middle
   // The ground tilts a touch against the bend, like a banked road.
   const { fx } = cameraForward(camZ);
-  const vpX = vw * (0.5 - fx * 0.12);
+  const vpX = vw * 0.5 - Math.min(vw, vh) * fx * 0.12;
   const sky = getSkyColors(hour);
   const sun = sunPosition(hour);
   const sunX = vw * sun.x;
@@ -157,7 +157,8 @@ function PerspectiveBg({
     const zAbs = Math.max(0, Math.min(N_STOPS - 1, camZ + rel));
     const dStop = Math.abs(zAbs - Math.round(zAbs));
     const swell = 1 + 0.2 * Math.exp(-(dStop * dStop) / 0.045);
-    const hw = Math.max(vw * 0.11, vw * 0.34 * Math.pow(p.scale, 1.6)) * swell;
+    const ref = Math.min(vw, vh);
+    const hw = Math.max(ref * 0.11, ref * 0.34 * Math.pow(p.scale, 1.6)) * swell;
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
