@@ -249,6 +249,34 @@ What this does NOT cover: things that are not single controls. The bottom
 bar (five controls sharing the width), the heading band, a text input, the
 progress strip — none of these is one button wearing the page's width.
 
+# Geist is banned — permanent (2026-09-07)
+
+**Dan: *"GEIST HAS BEEN BANNED, WHY IS IT BACK AS A FONT?"***
+
+It was never back. It was never removed. `Geist` and `Geist_Mono` are what
+`create-next-app` scaffolds into `layout.tsx`; they were in the commit that
+created that file and survived every session since, because the ban lived only
+in Dan's head — not in this file, not in STATUS, and not in a check. Every
+session that looked at the repo saw Geist and read it as a decision.
+
+And it was not sitting there inertly. Three lines made it the app's real face:
+
+    @theme inline { --font-sans: var(--font-geist-sans); }   Tailwind's default
+                  { --font-mono: var(--font-geist-mono); }   for the whole app
+    --fluo-mono: var(--font-geist-mono), ui-monospace, ...   every small label
+
+Tailwind v4 resolves `font-sans`/`font-mono` and its `<html>` preflight rule out
+of `@theme`, so Geist Sans was what anything unstyled inherited; `--fluo-mono`
+led with Geist Mono, so it drew « GOAL », « PICK ONE OF THE FIFTY », the map's
+vocabulary/grammar legend and the 2D/3D switch. Measured before removal by
+driving the built app: Geist rendered on **13 of 14 pages** — 28 elements on
+/profil and /moi, 18 on /map.
+
+`verify111-no-geist.py` now fails on the import, on the `@theme` variables, on
+any font stack, and on the name anywhere under `src/`. **The lesson generalises:
+a ban that is not written down and not checked is not a ban.** If Dan rules a
+thing out, it goes here AND into a check in the same patch.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

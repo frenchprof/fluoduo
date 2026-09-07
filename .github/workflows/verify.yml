@@ -366,6 +366,9 @@ jobs:
       - name: "Every coloured token sits on one of the twelve palette hues (6 Sep)"
         run: python3 verify/verify110-palette-hues.py
 
+      - name: "Geist is banned — not imported, not the default face, not in a stack (7 Sep)"
+        run: python3 verify/verify111-no-geist.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).

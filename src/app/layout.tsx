@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
+import { Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
@@ -12,15 +12,15 @@ import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
 import InstallPrompt from "@/components/InstallPrompt";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// NO GEIST. Dan, 2026-09-07: *"GEIST HAS BEEN BANNED, WHY IS IT BACK AS A
+// FONT?"* — it was never removed. Geist and Geist Mono are what
+// `create-next-app` scaffolds, they have been in this file since the commit
+// that created it, and nothing ever took them out. They were not merely
+// declared either: `@theme inline` pointed Tailwind's --font-sans and
+// --font-mono at them, and `--fluo-mono` led with Geist Mono, so the .fluo-mono
+// labels — "GOAL", "PICK ONE OF THE FIFTY", the map legend, the 2D/3D switch —
+// rendered in Geist Mono on 13 of the 14 pages driven. Removed at the source
+// here, and verify111 fails if either name comes back.
 
 // Dan (2026-07-01): the mono "label" font used for SIO circle captions etc. was
 // "much much" too hard to read — swap in Roboto for anywhere that needs to be
@@ -150,7 +150,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}
