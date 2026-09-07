@@ -364,6 +364,8 @@ jobs:
         run: python3 verify/verify109-lucky-find.py
       - name: verify113 — the fire ladder past day 7, executed
         run: python3 verify/verify113-streak-ladder.py
+      - name: verify114 — level 0-4, exponential, rank-free
+        run: python3 verify/verify114-level-curve.py
       - name: verify111 — the course ends, the French doesn't
         run: python3 verify/verify111-forever-french.py
       - name: verify112 — you vs last week, executed

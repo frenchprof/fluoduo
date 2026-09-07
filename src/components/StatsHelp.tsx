@@ -33,7 +33,7 @@ export default function StatsHelp() {
                 IN FLUOLINGO FONT PLEASE"), one line per icon — nothing wraps
                 below (Dan: "WE DON'T NEED THOSE WORDS BELOW THE ICONS"). */}
             <div className="card-hand grid grid-cols-[auto_1fr] items-baseline gap-x-2.5 gap-y-1 text-sm text-[color:var(--fluo-ink,#222850)]">
-              <span aria-hidden>🎚️</span><span>rises with ⭐</span>
+              <span aria-hidden>🎚️</span><span>rises with ⭐ (0–4)</span>
               <span aria-hidden>✓</span><span>goals done</span>
               <span aria-hidden>🔥</span><span>days in a row</span>
               <span aria-hidden>⭐</span><span>earned every answer</span>

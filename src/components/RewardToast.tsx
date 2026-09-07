@@ -47,7 +47,7 @@ function toToast(d: RewardDetail, seq: number): Toast | null {
   const base = { key: seq, size: d.size };
   switch (d.type) {
     case "level":
-      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "You've ranked up" };
+      return { ...base, icon: "🎚️", role: "reward", title: `Level ${d.level}!`, sub: "Your French moved up a level" };
     case "badge": {
       const b = badgeById(d.id);
       return b ? { ...base, icon: b.icon, role: "reward", title: "Badge unlocked!", sub: `${b.label} · 💎 +${b.gems}` } : null;
