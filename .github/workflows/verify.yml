@@ -363,6 +363,9 @@ jobs:
       - name: "The lucky find pays gems, is seeded, and is capped (6 Sep)"
         run: python3 verify/verify109-lucky-find.py
 
+      - name: "Every coloured token sits on one of the twelve palette hues (6 Sep)"
+        run: python3 verify/verify110-palette-hues.py
+
       - name: "SIO-010 keys Enchantée for Léa; Libéria carries its accent (3 Sep)"
         # Renumbered 91 -> 92 at the QC merge — sixth collision: pages-basepath
         # claimed 91 the same morning and landed first (#157).

@@ -89,7 +89,7 @@ body {
   --neo-bg-hi: #334155;
   --neo-shadow-dark: rgba(0, 0, 0, 0.55);
   --neo-shadow-light: rgba(148, 163, 184, 0.10);
-  --neo-accent: #fbbf24;
+  --neo-accent: #e3cb2a;
 }
 
 .neo-btn {
@@ -207,19 +207,19 @@ body {
 :root {
   --fluo-bg:        #fce8d4;   /* peach foolscap paper */
   --fluo-rule:      #f1cba0;   /* faint ruled line */
-  --fluo-margin:    #e08b80;   /* red margin rule */
+  --fluo-margin:    #d99363;   /* red margin rule */
   --fluo-hole:      #aab0bb;   /* three-hole-punch grey */
   --fluo-ink:       #22305a;   /* deep navy ink */
   --fluo-ink-soft:  #5d6488;
-  --fluo-line:      #e2caa2;   /* tan borders */
+  --fluo-line:      #e9c6a5;   /* tan borders */
   --fluo-card:      #fffaf0;   /* paper card */
   --fluo-hl:        #d4f24c;   /* chartreuse highlighter / Start */
   --fluo-primary:   #cfe84b;
   --fluo-primary-shadow: #a6c130;
   --fluo-primary-ink:    #22305a;   /* navy text on chartreuse */
   --fluo-primary-soft:   #eef7c0;
-  --fluo-secondary: #2bb6c2;        /* teal */
-  --fluo-secondary-shadow: #1d8b96;
+  --fluo-secondary: #51adde;        /* teal */
+  --fluo-secondary-shadow: #3c84ab;
   --fluo-danger:    #ff5667;
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
@@ -510,7 +510,7 @@ body {
 }
 
 /* Six rotating accent hues for item cards (paper-tinted). */
-.fluo-h-0 { --fluo-card-accent: #e0567f; --fluo-card-tint: #fbe3ec; }
+.fluo-h-0 { --fluo-card-accent: var(--fam-svplay-ink); --fluo-card-tint: var(--fam-svplay-wash); }
 /* THE FAMILY PENS, derived (Dan, 6 Sep). His spec's /moi exemption was
    OVERRULED by him the same hour: "It is no longer an exception... moi has
    to follow the scheme because it is part of the website, and there must
@@ -673,7 +673,7 @@ body {
   --cahier-la:         #d11149;   /* feminine (la) + red margin */
   --cahier-hl:         var(--fluo-hl);   /* chartreuse marker */
   --cahier-hl-edge:    #a6c130;
-  --cahier-gold:       #c8a24b;
+  --cahier-gold:       #b9a94d;
   /* drill verdict palette (patch 20–21): correct/wrong is colour with
      meaning, so it lives as tokens — one definition for the shell, every
      drill, and the future GameFrame — and the 19b ratchet can hold. */
@@ -690,7 +690,7 @@ body {
   --cahier-spiral:     #b9bcc4;
   --cahier-spiral-lo:  #82868f;
   /* six index-tab pastels (match Dan's reference image) */
-  --cahier-t0: #cbb7e6;  --cahier-t1: #8fd3cd;  --cahier-t2: #f3cba0;
+  --cahier-t0: #cbb7e6;  --cahier-t1: #97d3bd;  --cahier-t2: #f3cba0;
   --cahier-t3: #f0d24e;  --cahier-t4: #b6d77f;  --cahier-t5: #e290b6;
 
   /* Course-map region accents (regionIcons.tsx reads these). PROVISIONAL
@@ -1588,10 +1588,10 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
   --cahier-line: oklch(90% 0.018 85);
   --cahier-line-strong: oklch(81% 0.025 78);
   --cahier-ink-faint: oklch(60% 0.014 65);
-  --cahier-accent: oklch(46% 0.13 262);
+  --cahier-accent: #015c93;
   --cahier-accent-soft: oklch(92% 0.03 262);
-  --cahier-accent-strong: oklch(36% 0.13 262);
-  --cahier-kraft: oklch(85% 0.045 75);
+  --cahier-accent-strong: #004069;
+  --cahier-kraft: #e3c8b0;
   --cahier-kraft-strong: oklch(65% 0.06 70);
   --cahier-hover: oklch(95% 0.018 262);
 
