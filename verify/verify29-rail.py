@@ -61,9 +61,15 @@ check(fams == WANT,
 # green with the element deleted. Break-testing caught it — both of these
 # assertions were vacuous, in this file's previous home as well as this one.
 nocom_bar = re.sub(r"\{/\*[\s\S]*?\*/\}", "", topbar)
-check("<RailGroups" in nocom_bar,
-      "the site bar renders RailGroups",
-      "the site bar does not render RailGroups")
+# THE DROPDOWN'S TENANT CHANGED AGAIN on 7 Sep (Dan, with a screenshot:
+# "replace the burger menu that comes down like this with this 3x5 grid
+# instead"). RailGroups retired from the bar; MenuGrid — his picture, tile
+# for tile — is the menu, and the grouped-never-flat rule survives as
+# family-coloured ROWS instead of family-labelled groups. RailGroups.tsx
+# stays on disk for MenuSplash until that surface is re-judged.
+check("<MenuGrid" in nocom_bar,
+      "the site bar renders the ☰ grid menu",
+      "the site bar does not render MenuGrid — Dan's 3x5 menu is gone")
 # toolTabs() still legitimately feeds the phone ☰ dropdown and the active-label
 # lookup; what must be gone is the flat column INSIDE the rail itself.
 # WHERE THE GROUPED RAIL LIVES CHANGED ON 2026-08-30. Dan: the rail "cannot be
@@ -73,14 +79,14 @@ check("<RailGroups" in nocom_bar,
 # rule it must still obey is the same one, in its new home: grouped, never a
 # flat column.
 menu_start = nocom_bar.find("absolute left-0 top-full")
-menu_end = nocom_bar.find("</div>", nocom_bar.find("tools.filter", menu_start)) if menu_start >= 0 else -1
+menu_end = nocom_bar.find("</div>", nocom_bar.find("MenuGrid", menu_start)) if menu_start >= 0 else -1
 menu_block = nocom_bar[menu_start:menu_end] if menu_start >= 0 else ""
 check(bool(menu_block) and "site.map" not in menu_block,
       "the ☰ dropdown is grouped — no flat site map inside it",
       "the ☰ dropdown maps site flat — it disagrees with the families again")
-check("<RailGroups" in menu_block,
-      "the ☰ dropdown renders RailGroups",
-      "the ☰ dropdown does not render RailGroups — the grouped families are gone")
+check("<MenuGrid" in menu_block,
+      "the ☰ dropdown renders the grid",
+      "the ☰ dropdown does not render MenuGrid — the grouped families are gone")
 # tools.map WHOLE would duplicate the families (SpecuLearn and 4Mémoire twice);
 # only Carte, which belongs to no family, may come through.
 check("tools.map" not in menu_block,

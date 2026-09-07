@@ -181,9 +181,13 @@ check("dueCount > 0" in home,
 # rebuild: it opened the stop-less Menu, it now opens the current stop's own
 # activities. "One must first choose the stop before they can access the
 # activity." verify37 holds the rest of that rule.
-check("StopSheet" in home and "MenuSplash" not in home,
-      "the third key opens THIS STOP's activities, not the stop-less Menu",
-      "Home still opens a stop-less activity menu")
+# THE SHEET RETIRED WITH ITS KEY (Dan, 7 Sep: "we can now remove the red
+# button above the map" — the ☰ grid menu lists every activity, so the
+# goal-activities sheet lost its door). The claim inverts: neither the
+# sheet nor the stop-less Menu may creep back onto Home.
+check("StopSheet" not in home and "MenuSplash" not in home,
+      "Home opens no activity popup — the ☰ grid is the menu",
+      "an activity popup is back on Home — the red key Dan removed has a ghost")
 
 # 3b · THE KEY ROW STILL FITS A PHONE (1 Sep). Dan's Next-stop key made it four
 # keys, and four 50px keys are 224px against a row that is 232px wide at 320

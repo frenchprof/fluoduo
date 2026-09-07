@@ -124,23 +124,20 @@ ok('aria-label="Your progress"' not in home,
 ok("MenuSplash" not in home,
    "Home no longer opens the stop-less twenty-tile Menu",
    "Home still opens MenuSplash — the activity is reachable without a stop")
-ok("StopSheet" in home, "Home opens the stop's own activities",
-   "Home does not open a StopSheet")
-ok("deckActivityTabs" in sheet,
-   "the sheet is BUILT from the stop's deck, so every door is already aimed",
-   "the sheet does not use deckActivityTabs — its links cannot be stop-scoped")
-ok("collectionId" in sheet and "collectionId" in home,
-   "the stop's deck is threaded from Home into the sheet",
-   "no deck is passed — the sheet cannot know which stop it is for")
-ok("activeSio?.collectionId" in home,
-   "a stop with no deck cannot open the sheet (the key is disabled)",
-   "the sheet can open on a stop with no deck, which would list nothing")
+# THE SHEET RETIRED WITH ITS KEY (Dan, 7 Sep: "we can now remove the red
+# button above the map" — the ☰ grid menu lists every activity). The claim
+# inverts: the sheet must NOT come back to Home. StopSheet.tsx itself stays
+# for /map's deep-link popup path; its Home door is gone.
+ok("StopSheet" not in home,
+   "Home opens no stop sheet — the ☰ grid is the activities menu",
+   "a StopSheet door is back on Home — the red key Dan removed has a ghost")
 ok("bandOf" in sheet,
    "each row wears its demand band (verify36)",
    "the sheet does not colour its rows by band")
 
-# 5 · the three keys are the dopamine roles, and Rewind sinks when nothing is due
-for role in ("--dopa-win", "--dopa-focus", "--dopa-reward"):
+# 5 · the keys are the dopamine roles, and Rewind sinks when nothing is due.
+# (--dopa-reward left with the ▦ key, 7 Sep — verify32 pins its absence.)
+for role in ("--dopa-win", "--dopa-focus"):
     ok(role in home, f"a key carries {role}", f"no key carries {role}")
 ok('aria-disabled="true"' in home,
    "Rewind is flat and inert when nothing is waiting",

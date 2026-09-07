@@ -26,8 +26,7 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import StopSheet from "@/components/StopSheet";
-import HomeMap from "@/components/HomeMap";
+import Map2DGrid from "@/components/Map2DGrid";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
@@ -76,9 +75,6 @@ export default function HomeDashboard() {
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
   const [inkDone, setInkDone] = useState(false);
-  // Quick Guide popup, summoned from the hero button next to the (?) circle
-  // (Dan, 2026-07-14: "insert a QuickGuide link where my red arrow points").
-  const [qgOpen, setQgOpen] = useState(false);
   // The Review button's count — the one destination on Home with a deadline.
   const [dueCount, setDueCount] = useState(0);
   // The learner's own word on where they are (Dan, 2 Sep: wandering "should
@@ -389,34 +385,12 @@ export default function HomeDashboard() {
               </svg>
             </span>
           )}
-          <button
-            type="button"
-            onClick={() => setQgOpen(true)}
-            disabled={!activeSio?.collectionId}
-            aria-label="All activities at this goal"
-            title="Every activity available at your goal"
-            className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
-            style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-reward) 55%, white) 0%, var(--dopa-reward) 52%, color-mix(in oklab, var(--dopa-reward) 70%, black) 100%)" }}
-          >
-            <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-              <g fill="var(--key-ink-reward)">
-                {[3.5, 10.25, 17].map((y) =>
-                  [3.5, 10.25, 17].map((x) => <rect key={`${x}-${y}`} x={x} y={y} width="5.5" height="5.5" rx="1.4" />),
-                )}
-              </g>
-            </svg>
-          </button>
+          {/* THE RED ▦ KEY IS GONE (Dan, 7 Sep: "we can now remove the red
+              button above the map") — the ☰ grid menu lists every activity
+              now, so the goal-activities sheet lost its door and retires
+              with it. */}
         </div>
       </div>
-
-      {qgOpen && activeSio?.collectionId && (
-        <StopSheet
-          stopId={activeSio.id}
-          topic={activeSio.topic}
-          collectionId={activeSio.collectionId}
-          onClose={() => setQgOpen(false)}
-        />
-      )}
 
       {/* THE « n IN A ROW » COUNTER IS GONE (Dan, 1 Sep: "we don't need that
           actually, please remove it"). It counted stops completed in order from
@@ -443,10 +417,7 @@ export default function HomeDashboard() {
             photo — a surface you scroll PAST, never a control. The mat plus
             `inert` + pointer-events-none below mean no gesture over it can
             ever catch: a finger going down the page glides over. */}
-        {/* pb-12, not pb-0: the CTA pill sits in its own apron BELOW the
-            picture — over calm paper, never over the stops (first capture
-            had it punching through circle 28). */}
-        <div className="p-2 pb-12" aria-hidden>
+        <div className="p-2 pb-0" aria-hidden>
           <div
             inert
             className="pointer-events-none select-none overflow-hidden rounded-xl"
@@ -457,17 +428,39 @@ export default function HomeDashboard() {
                 2 Sep flip-in-place, whose switch left with it). The postcard
                 is a picture of where you are; the 2D/3D choice lives where
                 it matters, on /map. */}
-            <HomeMap progress={progress} activeId={activeId} accent={accent} postcard />
+            {/* THE REAL MAP (Dan, 7 Sep: "the home page map ought to be at
+                least one of the two real maps, it is the wrong map now (an
+                older version)"). Map2DGrid is the map /map itself renders —
+                same pens, same stops — zoomed to postcard size and cropped;
+                HomeMap (patch 25's drawing) retires from this card. */}
+            <div className="h-[330px] overflow-hidden" style={{ zoom: 0.44 }}>
+              <Map2DGrid progress={progress} activeId={activeId} accent={accent} />
+            </div>
           </div>
           {/* THE DOOR, SAID ON THE PICTURE (Dan, 7 Sep: "Across it we can
               have the CTA 'Enter the map'"). A content-sized pill, centred —
               never spanning (the no-full-width rule). Visual only: the
               stretched link below carries the tap, so the whole card stays
               one door and the pill needs no second handler. */}
+          {/* GLASSMORPHIC, PER DAN (7 Sep: "i meant it as a (glassmorphic)
+              layer over the map leaving the underneath pass through in a
+              blur manner"). A translucent band across the card's foot: the
+              stops glow through the blur, the words float on it. Still
+              visual-only — the stretched link is the one door. */}
           <span
             aria-hidden
-            className="pointer-events-none fluo-btn-hand absolute bottom-2.5 left-1/2 -translate-x-1/2 rounded-full border-2 px-4 py-1.5 text-base"
-            style={{ background: "var(--cahier-hl)", borderColor: "var(--cahier-ink)", color: "var(--cahier-ink)", boxShadow: "0 2px 0 0 var(--cahier-ink)" }}
+            className="pointer-events-none fluo-btn-hand absolute inset-x-2 bottom-2 flex items-center justify-center rounded-xl border px-4 py-2.5 text-lg"
+            /* rgba, not a color-mix-to-transparent: the mix computed to full
+               transparency in the first capture and the words floated bare on
+               the stops. The blur is the garnish; the tint is the glass. */
+            style={{
+              background: "rgba(250, 247, 238, 0.62)",
+              backdropFilter: "blur(7px)",
+              WebkitBackdropFilter: "blur(7px)",
+              borderColor: "rgba(49, 38, 32, 0.35)",
+              color: "var(--cahier-ink)",
+              boxShadow: "0 1px 8px rgba(49,38,32,0.18)",
+            }}
           >
             Enter the map
           </span>
