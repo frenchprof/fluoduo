@@ -133,15 +133,21 @@ Four things this took, each measured rather than reasoned:
   DrillShell surfaces are untouched. The page sits in a document 90px taller
   than the viewport, so without it two swipes take the frozen header away.
 
+**1b · The chain ENDS AT GAMES.** Dan, an hour later: *"LEADERBOARD AND
+PROFILE SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. Every station on the
+rail is work on a goal — guess it, read it, drill it, play it — and where you
+stand against the class is not work. Both pages stay reachable through the
+👤 User family in the bottom bar and the ☰; off the rail they simply get no
+horizontal swipe, like Home, the guide and Réglages. Seven stations.
+
 **2 · Skills and Games are HUBS.** Dan: *"when there are multiple destinations
 on the right, we need the hub page, but when we return from one of those back
 to the left, it returns to the hub page. Hub pages are Skills and Games."* So
 the six skills and the three games stop being nine columns of the rail and
 become two. Standing on ChaTutor, rightwards is « Skills », not « ComposeIt ».
-The chain is nine stations now:
+The chain is seven stations:
 
-    Map > Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games >
-    Leaderboard > Profile
+    Map > Goal > SpecuLearn > MneMemo > MémoiRecall > Skills > Games
 
 **3 · The goal card's activities are icons only**, three up (*"not in this form
 but the grid of icons only like we saw in the earlier 'HELP'"*). Seven labelled
@@ -160,7 +166,7 @@ be the wrapper's first attribute, and a `ref` had moved it.
 
 ### Still open, and Dan's to settle
 
-- **Wrap or stop** at the two ends of the rail (past Profile, and swiping right
+- **Wrap or stop** at the two ends of the rail (past Games, and swiping right
   off the map). Stopping is what shipped.
 - **Unit 0 and the picture pre-tests** are still at `/pretests/unit0/<sio>` and
   `/pretests/picture/<deck>`, and still one-at-a-time rather than a feed. They

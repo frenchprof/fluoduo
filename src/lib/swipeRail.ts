@@ -8,8 +8,12 @@
  *
  *   Map --> jump to one of the SIO > SpecuLearn > MneMemo > MémoiRecall >
  *   Skills (ConjugaZone · ÉcouTexte · WorDrill · VoixLà · ComposeIt · ChaTutor)
- *   > Games [NumBus + NumBourse inside) · VocabulaRain · LexicaLater] >
- *   👤 User (Leaderboard · Profile)
+ *   > Games [NumBus + NumBourse inside) · VocabulaRain · LexicaLater]
+ *
+ * — with 👤 User (Leaderboard · Profile) struck off it the next day: *"LEADER-
+ * BOARD AND PROFILE SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. Every
+ * station on the rail is work on a goal; where you stand against the class is
+ * not. The chain ends at Games.
  *
  * and the next day, closing it: *"it's a mental map, not a map to be published.
  * we just need the swipes to go the right way."* So there is no drawing in the
@@ -25,7 +29,7 @@
  * LEFT, so rightwards is BACK — the same rule the lesson tabs have always had,
  * and the one a phone's own edge-swipe teaches. Leftwards is forward.
  *
- * BOTH ENDS STOP. Swiping right on the map, or left on Profile, does nothing.
+ * BOTH ENDS STOP. Swiping right on the map, or left on Games, does nothing.
  * Dan has not ruled on wrapping and stopping is the reversible choice: a rail
  * that stops can be made to wrap later without anyone having learnt a wrong
  * habit, while a rail that silently teleports from the last station back to the
@@ -33,8 +37,8 @@
  *
  * WHY EVERY STATION IS NOT DECK-SCOPED. The first five columns belong to a
  * goal — you guess THIS deck, read THIS lesson, flip THESE cards. From Skills
- * rightwards the activity is not about one goal (ChaTutor, the leaderboard),
- * so those columns are their own hub. The deck is still remembered while you
+ * rightwards the activity is not about one goal (ChaTutor, VocabulaRain), so
+ * those two columns are hubs of their own. The deck is still remembered while you
  * are away, so swiping back right from ConjugaZone returns to the flashcards
  * of the goal you left, not to a picker.
  */
@@ -159,8 +163,18 @@ export const RAIL: RailStation[] = [
       p.startsWith("/games/lexicalater") ||
       p.startsWith("/games/matching"),
   },
-  { key: "leaderboard", name: "Leaderboard", href: () => "/leaderboard", at: (p) => p === "/leaderboard" },
-  { key: "profil", name: "Profile", href: () => "/profil", at: (p) => p === "/profil" || p.startsWith("/moi") },
+  // THE CHAIN ENDS AT GAMES. Dan, 2026-09-07: *"LEADERBOARD AND PROFILE SHOULD
+  // NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. They were the last two columns
+  // for a day and they do not belong: every station before them is WORK ON A
+  // GOAL — guess it, read it, drill it, play it — and where you stand against
+  // the class is not work. Swiping through the course should not end up at
+  // your own profile any more than reading a book ends at the library card.
+  //
+  // Out of the RAIL is not out of the app: 👤 User is a family in the bottom
+  // bar and the ☰, which is how both pages are reached. Off the rail they
+  // simply get no horizontal swipe at all — `railIndex` returns -1 and
+  // `railNeighbours` answers null in both directions, the same as Home, the
+  // guide and Réglages.
 ];
 
 /**

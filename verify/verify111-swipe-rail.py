@@ -60,10 +60,13 @@ keys = re.findall(r'key:\s*"([a-z]+)"', rail)
 # of those back to the left, it returns to the hub page. Hub pages are Skills
 # and Games."*). They were six and three columns for a day, which made a
 # sideways drag on ChaTutor a walk through a list nobody thinks of as ordered.
+# And the chain ENDS AT GAMES (Dan, same day: *"LEADERBOARD AND PROFILE SHOULD
+# NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*). Every station is work on a goal;
+# where you stand against the class is not. Both pages stay reachable through
+# the 👤 User family — they simply get no horizontal swipe.
 EXPECTED = [
     "map", "goals", "speculearn", "lesson", "flip",
     "skills", "svplay",
-    "leaderboard", "profil",
 ]
 if keys != EXPECTED:
     fails.append(
@@ -91,6 +94,15 @@ if "hub" not in rail or "normalise(hub) !== here" not in rail:
 for hub_href in ['hub: "/skills"', 'hub: "/games"']:
     if hub_href not in rail:
         fails.append(f"{hub_href} is gone — Dan named both hubs by name.")
+
+# The two pages Dan struck off must not creep back as stations.
+for gone in ['"/leaderboard"', '"/profil"']:
+    if gone in rail:
+        fails.append(
+            f"{gone} is back on the rail. Dan, 7 Sep: \"LEADERBOARD AND PROFILE\n"
+            "    SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT\". They are reached\n"
+            "    through the 👤 User family, not by swiping through the course."
+        )
 
 # ── 2 · one handler reads a finger ─────────────────────────────────────────
 HANDLER = SRC / "components" / "useRailSwipe.ts"
