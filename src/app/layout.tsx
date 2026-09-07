@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Work_Sans, Patrick_Hand, Roboto } from "next/font/google";
+import { Patrick_Hand, Roboto } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import BetaNotice from "@/components/BetaNotice";
@@ -12,42 +12,17 @@ import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
 import InstallPrompt from "@/components/InstallPrompt";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Dan (2026-07-01): the mono "label" font used for SIO circle captions etc. was
-// "much much" too hard to read — swap in Roboto for anywhere that needs to be
-// legible fast (path node captions, grid tile labels), via the .fluo-readable
-// class in globals.css. Not a wholesale font replacement — fluo-mono/fluo-label
-// stay as-is for chrome that isn't a readability complaint.
+// THREE FONTS, NO MORE (Dan, 6 Sep): "FluOLinGo font + Patrick Hand font +
+// Roboto font", and "Geist is OUT" — Work Sans, unnamed in his roster, goes
+// with it. Roboto is the ONE workhorse now: body, controls, data (tabular
+// numerals stand in for the retired Geist Mono — see --fluo-mono in
+// globals.css). The display role moves to Dan's own hand ("use the FluOLinGo
+// font as far as possible, everywhere, in their different variations");
+// Patrick Hand keeps only the accent spots .cahier-hand already marks.
 const roboto = Roboto({
   variable: "--font-readable",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  display: "swap",
-});
-
-// "Le Cahier" type system: characterful serif display, humanist body.
-// No handwriting/cursive font anywhere in the product — Dan's explicit call.
-// Work Sans is the FUNCTIONAL face: body, controls, navigation, metrics,
-// data, dense headings, anything accessibility-critical. It powers both
-// --font-body and --font-display, so the 73 existing .cahier-display uses
-// all become functional headings — correct by default.
-const workSans = Work_Sans({
-  variable: "--font-body",
-  subsets: ["latin"],
-  display: "swap",
-});
-const workSansDisplay = Work_Sans({
-  variable: "--font-display",
-  subsets: ["latin"],
+  weight: ["400", "500", "700", "900"],
   display: "swap",
 });
 
@@ -150,7 +125,7 @@ export default function RootLayout({
       // reverse. English-heavy blocks can opt out with lang="en" spans.
       lang="fr"
       translate="no"
-      className={`${geistSans.variable} ${geistMono.variable} ${workSans.variable} ${workSansDisplay.variable} ${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
+      className={`${patrickHand.variable} ${fluoHand.variable} ${roboto.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         {children}

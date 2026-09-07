@@ -9,6 +9,8 @@
  * what a learner can act on: the badges they have and have not earned, and the
  * gem balance with the only thing it buys.
  *
+ * [7 Sep: the rank NAMES are gone app-wide — level is a bare 0-4 number
+ * now. The sentence below is kept for the 22 Aug story it tells.]
  * The ranks themselves are NOT gone from the app — `levelForXp` still names
  * rows on the leaderboard. They are gone from the profile.
  *

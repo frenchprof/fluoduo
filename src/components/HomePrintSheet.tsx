@@ -68,8 +68,10 @@ export default function HomePrintSheet({ progress }: { progress: Progress }) {
                   const c = KIND_COLOR[sioKind(s.id)];
                   return (
                     <div key={s.id} className="flex items-center gap-1">
-                      <span className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full border-2 text-[9px] font-black" style={{ borderColor: c, background: d ? c : "var(--cahier-paper-raised)", color: d ? "var(--cahier-paper-raised)" : "var(--cahier-ink)" }}>
-                        {d ? "✓" : s.num}
+                      <span className="grid h-[22px] w-[22px] shrink-0 place-items-center rounded-full border-2 text-[9px] font-black" // Ink on both shades HERE, unlike the screen: this sheet is printed,
+                      // and a white numeral with a shadow does not survive toner.
+                      style={{ borderColor: c, background: d ? c : "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}>
+                        {s.num}
                       </span>
                       <span className="truncate text-[10px] font-bold leading-tight">{s.short}</span>
                     </div>

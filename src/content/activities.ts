@@ -467,24 +467,17 @@ export function bandOf(activeKey: string | undefined): BandKey | null {
   return BAND[activeKey] ?? null;
 }
 
-/**
- * Pages you READ rather than answer — the ones that take the sand paper.
+/* Pages you READ rather than answer used to take a sand-coloured ground here,
+ * through `READING` and `isReadingSurface()`. Dan chose the sand blind on
+ * 30 Aug; on 6 Sep, shown the eleven activity pages side by side, he retired
+ * it: *"can you standardise pls, i don't want outliers"*. The Memo, the guide
+ * and the quick guide now wear their family's ground like every other page.
  *
- * Dan chose it blind (2026-08-30): shown the six family grounds and the sand
- * with no labels and asked which he wanted under a page of French he was
- * reading, he picked the sand. The test was built so that answer would settle
- * the question either way.
- *
- * The Memo IS the lesson (key "lesson"); the guide and the quick guide are the
- * other two surfaces that hold a page of prose. A drill is not here, however
- * long it runs: you are answering it, not reading it.
+ * The set and the function are DELETED rather than left unused on purpose. An
+ * exemption nothing calls is an exemption one import away from coming back,
+ * and this one came back invisibly once already — it was the only reason a
+ * page could carry `fam-practice` and not look like Practice.
  */
-const READING = new Set(["lesson", "guide", "quickguide"]);
-
-export function isReadingSurface(activeKey: string | undefined): boolean {
-  return !!activeKey && READING.has(activeKey);
-}
-
 export function familyOf(activeKey: string | undefined): FamilyKey | null {
   if (!activeKey) return null;
   // Pages that already own a complete colour scheme are left alone (Dan,

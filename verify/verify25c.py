@@ -117,8 +117,26 @@ check("sioKind(" in m3 and "sioSecondary(" in m3 and "KIND_COLOR[" in m3, "ring 
 # signal moved from a dashed ring to a lightened face on the to-come stops.
 # 2026-08-21: the current stop's inner ▶ is gone — the 🧑‍🎓 bobbing over it
 # already says "you are here", and the triangle now means sound everywhere.
-check("isSioDone(" in m3 and '"✓"' in m3 and "🧑‍🎓" in m3 and "home-map-bob" in m3 and f"55%, {'${PAPER}'}" in m3,
-      "done ✓ · current = the bobbing 🧑‍🎓 · to-come the same colour lightened", "stop states missing")
+# 2026-09-06: the ✓ went. It replaced the stop's NUMBER the moment a stop was
+# finished, so a learner hunting for "stop 12" lost it exactly when they
+# completed it (Dan: "i do still want the number to remain on the buttons",
+# then "Drop it — the fill says it"). Done-ness is carried by the FACE now —
+# the pen at full strength when reached, its pale shade when still ahead —
+# which this line tests instead, so the three states stay distinguishable
+# without pinning which glyph does it.
+# 2026-09-07: the pale shade is the pen's own KIND_WASH now, not a local
+# `55%, ${PAPER}` mix (Dan: "i just need visual unity for the buttons" — the
+# 3D map's pale was a different pale from the 2D grid's, and by a different
+# amount per hue). This pins the THREE STATES being distinguishable, which is
+# the claim, and no longer the arithmetic that happened to produce one of
+# them — pinning the mix is what made a colour fix show up here as a failure.
+check("isSioDone(" in m3 and "reached = done || active" in m3 and "🧑‍🎓" in m3
+      and "home-map-bob" in m3 and "reached ? colour : KIND_WASH[kind]" in m3,
+      "done = the full pen face · current = the bobbing 🧑‍🎓 · to-come the pen's wash",
+      "stop states missing")
+check("{st.num}" in m3 and '{done ? "✓" : st.num}' not in m3,
+      "a finished stop keeps its number in 3D, as it does in 2D",
+      "the 3D map swaps the number for a tick again — half a finished map goes unnumbered")
 check('{active ? "▶"' not in m3,
       "the current stop no longer doubles its mark with a ▶ inside",
       "the stop carries a ▶ as well as the 🧑‍🎓 — one thing, two marks")

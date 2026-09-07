@@ -10,10 +10,9 @@
  */
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
-import { levelForXp } from "@/lib/economy";
 import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
 import { weekKey } from "@/lib/dayKey";
-import RankBadge from "@/components/RankBadge";
+import { loadProgress, weekPair, type Progress } from "@/lib/progress";
 import SectionBand from "@/components/SectionBand";
 
 type BoardRow = {
@@ -46,6 +45,15 @@ const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous"; // same
 
 export default function LeaderboardList() {
   const user = useAuthUser();
+  // The learner's OWN progress, for the you-vs-last-week strip (7 Sep). Read
+  // locally — self-comparison publishes nothing and asks the network nothing.
+  const [me, setMe] = useState<Progress | null>(null);
+  useEffect(() => {
+    const read = () => setMe(loadProgress());
+    read();
+    window.addEventListener("fluolingo:progress-updated", read);
+    return () => window.removeEventListener("fluolingo:progress-updated", read);
+  }, []);
   const [rows, setRows] = useState<BoardRow[] | null>(null);
   const [failed, setFailed] = useState(false);
   // "This week" leads. A cumulative board is decided by week three and only the
@@ -182,7 +190,8 @@ export default function LeaderboardList() {
         <span className="min-w-0 flex-1 truncate text-sm font-bold text-[color:var(--cahier-ink)]">
           {rowName(r)}{me && " (you)"}
         </span>
-        <RankBadge level={r.level ?? levelForXp(rowXp(r)).level} name={levelForXp(rowXp(r)).name} />
+        {/* The rank pill left this row with the rank ladder (Dan, 7 Sep:
+            "i don't know why we need them") — the row is name and score. */}
         <span className="fluo-mono w-16 shrink-0 text-right text-sm font-black tabular-nums text-[color:var(--cahier-ink)]">
           {score(r).toLocaleString()}
         </span>
@@ -220,6 +229,24 @@ export default function LeaderboardList() {
       {/* Two colour-coded zones, not two headings (SectionBand): the board
           reads as "you" and "everyone", and you can find yourself without
           reading a word. */}
+      {/* YOU vs LAST WEEK (Dan, 7 Sep — from the retention read): the one
+          comparison that has no loser. Gain-framed by law: ahead says so,
+          behind states last week's figure as the line to reach, and a first
+          week simply shows no strip (no zero to be measured against). */}
+      {view === "week" && me && (() => {
+        const pair = weekPair(me);
+        if (pair.lastWeek <= 0) return null;
+        const lead = pair.thisWeek - pair.lastWeek;
+        return (
+          <div className="neo-well flex items-center justify-between gap-2 rounded-xl px-3 py-2">
+            <span className="text-[13px] font-extrabold text-[color:var(--cahier-ink)]">You vs last week</span>
+            <span className="fluo-mono text-[13px] font-black tabular-nums text-[color:var(--cahier-ink)]">
+              {pair.thisWeek.toLocaleString()} · last week {pair.lastWeek.toLocaleString()}
+              {lead > 0 && <b style={{ color: "var(--dopa-win)" }}> ↑ already ahead</b>}
+            </span>
+          </div>
+        );
+      })()}
       {view === "week" && myIndex >= 0 && (
         <SectionBand
           family="user"

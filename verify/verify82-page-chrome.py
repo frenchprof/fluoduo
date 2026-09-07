@@ -159,19 +159,42 @@ ok('active=""' not in code(ALL_SRC),
    "no page passes an empty `active` — the emptiest possible answer to which page this is",
    'a page passes active="" again; familyOf returns null before it looks anything up')
 
-# ---- 2 · the spine names BOTH shells --------------------------------------
+# ---- 2 · ONE class carries the colour, and both shells wear it -------------
+# Dan, 2026-09-06, shown the eleven activity pages side by side: *"can you
+# standardise pls, i don't want outliers"*.
+#
+# The spine rule used to name `.cahier-page` alone, and DrillShell's root is
+# not one — so every drill carried the right `fam-` class and drew no strip
+# (Dan's 1 Sep audit). The fix listed both shells, `:is(.cahier-page,
+# .cahier-drill)`, which works and leaves the same trap armed: a THIRD shell
+# is silently colourless again, and a grep for one name finds half the app.
+# Both roots wear `cahier-surface` now, so the colour is keyed on what a
+# surface IS rather than on which component drew it.
 spine = re.search(r"^([^\n{]*)\[class\*=\"fam-\"\]\s*\{[^}]*border-left:\s*6px", css, re.M | re.S)
 ok(spine is not None, "the family spine is a 6px left border keyed on the fam- class",
    "the spine rule is gone or no longer 6px")
 if spine:
-    sel = spine.group(1)
-    ok("cahier-page" in sel and "cahier-drill" in sel,
-       "the spine rule names BOTH shells — the cahier page and the drill",
-       f"the spine selector is `{sel.strip()}`: a shell it does not name draws no strip at all, "
-       "which is how every drill in the app lost one")
-ok(re.search(r'className=\{`cahier-drill ', drill) is not None,
-   "DrillShell's root carries `cahier-drill`, so the rule can reach it",
-   "the drill root no longer carries the class the spine rule names")
+    sel = spine.group(1).strip()
+    ok(sel.startswith(".cahier-surface"),
+       "the spine is keyed on the ONE surface class, not on a list of shells",
+       f"the spine selector is `{sel}`: back to naming shells one by one, so the "
+       "next shell added draws no strip and nobody finds out until an audit")
+for name, src in (("CahierShell", cahier), ("DrillShell", drill)):
+    ok(re.search(r'className=\{?`cahier-(page|drill) cahier-surface ', src) is not None,
+       f"{name}'s root wears `cahier-surface`, so one rule reaches it",
+       f"{name}'s root no longer carries `cahier-surface` — its pages lose the "
+       "spine, the family ground and the band in one go")
+
+# ---- 2b · no page is exempt from the ground -------------------------------
+# `paper-sand` made the Memo, the guide and the quick guide the only three
+# grounds in the app that did not name a family. Retired 6 Sep with the ruling
+# above. Deleted rather than unwired: an exemption nothing calls is one import
+# away from returning, and this one was invisible for a fortnight.
+ok("paper-sand" not in css and "isReadingSurface" not in code(ALL_SRC),
+   "no page opts out of its family's ground",
+   "`paper-sand` / `isReadingSurface` is back. A reading page keeps its family's "
+   "paper — Dan retired the sand on 6 Sep looking at the eleven activity pages: "
+   '"can you standardise pls, i don\'t want outliers"')
 
 # ---- 3 · no page borrows a sibling's name ---------------------------------
 ok("context[0]?.label" not in cahier,

@@ -13,8 +13,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* THREE FONTS (Dan, 6 Sep): FluOLinGo Hand + Patrick Hand + Roboto.
+     "Geist is OUT" — and Work Sans, unnamed in his roster, went with it. */
+  --font-sans: var(--font-readable);
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   /* ── FLUID TYPE, APP-WIDE (Dan, 2026-09-05) ────────────────────────────
      "fonts can afford to be bigger on the desktop", then "the relative font
@@ -224,13 +226,14 @@ body {
   --fluo-danger-shadow: #d83a4a;
   --fluo-warn:      #f5b301;
   --fluo-warn-shadow: #cf9600;
-  --fluo-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-  --fluo-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, "Courier New", monospace;
+  /* Was a system serif; the display role belongs to Dan's hand now. */
+  --fluo-serif: var(--font-fluohand-stack);
+  --fluo-mono: var(--font-readable), system-ui, sans-serif;
 }
 
 /* Typography helpers — serif headings, typewriter labels (the Reviser look). */
 .fluo-serif { font-family: var(--fluo-serif); }
-.fluo-mono  { font-family: var(--fluo-mono); }
+.fluo-mono  { font-family: var(--fluo-mono); font-variant-numeric: tabular-nums lining-nums; }
 .fluo-label {
   font-family: var(--fluo-mono);
   text-transform: uppercase;
@@ -711,15 +714,15 @@ body {
   --region-valley-band:   var(--tier-good-soft);
   --region-downtown-band: var(--tier-medium-soft);
   --region-market-band:   var(--tier-weak-soft);
-  --font-display-stack: var(--font-display), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-hand-stack:    var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
   --font-fluohand-stack: var(--font-fluohand), var(--font-hand), "Bradley Hand", "Segoe Print", cursive;
-  --font-body-stack:    var(--font-body), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body-stack:    var(--font-readable), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 /* -0.02em, was -0.01em (Dan, 6 Sep, closing the UI-police type round):
    big display text tightens ~2% so it reads as one drawn line. */
-.cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: -0.02em; }
+.cahier-display { font-family: var(--font-display-stack); font-weight: 600; letter-spacing: 0; }
 .cahier-body    { font-family: var(--font-body-stack); }
 /* Expressive display face. Apply DELIBERATELY to major page titles only. */
 .cahier-hand    { font-family: var(--font-hand-stack); font-weight: 400; letter-spacing: 0; }
@@ -1554,28 +1557,6 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 .fluo-fog:hover, .fluo-fog:focus-within { filter: none; }
 @media (prefers-reduced-motion: reduce) { .fluo-fog { transition: none; } }
 
-/* Level-name badges (Dan, 2026-07-08): the NAME's dressing escalates with the
-   rank — N1 almost invisible, N10 a glowing gold shimmer. Same word, more
-   ceremony. Used by components/RankBadge on every level-name surface. */
-.fluo-rank { display: inline-block; border-radius: 9999px; padding: 0 0.5em; font-weight: 800; line-height: 1.5; white-space: nowrap; }
-.fluo-rank-1 { color: rgba(34, 40, 80, 0.5); font-weight: 600; }
-.fluo-rank-2 { color: rgba(34, 40, 80, 0.7); box-shadow: inset 0 0 0 1px rgba(34, 40, 80, 0.22); }
-.fluo-rank-3 { color: #2a2e6e; background: rgba(123, 191, 46, 0.18); }
-.fluo-rank-4 { color: #1c5e8a; background: #def3f5; box-shadow: inset 0 0 0 1.5px #2bb6c2; }
-.fluo-rank-5 { color: #fff; background: #2bb6c2; }
-.fluo-rank-6 { color: #fff; background: #8a5fd4; }
-.fluo-rank-7 { color: #fff; background: linear-gradient(100deg, #8a5fd4, #e0567f); }
-.fluo-rank-8 { color: #fff; background: linear-gradient(100deg, #e0567f, #e8852e); box-shadow: 0 0 8px rgba(224, 86, 127, 0.55); }
-.fluo-rank-9 { color: #5c4a00; background: linear-gradient(100deg, #ffe9a8, #ffd34d, #ffe9a8); box-shadow: inset 0 0 0 1.5px #e3a700, 0 0 8px rgba(227, 167, 0, 0.5); }
-.fluo-rank-10 {
-  color: #4a3a00;
-  background: linear-gradient(110deg, #ffd34d 0%, #fff3b0 25%, #ffd34d 50%, #fff3b0 75%, #ffd34d 100%);
-  background-size: 220% 100%;
-  animation: fluo-rank-shimmer 2.6s linear infinite;
-  box-shadow: inset 0 0 0 2px #e3a700, 0 0 12px rgba(255, 211, 77, 0.8);
-}
-@keyframes fluo-rank-shimmer { from { background-position: 0% 0; } to { background-position: 220% 0; } }
-@media (prefers-reduced-motion: reduce) { .fluo-rank-10 { animation: none; } }
 
 /* ── Cahier design system — Dan's handoff, 2026-08-10 ─────────────────────
    Tokens from `design_handoff_cahier_dashboard/README.md`, in OKLCH as
@@ -1810,27 +1791,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* The family spine — a 6px edge down the page's left gutter, just inside the
    binding. It is the page's "where am I", and it is the cheapest possible
    version: one border, no layout, no per-page markup.
-   BOTH SHELLS, since 1 Sep. This selector named `.cahier-page` alone, and
+   ONE CLASS, BOTH SHELLS (Dan, 2026-09-06: "can you standardise pls, i don't
+   want outliers"). This selector used to name `.cahier-page` alone, and
    DrillShell's root is not one — so every drill (Flip It, Say It,
    GramMarathon, ConjugaZone, the lesson pager, a deck's study run) carried
    the right `fam-` class and drew no spine at all. Dan, 1 Sep: "there are
    pages missing this colored vertical strip on the left in whatever color it
-   should be in." The class the drill root now carries is `cahier-drill`, so
-   the two shells are named rather than matched by shape. */
-:is(.cahier-page, .cahier-drill)[class*="fam-"] {
+   should be in." The first fix listed both shells, `:is(.cahier-page,
+   .cahier-drill)`, which works and leaves the same trap armed: a third shell
+   is a silent no-spine again, and a grep for one name misses half the app.
+   Both roots now wear `cahier-surface`, so the colour is keyed on what a
+   surface IS rather than on which component drew it. */
+.cahier-surface[class*="fam-"] {
   border-left: 6px solid var(--fam-ink, transparent);
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
-/* A page you READ rather than answer takes the sand instead of its family's
-   ground — the strip, the section band and the rail still say which family
-   it belongs to. Wins over the family rule above by being later and equally
-   specific, which is why it is written here and not beside the tokens. */
-.paper-sand,
-:is(.cahier-page, .cahier-drill).paper-sand[class*="fam-"] {
-  background-color: var(--sable-page);
-  --cahier-rule: var(--sable-rule);
-}
+/* THE SAND IS GONE (Dan, 2026-09-06, shown the eleven activity pages side by
+   side: "can you standardise pls, i don't want outliers").
+   It was a real ruling — Dan picked the sand blind on 30 Aug from the six
+   family grounds, for a page you READ rather than answer — and it made the
+   Memo, the guide and the quick guide the only three pages in the app whose
+   ground did not say which family they belong to. Seen next to the other
+   ten, that reads as three pages that forgot rather than three pages with a
+   reason. A reading page still gets its calmer treatment from the type and
+   the width; the paper now says the same thing everywhere.
+   `isReadingSurface` and the --sable-* tokens went with it: they had no
+   other caller, and a dead exemption is how one comes back by accident. */
 
 /* Accuracy tiers, finally doing the job the rotating hue was pretending to do.
    Deliberately distinct from --cahier-accent so "this is a link" never reads
@@ -1965,8 +1952,6 @@ h3.cahier-display { font-size: var(--fs-h3); }
 /* 2 · White on --fluo-secondary measured 2.45:1. Both sites take the teal's
        own ink instead, on its wash — 4.98:1. */
 .fluo-btn-secondary { background: var(--dopa-flow); color: var(--cahier-ink); }
-.fluo-rank-5 { background: var(--dopa-flow-wash); color: var(--dopa-flow-ink);
-  box-shadow: inset 0 0 0 1.5px var(--dopa-flow-ink); }
 
 /* 3 · --cahier-line paints every form-input border at 1.25:1, well under the
        3:1 a control boundary needs. Inputs (and only inputs) take the
@@ -2081,18 +2066,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
      measuring rather than re-reading. The soft ink is fine where it is used —
      labels and captions, not paragraphs — but nobody should cite seven from
      here. verify96 recomputes it. */
-  /* THE READING PAPER — « le sable beige », the colour already in the colours
-     deck (#d9c39a), worked out into a surface. Dan picked it, blind, over all
-     six family grounds when asked which he wanted under a page of French he
-     was READING rather than answering.
-     It is not a seventh family: a Memo keeps its family's strip, its section
-     band and its rail. Only the paper changes, because a page you stay on
-     should not be competing with the words. Body ink is derived against the
-     CARD, the darker of the two surfaces, at 7.2:1 — the stricter standard,
-     for prose rather than buttons. */
-  --sable-page: #f9ebd1;  --sable-card: #ebd8b5;
-  --sable-rule: #e0cba4;  --sable-ink: #4e4026;  --sable-soft: #6b5d44;
-
+  /* THE READING PAPER WAS HERE — « le sable beige », picked blind by Dan on
+     30 Aug for a page you READ rather than answer, and retired 6 Sep when he
+     saw the eleven activity pages side by side: "can you standardise pls, i
+     don't want outliers". It left the Memo, the guide and the quick guide as
+     the only three grounds in the app that did not name a family. Removed
+     with its rule, not merely unwired — see the note by `.cahier-surface`. */
   --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
   --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
   --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
@@ -2122,40 +2101,41 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 @media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
 
-/* ── WHAT THE ACTIVITY ASKS YOU TO DO (Dan, 2026-08-26) ────────────────────
-   The family tells you where an activity LIVES in the menu. This tells you
-   what it DEMANDS of the learner, which is the thing a colour should carry
-   on the activity's own page. Five branches, taken from the ladder already
-   in lib/evidence.ts (recognition -> constrained -> free / productive):
+/* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
+   He sent the palette back — *"i am sorry your colors are very off. these are
+   the correct colors, you need to remedy"* — then the bands themselves,
+   *"these colors are wrrong"*, then the rule that settles it:
+   *"whatever it is, every color on the web can only be one of these"*, with
+   *"use black ink if you have to - for words"*.
 
-     guess   before you are taught     Pre-Test · SpecuLearn
-     lesson  the rule, then practice   Memo — the only door that teaches
-     recog   the answer is in view     4Mémoire · Sorting · Match It ·
-                                       VocabulaRain · LexicaLater
-     prod    retrieve one right answer iComplete · GramMarathon (written)
-                                       WorDrill (spoken — same branch, and
-                                       the only microphone in the app)
-     create  no single right answer    ComposeIt
+   The six family pens already WERE the palette's six pens; these five were a
+   separate hand-picked set matching nothing in it. `highlighterMarks.ts` is
+   the source now, and the two axes are the palette's two halves:
 
-   These are BAND fills carrying white text, so every ink is measured against
-   white AND against --cahier-paper, whichever surface it lands on:
-   guess 5.30 / 5.11 · lesson 4.95 / 4.77 · recog 5.36 / 5.16 ·
-   prod 7.74 / 7.46 · create 7.32 / 7.05. All clear AA at both.
+       the six PENS         -> the six families   (already true)
+       five of the six COMPLEMENTS -> the five phases
 
-   THE HUES ARE DERIVED, NOT PICKED. Five categories is past what hue alone
-   can carry for a red-green colour-blind reader, and the obvious semantic
-   palette is the worst possible one: amber/green/crimson is exactly the axis
-   deuteranopia flattens. A hand-picked set (violet #6d3fc0, amber #a15c00,
-   teal #0f7480, green #2f6b3d, crimson #b32d55) measured dEok 0.038 at its
-   worst pair under Machado deutan/protan simulation — indistinguishable.
-   These five came out of a search over OKLCH at >=45 deg hue separation,
-   white contrast held between 4.5 and 8.0: worst pair 0.120, roughly
-   3x better. Even so, colour is REINFORCEMENT here, never the only channel —
-   PageBand always prints the activity's name on the band. verify36
-   recomputes both the ratios and the simulated separations from this file. */
+       guess   Periwinkle #9398ff      prod    Amber   #e88c00
+       lesson  Olive      #98b300      create  Magenta #f350ff
+       recog   Sky        #00b2f6      (Teal #00c197 is the one left spare)
+
+   TAKEN RAW, at highlighter strength, which is why the words on them are
+   BLACK. White on these measures 1.84-2.84:1 and was unreadable; black
+   measures 8.18, 8.78, 8.70, 8.18 and 7.40 — every one clear. That is Dan's
+   ruling doing the work the old set needed a dimmed, off-palette colour for:
+   the ink moves so the colour does not have to.
+
+   NO COLOUR-BLIND SEPARATION RULE ANY MORE. The set these replace was chosen
+   by a search maximising deutan/protan separation, and no five of the twelve
+   can pass that bar — the palette sits at one lightness by design, so its
+   hues collapse in pairs (Sky/Magenta 0.009, Amber/Olive 0.013). Shown the
+   simulation and the numbers, Dan: *"don't care about color blindness pls"*,
+   *"it is NOT OUR CONCERN"*. Recorded here rather than quietly dropped, and
+   the checks that enforced it are removed in verify36 with the same quote —
+   a rule that is deleted for a reason should say whose reason. */
 :root {
-  --band-guess: #6c50e9;   --band-lesson: #6d7607;  --band-recog: #0e7397;
-  --band-prod: #9d2602;    --band-create: #a7016d;
+  --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
+  --band-prod: #e88c00;    --band-create: #f350ff;
 }
 .band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
 .band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
@@ -2284,6 +2264,137 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -3px -3px 7px color-mix(in oklab, white 35%, transparent);
 }
 .neo-key:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 4px; }
+
+/* ─── THE MAP'S STOPS: the same material, at a fiftieth of the size ─────────
+   Dan, 6 Sep, after Malewicz on tactility: "make them really 3D stand out".
+
+   THE FAULT THIS FIXES. Forty of the fifty stops were a DASHED RING on paper.
+   A broken outline is not an object — it is a hole where one should be, so the
+   map's dominant impression was absence, and nothing on it looked pressable.
+   Meanwhile Home's Continue / Next / Rewind keys had worn .neo-key since 1 Sep:
+   one product, two materials, and the map was the surface that opted out.
+
+   WHY NOT JUST USE .neo-key. Its shadow is measured for a 58px key with three
+   siblings. Fifty of those at 44px, four gaps apart, and the shadow becomes
+   the first thing you see — which is charter item 49 failing from the other
+   side. So the geometry is the same and every value is scaled: the cast drops
+   3px/5px/10px instead of 7px/12px/20px, and the lips are 2px/3px not 3px/6px.
+
+   DEPTH CARRIES PROGRESS, which is the whole reason this is worth doing. A
+   stop you have reached STANDS OUT (--reached); a stop still ahead is SUNK
+   into the band (--ahead, the .neo-well grammar). Run your eye down the grid
+   and the shape of your progress is legible without reading a single number,
+   and an ahead stop is still a real object rather than a gap. */
+/* SPRING, NOT SLIDE (Dan, 6 Sep: "I do want the buttons to behave like they
+   would really behave in the real world — springy buttons that bounces back").
+
+   A real key does two different things. Going DOWN it is fast and dead: your
+   finger drives it, it stops against the base, and nothing overshoots — a
+   bouncy press feels mushy, like the button is unsure. Coming UP the spring
+   does the work, and a spring overshoots before it settles.
+
+   So the two directions get different physics. The rest state carries the
+   springy curve (cubic-bezier's third control point above 1 is the overshoot);
+   :active overrides it with a short, hard ease-in so the press is immediate.
+   One property animates — transform — which the compositor handles without
+   laying out or painting, so fifty of these cost nothing. */
+.fluo-spring, .fluo-stop {
+  border: 0;
+  transition:
+    transform .34s cubic-bezier(.34, 1.56, .64, 1),
+    box-shadow .16s ease;
+}
+.fluo-spring:active, .fluo-stop:active {
+  transition-duration: .06s, .06s;
+  transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease;
+}
+.fluo-stop--reached {
+  box-shadow:
+    -3px -3px 7px color-mix(in oklab, white 92%, transparent),
+    3px 5px 10px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
+    inset 1px 2px 0 color-mix(in oklab, white 60%, transparent),
+    inset -1px -3px 0 color-mix(in oklab, black 18%, transparent),
+    inset 0 0 0 2px var(--fluo-stop-kind, transparent);
+}
+.fluo-stop--ahead {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 34%, transparent),
+    inset 3px 3px 6px color-mix(in oklab, var(--cahier-ink) 20%, transparent),
+    inset -3px -3px 6px color-mix(in oklab, white 92%, transparent),
+    inset 0 0 0 2px color-mix(in oklab, var(--fluo-stop-kind, transparent) 45%, transparent);
+}
+/* Lift on hover, press INTO the band on tap — the same affordance the keys
+   use, so a stop behaves like every other control in the app. */
+.fluo-stop:hover { transform: translateY(-2px); }
+.fluo-stop:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
+    inset 3px 4px 7px color-mix(in oklab, black 26%, transparent),
+    inset -2px -2px 5px color-mix(in oklab, white 35%, transparent);
+}
+.fluo-stop:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 3px; }
+
+/* THE NUMERAL ON A FLUORESCENT FILL (6 Sep). Dan chose white type on the pen,
+   having been shown the measurements: 2.64 / 3.01 / 2.26 / 1.84 against the
+   4.5 floor, because a fluorescent pen is lighter than white type can clear.
+   The shadow is what makes that survivable — it gives the glyph its own dark
+   edge so it stops dissolving into the fill. WCAG scores flat colours and does
+   not count a shadow, so the ratio is unchanged and this is a deliberate,
+   recorded trade rather than a fix. Page ink on the same fills measures
+   4.92-8.05 if it is ever revisited.
+
+   Two shadows, not one: a tight 1px drop gives the edge, a soft 3px halo
+   separates the glyph from a light fill without printing a visible outline. */
+.fluo-stop-num {
+  color: #fff;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, .55),
+    0 0 3px rgba(0, 0, 0, .45);
+}
+
+/* The unit band is the TRAY the stops sit in — recessed, so raised stops have
+   something to be raised out of. One hairline and one soft inner shadow: any
+   more and fifty nodes start to swim. */
+.fluo-band {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 10%, transparent),
+    inset 0 2px 5px color-mix(in oklab, var(--cahier-ink) 12%, transparent);
+}
+
+/* The same spring on the app's own keys, so a stop and a Continue key answer
+   the finger identically. .neo-key set transform .1s ease on 1 Sep; this
+   overrides only the curve, not the travel. */
+.neo-key { transition: transform .34s cubic-bezier(.34, 1.56, .64, 1), box-shadow .16s ease; }
+.neo-key:active { transition-duration: .06s, .06s; transition-timing-function: cubic-bezier(.2, 0, .1, 1), ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fluo-stop, .fluo-stop:hover, .fluo-stop:active,
+  .fluo-spring, .fluo-spring:hover, .fluo-spring:active { transform: none; }
+  /* A spring IS motion. Someone who asked for less of it gets the state
+     change with no travel at all, rather than a shorter bounce. */
+  .fluo-stop, .fluo-spring, .neo-key { transition: box-shadow .12s ease; }
+}
+
+/* AN EMBED IS THE MAP AND NOTHING ELSE (6 Sep). /map/embed is meant to be
+   iframed into a course page, where FluOLinGo's own footer, feedback button,
+   beta notice and install prompt are not just noise — they are another site's
+   furniture appearing inside someone's page. The root layout renders them for
+   every route and, being a server component, cannot know the pathname; a
+   nested layout cannot remove what the root already put in the body. So the
+   page marks itself and the body hides the rest.
+
+   `:has()` rather than a class on <body>: the page cannot reach the body
+   element from inside the tree without an effect that would flash the
+   furniture on first paint. This costs one selector and no JavaScript.
+
+   EVERYTHING BUT THE MAIN, rather than a list of names: a list would need a
+   hook added to each of FeedbackButton, BetaNotice and InstallPrompt — three
+   shared files edited for a styling concern — and would silently miss the
+   next thing added to the layout. `display: none` on a <script> or on the
+   render-nothing helpers (ProgressSync, PageViewTracker, KeyNav) changes
+   nothing: scripts still run and a style element still applies. */
+body:has(.fluo-embed) > *:not(main) { display: none !important; }
 /* A key with nothing behind it is a WELL, not a faded button — Rewind when
    no words are waiting. Dan named it in the same breath as the wells ("the
    buttons that are greyed out because nothing lies underneath"), so it takes

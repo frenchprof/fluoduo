@@ -6,6 +6,66 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 6 Sep, latest — Dan picked a gamification option; the map is tactile; every reward banner is coloured (Peers)
+
+Sole editor of STATUS.md in this commit: Peers.
+
+**Dan picked one of the five.** The entry below says "he has picked none yet";
+he has now. From the video read he chose **"Craving — add surprise"**, and it
+is built. THE LUCKY FIND: a graded answer can now find gems.
+
+- **Gems, NOT XP**, and that is the whole design. XP drives the level, the
+  rank and the leaderboard, and the honest-receipt rule says a receipt states
+  the EXACT amount an answer pays. Random XP breaks both. Gems buy cosmetics
+  and gate nothing.
+- Four guards, all executed in `verify109` against 5000 seeds — **seeded, not
+  rolled** (a hash of item+day, and it rides the same `award` gate as the XP,
+  so a re-attempt cannot fish for a drop), a **pity floor** at 12 dry answers,
+  a **daily cap** of 40 gems, and **never negative** (hearts were removed for
+  punishing errors; a find that could take something away brings them back).
+- `findDry` deliberately does NOT reset at midnight — the floor is a run of
+  bad luck, not a date, or every day would start owing a find.
+- `normalize()` guards `findGems`/`findDry` with `Number.isFinite` because
+  the cap is arithmetic on them: `findGems: "40"` makes the cap NaN and the
+  balance NaN forever, and a spread default cannot catch it.
+
+**TWO COLOUR RULINGS from the same afternoon, both Dan's, both worth keeping:**
+
+1. **The find wears `flow` (teal), and the rule is one colour, one meaning.**
+   It shipped for a day in `joy` — which is this app's XP colour, the +20
+   float and the receipt's XP line — so the banner said "XP" while the code
+   paid gems. Dan: not amber (XP), not magenta (the streak fire), not either
+   red (a find often lands right after a WRONG answer, so the reward would
+   flash in the failure colour). `verify109` reads the roles FROM SOURCE
+   rather than pinning the string "flow", so it survives a re-cut palette.
+
+2. **Every reward banner now carries its role's fill.** Dan: *"The 'You found'
+   tile should be in color ?!"* and *"it looks too fade"*. The banner was
+   hardcoded `bg-white`, so a badge, a level-up, a streak, a finished unit and
+   a find were five white cards differing by a hairline. **The trap for the
+   next session:** on a full fill the text colour is NOT a constant. Page ink
+   works for flow/reward/win/joy and FAILS for streak/focus/miss
+   (3.19–3.28:1); white does the exact opposite. A mock-up of the find, the
+   badge and the level-up all say "use ink" because those three are the light
+   half of the palette — and ink would then ship the STREAK banner, seen
+   daily, unreadable. Each role already declares its answer as
+   `--dopa-X-on`; the banner asks the token instead of choosing.
+
+**The map is tactile** (the Malewicz brief). Stops are objects with a two-sided
+spring, the road has a body (a three-stroke cord travelled, a groove ahead),
+stops wear the fluorescent pens in two shades — pen when reached, wash when
+still ahead — the numeral never disappears (Dan: *"i do still want the number
+to remain"*), and there is no ✓ at all (*"Drop it — the fill says it"*).
+`/map/embed` is a standalone iframe-able map on the same component. `verify108`
+holds it.
+
+**Open, and NOT built:** the Finale card (`FinaleContent.tsx`) is entirely raw
+Tailwind — `amber-300/50/800` on the hint button, `slate-300/700` on check,
+plus `slate-900`, `emerald-500`, `rose-400`, `yellow-100`. The hint button's
+amber is **0.3° of hue from the XP amber**, i.e. the same fault Dan just
+caught on the find banner. Dan has authorized the conversion; it is being done
+on its own branch, not in the batch above.
+
 ## 6 Sep, late — #199 ships: rings that wrap the page edge; work paused for Dan's gamification video
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
@@ -49,8 +109,11 @@ game (streak multiplier caps at day 7; loss-framing is banned by
 verify32), and run no variable reward at all. Five options put to him,
 cheapest first: extend the streak ladder past day 7; a "course ends, French
 doesn't" surface after Diplômé; occasional bonus gems on perfect runs;
-"you vs last week"; a Finch-style companion (big, own conversation). **He has
-picked none yet — nothing is to be built from this list without his word.**
+"you vs last week"; a Finch-style companion (big, own conversation).
+[SUPERSEDED the same evening: Dan routed THREE to Color review — the streak
+ladder, the after-Diplômé surface, and "you vs last week"; see the BRIEF FOR
+COLOR REVIEW in THE ROSTER. Bonus gems went to Peers on Dan's direct pick
+(the lucky find, #202); only the companion stays unapproved.]
 
 Still open from the same afternoon: the landing recapture (bands + family
 captions, authorized), the three-fonts branch awaiting his go, the dark-cahier
@@ -258,6 +321,43 @@ deciding what DéjàRevu is, and pre-tests are barred from `queueForReview`.
 And SpecuLearn is merged in NAME only: four runners, 2,264 lines, 109 routes,
 with the game paying XP/SRS through the help ladder while the /pretests half is
 forbidden from it. Both are Dan's calls, raised with him.
+## 6 Sep — OPEN FOR fluoduo-main: the lesson tab strip is under #192's tap floor
+
+Sole editor of STATUS.md in this commit: claude/fluolingo-color-review-9thj8x
+(Colour review). Raised at Dan's instruction after #189 merged; the detail and
+the numbers are in **issue #193**.
+
+#192 set the fat-finger floor — a control may draw small, but must CATCH ~44px.
+The four lesson tabs do not, measured on the merged export at
+`/lessons/deck/salutations`:
+
+    320px   36.8px tall   4 of 4 under the floor   4px apart
+    390px   41.3px tall   4 of 4 under the floor   4px apart
+
+AND IT CANNOT TAKE #192's OWN FIX. That patch's note says so: *"Do not put it
+on two controls closer than ~10px, or their halos cross."* The strip is
+`grid-cols-4 gap-1` — four pixels. So the remedy has to be real height, not the
+invisible halo.
+
+TWO THINGS BEFORE ANYONE CALLS IT A REGRESSION.
+
+  · It is not one. The strip measured 37px and 41px BEFORE the 5 Sep stacking
+    change too — same heights, one row instead of two. What is new is a rule it
+    breaks, not the strip.
+  · Nothing catches it. The floor is a hand-applied class, so a control that
+    never got the class is invisible to CI. A check that MEASURES rendered hit
+    areas would; the jam scan already drives every lesson page in a browser and
+    could carry it.
+
+NOT FIXED HERE, deliberately. ~5px of vertical padding brings the tabs to 44
+without touching the emoji, the labels or the four columns — but it is a
+visible change to a strip Dan has been iterating on all week, and the choice
+(raise it, or accept a documented exception to the floor) is with him.
+
+Clean at the same measurement, for the record: the goal-page item links catch
+60px with 6px between them, 0 of 313 under the floor; and `/sio/[id]` and the
+lesson pages render correctly on a dark-mode phone under #190 — the cahier
+stays light, the ink stays dark, no dark-on-dark.
 
 ## 6 Sep — Peers' language pass lands; the rest of #187 was already home
 
@@ -2076,6 +2176,106 @@ closed.
 
 ## THE ROSTER (31 Aug 2026) — lanes, rules, and the decision queue
 
+### FOR COLOR REVIEW, FIRST — the icon colours are to be REDONE (Dan, 6 Sep, direct)
+
+Dan has told Color review directly to redo the colours, and pasted the spec
+sheet in the fluoduo-main session; this transcribes it so the file you read
+first carries it. It shows the notebook "C" icon in TWELVE colourways — six
+pen-dominant (top row) and six complement-dominant (bottom row) — on paper
+and on dark:
+
+    pen-dominant:        Pink #ff4eb2 · Orange #ff9037 · Yellow #fcdf00
+                         · Green #00dd3e · Blue #1ca6ff · Violet #b17eff
+    complement-dominant: Teal #00c197 · Sky #00b2f6 · Periwinkle #9398ff
+                         · Magenta #f350ff · Amber #e88c00 · Olive #98b300
+
+The design rule on the sheet: **the C needs two things at once — the L-block
+and the top-right block close enough to fuse into one stroke, and both far
+enough from the paper to be seen at all.** Judged by eye first, corrected by
+measurement twice. Measured block-vs-paper / tint-vs-paper / block-vs-tint,
+the notable rows: Pink 2.79/1.48/1.89 is the strongest block; Sky's orange
+mouth on a blue letter is the cleanest pair; Teal's pink mouth the best
+reversal by eye; **Yellow 1.24/1.13/1.10 is the weak one — fuses perfectly,
+then vanishes into the page**; Green is faint on paper with the palest tint
+(1.09). Periwinkle and Amber hold (mid-pack, not the weak ones first
+called). This supersedes prior icon-colour work where they disagree; Dan's
+words in his own brief to you are the authority on scope.
+
+### The ladder was built TWICE in one evening — the routing whiplash did it (7 Sep)
+
+The routing below moved three times in hours, and the cost arrived on
+schedule: Peers, briefed before the take-back, built the streak ladder on
+their branch (PR 207) while fluoduo-main built it on feat/streak-ladder —
+same rungs, same algorithm, different names. Assertion 4 flagged the
+verify-number half at push time (110 twice); the FUNCTION half no scan can
+see, exactly like blankKeysFor on 31 Aug. Resolved in the PR-207 QC merge:
+main's names stay (`FIRE_LADDER`/`nextFireMilestone`), Peers' ×3-ceiling
+rationale is grafted into the comment, their RewardToast fix is kept — they
+caught that the streak toast's fallback line "Come back tomorrow to keep it"
+is loss-framed (KEEP is a thing you can lose) and verify32's word list had
+missed it — and their 3D-map stops work lands untouched. The lesson is the
+31 Aug lesson again: when a brief moves between lanes mid-evening, the OLD
+assignee must be told to stand down in the same breath — the brief edit
+landed on main before Peers pushed, but nothing pinged them.
+
+### The three retention builds — ALL TAKEN BY FLUODUO-MAIN (final routing, 7 Sep)
+
+The routing moved three times in one evening, on Dan's word each time, and
+this is where it ended: Color review ("no time") → Peers ("rope in peers") →
+Peers is busy, so **fluoduo-main built all three** on `feat/streak-ladder`
+(one PR: the ladder, the forever key, you-vs-last-week; checks verify111, 112,
+113 — the ladder check was born 110 and renumbered at the gate: assertion 4
+caught verify110-finale-colours in flight on Peers' branch, the first live
+catch at push time). Nothing below is anyone's to build any more — it is a record of
+what shipped and why. Color review: verify numbers 111-113 are taken (110 is
+peers-finale-colours'), so 114+ look free.
+
+Background: Dan sent a video on the three retention machines consumer apps
+run (unpredictable rewards / the infinite game / social scoreboards). Five
+options were put to him; the three below are now Peers' lane. Of the
+other two, the bonus-gems idea was picked by Dan directly in Peers' session
+and is BUILT (the lucky find, #202 — do not build it again; its colour rules
+live in verify109); the Finch-style companion remains NOT approved.
+
+THE ETHICS FLOOR IS LAW on all three: nothing loss-framed (verify32 greps
+for the phrases and fails the build), effort never punished, nothing locked,
+delight never delays a cold guess (UI_POLICE 79-80). These builds add reasons
+to come back, never fear of staying away.
+
+**1 · The streak ladder grows past day 7.** Built — `xpMultiplier` in
+`src/lib/economy.ts` is ×1 → ×1.5 (day 3) → ×2 (day 7) and then flat
+forever: day 40 pays what day 7 pays. Extend it — e.g. ×2.5 at 14 and ×3 at
+30, numbers yours to tune — and make the NEXT milestone visible wherever the
+multiplier already shows (the +XP float prints the arithmetic, `XpFloat.tsx`;
+the streak mark sits in `SiteTopBar.tsx`). Gain-framed only: "day 14 pays
+×2.5", never "don't break it". The 30-day badge (`inarretable`) already
+exists — the ladder step should agree with it.
+
+**2 · "The course ends; the French doesn't."** « Diplômé » at 50/50 is a
+correct terminal state — LAF1201 is a semester course — but nothing tells a
+finished learner that the revise deck is the forever-game (spaced repetition
+generates due work indefinitely). Build the small surface that says so when
+`doneSios.length >= 50`: where Continue would point at a next goal, point at
+revision instead, in the app's own voice. Where it lives (Home hero /
+profile / both) is your call — show Dan renders before wiring, per
+show-don't-describe.
+
+**3 · "You vs last week."** The weekly board resets Monday and the learner's
+own last-week figure dies with it. `progress` carries `weekXp` + `weekKey`
+(`src/lib/dayKey.ts` derives keys); keep one prior week locally and show the
+comparison on the leaderboard page (`LeaderboardList.tsx` renders the
+periods). Self-comparison only — no new social data, no publishing changes,
+`firestore.rules` untouched. If beating last week earns anything, it earns a
+chime-tier moment, not a fanfare (the ladder in `RewardToast.tsx`).
+
+House rules that bite here: counts only where the thing counted is unseen;
+no full-width single controls; English chrome (these are chrome surfaces, not
+decks); relative type sizes; hand over the branch to fluoduo-main explicitly
+when it is ready — files touched, shared files, known collisions. Verify
+numbers: 108/109 are Peers' (#202), 107 is the landing branch's, 110 is
+peers-finale-colours', 111-113 the retention builds', so 114+ look free;
+assertion 4 checks your claim at push time either way.
+
 ### The Grok duty-roster proposal is DROPPED (Dan, 6 Sep)
 
 Asked directly — "Stamp it, amend it, or drop it?" — Dan chose **Drop
@@ -2088,9 +2288,9 @@ is gone from here; it lives in git history if anyone needs the wording.
 | Agent (session) | Lane | Owns right now |
 |---|---|---|
 | **fluoduo-main** | **Integration** — merges, branch hygiene, verify-number renumbers, cross-session stall watch, previews for Dan, deploy shepherding | The 31 Aug cleanup sweep; this roster |
-| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **Gate OPEN** (#100 merged, decision 1 resolved): next Tier-1 batch and the Tier-3 eight |
+| **Color review** | **Concepts** — the tier pipeline (Tier 1 ×19, Tier 2 second half), keeper of the Stocktake ledger | **The icon-colour REDO** (Dan direct, spec transcribed below) — the retention builds moved to Peers · then the tier pipeline resumes |
 | **Pre-tests** | **Pre-test surfaces** | ✅ Unit-0 pages (#98) · ✅ popup collapse (#99) · ✅ derived done-ness (#104, open) · ✅ iComplete cut + SIO-010 tabs (#107, open) · **next: Tier-1 concept batches as second capacity** |
-| **Peers** | **Features** | 31 Aug PM: SIO-005/006 lessons, the colour ladder, band weight, English tabs, Words-under-Forms, the collapse rule — **LANDED — #105, `d85533b`**. Queue empty; next assignment is Dan's |
+| **Peers** | **Features** | #202 landed (`fb63da9`: tactile map, lucky find, banner colours) · retention builds re-taken by fluoduo-main (7 Sep, Dan: "he is now busy") · next assignment is Dan's |
 | **Dan** | **Decisions + reads + deploys** | The queue below; every pedagogical claim is read before it ships |
 
 ### Rules every session respects
