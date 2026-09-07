@@ -6,6 +6,7 @@
  * understand what it means"). Tap → a small popover naming each icon.
  */
 import { useState } from "react";
+import { FIRE_LADDER } from "@/lib/economy";
 
 export default function StatsHelp() {
   const [open, setOpen] = useState(false);
@@ -25,10 +26,17 @@ export default function StatsHelp() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
           <div className="absolute left-1/2 top-full z-50 mt-1.5 w-72 max-w-[88vw] -translate-x-1/2 rounded-2xl border-2 border-[color:var(--fluo-ink,#222850)] bg-white p-3 text-left shadow-xl">
-            <ul className="space-y-1.5 text-xs font-bold text-[color:var(--fluo-ink,#222850)]">
+            {/* IN THE HOUSE HAND (Dan, 7 Sep: "The content of ? NEEDS TO BE
+                WRITTEN IN FLUOLINGO FONT PLEASE") — card-hand is the app's
+                FluOLinGo Hand class; a step up in size because the hand face
+                runs narrower than the body face at the same box. The fire
+                line renders FROM the ladder itself so this card can never
+                teach rungs the economy stopped paying (it still said "≥ 7 →
+                ×2" a day after day 14 and day 30 shipped). */}
+            <ul className="card-hand space-y-1.5 text-sm text-[color:var(--fluo-ink,#222850)]">
               <li>🎚️ Level — rises with your ⭐ XP.</li>
               <li>✓ — objectives marked « done », out of 50.</li>
-              <li>🔥 — days in a row; ≥ 3 days → XP ×1.5, ≥ 7 → ×2.</li>
+              <li>🔥 — days in a row; {FIRE_LADDER.map((r) => `day ${r.day} pays ×${String(r.mult).replace(".", ",")}`).join(" · ")}.</li>
               <li>⭐ XP — earned on every answer;<br />ranks the 🏆 Leaderboard.</li>
               <li>💎 Gemmes — paid out by 🎖️ badges;<br />spend them in the Shop.</li>
             </ul>
