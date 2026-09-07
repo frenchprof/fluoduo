@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import LetrisGame from "@/games/letris/LetrisGame";
 import AuthGate from "@/components/AuthGate";
+import GameLanding from "@/components/GameLanding";
 import { getLetrisSet, listLetrisSets } from "@/games/letris/sets";
 
 export function generateStaticParams() {
@@ -19,7 +20,12 @@ export default async function LetrisSetPage({
 
   return (
     <AuthGate what="play">
-      <LetrisGame set={set} />
+      {/* The game sits IN a page (Dan, 7 Sep: "can we have them embedded like
+          the map, (with option to go full screen)") — the band names the
+          activity above the board, and ⛶ on the game bar takes it full. */}
+      <GameLanding activityKey="vocabularain" bleed>
+        <LetrisGame set={set} />
+      </GameLanding>
     </AuthGate>
   );
 }

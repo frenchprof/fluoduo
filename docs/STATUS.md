@@ -6,6 +6,56 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 7 Sep, later — games in the page, and the SECOND same-day collision (Peers)
+
+Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
+
+**PR #207 is open and waiting on a decision fluoduo-main has to make, not on
+its own CI.** Dan was shown the situation and ruled: *hand both to fluoduo-main
+to reconcile.* Nothing here should land before that.
+
+Dan asked this lane for games *"embedded like the map, (with option to go full
+screen), and remember the landscape modes"*. He asked the pre-tests lane, the
+same day, for *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER PAGES
+IN IFRAMES"*. **These are one instruction and they were built twice**, an hour
+apart, and both are correct:
+
+    /games/vocabularain           the SET LIST   -> on main, an iframe (EmbedFrame)
+    /games/vocabularain/aliments  the GAME       -> PR #207, a box in the page
+
+A learner cannot tell them apart; the code has two machines for one job. This is
+the `blankKeysFor` case again — the fifth same-day duplication in a week — and
+it is why the merge gate exists. Neither branch conflicts TEXTUALLY: #207
+rebased onto `89ff466` clean.
+
+If the iframe mechanism wins, three things in #207 are independent of it and
+should be carried over rather than dropped: the **⛶ / ⤡ key** (the iframe
+version has no full-screen option and Dan asked for one — and a box inside an
+iframe can only fill its own window, so it will have to ask the host to go full
+for it), the **landscape rule**, and the three bugs below.
+
+**Three faults it turned up, real at any size:**
+
+- **VocabulaRain's sky never sized to its board.** Patch 23's rule ran through
+  `useBoardSize()` — a context `GameFrame` PROVIDES — and `LetrisGame` is the
+  component that renders `GameFrame`, so the hook sat above its own provider and
+  returned `{0,0}` every time. Every row has been the 48px fallback since the day
+  it was written. Nobody noticed while the game owned the whole phone. The sky is
+  a flex child with `minmax(0, 1fr)` rows now and cannot overflow at any size.
+- **The puddle labels ran off the edge** at 293px of board — « LÉGUME »,
+  « BOISSO ». They size from `--board-w` in CSS now, 9–16px.
+- **The game bar overflowed** once ⛶ joined it: ⋯ half off the right edge. Gaps
+  and key sizes tighten below `sm`.
+
+**Number collisions, the eleventh AND the twelfth, forty minutes apart.**
+Written as `verify111`; main claimed 111–118 while it was in flight (115 being
+this lane's own Finale work re-landed via #214), so it went to **119** — and
+the colour-review lane claimed 119 and 120 in the minutes between that push
+and CI running. Now **121**. Both were caught by `verify-wiring` at push time,
+neither by anyone's scan, which is the whole argument for the check: a scan is
+a snapshot, and today `main` and four branches are all moving inside the same
+hour.
+
 ## 7 Sep — THE PRE-TESTS LANE WENT STRAIGHT ONTO `main`, AT DAN'S WORD. Rebase before you push.
 
 Sole editor of STATUS.md in this commit: the pre-tests lane.

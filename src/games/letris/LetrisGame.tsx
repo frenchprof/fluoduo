@@ -6,7 +6,7 @@ import { resolveBoard } from "./resolve";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
-import GameFrame, { useBoardSize } from "@/components/GameFrame";
+import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
@@ -555,10 +555,42 @@ export default function LetrisGame({
     setPaused(false); // resume the fall under the new sky
   };
   const dark = phase !== "day"; // night AND storm keep the veil + blurred letters
-  // Rows size to the room the frame gives the board (patch 23) — the puddle
-  // row and the frame's padding come off first; 48px was the old fixed row.
-  const boardSize = useBoardSize();
-  const rowH = boardSize.height > 0 ? Math.max(30, Math.min(56, Math.floor((boardSize.height - 110) / ROWS))) : 48;
+  // THE SKY SHARES THE BOARD'S HEIGHT — it is not a stack of fixed rows (7 Sep).
+  //
+  // Patch 23 wrote a rule that rows "size to the room the frame gives the
+  // board", and it has never once run: `useBoardSize()` reads a context that
+  // GameFrame PROVIDES, and this component is the one that renders
+  // <GameFrame>, so the hook sat above its own provider and always returned
+  // {0, 0}. Every row has been the 48px fallback since the day it was
+  // written. Nobody noticed while the game owned the whole phone and 10×48
+  // plus the puddles happened to fit.
+  //
+  // Embedded in the page they do not. A 565px board wants 10×48 + a 68px
+  // puddle row + borders, and the puddles — the four things you TAP — were
+  // cut off at the bottom edge. A sideways phone is worse: 334px of board.
+  //
+  // So the sky is `flex-1` inside a flex column and its rows are
+  // `minmax(0, 1fr)`. It cannot overflow the board at any size, there is no
+  // measurement to be stale, and the puddle row below it is `shrink-0` — the
+  // one part that must keep its own height, because it is the target.
+
+  // The puddle LABELS size from the board WIDTH the same way, in CSS. They
+  // were `text-sm sm:text-base` —
+  // fixed, and fine at 390px of phone. At ~293px of board a puddle is 73px
+  // and « BOISSONS » at 14px with tracking-wider is 82px, so the first and
+  // last of the four read « LÉGUME » and « BOISSO », each clipped by its
+  // neighbour. One unbreakable word cannot wrap out of that; the type has to
+  // come down. 0.68em per uppercase glyph is measured on this face at this
+  // weight and tracking, and the 16px ceiling is the old `sm:text-base`, so a
+  // full-screen board looks exactly as it did.
+  const longestWord = Math.max(
+    ...set.categories.flatMap((c) => c.label.split(/\s+/).map((w) => w.length)),
+  );
+  // 40px is the sky's border and the board's own inset, measured — the row is
+  // narrower than the board it sits in — and 8px is this button's padding.
+  // 0.70em per uppercase glyph is measured too: « BOISSONS » renders 65px at
+  // 11.63px type, tracking included.
+  const binFont = `clamp(9px, calc(((var(--board-w, 400px) - 40px) / ${cols} - 8px) / ${(longestWord * 0.7).toFixed(2)}), 16px)`;
   // Ambient dusk (Dan, 2026-07-14: "sky turns dark periodically, e.g. after
   // 30 seconds"): a passing cloud every 30 s of daytime play, ~6 s long —
   // scenery only; the pedagogical night/storm veil always wins.
@@ -737,12 +769,12 @@ export default function LetrisGame({
         );
       })()}
 
-      <div className="relative overflow-hidden rounded-3xl border-4 border-white shadow-xl">
+      <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border-4 border-white shadow-xl">
         <div
-          className="relative grid"
+          className="relative grid min-h-0 flex-1"
           style={{
             gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-            gridTemplateRows: `repeat(${ROWS}, ${rowH}px)`,
+            gridTemplateRows: `repeat(${ROWS}, minmax(0, 1fr))`,
             background: "linear-gradient(180deg, #59b8f2 0%, #8fd0f8 55%, #c8e9fc 100%)",
           }}
         >
@@ -825,7 +857,7 @@ export default function LetrisGame({
                       style={
                         isActive
                           ? {
-                              height: rowH - 4,
+                              height: "calc(100% - 4px)",
                               // falling = a neutral raindrop: colour hidden until it lands.
                               // At night it rides ABOVE the dark veil — only its
                               // masked letters are unclear, not the whole word.
@@ -836,7 +868,7 @@ export default function LetrisGame({
                               position: "relative",
                               zIndex: 20,
                             }
-                          : { height: rowH - 4, background: colorOf(tile), color: "#fff", borderRadius: 10, boxShadow: "inset 0 -3px 0 rgba(0,0,0,.2)" }
+                          : { height: "calc(100% - 4px)", background: colorOf(tile), color: "#fff", borderRadius: 10, boxShadow: "inset 0 -3px 0 rgba(0,0,0,.2)" }
                       }
                     >
                       {isActive && dark ? <NightWord text={tile.text} /> : tile.text}
@@ -849,7 +881,7 @@ export default function LetrisGame({
         </div>
 
         {/* coloured puddles — the category bases the drops sort into */}
-        <div className="grid border-t-4 border-white" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+        <div className="grid shrink-0 border-t-4 border-white" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
           {set.categories.map((c, i) => (
             <button
               key={c.key}
@@ -857,10 +889,10 @@ export default function LetrisGame({
               onClick={() => dropInto(i)}
               title={`Poser ici : ${c.label}`}
               disabled={!active || paused || gameOver}
-              className={`cursor-pointer px-2 py-3 text-center text-sm font-black tracking-wider text-white transition hover:brightness-110 active:translate-y-[2px] disabled:cursor-default sm:text-base ${
+              className={`cursor-pointer px-1 py-3 text-center font-black leading-tight tracking-wider text-white transition hover:brightness-110 active:translate-y-[2px] disabled:cursor-default ${
                 i < cols - 1 ? "border-r-2 border-white/50" : ""
               }`}
-              style={{ background: catColor(i), boxShadow: "inset 0 -5px 0 rgba(0,0,0,.18), inset 0 4px 6px rgba(255,255,255,.25)" }}
+              style={{ background: catColor(i), fontSize: binFont, boxShadow: "inset 0 -5px 0 rgba(0,0,0,.18), inset 0 4px 6px rgba(255,255,255,.25)" }}
             >
               {c.label}
             </button>

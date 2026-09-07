@@ -39,6 +39,8 @@ export default function GameBar({
   score,
   onMenu,
   menuOpen,
+  full,
+  onToggleFull,
 }: {
   /** The ✕. A game you cannot leave is a trap. */
   exitHref: string;
@@ -52,14 +54,17 @@ export default function GameBar({
   score?: ReactNode;
   onMenu: () => void;
   menuOpen: boolean;
+  /** null = this frame cannot go full screen (it already is). */
+  full?: boolean;
+  onToggleFull?: () => void;
 }) {
   const pct = progress && progress.total > 0
     ? Math.min(100, Math.round((progress.done / progress.total) * 100))
     : 0;
   const exitCls =
-    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/50 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]";
+    "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/50 sm:h-9 sm:w-9 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]";
   return (
-    <div className="game-bar flex h-14 shrink-0 items-center gap-3 border-b-2 border-[color:var(--cahier-ink)]/10 bg-[color:var(--cahier-paper-raised)]/80 px-3 backdrop-blur sm:px-5">
+    <div className="game-bar flex h-14 shrink-0 items-center gap-1.5 border-b-2 border-[color:var(--cahier-ink)]/10 bg-[color:var(--cahier-paper-raised)]/80 px-2 backdrop-blur sm:gap-3 sm:px-5">
       {onExit ? (
         <button type="button" onClick={onExit} aria-label="Exit" className={exitCls}>✕</button>
       ) : (
@@ -108,12 +113,29 @@ export default function GameBar({
           HelpDot fault again. */}
       <SoundControl />
 
+      {/* FULL SCREEN (Dan, 7 Sep: games "embedded like the map, (with option
+          to go full screen)"). Beside ⋯ rather than inside it: it is a thing
+          you reach for mid-game, and a control you have to open a sheet to
+          find is a control you do not use. */}
+      {onToggleFull && (
+        <button
+          type="button"
+          onClick={onToggleFull}
+          aria-pressed={full}
+          aria-label={full ? "Leave full screen" : "Play full screen"}
+          title={full ? "Leave full screen" : "Play full screen"}
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
+        >
+          <span aria-hidden>{full ? "⤡" : "⛶"}</span>
+        </button>
+      )}
+
       <button
         type="button"
         onClick={onMenu}
         aria-label="Menu"
         aria-expanded={menuOpen}
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)]"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xl font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
       >
         ⋯
       </button>
