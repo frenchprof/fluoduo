@@ -107,6 +107,55 @@ export default function MapBody() {
   // key makes "303" -> clamped to 200. Driven and measured: typing "135" left
   // 200 in the field. Only round numbers already in range could ever be typed.
   const [zoomDraft, setZoomDraft] = useState<string | null>(null);
+  // PINCH TO ZOOM, BOTH VIEWS (Dan, 7 Sep, choosing "Both views" and thereby
+  // retiring his own 20 Aug ruling that the 3D view must not zoom).
+  //
+  // It drives the SAME `zoomPct` the field and the steppers drive — the zoom
+  // wrapper below contains both the 3D scene and the 2D grid, so there is one
+  // number and the field visibly tracks your fingers. A second, separate
+  // pinch scale for 3D would be two scales fighting over one scene.
+  //
+  // `touch-action: pan-y` on the wrapper is what makes the gesture OURS: it
+  // leaves one-finger scrolling to the browser and takes two-finger pinch off
+  // it, so the page does not zoom underneath the map. The move listener has to
+  // be non-passive to call preventDefault, which is why this is an effect and
+  // not an onTouchMove prop — React attaches those passively.
+  const zoomRef = useRef(100);
+  // Mirrored in an effect, not written during render: a ref write during
+  // render is what the repo's lint rule forbids, and there is no reason to
+  // reach for a disable here — the ref only seeds `baseZoom` when two fingers
+  // land, which is always long after the effect has flushed.
+  useEffect(() => { zoomRef.current = zoomPct; }, [zoomPct]);
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+    let baseDist = 0;
+    let baseZoom = 100;
+    const gap = (t: TouchList) =>
+      Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) { baseDist = gap(e.touches); baseZoom = zoomRef.current; }
+    };
+    const onMove = (e: TouchEvent) => {
+      if (e.touches.length !== 2 || baseDist <= 0) return;
+      e.preventDefault();
+      setZoom(baseZoom * (gap(e.touches) / baseDist));
+    };
+    const onEnd = (e: TouchEvent) => { if (e.touches.length < 2) baseDist = 0; };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd, { passive: true });
+    el.addEventListener("touchcancel", onEnd, { passive: true });
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+    };
+    // Binds once: the live zoom is read through zoomRef rather than closed
+    // over, so the listeners never need re-attaching.
+  }, []);
+
   const commitZoom = (text: string) => {
     const n = parseFloat(text);
     setZoom(Number.isFinite(n) ? n : 100);
@@ -230,7 +279,7 @@ export default function MapBody() {
         </span>
       </div>
 
-      <div ref={mapRef} className="relative scroll-mt-3">
+      <div ref={mapRef} className="relative scroll-mt-3" style={{ touchAction: "pan-y" }}>
         <div data-tour="map" style={{ zoom: zoomPct / 100 }}>
           {mapView === "3d" ? (
             <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />

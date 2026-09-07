@@ -426,6 +426,33 @@ for f in ("src/components/HomeMap.tsx", "src/app/map/MapBody.tsx"):
           f"{os.path.basename(f)}: the zoom control is flat again — it sits "
           f"beside a map made of keys that rise and press")
 
+# --- 12 · pinch to zoom, both views ---------------------------------------
+# Dan, 7 Sep, choosing "Both views" — and thereby retiring his own 20 Aug
+# ruling that the 3D view must not zoom. Recorded in STATUS.
+#
+# ONE NUMBER, NOT TWO. The pinch drives the same `zoomPct` the field and the
+# steppers drive, because the zoom wrapper contains BOTH the 3D scene and the
+# 2D grid — so the field visibly tracks your fingers, and there is no second
+# scale to fight the camera.
+mb = strip_comments(read("src/app/map/MapBody.tsx"))
+check('touchAction: "pan-y"' in mb,
+      "the map wrapper takes the pinch off the browser and keeps 1-finger scroll",
+      "the map wrapper does not set touch-action, so a pinch zooms the PAGE "
+      "instead of the map")
+check('addEventListener("touchmove", onMove, { passive: false })' in mb,
+      "the move listener is non-passive, so the gesture can be claimed",
+      "the touchmove listener is passive — preventDefault is a no-op and the "
+      "browser will zoom the page underneath the map (this is why it is an "
+      "effect and not an onTouchMove prop: React attaches those passively)")
+check(re.search(r"setZoom\(baseZoom \* \(gap\(e\.touches\) / baseDist\)\)", mb),
+      "the pinch scales the zoom proportionally from where the fingers landed",
+      "the pinch no longer scales from the gesture's own starting distance, so "
+      "it will jump rather than track")
+check("zoomRef" in mb and "zoomRef.current = zoomPct" in mb,
+      "the live zoom is read through a ref, so the listeners bind once",
+      "the pinch listeners close over the zoom and must re-attach on every "
+      "change")
+
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:
     print("\n".join(f"  FAIL {m}" for m in FAIL))
