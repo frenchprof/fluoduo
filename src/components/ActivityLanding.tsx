@@ -168,16 +168,22 @@ function Row({
   isLast: boolean;
 }) {
   const label = (
-    <span className="flex min-w-0 flex-1 items-center gap-2 text-left">
+    <span className="flex min-w-0 flex-1 items-start gap-2 text-left">
       <span
         className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 text-[0.7rem] font-black"
         style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
       >
         {String(sio.num).padStart(2, "0")}
       </span>
+      {/* WRAPS, NEVER TRUNCATES (Dan, 2026-09-07: *"put buttons in two
+          columns"*). At two columns on a 390px phone a cell is 117px wide, and
+          `truncate` turned that into « Je m… », « Tu (t… » — and, worse, made
+          stops 05 and 06 both read « C'est… », two different goals wearing one
+          label. The title is the only thing that says which stop this is, so it
+          wraps onto as many lines as it needs and the cell grows to fit. */}
       <span className="min-w-0">
-        <span lang="fr" className="block truncate text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
-        <span className="block truncate text-[0.7rem] text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
+        <span lang="fr" className="block hyphens-auto break-words text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
+        <span className="block break-words text-[0.7rem] leading-tight text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
       </span>
       {isLast && (
         <span className="fluo-label shrink-0 rounded-full border-2 px-2 py-0.5 text-[0.55rem]"
@@ -188,7 +194,9 @@ function Row({
     </span>
   );
 
-  const base = "flex w-full items-center gap-1.5 rounded-xl border-2 px-2.5 py-2 transition";
+  /* `items-stretch` + `h-full` so both cells in a row are the same height
+     whatever their titles do — a grid of ragged boxes reads as broken. */
+  const base = "flex h-full w-full items-start gap-1.5 rounded-xl border-2 px-2.5 py-2 transition";
   if (!href) {
     return (
       <li>
@@ -212,7 +220,11 @@ function Row({
         style={{ borderColor: isLast ? "var(--fluo-card-accent)" : "var(--fluo-line)" }}
       >
         {label}
-        <span aria-hidden className="shrink-0 text-sm font-black text-[color:var(--fluo-ink)]/35">›</span>
+        {/* The « › » that sat here is gone (7 Sep). The whole cell is the link
+            and says so by being a raised white button; the chevron added
+            nothing a learner needed and cost ~12px of a 117px cell, which is
+            width the title could not spare. Dan's litmus test, applied to a
+            glyph. */}
       </Link>
     </li>
   );

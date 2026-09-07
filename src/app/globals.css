@@ -2130,7 +2130,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
 }
-@media (max-width: 520px) { .stop-grid { grid-template-columns: 1fr; } }
+/* TWO COLUMNS ON A PHONE TOO (Dan, 2026-09-07: *"put buttons in two
+   columns"*, looking at SpecuLearn at 390px). This rule collapsed the grid to
+   one column below 520px, so every phone — the way the course is actually
+   used — saw a single stack of full-width rows, which is also what the
+   no-full-width-control rule forbids. The grid keeps its 6px gap; the rows
+   themselves already truncate rather than overflow. */
 
 /* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
    He sent the palette back — *"i am sorry your colors are very off. these are
