@@ -24,7 +24,8 @@ import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
-import { gapDecoyPool, gapSentence, gapSentenceEn, isPlayableGap } from "@/lib/collections/gapSentence";
+import { gapDecoyPool, gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
+import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import { stopForDeck } from "@/lib/stopTag";
@@ -59,11 +60,20 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const inputRef = useRef<HTMLInputElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
 
+  // THE ONE POOL. This used to filter `deck.items` with isPlayableGap right
+  // here, and the readiness gate filtered its own copy in
+  // gramMarathonReady.ts — the split that gapSentence.ts was written to close
+  // after three decks turned out to be silently unplayable. `gappedItems` is
+  // now the only answer to "what does this deck play", so a deck whose
+  // questions are DERIVED (matching pairs projected as « Vous tournez ___ »)
+  // reaches the gate, the tab and the game as one set or none of them.
+  const pool = useMemo(() => (deck ? gappedItems(deck) : []), [deck]);
+
   // Only the gapped items play — a line with no grammar word ("Oui, bonne
   // idée !") sits the game out.
   useEffect(() => {
     if (!deck) return;
-    const full = shuffle(deck.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    const full = shuffle(pool.map((_, idx) => idx));
     // The shuffle must happen after mount so SSR and the first client render
     // agree (the AGENTS rule every drill follows) — so this effect has to
     // seed state; there is no render-time home for it. Block-disabled: the
@@ -75,7 +85,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     // Short enough not to need asking → answered for the learner.
     setAsked(offer(full.length) === null);
     /* eslint-enable react-hooks/set-state-in-effect */
-  }, [deck]);
+  }, [deck, pool]);
 
   useEffect(() => {
     if (result === null) inputRef.current?.focus();
@@ -88,7 +98,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const run = useMemo(() => (order === null ? null : cap(order, chosen)), [order, chosen]);
   const total = run?.length ?? 0;
   const done = run === null || i >= total;
-  const item = done || !deck ? null : deck.items[run![i]];
+  const item = done || !deck ? null : pool[run![i]];
   const gap = item?.gap ?? "";
   const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
   const isRight = result === "perfect" || result === "good";
@@ -170,7 +180,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   function restart() {
     // A replay reshuffles and asks again — someone who did ten may want
     // twenty-five next, and re-asking costs one tap. A short deck still skips.
-    const full = shuffle(deck!.items.map((it, idx) => (isPlayableGap(it) ? idx : -1)).filter((x) => x >= 0));
+    const full = shuffle(pool.map((_, idx) => idx));
     setOrder(full);
     setChosen(null);
     setAsked(offer(full.length) === null);

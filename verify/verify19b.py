@@ -42,6 +42,27 @@ HARD, SOFT = [], []
 # set as short as its reason.
 PALETTE_SOURCES = {"src/content/highlighterMarks.ts"}
 
+# DRAWINGS — files whose whole job is to BE a picture.
+#
+# The same exemption from the other side. `ChestArt.tsx` is the app's treasure
+# chest: an SVG of wood, gold and ink, drawn over four rounds of Dan sending it
+# back. Its eight hexes are a picture's PIGMENTS — the gold's two stops, the
+# ink it is outlined in, the default livery's wood — not interface colour that
+# a token could carry. « the chestboxes will look like chestboxes if they are
+# viewed from the corner » is not a question a design token can answer.
+#
+# It is exempt for the same reason globals.css is outside the scan, and it is
+# held to the same bargain: the drawing moved OUT of Lexicalator.tsx, where its
+# hexes were already counted and unexempted, so this admits nothing new. The
+# baseline was lowered by exactly those 8 in the same patch (494 -> 486) so
+# the exemption leaves no slack behind it.
+#
+# A component that draws a BUTTON in hex does not belong here. The test is
+# whether the file would be a .svg on disk if SVG could take a prop.
+DRAWINGS = {"src/components/ChestArt.tsx"}
+
+EXEMPT = PALETTE_SOURCES | DRAWINGS
+
 
 def files(ext):
     out = []
@@ -50,7 +71,7 @@ def files(ext):
         out += [
             p for f in fs
             if f.endswith(ext)
-            and (p := os.path.join(root, f)).replace(os.sep, "/") not in PALETTE_SOURCES
+            and (p := os.path.join(root, f)).replace(os.sep, "/") not in EXEMPT
         ]
     return out
 

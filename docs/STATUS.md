@@ -6,6 +6,77 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 8 Sep, later — the chest on file, and Match It becomes two exercises (Peers)
+
+Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
+
+**FIRST, WHAT IS NO LONGER THIS BRANCH'S.** Four of the six things this branch
+built landed in main through OTHER lanes while it was still open — the night
+plates and `/welcome` (#234, then #237 with Dan's bigger type and the F O L G
+colours), the map's fit and its near foreground (#235), the road's grey and the
+coin stops (#236). `verify150`, `verify151` and `verify152` are main's now.
+This branch merged main in and took main's side on every one of them; nothing
+here re-applies an older copy.
+
+That is the AGENTS.md warning arriving in practice — *"BEFORE YOU RENUMBER A
+SECOND TIME, DIFF THE BRANCH AGAINST `main`"* — with the twist that the check
+that catches it (`git diff origin/main HEAD`) is worth running before OPENING
+the pull request, not only before renumbering. PR #239 was opened describing
+six pieces; four of them were already home.
+
+**THE CHEST IS A DRAWING NOW, in `src/components/ChestArt.tsx`.** What it
+replaces is 🧰 — the TOOLBOX emoji, which stood in for a chest in six places
+while also being the real icon of the in-exercise tools tray. One glyph, two
+meanings, and neither of them a chest.
+
+Four rounds of Dan sending it back, every one the same fault from a different
+side:
+
+    "the strap makes the chest look off"        straps painted on a flat front
+    "the chests i know have not straps"         there were never straps — gold
+                                                trim round wood panels
+    "your drawing mixes up the side view with   a front elevation is a shape;
+     the front lock … viewed from the corner"   a chest is a BOX or it is nothing
+    "the rounded top is only visible from the   the lid is a half-cylinder lying
+     side though, you mixed up side and front"  left-to-right: along that axis
+                                                you see the curved SURFACE (a
+                                                band with a straight crown), and
+                                                the arch is its END CAP
+
+Worth keeping: three of those four rounds were spent restyling what was PAINTED
+on a wrong projection. No amount of fixing the straps could have worked.
+
+`GameOver.emoji`, `CreditsSplash.emoji` and `GameGallery.emoji` widened from
+`string` to `ReactNode` (a string is one, so no other game changed). **The
+registry emoji in `src/content/activities.ts` and the Menu tile are still 🧰
+and that is Dan's open call** — all twenty activities carry a text emoji there,
+so doing one alone makes LexicaLater the odd tile out.
+
+Sized in px, not `em`: the block slots inherit 16px rather than their wrapper's
+`text-4xl`, so `h-[1.1em]` rendered at 18px where the emoji sat at ~34.
+Measured in the browser, not guessed from the screenshot.
+
+**`verify19b`'s ratchet caught the move and was answered with an exemption, not
+a rebaseline.** A drawing's hexes are PIGMENTS, so `ChestArt.tsx` joins
+`highlighterMarks.ts` in a new `DRAWINGS` set — the test is *"would this be a
+.svg on disk if SVG could take a prop?"* — and the ceiling dropped by exactly
+its eight (494 → 486) so the exemption left no slack. That is the precedent
+the file's own comment records from 505 → 494.
+
+**MATCH IT (`/games/matching`) IS NOW TWO EXERCISES, not one orphan game.** Dan
+picked options 1 and 2 of three. `src/lib/collections/pairChests.ts` is the one
+place that answers "what is a matching pair?", projecting each authored join
+into LexicaLater as a two-keyhole chest (`fixed`, so the level re-cut leaves it
+alone) and into GramMarathon as a gap-fill item. Option 3 — Letris columns —
+was accepted and withdrawn by Dan the same hour and is fully reverted;
+`letris.columns[].prefix` already encodes the left half if it is wanted back.
+
+`verify153-pair-chests.py` holds both, break-tested five ways. Its two
+non-obvious traps: the projected sentence must end in a FULL STOP (`gapSentence`
+reads final punctuation to tell a sentence from a grid label — the transport
+bug), and the gap must be the RIGHT half (« Vous tournez ___ », never
+« ___ à droite »).
+
 ## 8 Sep — scrolling on moves to the next QUESTION, and Unit 0 stops being one long page (pre-tests lane, branch, NOT merged)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane.

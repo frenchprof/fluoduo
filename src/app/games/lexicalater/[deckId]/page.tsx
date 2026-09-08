@@ -1,4 +1,5 @@
 import BackLink from "@/components/BackLink";
+import ChestArt, { CHEST_GOLD } from "@/components/ChestArt";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import GameLanding from "@/components/GameLanding";
@@ -6,6 +7,7 @@ import GameFrame from "@/components/GameFrame";
 import { CURATED } from "@/content/collections";
 import { displayFr, prefixTokens } from "@/lib/collections/display";
 import { isLexReady, lexBase, lexReadyItems } from "@/lib/collections/lexReady";
+import { hasPairs, pairChests, pairDecoys } from "@/lib/collections/pairChests";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -24,7 +26,7 @@ export default async function ConveyorPage({
   const collection = CURATED.find((c) => c.id === deckId);
   if (!collection) {
     return (
-      <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+      <GameFrame title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>} exitHref="/games/lexicalater" progress={null}>
         <p className="p-6 text-[color:var(--cahier-ink-soft)]">No deck <code>{deckId}</code>.</p>
       </GameFrame>
     );
@@ -32,12 +34,12 @@ export default async function ConveyorPage({
 
   // Not yet hand-syllabified → the game isn't available for this deck (rather
   // than falling back to the retired ConveyorMatch). Same frame, empty board.
-  if (!isLexReady(collection)) {
+  if (!isLexReady(collection) && !hasPairs(collection)) {
     return (
       <AuthGate what="play">
-        <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+        <GameFrame title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>} exitHref="/games/lexicalater" progress={null}>
           <div className="mx-auto max-w-md px-6 py-20 text-center text-[color:var(--cahier-ink)]">
-            <p className="text-4xl" aria-hidden>🧰</p>
+            <ChestArt tint={CHEST_GOLD} className="mx-auto block w-[52px]" />
             <p className="mt-3 text-xl font-black">LexicaLater is being prepared for “{collection.title}”.</p>
             <BackLink fallback="/games/lexicalater" className="cahier-btn mt-5 inline-block">← Back</BackLink>
           </div>
@@ -77,14 +79,30 @@ export default async function ConveyorPage({
       say: displayFr(it, collection),
     };
   });
-  const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
+  // PHRASE CHESTS (8 Sep). A deck that authors matching pairs — « Vous
+  // tournez » + « à droite » — deals them as two-keyhole chests alongside its
+  // word chests. It is the same mechanic Match It ran on its own page, in the
+  // game that already stitches parts back together, with a tile, a gallery and
+  // a spacing ladder it does not have to grow for itself.
+  //
+  // ON A PAIRS DECK THE PHRASES ARE THE WHOLE GAME. The first build dealt them
+  // ALONGSIDE the deck's word chests and the lane came out muddled: « arrivé »
+  // arrived as a one-keyhole chest of its own, next to « You exit / leave from
+  // the metro station » with two — and the belt carried whole sentences
+  // (« Vous traversez le passage piéton ») beside the halves they are made of.
+  // On a deck like this the halves' job is to be KEYS, not chests; a chest for
+  // a bare half teaches nothing the sentence does not.
+  const phrases = hasPairs(collection) ? pairChests(collection) : [];
+  const decoys = phrases.length
+    ? pairDecoys(collection)
+    : (collection.gameConfig?.lexicalator?.decoys ?? []);
   return (
     <AuthGate what="play">
       {/* The game sits IN a page (Dan, 7 Sep: "can we have them embedded like
           the map, (with option to go full screen)") — the band names the
           activity above the board, and ⛶ on the game bar takes it full. */}
       <GameLanding activityKey="lexicalator" bleed>
-        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} deckId={collection.id} />
+        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={phrases.length ? phrases : entries} decoys={decoys} deckId={collection.id} />
       </GameLanding>
     </AuthGate>
   );
