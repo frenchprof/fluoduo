@@ -49,6 +49,17 @@ WHAT IS PINNED, and what each failure looks like on Dan's screen
      verify117 names: *"two runners is how the app came to have four of them
      under one name"*.
 
+ 10  EVERY ROUTE UNDER /practice/speculearn IS NAMED IN `deckFromPath`. The
+     rail and the scroll-on both ask which DECK a page belongs to, and both
+     read the segment after `/practice/speculearn/`. A sub-route breaks that:
+     `/practice/speculearn/pretest/<id>` once resolved to a deck called
+     "pretest" and sent the forward swipe to `/decks/pretest`; the merged
+     `/practice/speculearn/goal/<SIO>` did the same thing to `/decks/goal`,
+     measured on the built export by scrolling off the end of goal 41. Twice
+     is a pattern, so the route FOLDERS are read off disk and each must have a
+     line in that function. A third one added without it fails here rather
+     than in a learner's hands.
+
   9  THE ENGLISH BEFORE THE PICK STAYS AUDITED, ITEM BY ITEM. `transFirst`
      shows a question's English translation BEFORE the learner answers. On some
      cards that is the whole question — « Elle est ___ » cannot choose between
@@ -233,6 +244,20 @@ banned = [w for w in ("recordItemResult", "queueForReview", "awardXp") if w in r
 ok(not banned,
    "the merged run pays no XP and schedules no review — it is still the cold guess",
    f"the merged runner calls {banned} — pooling generated questions into a pre-test made the pre-test count")
+
+# ---- 10 · every sub-route under /practice/speculearn is a named non-deck ---
+rail = code(read("src/lib/swipeRail.ts"))
+routes = sorted(
+    d for d in os.listdir("src/app/practice/speculearn")
+    if os.path.isdir(os.path.join("src/app/practice/speculearn", d)) and not d.startswith("[")
+)
+unnamed = [r for r in routes if not re.search(rf'seg\[2\]\s*===\s*"{re.escape(r)}"', rail)]
+ok(not unnamed,
+   f"every route folder under /practice/speculearn is named in deckFromPath ({', '.join(routes)})",
+   f"deckFromPath does not know about {unnamed} — the segment after /practice/speculearn/ is read as a "
+   f"DECK ID, so those pages resolve to a deck literally called {unnamed[0] if unnamed else '?'} and the "
+   f"forward swipe lands on /decks/{unnamed[0] if unnamed else '?'}. This is the third time; see the "
+   f"comment in swipeRail.ts")
 
 # ---- 9 · the English-before-the-pick audit holds --------------------------
 AUDITED_OFF = [
