@@ -90,9 +90,17 @@ grid = strip_comments(grid_raw)
 body = strip_comments(read("src/app/map/MapBody.tsx"))
 
 # 1 + 2 ── the scale is derived from the box itself and applied.
-scale = re.search(r"const scale = box\.offsetWidth > 0 \? b\.width / box\.offsetWidth : 1;", grid)
+# HOW the zoom is read is not the point; that it IS read and divided out is.
+# This pinned one spelling — `b.width / box.offsetWidth` — and main landed a
+# better one that asks the browser directly (`currentCSSZoom`, Chrome 128+)
+# and keeps the width ratio as the fallback for older engines. A check that
+# fails a strictly better fix is a check that fights its own purpose. So it
+# accepts either source, and still insists the result is APPLIED to every
+# measured point (assertion 3 below), which is where the bug actually lived.
+scale = re.search(r"currentCSSZoom", grid) or re.search(
+    r"b\.width / box\.offsetWidth", grid)
 check(scale is not None,
-      "the zoom in force is derived from the box's own two widths",
+      "the zoom in force is read from the box and divided out",
       "the road no longer divides out the zoom. `getBoundingClientRect` "
       "reports zoomed pixels and the <svg> is in unzoomed ones, so the road is "
       "stretched by the zoom factor — measured at 200%, the worst stop sat "
