@@ -150,9 +150,17 @@ function judge(label, r) {
   if (!ok) bad.push(`${label} (zoom ${r.zoom}): the road is ${r.worst}px off its stops — ${r.rows.join("; ")}`);
 }
 
-await page.goto(`http://localhost:${PORT}/`, { waitUntil: "domcontentloaded" });
-await page.waitForTimeout(2600); await dismissHints(); await page.waitForTimeout(500);
-judge("Home's postcard", await read());
+// HOME'S POSTCARD WAS THE FIRST SURFACE HERE and it is gone (Dan, 8 Sep,
+// shown a screenshot of it: *"we don't need this anymore"*). It was the case
+// that FOUND this fault — a 0.44 zoom is where a 2px error becomes visible —
+// so losing it costs real coverage, and the three below do not replace it:
+// /map's control and pinch both drive the same `zoomPct`, and 100% exercises
+// no division at all.
+//
+// The zoom that remains extreme is /map's own control, so the sweep below
+// keeps a LOW one as well as a high one. Do not quietly drop it: at 100% the
+// division by currentCSSZoom is a no-op, which is exactly how this fault hid
+// the first time.
 
 await page.goto(`http://localhost:${PORT}/map`, { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(2600); await dismissHints(); await page.waitForTimeout(500);
@@ -180,6 +188,28 @@ await cdp.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }
 await page.waitForTimeout(900);
 judge("/map after a pinch", await read());
 
+// A LOW ZOOM, which is what Home's postcard used to give this scan for free.
+// It matters more than the high one: below 1 the road's points are DIVIDED by
+// a number smaller than one, and the postcard (0.44) is where the original
+// fault was caught because a 2px error there is a visible break. The minus
+// control bottoms out at 30%, so six presses from 140% lands well under 1.
+// FRESH PAGE FIRST. The pinch above leaves the map at 2x, and ten presses
+// from there only walks back to 1.0 — a "low" case that measures the very
+// zoom 100% already covers. `zoomPct` is component state, so a reload starts
+// at 100 and ten presses hit the 30% floor.
+await page.goto(`http://localhost:${PORT}/map`, { waitUntil: "domcontentloaded" });
+await page.waitForTimeout(2600); await dismissHints(); await page.waitForTimeout(500);
+const lowFrame = page.frames().find((f) => f.url().includes("/embed")) ?? page.mainFrame();
+const minus = lowFrame.getByRole("button", { name: /^−$|^-$|zoom out/i });
+if (await minus.count().catch(() => 0)) {
+  for (let i = 0; i < 10; i++) { await minus.first().evaluate((e) => e.click()).catch(() => {}); await page.waitForTimeout(200); }
+  await page.waitForTimeout(700);
+  judge("/map at a low zoom", await read());
+} else {
+  bad.push("/map has no zoom − control — the low-zoom case Home's postcard used to cover is unreachable");
+  console.log("  ✗ /map has no zoom − control");
+}
+
 await browser.close();
 server.close();
 
@@ -192,4 +222,4 @@ if (bad.length) {
   console.log("  Losing that division is the whole fault, and it is invisible at 100%.");
   process.exit(1);
 }
-console.log("\nroad-scan: the road lands on its stops at every zoom (postcard, 100%, + control, pinch).");
+console.log("\nroad-scan: the road lands on its stops at every zoom (100%, + control, pinch, low).");
