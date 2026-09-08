@@ -93,6 +93,15 @@ const MEASURE = (band) => {
     if (r.width < 2 || r.height < 2) continue;
     over.push({ tag: el.tagName.toLowerCase(), text: t.slice(0, 40), top: Math.round(r.top), bottom: Math.round(r.bottom), width: Math.round(r.width) });
   }
+  // THE NEAR GROUND. Nature sprites carry a French title ("de l'herbe", "un
+  // arbre", …) — that is what marks a piece of scenery apart from a goal, a
+  // gate or a prop. Binned by where each one's FOOT lands down the frame.
+  const NAT = /herbe|arbre|sapin|buisson/;
+  const nature = map ? [...map.querySelectorAll("[title]")].filter((e) => NAT.test(e.getAttribute("title") || "")) : [];
+  const mapRect = map ? map.getBoundingClientRect() : null;
+  const nearGround = mapRect
+    ? nature.filter((e) => (e.getBoundingClientRect().bottom - mapRect.top) >= mapRect.height * 0.67).length
+    : 0;
   const actions = [...(main ? main.querySelectorAll("a[href], button") : [])]
     .filter((el) => !(map && map.contains(el)))
     .map((el) => { const r = el.getBoundingClientRect(); return { text: (el.textContent || "").trim().slice(0, 40), width: Math.round(r.width) }; });
@@ -100,6 +109,7 @@ const MEASURE = (band) => {
     vw, vh,
     mapBox: map ? { w: Math.round(map.getBoundingClientRect().width), h: Math.round(map.getBoundingClientRect().height) } : null,
     intruders: over.filter((o) => o.bottom > top && o.top < bottom),
+    nature: nature.length, nearGround,
     over, actions,
     scrollW: document.documentElement.scrollWidth,
   };
@@ -110,13 +120,15 @@ const exe = process.env.ROAD_BROWSER
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 
 const VIEWS = [
-  ["desktop 1440x900", { width: 1440, height: 900 }],
-  ["phone 390x844", { width: 390, height: 844 }],
-  ["phone sideways 844x390", { width: 844, height: 390 }],
+  // `ground` is off for the sideways phone: at 390px tall its bottom third is a
+  // sliver of near road, and the scene has barely any ground in it to judge.
+  ["desktop 1440x900", { width: 1440, height: 900 }, { ground: true }],
+  ["phone 390x844", { width: 390, height: 844 }, { ground: true }],
+  ["phone sideways 844x390", { width: 844, height: 390 }, { ground: false }],
 ];
 const bad = [];
 
-for (const [label, viewport] of VIEWS) {
+for (const [label, viewport, checks] of VIEWS) {
   const page = await browser.newPage({ viewport });
   await page.goto(`http://localhost:${PORT}/welcome`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(2600);
@@ -140,13 +152,25 @@ for (const [label, viewport] of VIEWS) {
   if (wide.length) {
     bad.push(`${label}: ${wide.map((a) => `"${a.text}" is ${a.width}px of a ${m.vw}px page`).join("; ")} — no single control wears the page's width`);
   }
+  // THE NEAR FOREGROUND IS NOT BARE (8 Sep). Every scenery pass used to start
+  // at z ≈ 0.15 — the start of the COURSE — while the camera sits about 1.16
+  // stops behind goal 1 and can be dragged further back still. So the nearest
+  // stretch of ground, the bottom fifth of the frame where the picture is
+  // biggest, had nothing planted in it at all. Measured on this page before:
+  // 196 sprites, 116 of them packed in one band at the horizon, SIX in the
+  // bottom third and none below 80%. After: 278 and 55. The floor is set well
+  // under that — this is here to catch the near ground going empty again, not
+  // to pin a density.
+  if (checks.ground && m.nearGround < 12) {
+    bad.push(`${label}: only ${m.nearGround} of ${m.nature} pieces of scenery stand in the bottom third of the frame — the near ground is bare again. The usual cause is the scenery starting at z ≈ 0 while the camera starts behind it`);
+  }
   if (m.actions.length !== 1) {
     bad.push(`${label}: the page offers ${m.actions.length} actions (${m.actions.map((a) => `"${a.text}"`).join(", ") || "none"}) — a door has one`);
   }
   if (m.scrollW > m.vw + 1) bad.push(`${label}: the page scrolls sideways (${m.scrollW}px of content in ${m.vw}px)`);
 
-  const ok = fills && !m.intruders.length && !wide.length && m.actions.length === 1 && m.scrollW <= m.vw + 1;
-  console.log(`  ${ok ? "ok" : "x "} ${label.padEnd(24)} scene ${m.mapBox.w}x${m.mapBox.h}  horizon band clear: ${m.intruders.length === 0}  actions: ${m.actions.length}  cta ${m.actions[0]?.width ?? "-"}px`);
+  const ok = fills && !m.intruders.length && !wide.length && m.actions.length === 1 && m.scrollW <= m.vw + 1 && (!checks.ground || m.nearGround >= 12);
+  console.log(`  ${ok ? "ok" : "x "} ${label.padEnd(24)} scene ${m.mapBox.w}x${m.mapBox.h}  horizon clear: ${m.intruders.length === 0}  actions: ${m.actions.length}  cta ${m.actions[0]?.width ?? "-"}px  ${checks.ground ? `near ground ${m.nearGround}/${m.nature}` : ""}`);
 }
 
 await browser.close();

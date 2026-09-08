@@ -36,6 +36,20 @@ Two more assertions that are rules rather than taste:
     rule, which on this page also means "no wall laid across the road";
   · exactly one action, because a door has one.
 
+AND ONE THAT IS THE SCENE'S, measured here because this is the surface where
+the scene fills the whole screen and is judged as a picture. Every scenery pass
+used to start at z ~ 0.15 — the start of the COURSE — while the camera sits
+about 1.16 stops BEHIND goal 1 and can be dragged further back still, so the
+nearest stretch of ground had nothing planted in it at all. That is the bottom
+fifth of the frame, where the picture is biggest, on the first view every
+learner and every visitor meets. Measured before: 196 sprites, 116 of them
+packed into one band at the horizon, SIX in the bottom third and none at all
+below 80%. After: 278 and 71. The floor is 12 — this catches the near ground
+going empty again, it does not pin a density.
+
+Break-tested by putting the scenery's start back to z = 0.15: red on the
+desktop and the phone, "only 6 of 196".
+
 THREE VIEWPORTS, because this is a geometry fault. The desktop and the phone
 both passed the first build; the phone HELD SIDEWAYS did not, and that is the
 case that found the real bug: at 844×390 the sky is about 113px deep, and the
