@@ -328,7 +328,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
         ))}
       </div>
 
-      {/* 🧰 The summonable tools (5 Sep): VoixLà is handed the itinerary as
+      {/* 🛠️ The summonable tools (5 Sep): VoixLà is handed the itinerary as
           built so far; ChaTutor is told which scenario the learner is in. */}
       <ToolSummon
         context={{

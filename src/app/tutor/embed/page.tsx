@@ -15,7 +15,7 @@
 /**
  * 🤖 Le Tuteur — the standalone chat page. The chat itself now lives in
  * components/tools/ChaTutorPanel (5 Sep, AMBIENT TOOLS extraction) so the
- * 🧰 in-exercise card can mount the same panel; this page passes no context
+ * 🛠️ in-exercise card can mount the same panel; this page passes no context
  * and keeps its shell, wall and behaviour unchanged.
  */
 import CahierShell from "@/components/CahierShell";

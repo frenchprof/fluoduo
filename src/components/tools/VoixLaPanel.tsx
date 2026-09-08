@@ -5,7 +5,7 @@
  * AMBIENT TOOLS) so the same panel can live in two places:
  *
  *   · the standalone /tts page (no props) — behaviour unchanged;
- *   · the in-exercise 🧰 card (`correctsFirst` + `initialText`), where the
+ *   · the in-exercise 🛠️ card (`correctsFirst` + `initialText`), where the
  *     trainer hands over the learner's current typed French.
  *
  * THE CORRECTS-FIRST RULE (Dan, 2026-09-05): "the bot should not be made to
@@ -76,7 +76,7 @@ export default function VoixLaPanel({
 }: {
   /** Text handed in by a trainer — the learner's current typed French. */
   initialText?: string;
-  /** The 🧰 card mode: nothing is voiced until /api/correct has vetted it. */
+  /** The 🛠️ card mode: nothing is voiced until /api/correct has vetted it. */
   correctsFirst?: boolean;
 }) {
   const [text, setText] = useState(initialText !== undefined ? initialText : SAMPLE);
@@ -130,7 +130,7 @@ export default function VoixLaPanel({
     const run = ++runRef.current;
     synth.cancel();
     // cancel() while the queue is paused leaves some engines stuck paused —
-    // the 🧰 card opens with the exercise's speech paused, so unstick first.
+    // the 🛠️ card opens with the exercise's speech paused, so unstick first.
     synth.resume();
     const u = new SpeechSynthesisUtterance(sub);
     u.lang = "fr-FR";

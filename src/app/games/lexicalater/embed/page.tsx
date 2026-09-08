@@ -1,5 +1,5 @@
 /**
- * /games/lexicalater/embed — LexicaLater, running inside the cahier rather than drawing one.
+ * /games/lexicalater/embed — LexicaLocker, running inside the cahier rather than drawing one.
  *
  * Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
  * PAGES IN IFRAMES (EMBEDDED)"*, and then *"proceed the remaining unframed
@@ -22,5 +22,5 @@ export default function LexicalatorIndexPage() {
   const entries: GalleryEntry[] = CURATED.filter((c) => isLexReadyId(c.id))
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9))
     .map((c) => ({ id: c.id, href: `/games/lexicalater/${c.id}`, title: shortTitle(c.id, c.title), unit: c.unit ?? null, deckId: c.id }));
-  return <GameGallery activityKey="lexicalator" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} name="LexicaLater" entries={entries} />;
+  return <GameGallery activityKey="lexicalator" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} name="LexicaLocker" entries={entries} />;
 }

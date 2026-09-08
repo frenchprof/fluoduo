@@ -476,18 +476,23 @@ its emoji glyphs.** The six families keep wearing 🎯 🏋️ 🎮 🔄 💬 �
 every other emoji-as-icon in the app stays an emoji. Nothing in the code
 changed under this proposal — it never reached step 1 of its own sequence.
 
-The stock-take did surface one real, still-open finding, unrelated to the
-SVG question: **the same emoji is reused for two unrelated things in two
-places**, live at once:
-- **💬** is both the Skills family door AND the floating "report a bug"
-  button (`components/FeedbackButton.tsx`) that sits on top of many pages,
-  including Skills activities themselves (e.g. open WorDrill and both the
-  Skills-family 💬 and the bug-report 💬 are on screen at once).
-- **🧰** is both the LexicaLater game AND the floating "Outils" tools tray
-  (`components/tools/ToolSummon.tsx`, VoixLà + ChaTutor) that appears on
-  most exercise screens, including ones that have nothing to do with
-  LexicaLater (e.g. ÉcouTexte, WorDrill).
+The stock-take did surface one real finding, unrelated to the SVG question:
+**the same emoji was reused for two unrelated things in two places**, live
+at once — 💬 was both the Skills family door and the floating "report a
+bug" button; 🧰 was both the LexicaLater game and the floating "Outils"
+tools tray (VoixLà + ChaTutor) that appears on most exercise screens.
 
-Whether to change either of those two glyphs is Dan's call, undecided as of
-this entry — flagged here so the next session does not have to rediscover
-it.
+**Dan's fix, same day (9 Sep) — four glyphs, one rename, resolved:**
+
+    🐞  the bug-report button (was 💬)         components/FeedbackButton.tsx
+    🤹  FluOLin Skills (was 💬)                 content/activities.ts FAMILIES
+    🛠️  the Outils tools tray (was 🧰)          components/tools/ToolSummon.tsx
+    🔐  LexicaLocker (was 🧰, name was LexicaLater) content/activities.ts, MenuGrid.tsx
+
+**LexicaLater is retired for good — call it LexicaLocker everywhere.** Same
+key (`lexicalator`) and route (`/games/lexicalater`), display name only —
+the Memo-rename precedent. Concrete example: open WorDrill (a Skills
+exercise) and you now see 🐞 (report a bug) and 🛠️ (Outils — VoixLà /
+ChaTutor) floating on screen together, and neither is 🤹 (Skills, the
+family WorDrill lives in) or 🔐 (LexicaLocker, an unrelated game). No glyph
+in the app means two different things any more.
