@@ -88,7 +88,15 @@ renaming those breaks things without a learner ever seeing the difference.
 **The six families are called by these names and wear these icons, and no
 others** (Dan, same day):
 
-    🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User
+    🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 🤹 Skills · 👤 User
+
+SKILLS WORE 💬 UNTIL 2026-09-09, when Dan moved it to 🤹 — not a change of
+mind about the family, but the fix to a COLLISION: 💬 was also the floating
+"report a bug" button, so opening WorDrill put the Skills door and the bug
+button on screen wearing the same glyph. The bug button took 🐞 and the
+family took 🤹. The ruling itself — one fixed icon per family, living once in
+`FAMILIES` — is unchanged, and the reasoning is at the foot of this file
+under the emoji stock-take.
 
 They live once, in `FAMILIES` (`src/content/activities.ts`), as
 `FluOLin <Name>`; everything else derives. Registry KEYS stay as they are
@@ -464,7 +472,8 @@ your CI runs.
 Dan asked (9 Sep) for emojis to be replaced by SVG icons everywhere, and for
 that decision to be recorded. Before any SVG existed, a stock-take of every
 emoji-as-icon place turned up a mix-up: Dan thought icons like the six family
-glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User)
+glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User —
+Skills has since become 🤹, see below)
 were already SVGs in the app; they are plain emoji characters (the OS/browser
 draws them — e.g. the "abc" box next to ConjugaZone is just the 🔤 emoji,
 not a picture file). No SVGs were ever supplied.
