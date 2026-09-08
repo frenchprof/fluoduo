@@ -48,16 +48,22 @@ export default function StopBookmark({
     setDraft(null);
   };
 
+  // Two digits at rest — « 01 », never « 1 » (Dan, 7 Sep: "I need the
+  // editable stop field to have two digits, so 01 would be shown in this
+  // case"). Only the RESTING face pads; while the learner types, the field
+  // shows their keystrokes untouched, and a committed "7" comes back "07".
+  const shown = String(stopNo).padStart(2, "0");
+
   return (
     <>
       <input
         type="text"
         inputMode="numeric"
-        value={draft ?? String(stopNo)}
+        value={draft ?? shown}
         aria-label={`Your stop, 1 to ${SIOS.length} — edit it to bookmark one`}
         title="Your stop. Edit it to bookmark where you left off; clear it to go back to automatic."
         onFocus={(e) => {
-          setDraft(String(stopNo));
+          setDraft(shown);
           e.target.select();
         }}
         onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
