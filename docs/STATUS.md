@@ -36,6 +36,20 @@ the top edge, the far rim turning away at the bottom. `:active` still replaces
 the whole stack, so the coin bottoms out on the page instead of sliding down a
 step that is still there.
 
+**AND NOTHING AT ALL ON THE TOP EDGE** (Dan, shown the first pass: *"no, the
+top edge should end cleanly and not have any shadow"*). That pass still
+carried `inset 0 2px 1px white 62%`, a soft lit rim — the thing a glossy
+button gets. Softness at the top is the halo's mistake in a smaller size: it
+makes the edge look thick and lit from within, when it is simply where the
+coin stops. Measured down the top rim at 5x, one pixel at a time:
+
+    before   paper … 251 → (176,224,255) (175,223,255) (175,223,255) → (55,176,255)
+    now      paper … 243 → (56,176,253) → (54,176,255)
+
+Three samples of washed-out blue became one transitional pixel. Everything
+that describes depth now sits at the BOTTOM, which is the only place a raised
+disc lit from above can show it.
+
 **And the current stop got its 3D back, which nobody had noticed was missing.**
 `fluo-node-glow` animated `box-shadow` on the button itself. `box-shadow` is
 ONE property, so every keyframe replaced the entire coin stack: the one stop a

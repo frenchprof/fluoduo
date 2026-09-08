@@ -2397,8 +2397,17 @@ h3.cahier-display { font-size: var(--fs-h3); }
                      you see because you look slightly down at a raised disc,
                      and the 3px the button travels when it is pressed
      the cast shadow down and right, the only thing painted on the paper
-     the lit rim     inside the top edge, where the light lands
-     the far rim     inside the bottom edge, turning away from it
+     the far rim     inside the bottom edge, turning away from the light
+
+   AND NOTHING AT ALL ON THE TOP EDGE (Dan, same day, on the first pass:
+   *"the top edge should end cleanly and not have any shadow"*). That pass
+   still carried `inset 0 2px 1px white 62%` — a soft lit rim, the thing a
+   glossy button gets. Softness at the top is the same mistake as the halo in
+   a smaller size: it makes the edge look thick and lit from within, when it
+   is simply where the coin stops. The colour now runs full strength to the
+   boundary and the antialiasing is the whole of the edge. Everything that
+   describes depth sits at the BOTTOM, which is the only place a raised disc
+   lit from above can show it.
 
    `:active` drops the side wall entirely, so the coin bottoms out on the page
    instead of sliding down a step that is still there. */
@@ -2406,7 +2415,6 @@ h3.cahier-display { font-size: var(--fs-h3); }
   box-shadow:
     0 3px 0 color-mix(in oklab, var(--fluo-stop-kind, var(--cahier-ink)) 66%, black),
     2px 6px 9px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
-    inset 0 2px 1px color-mix(in oklab, white 62%, transparent),
     inset 0 -3px 4px color-mix(in oklab, black 20%, transparent),
     inset 0 0 0 2px var(--fluo-stop-kind, transparent);
 }
