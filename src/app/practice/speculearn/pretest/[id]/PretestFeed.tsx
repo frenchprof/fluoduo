@@ -1,33 +1,51 @@
 "use client";
 
 /**
- * ONE QUESTION PER SCREEN. Swipe up for the next.
+ * ONE SPECULEARN PER GOAL. ONE QUESTION PER SCREEN. ONE URL.
  *
- * Dan, 2026-09-07: *"ONE QUESTION PER PAGE!"*, *"so that we scroll down when
- * one is done"*, and then, closing the ambiguity himself: *"scroll down =
- * swipe up"*.
+ * Dan, 2026-09-07, over a screenshot of SIO-041 with two 💡 circled in red:
  *
- * WHAT CHANGED FROM THE OLD RUNNER, and why each thing went:
+ *   *"the SIO page itself is now being separated from the SpecuLearn, there
+ *    should no longer be any SIO at the start of SpecuLearn. it jumps into the
+ *    first question, and the SpecuLearn is to be answered question by question.
+ *    There are lessons with two speculearn, which must now be merged"*
  *
- * · THE « Next → » BUTTON IS GONE. It was the only way past an answered
- *   question, and Dan has just named the gesture that replaces it. Keeping
- *   both would teach two answers to one question — and the button is the one
- *   that cannot be discovered by feel.
- * · A step counter in state is gone with it. The row you are on is wherever
- *   the magnet settled, which the feed reports; nothing can now disagree about
- *   which question is on screen.
- * · Every question is BUILT UP FRONT rather than one at a time, because they
- *   are all in the document at once. Options are shuffled once per question at
- *   mount, so scrolling back to a question you have answered shows it exactly
- *   as you answered it — the same rule the SpecuLearn game got on 5 Sep when
- *   its ‹ back button arrived.
+ * and, when the two were put to him as different engines:
  *
- * WHAT DID NOT CHANGE. The judging, the gap report and the usage ledger are
- * still `lib/pretests/runner.ts` — this engine only renders a verdict. A
- * pre-test remains barred from `recordItemResult`, `queueForReview` and
- * `awardXp` (verify40 §2): it is the cold guess BEFORE the teaching, and
- * paying it into the review system would schedule a learner's revision around
- * material they have never met.
+ *   *"it does not matter if they are different versions, but the combined pool
+ *    between them consists only of MCQ, so they CAN be and MUST NOW BE MERGED
+ *    AS ONE!"*
+ *
+ * and on how to hold a learner's place across 63 questions:
+ *
+ *   *"could we work with bookmarks on the same page (one url) rather than
+ *    multiple pages"*
+ *
+ * WHY THIS FILE AND NOT A NEW ONE. The merge was first built as a second
+ * runner beside this one, and that is the exact mistake this app has made
+ * three times already — verify117 carries the sentence: *"two runners is how
+ * the app came to have four of them under one name"*. Everything the merge
+ * needed was already here and tested: the judge and the usage ledger, the
+ * keyboard's own way on, the bare-item rule that stops « Hear the full
+ * sentence » reading the answer aloud, the TTS toggle, the recap. So the pool
+ * widened and the runner stayed.
+ *
+ * WHAT THE POOL IS. `lib/speculearn/pool.ts` puts the goal's authored pre-test,
+ * its unit-0 bank and its deck's generated questions into one MCQ list. This
+ * file renders that list and does not know which engine wrote a question,
+ * beyond the one thing that differs on screen: what sits above the options —
+ * a sentence with a gap, a bare prompt, or a picture.
+ *
+ * THE ORDER IS THE POOL'S, NOT SHUFFLED. This runner used to shuffle its
+ * questions. It cannot any more and the reason is Dan's bookmark: `#q9` has to
+ * be the same question tomorrow as it was today, and a shuffle at mount makes
+ * the address point somewhere new on every load. Options are still shuffled
+ * once per mount, which is the part a learner could otherwise memorise.
+ *
+ * A PRE-TEST IS STILL A COLD GUESS. No XP, no accuracy, no review queue —
+ * verify40's rule for every pre-test surface, and the merge does not soften it:
+ * pooling generated questions into a pre-test makes them part of the cold
+ * guess, not the other way round.
  */
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -36,12 +54,16 @@ import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import SnapFeed, { type SnapFeedHandle } from "@/components/SnapFeed";
 import { TAB_ICONS } from "@/content/activities";
 import { speak } from "@/games/letris/speech";
-import { getPretest } from "@/content/pretests";
-import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
-import { goalNumber, stopForPretestId } from "@/lib/stopTag";
+import { getPretestForSio } from "@/content/pretests";
+import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
+import { judgePretestAnswer, shuffle } from "@/lib/pretests/runner";
+import { buildItems } from "@/lib/speculearn/deckWords";
+import { speculearnPool, type PoolItem } from "@/lib/speculearn/pool";
+import { getSio } from "@/content/sios";
+import { goalNumber } from "@/lib/stopTag";
 import { optionGridClass } from "@/lib/optionGrid";
 import { useChoiceKeys } from "@/lib/useChoiceKeys";
-import type { Pretest, PretestItem } from "@/lib/pretests/schema";
+import type { Pretest } from "@/lib/pretests/schema";
 
 // A pre-test's tab rail deliberately does NOT link to Practice activities —
 // the pre/post boundary (PRETEST_BLUEPRINT.md).
@@ -52,22 +74,80 @@ const PRETEST_TABS: ShellTab[] = [
 
 type Verdict = { picked: string; correct: boolean };
 /** A question with its options fixed for the life of the run. */
-type Row = { item: PretestItem; choices: string[] };
+type Row = { item: PoolItem; choices: string[] };
 
 const TTS_KEY = "fluolingo.pretestTts.v1";
 
-export default function PretestFeed({ id }: { id: string }) {
-  const pretest = getPretest(id);
+/**
+ * THE POOL IS STATIC, so it is built once per goal and never again.
+ *
+ * Not a `useMemo`: the questions are a fact about the goal, not about a render
+ * — every input is in the bundle. Memoizing in the component made `pool` a new
+ * array whenever React chose to re-run the hook, and the run's shuffle effect
+ * depends on it, which would re-deal a learner's options mid-run. A module
+ * cache has one identity per goal for the life of the tab.
+ */
+const POOLS = new Map<string, PoolItem[]>();
 
-  if (!pretest) {
+function poolFor(sioId: string): PoolItem[] {
+  const cached = POOLS.get(sioId);
+  if (cached) return cached;
+  const deck = getSio(sioId)?.collectionId;
+  // Only a deck on the ready list contributes generated questions; the rest
+  // have no vetted visuals, which is what that list is for.
+  const words =
+    deck && (SPECULEARN_READY as readonly string[]).includes(deck)
+      ? buildItems(deck).items.map((it) => ({ w: it.w, img: it.img, emoji: it.emoji }))
+      : [];
+  const built = speculearnPool(sioId, words);
+  POOLS.set(sioId, built);
+  return built;
+}
+
+/**
+ * THE WINDOW WHOSE ADDRESS A LEARNER CAN SEE.
+ *
+ * This run lives in an iframe inside the cahier (Dan, 2026-09-07: *"EVERYTHING
+ * … MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES"*), and a frame's own src
+ * is `…/embed` with no hash on it — so a bookmark written here would be
+ * written on a URL nobody can see, and read back as empty. Measured: the
+ * address bar said `#q9` and the run opened on question one, every time.
+ *
+ * Same origin, so the parent is simply readable; standalone, the parent IS
+ * this window and the same code works unchanged.
+ */
+function addressWindow(): Window {
+  try {
+    if (window.parent !== window && window.parent.location.origin === window.location.origin) {
+      return window.parent;
+    }
+  } catch {}
+  return window;
+}
+
+/** Which question the address is pointing at. 1-based for a human reading it;
+ *  `#q1` is the first, which is what a learner would guess. */
+function rowFromHash(): number {
+  if (typeof window === "undefined") return 0;
+  const m = addressWindow().location.hash.match(/^#q(\d+)$/);
+  const n = m ? Number(m[1]) - 1 : 0;
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+export default function PretestFeed({ sioId }: { sioId: string }) {
+  const sio = getSio(sioId);
+  const pretest = getPretestForSio(sioId) ?? null;
+  const pool = poolFor(sioId);
+
+  if (pool.length === 0) {
     return (
       <CahierShell tabs={PRETEST_TABS} active="pretest">
         <div className="mx-auto max-w-3xl px-4 py-10">
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-10 text-center">
             <div className="text-6xl" aria-hidden>🤷</div>
-            <h2 className="mt-3 text-xl font-black text-slate-900">No pretest found</h2>
+            <h2 className="mt-3 text-xl font-black text-slate-900">Nothing to guess at yet</h2>
             <p className="mt-1 text-sm text-slate-600">
-              No pretest with id <code className="rounded bg-slate-100 px-1.5 py-0.5">{id}</code>.
+              No SpecuLearn questions for <code className="rounded bg-slate-100 px-1.5 py-0.5">{sioId}</code>.
             </p>
             <div className="mt-5 flex justify-center gap-3">
               <Link href="/practice/speculearn" className="fluo-btn fluo-btn-ghost">← SpecuLearn</Link>
@@ -80,41 +160,46 @@ export default function PretestFeed({ id }: { id: string }) {
 
   return (
     /* The band has said « SpecuLearn » since 1 Sep — the page has simply
-       caught up with it. The stop comes from the pre-test's own id, which
-       encodes it. `band={false}` is NOT wanted here: the band is the frozen
-       header the feed scrolls behind. */
+       caught up with it. `band={false}` is NOT wanted here: the band is the
+       frozen header the feed scrolls behind. */
     <CahierShell
       tabs={PRETEST_TABS}
       active="pretest"
-      band={{ title: "SpecuLearn", goal: goalNumber(stopForPretestId(pretest.id)) }}
+      band={{ title: "SpecuLearn", goal: sio ? goalNumber(sio) : undefined }}
     >
-      <Run pretest={pretest} />
+      <Run pool={pool} pretest={pretest} />
     </CahierShell>
   );
 }
 
 /* ──────────────────────────────────────────────────────────── */
 
-function Run({ pretest }: { pretest: Pretest }) {
+function Run({ pool, pretest }: { pool: PoolItem[]; pretest: Pretest | null }) {
   const [rows, setRows] = useState<Row[]>([]);
   const [verdicts, setVerdicts] = useState<Record<number, Verdict>>({});
   const [at, setAt] = useState(0);
+  const [startAt, setStartAt] = useState(0);
   const [ttsOn, setTtsOn] = useState(true);
   const [run, setRun] = useState(0); // bumped by Retry — remounts the feed
   const feed = useRef<SnapFeedHandle>(null);
 
   useEffect(() => {
-    // Shuffled AFTER mount on purpose: a pre-test is a static page, so
+    // Options shuffled AFTER mount on purpose: this is a static page, so
     // shuffling during render would give the server one order and the first
     // client render another, and the hydration mismatch would swap the options
-    // under the learner's finger.
+    // under the learner's finger. The QUESTIONS keep the pool's order — see
+    // the note at the top: the bookmark is what depends on it.
     // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR determinism, see above
-    setRows(shuffle(pretest.items).map((item) => ({
-      item,
-      choices: shuffle([item.answer, ...item.distractors]),
-    })));
+    setRows(pool.map((item) => ({ item, choices: shuffle(item.options) })));
     setVerdicts({});
-  }, [pretest, run]);
+  }, [pool, run]);
+
+  useEffect(() => {
+    // Where the address says to open. A hash is never sent to the server, so
+    // reading it during render would disagree with the prerendered HTML.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only value, see above
+    setStartAt(rowFromHash());
+  }, []);
 
   useEffect(() => {
     try {
@@ -139,14 +224,29 @@ function Run({ pretest }: { pretest: Pretest }) {
     const row = rows[i];
     if (!row || verdicts[i]) return;
     // The judge + gap report + usage ledger live in the shared runner — this
-    // engine only renders the verdict.
-    const correct = judgePretestAnswer(pretest.id, row.item, choice);
+    // engine only renders the verdict. A GENERATED question has no ledger
+    // entry to write: it is not part of the authored pre-test the teacher's
+    // dashboard reports on, and inventing one would put questions in that
+    // report that no pre-test contains.
+    const correct = row.item.authored && pretest
+      ? judgePretestAnswer(pretest.id, row.item.authored, choice)
+      : choice === row.item.answer;
     setVerdicts((v) => ({ ...v, [i]: { picked: choice, correct } }));
     // Hearing the CORRECT sentence is the feedback, not the lonely answer word.
-    if (correct && ttsOn) speak(ttsTextForItem(row.item), "fr-FR");
+    if (correct && ttsOn && row.item.speak) speak(row.item.speak, "fr-FR");
   }
 
-  const onIndex = useCallback((i: number) => setAt(i), []);
+  /* KEEP THE ADDRESS HONEST as the magnet settles. This is the bookmark:
+     `replaceState`, never `push` — scrolling is not navigation, and 63 Back
+     steps would make the Back button useless. */
+  const onIndex = useCallback((i: number) => {
+    setAt(i);
+    if (typeof window === "undefined") return;
+    const w = addressWindow();
+    const want = `#q${i + 1}`;
+    if (w.location.hash === want) return;
+    try { w.history.replaceState(null, "", w.location.pathname + want); } catch {}
+  }, []);
 
   /* THE KEYBOARD STILL ANSWERS, and it needs its own way on.
      "The way on is the swipe" is true of a finger and false of a laptop — a
@@ -156,8 +256,8 @@ function Run({ pretest }: { pretest: Pretest }) {
      that there is no step counter to disagree with it.
 
      The speak key is gated on a bare item exactly as the button is: with no
-     sentence around the blank, `ttsTextForItem` IS the answer, and reading it
-     aloud before the pick hands the question away (verify63 §6). */
+     sentence around the blank, what there is to speak IS the answer, and
+     reading it aloud before the pick hands the question away (verify63 §6). */
   const here = rows[at];
   const submitted = here ? verdicts[at] ?? null : null;
   useChoiceKeys({
@@ -171,10 +271,10 @@ function Run({ pretest }: { pretest: Pretest }) {
     onPick: (i) => { const c = here?.choices[i]; if (c !== undefined) pick(at, c); },
     onNext: () => { if (submitted) feed.current?.scrollToRow(at + 1); },
     onSpeak: () => {
-      if (!here || !ttsOn) return;
-      const bare = !here.item.sentenceBefore.trim() && !here.item.sentenceAfter.trim();
+      if (!here || !ttsOn || !here.item.speak) return;
+      const bare = isBare(here.item);
       if (bare && !submitted) return;
-      speak(ttsTextForItem(here.item), "fr-FR");
+      speak(here.item.speak, "fr-FR");
     },
   });
 
@@ -211,7 +311,16 @@ function Run({ pretest }: { pretest: Pretest }) {
         />
       </div>
 
-      <SnapFeed key={run} ref={feed} onIndex={onIndex} sectionClassName="justify-center px-0.5 py-2">
+      {/* NOTHING PRECEDES QUESTION ONE. The feed's first row IS the first
+          question — Dan circled the goal card that used to sit here. The
+          recap is the one row after them, which is where a score belongs. */}
+      <SnapFeed
+        key={run}
+        ref={feed}
+        onIndex={onIndex}
+        startAt={startAt}
+        sectionClassName="justify-center px-0.5 py-2"
+      >
         {rows.map((row, i) => (
           <ItemCard
             key={`${run}-${i}`}
@@ -219,7 +328,7 @@ function Run({ pretest }: { pretest: Pretest }) {
             choices={row.choices}
             submitted={verdicts[i] ?? null}
             onPick={(c) => pick(i, c)}
-            onSpeak={() => ttsOn && speak(ttsTextForItem(row.item), "fr-FR")}
+            onSpeak={() => ttsOn && row.item.speak && speak(row.item.speak, "fr-FR")}
           />
         ))}
         <Recap
@@ -234,6 +343,21 @@ function Run({ pretest }: { pretest: Pretest }) {
   );
 }
 
+/**
+ * A BARE item has no sentence around the blank: the whole French line IS the
+ * answer, and whatever is above it is the entire question. The atelier
+ * pre-tests are all like this, and so is every generated picture question.
+ * Two things right for a gapfill are wrong for it, and both are silent faults:
+ * the dashed "?" pill promises a sentence with a hole in it when there is no
+ * sentence, and "hear the full sentence" reads the correct line aloud before
+ * the learner has picked.
+ */
+function isBare(item: PoolItem): boolean {
+  const before = item.sentenceBefore ?? "";
+  const after = item.sentenceAfter ?? "";
+  return !before.trim() && !after.trim();
+}
+
 function ItemCard({
   item,
   choices,
@@ -241,23 +365,30 @@ function ItemCard({
   onPick,
   onSpeak,
 }: {
-  item: PretestItem;
+  item: PoolItem;
   choices: string[];
   submitted: Verdict | null;
   onPick: (c: string) => void;
   onSpeak: () => void;
 }) {
-  // A BARE item has no sentence around the blank: the whole French line IS the
-  // answer, and the English above is the entire question. The atelier
-  // pre-tests are all like this. Two things right for a gapfill are wrong for
-  // it, and both are silent faults: the dashed "?" pill promises a sentence
-  // with a hole in it when there is no sentence, and "hear the full sentence"
-  // reads the correct line aloud before the learner has picked. So a bare item
-  // shows neither until it has been answered.
-  const bare = !item.sentenceBefore.trim() && !item.sentenceAfter.trim();
+  const bare = isBare(item);
+  const hasSentence = item.sentenceBefore !== undefined;
   return (
     <article className="fluo-card speculearn-card fluo-h-1" data-hue={1}>
-      {(!bare || submitted) && (
+      {/* WHAT SITS ABOVE THE OPTIONS is the one place the three sources
+          differ, so it is the one branch on this card. */}
+      {item.img ? (
+        // eslint-disable-next-line @next/next/no-img-element -- static export: next/image needs a loader this app does not ship, and the deck photos are already sized
+        <img src={item.img} alt="" className="mx-auto mb-2 block max-h-44 w-auto rounded-xl" />
+      ) : item.emoji && !hasSentence ? (
+        <div className="mb-1 text-center text-6xl" aria-hidden>{item.emoji}</div>
+      ) : null}
+
+      {item.prompt && (
+        <p className="text-center text-sm font-bold text-slate-500">{item.prompt}</p>
+      )}
+
+      {hasSentence && (!bare || submitted) && (
         <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
           <span lang="fr">{item.sentenceBefore}</span>
           <span
@@ -273,15 +404,19 @@ function ItemCard({
           <span lang="fr">{item.sentenceAfter}</span>
         </p>
       )}
-      {item.sentenceTrans && item.transFirst && !submitted ? (
+
+      {/* The English is a REFERENCE and never outsizes the French (AGENTS.md,
+          1 Sep) — it is sized against the French on THIS card, which is why
+          the answered state drops to `text-sm` beside `text-2xl` options. */}
+      {item.en && item.transFirst && !submitted ? (
         <p className="mx-auto mt-1 w-fit rounded-lg border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-3 py-1.5 text-center text-base font-bold text-[color:var(--fluo-ink)]">
-          🎯 {item.sentenceTrans}
+          🎯 {item.en}
         </p>
-      ) : item.sentenceTrans && submitted ? (
-        <p className="text-center text-sm italic text-slate-500">{item.sentenceTrans}</p>
+      ) : item.en && submitted ? (
+        <p className="text-center text-sm italic text-slate-500">{item.en}</p>
       ) : null}
 
-      {(!bare || submitted) && (
+      {item.speak && (!bare || submitted) && (
         <div className="mt-3 flex justify-center">
           <button
             type="button"
@@ -322,6 +457,16 @@ function ItemCard({
         })}
       </div>
 
+      {/* WHY, on demand and only for the wrong choice the learner actually
+          made — never inline, never explaining a correct answer (AGENTS.md
+          litmus test; Dan, 2026-07-02). */}
+      {submitted && !submitted.correct && item.whyWrong?.[submitted.picked] && (
+        <details className="mt-3 rounded-lg border-2 border-slate-200 bg-white p-2.5">
+          <summary className="cursor-pointer text-sm font-black text-slate-700">WHY</summary>
+          <p className="mt-2 text-sm text-slate-700">{item.whyWrong[submitted.picked]}</p>
+        </details>
+      )}
+
       {/* THE WAY ON IS THE GESTURE, so what marks it is a glyph and not a
           button (Dan: *"scroll down = swipe up"*). A « Next → » here would be a
           second answer to the question the swipe already answers, and the one
@@ -342,7 +487,7 @@ function Recap({
   total,
   onRestart,
 }: {
-  pretest: Pretest;
+  pretest: Pretest | null;
   score: number;
   answered: number;
   total: number;
@@ -373,7 +518,7 @@ function Recap({
         </p>
       </div>
 
-      {pretest.recap && pretest.recap.length > 0 && (
+      {pretest?.recap && pretest.recap.length > 0 && (
         /* COLLAPSED, and it is the case the rule was written for (2026-08-31):
            the recap table is reference, the score is the argument, and on a
            screen that holds exactly one item the table would push the score

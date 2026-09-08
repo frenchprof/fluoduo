@@ -14,17 +14,41 @@
 
 import { getPretestForSio } from "@/content/pretests";
 import { UNIT0_QUESTIONS } from "@/content/sios/unit0-questions";
-import { stopForDeck } from "@/lib/stopTag";
+import { speculearnHref } from "@/lib/speculearn/route";
+import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
 
-/** The authored pre-tests of units 1–4, keyed by the pre-test's own id. */
+/**
+ * The authored pre-tests of units 1–4, keyed by the pre-test's own id.
+ *
+ * SINCE THE MERGE (Dan, 2026-09-07: *"they CAN be and MUST NOW BE MERGED AS
+ * ONE!"*) this returns the GOAL's one SpecuLearn, not the pre-test's old page.
+ * The old page still answers and forwards here, so paper keeps working — but a
+ * link the app draws today should not make a learner watch a hop.
+ *
+ * The fallback is the old address rather than null: a pre-test whose id does
+ * not resolve to a stop still has to go somewhere, and a dead link is worse
+ * than an extra hop.
+ */
 export function pretestHref(pretestId: string): string {
-  return `/practice/speculearn/pretest/${pretestId}`;
+  const stop = stopForPretestId(pretestId);
+  return stop ? speculearnHref(stop.id) : `/practice/speculearn/pretest/${pretestId}`;
 }
 
-/** Unit 0's ten banks, keyed by the stop rather than by a pre-test id — they
- *  are generated from the stop's own questions, not authored as files. */
+/**
+ * Unit 0's ten banks, keyed by the stop rather than by a pre-test id — they are
+ * generated from the stop's own questions, not authored as files.
+ *
+ * These all pool into the merged run. Three of SIO-010's did not, briefly:
+ * they asked the learner to tick SEVERAL greetings and were graded on the exact
+ * set of picks, which is not multiple choice, so `speculearnPool` dropped them.
+ * Shown the three, Dan rewrote them himself (2026-09-08) so that each has one
+ * right answer — « which can be used to say both hello AND goodbye », « which
+ * is the LEAST appropriate with a client », « which CAN be used with a single
+ * person ». All 21 of SIO-010's questions are in the run now, and the drop in
+ * `speculearnPool` stays as the guard for the next one authored that way.
+ */
 export function unit0PretestHref(sioId: string): string {
-  return `/pretests/unit0/${sioId}`;
+  return speculearnHref(sioId);
 }
 
 /**

@@ -415,6 +415,8 @@ jobs:
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
         run: python3 verify/verify127-map-road.py
+      - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
+        run: python3 verify/verify140-speculearn-merged.py
 
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
