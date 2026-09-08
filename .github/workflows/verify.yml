@@ -428,6 +428,11 @@ jobs:
       - name: "/welcome keeps the horizon clear and offers one way in (8 Sep)"
         run: python3 verify/verify151-landing-page.py
 
+      # Five faults from one QC pass, four of them geometry no grep can see —
+      # and the fifth is the ruled paper the frame was painting white over.
+      - name: "The map fills its notebook, and never scrolls sideways (8 Sep)"
+        run: python3 verify/verify152-map-fit.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
