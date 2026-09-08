@@ -51,7 +51,7 @@ import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
 import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
-import { getSkyColors, sunPosition, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
+import { getSkyColors, sunPosition, nightness, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
 
 /* ── Camera travel ─────────────────────────────────────────────────────────
@@ -73,6 +73,9 @@ const MAX_SCROLL = scrollForCam(CAM_MAX);
 const INK = "var(--cahier-ink)";
 const PAPER = "var(--cahier-paper-raised)";
 const SHADOW = "rgba(0,0,0,0.13)";
+/** The plate a label wears after dark — deep enough for pale ink to carry,
+ *  translucent enough that the ground still shows through it. */
+const NIGHT_PLATE = "rgba(22,18,34,0.80)";
 
 /** The mini-planet rise (projection.ts `reveal`): a thing coming over the
  *  horizon shows only its TOP `reveal` fraction — the rest is still behind
@@ -443,7 +446,7 @@ function PropSprite({ item, scale, scaleY }: { item: RProp; scale: number; scale
         <div
           lang="fr"
           className="whitespace-nowrap text-center font-extrabold"
-          style={{ marginTop: 2, fontSize: Math.max(6, Math.min(15, Math.round(fs * 0.14))), color: INK, background: "rgba(255,255,255,0.88)", padding: "1px 5px", borderRadius: 3, boxShadow: "0 1px 4px rgba(0,0,0,0.12)" }}
+          style={{ marginTop: 2, fontSize: Math.max(6, Math.min(15, Math.round(fs * 0.14))), color: "var(--m3d-plate-ink)", background: "var(--m3d-plate)", padding: "1px 5px", borderRadius: 3, boxShadow: "0 1px 4px rgba(0,0,0,0.12)", transition: "var(--m3d-plate-fade)" }}
         >
           {item.label}
         </div>
@@ -555,6 +558,7 @@ export default function HomeMap3D({
   focusUnit,
   onOpenUnit,
   onOpenSio,
+  fill = false,
 }: {
   progress: Progress;
   activeId?: string;
@@ -562,6 +566,20 @@ export default function HomeMap3D({
   accent?: string;
   /** Unit to open on (deep link); defaults to the current stop. */
   focusUnit?: number;
+  /**
+   * THE SCENE AS THE PAGE, not a card on it (Dan, 8 Sep, on the landing page:
+   * "can the map fill the screen such that the night sky could serve as
+   * background for the top nav"). Drops the card — border, corners, shadow,
+   * the 520/640px height and the 68vh cap — for `h-full`, and drops the two
+   * pieces of furniture that belong to a map you are USING rather than
+   * looking at: the kind legend and the "back to your goal" button.
+   *
+   * NOTHING ABOUT THE SCENE ITSELF CHANGES. It has no width of its own — the
+   * projection is a function of the box's measured `vw`/`vh` — so filling the
+   * viewport is a matter of giving the box the viewport, not of a second
+   * scene built for it.
+   */
+  fill?: boolean;
   /** Tapping a world's gate sign — the parent shows that unit's list. */
   onOpenUnit?: (unit: number) => void;
   /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
@@ -588,6 +606,8 @@ export default function HomeMap3D({
 
   // The clock → sky, once a minute; `?hour=` (dev / screenshots) pins it.
   const [hour, setHour] = useState(12);
+  // 0 at noon, 1 in the small hours — the one number the label plates read.
+  const night = nightness(hour);
   useEffect(() => {
     const tick = () => setHour(clockHour(window.location.search));
     tick();
@@ -735,8 +755,8 @@ export default function HomeMap3D({
   const finP = vw === 0 ? null : project(pathXAt(49.99), FINISH_Z - camZ, camZ, vw, vh);
 
   return (
-    <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>
-      <div className="relative">
+    <div className={`home-map home-map-3d${fill ? " h-full" : ""}`} style={{ fontFamily: "var(--font-body-stack)" }}>
+      <div className={fill ? "relative h-full" : "relative"}>
         <div
           ref={boxRef}
           tabIndex={0}
@@ -748,10 +768,42 @@ export default function HomeMap3D({
              `useScrollOn` reads, the same shape `data-no-rail-swipe` gives the
              sideways drag. */
           data-no-scroll-on
-          className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
+          className={fill
+            ? "home-map3d-box relative h-full overflow-y-auto overflow-x-hidden"
+            : "home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"}
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
-          style={{ maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER, boxShadow: "var(--shadow-card)", touchAction: "pan-y" }}
+          style={{
+            maxHeight: fill ? "none" : "68vh",
+            borderColor: "var(--cahier-line-strong)", background: PAPER,
+            boxShadow: fill ? "none" : "var(--shadow-card)", touchAction: "pan-y",
+            /* THE LABELS FOLLOW THE SUN TOO (Dan, 8 Sep: could it "land day
+               when it's daytime and night when it is night time, with the
+               fonts adapting accordingly?").
+               The sky has read the learner's clock since it was built. The
+               TEXT never did: at 23:00 « Introductions » and the roadside tags
+               were the same dark ink on the same near-white plate they wear at
+               midday, sitting on ground that had gone dark — the one part of
+               the scene that did not know what time it was.
+               `nightness(hour)` already existed in sky.ts and NOTHING outside
+               that file read it. It does now, in one place: two custom
+               properties every plate on the scene inherits, so a plate never
+               has to be told the hour and there is one line to change if the
+               palette moves.
+
+               IT SWITCHES, IT DOES NOT FADE — and that was measured, not
+               assumed. The first build crossfaded BOTH the ink and the plate
+               through `night`, which reads as the obvious thing to do and is
+               wrong: the two pass through each other at dawn and dusk. At
+               06:00 the ink came out at lightness 0.635 on a plate of 0.612 —
+               all but invisible, twice a day, every day. A plate is legible at
+               the two ENDS of that fade and nowhere in the middle, so the pair
+               flips together at one threshold and the CSS transition below
+               carries the eye across it. */
+            ["--m3d-plate" as string]: night > 0.45 ? NIGHT_PLATE : "rgba(255,255,255,0.86)",
+            ["--m3d-plate-ink" as string]: night > 0.45 ? PAPER : INK,
+            ["--m3d-plate-fade" as string]: "background-color 1.2s ease, color 1.2s ease",
+          } as React.CSSProperties}
           // A TAP also focuses, and the focus-travel then yanked the camera
           // out from under the finger — the tap read as "the map jumped
           // further down" instead of opening the stop (Dan, 31 Aug; measured:
@@ -1156,11 +1208,22 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {scale > 0.7 && reveal === 1 && ( // names for the nearest two or three standing stops. The old gate (nodeH > 48) was tuned for a taller box — on the 520px phone box nodeH tops out ~45, so NO stop ever wore its name there (Dan, 31 Aug: "why have the names of the stops vanished")
+                        {/* NOT ON THE LANDING PAGE (`fill`). The nearest stop's
+                            name lands in the same few hundred pixels of near
+                            ground as that page's one button — measured on the
+                            first build, « Introductions » sat directly under
+                            « Start my journey » at 1440 AND at 390, poking out
+                            both sides of the pill on a phone. Moving the button
+                            does not fix it: the label follows the camera's own
+                            stop, so it is always low and always centred. The
+                            landing page is a VIEW of the road rather than a map
+                            being read, and its answer to "what is this" is the
+                            button, so the name is the thing that goes. */}
+                        {!fill && scale > 0.7 && reveal === 1 && ( // names for the nearest two or three standing stops. The old gate (nodeH > 48) was tuned for a taller box — on the 520px phone box nodeH tops out ~45, so NO stop ever wore its name there (Dan, 31 Aug: "why have the names of the stops vanished")
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"
-                            style={{ fontSize: Math.max(7, sz * 0.16), color: INK, background: "rgba(255,255,255,0.82)" }}
+                            style={{ fontSize: Math.max(7, sz * 0.16), color: "var(--m3d-plate-ink)", background: "var(--m3d-plate)", transition: "var(--m3d-plate-fade)" }}
                           >
                             {st.short}
                           </span>
@@ -1237,7 +1300,7 @@ export default function HomeMap3D({
           </div>
         </div>
 
-        {pin !== "visible" && activeIdx >= 0 && (
+        {!fill && pin !== "visible" && activeIdx >= 0 && (
           <button
             type="button"
             aria-label="Back to your goal"
@@ -1254,7 +1317,7 @@ export default function HomeMap3D({
           </button>
         )}
       </div>
-      <KindLegend />
+      {!fill && <KindLegend />}
     </div>
   );
 }

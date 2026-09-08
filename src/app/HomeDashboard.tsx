@@ -444,12 +444,18 @@ export default function HomeDashboard() {
                 because 153px at 293px wide is a deliberate glimpse and there is
                 no room on a phone for more. Above `sm` the card takes a ratio
                 instead — scale-invariant, so it survives the 0.44 zoom with no
-                arithmetic against it. 3.2 is not a taste: it is where the map
-                ENDS at that width. A rounder 1.9 was tried first and left
-                ~100px of blank paper under the last row, because the whole
-                fifty-stop grid needs less height than that once the card is
-                764px wide. */}
-            <div className="h-[330px] overflow-hidden sm:h-auto sm:aspect-[3.2]" style={{ zoom: 0.44 }}>
+                arithmetic against it.
+
+                3.7 IS DAN'S PICK, from three heights rendered side by side
+                (8 Sep): a tight letterbox, a middle, and one showing the whole
+                map. He chose the middle — more of the journey than the
+                letterbox, without the card growing to dominate the page. The
+                number is not a taste, it is what puts the card at that height:
+                748px wide on a 1440 desktop, so 748/3.7 = 202px, against
+                748/3.2 = 234px before. The phone is byte-for-byte unchanged —
+                277×145 either way, because below `sm` the ratio never applies
+                and `h-[330px]` × the 0.44 zoom still rules. */}
+            <div className="h-[330px] overflow-hidden sm:h-auto sm:aspect-[3.7]" style={{ zoom: 0.44 }}>
               <Map2DGrid progress={progress} activeId={activeId} accent={accent} />
             </div>
           </div>

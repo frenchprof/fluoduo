@@ -32,10 +32,12 @@ are invisible on a phone, which is why they had survived.
      across the third.
 
      Above `sm` it takes a ratio instead. A ratio is scale-invariant, so it
-     survives the card's 0.44 zoom with no arithmetic against it. 3.2 is not a
-     taste — it is where the fifty-stop grid ENDS at that width: measured
-     after, 9px of slack. A rounder 1.9 was tried first and left ~100px of
-     blank paper under the last row.
+     survives the card's 0.44 zoom with no arithmetic against it. The number
+     itself was settled by Dan on 8 Sep, from three heights rendered side by
+     side; he picked the middle, and 3.7 is what puts the card there — 202px on
+     a 1440 desktop, against 234px at the 3.2 first shipped here. So the
+     assertion below holds that a ratio EXISTS, not which one: the height is
+     Dan's to move, the letterbox is the fault.
 
      THE PHONE MUST NOT MOVE. `h-[330px]` stays as the base and the ratio is
      an `sm:` override, so a phone renders 293×153 exactly as before. An
