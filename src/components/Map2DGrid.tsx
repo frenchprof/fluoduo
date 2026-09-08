@@ -49,9 +49,15 @@ function serpentine<T>(items: T[]): T[] {
  *  ever swings — a turn shorter than this reads as a kink, not a corner. */
 const HAIRPIN_REACH = 0.62;
 const HAIRPIN_MIN = 16;
-/** The cord's own width, and the disc that swells it at each stop. */
-const ROAD_W = 7;
-const BEAD_R = 7;
+/** The cord's own width, and the disc that swells it BETWEEN two stops.
+ *
+ *  ROAD_W was 7 for a day and Dan's verdict was "the line linking the stops is
+ *  way too thick" — against a 44px stop that is a fifth of its diameter, which
+ *  reads as a pipe rather than a road. 4 sits at about a tenth, which is what
+ *  his drawing showed. */
+const ROAD_W = 4;
+/** The fold. Wider than the cord's half-width, so the line visibly swells. */
+const BEAD_R = 3.1;
 
 export default function Map2DGrid({
   progress,
@@ -67,9 +73,13 @@ export default function Map2DGrid({
 }) {
   const activeIdx = activeId ? SIOS.findIndex((s) => s.id === activeId) : -1;
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const [route, setRoute] = useState<{ travelled: string; ahead: string; beads: { x: number; y: number }[] }>(
-    { travelled: "", ahead: "", beads: [] },
-  );
+  const [route, setRoute] = useState<{
+    travelled: string;
+    ahead: string;
+    /** `i` is the segment's FIRST stop, so the fold takes the colour of the
+     *  stretch it belongs to rather than of whichever stop is nearer. */
+    beads: { x: number; y: number; i: number }[];
+  }>({ travelled: "", ahead: "", beads: [] });
 
   // The route, measured. Node centres are read from the laid-out DOM (in
   // course order, via data-stop) because the grid's geometry depends on the
@@ -147,8 +157,21 @@ export default function Map2DGrid({
     setRoute({
       travelled: path(0, t),
       ahead: path(t, last),
-      // A bead where the road meets each stop. See the render for what it does.
-      beads: pts.map((q) => ({ x: Math.round(q.x), y: Math.round(q.y) })),
+      /* THE FOLD SITS BETWEEN TWO STOPS, NOT ON ONE (Dan, 2026-09-08: *"where
+         is the middle 'fold' bulge"* — it was never visible). The first version
+         put a disc at every stop CENTRE, which is the one place on the road a
+         disc can never be seen: the road runs UNDER the stops, and a 44px node
+         covers a 7px bead completely. It was invisible by construction, and I
+         shipped it without checking that it showed.
+
+         Midway along each straight run it has nothing over it, so the line
+         swells where a learner is actually looking — between one goal and the
+         next. Row-end hairpins get none: a bulge on a curve reads as a lump. */
+      beads: pts.slice(0, -1).flatMap((q, i) => {
+        if ((i + 1) % 5 === 0) return [];          // that gap is a hairpin
+        const n = pts[i + 1];
+        return [{ x: Math.round((q.x + n.x) / 2), y: Math.round((q.y + n.y) / 2), i }];
+      }),
     });
   }, [activeIdx]);
 
@@ -238,9 +261,9 @@ export default function Map2DGrid({
             stop looks threaded onto the road rather than laid beside it. It is
             drawn first so the cord runs over its own bead and the two read as
             one shape. */}
-        {route.beads.map((q, i) => (
-          <circle key={i} cx={q.x} cy={q.y} r={BEAD_R}
-            fill={i <= (activeIdx >= 0 ? activeIdx : route.beads.length - 1)
+        {route.beads.map((q) => (
+          <circle key={q.i} cx={q.x} cy={q.y} r={BEAD_R}
+            fill={q.i < (activeIdx >= 0 ? activeIdx : Infinity)
               ? (accent ?? "var(--cahier-ink)")
               : "var(--cahier-ink)"} />
         ))}
