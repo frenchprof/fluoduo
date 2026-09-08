@@ -558,6 +558,7 @@ export default function HomeMap3D({
   focusUnit,
   onOpenUnit,
   onOpenSio,
+  fill = false,
 }: {
   progress: Progress;
   activeId?: string;
@@ -565,6 +566,20 @@ export default function HomeMap3D({
   accent?: string;
   /** Unit to open on (deep link); defaults to the current stop. */
   focusUnit?: number;
+  /**
+   * THE SCENE AS THE PAGE, not a card on it (Dan, 8 Sep, on the landing page:
+   * "can the map fill the screen such that the night sky could serve as
+   * background for the top nav"). Drops the card — border, corners, shadow,
+   * the 520/640px height and the 68vh cap — for `h-full`, and drops the two
+   * pieces of furniture that belong to a map you are USING rather than
+   * looking at: the kind legend and the "back to your goal" button.
+   *
+   * NOTHING ABOUT THE SCENE ITSELF CHANGES. It has no width of its own — the
+   * projection is a function of the box's measured `vw`/`vh` — so filling the
+   * viewport is a matter of giving the box the viewport, not of a second
+   * scene built for it.
+   */
+  fill?: boolean;
   /** Tapping a world's gate sign — the parent shows that unit's list. */
   onOpenUnit?: (unit: number) => void;
   /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
@@ -740,8 +755,8 @@ export default function HomeMap3D({
   const finP = vw === 0 ? null : project(pathXAt(49.99), FINISH_Z - camZ, camZ, vw, vh);
 
   return (
-    <div className="home-map home-map-3d" style={{ fontFamily: "var(--font-body-stack)" }}>
-      <div className="relative">
+    <div className={`home-map home-map-3d${fill ? " h-full" : ""}`} style={{ fontFamily: "var(--font-body-stack)" }}>
+      <div className={fill ? "relative h-full" : "relative"}>
         <div
           ref={boxRef}
           tabIndex={0}
@@ -753,12 +768,15 @@ export default function HomeMap3D({
              `useScrollOn` reads, the same shape `data-no-rail-swipe` gives the
              sideways drag. */
           data-no-scroll-on
-          className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
+          className={fill
+            ? "home-map3d-box relative h-full overflow-y-auto overflow-x-hidden"
+            : "home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"}
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
           style={{
-            maxHeight: "68vh", borderColor: "var(--cahier-line-strong)", background: PAPER,
-            boxShadow: "var(--shadow-card)", touchAction: "pan-y",
+            maxHeight: fill ? "none" : "68vh",
+            borderColor: "var(--cahier-line-strong)", background: PAPER,
+            boxShadow: fill ? "none" : "var(--shadow-card)", touchAction: "pan-y",
             /* THE LABELS FOLLOW THE SUN TOO (Dan, 8 Sep: could it "land day
                when it's daytime and night when it is night time, with the
                fonts adapting accordingly?").
@@ -1190,7 +1208,18 @@ export default function HomeMap3D({
                             />
                           )}
                         </button>
-                        {scale > 0.7 && reveal === 1 && ( // names for the nearest two or three standing stops. The old gate (nodeH > 48) was tuned for a taller box — on the 520px phone box nodeH tops out ~45, so NO stop ever wore its name there (Dan, 31 Aug: "why have the names of the stops vanished")
+                        {/* NOT ON THE LANDING PAGE (`fill`). The nearest stop's
+                            name lands in the same few hundred pixels of near
+                            ground as that page's one button — measured on the
+                            first build, « Introductions » sat directly under
+                            « Start my journey » at 1440 AND at 390, poking out
+                            both sides of the pill on a phone. Moving the button
+                            does not fix it: the label follows the camera's own
+                            stop, so it is always low and always centred. The
+                            landing page is a VIEW of the road rather than a map
+                            being read, and its answer to "what is this" is the
+                            button, so the name is the thing that goes. */}
+                        {!fill && scale > 0.7 && reveal === 1 && ( // names for the nearest two or three standing stops. The old gate (nodeH > 48) was tuned for a taller box — on the 520px phone box nodeH tops out ~45, so NO stop ever wore its name there (Dan, 31 Aug: "why have the names of the stops vanished")
                           <span
                             aria-hidden
                             className="pointer-events-none mt-0.5 whitespace-nowrap rounded px-1 font-bold leading-tight"
@@ -1271,7 +1300,7 @@ export default function HomeMap3D({
           </div>
         </div>
 
-        {pin !== "visible" && activeIdx >= 0 && (
+        {!fill && pin !== "visible" && activeIdx >= 0 && (
           <button
             type="button"
             aria-label="Back to your goal"
@@ -1288,7 +1317,7 @@ export default function HomeMap3D({
           </button>
         )}
       </div>
-      <KindLegend />
+      {!fill && <KindLegend />}
     </div>
   );
 }

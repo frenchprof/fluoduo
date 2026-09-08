@@ -41,6 +41,12 @@ const PORT = 4183;
 const EXEMPT = new Map([
   ["/", "Home keeps its hero instead of a band (CahierShell: active !== 'home')."],
   ["/map/standalone", "The deliberately BARE map for other people's pages — it draws no cahier at all."],
+  // The pre-home landing page (Dan, 8 Sep). A coloured strip IS notebook
+  // furniture — it names the page you are on inside the app — and this page is
+  // the door in front of the app. The scene fills it edge to edge and a band
+  // would be a bar laid across the sky, which is where the welcome lives.
+  // verify151 is what holds this page's layout instead.
+  ["/welcome", "The door: the 3D scene fills the screen and there is no cahier to label."],
   // Both /hidden pages are `robots: noindex`, reachable only by typing the URL,
   // and exist so Dan can look at ONE thing at a size: the origin animation, and
   // the language sorter. Chrome around them is the thing being excluded. They
