@@ -436,6 +436,16 @@ jobs:
       - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
         run: python3 verify/verify140-speculearn-merged.py
 
+      # Dan asked for the end-of-page scroll one level in — between questions
+      # of the same lesson. Ungated it would ANSWER a question nobody read.
+      - name: "Scrolling on moves to the next question, never past an unread one (8 Sep)"
+        run: python3 verify/verify170-scroll-next-question.py
+
+      # The forward is a client-side replace, so where a learner LANDS and what
+      # shape that page is exist in no file — this one has to be driven.
+      - name: "No pre-test stacks its questions down one page (8 Sep)"
+        run: python3 verify/verify171-pretest-feeds.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
