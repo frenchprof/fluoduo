@@ -132,48 +132,68 @@ function gradStops(css: string): [string, string] {
 function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; open?: boolean; className?: string }) {
   const id = useId();
   const [w1, w2] = gradStops(tint.body);
-  // The metal is the SAME on every chest, and the wood is what the livery
-  // colours. Dan's reference (8 Sep) is a row of classic chests: gold trim, a
-  // wooden lid and body between it, one small lock plate at the joint — and NO
-  // straps at all, which is what he was pointing at ("i mean the chests i know
-  // have not straps"). Three earlier drafts hung straps on it; they were never
-  // in the drawing.
+  // The livery's `lid` value is its own darker shade — exactly what the faces
+  // turned away from the light need, so the receding end and the lid's swept
+  // top take it rather than a computed darkening.
+  const [shade] = gradStops(tint.lid);
+  // The metal is the same on every chest; the livery colours the WOOD.
   const G1 = "#f7d878";
   const G2 = "#d69f22";
   const ink = "#4a3a12";
   return (
-    <svg viewBox="0 0 104 96" className={className} aria-hidden focusable="false">
+    <svg viewBox="0 0 100 92" className={className} aria-hidden focusable="false">
       <defs>
         <linearGradient id={`${id}w`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={w1} /><stop offset="1" stopColor={w2} /></linearGradient>
         <linearGradient id={`${id}g`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={G1} /><stop offset="1" stopColor={G2} /></linearGradient>
       </defs>
-      <ellipse cx="52" cy="90" rx="40" ry="4" fill="rgba(0,0,0,0.14)" />
+      <ellipse cx="49" cy="86" rx="40" ry="3.6" fill="rgba(0,0,0,0.15)" />
 
-      {/* THE LID — a gold rim with the wood inside it. The rim is drawn as the
-          whole lid shape with the wood laid over it 4 units in, which is
-          cheaper and rounder than stroking an arc, and gives the trim the same
-          thickness all the way round the dome.
-          THE DOME'S RADIUS IS NOT ARBITRARY: the chord is 84 wide, so r = 42
-          would be a semicircle rising 42 units, clean off the top of the box —
-          an earlier draft did exactly that and rendered a lid clipped flat.
-          r = 49 lifts it 26, which is a chest lid. */}
-      <g transform={open ? "rotate(-14 12 44)" : undefined}>
-        <path d="M8 44 V40 A49 49 0 0 1 96 40 V44 z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
-        <path d="M12 43 V39 A46 46 0 0 1 92 39 V43 z" fill={`url(#${id}w)`} stroke={ink} strokeWidth="1.2" />
-        <path d="M20 28 A38 38 0 0 1 84 28" fill="none" stroke={ink} strokeWidth="0.9" opacity="0.22" />
+      {/* SEEN FROM THE CORNER, NOT FROM THE FRONT (Dan, 8 Sep: *"your drawing
+          mixes up the side view with the front lock. the chestboxes will look
+          like chestboxes if they are viewed from the corner rather than from
+          the front or side"*). Three drafts drew a flat front elevation with a
+          lock on it, which is a shape, not a box.
+          A chest lid is a HALF-CYLINDER lying front to back: what faces you is
+          the cylinder's END CAP — the arch — and its curved surface runs away
+          to the right. The body is the same box: a front face and one end face
+          receding. The lock sits on the front face alone, which is the piece
+          the earlier drafts had right and everything else wrong.
+          The depth offset is (+18, −10) throughout, so every receding edge is
+          parallel and the box holds together.
+
+          THE ARCH'S RADIUS IS NOT ARBITRARY: over a 70-wide chord, r = 35 is a
+          semicircle rising 35 — an early draft used the equivalent and drew a
+          lid clipped clean off the top of the box. r = 41 lifts it 20, which
+          is a lid on a body 31 deep. */}
+      <g transform={open ? "rotate(-13 8 47)" : undefined}>
+        {/* the lid's curved top, swept back and to the right */}
+        <path d="M5 46 A41 41 0 0 1 75 46 L93 36 A41 41 0 0 0 23 36 Z" fill={shade} stroke={ink} strokeWidth="1.9" strokeLinejoin="round" />
+        <path d="M40 25 L58 15" stroke={ink} strokeWidth="0.8" opacity="0.22" />
       </g>
 
-      {/* THE BODY — the same gold-frame-and-wood-panel, with the frame left
-          thicker along the foot so it reads as the chest's base band. */}
-      <path d="M12 47 h80 v32 a3 3 0 0 1 -3 3 H15 a3 3 0 0 1 -3 -3 z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
-      <rect x="16" y="51" width="72" height="21" rx="2" fill={`url(#${id}w)`} stroke={ink} strokeWidth="1.2" />
-      <path d="M18 58 H86 M18 65 H86" stroke={ink} strokeWidth="0.9" opacity="0.22" />
+      {/* the body: the receding end first, then the front over it */}
+      <path d="M72 47 L90 37 V68 L72 78 Z" fill={shade} stroke={ink} strokeWidth="1.9" strokeLinejoin="round" />
+      <path d="M8 47 H72 V78 H8 Z" fill={`url(#${id}w)`} stroke={ink} strokeWidth="2.1" strokeLinejoin="round" />
+      <path d="M10 57 H70 M10 66 H70" stroke={ink} strokeWidth="0.8" opacity="0.2" />
 
-      {/* the band where the lid closes onto the body, and the lock across it */}
-      <rect x="12" y="40" width="80" height="7" rx="2" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" />
-      <rect x="45" y="38" width="14" height="16" rx="2.5" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.9" />
-      <circle cx="52" cy="44" r="2.1" fill={ink} />
-      <path d="M52 45 l-1.4 5 h2.8 z" fill={ink} />
+      <g transform={open ? "rotate(-13 8 47)" : undefined}>
+        {/* the arched front — the cylinder's end cap — and its gold rim */}
+        <path d="M5 47 A41 41 0 0 1 75 47 Z" fill={`url(#${id}w)`} stroke={ink} strokeWidth="2.1" strokeLinejoin="round" />
+        <path d="M13 41 A32 32 0 0 1 67 41" fill="none" stroke={ink} strokeWidth="0.8" opacity="0.2" />
+        <path d="M5 47 A41 41 0 0 1 75 47" fill="none" stroke={`url(#${id}g)`} strokeWidth="4" />
+        <path d="M5 47 A41 41 0 0 1 75 47" fill="none" stroke={ink} strokeWidth="0.9" opacity="0.5" />
+        <path d="M75 47 L93 37" stroke={`url(#${id}g)`} strokeWidth="4" />
+        <path d="M75 47 L93 37" stroke={ink} strokeWidth="0.9" opacity="0.5" />
+      </g>
+
+      {/* the gold band where the lid closes, and the one round the foot */}
+      <path d="M4 45 H74 L92 35 V40 L74 50 H4 Z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M8 71 H72 L90 61 V68 L72 78 H8 Z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.5" strokeLinejoin="round" />
+
+      {/* the lock — on the FRONT face, and only there */}
+      <rect x="33" y="43" width="13" height="15" rx="2.4" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.7" />
+      <circle cx="39.5" cy="48.5" r="2" fill={ink} />
+      <path d="M39.5 49.5 l-1.3 4.6 h2.6 z" fill={ink} />
     </svg>
   );
 }
