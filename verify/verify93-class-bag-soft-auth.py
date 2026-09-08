@@ -67,9 +67,17 @@ check("REQUIRE_SIGN_IN = true" not in code(auth),
       "REQUIRE_SIGN_IN hard-coded true")
 
 # A learner can always decline the guess and move on.
-check("Skip pretest" in recap or "Skip pretest" in read("src/app/pretests/unit0/[sioId]/Content.tsx"),
-      "Skip pretest is still offered",
-      "no Skip pretest control — a learner cannot decline a diagnostic")
+#
+# THE FALLBACK IS GONE ON PURPOSE (2026-09-08). This used to accept the control
+# on EITHER the merged run or the stacked Unit-0 page — and it was the page
+# that carried it, so the run every learner actually reaches had no way to
+# decline at all, and this check stayed green throughout. The page is a forward
+# now and the control moved into the run, where it belongs: one place, and a
+# check that names it.
+check("Skip pretest" in recap,
+      "Skip pretest is still offered in the run itself",
+      "no Skip pretest control in the merged run — a learner cannot decline a\n"
+      "     cold guess before the lesson, which it has never been the point to force")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

@@ -8,11 +8,22 @@
  * ledger is how one of them drifts; the Unit-0 quiz already proves it — it
  * grades but never records. The presentation stays per-engine; the facts of
  * an answer are decided and recorded here only.
+ *
+ * AND UNIT 0 CAME IN HERE ON 2026-09-08, which is the same lesson a third time.
+ * Its questions are a different shape — a prompt and four options rather than
+ * an authored `PretestItem` — so they had their own writer inside the stacked
+ * page, and when that page became a forward to the merged run the write simply
+ * stopped happening: from the 7 Sep merge the only surface that recorded a
+ * Unit-0 answer was one nothing linked to. Restoring it INSIDE the runner
+ * rather than inside the feed is the whole point — verify22 forbids an engine
+ * from calling `recordPretestAnswer` itself, and that rule is why this file
+ * exists.
  */
 import { sioIdForPretest } from "@/content/pretests";
 import { recordPretestAnswer, stemForItem } from "@/lib/pretestRecord";
 import { logEvent } from "@/lib/firebase/usage";
 import type { PretestItem } from "@/lib/pretests/schema";
+import { unit0QuestionId, type Unit0Question } from "@/content/sios/unit0-questions";
 
 
 export { shuffle } from "@/lib/shuffle";
@@ -22,6 +33,41 @@ export function ttsTextForItem(item: PretestItem): string {
   return `${item.sentenceBefore} ${item.answer} ${item.sentenceAfter}`
     .replace(/\s+/g, " ")
     .trim();
+}
+
+/**
+ * The same job for a UNIT-0 question, which is not an authored `PretestItem`.
+ *
+ * Dan, 2026-08-27, of a pre-lesson guess: *"remember it, but don't score it"* —
+ * so this writes the record and the evidence and nothing else. No `logEvent`,
+ * because a unit-0 question has never carried a pretest id to log under.
+ *
+ * TWO IDS, AND THEY ARE NOT INTERCHANGEABLE. The record is keyed
+ * `unit0:<stop>`; the EVIDENCE is keyed by the stop's DECK id, because
+ * `activityLedger` resolves a stop by taking the tail after the last colon and
+ * asking `sioForDeck` — a SIO id there resolves to nothing and the write
+ * silently no-ops. That was traced rather than assumed when the stacked page
+ * was built, because a no-op looks identical to success from the call site.
+ */
+export function judgeUnit0Answer(
+  sioId: string,
+  deckId: string,
+  q: Unit0Question,
+  answer: string,
+  choice: string,
+): boolean {
+  const correct = choice === answer;
+  recordPretestEvidence(deckId, unit0QuestionId(q), correct, choice);
+  recordPretestAnswer({
+    pretestId: `unit0:${sioId}`,
+    sioId,
+    itemId: unit0QuestionId(q),
+    correct,
+    picked: choice,
+    answer,
+    stem: (q.stem ?? q.title ?? q.emoji ?? "").replace(/\s+/g, " ").trim(),
+  });
+  return correct;
 }
 
 /**

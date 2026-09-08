@@ -223,13 +223,27 @@ ok("aria-label={s.label}" in sio010,
    "the full audience sentence is the tab's accessible name",
    "the tab has no accessible name; its two short lines read as a fragment")
 
-# ---- 9 · the page's count is honest --------------------------------------
-ok("SIO010_SITUATIONS[0].questions.length" in page,
-   "the page counts one situation's questions, not all three flattened",
-   "the page prints SIO-010's flattened bank size — 21 in one number reads as one very long run")
-ok("SIO010_SITUATIONS.length" in page,
-   "the page says how many situations there are",
-   "the page no longer says there are three situations — a learner would not know two more tabs are waiting")
+# ---- 9 · the count is honest, and the reason it can be ------------------
+# THIS CLAUSE CHANGED ON 2026-09-08, and the ruling behind it did not.
+#
+# It used to require the stacked page to print "3 situations · 7 questions
+# each" rather than a flat 21, because 21 in one number read as a single very
+# long run — which is exactly what that page WAS, three screens of questions
+# down one scroll. Dan struck the page out that day ("Unit 0 stacks every
+# question down one long page — and it is a beginner's first contact with the
+# app"), and the address now forwards to the merged run.
+#
+# The merged run may say 22 without misleading anyone, because there a learner
+# genuinely does sit every question, one per screen, with the magnet stopping
+# on each: the number describes what is in front of them instead of hiding two
+# thirds of it behind a tab. So what is pinned here is the thing that makes the
+# honest number honest — one question per screen — and `pretest-scan` (verify171)
+# drives it on SIO-010 itself.
+run = read("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx")
+ok("SnapFeed" in run,
+   "SIO-010's questions are served one per screen, so a flat count is honest",
+   "the merged run no longer uses SnapFeed — without one question per screen a\n"
+   "        flat 22 is the very thing this clause was written against")
 
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
