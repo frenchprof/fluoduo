@@ -49,15 +49,20 @@ function serpentine<T>(items: T[]): T[] {
  *  ever swings — a turn shorter than this reads as a kink, not a corner. */
 const HAIRPIN_REACH = 0.62;
 const HAIRPIN_MIN = 16;
-/** The cord's own width, and the disc that swells it BETWEEN two stops.
+/** The cord's own width.
  *
- *  ROAD_W was 7 for a day and Dan's verdict was "the line linking the stops is
- *  way too thick" — against a 44px stop that is a fifth of its diameter, which
- *  reads as a pipe rather than a road. 4 sits at about a tenth, which is what
- *  his drawing showed. */
-const ROAD_W = 4;
-/** The fold. Wider than the cord's half-width, so the line visibly swells. */
-const BEAD_R = 3.1;
+ *  This went 7 -> 4 on "the line linking the stops is way too thick", and then
+ *  Dan corrected the diagnosis himself: *"I realised the thickness is not the
+ *  real issue, it is the color and darkness, it should be greyish with almost
+ *  the same thickness"*. A near-black cord at 7px reads as heavy; the SAME
+ *  width in grey does not. So the width comes back and the ink goes. */
+const ROAD_W = 6;
+/** The road's grey. Dark enough to read on the paper and on every band wash,
+ *  pale enough that fifty of them are a route rather than a cage. */
+const ROAD_GREY = "color-mix(in oklab, var(--cahier-ink) 42%, var(--cahier-paper))";
+/* FOLD_SPAN lived here — how far a crease ran across a button. It is gone with
+   the crease-as-a-chord idea: the fold is a wash over the whole node now, so
+   the only measurement it needs is the node's own radius. */
 
 export default function Map2DGrid({
   progress,
@@ -76,10 +81,9 @@ export default function Map2DGrid({
   const [route, setRoute] = useState<{
     travelled: string;
     ahead: string;
-    /** `i` is the segment's FIRST stop, so the fold takes the colour of the
-     *  stretch it belongs to rather than of whichever stop is nearer. */
-    beads: { x: number; y: number; i: number }[];
-  }>({ travelled: "", ahead: "", beads: [] });
+    /** One fold per stop: its centre, the button's radius, and its index. */
+    creases: { x: number; y: number; r: number; i: number }[];
+  }>({ travelled: "", ahead: "", creases: [] });
 
   // The route, measured. Node centres are read from the laid-out DOM (in
   // course order, via data-stop) because the grid's geometry depends on the
@@ -115,7 +119,7 @@ export default function Map2DGrid({
       ?? (box.offsetWidth > 0 ? b.width / box.offsetWidth : 1);
     const scale = Number.isFinite(k) && k > 0 ? k : 1;
 
-    const pts: { x: number; y: number }[] = [];
+    const pts: { x: number; y: number; r: number }[] = [];
     for (const s of SIOS) {
       const el = box.querySelector(`[data-stop="${s.id}"]`);
       if (!el) return;
@@ -123,6 +127,9 @@ export default function Map2DGrid({
       pts.push({
         x: (r.left + r.width / 2 - b.left) / scale,
         y: (r.top + r.height / 2 - b.top) / scale,
+        // The node's own radius, so the crease is sized to the button rather
+        // than to a constant that goes wrong the moment the grid resizes.
+        r: r.width / 2 / scale,
       });
     }
     /* A PATH, NOT A POLYLINE, so the row ends can TURN (Dan, 2026-09-07, with
@@ -157,21 +164,27 @@ export default function Map2DGrid({
     setRoute({
       travelled: path(0, t),
       ahead: path(t, last),
-      /* THE FOLD SITS BETWEEN TWO STOPS, NOT ON ONE (Dan, 2026-09-08: *"where
-         is the middle 'fold' bulge"* — it was never visible). The first version
-         put a disc at every stop CENTRE, which is the one place on the road a
-         disc can never be seen: the road runs UNDER the stops, and a 44px node
-         covers a 7px bead completely. It was invisible by construction, and I
-         shipped it without checking that it showed.
+      /* THE FOLD IS IN THE BUTTON, NOT IN THE ROAD (Dan, 2026-09-08: *"it was
+         supposed to look like the button was folded very lightly along the line
+         below … can you try to render a slight folding line along where the
+         line below passes?"*, then *"make it look 3D"*).
 
-         Midway along each straight run it has nothing over it, so the line
-         swells where a learner is actually looking — between one goal and the
-         next. Row-end hairpins get none: a bulge on a curve reads as a lump. */
-      beads: pts.slice(0, -1).flatMap((q, i) => {
-        if ((i + 1) % 5 === 0) return [];          // that gap is a hairpin
-        const n = pts[i + 1];
-        return [{ x: Math.round((q.x + n.x) / 2), y: Math.round((q.y + n.y) / 2), i }];
-      }),
+         Two wrong readings before this one, both mine. First a disc at each
+         stop's CENTRE — invisible, because the road runs under a 44px node.
+         Then a disc MIDWAY between stops — visible, but a knot on the road,
+         when what he drew was a crease across the BUTTON where the road passes
+         behind it. The road is not meant to change shape at all.
+
+         So each stop carries a chord at its own centre line: the button bent
+         gently along the road. Drawn ABOVE the nodes, since a crease under one
+         is the same nothing as the first attempt. */
+      creases: pts.map((q, i) => ({
+        x: Math.round(q.x),
+        y: Math.round(q.y),
+        // The button's own radius, so the fold is the button's shape exactly.
+        r: Math.round(q.r),
+        i,
+      })),
     });
   }, [activeIdx]);
 
@@ -240,40 +253,30 @@ export default function Map2DGrid({
             ResizeObserver redraws. Ahead is a GROOVE cut into the band: the
             dark dashes sit a pixel high with a white catch-light under them,
             which is the same light-from-above the stops use. */}
-        {/* ONE SOLID ROAD, DARK AND THICK (Dan, 2026-09-07, with a drawing:
-            *"we don't want to see dotted lines, but solid darker thicker line
-            that even seems to almost 'bulge' the stop along the line where it
-            passes"*).
+        {/* ONE SOLID ROAD, IN GREY (Dan, 2026-09-07 with a drawing: *"we don't
+            want to see dotted lines, but solid darker thicker line"*; then, on
+            8 Sep, correcting his own diagnosis: *"I realised the thickness is
+            not the real issue, it is the color and darkness, it should be
+            greyish with almost the same thickness"*).
 
             WHY IT LOOKED DOTTED EVERYWHERE, which is the part worth recording:
             the dashes were never a style choice about the road, they were the
             AHEAD half of a travelled/ahead grammar — and a learner standing on
             stop 1 has forty-nine stops ahead, so the whole map was dashes. The
-            distinction survives, in colour rather than in dots: the stretch you
-            have walked takes your accent, the stretch to come takes the ink.
-            Both are the same solid cord, so the map reads as one road either
-            way, which is what it is.
+            distinction survives in COLOUR: the stretch you have walked takes
+            your accent, the stretch to come takes the grey.
 
-            THE BEAD IS THE BULGE. The road passes UNDER the stops (z-[1] on
-            this svg, the nodes above it), so on its own it simply disappears
-            behind each one and reappears. A disc at every centre, a shade wider
-            than the cord, swells the line exactly where a stop sits on it — the
-            stop looks threaded onto the road rather than laid beside it. It is
-            drawn first so the cord runs over its own bead and the two read as
-            one shape. */}
-        {route.beads.map((q) => (
-          <circle key={q.i} cx={q.x} cy={q.y} r={BEAD_R}
-            fill={q.i < (activeIdx >= 0 ? activeIdx : Infinity)
-              ? (accent ?? "var(--cahier-ink)")
-              : "var(--cahier-ink)"} />
-        ))}
+            THE BULGE IS NOT HERE. Two versions put it on the road — a disc at
+            each stop's centre (invisible under a 44px node) and then one midway
+            between stops (visible, but a knot on the cord). Dan meant a crease
+            in the BUTTON, and it is drawn over the nodes further down. */}
         {route.ahead && (
           <>
             {/* The under-edge, one pixel low: the road has a body, not a
                 painted stripe. Same three-stroke cord the travelled half has
                 used since 6 Sep, in ink instead of the accent. */}
             <path d={route.ahead} fill="none" strokeWidth={ROAD_W + 2}
-              stroke="color-mix(in oklab, var(--cahier-ink) 35%, transparent)"
+              stroke="color-mix(in oklab, var(--cahier-ink) 16%, transparent)"
               strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1.5)" />
             {/* NO CATCH-LIGHT ON THIS HALF. The travelled cord earns one — it
                 is the accent, a raised thing you have laid down behind you. On
@@ -282,7 +285,7 @@ export default function Map2DGrid({
                 the map. Dan drew one solid dark line; this is one solid dark
                 line, with only the under-edge that keeps it off the paper. */}
             <path d={route.ahead} fill="none" strokeWidth={ROAD_W}
-              stroke="var(--cahier-ink)" strokeLinejoin="round" strokeLinecap="round" />
+              stroke={ROAD_GREY} strokeLinejoin="round" strokeLinecap="round" />
           </>
         )}
         {route.travelled && (
@@ -435,6 +438,51 @@ export default function Map2DGrid({
           </Link>
         </div>
       </div>
+
+      {/* THE FOLD, DRAWN OVER THE BUTTONS (Dan, 2026-09-08: *"it was supposed
+          to look like the button was folded very lightly along the line below
+          … can you try to render a slight folding line along where the line
+          below passes?"*, then *"make it look 3D"*).
+
+          A SECOND LAYER, and it has to be: the road sits at z-[1], under the
+          nodes, which is why both earlier attempts at a bulge were invisible or
+          in the wrong place. A crease belongs ON the button, so it is painted
+          after them at z-[3], pointer-events off so nothing is caught.
+
+          WHAT MAKES IT READ AS A BEND rather than a drawn line: two chords, not
+          one. A white hairline a pixel ABOVE the centre is the face turned up
+          into the light; a soft shadow a pixel BELOW is the face turned away.
+          That is the same light-from-above the stops are already lit by
+          (`.fluo-stop`), so the button folds within its own lighting rather
+          than against it. The chord stops short of the rim (FOLD_SPAN), because
+          a crease that reaches the edge cuts the button in two instead of
+          bending it. */}
+      <svg aria-hidden className="pointer-events-none absolute inset-0 z-[3] h-full w-full overflow-visible">
+        <defs>
+          {/* THE FOLD IS SHADING, NOT A LINE. Drawn first as a single bright
+              chord across each button, it read as a STRIKE-THROUGH: a white
+              rule straight through the number, cutting the button in two
+              instead of bending it. A fold is not a line you draw, it is two
+              faces meeting — so this is a vertical wash: the upper face turned
+              up into the light, a thin catch on the crease itself, the lower
+              face falling away. The digits sit under a gradient rather than
+              under a rule, so nothing is struck out. */}
+          <linearGradient id="fluo-fold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stopColor="rgb(255,255,255)" stopOpacity="0.13" />
+            <stop offset="47%"  stopColor="rgb(255,255,255)" stopOpacity="0.03" />
+            <stop offset="50%"  stopColor="rgb(255,255,255)" stopOpacity="0.28" />
+            <stop offset="53%"  stopColor="rgb(0,0,0)"       stopOpacity="0.09" />
+            <stop offset="100%" stopColor="rgb(0,0,0)"       stopOpacity="0.14" />
+          </linearGradient>
+        </defs>
+        {/* A circle, not a clipped rect: the stops ARE circles (`rounded-full
+            h-11 w-11`), so the node's own measured radius is the fold's shape
+            and no clip path is needed — fifty of them would cost more than the
+            fold is worth. */}
+        {route.creases.map((c) => (
+          <circle key={c.i} cx={c.x} cy={c.y} r={c.r} fill="url(#fluo-fold)" />
+        ))}
+      </svg>
     </div>
   );
 }
