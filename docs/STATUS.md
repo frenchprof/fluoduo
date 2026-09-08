@@ -6,17 +6,31 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 8 Sep — the chest is on file, and Match It became two exercises (Peers)
+## 8 Sep, later — the chest on file, and Match It becomes two exercises (Peers)
 
 Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
+
+**FIRST, WHAT IS NO LONGER THIS BRANCH'S.** Four of the six things this branch
+built landed in main through OTHER lanes while it was still open — the night
+plates and `/welcome` (#234, then #237 with Dan's bigger type and the F O L G
+colours), the map's fit and its near foreground (#235), the road's grey and the
+coin stops (#236). `verify150`, `verify151` and `verify152` are main's now.
+This branch merged main in and took main's side on every one of them; nothing
+here re-applies an older copy.
+
+That is the AGENTS.md warning arriving in practice — *"BEFORE YOU RENUMBER A
+SECOND TIME, DIFF THE BRANCH AGAINST `main`"* — with the twist that the check
+that catches it (`git diff origin/main HEAD`) is worth running before OPENING
+the pull request, not only before renumbering. PR #239 was opened describing
+six pieces; four of them were already home.
 
 **THE CHEST IS A DRAWING NOW, in `src/components/ChestArt.tsx`.** What it
 replaces is 🧰 — the TOOLBOX emoji, which stood in for a chest in six places
 while also being the real icon of the in-exercise tools tray. One glyph, two
 meanings, and neither of them a chest.
 
-It took four rounds of Dan sending it back, and every round was the same fault
-seen from a different side:
+Four rounds of Dan sending it back, every one the same fault from a different
+side:
 
     "the strap makes the chest look off"        straps painted on a flat front
     "the chests i know have not straps"         there were never straps — gold
@@ -29,57 +43,102 @@ seen from a different side:
                                                 band with a straight crown), and
                                                 the arch is its END CAP
 
-Lesson worth keeping: three of those four rounds were spent fixing what was
-PAINTED on a wrong projection. No amount of restyling the straps could have
-worked, because the drawing was the wrong view of the object.
+Worth keeping: three of those four rounds were spent restyling what was PAINTED
+on a wrong projection. No amount of fixing the straps could have worked.
 
-**Where it shows and where it does not.** `GameOver.emoji`, `CreditsSplash.emoji`
-and `GameGallery.emoji` were widened from `string` to `ReactNode` (a string is
-one, so nothing else changed), which puts the chest on the game's front door,
-its ⋯ menu, its help sheet, its treasure sheet, the credits splash and the
-game-over card. **The registry emoji in `src/content/activities.ts` and the tile
-in `MenuGrid.tsx` are still 🧰 and that is Dan's call to make** — all twenty
-activities carry a text emoji there, and swapping one for an SVG would make
-LexicaLater the odd tile out.
+`GameOver.emoji`, `CreditsSplash.emoji` and `GameGallery.emoji` widened from
+`string` to `ReactNode` (a string is one, so no other game changed). **The
+registry emoji in `src/content/activities.ts` and the Menu tile are still 🧰
+and that is Dan's open call** — all twenty activities carry a text emoji there,
+so doing one alone makes LexicaLater the odd tile out.
+
+Sized in px, not `em`: the block slots inherit 16px rather than their wrapper's
+`text-4xl`, so `h-[1.1em]` rendered at 18px where the emoji sat at ~34.
+Measured in the browser, not guessed from the screenshot.
 
 **`verify19b`'s ratchet caught the move and was answered with an exemption, not
 a rebaseline.** A drawing's hexes are PIGMENTS, so `ChestArt.tsx` joins
-`highlighterMarks.ts` as an exempt file (a new `DRAWINGS` set — the test is
-"would this be a .svg on disk if SVG could take a prop?"), and the baseline was
-lowered by exactly its eight (494 → 486) so the exemption left no slack behind
-it. That is the precedent the file's own comment records from 505 → 494.
+`highlighterMarks.ts` in a new `DRAWINGS` set — the test is *"would this be a
+.svg on disk if SVG could take a prop?"* — and the ceiling dropped by exactly
+its eight (494 → 486) so the exemption left no slack. That is the precedent
+the file's own comment records from 505 → 494.
 
 **MATCH IT (`/games/matching`) IS NOW TWO EXERCISES, not one orphan game.** Dan
 picked options 1 and 2 of three. `src/lib/collections/pairChests.ts` is the one
-place that answers "what is a matching pair?", and it projects each authored
-join two ways: into LexicaLater as a two-keyhole chest (`fixed`, so the level
-re-cut leaves it alone), and into GramMarathon as a gap-fill item. Option 3 —
-Letris columns — was accepted and then withdrawn by Dan the same hour, and is
-fully reverted; `letris.columns[].prefix` already encodes the left half if it
-is ever wanted back.
+place that answers "what is a matching pair?", projecting each authored join
+into LexicaLater as a two-keyhole chest (`fixed`, so the level re-cut leaves it
+alone) and into GramMarathon as a gap-fill item. Option 3 — Letris columns —
+was accepted and withdrawn by Dan the same hour and is fully reverted;
+`letris.columns[].prefix` already encodes the left half if it is wanted back.
 
-`verify153-pair-chests.py` holds both projections, break-tested five ways. The
-two traps it exists for are not obvious: the projected sentence must end in a
-FULL STOP (`gapSentence` uses final punctuation to tell a sentence from a grid
-label — the transport bug), and the gap must be the RIGHT half (« Vous tournez
-___ », never « ___ à droite »).
+`verify153-pair-chests.py` holds both, break-tested five ways. Its two
+non-obvious traps: the projected sentence must end in a FULL STOP (`gapSentence`
+reads final punctuation to tell a sentence from a grid label — the transport
+bug), and the gap must be the RIGHT half (« Vous tournez ___ », never
+« ___ à droite »).
 
-**Also on this branch, earlier the same day:** the map's plates turn over at
-nightfall (`verify150`, all 24 hours swept in a browser, worst 9.7:1);
-`/welcome`, the pre-home landing page, with the scene as the page and the
-horizon band held clear (`verify151`); the 2D map's fit inside its frame
-(`verify152` — and its first version LIED, passing the fault it existed to
-catch, because clicking the 2D/3D switch silently did nothing and it measured
-the wrong view; it seeds `fluo.homeMapView` now and fails if the scene is
-absent); and the map's near foreground, which was bare BY CONSTRUCTION — every
-scenery pass started at z ≈ 0.15, the start of the course, while the camera
-sits about 1.16 stops behind goal 1. Measured: 6 of 196 sprites in the bottom
-third before, 71 of 278 after.
 
-**Shared files this branch touches**, for the integration lane:
-`.github/workflows/verify.yml` (four `run:` lines), `verify/verify19b.py` and
-`verify/visual-baseline.json`, `src/components/GameOver.tsx`,
-`src/components/GameGallery.tsx`, `src/games/CreditsSplash.tsx`, and this file.
+## 8 Sep — the map's stops are coins now (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+On `claude/pre-tests-amendments-hndx8r`, three commits ahead of main and with
+fluoduo-main for the gate. `51523e9f` and `22e2a6e4` are the road's width, its
+grey and the button's fold; `c919f3cc` is the one below.
+
+**Dan sent a crop of a map stop with a red arc drawn on its upper-left rim,
+beside a render of a gold coin:** *"for llustrative purposes : the part i
+marked in red has no reason to exist"* — following his *"make it look 3D"* an
+hour earlier.
+
+What he ringed was one line of `.fluo-stop--up`:
+
+    -3px -3px 7px color-mix(in oklab, white 92%, transparent)
+
+an outer white glow spread up and left of the button, onto the paper. It is
+the standard soft-UI partner to the drop shadow opposite, and it is the only
+shadow in that stack that describes nothing — **a disc standing proud of a
+page casts a shadow; it does not paint light onto the paper beside it.** Fifty
+of them made every stop sit in a shallow dish of its own.
+
+The stack is now one light from above-left, and every line is either part of
+the object or the shadow it throws: a solid unblurred **side wall** in the
+stop's own colour darkened, the cast shadow down and right, the lit rim inside
+the top edge, the far rim turning away at the bottom. `:active` still replaces
+the whole stack, so the coin bottoms out on the page instead of sliding down a
+step that is still there.
+
+**AND NOTHING AT ALL ON THE TOP EDGE** (Dan, shown the first pass: *"no, the
+top edge should end cleanly and not have any shadow"*). That pass still
+carried `inset 0 2px 1px white 62%`, a soft lit rim — the thing a glossy
+button gets. Softness at the top is the halo's mistake in a smaller size: it
+makes the edge look thick and lit from within, when it is simply where the
+coin stops. Measured down the top rim at 5x, one pixel at a time:
+
+    before   paper … 251 → (176,224,255) (175,223,255) (175,223,255) → (55,176,255)
+    now      paper … 243 → (56,176,253) → (54,176,255)
+
+Three samples of washed-out blue became one transitional pixel. Everything
+that describes depth now sits at the BOTTOM, which is the only place a raised
+disc lit from above can show it.
+
+**And the current stop got its 3D back, which nobody had noticed was missing.**
+`fluo-node-glow` animated `box-shadow` on the button itself. `box-shadow` is
+ONE property, so every keyframe replaced the entire coin stack: the one stop a
+learner is actually looking at was the only flat disc on the map. The pulse
+moved to `.fluo-node-active::after`; the coin beneath is untouched. *The
+general lesson, for the next session that reaches for an animation: animating a
+composite property does not add to it, it overwrites it.*
+
+**Shared surface, flagged to peers.** `HomeMap3D.tsx` line 1134 puts the same
+two classes on the 3D map's flat nodes. No TSX of theirs was touched, but the
+side wall is a 3px solid offset and their nodes already carry a plinth — peers
+have been written to, with an offer to scope the wall to the 2D grid if the two
+double up.
+
+Checked before pushing: `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1 npm run
+build` green, every `verify/` script passes, `scripts/road-scan.mjs` lands on
+its stops at all four zooms (0 / 0 / 1 / 1 px).
 
 ## 8 Sep — the second sweep: 23 gone, ten `keep/` markers planted
 

@@ -55,7 +55,6 @@
       ],
       "fullSentence": "Je mange rarement au fast-food.",
       "sentenceTrans": "I rarely eat at fast-food places.",
-      "transFirst": true,
       "whyWrong": {
         "rares": "rares is a plural adjective — the adverb is rarement.",
         "très rare": "rare is an adjective — the adverb is rarement.",

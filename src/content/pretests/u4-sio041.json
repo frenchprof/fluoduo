@@ -8,21 +8,20 @@
     {
       "id": "u4-sio041-01",
       "sentenceBefore": "Je prends ",
-      "sentenceAfter": " à sept heures.",
+      "sentenceAfter": " à sept heures du matin.",
       "answer": "le petit-déjeuner",
       "distractors": [
         "le déjeuner",
         "la matinée",
         "le dîner"
       ],
-      "fullSentence": "Je prends le petit-déjeuner à sept heures.",
-      "sentenceTrans": "I have breakfast at seven o'clock.",
+      "fullSentence": "Je prends le petit-déjeuner à sept heures du matin.",
+      "sentenceTrans": "I have breakfast at seven in the morning.",
       "whyWrong": {
         "le déjeuner": "That means 'lunch', not breakfast.",
         "la matinée": "That means 'the morning' (the time), not the meal.",
-        "le dîner": "That means 'dinner', not breakfast."
-      },
-      "transFirst": true
+        "le dîner": "That means 'dinner' — dinner is not at seven in the MORNING."
+      }
     },
     {
       "id": "u4-sio041-02",
@@ -54,7 +53,6 @@
       ],
       "fullSentence": "Il mange de la salade et des tomates.",
       "sentenceTrans": "He eats (some) salad and tomatoes.",
-      "transFirst": true,
       "whyWrong": {
         "du salade": "salade is feminine — de la, not du.",
         "la salade": "la means salad in general; here he eats 'some', so de la.",

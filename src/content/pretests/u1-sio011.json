@@ -35,7 +35,6 @@
       ],
       "fullSentence": "Moi, c'est Léa. Et toi ?",
       "sentenceTrans": "Me, I'm Léa. And you?",
-      "transFirst": true,
       "whyWrong": {
         "tu": "tu is a subject pronoun; after 'et' you need the stressed form toi.",
         "nous": "nous means 'us', not 'you'.",

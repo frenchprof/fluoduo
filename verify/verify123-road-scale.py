@@ -109,7 +109,15 @@ check(scale is not None,
 # 3 ── both axes.
 pts = re.search(r"pts\.push\(\{(.*?)\}\);", grid, flags=re.S)
 xy = pts.group(1) if pts else ""
-check(xy.count("/ scale") == 2 and re.search(r"x:.*?/ scale", xy, flags=re.S)
+# `>= 2`, NOT `== 2` (pre-tests lane, 8 Sep). This counted divisions and
+# required exactly two, which is a proxy for "x and y" rather than the thing
+# itself — and the two regexes below already ARE the thing itself. It went red
+# the moment a THIRD correctly-divided measurement joined the block: the stop's
+# own radius, `r: r.width / 2 / scale`, needed so the fold Dan asked for is
+# sized to the button. A check that fails a strictly better measurement is
+# fighting its own purpose, which is the reasoning its own header gives for
+# accepting either zoom source twenty lines up.
+check(xy.count("/ scale") >= 2 and re.search(r"x:.*?/ scale", xy, flags=re.S)
       and re.search(r"y:.*?/ scale", xy, flags=re.S),
       "both axes are divided by the zoom",
       "only one axis is corrected — on a grid that snakes, dividing x alone "

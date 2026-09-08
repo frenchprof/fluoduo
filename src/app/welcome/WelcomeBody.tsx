@@ -56,8 +56,35 @@ import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
 import { clockHour, nightness } from "@/lib/map3d/sky";
 
-/** The four letters the brand is built from: Fluency On Linguistic Goals. */
-const CAP = "text-[1.3em] font-black leading-none text-white";
+/** The four letters the brand is built from: Fluency On Linguistic Goals.
+ *  COLOURED, ON DAN'S MOCK (8 Sep: "text bigger and More like this with the
+ *  colors on F, O, L and G" — his render supersedes the earlier size-and-
+ *  weight-only ruling in this file). The four hues are the app's own pens,
+ *  as vars so the ratchet counts no new hex; the drop shadow both lines
+ *  already wear is what keeps them legible on the dawn band. */
+const CAP = "text-[1.3em] font-black leading-none";
+const BRAND: Record<string, string> = {
+  F: "var(--fam-svplay)", // pink
+  o: "var(--fam-goals)", // green
+  O: "var(--fam-goals)",
+  L: "var(--fam-review)", // blue
+  G: "var(--dopa-flow)", // teal
+};
+/** The name with its four letters lit — one span per character, spoken once. */
+function BrandName({ word }: { word: string }) {
+  return (
+    <>
+      <span aria-hidden>
+        {word.split("").map((ch, i) => (
+          <span key={i} style={"FOLG".includes(ch) ? { color: BRAND[ch] } : undefined}>
+            {ch}
+          </span>
+        ))}
+      </span>
+      <span className="sr-only">{word}</span>
+    </>
+  );
+}
 
 export default function WelcomeBody() {
   // Progress lives in localStorage, which the static export must not read at
@@ -120,7 +147,7 @@ export default function WelcomeBody() {
           className="text-xl font-black tracking-tight text-white/90 sm:text-2xl"
           style={{ fontFamily: "var(--font-fluohand-stack)", textShadow: "0 1px 12px rgba(0,0,0,0.55)" }}
         >
-          FluOLinGo
+          <BrandName word="FluOLinGo" />
         </span>
       </header>
 
@@ -150,24 +177,29 @@ export default function WelcomeBody() {
             and 6, the exact thing Dan sent the first design back for. Below
             480px of height both lines shrink to fit that band, and
             verify151 measures it rather than trusting the arithmetic. */}
+        {/* BIGGER, AND COLOURED — Dan's mock, 8 Sep: "text bigger and More
+            like this with the colors on F, O, L and G". Both lines grew a
+            step at every breakpoint; the name's own F·O·L·G light up in the
+            same four pens as the subline's capitals, so the word and its
+            meaning wear one system. */}
         <h1
-          className="text-[1.75rem] font-black leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)] sm:text-[2.9rem] [@media(max-height:480px)]:text-[1.35rem]"
+          className="text-[2.1rem] font-black leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)] sm:text-[3.6rem] [@media(max-height:480px)]:text-[1.5rem]"
           style={{ fontFamily: "var(--font-fluohand-stack)" }}
         >
-          Welcome to FluOLinGo
+          Welcome to <BrandName word="FluOLinGo" />
         </h1>
         <p
-          className="mt-1.5 text-[0.95rem] font-bold leading-[1.15] text-white/80 drop-shadow-[0_1px_12px_rgba(0,0,0,0.7)] sm:mt-2.5 sm:text-[1.55rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.8rem]"
+          className="mt-2 text-[1.15rem] font-bold leading-[1.15] text-white/90 drop-shadow-[0_1px_12px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-[1.95rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
           style={{ fontFamily: "var(--font-fluohand-stack)" }}
         >
           {/* One span per raised letter, and the sentence given once to a
               screen reader — otherwise it reads out four stray characters. */}
           <span aria-hidden>
             Building your{" "}
-            <span className={CAP}>F</span>luency{" "}
-            <span className={CAP}>o</span>n{" "}
-            <span className={CAP}>L</span>inguistic{" "}
-            <span className={CAP}>G</span>oals
+            <span className={CAP} style={{ color: BRAND.F }}>F</span>luency{" "}
+            <span className={CAP} style={{ color: BRAND.o }}>o</span>n{" "}
+            <span className={CAP} style={{ color: BRAND.L }}>L</span>inguistic{" "}
+            <span className={CAP} style={{ color: BRAND.G }}>G</span>oals
           </span>
           <span className="sr-only">Building your Fluency on Linguistic Goals</span>
         </p>
@@ -187,7 +219,10 @@ export default function WelcomeBody() {
           // On a phone held sideways the whole page is 390px tall, and the
           // prominent pill measured 96px of it — a lid over the near ground and
           // over goal 1. It keeps its weight and loses its bulk there.
-          className="rounded-full border-2 px-10 py-4 text-xl font-black tracking-tight transition hover:-translate-y-0.5 sm:px-12 sm:py-5 sm:text-2xl [@media(max-height:480px)]:px-8 [@media(max-height:480px)]:py-2.5 [@media(max-height:480px)]:text-lg"
+          // AND MORE PROMINENT AGAIN (Dan, 8 Sep, over the mock: "The Start
+          // now is not prominent enough") — a size up at every breakpoint, a
+          // thicker border, a deeper shadow. Still content-sized.
+          className="rounded-full border-[3px] px-12 py-5 text-2xl font-black tracking-tight transition hover:-translate-y-0.5 sm:px-16 sm:py-6 sm:text-3xl [@media(max-height:480px)]:px-9 [@media(max-height:480px)]:py-3 [@media(max-height:480px)]:text-xl"
           style={{
             // The glass: what is behind the pill blurs, the pill's own words
             // do not. Dan, on the panel version: the CTA should be "crystal
@@ -197,7 +232,7 @@ export default function WelcomeBody() {
             background: night > 0.45 ? "rgba(22,18,34,0.68)" : "rgba(255,255,255,0.78)",
             borderColor: night > 0.45 ? "rgba(255,255,255,0.5)" : "rgba(40,32,26,0.4)",
             color: night > 0.45 ? "var(--cahier-paper)" : "var(--cahier-ink)",
-            boxShadow: "0 6px 28px rgba(0,0,0,0.35)",
+            boxShadow: "0 8px 36px rgba(0,0,0,0.45)",
             // The same 1.2s the map's label plates use, so the whole page
             // turns over together at dusk instead of in two steps.
             transition: "background-color 1.2s ease, color 1.2s ease, border-color 1.2s ease, transform 0.15s ease",

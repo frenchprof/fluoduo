@@ -48,6 +48,19 @@ WHAT IS PINNED, and what each failure looks like on Dan's screen
      It was briefly built as a second runner beside it, which is the mistake
      verify117 names: *"two runners is how the app came to have four of them
      under one name"*.
+
+  9  THE ENGLISH BEFORE THE PICK STAYS AUDITED, ITEM BY ITEM. `transFirst`
+     shows a question's English translation BEFORE the learner answers. On some
+     cards that is the whole question — « Elle est ___ » cannot choose between
+     actrice and chanteuse without it. On others it hands the answer over —
+     « Je ___ manger de la pizza » is decided by « Je » alone. Dan, 2026-09-08:
+     *"so it is a case by case basis, that is what the audit is for, NOT a
+     clean sweep modify-all-once lazy method, but meticulous check that only AI
+     can help do"*. So this does NOT assert a rule about `transFirst`; it pins
+     the RESULT of that audit — the 28 items it took the flag off, and the
+     total that still carry it — so a later sweep in either direction shows up
+     as a diff with a number on it rather than as silence.
+     docs/audit2/ENGLISH_FIRST_AUDIT_2026-09-08.md is the reasoning, per item.
   6  THE BOOKMARK IS A HASH, SET WITH replaceState. `pushState` would make the
      Back button walk 63 questions backwards; a route per question would make
      it 63 pages.
@@ -57,6 +70,8 @@ WHAT IS PINNED, and what each failure looks like on Dan's screen
 
 Run from the repo root:  python3 verify/verify140-speculearn-merged.py
 """
+import glob
+import json
 import os
 import re
 import sys
@@ -218,6 +233,67 @@ banned = [w for w in ("recordItemResult", "queueForReview", "awardXp") if w in r
 ok(not banned,
    "the merged run pays no XP and schedules no review — it is still the cold guess",
    f"the merged runner calls {banned} — pooling generated questions into a pre-test made the pre-test count")
+
+# ---- 9 · the English-before-the-pick audit holds --------------------------
+AUDITED_OFF = [
+    "u1-sio011/u1-sio011-02",
+    "u1-sio017/u1-sio017-08",
+    "u1-sio019/u1-sio019-01",
+    "u2-sio027/u2-sio027-07",
+    "u2-sio027/u2-sio027-08",
+    "u3-l1-weather/05-il-fait-frais",
+    "u3-l1-weather/12-quel-temps-fait-il",
+    "u3-sio039/u3-sio039-02",
+    "u4-sio041/u4-sio041-01",
+    "u4-sio041/u4-sio041-03",
+    "u4-sio045/u4-sio045-03",
+    "u4-sio046/u4-sio046-02",
+    "u4-sio047-plans/u4-sio047-plans-01",
+    "u4-sio047-plans/u4-sio047-plans-02",
+    "u4-sio047-plans/u4-sio047-plans-03",
+    "u4-sio047-plans/u4-sio047-plans-04",
+    "u4-sio047-plans/u4-sio047-plans-07",
+    "u4-sio047-plans/u4-sio047-plans-08",
+    "u4-sio047-plans/u4-sio047-plans-09",
+    "u4-sio047-plans/u4-sio047-plans-10",
+    "u4-sio047-plans/u4-sio047-plans-11",
+    "u4-sio047-plans/u4-sio047-plans-12",
+    "u4-sio047/u4-sio047-11",
+    "u4-sio047/u4-sio047-16",
+    "u4-sio048-advice/u4-sio048-advice-06",
+    "u4-sio048-advice/u4-sio048-advice-08",
+    "u4-sio048-advice/u4-sio048-advice-09",
+    "u4-sio048-advice/u4-sio048-advice-10",
+    "u4-sio048-advice/u4-sio048-advice-11",
+]
+AUDIT_DOC = "docs/audit2/ENGLISH_FIRST_AUDIT_2026-09-08.md"
+ok(os.path.isfile(AUDIT_DOC),
+   "the per-item audit of the English-before-the-pick flag is written down",
+   f"{AUDIT_DOC} is gone — the reasoning for 88 individual calls with it")
+
+back, still = [], 0
+for path in sorted(glob.glob("src/content/pretests/*.json")):
+    pre = os.path.splitext(os.path.basename(path))[0]
+    try:
+        items = json.load(open(path, encoding="utf-8")).get("items", [])
+    except Exception:
+        items = []
+    for it in items:
+        if not it.get("transFirst"):
+            continue
+        still += 1
+        if f"{pre}/{it.get('id')}" in AUDITED_OFF:
+            back.append(f"{pre}/{it.get('id')}")
+ok(not back,
+   f"none of the {len(AUDITED_OFF)} items the audit cleared shows its English before the pick again",
+   f"these were audited and cleared, and the flag is back on them: {back[:5]} — "
+   f"see {AUDIT_DOC} for why each one came off")
+# The ateliers' 34 are generated, so only the authored JSON is counted here.
+ok(still == 25,
+   f"{still} authored items still show their English first — the audit's own number",
+   f"{still} authored items show their English first, not the 25 the audit left. "
+   f"A sweep in either direction is the thing this number exists to catch; if the change "
+   f"is deliberate, audit the new ones in {AUDIT_DOC} and move the number with them")
 
 print("\n".join(f"  ok    {m}" for m in PASS))
 if FAIL:

@@ -145,7 +145,6 @@
       ],
       "fullSentence": "Tu viens de quel pays ?",
       "sentenceTrans": "Which country are you from?",
-      "transFirst": true,
       "whyWrong": {
         "quelle": "pays is masculine — quel.",
         "quels": "Grammatical for several countries — but you come from one: quel.",
