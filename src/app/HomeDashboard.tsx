@@ -433,7 +433,23 @@ export default function HomeDashboard() {
                 older version)"). Map2DGrid is the map /map itself renders —
                 same pens, same stops — zoomed to postcard size and cropped;
                 HomeMap (patch 25's drawing) retires from this card. */}
-            <div className="h-[330px] overflow-hidden" style={{ zoom: 0.44 }}>
+            {/* A RATIO, NOT A HEIGHT (7 Sep, the desktop pass). This crop was
+                `h-[330px]`, a fixed slice of map height at EVERY card width —
+                so the postcard was 293×153 on a phone (right) and 764×153 on a
+                1440px desktop: a 5:1 letterbox showing three rows of stops with
+                the « Enter the map » band lying across the third. The card got
+                wider with the screen and never got taller.
+
+                THE PHONE KEEPS ITS EXACT CROP and only the wide card changes,
+                because 153px at 293px wide is a deliberate glimpse and there is
+                no room on a phone for more. Above `sm` the card takes a ratio
+                instead — scale-invariant, so it survives the 0.44 zoom with no
+                arithmetic against it. 3.2 is not a taste: it is where the map
+                ENDS at that width. A rounder 1.9 was tried first and left
+                ~100px of blank paper under the last row, because the whole
+                fifty-stop grid needs less height than that once the card is
+                764px wide. */}
+            <div className="h-[330px] overflow-hidden sm:h-auto sm:aspect-[3.2]" style={{ zoom: 0.44 }}>
               <Map2DGrid progress={progress} activeId={activeId} accent={accent} />
             </div>
           </div>

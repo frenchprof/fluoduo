@@ -160,24 +160,30 @@ export default function Map2DGrid({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     draw();
 
-    /* A PINCH IS NOT A RESIZE, and that is the whole of this (Dan, 2026-09-07:
-       *"WHEN DRAGGING THE MAP THE LINE JOINING UP THE STOPS GET DETACHED FROM
-       THE STOPS"*, then *"NOT A SCROLLER BUT PINCH GESTURE"*).
+    /* WHEN TO RE-MEASURE (Dan, 2026-09-07: *"WHEN DRAGGING THE MAP THE LINE
+       JOINING UP THE STOPS GET DETACHED FROM THE STOPS"*, then *"NOT A SCROLLER
+       BUT PINCH GESTURE"*, and on 7 Sep again: *"the pinching issue is not
+       resolved: the stops get detached from the route"*).
 
-       The road is MEASURED — node centres read from the laid-out DOM — and the
-       only thing that re-measured it was a ResizeObserver on this box. A pinch
-       changes the VISUAL viewport, not the layout: the box's width and height
-       in CSS pixels do not move a hair, so the observer never fires and the
-       polyline keeps the coordinates it was given before the pinch while the
-       stops are painted at the new scale. The road stays where the stops used
-       to be, which is exactly what "detached" looks like.
+       A CORRECTION FOR THE NEXT READER. This block was first written on the
+       theory that the detachment was a MISSED REDRAW: that a pinch changes the
+       visual viewport without changing layout, so the ResizeObserver never
+       fires and the polyline keeps pre-pinch coordinates. That is true of a
+       NATIVE two-finger pinch on the page — but it is not what was happening
+       here, and the listeners it added did not fix anything, which is why Dan
+       reported the same fault twice.
 
-       `visualViewport` is the event nobody thinks of because it is the only one
-       a pinch raises. Both of its events matter: `resize` is the zoom itself
-       and `scroll` is panning around while zoomed in.
+       The map's pinch does not zoom the browser. It drives `zoomPct`, which
+       becomes CSS `zoom` on an ancestor, which DOES change layout — so the
+       observer fires and the road is redrawn every time. The road was redrawn
+       wrong: see the scale correction in `draw()` above, which is the actual
+       fix. Proof it was never the trigger: the road detaches identically when
+       you type 150 into the zoom field and never touch the screen.
 
-       rAF-throttled, because a pinch fires these continuously and each draw
-       reads fifty rects. */
+       The visualViewport listeners stay because they are still right for the
+       case they were written for — a learner pinching the PAGE itself, on a
+       phone, which really does move the stops without a resize. rAF-throttled:
+       those events fire continuously and each draw reads fifty rects. */
     let raf = 0;
     const redraw = () => {
       if (raf) return;

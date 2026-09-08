@@ -90,7 +90,26 @@ check("const csx = relX * rx + relZ * rz" in proj and "const csz = relX * fx + r
 # and disc size are DECOUPLED — rows ride a sine over the near depth, sizes
 # fall off on their own gentle curve with a floor — and a thing beyond
 # FULL_AHEAD RISES tip-first over the horizon (`reveal`), never pops.
-check("Math.sin(" in proj and "csz / FULL_AHEAD" in proj, "project(): rows ride the curved world — sine over the near depth", "project() rows are not the curved-world sine profile")
+# THE CURVE'S SHAPE IS DAN'S TO CHANGE; THE DECOUPLING IS NOT (7 Sep). This
+# asserted `Math.sin(` — the exact easing from the 20 Aug mini-planet ruling.
+# On 7 Sep Dan asked for "less aerial and more grounded, so that we see more
+# contrast between what pops from afar vs what we see up close", and the sine
+# is precisely what spreads the ground evenly, which is the aerial look. It is
+# a power easing now. So this checks what the rule was actually protecting —
+# rows driven by NEAR DEPTH, and sizes falling off on their OWN curve — and
+# lets the easing be whatever the current ruling says.
+row_curve = re.search(r"const t = 0\.97 \* [^;]+;", proj)  # the ROW curve, not the two other `t`s in the file
+check(row_curve is not None and "csz / FULL_AHEAD" in proj
+      and re.search(r"Math\.(sin|pow)\(", row_curve.group(0)) is not None,
+      "project(): rows ride a saturating curve over the near depth",
+      "project() no longer eases rows over the near depth — without that the "
+      "ground plane is linear and the horizon stops being a horizon")
+check("SIZE_FALLOFF" in proj and "MIN_SCALE" in proj
+      and "SIZE_FALLOFF" not in (row_curve.group(0) if row_curve else ""),
+      "project(): disc size falls off on its own curve, not the row curve's",
+      "disc size has been coupled back into the row curve — the two were "
+      "decoupled on purpose (20 Aug) so a far stop stays a readable disc "
+      "even where the rows have bunched up against the horizon")
 check("reveal" in proj and "MAX_AHEAD - FULL_AHEAD" in proj, "project(): things rise tip-first over the horizon (reveal)", "project() has no mini-planet rise (reveal)")
 check("clipRise" in m3 and "reveal" in m3, "HomeMap3D clips the below-horizon part of a rising billboard", "HomeMap3D does not render the mini-planet rise")
 check("SIZE_FALLOFF" in proj and "MIN_SCALE" in proj,

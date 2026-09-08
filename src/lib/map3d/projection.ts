@@ -24,7 +24,7 @@
 // the screen, the vista band and sky squeeze above it; the current station
 // sits fully visible near the bottom edge, never cut.
 export const HORIZON_Y = 0.34; // the road's CREST — stops vanish behind this rounded shoulder
-export const SKYLINE_Y = 0.14; // the true sky line, far above the crest — the distant vista lives between
+export const SKYLINE_Y = 0.29; // the true sky line, far above the crest — the distant vista lives between
 export const CAMERA_Y = 0.97; // the eye line sits just above the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
 // Dan's capture, round 5: the path is FULL of stations — five or six in the
@@ -44,8 +44,8 @@ export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's sh
 // around d ≈ 5.5–7. Eight puts every sprite's top past the frame before the
 // cull, on both box heights.
 export const MAX_BEHIND = 8; // draw distance behind (stops)
-export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
-export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
+export const SIZE_FALLOFF = 0.24; // per-stop size decay — steeper since 7 Sep, so near reads much nearer
+export const MIN_SCALE = 0.30; // a far stop is small, but never so small its number cannot be read
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit).
@@ -121,7 +121,17 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     // curve; row position follows a sine of the angular distance — crawls at
     // the horizon, sweeps fast underfoot (sin' = cos).
     const a = Math.min(1, csz / FULL_AHEAD);
-    const t = 0.97 * Math.sin((a * Math.PI) / 2);
+    // GROUNDED, NOT AERIAL (Dan, 7 Sep: "the perspective of the map should
+    // also be less aerial and more grounded, so that we see more contrast
+    // between what pops from afar vs what we see up close like real human
+    // view near-the-ground view of the scene").
+    //
+    // A quarter-sine leaves the ground plane evenly spread, which is what a
+    // camera looking DOWN sees. Standing on the road, the near ground rushes
+    // past and the far ground piles up against the horizon. This curve has
+    // twice the slope at your feet and flattens harder into the distance,
+    // which is that difference.
+    const t = 0.97 * (1 - Math.pow(1 - a, 2.1));
     // The rise: between MAX_AHEAD and FULL_AHEAD a thing is climbing over
     // the shoulder — first its very tip AT the horizon line, then more of it
     // as the world rolls under the camera, until it stands whole and starts
@@ -133,22 +143,32 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     // on edge): a station is an oblate button LYING ON THE ROAD, seen from
     // above — constant strong foreshortening across the chain, the thick rim
     // below the face supplies the button's height off the ground.
-    const scaleY = 0.58;
-    const px = vw * 0.5 + csx * vw * 0.4 * sc;
+    // Dan, 7-8 Sep: "i used the word stop to mean goal (flat-lying coin)",
+    // "that stop has to be of a certain height". A coin lying on the ground
+    // seen from eye level is a THIN ellipse with a THICK side wall — the wall
+    // is where its height reads. 0.58 was a view from above, where a coin is
+    // nearly a circle and has no side to show.
+    const scaleY = 0.40;
+    // THE STOPS TRACK THE ROAD, AT ANY WIDTH. This lateral used `vw` while the
+    // road's width now uses the shorter edge, so on a wide screen the two
+    // drifted apart and a stop on a bend could sit out on the grass. Same
+    // reference as the road; on a portrait phone the shorter edge IS the
+    // width, so nothing there moves.
+    const px = vw * 0.5 + csx * Math.min(vw, vh) * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
     // Dan, 2026-08-20 (his capture, round 4): "the numbered stations are
     // small enough to be contained within a single circular spot on the
     // road" — the road is ~2.5 stops wide, the stop rides IN it, never over
     // its banks.
-    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.15 * sc)), t, reveal, behind: false };
+    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.23 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
   const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
   const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
-  const scaleY = 0.58;
-  const px = vw * 0.5 + csx * vw * 0.4 * sc;
+  const scaleY = 0.40;
+  const px = vw * 0.5 + csx * Math.min(vw, vh) * 0.4 * sc;
   const py = camY + (vh * 1.9 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
   return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
