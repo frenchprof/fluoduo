@@ -121,6 +121,42 @@ neither by anyone's scan, which is the whole argument for the check: a scan is
 a snapshot, and today `main` and four branches are all moving inside the same
 hour.
 
+## 7 Sep — the road becomes one solid line, and the rows turn
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+**Dan, with a drawing: *"we don't want to see dotted lines, but solid darker
+thicker line that even seems to almost 'bulge' the stop along the line where it
+passes, that line should also show at the end of each row between rows."***
+
+**Why the map looked dotted everywhere, which is the part worth keeping.** The
+dashes were never a style choice about the road — they were the AHEAD half of a
+travelled/ahead grammar, and a learner standing on stop 1 has forty-nine stops
+ahead. So the whole map was dashes. The distinction survives in COLOUR instead:
+the walked stretch takes the accent, the stretch to come takes the ink, both the
+same solid cord.
+
+**A `<path>`, not a `<polyline>`, so the row ends can turn.** The stops snake
+five to a row, so the 5th and the 6th sit in the same column and a polyline
+joined them with a bare vertical stub, mostly hidden behind the band edge and
+the two stops. The road now swings out past the last stop of a row and back down
+into the next — the side comes from the point's own x against the middle, not
+from a parity that has to be kept in step with `serpentine()`. The svg is
+`overflow-visible` or the default clip would cut every turn in half.
+
+**Two things found by looking rather than by reasoning**: a white hairline down
+the middle of the ink road read as a SEAM rather than a catch-light, so the ink
+half has none; and the bead at each stop centre is what makes the line appear to
+swell where a stop sits on it.
+
+**`verify127` went BLIND, and that is the lesson.** It selected `svg polyline`;
+the moment the road became a `<path>` it found nothing and reported a clean pass
+on every page. A check that goes quiet rather than red is worse than no check.
+It now finds the road BY ITS STOPS — walking up from a `[data-stop]` to the box
+whose direct child is the road's svg — because the obvious fix, `svg path[d]`,
+matched an icon in the top bar instead. Re-proved by removing the zoom fix:
+Home 138px off, the + control 110px, a pinch 356px.
+
 ## 7 Sep — the road, reported twice: the first fix was for a pinch that was never broken
 
 Sole editor of STATUS.md in this commit: the pre-tests lane.

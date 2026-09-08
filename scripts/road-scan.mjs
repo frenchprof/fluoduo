@@ -58,13 +58,45 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(PORT, r));
 
 const CHECK = () => {
-  const poly = document.querySelector("svg polyline");
-  const svg = poly?.ownerSVGElement;
-  const box = poly?.closest("div");
-  if (!poly || !svg || !box) return { err: "no road on this page" };
+  // A PATH, NOT A POLYLINE, since 7 Sep — Dan asked for the row ends to TURN
+  // ("that line should also show at the end of each row between rows"), which a
+  // polyline cannot do. This check looked for `svg polyline` and, the moment
+  // the road became a <path>, reported a clean pass on every page because it
+  // simply found nothing to measure. A check that goes blind rather than red is
+  // worse than no check, so it now takes whichever the road is.
+  // FOUND BY ITS STOPS, not by a bare selector. `svg path[d]` matched the
+  // first path in the DOCUMENT, which on /map is an icon in the top bar — so
+  // the check read a chevron, found no stops near it, and reported "no road"
+  // on a page whose road was perfect. Walk up from a real stop to the box that
+  // holds the road's svg as a direct child; that box is also the one the
+  // coordinates are measured against, so the two cannot disagree.
+  const stop = document.querySelector("[data-stop]");
+  let box = null, road = null;
+  for (let el = stop?.parentElement; el; el = el.parentElement) {
+    const svg = el.querySelector(":scope > svg");
+    if (!svg) continue;
+    const longest = [...svg.querySelectorAll("path[d], polyline[points]")]
+      .sort((a, c) => ((c.getAttribute("d") || c.getAttribute("points") || "").length
+                     - (a.getAttribute("d") || a.getAttribute("points") || "").length))[0];
+    if (longest) { box = el; road = longest; break; }
+  }
+  const svg = road?.ownerSVGElement;
+  if (!road || !svg || !box) return { err: "no road on this page" };
   const m = svg.getScreenCTM();
   if (!m) return { err: "the road's SVG has no screen transform" };
-  const pts = (poly.getAttribute("points") || "").trim().split(/\s+/).map((s) => s.split(",").map(Number));
+  // The ANCHOR of every segment is a stop: `M x y`, `L x y`, and for a hairpin
+  // `C x1 y1, x2 y2, x y` — the last pair in each command, control points
+  // skipped. Read in the order the road is walked, so index 4 is stop 5.
+  let pts;
+  if (road.tagName.toLowerCase() === "polyline") {
+    pts = (road.getAttribute("points") || "").trim().split(/\s+/).map((s) => s.split(",").map(Number));
+  } else {
+    pts = [];
+    for (const cmd of (road.getAttribute("d") || "").match(/[MLC][^MLC]*/g) || []) {
+      const n = (cmd.slice(1).match(/-?\d+(?:\.\d+)?/g) || []).map(Number);
+      if (n.length >= 2) pts.push([n[n.length - 2], n[n.length - 1]]);
+    }
+  }
   if (pts.length < 10) return { err: `the road has only ${pts.length} points` };
   const rows = [];
   let worst = 0;
