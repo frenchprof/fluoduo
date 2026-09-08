@@ -86,12 +86,23 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
   // Land on the row asked for, without animating every row to get there.
   // `scrollTop`, NOT `scrollIntoView`: that scrolls every ancestor including
   // the window, and takes the frozen header off the top with it.
+  //
+  // IT WAITS FOR THE ROWS. A caller that deals its rows in an effect — the
+  // merged SpecuLearn shuffles its options after mount, for SSR determinism —
+  // has NO children on the render `startAt` arrives in, so the row lookup
+  // missed and `#q9` opened on question one. Measured: the address said q9,
+  // the counter said 1 / 63. So the row count is a dependency, and `landed`
+  // keeps it a one-time landing rather than a scroll that fights the learner
+  // every time a row is added.
+  const landed = useRef(false);
   useEffect(() => {
     const el = box.current;
-    if (!el || !startAt) return;
+    if (!el || !startAt || landed.current) return;
     const row = el.children[startAt] as HTMLElement | undefined;
-    if (row) el.scrollTop = row.offsetTop;
-  }, [startAt]);
+    if (!row) return;
+    el.scrollTop = row.offsetTop;
+    landed.current = true;
+  }, [startAt, rows.length]);
 
   useEffect(() => {
     const el = box.current;

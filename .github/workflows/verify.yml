@@ -384,6 +384,12 @@ jobs:
       - name: "The broker calls the number again; the clocks are untouched (7 Sep)"
         run: python3 verify/verify122-number-callouts.py
 
+      - name: "The map's road is drawn in the units it is painted in (7 Sep)"
+        run: python3 verify/verify123-road-scale.py
+
+      - name: "The desktop pass: one view switch, a postcard that is not a letterbox (7 Sep)"
+        run: python3 verify/verify124-desktop-pass.py
+
       - name: "Banned fonts (Geist, Work Sans) — not imported, not the default, not in a stack (7 Sep)"
         run: python3 verify/verify125-banned-fonts.py
 
@@ -409,6 +415,8 @@ jobs:
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
         run: python3 verify/verify127-map-road.py
+      - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
+        run: python3 verify/verify140-speculearn-merged.py
 
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py

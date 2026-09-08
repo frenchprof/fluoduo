@@ -296,7 +296,9 @@ for path, dup in (
 # arrived beside them: the deck page opened with the DECK's title, which is the
 # same string the tag carries, and Profil opened with the signed-in user's name.
 for path, want, was in (
-    ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title="Deck"', "a name that is not its own"),
+    # 7 Sep: this was `title="Deck"`. See the note below — Dan reversed it.
+    ("src/app/decks/[id]/CuratedDeckTable.tsx", 'title={activity("flip")?.name',
+     "a name that is not the activity's"),
     # The profile's band moved OUT of ProfileContent and into its two routes
     # on 1 Sep — drawn inside the content well it sat 20px lower than every
     # other band on the site. The claim is unchanged: its first word is the
@@ -317,22 +319,45 @@ for path, want, was in (
        f"{path} opens its band with {was} again — Dan: 'the word that appears must be the "
        "activity name', and beside the goal tag that reads as the same thing said twice")
 
-# AND NO PAGE WEARS ANOTHER PAGE'S NAME. Dan, 1 Sep: "why are there two
-# 4Memoires". The deck's word table and Flip It both printed « 4Mémoire »,
-# because fixing the first fault above I took the old hand-written row's
-# wording at face value — that row was already wrong, and giving it a proper
-# band made it visible. 4Mémoire is the DRILL this page links to; this page is
-# the deck. Same shape as `context[0]?.label` borrowing « Home ».
+# ONE ACTIVITY, ONE NAME — EVEN ACROSS TWO URLs. REVERSED 7 SEP, BY DAN.
 #
-# Asserted as: no page hands PageBand a registry activity's name that is not
-# its own. Two pages CAN legitimately share a title — both pre-tests are
-# « Pretest », at different goals, and the goal tag tells them apart — so this
-# names the one relationship that is wrong rather than banning duplicates.
+# This assertion used to say the opposite, and the reversal is worth keeping in
+# full because the argument for the old version was good and it was still
+# wrong.
+#
+# On 1 Sep Dan asked *"why are there two 4Memoires"*. The deck's word table and
+# the flashcards both printed « 4Mémoire », so this check was written to stop a
+# page wearing another page's name, and the deck table was renamed « Deck » on
+# the reasoning that a page is not the drill it links to.
+#
+# On 7 Sep he saw « DECK » on the band and asked why. Put to him that the two
+# pages are deliberately separate, he answered: *"No way José, they are
+# supposed to be one and the same activity!"* — and, the same day, *"i wanted
+# to keep the pages apart, and in different URL"*. Both at once: APART is about
+# the pages, not about what they are called.
+#
+# The swipe rail says the same thing in its own words (lib/swipeRail.ts, from
+# Dan's 6 Sep chain): MémoiRecall is ONE station, and "a ROW is one item inside
+# a station — you move between rows by scrolling DOWN". The word table and the
+# cards are two rows of one station: two URLs, one activity, one name. What he
+# objected to on 1 Sep was two things looking like separate activities, not two
+# URLs sharing a name.
+#
+# So the assertion inverts: the band must READ THE NAME FROM THE REGISTRY, and
+# must never hard-code it. `activity("flip")` is now required, and a typed
+# "MémoiRecall" is the fault — that is how the band drifts the next time the
+# activity is renamed (the Memo-rename precedent: display renames never touch
+# keys or routes, and this page's key and URL do not move).
 deck_tbl = code(read("src/app/decks/[id]/CuratedDeckTable.tsx"))
-ok('activity("flip")' not in deck_tbl and "4Mémoire" not in deck_tbl,
-   "the deck's table does not borrow the drill's name — 4Mémoire is one tap away, with its own band",
-   "the deck table calls itself 4Mémoire again; that is the drill it LINKS to, and two pages "
-   "wearing one name is the fault Dan spotted")
+ok('activity("flip")' in deck_tbl,
+   "the deck's table takes MémoiRecall's name from the registry — one activity, one name",
+   "the deck table no longer reads its band name from the registry. Dan, 7 Sep: "
+   "'No way José, they are supposed to be one and the same activity!' — the word "
+   "table and the cards are two URLs of ONE activity and wear one name")
+ok('"MémoiRecall"' not in deck_tbl.replace('?? "MémoiRecall"', ""),
+   "and does not type the name out beside the registry lookup",
+   "the deck table hard-codes « MémoiRecall » somewhere other than the lookup's "
+   "fallback — the name lives once, in the registry, or it drifts at the next rename")
 
 # THE WORD IS « GOAL » wherever a learner reads it before a number. Scanned
 # rather than listed, so a new one cannot slip in: any JSX text or aria-label

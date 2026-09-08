@@ -22,10 +22,18 @@ things about that shape are load-bearing and every one of them fails silently.
       not the others re-points every label to the wrong question, and every card
       still renders. So the three runs are held to one length and one shape.
 
-  3 · THE GREETING STEP IS EXCLUDED, AND ONLY IT. Step 1 is `multi: true` —
-      several greetings are right. A DiceQuestion has one `correct`, so a card
-      built from it would grade a correct answer wrong. The exclusion must be
-      driven by `multi`, not by the index 0 happening to be the greeting.
+  3 · THE GREETING STEP IS EXCLUDED, AND ONLY IT. The other six ask the learner
+      to PRODUCE a line — each of their titles ends « You say: » — which is what
+      a Dice card is. The greeting step asks a judgement instead ("which is the
+      LEAST appropriate with a business client?"), so there is no line to build
+      a card from. The exclusion must be driven by the step's own `produces`
+      flag, not by the index 0 happening to be the greeting, and that flag must
+      agree with what the authored titles actually ask for.
+
+      It was `multi: true` until 2026-09-08 — several greetings were right — and
+      the exclusion rode on that. Dan rewrote the three greeting questions to a
+      single answer each, so `multi` stopped being true and stopped being the
+      reason; the reason it replaced it with is the one above.
 
 It also pins the ordinary things: the three registration joints, `concept` left
 to the concepts lane, and no invented French — every option a card offers must
@@ -163,10 +171,10 @@ check(re.search(r"memo=\{lesson\?\.memo \?\? \(collectionId \? memoForDeck\(coll
       "the pager's memo resolution changed — re-read whether an atelier lesson still needs to pass the model through")
 
 # ---- 3 · the exclusion is driven by `multi`, not by an index ---------------
-check(re.search(r"ASKABLE\s*=\s*STEPS\.filter\(\(s\) => !s\.multi\)", gen) is not None,
-      "the multi-answer step is excluded by its own `multi` flag",
+check(re.search(r"ASKABLE\s*=\s*STEPS\.filter\(\(s\) => s\.produces\)", gen) is not None,
+      "the judgement step is excluded by its own `produces` flag",
       "the askable steps are chosen some other way — an index test breaks the moment a step moves, "
-      "and a multi step on a one-answer card grades a correct greeting wrong")
+      "and a judgement question on a produce-the-line card asks for a line it never names")
 
 # ---- execute: the parallel steps, the options, the axes --------------------
 probe = """
@@ -189,7 +197,7 @@ for (const ax of g.RENCONTRE_AXES) {
   }
 }
 console.log("@@JSON@@" + JSON.stringify({
-  steps: g.STEPS.map((s) => ({ key: s.key, label: s.label, multi: s.multi })),
+  steps: g.STEPS.map((s) => ({ key: s.key, label: s.label, produces: s.produces })),
   askable: g.ASKABLE.map((s) => s.key),
   situations: sits.map((s) => ({
     key: s.key, who: s.who, label: s.label,
@@ -231,21 +239,30 @@ check(len(steps) == len(sits[0]["questions"]),
       f"STEPS has {len(steps)} rows against {len(sits[0]['questions'])} authored questions — the labels "
       f"have slipped off the questions they name")
 for i, st in enumerate(steps):
-    kinds = {s["questions"][i]["multi"] for s in sits}
-    check(len(kinds) == 1 and kinds.pop() == st["multi"],
-          f"step {i + 1} ({st['key']}) is the same KIND in all three audiences",
-          f"step {i + 1} ({st['key']}) is multi-answer in some audiences and not others, or STEPS "
-          f"disagrees with the authored questions")
+    # EVERY step is single-answer now, drillable or not — the whole pre-test is
+    # MCQ since 2026-09-08 (Dan's own older rule, applied to the last three that
+    # were not). A step that grows a second correct answer breaks two things at
+    # once: the merged SpecuLearn, which cannot grade it, and any card built
+    # from it.
     singles = [len(s["questions"][i]["ok"]) for s in sits]
-    if not st["multi"]:
-        check(set(singles) == {1},
-              f"step {i + 1} ({st['key']}) has exactly one correct answer per audience",
-              f"step {i + 1} ({st['key']}) has {singles} correct answers — a one-answer card would grade "
-              f"a correct answer wrong")
+    check(set(singles) == {1},
+          f"step {i + 1} ({st['key']}) has exactly one correct answer in each audience",
+          f"step {i + 1} ({st['key']}) has {singles} correct answers — the pre-test is MCQ only, and a "
+          f"one-answer card would grade a correct answer wrong")
+    # AND `produces` says what the authored titles say. A step marked drillable
+    # whose question does not ask for a line is a card asking for a line nobody
+    # named; a step marked judgement whose question DOES ask for one is a card
+    # the lesson is needlessly missing.
+    says = [(s["questions"][i]["title"] or "").rstrip().endswith("You say:") for s in sits]
+    check(len(set(says)) == 1 and says[0] == st["produces"],
+          f"step {i + 1} ({st['key']}) is marked {'produce-a-line' if st['produces'] else 'judgement'}, "
+          f"and its authored titles agree",
+          f"step {i + 1} ({st['key']}) is marked produces={st['produces']} but its titles say {says} — "
+          f"the flag and the questions disagree about what the step asks for")
 
-check(d["askable"] == [s["key"] for s in steps if not s["multi"]],
-      f"the drillable steps are exactly the non-multi ones ({len(d['askable'])})",
-      "ASKABLE and the multi flags disagree")
+check(d["askable"] == [s["key"] for s in steps if s["produces"]],
+      f"the drillable steps are exactly the produce-a-line ones ({len(d['askable'])})",
+      "ASKABLE and the `produces` flags disagree")
 check(len(d["askable"]) >= 6,
       f"{len(d['askable'])} steps are drillable — the competence asks for ≥6 of 7",
       f"only {len(d['askable'])} drillable steps; SIO-010's competence asks for ≥6/7 in each audience")

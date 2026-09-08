@@ -1,13 +1,13 @@
 /**
- * /practice/speculearn/pretest/<id> — THE PRE-TEST'S ADDRESS, and since
- * 2026-09-07 the notebook that HOSTS it (Dan: "EVERYTHING (LIKE THE MAP) MUST
- * NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)").
+ * /practice/speculearn/pretest/<id> — THE PRE-TEST'S OLD ADDRESS, still hosting.
  *
- * It lived at `/pretests/<id>`, a top-level family of its own, which is what
- * "sitting under the SIO" described from the learner's side. The merger has
- * been settled since 2026-08-10 — the registry has said « Pre-Test folds into
- * SpecuLearn » for a month — and only the URL had not moved. `/pretests/<id>`
- * still answers and forwards, keeping printed QR sheets alive.
+ * Dan, 2026-09-07: *"they CAN be and MUST NOW BE MERGED AS ONE!"*
+ *
+ * The MERGE is in what runs here, not in this URL disappearing. A pre-test id
+ * names a stop, and the stop's SpecuLearn is now the whole pool — so this page
+ * serves exactly what `/practice/speculearn/goal/<SIO>` serves. A forward would
+ * have done the same job and cost a redirect flash on every QR scan; hosting is
+ * simpler and keeps the embed twin this route owns (verify117).
  */
 import CahierShell from "@/components/CahierShell";
 import EmbedFrame from "@/components/EmbedFrame";
@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
        `band={false}` was here on the reasoning that the framed drill draws its
        own strip. That reasoning holds for the five DrillShell activities — a
        drill's band carries its ✕, goal chip and progress — but NOT here: the
-       pre-test's band comes from CahierShell, and `html[data-embed]` hides a
+       run's band comes from CahierShell, and `html[data-embed]` hides a
        CahierShell band inside a frame. Host suppressed + frame hidden = a page
        with no strip at all, which is what Dan was looking at. */
     <CahierShell

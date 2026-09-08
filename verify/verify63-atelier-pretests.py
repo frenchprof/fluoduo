@@ -187,7 +187,14 @@ ok(not noprompt,
 render = read(RENDER)
 nocom = re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", render)
 nocom = re.sub(r"^\s*//.*$", "", nocom, flags=re.M)
-ok("const bare" in nocom and "sentenceBefore.trim()" in nocom,
+# The TEST moved from a literal `item.sentenceBefore.trim()` to a named helper
+# when the pool merged (2026-09-07): a pooled question may have no sentence at
+# all — a picture and four words — so `sentenceBefore` is optional now and
+# calling `.trim()` on it directly would throw on every generated card. The
+# claim is unchanged: the renderer still knows a bare item from a gapfill, and
+# both callers below still gate on it.
+ok("const bare" in nocom and re.search(r"function isBare\(", nocom) is not None
+   and "sentenceBefore" in nocom and ".trim()" in nocom,
    "the renderer knows a bare item from a gapfill",
    "the renderer no longer distinguishes a bare item — the empty gap pill is back")
 ok(nocom.count("(!bare || submitted)") >= 2,

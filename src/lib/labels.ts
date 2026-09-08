@@ -30,6 +30,7 @@
  * goes there — `hrefForActivity` is the counterpart to `describeActivity`, and
  * the two share the surface table below so they cannot drift apart.
  */
+import { speculearnHrefForDeck } from "@/lib/speculearn/route";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { outcomeForItem } from "@/lib/evidence";
@@ -172,7 +173,8 @@ const KEY_SURFACES: Record<string, { name: string; href: (deck: string) => strin
   mcq: { name: "Deck MCQ", href: (d) => (d ? `/decks/${d}/mcq` : null) },
   grammarathon: { name: "GramMarathon", href: (d) => (d ? `/practice/grammarathon/${d}` : null) },
   finale: { name: "GramMarathon Final", href: () => "/practice/grammarathon/finale" },
-  speculearn: { name: "SpecuLearn", href: (d) => (d ? `/practice/speculearn/${d}` : "/practice/speculearn") },
+  // Goal-keyed since the merge (Dan, 7 Sep) — see lib/speculearn/route.ts.
+  speculearn: { name: "SpecuLearn", href: (d) => speculearnHrefForDeck(d) ?? "/practice/speculearn" },
   "say-it": { name: "WorDrill", href: (d) => (d ? `/practice/say-it/${d}` : "/practice/wordrill") },
   wordrill: { name: "WorDrill", href: () => "/practice/wordrill" },
   // iComplete's ROUTE IS DELETED (Dan, 2026-08-31: "iComplete is to be deleted,

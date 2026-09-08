@@ -46,6 +46,7 @@ import { SIOS } from "@/content/sios";
 import { lessonsForDeck } from "@/content/lessons";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
+import { speculearnHrefForDeck } from "@/lib/speculearn/route";
 // The deck -> stop lookup lives in ONE place (verify82). A second hand-written
 // `SIOS.find(s => s.collectionId === …)` is how two copies start disagreeing.
 import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
@@ -110,10 +111,11 @@ export const RAIL: RailStation[] = [
     // off it should reach its lesson, not a picker asking which deck you want
     // when you are already in one.
     name: "SpecuLearn",
-    href: (deck) =>
-      (deck && isSpecuLearnReady(deck) && `/practice/speculearn/${deck}`) ||
-      (deck && pretestHrefForDeck(deck)) ||
-      "/practice/speculearn",
+    // ONE ADDRESS SINCE THE MERGE (Dan, 2026-09-07: *"they CAN be and MUST NOW
+    // BE MERGED AS ONE!"*). This used to try the deck run first and fall back
+    // to the pre-test, which is how the rail sent a learner to one of a goal's
+    // two lightbulbs while the goal card sent them to the other.
+    href: (deck) => speculearnHrefForDeck(deck) ?? "/practice/speculearn",
     at: (p) => p.startsWith("/practice/speculearn") || p.startsWith("/pretests/"),
     has: (deck) => !deck || isSpecuLearnReady(deck) || !!pretestHrefForDeck(deck),
   },
