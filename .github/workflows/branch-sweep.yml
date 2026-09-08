@@ -41,7 +41,10 @@ jobs:
             const names = process.env.BRANCHES.split(/\s+/).filter(Boolean);
             let gone = 0, kept = 0, missing = 0;
             for (const name of names) {
-              if (PROTECTED.has(name) || name.startsWith("claude/fluoduo-pr9")) {
+              // keep/* holds work main never took (Dan, 8 Sep: "tag them as
+              // such but do not delete those") — never sweepable, whatever
+              // the pasted list says.
+              if (PROTECTED.has(name) || name.startsWith("claude/fluoduo-pr9") || name.startsWith("keep/")) {
                 core.warning(`protected, kept: ${name}`); kept++; continue;
               }
               try {
