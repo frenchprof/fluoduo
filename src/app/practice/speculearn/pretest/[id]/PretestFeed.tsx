@@ -56,7 +56,7 @@ import { TAB_ICONS } from "@/content/activities";
 import { speak } from "@/games/letris/speech";
 import { getPretestForSio } from "@/content/pretests";
 import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
-import { judgePretestAnswer, shuffle } from "@/lib/pretests/runner";
+import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
 import { speculearnPool, type PoolItem } from "@/lib/speculearn/pool";
 import { getSio } from "@/content/sios";
@@ -167,14 +167,24 @@ export default function PretestFeed({ sioId }: { sioId: string }) {
       active="pretest"
       band={{ title: "SpecuLearn", goal: sio ? goalNumber(sio) : undefined }}
     >
-      <Run pool={pool} pretest={pretest} />
+      <Run pool={pool} pretest={pretest} sioId={sioId} deck={sio?.collectionId ?? sioId} />
     </CahierShell>
   );
 }
 
 /* ──────────────────────────────────────────────────────────── */
 
-function Run({ pool, pretest }: { pool: PoolItem[]; pretest: Pretest | null }) {
+function Run({ pool, pretest, sioId, deck }: {
+  pool: PoolItem[];
+  pretest: Pretest | null;
+  /** The goal this run belongs to — the key a unit-0 answer is recorded under. */
+  sioId: string;
+  /** …and the DECK id the evidence ledger is keyed by. `activityLedger`
+   *  resolves a stop by taking the tail after the last colon and asking
+   *  `sioForDeck`, so a SIO id there silently no-ops. Traced rather than
+   *  assumed, because a no-op looks identical to success from the call site. */
+  deck: string;
+}) {
   const [rows, setRows] = useState<Row[]>([]);
   const [verdicts, setVerdicts] = useState<Record<number, Verdict>>({});
   const [at, setAt] = useState(0);
@@ -224,13 +234,28 @@ function Run({ pool, pretest }: { pool: PoolItem[]; pretest: Pretest | null }) {
     const row = rows[i];
     if (!row || verdicts[i]) return;
     // The judge + gap report + usage ledger live in the shared runner — this
-    // engine only renders the verdict. A GENERATED question has no ledger
-    // entry to write: it is not part of the authored pre-test the teacher's
-    // dashboard reports on, and inventing one would put questions in that
-    // report that no pre-test contains.
-    const correct = row.item.authored && pretest
-      ? judgePretestAnswer(pretest.id, row.item.authored, choice)
-      : choice === row.item.answer;
+    // engine only renders the verdict. THREE SOURCES, THREE ANSWERS about what
+    // is written: an authored item goes through the runner, a unit-0 item is
+    // recorded here, a generated one is not recorded at all.
+    let correct: boolean;
+    if (row.item.authored && pretest) {
+      correct = judgePretestAnswer(pretest.id, row.item.authored, choice);
+    } else if (row.item.unit0) {
+      /* A UNIT-0 QUESTION IS REMEMBERED TOO — and through the runner, like the
+         authored one beside it. Dan, 2026-08-27: *"remember it, but don't score
+         it"*. The write used to live in the stacked page; that page became a
+         forward on 8 Sep, so from the 7 Sep merge until then a Unit-0 miss
+         reached no record at all. It belongs in the runner and not here because
+         an engine that writes its own ledger is exactly what the runner was
+         extracted to stop (verify22). */
+      correct = judgeUnit0Answer(sioId, deck, row.item.unit0, row.item.answer, choice);
+    } else {
+      // A GENERATED question has no ledger entry to write: it is not part of
+      // the authored pre-test the teacher's dashboard reports on, and
+      // inventing one would put questions in that report that no pre-test
+      // contains.
+      correct = choice === row.item.answer;
+    }
     setVerdicts((v) => ({ ...v, [i]: { picked: choice, correct } }));
     // Hearing the CORRECT sentence is the feedback, not the lonely answer word.
     if (correct && ttsOn && row.item.speak) speak(row.item.speak, "fr-FR");
@@ -293,6 +318,28 @@ function Run({ pool, pretest }: { pool: PoolItem[]; pretest: Pretest | null }) {
           {Math.min(at + 1, total)} / {total}
           <span className="ml-2 normal-case tracking-normal">Score {score}/{total}</span>
         </p>
+        <div className="flex items-center gap-2">
+        {/* A LEARNER MAY ALWAYS DECLINE THE GUESS. It is a cold guess before
+            the lesson, not an exam, and Dan has held that line since the
+            pre-tests were built — the stacked Unit-0 page carried a « Skip
+            pretest » pill for exactly this reason. That page became a forward
+            to this run on 2026-09-08, and the control had to come with it or
+            the ten Unit-0 stops would have lost the only way out of a
+            diagnostic they never asked for. (verify93 pins it.)
+
+            It jumps to the recap rather than navigating: the recap is the row
+            after the questions and already holds the two doors onward, so
+            declining lands a learner where finishing lands them, and the
+            second control here stays content-sized beside the 🔊 — two small
+            pills, never a button wearing the page's width. */}
+        <button
+          type="button"
+          onClick={() => feed.current?.scrollToRow(total)}
+          title="Skip pretest — a guess before the lesson is optional"
+          className="rounded-full border-2 border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500"
+        >
+          Skip pretest
+        </button>
         <button
           type="button"
           onClick={() => setTtsOn((v) => !v)}
@@ -303,6 +350,7 @@ function Run({ pool, pretest }: { pool: PoolItem[]; pretest: Pretest | null }) {
         >
           {ttsOn ? "🔊" : "🔇"}
         </button>
+        </div>
       </div>
       <div className="mb-2 h-2 overflow-hidden rounded-full bg-slate-200">
         <div

@@ -152,15 +152,31 @@ for h, what in HANDLERS.items():
 # The end-of-scroll gesture's three guards, each pinned against the failure it
 # was written for. Every one of them was found by DRIVING the built export, and
 # without any of them this feature is worse than the wall it replaces.
-scroll_on = (SRC / "components" / "useScrollOn.ts")
+#
+# THEY MOVED ON 8 SEP, and the check follows them rather than going quiet where
+# they used to be. Dan asked for the same gesture one level in — *"between
+# questions of the same lesson … it should be scrolling to the next bookmarked
+# item below on the same page"* — so the reading of the finger came out of
+# `useScrollOn` into `usePullPastEnd`, which the rail and DrillShell now share.
+# A check that kept looking in the old file would have passed on an empty
+# string, which is the failure mode verify127 already taught this repo once.
+scroll_on = (SRC / "components" / "usePullPastEnd.ts")
+if not scroll_on.exists():
+    fails.append(
+        "components/usePullPastEnd.ts is gone — the pull past the end has no reader.\n"
+        "    Both the rail's carry-on and a drill's next question are that one\n"
+        "    gesture; if it has moved again, point this check at where it lives."
+    )
 if scroll_on.exists():
     text = scroll_on.read_text(encoding="utf-8")
     for token, why in [
-        ("if (!boxes.length) return false",
+        ("if (!boxes.length) return opts.whenNothingScrolls === true",
          "GUARD 1 — a page that does not scroll is never at the end of a scroll.\n"
          "    /skills and /games are shorter than the screen, so every scroller on\n"
          "    them is trivially at its bottom; without this one flick anywhere\n"
-         "    navigates."),
+         "    navigates. The opt-out is for a caller whose answer costs nothing on a\n"
+         "    stray flick (a drill pressing Continue on a question already answered);\n"
+         "    the RAIL must never pass it, because navigating away is destructive."),
         ("startedAtEnd",
          "GUARD 2 — a gesture only counts if it BEGAN at the end. Measured before\n"
          "    this existed: reading the pre-test through in one pass landed on the\n"
@@ -178,7 +194,21 @@ if scroll_on.exists():
          "    pre-test sat at 4005 of 4005 and nothing happened."),
     ]:
         if token not in text:
-            fails.append(f"useScrollOn lost `{token}`.\n    {why}")
+            fails.append(f"usePullPastEnd lost `{token}`.\n    {why}")
+
+# …AND THE RAIL MUST NOT OPT OUT OF IT. `whenNothingScrolls` exists for
+# DrillShell, whose answer to a stray flick is "press Continue on a question you
+# already answered". The rail's answer is "leave the page", and on /skills or
+# /games — shorter than the screen, so trivially at their end — that would fire
+# on the first flick anywhere.
+rail = SRC / "components" / "useScrollOn.ts"
+if rail.exists() and "whenNothingScrolls" in rail.read_text(encoding="utf-8"):
+    fails.append(
+        "useScrollOn passes `whenNothingScrolls`.\n"
+        "    That opt-out is for a caller whose answer is harmless on a stray flick.\n"
+        "    The rail NAVIGATES: on a page shorter than the screen every scroller is\n"
+        "    already at its bottom, so one flick anywhere would carry a learner off."
+    )
 
 for f in sorted(SRC.rglob("*.tsx")) + sorted(SRC.rglob("*.ts")):
     if f in HANDLERS:
