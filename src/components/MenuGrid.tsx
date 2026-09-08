@@ -84,50 +84,57 @@ export default function MenuGrid({
   const router = useRouter();
   const go = (href: string) => { onNavigate(); router.push(href); };
   return (
-    // A narrow first column carries each row's name, set on its side and
-    // faint — present when you look for it, invisible when you don't. The
-    // container grows by that column's width so the tiles keep their size.
-    <div className="grid w-[20.6rem] max-w-[90vw] grid-cols-[auto_repeat(3,minmax(0,1fr))] gap-1.5 p-1.5">
-      {ROWS.flatMap((row, r) => [
-        <span
-          key={`label-${r}`}
-          className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-[color:var(--cahier-ink-faint)]"
+    // Each row is its OWN band, washed in the family's pen at low opacity —
+    // "the burger menu should have background in the same hue as the family"
+    // (Dan). The tiles keep their raised-paper ground (pen never behind
+    // text, per the colour law above); it's the band BEHIND the row, not
+    // the tiles, that now carries the hue. `pen + "26"` = ~15% alpha on a
+    // hex colour — enough to read as a wash, not enough to fight the tile
+    // borders drawn in the same pen.
+    <div className="w-[20.6rem] max-w-[90vw] overflow-hidden rounded-lg">
+      {ROWS.map((row, r) => (
+        <div
+          key={r}
+          className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
+          style={{ background: `${row.pen}26` }}
         >
-          {row.label}
-        </span>,
-        ...row.cells.map((cell, c) => {
-          const key = `${r}-${c}`;
-          if (cell.kind === "help") {
+          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-[color:var(--cahier-ink-faint)]">
+            {row.label}
+          </span>
+          {row.cells.map((cell, c) => {
+            const key = `${r}-${c}`;
+            if (cell.kind === "help") {
+              return (
+                <button key={key} type="button" onClick={() => { onNavigate(); onHelp(); }}
+                        className={TILE} style={{ borderColor: row.pen }}>
+                  <span aria-hidden className="text-lg leading-none">❓</span>
+                  <span className={NAME}>Help</span>
+                </button>
+              );
+            }
+            if (cell.kind === "two") {
+              return (
+                <div key={key} className={`${TILE} !flex-row gap-1 px-0.5`} style={{ borderColor: row.pen }}>
+                  {[cell.a, cell.b].map((half) => (
+                    <button key={half.name} type="button" onClick={() => go(half.href)}
+                            className="flex min-w-0 flex-1 flex-col items-center gap-0.5">
+                      <span aria-hidden className="text-lg leading-none">{half.emoji}</span>
+                      <span className={`${NAME} text-[11.5px]`}>{half.name}</span>
+                    </button>
+                  ))}
+                </div>
+              );
+            }
             return (
-              <button key={key} type="button" onClick={() => { onNavigate(); onHelp(); }}
-                      className={TILE} style={{ borderColor: row.pen }}>
-                <span aria-hidden className="text-lg leading-none">❓</span>
-                <span className={NAME}>Help</span>
-              </button>
+              <Link key={key} href={cell.href} onClick={onNavigate}
+                    className={TILE} style={{ borderColor: row.pen }} lang="fr">
+                <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
+                <span className={NAME}>{cell.name}</span>
+              </Link>
             );
-          }
-          if (cell.kind === "two") {
-            return (
-              <div key={key} className={`${TILE} !flex-row gap-1 px-0.5`} style={{ borderColor: row.pen }}>
-                {[cell.a, cell.b].map((half) => (
-                  <button key={half.name} type="button" onClick={() => go(half.href)}
-                          className="flex min-w-0 flex-1 flex-col items-center gap-0.5">
-                    <span aria-hidden className="text-lg leading-none">{half.emoji}</span>
-                    <span className={`${NAME} text-[11.5px]`}>{half.name}</span>
-                  </button>
-                ))}
-              </div>
-            );
-          }
-          return (
-            <Link key={key} href={cell.href} onClick={onNavigate}
-                  className={TILE} style={{ borderColor: row.pen }} lang="fr">
-              <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
-              <span className={NAME}>{cell.name}</span>
-            </Link>
-          );
-        }),
-      ])}
+          })}
+        </div>
+      ))}
     </div>
   );
 }
