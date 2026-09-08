@@ -77,6 +77,100 @@ reads final punctuation to tell a sentence from a grid label — the transport
 bug), and the gap must be the RIGHT half (« Vous tournez ___ », never
 « ___ à droite »).
 
+## 8 Sep — scrolling on moves to the next QUESTION, and Unit 0 stops being one long page (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+Two of Dan's items, closed together because they turned out to be the same
+shape. `26ee2912` on `claude/pre-tests-amendments-hndx8r`.
+
+**FIRST, WHO ELSE IS ON IT.** Dan asked. The colour lane built the merged
+SpecuLearn — one door per goal, one URL, one question per screen — and it is
+already on `main`. So the mechanism exists on two surfaces (SpecuLearn and the
+goals scroller) and this branch does not touch it.
+
+### The gesture, for the other eleven activities
+
+Dan, 7 Sep: *"the technique you used for going to a different page by just
+scrolling is something we want replicate across all activities, but between
+questions of the same lesson … it should be scrolling to the next bookmarked
+item below on the same page"*.
+
+A drill cannot stack rows the way a feed does — **it generates its next
+question from the answer you just gave**, so there is nothing below to scroll
+to until you have answered. What the eleven share is `DrillShell`, and that
+shell already knows what its one visible button is. So the pull past the end
+presses it.
+
+The reading of the finger came out of `useScrollOn` into **`usePullPastEnd`**,
+shared by the rail and the shell: one gesture, two answers — next station, next
+question. Three things make it safe, and each was found by driving rather than
+by reasoning:
+
+    the gate     a tray up or a finished run, never the base « Check ». A
+                 scroll can carry you PAST a question you answered; it can
+                 never answer or skip one.
+    the hatch    wider than the gate on purpose. The rail stands down wherever
+                 the shell has a button at all, so with « Check » on screen the
+                 pull does nothing. One finger must not mean "next question"
+                 after a verdict and "leave the drill" before one.
+    the opt-out  a drill card DOES NOT SCROLL (787px in a 787px viewport), so
+                 guard 1 — "a page that does not scroll is never at the end of
+                 one" — would have blocked the gesture on every activity Dan
+                 asked for. The caller opts out; the rail never may, and
+                 verify117 now fails if it does.
+
+Driven on the built export: GramMarathon, « J'aime __ danse » answered, one
+pull — « J'aime __ cinéma », counter 0 → 1, nothing tapped. Unanswered, six
+pulls — nothing moves. And **the lesson deck still carries on to MémoiRecall**,
+which hatching the page unconditionally would have quietly taken back.
+
+### Unit 0 and the picture pre-tests
+
+Measured before touching anything:
+
+    /pretests/unit0/SIO-001      2470px on an 844px phone — three screens
+    /pretests/picture/*          32 of the 50 pages rendered ONLY
+                                 "No picture pretest available"
+    inbound links to either      NONE — both orphans since the 7 Sep merge
+
+Both addresses forward to the goal's merged run now, as `/pretests/<id>`
+already did; printed QR sheets name them and stop ids are frozen. Their two
+runners are deleted (604 lines). Driven after: every one of those addresses
+lands on a one-question-per-screen feed, SIO-010 included at 22 questions, and
+`/pretests/picture/aimer-activites` — an error message before — is an 8-question
+run.
+
+Nothing is lost, and that is a measurement. `speculearnPool` drops only `multi`
+questions and **Unit 0 has none left** — Dan rewrote SIO-010's three himself.
+Its three audiences survive the flattening because each question names its own
+(« You ask the client their name »): 22 questions, **22 distinct prompts**.
+
+**AND TWO THINGS THE OLD PAGE WAS DOING THAT THE RUN WAS NOT.** Both were found
+by the existing checks refusing to go quiet when the page went away, which is
+the whole argument for re-aiming a check rather than relaxing it:
+
+- **A Unit-0 answer was not being recorded.** Dan, 27 Aug: *"remember it, but
+  don't score it"*. The only writer was that page, and nothing had linked to it
+  since 7 Sep — so for a fortnight a Unit-0 miss reached no gap report at all.
+  `judgeUnit0Answer` restores it **in the runner**, because verify22 forbids an
+  engine from writing its own ledger.
+- **There was no way to decline.** « Skip pretest » lived on that page, and
+  verify93 accepted it on *either* surface — so the run every learner actually
+  reaches had none, and the check stayed green throughout. It sits beside the
+  🔊 now, and the fallback in the check is gone.
+
+### Checks
+
+Two new — **verify170** pins the gate, the hatch and the single reader;
+**verify171** drives every old pre-test address to where it LANDS and asks that
+page whether it is a feed (a static check could pin the word `Forward` and pass
+while the run went back to one long page). Six existing checks were re-aimed
+rather than relaxed — 27, 40, 64, 70, 93, 117 — each at the surface that now
+carries its ruling, with the reason for the move written into the file.
+
+tsc clean, build green, all 118 verify scripts pass, eslint clean on every file
+touched.
 
 ## 8 Sep — the map's stops are coins now (pre-tests lane, branch, NOT merged)
 

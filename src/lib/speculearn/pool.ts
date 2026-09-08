@@ -90,6 +90,17 @@ export type PoolItem = {
    * no pre-test contains.
    */
   authored?: PretestItem;
+  /**
+   * The ORIGINAL unit-0 question, carried through for the same reason.
+   *
+   * Dan, 2026-08-27, of a pre-lesson guess: *"remember it, but don't score
+   * it"* — a Unit-0 miss goes into the pre-test record so a teacher can see
+   * what the class did not know, and never into the score. The page that used
+   * to do that writing (`/pretests/unit0/<stop>`) has been a forward to this
+   * run since 2026-09-08, so the runner has to do it, and it needs the
+   * question's own id and option set to do it the same way.
+   */
+  unit0?: Unit0Question;
 };
 
 /** An authored pre-test item is already this shape bar the naming. */
@@ -133,6 +144,7 @@ function fromUnit0(q: Unit0Question, i: number): PoolItem | null {
       q.options.filter((o) => !o.ok && o.why).map((o) => [o.v, o.why!]),
     ),
     speak: q.tts ?? right.v,
+    unit0: q,
     ...(q.stem ? sentenceFromStem(q.stem) : {}),
   };
 }

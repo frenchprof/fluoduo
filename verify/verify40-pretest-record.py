@@ -76,7 +76,13 @@ RUNNER  = "src/lib/pretests/runner.ts"
 STORE   = "src/lib/pretestRecord.ts"
 POPUP   = "src/app/PretestQuiz.tsx"
 SOLO    = "src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx"
-PICTURE = "src/app/pretests/picture/[collectionId]/PicturePretestContent.tsx"
+# THE PICTURE ENGINE IS GONE (2026-09-08). `/pretests/picture/<deck>` was a
+# second pre-test runner that never got a door — nothing in the app linked to
+# it — and 32 of its 50 pages rendered only "No picture pretest available".
+# `speculearnPool`'s `fromDeck` builds the same question into the goal's merged
+# run, so the address forwards there and the runner is deleted. Its clause below
+# is replaced by the one that now carries the same duty: the merged run must
+# record a UNIT-0 answer, which was the other engine retired the same day.
 # The Unit-0 questions left Unit0Panel on 2026-08-31: they now render on their
 # own page as well as in the popup (Dan: "each pre-test to now have its own page
 # rather just a pop up"), so they live in one component both surfaces mount.
@@ -86,13 +92,13 @@ PICTURE = "src/app/pretests/picture/[collectionId]/PicturePretestContent.tsx"
 UNIT0   = "src/components/Unit0Pretest.tsx"
 BANK    = "src/content/sios/unit0-questions.ts"
 
-for p in (RUNNER, STORE, POPUP, SOLO, PICTURE, UNIT0, BANK):
+for p in (RUNNER, STORE, POPUP, SOLO, UNIT0, BANK):
     check(os.path.isfile(p), f"{p} present", f"MISSING {p}")
 if FAIL:
     print("\n".join(FAIL)); sys.exit(1)
 
 runner, store = read(RUNNER), read(STORE)
-popup, solo, picture, unit0, bank = read(POPUP), read(SOLO), read(PICTURE), read(UNIT0), read(BANK)
+popup, solo, unit0, bank = read(POPUP), read(SOLO), read(UNIT0), read(BANK)
 
 # ---- 1 · every engine feeds the gap report ---------------------------------
 # Assert the CALL, not the mention: `"recordPretestAnswer" in src` is satisfied
@@ -109,9 +115,26 @@ for name, src in (("PretestQuiz", popup), ("/pretests/[id]", solo)):
     check(calls(src, "judgePretestAnswer"),
           f"{name} routes through the runner",
           f"{name} grades on its own again — that is how the two ledgers drifted")
-check(calls(picture, "recordPretestAnswer"),
-      "the picture pretest writes the gap record",
-      "the picture pretest records nothing — its misses never reach 'Bring to class'")
+# THE MERGED RUN WRITES FOR UNIT 0 NOW, and this replaces the picture engine's
+# clause because it is the same duty moved. Dan, 2026-08-27, of a pre-lesson
+# guess: *"remember it, but don't score it"*. Until 8 Sep the only surface that
+# wrote a Unit-0 answer was `/pretests/unit0/<stop>` — a page nothing had linked
+# to since the merge — so the write had quietly stopped happening for anyone
+# using the app. `PretestFeed` records it directly for a pooled unit-0 item.
+# THROUGH THE RUNNER, like everything else. verify22 forbids an engine from
+# calling `recordPretestAnswer` itself — one ledger, one writer — so the run
+# calls `judgeUnit0Answer` and the runner does the writing.
+check(calls(runner, "recordPretestAnswer"),
+      "the runner writes a Unit-0 answer to the gap record",
+      "judgeUnit0Answer no longer records — Unit 0 has no gap report")
+check(calls(solo, "judgeUnit0Answer"),
+      "the merged run routes a Unit-0 answer through the runner",
+      "the merged run records nothing for a Unit-0 question — and it is the only\n"
+      "        surface a learner can reach one through, so Unit 0 has no gap report")
+check("export function judgeUnit0Answer" in runner,
+      "the runner owns the Unit-0 judge",
+      "judgeUnit0Answer is gone from the runner — the engine is writing its own\n"
+      "        ledger again, which is the drift this file exists to catch")
 check(calls(unit0, "recordPretestAnswer"),
       "the Unit-0 quiz writes the gap record",
       "the Unit-0 quiz grades but never records — Unit 0 has no gap report")
@@ -141,7 +164,7 @@ check('"fluolingo:pretest.v1"' in record,
 # the learner for material the course has not taught them yet.
 SCORING = ("recordItemResult", "queueForReview", "awardXp", "addXp", "awardConversationXp")
 for name, src in (("the runner", runner), ("PretestQuiz", popup), ("/pretests/[id]", solo),
-                  ("the picture pretest", picture)):
+                  ("the Unit-0 questions", unit0)):
     src = code(src)
     for sym in SCORING:
         check(sym not in src,
@@ -181,7 +204,7 @@ for sym in SCORING:
 # these screens does not mean "tighten the pretest", it means the screen has
 # stopped being a pretest.
 for name, src in (("PretestQuiz", popup), ("/pretests/[id]", solo),
-                  ("the picture pretest", picture)):
+                  ("the Unit-0 questions", unit0)):
     body = code(src)
     typed = [t for t in ("<input", "<textarea", "contentEditable") if t in body]
     check(not typed,
@@ -210,9 +233,17 @@ check("localStorage" in store,
       "the gap store no longer writes localStorage")
 
 # ---- 4 · one deck->SIO resolver, not a private map -------------------------
-check("sioForDeck" in picture,
-      "the picture pretest resolves its SIO through the shared map",
-      "the picture pretest resolves its SIO some other way — see curriculum.ts on private maps")
+# This pinned the picture engine, which is retired (see the note at PICTURE
+# above). The rule it protected is alive on the surface that replaced it: a
+# Unit-0 answer's EVIDENCE is keyed by the DECK id, because `activityLedger`
+# resolves a stop by taking the tail after the last colon and asking
+# `sioForDeck` — a SIO id there silently no-ops, and a no-op looks identical to
+# success from the call site. So the merged run must take that id from the stop
+# it was given, never invent one.
+check("collectionId" in solo,
+      "the merged run keys its Unit-0 evidence by the deck id",
+      "the merged run has stopped resolving the deck — the evidence ledger keys on\n"
+      "        a deck id, so a SIO id there writes nothing and reports success")
 
 # ---- 5 · Unit-0 keys on content, not on position ---------------------------
 check("unit0QuestionId" in bank and "export function unit0QuestionId" in bank,

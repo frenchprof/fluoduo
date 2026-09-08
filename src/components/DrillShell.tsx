@@ -43,6 +43,7 @@ import type { ReactNode } from "react";
 import { activity as activityInfo, bandOf, familyName, familyOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
+import usePullPastEnd from "@/components/usePullPastEnd";
 import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
@@ -268,6 +269,78 @@ export default function DrillShell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  /**
+   * AND ONE GESTURE FOR EVERY DRILL: keep scrolling and the next question
+   * arrives.
+   *
+   * Dan, 2026-09-07: *"the technique you used for going to a different page by
+   * just scrolling is something we want replicate across all activities, but
+   * between questions of the same lesson, instead of scrolling into another
+   * url, it should be scrolling to the next bookmarked item below on the same
+   * page"*.
+   *
+   * Two surfaces already did it — SpecuLearn and the goals scroller both stack
+   * their rows in a SnapFeed, so a swipe moves one question. The other eleven
+   * could not: a drill GENERATES its next question from the answer you just
+   * gave, so there is nothing below to scroll to until you have answered. What
+   * they all share is this shell, and this shell already knows what the one
+   * visible button is. So the pull past the end presses it.
+   *
+   * ONLY WHEN THE TRAY IS UP, which is the whole safety of it. `liveCta` is
+   * the tray's Continue once a verdict has landed, and the finish row's
+   * « Next › » at the end of a run — never the base « Check ». A scroll can
+   * therefore carry you PAST a question you have answered and off the end of a
+   * finished run, and can never answer or skip a question in front of you.
+   *
+   * `data-no-scroll-on` on the shell (below) is the other half: without it the
+   * rail's own reader would see the same pull on the same page and carry the
+   * learner off to the next station mid-run. While a drill can act on the
+   * gesture, the drill owns it — and at the end of the run its « Next › » IS
+   * the next station, so the chain still runs to the end unbroken.
+   *
+   * THE THIRD ARGUMENT IS WHY IT FIRES AT ALL. `usePullPastEnd` normally
+   * refuses a page with no scroller — on /skills or /games every scroller is
+   * trivially at its bottom, and one flick would navigate. A drill card does
+   * not scroll either: measured on the built export, the frame's document is
+   * 787px in a 787px viewport, and this shell's own rules forbid a nested
+   * scroller in the body. So without opting out, the gesture Dan asked for
+   * could never fire on a single one of the eleven activities he asked for it
+   * on. It is safe here for the reason the rail's case is not: the worst a
+   * stray flick can do is press Continue on a question already answered.
+   */
+  // TWO LINES, TWO DIFFERENT QUESTIONS, and they must not be the same one.
+  //   `owns`     — this shell has a footer action, so the gesture is ITS
+  //                gesture on this page and the rail stands down.
+  //   `pullable` — …and there is something the pull may actually press.
+  //
+  // Between them sits the case that matters: a question ANSWERABLE but not yet
+  // answered — « Check » on screen, no verdict. The shell owns the gesture
+  // there and does nothing with it, so a pull past the end neither answers the
+  // card nor throws the learner out mid-question. Making one flag do both jobs
+  // would give the same finger two meanings on one page: "next question" after
+  // a verdict, "leave the drill" before one.
+  //
+  // AND THE RAIL KEEPS WHAT IS ITS OWN, which is why `owns` is not simply
+  // `true` while this shell is mounted. A lesson deck runs in DrillShell with
+  // NO footer action at all — it is panels, not questions — and its end of
+  // scroll is a station step Dan asked for by name: *"the last panel -> the
+  // flashcards"*. Hatching the page unconditionally would have quietly taken
+  // that back. Some drills also hand `cta: null` until a first pick (the body
+  // owns the flow there), and the rail's answer stays the only one on offer.
+  const owns = !!cta || !!feedback || !!finish;
+  const pullable = !!feedback || !!finish;
+  usePullPastEnd(() => {
+    const c = liveRef.current;
+    if (!pullable || !c || c.disabled) return;
+    c.onClick();
+  }, {
+    resetKey: pullable,
+    // A drill card does not scroll — see the note above.
+    whenNothingScrolls: true,
+    // This shell PLANTS the hatch, for the rail. It must not silence itself.
+    heedHatch: false,
+  });
+
   // The draggable floats (feedback bubble, tour launcher) default to the
   // bottom corners — exactly where this shell's footer lives, at every
   // width. Declare a floor while the shell is mounted; useDragFloat's
@@ -311,7 +384,19 @@ export default function DrillShell({
        edge for the fortnight before Dan's 1 Sep audit found it: the rule named
        one shell, this root was the other, and nothing failed loudly.
        `cahier-drill` stays for the layout rules that ARE this shell's. */
-    <div className="cahier-drilldesk">
+    /* `data-no-scroll-on` WHILE THIS SHELL CAN ACT ON THE PULL (8 Sep). Two
+       readers of one gesture are on this page: the rail's, which carries a
+       learner to the next station, and this shell's, which presses the visible
+       CTA. Without the hatch a single pull past the end would fire both — the
+       question would advance AND the page would navigate away from it. So the
+       drill takes the gesture for as long as it owns the footer and hands it
+       back where it has no button at all — a lesson deck's panels, or a drill
+       before its first pick. With « Check » on screen the pull does nothing at
+       all, which is the point: the same finger must not mean "next question"
+       after a verdict and "leave the activity" before one. Nothing is lost at
+       the end of a run either — the finish row's « Next › » IS the next
+       station. */
+    <div className="cahier-drilldesk" data-no-scroll-on={owns ? "" : undefined}>
     {/* `cahier-surface` is main's one colour class (6 Sep, "i don't want
         outliers"); `touch-pan-y` is this branch's, and hands the sideways drag
         to the swipe rail. Unrelated jobs, both wanted. */}
