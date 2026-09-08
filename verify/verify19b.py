@@ -52,10 +52,21 @@ PALETTE_SOURCES = {"src/content/highlighterMarks.ts"}
 # viewed from the corner » is not a question a design token can answer.
 #
 # It is exempt for the same reason globals.css is outside the scan, and it is
-# held to the same bargain: the drawing moved OUT of Lexicalator.tsx, where its
-# hexes were already counted and unexempted, so this admits nothing new. The
-# baseline was lowered by exactly those 8 in the same patch (494 -> 486) so
-# the exemption leaves no slack behind it.
+# held to the same bargain: an exemption must not leave slack behind it.
+#
+# THE ARITHMETIC, measured at the gate rather than assumed, because the first
+# telling of it was wrong in a way worth keeping. The drawing did NOT simply
+# move out of Lexicalator.tsx: that file lost 2 counted hexes, while the chest
+# arrived with 8, so 6 of the pigments are new — the redrawn chest is not the
+# old one relocated. Counted totals, by running this check on both trees:
+#
+#     main         baseline 494, actual 484   ->  10 of slack, inherited
+#     this patch   baseline 482, actual 482   ->   0
+#
+# So the ceiling comes down 12, not 8: the 2 the move really took off, plus
+# the 10 of drift that had accumulated on main and that nobody had claimed.
+# Lowering only by the exemption's size would have banked that drift as
+# permanent headroom, which is the failure this bargain exists to prevent.
 #
 # A component that draws a BUTTON in hex does not belong here. The test is
 # whether the file would be a .svg on disk if SVG could take a prop.
