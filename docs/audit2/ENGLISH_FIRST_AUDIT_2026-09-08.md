@@ -19,16 +19,18 @@ the flag stays: the English is the only thing that chooses, and hiding it would
 make the card unanswerable.
 
     88 audited
-    28  flag removed — the French already decides
+    29  flag removed — the French already decides
     25  flag kept — two options are both correct French
     34  flag kept — the card has no French sentence at all (the five ateliers)
-     1  put to Dan — goal 41 q1, where the fault is the French, not the flag
+
+The 29th is goal 41 q1, which was put to Dan and settled the same day — see
+the note under the second table.
 
 This file is the record so the next session neither redoes the audit nor undoes
 it with a sweep. `verify140` pins the counts and the 28 ids.
 
 
-## The 28 where the flag came off
+## The 29 where the flag came off
 
 | pre-test / item | the card | English (was first) | answer | why the French alone decides |
 |---|---|---|---|---|
@@ -63,6 +65,8 @@ it with a sweep. `verify140` pins the counts and the 28 ids.
 
 ## The 25 where it stays — two options are both correct French
 
+(The goal 41 row below is the 29th removal, kept here with its reasoning.)
+
 | pre-test / item | the card | English | answer | equally grammatical |
 |---|---|---|---|---|
 | `u3-l1-weather` / `02-il-fait-chaud` | En juillet à Paris, il fait très___. | In July in Paris, it is very hot. | **chaud** | froid, beau, mauvais |
@@ -92,16 +96,21 @@ it with a sweep. `verify140` pins the counts and the 28 ids.
 | `u4-sio048-advice` / `u4-sio048-advice-05` | Pour être en forme, il ___ faire du sport. | To be in shape, one must do sport. | **faut** | dois, peut, va |
 | `u4-sio048-advice` / `u4-sio048-advice-07` | Tu ___ prendre le bus pour aller au marché. | You can take the bus to go to the market. | **peux** | peut, pouvez, veux |
 
-### The one put to Dan — `u4-sio041` / `u4-sio041-01`
+### The one put to Dan, and settled — `u4-sio041` / `u4-sio041-01`
 
-« Je ___ à sept heures. » / *I have breakfast at seven o'clock.* → **le petit-déjeuner**
+    was:  « Je ___ à sept heures. »          / I have breakfast at seven o'clock.
+    now:  « Je ___ à sept heures du matin. » / I have breakfast at seven in the morning.
 
-This card is in both camps, which is why it is not decided here. The English
-does name the answer — and with it hidden the card has two defensible answers,
-because seven o'clock is breakfast in the morning and dinner in the evening.
-The fault is the French, not the flag: adding « du matin » would settle it and
-let the flag come off with the other 28. That is a change to Dan's own
-sentence, so it is his to make.
+This card was in both camps, which is why it went to Dan rather than being
+decided here. The English did name the answer — and with it hidden the card had
+TWO defensible answers, because seven o'clock is breakfast in the morning and
+dinner in the evening. So the fault was the French, not the flag.
+
+Dan, 2026-09-08, choosing between adding « du matin », leaving it alone, and
+changing the four options: **add « du matin »**. With the morning stated,
+« le dîner » is out on the French alone, and the flag came off with the other
+28. « le dîner »'s WHY was rewritten to name the new reason rather than the old
+one — a learner who picks it is now being told about the hour, not the meal.
 
 
 ## The 34 where it stays — the card has no French sentence
