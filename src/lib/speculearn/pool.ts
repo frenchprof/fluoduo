@@ -79,6 +79,17 @@ export type PoolItem = {
   /** What to speak: the full sentence for an authored item, the word for a
    *  deck one. Absent = nothing to speak. */
   speak?: string;
+  /**
+   * The ORIGINAL authored item, carried through untouched.
+   *
+   * `judgePretestAnswer` writes the gap report and the usage ledger, and it is
+   * keyed on the authored item — so an authored question must still reach it
+   * in the shape it was written in. A generated one has no ledger to write:
+   * it was never part of the authored pre-test the teacher's dashboard reports
+   * on, and inventing an entry for it would put questions in that report that
+   * no pre-test contains.
+   */
+  authored?: PretestItem;
 };
 
 /** An authored pre-test item is already this shape bar the naming. */
@@ -96,6 +107,7 @@ function fromAuthored(it: PretestItem, i: number): PoolItem {
     options: [it.answer, ...it.distractors],
     whyWrong: it.whyWrong,
     speak: it.fullSentence ?? `${it.sentenceBefore}${it.answer}${it.sentenceAfter}`,
+    authored: it,
   };
 }
 

@@ -405,6 +405,9 @@ jobs:
       - name: "Every page wears exactly one coloured strip at the top (7 Sep)"
         run: python3 verify/verify126-band-strip.py
 
+      - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
+        run: python3 verify/verify140-speculearn-merged.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

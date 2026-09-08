@@ -46,13 +46,19 @@ export type ActivityHint = {
 
 export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
   // ── practice ────────────────────────────────────────────────────────────
+  // ONE ROW NOW, BECAUSE THERE IS ONE SPECULEARN. Dan, 2026-09-07: *"they CAN
+  // be and MUST NOW BE MERGED AS ONE!"* Until then this key described the
+  // generated DRILL and `pretest` described the authored PAGE — two rows for
+  // what a learner met as two identical lightbulbs on one goal. The merged run
+  // is a CahierShell page, so `page` is not a preference here: on `drill` this
+  // instruction would never fire again, silently, which is exactly the failure
+  // verify88 exists to catch.
   speculearn: {
-    on: "drill",
+    on: "page",
     title: "Guess first",
     steps: [
-      "Pick what you think is right, then Check.",
-      "Wrong costs nothing — the lesson is built on it.",
-      "? gives a hint, then another, then the answer.",
+      "This comes before the lesson. You are not meant to know it yet.",
+      "Pick one anyway — wrong costs nothing.",
     ],
   },
   lesson: {
@@ -75,18 +81,6 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     ],
   },
 
-  // A pre-test is SpecuLearn's other engine, not another activity (the merger
-  // Dan settled on 2026-08-10: "Pre-Test folds into SpecuLearn — same job, two
-  // engines"), so it gets the same instruction in the same words. It is on
-  // `page` because a pre-test mounts CahierShell rather than DrillShell.
-  pretest: {
-    on: "page",
-    title: "Guess first",
-    steps: [
-      "This comes before the lesson. You are not meant to know it yet.",
-      "Pick one anyway — wrong costs nothing.",
-    ],
-  },
 
   // ── revise ──────────────────────────────────────────────────────────────
   grammarathon: {

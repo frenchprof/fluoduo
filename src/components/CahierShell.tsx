@@ -40,6 +40,8 @@ import { isPlayableGap } from "@/lib/collections/gapSentence";
 // swipe rail could ask it without a library importing a page shell.
 import { TAB_ICONS, activity, bandOf, familyName, familyOf, familyShort, hubFamily } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
+import { stopForDeck } from "@/lib/stopTag";
+import { speculearnHref } from "@/lib/speculearn/route";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
@@ -317,14 +319,25 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
   const rainSet = getLetrisSet(collectionId.replace("-letris", ""));
   const composeBanks = composeBanksForDeck(collectionId);
   const curatedDeck = CURATED.find((c) => c.id === collectionId);
+  // The goal this deck belongs to, and whether it can ask anything at all.
+  // `pretestHref` still decides the second half: a goal has a SpecuLearn if it
+  // has an authored pre-test / unit-0 bank OR a generated-ready deck.
+  const sioId = stopForDeck(collectionId)?.id;
+  const hasAnySpeculearn = !!pretestHref || isSpecuLearnReady(collectionId);
   return [
-    ...(pretestHref
-      ? [{ key: "pretest", ...TAB_ICONS.pretest, href: pretestHref } as ShellTab]
-      : []),
-    // Guess-first activity (Dan, 2026-07-14: native page, "not a
-    // supplement") — photos for aliments, emoji everywhere else.
-    ...(isSpecuLearnReady(collectionId)
-      ? [registryTab("speculearn", `/practice/speculearn/${collectionId}`)]
+    /* ONE SPECULEARN, NOT TWO (Dan, 2026-09-07, over a goal wearing two 💡:
+       *"they CAN be and MUST NOW BE MERGED AS ONE!"*).
+       Two doors stood here — the authored pre-test and the generated run — and
+       nine goals had both: colors, consignes, countries, languages,
+       objets-articles, lieux, transport, aliments, commerces. The duplication
+       was always there and became visible on 6 Sep, when the pre-test stopped
+       wearing 🧪 and "Pre-Test" and started wearing SpecuLearn's name and
+       picture like the other one.
+       The merged run is keyed by the GOAL because the pool is: 36 goals have
+       an authored pre-test and no generated deck, so a door keyed on either
+       half cannot address the other. See lib/speculearn/pool.ts. */
+    ...(sioId && hasAnySpeculearn
+      ? [registryTab("speculearn", speculearnHref(sioId))]
       : []),
     // PRE-lesson supplements (standalone HTML outside the app) — none right
     // now; the plumbing (incl. visit tracking) stays for future material.
