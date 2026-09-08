@@ -198,7 +198,6 @@
       ],
       "fullSentence": "Et avec ceci ?",
       "sentenceTrans": "Anything else? (literally: and with this?)",
-      "transFirst": true,
       "whyWrong": {
         "celui": "celui needs a complement (celui-ci, celui de…) — the set phrase is « Et avec ceci ? »",
         "ceux": "ceux is plural and needs a complement — the set phrase is « Et avec ceci ? »",
@@ -289,7 +288,6 @@
       ],
       "fullSentence": "C'est trois euros le kilo.",
       "sentenceTrans": "It's three euros a kilo.",
-      "transFirst": true,
       "whyWrong": {
         "un": "Price per unit uses the definite article in French — trois euros le kilo.",
         "du": "The partitive doesn't fit here — the fixed price pattern is le + unit.",

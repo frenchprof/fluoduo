@@ -54,7 +54,6 @@
       ],
       "fullSentence": "Il mange de la salade et des tomates.",
       "sentenceTrans": "He eats (some) salad and tomatoes.",
-      "transFirst": true,
       "whyWrong": {
         "du salade": "salade is feminine — de la, not du.",
         "la salade": "la means salad in general; here he eats 'some', so de la.",
