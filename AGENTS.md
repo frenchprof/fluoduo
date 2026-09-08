@@ -458,3 +458,30 @@ longer matters. And if a renumber IS the right answer, **leave headroom** —
 take a number well clear of the contested band (140 when the highest claimed is
 126), because a number adjacent to the frontier will be claimed again while
 your CI runs.
+
+# Emojis are being replaced by SVG icons — Dan's ruling, 2026-09-09
+
+**Dan: "put it down as Dan's ruling as of 9 Sep"** — asked for after he
+supplied a set of SVGs to replace emojis wherever they appear in the app.
+
+This SUPERSEDES the "names — permanent (2026-08-31)" ruling above wherever
+that ruling names an emoji as a family's icon (🎯 Goals · 🏋️ Practice ·
+🎮 Games · 🔄 Revise · 💬 Skills · 👤 User). The family NAMES stand; the
+emoji GLYPHS do not — each is to become the matching SVG once one exists.
+The same replacement applies everywhere else an emoji is used as an icon in
+the learner-facing app (nav bar, buttons, tiles, badges, menus), not only
+the six family icons.
+
+**Sequencing, per Dan's own instructions the same day, before any code
+changes**:
+1. Stock-take every place an emoji currently stands in for an icon.
+2. One representative mock-up per distinct place, built against the actual
+   SVGs Dan supplies.
+3. Only after Dan signs off on the mock-ups does the real replacement go in,
+   place by place.
+
+As of this writing the SVG set has not yet been attached to a session — the
+stock-take and mock-ups are blocked on Dan sharing the files. Do not treat
+the family emoji as already replaced anywhere in the code until that
+sequence has actually run; this entry records the DECISION to replace them,
+not that the replacement has happened.
