@@ -219,13 +219,21 @@ export function deckFromPath(path: string): string | null {
     for (let i = 0; i < prefix.length; i++) if (seg[i] !== prefix[i]) return null;
     return seg[prefix.length] ?? null;
   };
-  // A PRE-TEST IS NOT A DECK. `/practice/speculearn/pretest/<id>` has the same
-  // shape as `/practice/speculearn/<deck>`, so reading the third segment as a
-  // deck turned every pre-test into a deck called "pretest" — measured, and it
-  // sent the forward swipe to `/decks/pretest`. The pre-test's id encodes its
-  // stop, which is where the real deck comes from.
-  if (seg[0] === "practice" && seg[1] === "speculearn" && seg[2] === "pretest") {
-    return stopForPretestId(seg[3])?.collectionId ?? null;
+  /* A ROUTE UNDER SPECULEARN IS NOT A DECK, and this has now cost the same bug
+     twice. `/practice/speculearn/<deck>` and `/practice/speculearn/pretest/<id>`
+     have the same shape, so reading the third segment as a deck turned every
+     pre-test into a deck called "pretest" and sent the forward swipe to
+     `/decks/pretest`. The merged SpecuLearn (7 Sep) added
+     `/practice/speculearn/goal/<SIO>` and did it again: measured on the built
+     export, scrolling off the end of goal 41 landed on `/decks/goal`.
+
+     So the sub-routes are named ONCE, here, and each says where its real deck
+     comes from. verify140 reads the route folders off disk and fails if a new
+     one is added without a line in this map — the third time is not going to be
+     found by hand either. */
+  if (seg[0] === "practice" && seg[1] === "speculearn") {
+    if (seg[2] === "pretest") return stopForPretestId(seg[3])?.collectionId ?? null;
+    if (seg[2] === "goal") return SIOS.find((s) => s.id === seg[3])?.collectionId ?? null;
   }
   return (
     after("practice", "speculearn") ??
