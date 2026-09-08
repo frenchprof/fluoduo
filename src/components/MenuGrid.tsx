@@ -19,6 +19,7 @@
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { familyName } from "@/content/activities";
 
 const PEN = {
   practice: "#fcdf00",
@@ -33,28 +34,32 @@ type Cell =
   | { kind: "two"; a: { emoji: string; name: string; href: string }; b: { emoji: string; name: string; href: string } }
   | { kind: "help" };
 
-const ROWS: { pen: string; cells: Cell[] }[] = [
-  { pen: PEN.practice, cells: [
+// Each row wears a NAME at its start — "(very subtly!) label each row at the
+// start to identify what each row is about" (Dan, 7 Sep, picking over the
+// bare grid). The four family rows take their family's own display name so a
+// rename in FAMILIES carries here; the last row is the User family's.
+const ROWS: { pen: string; label: string; cells: Cell[] }[] = [
+  { pen: PEN.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
     { kind: "one", emoji: "📚", name: "MneMemo", href: "/practice" },
     { kind: "one", emoji: "🃏", name: "MémoiRecall", href: "/practice/flip-it" },
   ]},
-  { pen: PEN.review, cells: [
+  { pen: PEN.review, label: familyName("review"), cells: [
     { kind: "one", emoji: "🔤", name: "ConjugaZone", href: "/conjugaison" },
     { kind: "one", emoji: "🔖", name: "DéjàRevu", href: "/reviser" },
     { kind: "one", emoji: "🏃", name: "GramMarathon", href: "/practice/grammarathon" },
   ]},
-  { pen: PEN.svplay, cells: [
+  { pen: PEN.svplay, label: familyName("svplay"), cells: [
     { kind: "one", emoji: "🔢", name: "NumBus", href: "/games/numbers" },
     { kind: "one", emoji: "🌧️", name: "VocabulaRain", href: "/games/vocabularain" },
     { kind: "one", emoji: "🧰", name: "LexicaLater", href: "/games/lexicalater" },
   ]},
-  { pen: PEN.skills, cells: [
+  { pen: PEN.skills, label: familyName("skills"), cells: [
     { kind: "two", a: { emoji: "🔊", name: "VoixLà", href: "/tts" }, b: { emoji: "🎙️", name: "WorDrill", href: "/practice/wordrill" } },
     { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: "/practice/ecoutexte" },
     { kind: "two", a: { emoji: "🤖", name: "ChaTutor", href: "/tutor" }, b: { emoji: "🧩", name: "ComposeIt", href: "/games/compose" } },
   ]},
-  { pen: PEN.ink, cells: [
+  { pen: PEN.ink, label: familyName("user"), cells: [
     { kind: "help" },
     { kind: "one", emoji: "👤", name: "User", href: "/profil" },
     { kind: "one", emoji: "🏆", name: "Leaderboard", href: "/leaderboard" },
@@ -79,9 +84,18 @@ export default function MenuGrid({
   const router = useRouter();
   const go = (href: string) => { onNavigate(); router.push(href); };
   return (
-    <div className="grid w-[19.5rem] max-w-[86vw] grid-cols-3 gap-1.5 p-1.5">
-      {ROWS.flatMap((row, r) =>
-        row.cells.map((cell, c) => {
+    // A narrow first column carries each row's name, set on its side and
+    // faint — present when you look for it, invisible when you don't. The
+    // container grows by that column's width so the tiles keep their size.
+    <div className="grid w-[20.6rem] max-w-[90vw] grid-cols-[auto_repeat(3,minmax(0,1fr))] gap-1.5 p-1.5">
+      {ROWS.flatMap((row, r) => [
+        <span
+          key={`label-${r}`}
+          className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-[color:var(--cahier-ink-faint)]"
+        >
+          {row.label}
+        </span>,
+        ...row.cells.map((cell, c) => {
           const key = `${r}-${c}`;
           if (cell.kind === "help") {
             return (
@@ -113,7 +127,7 @@ export default function MenuGrid({
             </Link>
           );
         }),
-      )}
+      ])}
     </div>
   );
 }
