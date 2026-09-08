@@ -173,18 +173,22 @@ export default function WelcomeBody() {
         style={{ background: "linear-gradient(to bottom, rgba(6,8,24,0.55), rgba(6,8,24,0.22) 55%, transparent)" }}
       />
 
-      {/* THE TOP NAV, ON THE SKY (Dan: "the night sky could serve as
-          background for the top nav"). It is a mark and nothing else: a link
-          back to a page you have not reached yet is not navigation, it is a
-          way to leave. */}
-      <header className="pointer-events-none absolute inset-x-0 top-0 flex items-center gap-2 px-5 pt-4 sm:px-8 sm:pt-6">
-        <span
-          className="text-xl font-black tracking-tight text-white/90 sm:text-2xl"
-          style={{ fontFamily: "var(--font-fluohand-stack)", textShadow: "0 1px 12px rgba(0,0,0,0.55)" }}
-        >
-          <BrandName word="FluOLinGo" />
-        </span>
-      </header>
+      {/* NO CORNER WORDMARK. There was one — "the night sky could serve as
+          background for the top nav", 7 Sep — and it earned its place while
+          the greeting was one modest line. It stopped earning it the moment
+          the name became the biggest thing on the screen: the mark and the h1
+          said « FluOLinGo » twice, eighty pixels apart, in the same hand and
+          the same four colours.
+
+          Dan, 9 Sep: *"what could possibly be the purpose of that small
+          'FluOLinGo' wordmark ... now that the title says the name in large
+          letters just below it"*. None — and the litmus test at the top of
+          AGENTS.md had already answered it: text that can be removed without
+          costing the reader anything is redundant. A mark identifies a page
+          whose content does not; this page's content IS its name.
+
+          It was not navigation either. It linked nowhere, because there is
+          nowhere behind a door. */}
 
       {/* THE WELCOME, IN THE SKY. `pointer-events-none` on the whole block so
           a swipe that starts on the headline still travels the road — the
