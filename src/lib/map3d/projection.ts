@@ -44,8 +44,8 @@ export const MAX_AHEAD = 7.5; // beyond this, still wholly below the planet's sh
 // around d ≈ 5.5–7. Eight puts every sprite's top past the frame before the
 // cull, on both box heights.
 export const MAX_BEHIND = 8; // draw distance behind (stops)
-export const SIZE_FALLOFF = 0.17; // per-stop size decay — halves across the visible chain
-export const MIN_SCALE = 0.42; // a far stop is still nearly half a near one
+export const SIZE_FALLOFF = 0.24; // per-stop size decay — steeper since 7 Sep, so near reads much nearer
+export const MIN_SCALE = 0.30; // a far stop is small, but never so small its number cannot be read
 export const LOOK_AHEAD = 1.5; // heading = the road this far ahead
 
 /** Road snake: world X per stop, repeating every ten stops (one unit).
@@ -121,7 +121,17 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     // curve; row position follows a sine of the angular distance — crawls at
     // the horizon, sweeps fast underfoot (sin' = cos).
     const a = Math.min(1, csz / FULL_AHEAD);
-    const t = 0.97 * Math.sin((a * Math.PI) / 2);
+    // GROUNDED, NOT AERIAL (Dan, 7 Sep: "the perspective of the map should
+    // also be less aerial and more grounded, so that we see more contrast
+    // between what pops from afar vs what we see up close like real human
+    // view near-the-ground view of the scene").
+    //
+    // A quarter-sine leaves the ground plane evenly spread, which is what a
+    // camera looking DOWN sees. Standing on the road, the near ground rushes
+    // past and the far ground piles up against the horizon. This curve has
+    // twice the slope at your feet and flattens harder into the distance,
+    // which is that difference.
+    const t = 0.97 * (1 - Math.pow(1 - a, 2.1));
     // The rise: between MAX_AHEAD and FULL_AHEAD a thing is climbing over
     // the shoulder — first its very tip AT the horizon line, then more of it
     // as the world rolls under the camera, until it stands whole and starts

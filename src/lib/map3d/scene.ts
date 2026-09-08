@@ -93,7 +93,7 @@ export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): Natu
   while (z < until) {
     for (const side of [1, -1] as const) {
       const blocked = items.some((r) => r.side === side && Math.abs(r.z - z) < 0.85);
-      if (!blocked && sRand(i * 3 + (side === 1 ? 0 : 17)) > 0.18) {
+      if (!blocked && sRand(i * 3 + (side === 1 ? 0 : 17)) > 0.10) {
         const tr = sRand(i * 7 + (side === 1 ? 0 : 5));
         // GIANTS (Dan, 2026-08-20 round 10: "occasionally some items need to
         // be as tall as to reach nearly the top of the frame, trees are the
@@ -104,14 +104,24 @@ export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): Natu
         const giant = sRand(i * 17 + (side === 1 ? 0 : 7)) < 0.12 || z - lastGiant > 3.2;
         if (giant) lastGiant = z;
         const type: NatureType = giant ? "round" : tr < 0.42 ? "round" : tr < 0.7 ? "pine" : "bush";
-        const lat = (giant ? 0.3 : 0.18) + sRand(i * 5 + (side === 1 ? 0 : 9)) * 0.18; // 0.18 – 0.36 (giants set back)
+        // THE OPEN COUNTRY GETS DRESSED TOO (Dan, 7 Sep: "the scenery is
+        // looking pretty empty at the moment. it can afford to have more
+        // density"). Every item used to sit at lat 0.18–0.36 — hugging the
+        // verge. That was invisible while the road filled the frame; once the
+        // road stopped widening with the window, the land beyond the verge was
+        // revealed and there was nothing in it. A share of the items now stand
+        // well out in the fields, where perspective makes them read as
+        // distance rather than clutter.
+        const outField = sRand(i * 23 + (side === 1 ? 0 : 11)) < 0.42;
+        const r = sRand(i * 5 + (side === 1 ? 0 : 9));
+        const lat = giant ? 0.3 + r * 0.18 : outField ? 0.46 + r * 0.5 : 0.18 + r * 0.2;
         const size = giant
           ? 96 + Math.round(sRand(i * 11 + (side === 1 ? 0 : 3)) * 24) // 96 – 120 px, high crown on a long trunk
           : 36 + Math.round(sRand(i * 11 + (side === 1 ? 0 : 3)) * 24); // 36 – 60 px
         out.push({ id: `n${i}${side}`, z, side, lat, type, size, ...(giant ? { giant: true } : {}) });
       }
     }
-    z += 0.48 + sRand(i * 13) * 0.42; // gap 0.48 – 0.90 stops
+    z += 0.31 + sRand(i * 13) * 0.32; // gap 0.31 – 0.63 stops — denser since 7 Sep
     i++;
   }
   return out;
