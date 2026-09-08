@@ -97,6 +97,24 @@ check(not missing,
       "the workflow runs scripts that no longer exist, so CI fails on a "
       "missing file: " + ", ".join(sorted(missing)))
 
+# ---- 2b · no script is run TWICE ------------------------------------------
+# Found on main, 8 Sep: verify140 had two run: lines and every CI run in the
+# repo was driving a browser through it twice. It came from the integration
+# lane resolving the SAME both-sides-added conflict in this file on two
+# branches in a row — the first resolution had already placed the line, the
+# second placed it again, and each diff read as correct on its own.
+#
+# Nothing here was going to catch that. Check 1 asks whether a script is named
+# AT ALL and a duplicate satisfies it twice over; check 3 compares files to
+# each other, not run lines. A doubled check never fails, so it is invisible
+# except in the clock.
+dupes = sorted({s for s in run_lines if run_lines.count(s) > 1})
+check(not dupes,
+      f"no check is named twice — {len(run_lines)} run lines, "
+      f"{len(set(run_lines))} distinct",
+      "these checks have more than one run: line, so CI executes each of them "
+      "twice for no gain: " + ", ".join(dupes))
+
 # ---- 3 · no two scripts share a number ------------------------------------
 # A collision is what causes the unwiring: two files differing only after the
 # number read as interchangeable, so one workflow line looks like it covers
