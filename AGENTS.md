@@ -459,29 +459,35 @@ take a number well clear of the contested band (140 when the highest claimed is
 126), because a number adjacent to the frontier will be claimed again while
 your CI runs.
 
-# Emojis are being replaced by SVG icons — Dan's ruling, 2026-09-09
+# Emoji → SVG replacement — proposed 9 Sep, DROPPED same day
 
-**Dan: "put it down as Dan's ruling as of 9 Sep"** — asked for after he
-supplied a set of SVGs to replace emojis wherever they appear in the app.
+Dan asked (9 Sep) for emojis to be replaced by SVG icons everywhere, and for
+that decision to be recorded. Before any SVG existed, a stock-take of every
+emoji-as-icon place turned up a mix-up: Dan thought icons like the six family
+glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User)
+were already SVGs in the app; they are plain emoji characters (the OS/browser
+draws them — e.g. the "abc" box next to ConjugaZone is just the 🔤 emoji,
+not a picture file). No SVGs were ever supplied.
 
-This SUPERSEDES the "names — permanent (2026-08-31)" ruling above wherever
-that ruling names an emoji as a family's icon (🎯 Goals · 🏋️ Practice ·
-🎮 Games · 🔄 Revise · 💬 Skills · 👤 User). The family NAMES stand; the
-emoji GLYPHS do not — each is to become the matching SVG once one exists.
-The same replacement applies everywhere else an emoji is used as an icon in
-the learner-facing app (nav bar, buttons, tiles, badges, menus), not only
-the six family icons.
+**Dan, once that was clear: "drop the SVG replacement, not doing that."**
 
-**Sequencing, per Dan's own instructions the same day, before any code
-changes**:
-1. Stock-take every place an emoji currently stands in for an icon.
-2. One representative mock-up per distinct place, built against the actual
-   SVGs Dan supplies.
-3. Only after Dan signs off on the mock-ups does the real replacement go in,
-   place by place.
+**The "names — permanent (2026-08-31)" ruling stands, UNCHANGED, including
+its emoji glyphs.** The six families keep wearing 🎯 🏋️ 🎮 🔄 💬 👤, and
+every other emoji-as-icon in the app stays an emoji. Nothing in the code
+changed under this proposal — it never reached step 1 of its own sequence.
 
-As of this writing the SVG set has not yet been attached to a session — the
-stock-take and mock-ups are blocked on Dan sharing the files. Do not treat
-the family emoji as already replaced anywhere in the code until that
-sequence has actually run; this entry records the DECISION to replace them,
-not that the replacement has happened.
+The stock-take did surface one real, still-open finding, unrelated to the
+SVG question: **the same emoji is reused for two unrelated things in two
+places**, live at once:
+- **💬** is both the Skills family door AND the floating "report a bug"
+  button (`components/FeedbackButton.tsx`) that sits on top of many pages,
+  including Skills activities themselves (e.g. open WorDrill and both the
+  Skills-family 💬 and the bug-report 💬 are on screen at once).
+- **🧰** is both the LexicaLater game AND the floating "Outils" tools tray
+  (`components/tools/ToolSummon.tsx`, VoixLà + ChaTutor) that appears on
+  most exercise screens, including ones that have nothing to do with
+  LexicaLater (e.g. ÉcouTexte, WorDrill).
+
+Whether to change either of those two glyphs is Dan's call, undecided as of
+this entry — flagged here so the next session does not have to rediscover
+it.
