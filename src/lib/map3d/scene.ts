@@ -81,7 +81,7 @@ export function sRand(seed: number) {
   return x - Math.floor(x);
 }
 
-export type NatureType = "round" | "pine" | "bush";
+export type NatureType = "round" | "pine" | "bush" | "grass";
 export type NatureItem = { id: string; z: number; side: 1 | -1; lat: number; type: NatureType; size: number; giant?: boolean };
 
 /** Trees and bushes along both verges, skipping where a prop stands. */
@@ -123,6 +123,68 @@ export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): Natu
     }
     z += 0.31 + sRand(i * 13) * 0.32; // gap 0.31 – 0.63 stops — denser since 7 Sep
     i++;
+  }
+  // THE FAR FIELD (Dan, 8 Sep: "the scenery is still bare esp. on the
+  // landscape side of things"). The pass above tops out at lat 0.96, which
+  // was generous while the road filled the frame. It is not any more: on a
+  // 1440-wide screen the visible ground runs out to roughly lat 2.5, so
+  // everything past 0.96 was guaranteed bare grass — and the wider the
+  // window, the more of the picture was that guarantee.
+  //
+  // This second pass dresses 1.0–2.6 on both verges. It is deliberately its
+  // own loop rather than a wider `lat` on the first: the far field wants its
+  // OWN spacing (looser, since perspective packs it together anyway) and its
+  // own mix (no giants — a towering pine two lanes out reads as a mistake,
+  // not as distance). A phone never sees past about lat 1.25, so these cost
+  // it nothing but a cull.
+  let j = 0;
+  let fz = 0.2;
+  while (fz < until) {
+    for (const side of [1, -1] as const) {
+      if (sRand(j * 31 + (side === 1 ? 0 : 13)) > 0.28) {
+        const tr = sRand(j * 19 + (side === 1 ? 0 : 3));
+        // REAL, FULL-HEIGHT TREES OUT THERE (Dan, 8 Sep: "grass and real
+        // full-height trees"). The first draft of this pass planted 30–56px
+        // saplings, which at that distance read as shrubbery — the land looked
+        // mown rather than wooded. A far field is full of ordinary big trees;
+        // perspective is what makes them small, not their being small.
+        const tallOne = sRand(j * 43 + (side === 1 ? 0 : 17)) < 0.34;
+        const type: NatureType = tr < 0.4 ? "round" : tr < 0.78 ? "pine" : "bush";
+        const lat = 1.0 + sRand(j * 29 + (side === 1 ? 0 : 23)) * 1.6; // 1.0 – 2.6
+        const size = tallOne
+          ? 84 + Math.round(sRand(j * 37 + (side === 1 ? 0 : 9)) * 34) // 84 – 118, a proper tree
+          : 44 + Math.round(sRand(j * 37 + (side === 1 ? 0 : 9)) * 30); // 44 – 74
+        out.push({ id: `f${j}${side}`, z: fz, side, lat, type, size, ...(tallOne ? { giant: true } : {}) });
+      }
+    }
+    fz += 0.42 + sRand(j * 41) * 0.5;
+    j++;
+  }
+  // GRASS (Dan, 8 Sep). Trees alone leave the ground a flat colour field. Low
+  // tufts, thick and close together, are what makes it read as GROUND — and
+  // they carry the perspective, because a near tuft is inches high on screen
+  // and a far one is a speck. Three per slot across the whole width, both
+  // sides, on their own tight spacing.
+  let g = 0;
+  let gz = 0.15;
+  while (gz < until) {
+    for (const side of [1, -1] as const) {
+      for (let k = 0; k < 3; k++) {
+        const seed = g * 53 + k * 7 + (side === 1 ? 0 : 29);
+        if (sRand(seed) > 0.34) {
+          out.push({
+            id: `g${g}${side}${k}`,
+            z: gz + sRand(seed * 3) * 0.18,
+            side,
+            lat: 0.16 + sRand(seed * 5) * 2.4, // verge to far field
+            type: "grass",
+            size: 12 + Math.round(sRand(seed * 11) * 14),
+          });
+        }
+      }
+    }
+    gz += 0.16 + sRand(g * 61) * 0.14;
+    g++;
   }
   return out;
 }

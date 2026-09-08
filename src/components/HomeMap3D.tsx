@@ -158,7 +158,7 @@ function PerspectiveBg({
     const dStop = Math.abs(zAbs - Math.round(zAbs));
     const swell = 1 + 0.2 * Math.exp(-(dStop * dStop) / 0.045);
     const ref = Math.min(vw, vh);
-    const hw = Math.max(ref * 0.11, ref * 0.34 * Math.pow(p.scale, 1.6)) * swell;
+    const hw = Math.max(ref * 0.08, ref * 0.22 * Math.pow(p.scale, 1.6)) * swell;
     lPts.push(`${(p.px - hw).toFixed(1)} ${p.py.toFixed(1)}`);
     rPts.unshift(`${(p.px + hw).toFixed(1)} ${p.py.toFixed(1)}`);
   }
@@ -473,6 +473,34 @@ function NatureSprite({ type, size, scale, scaleY, tall }: { type: NatureType; s
   const mid = type === "pine" ? PINE_MID : LEAF_MID;
   const light = type === "pine" ? LEAF_MID : LEAF_LIGHT;
   const shadow: CSSProperties = { width: Math.round(cW * 0.55), height: Math.max(2, Math.round(4 * scale * scaleY)), background: "rgba(0,0,0,0.10)", borderRadius: "50%", marginTop: 1 };
+  // A TUFT OF GRASS — three blades fanning from one root, no trunk and no
+  // shadow. It is the cheapest thing on screen and there are hundreds of
+  // them, so it is three <span>s and nothing else.
+  if (type === "grass") {
+    const gh = Math.max(1, Math.round(size * 0.9 * scale));
+    const gw = Math.max(1, Math.round(size * 0.12 * scale));
+    if (gh < 2) return null;
+    return (
+      <div className="pointer-events-none relative" style={{ width: Math.max(2, Math.round(size * 0.6 * scale)), height: gh }}>
+        {[-1, 0, 1].map((k) => (
+          <span
+            key={k}
+            className="absolute bottom-0"
+            style={{
+              left: "50%",
+              width: gw,
+              height: k === 0 ? gh : Math.round(gh * 0.72),
+              background: k === 0 ? PINE_MID : LEAF_MID,
+              borderRadius: `${gw}px ${gw}px 0 0`,
+              transformOrigin: "bottom center",
+              transform: `translateX(-50%) rotate(${k * 26}deg)`,
+              opacity: 0.9,
+            }}
+          />
+        ))}
+      </div>
+    );
+  }
   if (type === "bush") {
     return (
       <div className="pointer-events-none flex flex-col items-center">
@@ -749,6 +777,16 @@ export default function HomeMap3D({
                     const p0 = placeAt(item.z, item.side, item.lat);
                     if (!p0) return null;
                     const p = { ...p0, scale: p0.scale * PROP_DAMP };
+                    // OFF THE SIDE OF THE SCREEN IS NOT DRAWN (8 Sep). How far
+                    // out the ground reaches before the frame's edge depends on
+                    // how WIDE the frame is: about lat 2.5 on a 1440px desktop,
+                    // about lat 1.25 on a 390px phone. The far field and the
+                    // grass are planted out to lat 2.6 for the desktop, so a
+                    // phone would otherwise build several hundred sprites it
+                    // paints nothing of. The margin is generous — a giant's
+                    // crown is wide, and half of it showing at the edge is
+                    // scenery, not a bug.
+                    if (p.px < -260 || p.px > vw + 260) return null;
                     const cW = Math.round(item.size * p.scale * (item.type === "bush" ? 1.6 : 1));
                     const fullH = Math.round(item.size * p.scale * (item.giant ? 1.9 : item.type === "pine" ? 1.75 : item.type === "bush" ? 0.65 : 1.25));
                     return (
@@ -760,7 +798,7 @@ export default function HomeMap3D({
                         aria-hidden
                         className="absolute"
                         lang="fr"
-                        title={item.giant ? "un grand arbre" : item.type === "pine" ? "un sapin" : item.type === "bush" ? "un buisson" : "un arbre"}
+                        title={item.type === "grass" ? "de l\u2019herbe" : item.giant ? "un grand arbre" : item.type === "pine" ? "un sapin" : item.type === "bush" ? "un buisson" : "un arbre"}
                         style={{ left: p.px - cW / 2, top: p.py - fullH * p.reveal, zIndex: zOrder(p.scale) - 2, ...clipRise(p.reveal) }}
                       >
                         <NatureSprite type={item.type} size={item.size} scale={p.scale} scaleY={p.scaleY} tall={item.giant} />
@@ -845,7 +883,7 @@ export default function HomeMap3D({
                     // itself now (`.fluo-stop--up` is raised,
                     // `--down` is a well), so the pad is just the pad again —
                     // the same spot on the road under every stop.
-                    const depthH = Math.max(3, Math.round(sz * 0.28 * scaleY));
+                    const depthH = Math.max(4, Math.round(sz * 0.62 * scaleY));
                     // The pad is a circular SPOT ON THE ROAD, wider than the
                     // ball riding it (Dan's capture, 2026-08-20 round 4).
                     const baseW = Math.round(sz * 1.42);

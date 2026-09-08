@@ -143,22 +143,32 @@ export function project(worldX: number, relZ: number, camZ: number, vw: number, 
     // on edge): a station is an oblate button LYING ON THE ROAD, seen from
     // above — constant strong foreshortening across the chain, the thick rim
     // below the face supplies the button's height off the ground.
-    const scaleY = 0.58;
-    const px = vw * 0.5 + csx * vw * 0.4 * sc;
+    // Dan, 7-8 Sep: "i used the word stop to mean goal (flat-lying coin)",
+    // "that stop has to be of a certain height". A coin lying on the ground
+    // seen from eye level is a THIN ellipse with a THICK side wall — the wall
+    // is where its height reads. 0.58 was a view from above, where a coin is
+    // nearly a circle and has no side to show.
+    const scaleY = 0.40;
+    // THE STOPS TRACK THE ROAD, AT ANY WIDTH. This lateral used `vw` while the
+    // road's width now uses the shorter edge, so on a wide screen the two
+    // drifted apart and a stop on a bend could sit out on the grass. Same
+    // reference as the road; on a portrait phone the shorter edge IS the
+    // width, so nothing there moves.
+    const px = vw * 0.5 + csx * Math.min(vw, vh) * 0.4 * sc;
     const py = camY - (camY - horizY) * t;
     if (!isFinite(px) || !isFinite(py)) return null;
     // Dan, 2026-08-20 (his capture, round 4): "the numbered stations are
     // small enough to be contained within a single circular spot on the
     // road" — the road is ~2.5 stops wide, the stop rides IN it, never over
     // its banks.
-    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.15 * sc)), t, reveal, behind: false };
+    return { px, py, scale: sc, scaleY, size: Math.max(22, Math.round(vh * 0.23 * sc)), t, reveal, behind: false };
   }
   const d = -csz;
   const t = d / (d + FOCAL * 0.4);
   if (t > 0.97) return null;
   const sc = Math.max(MIN_SCALE, (1 - t * 0.3));
-  const scaleY = 0.58;
-  const px = vw * 0.5 + csx * vw * 0.4 * sc;
+  const scaleY = 0.40;
+  const px = vw * 0.5 + csx * Math.min(vw, vh) * 0.4 * sc;
   const py = camY + (vh * 1.9 - camY) * t;
   if (!isFinite(px) || !isFinite(py)) return null;
   return { px, py, scale: sc, scaleY, size: Math.max(20, Math.round(vh * 0.11 * sc)), t, reveal: 1, behind: true };
