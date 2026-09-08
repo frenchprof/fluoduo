@@ -444,6 +444,9 @@ jobs:
       - name: "No pre-test stacks its questions down one page (8 Sep)"
         run: python3 verify/verify171-pretest-feeds.py
 
+      - name: "Matching pairs resolve, and play as LexicaLater chests (8 Sep)"
+        run: python3 verify/verify153-pair-chests.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
