@@ -128,10 +128,21 @@ export type LetrisColumn = {
 /** Matching is relational — a directed validity graph between role:left and role:right items. */
 export type MatchingPair = { leftId: string; rightId: string };
 
+/**
+ * How a deck's PHRASE CHESTS are built — the two-keyhole locks LexicaLater
+ * deals (« [ Vous tournez ][ à droite ] »).
+ *
+ * `pairs` is the hand-authored graph: role:left and role:right items and the
+ * joins between them. One left may take several rights and one right several
+ * lefts — « Vous allez » and « Vous continuez » both take « tout droit » — so
+ * it has to be a list of joins rather than a field on an item.
+ */
+export type MatchingConfig = { pairs?: MatchingPair[] };
+
 /** Per-collection structural config. Games that need no structure ignore it. */
 export type GameConfig = {
   letris?: { columns: LetrisColumn[] };
-  matching?: { pairs: MatchingPair[] };
+  matching?: MatchingConfig;
   /**
    * Lexicalator: the pool of near-miss decoy syllables mixed onto the key belt
    * (wrong endings/vowels that only a knower rejects, e.g. "teur" against
