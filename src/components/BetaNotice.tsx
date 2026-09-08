@@ -54,7 +54,7 @@ export default function BetaNotice() {
           FluOLinGo is in beta. Many rounds of checks have been done, but some bugs and errors will
           have slipped through. You are among the first users of this platform — apologies in
           advance for any unworkable sections. Your feedback is extremely valuable: report anything
-          odd with the 💬 Feedback button, and claim XP 💎 for every bug you identify.
+          odd with the 🐞 Feedback button, and claim XP 💎 for every bug you identify.
         </p>
         <button type="button" onClick={dismiss} className="fluo-btn mt-4 w-full">
           Got it!

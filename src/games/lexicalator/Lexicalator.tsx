@@ -667,7 +667,7 @@ export default function Lexicalator({
 
   return (
     <GameFrame
-      title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>}
+      title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLocker</>}
       exitHref={exitHref}
       progress={{ done: cleared, total: quota }}
       hearts={{ left: lives, total: START_LIVES }}
@@ -684,7 +684,7 @@ export default function Lexicalator({
       background="linear-gradient(180deg, var(--region-heights-band) 0%, var(--cahier-paper) 60%)"
     >
     <div ref={rootRef} className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
-      <CreditsSplash game="LexicaLater" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} />
+      <CreditsSplash game="LexicaLocker" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}

@@ -6,6 +6,10 @@
  * Writes to the Firestore `feedback` collection (see firestore.rules — the
  * feedback rule must be deployed for this to persist). Works for anyone, signed
  * in or not; the uid is attached when available.
+ *
+ * 🐞, not 💬 (Dan, 2026-09-09) — this button used to share 💬 with the
+ * Skills family door, live on screen at once on a Skills activity. A bug
+ * is what this button reports, so it wears one.
  */
 
 import { useRef, useState } from "react";
@@ -110,7 +114,7 @@ export default function FeedbackButton() {
         aria-label="Feedback"
         className="fixed z-50 flex items-center justify-center rounded-full bg-[var(--fluo-hl)] px-3 py-2 text-base font-bold text-[color:var(--fluo-ink)] shadow-lg hover:brightness-95 active:scale-95 transition-transform"
       >
-        💬
+        🐞
       </button>
 
       {open && (

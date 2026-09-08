@@ -536,7 +536,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         </>
       )}
 
-      {/* 🧰 The summonable tools (5 Sep): VoixLà is handed the reply being
+      {/* 🛠️ The summonable tools (5 Sep): VoixLà is handed the reply being
           composed (or the learner's last sent line); ChaTutor is told which
           scene this is. */}
       <ToolSummon
