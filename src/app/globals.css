@@ -1577,15 +1577,28 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 /* The "glow" mechanic (Dan, 2026-07-08): the next uncompleted node is the
    most alive thing on the map — a soft pulsing halo pulls the eye forward
    without locking anything. Nodes ahead stay tappable, just calmer. */
+/* THE PULSE RIDES ON ITS OWN RING, not on the stop's box-shadow (8 Sep).
+   It used to animate `box-shadow` on the button itself, and `box-shadow` is
+   one property: every keyframe REPLACED the whole stack, so the current
+   stop — the one stop a learner is actually looking at — was the only one on
+   the map with no side wall, no lit rim and no cast shadow. It went flat the
+   instant it became current. A pseudo-element carries the halo instead, so
+   the coin underneath is untouched. */
 @keyframes fluo-node-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(255, 224, 0, 0.85); }
   55% { box-shadow: 0 0 0 10px rgba(255, 224, 0, 0); }
 }
-.fluo-node-active {
+.fluo-node-active { position: relative; }
+.fluo-node-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
   animation: fluo-node-glow 1.8s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
-  .fluo-node-active { animation: none; }
+  .fluo-node-active::after { animation: none; }
 }
 
 /* Metro-map fog of war (Dan, 2026-07-08, episode model item 4): lines beyond
@@ -2366,12 +2379,43 @@ h3.cahier-display { font-size: var(--fs-h3); }
    The names describe the LOOK now, because the meaning just inverted once and
    a class called --reached that paints not-yet-reached stops is a trap laid
    for the next session. */
+/* A COIN, NOT A NEUMORPHIC PILL (Dan, 2026-09-08, over a crop of stop 20 with
+   an arc drawn on its upper-left rim: *"the part i marked in red has no reason
+   to exist"*, sent beside a render of a gold coin).
+
+   What he ringed was `-3px -3px 7px white 92%` — an OUTER white glow spread up
+   and left of the button, onto the paper. It is the standard soft-UI pair to
+   the drop shadow opposite, and it is the one shadow here that describes
+   nothing: a disc standing proud of a page casts a shadow, it does not paint
+   light onto the paper beside it. Fifty of them made every stop look like it
+   sat in a shallow dish of its own.
+
+   So the stack is now one light, from above-left, and each line is a part of
+   the object or the shadow it throws:
+
+     the side wall   its own colour darkened, solid and unblurred — the wall
+                     you see because you look slightly down at a raised disc,
+                     and the 3px the button travels when it is pressed
+     the cast shadow down and right, the only thing painted on the paper
+     the far rim     inside the bottom edge, turning away from the light
+
+   AND NOTHING AT ALL ON THE TOP EDGE (Dan, same day, on the first pass:
+   *"the top edge should end cleanly and not have any shadow"*). That pass
+   still carried `inset 0 2px 1px white 62%` — a soft lit rim, the thing a
+   glossy button gets. Softness at the top is the same mistake as the halo in
+   a smaller size: it makes the edge look thick and lit from within, when it
+   is simply where the coin stops. The colour now runs full strength to the
+   boundary and the antialiasing is the whole of the edge. Everything that
+   describes depth sits at the BOTTOM, which is the only place a raised disc
+   lit from above can show it.
+
+   `:active` drops the side wall entirely, so the coin bottoms out on the page
+   instead of sliding down a step that is still there. */
 .fluo-stop--up {
   box-shadow:
-    -3px -3px 7px color-mix(in oklab, white 92%, transparent),
-    3px 5px 10px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
-    inset 1px 2px 0 color-mix(in oklab, white 60%, transparent),
-    inset -1px -3px 0 color-mix(in oklab, black 18%, transparent),
+    0 3px 0 color-mix(in oklab, var(--fluo-stop-kind, var(--cahier-ink)) 66%, black),
+    2px 6px 9px color-mix(in oklab, var(--cahier-ink) 26%, transparent),
+    inset 0 -3px 4px color-mix(in oklab, black 20%, transparent),
     inset 0 0 0 2px var(--fluo-stop-kind, transparent);
 }
 .fluo-stop--down {

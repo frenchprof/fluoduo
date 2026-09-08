@@ -6,6 +6,68 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 8 Sep — the map's stops are coins now (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+On `claude/pre-tests-amendments-hndx8r`, three commits ahead of main and with
+fluoduo-main for the gate. `51523e9f` and `22e2a6e4` are the road's width, its
+grey and the button's fold; `c919f3cc` is the one below.
+
+**Dan sent a crop of a map stop with a red arc drawn on its upper-left rim,
+beside a render of a gold coin:** *"for llustrative purposes : the part i
+marked in red has no reason to exist"* — following his *"make it look 3D"* an
+hour earlier.
+
+What he ringed was one line of `.fluo-stop--up`:
+
+    -3px -3px 7px color-mix(in oklab, white 92%, transparent)
+
+an outer white glow spread up and left of the button, onto the paper. It is
+the standard soft-UI partner to the drop shadow opposite, and it is the only
+shadow in that stack that describes nothing — **a disc standing proud of a
+page casts a shadow; it does not paint light onto the paper beside it.** Fifty
+of them made every stop sit in a shallow dish of its own.
+
+The stack is now one light from above-left, and every line is either part of
+the object or the shadow it throws: a solid unblurred **side wall** in the
+stop's own colour darkened, the cast shadow down and right, the lit rim inside
+the top edge, the far rim turning away at the bottom. `:active` still replaces
+the whole stack, so the coin bottoms out on the page instead of sliding down a
+step that is still there.
+
+**AND NOTHING AT ALL ON THE TOP EDGE** (Dan, shown the first pass: *"no, the
+top edge should end cleanly and not have any shadow"*). That pass still
+carried `inset 0 2px 1px white 62%`, a soft lit rim — the thing a glossy
+button gets. Softness at the top is the halo's mistake in a smaller size: it
+makes the edge look thick and lit from within, when it is simply where the
+coin stops. Measured down the top rim at 5x, one pixel at a time:
+
+    before   paper … 251 → (176,224,255) (175,223,255) (175,223,255) → (55,176,255)
+    now      paper … 243 → (56,176,253) → (54,176,255)
+
+Three samples of washed-out blue became one transitional pixel. Everything
+that describes depth now sits at the BOTTOM, which is the only place a raised
+disc lit from above can show it.
+
+**And the current stop got its 3D back, which nobody had noticed was missing.**
+`fluo-node-glow` animated `box-shadow` on the button itself. `box-shadow` is
+ONE property, so every keyframe replaced the entire coin stack: the one stop a
+learner is actually looking at was the only flat disc on the map. The pulse
+moved to `.fluo-node-active::after`; the coin beneath is untouched. *The
+general lesson, for the next session that reaches for an animation: animating a
+composite property does not add to it, it overwrites it.*
+
+**Shared surface, flagged to peers.** `HomeMap3D.tsx` line 1134 puts the same
+two classes on the 3D map's flat nodes. No TSX of theirs was touched, but the
+side wall is a 3px solid offset and their nodes already carry a plinth — peers
+have been written to, with an offer to scope the wall to the 2D grid if the two
+double up.
+
+Checked before pushing: `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1 npm run
+build` green, every `verify/` script passes, `scripts/road-scan.mjs` lands on
+its stops at all four zooms (0 / 0 / 1 / 1 px).
+
 ## 8 Sep — the second sweep: 23 gone, ten `keep/` markers planted
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
