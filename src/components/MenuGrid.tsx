@@ -29,6 +29,14 @@ const PEN = {
   ink: "var(--cahier-ink)",
 } as const;
 
+// The User row's tiles keep the ink pen for their border, same as always —
+// but ink is a CSS var, and a var can't take the hex alpha suffix the band
+// wash below appends. It also isn't a "family" hue, so a grey band reads
+// truer than tinting it ink-black would (Dan: "the last row can have it in
+// grey"). #9ca3af is a plain mid grey — no family owns it, which is the
+// point for Help/User/Leaderboard.
+const GREY = "#9ca3af";
+
 type Cell =
   | { kind: "one"; emoji: string; name: string; href: string }
   | { kind: "two"; a: { emoji: string; name: string; href: string }; b: { emoji: string; name: string; href: string } }
@@ -38,28 +46,30 @@ type Cell =
 // start to identify what each row is about" (Dan, 7 Sep, picking over the
 // bare grid). The four family rows take their family's own display name so a
 // rename in FAMILIES carries here; the last row is the User family's.
-const ROWS: { pen: string; label: string; cells: Cell[] }[] = [
-  { pen: PEN.practice, label: familyName("practice"), cells: [
+// `band` is the row's wash colour — the family pen for the four family rows,
+// grey for the last (see GREY above); `pen` still borders every tile.
+const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
+  { pen: PEN.practice, band: PEN.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
     { kind: "one", emoji: "📚", name: "MneMemo", href: "/practice" },
     { kind: "one", emoji: "🃏", name: "MémoiRecall", href: "/practice/flip-it" },
   ]},
-  { pen: PEN.review, label: familyName("review"), cells: [
+  { pen: PEN.review, band: PEN.review, label: familyName("review"), cells: [
     { kind: "one", emoji: "🔤", name: "ConjugaZone", href: "/conjugaison" },
     { kind: "one", emoji: "🔖", name: "DéjàRevu", href: "/reviser" },
     { kind: "one", emoji: "🏃", name: "GramMarathon", href: "/practice/grammarathon" },
   ]},
-  { pen: PEN.svplay, label: familyName("svplay"), cells: [
+  { pen: PEN.svplay, band: PEN.svplay, label: familyName("svplay"), cells: [
     { kind: "one", emoji: "🔢", name: "NumBus", href: "/games/numbers" },
     { kind: "one", emoji: "🌧️", name: "VocabulaRain", href: "/games/vocabularain" },
     { kind: "one", emoji: "🧰", name: "LexicaLater", href: "/games/lexicalater" },
   ]},
-  { pen: PEN.skills, label: familyName("skills"), cells: [
+  { pen: PEN.skills, band: PEN.skills, label: familyName("skills"), cells: [
     { kind: "two", a: { emoji: "🔊", name: "VoixLà", href: "/tts" }, b: { emoji: "🎙️", name: "WorDrill", href: "/practice/wordrill" } },
     { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: "/practice/ecoutexte" },
     { kind: "two", a: { emoji: "🤖", name: "ChaTutor", href: "/tutor" }, b: { emoji: "🧩", name: "ComposeIt", href: "/games/compose" } },
   ]},
-  { pen: PEN.ink, label: familyName("user"), cells: [
+  { pen: PEN.ink, band: GREY, label: familyName("user"), cells: [
     { kind: "help" },
     { kind: "one", emoji: "👤", name: "User", href: "/profil" },
     { kind: "one", emoji: "🏆", name: "Leaderboard", href: "/leaderboard" },
@@ -96,7 +106,7 @@ export default function MenuGrid({
         <div
           key={r}
           className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
-          style={{ background: `${row.pen}26` }}
+          style={{ background: `${row.band}26` }}
         >
           <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-[color:var(--cahier-ink-faint)]">
             {row.label}
