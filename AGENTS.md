@@ -458,3 +458,36 @@ longer matters. And if a renumber IS the right answer, **leave headroom** —
 take a number well clear of the contested band (140 when the highest claimed is
 126), because a number adjacent to the frontier will be claimed again while
 your CI runs.
+
+# Emoji → SVG replacement — proposed 9 Sep, DROPPED same day
+
+Dan asked (9 Sep) for emojis to be replaced by SVG icons everywhere, and for
+that decision to be recorded. Before any SVG existed, a stock-take of every
+emoji-as-icon place turned up a mix-up: Dan thought icons like the six family
+glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User)
+were already SVGs in the app; they are plain emoji characters (the OS/browser
+draws them — e.g. the "abc" box next to ConjugaZone is just the 🔤 emoji,
+not a picture file). No SVGs were ever supplied.
+
+**Dan, once that was clear: "drop the SVG replacement, not doing that."**
+
+**The "names — permanent (2026-08-31)" ruling stands, UNCHANGED, including
+its emoji glyphs.** The six families keep wearing 🎯 🏋️ 🎮 🔄 💬 👤, and
+every other emoji-as-icon in the app stays an emoji. Nothing in the code
+changed under this proposal — it never reached step 1 of its own sequence.
+
+The stock-take did surface one real, still-open finding, unrelated to the
+SVG question: **the same emoji is reused for two unrelated things in two
+places**, live at once:
+- **💬** is both the Skills family door AND the floating "report a bug"
+  button (`components/FeedbackButton.tsx`) that sits on top of many pages,
+  including Skills activities themselves (e.g. open WorDrill and both the
+  Skills-family 💬 and the bug-report 💬 are on screen at once).
+- **🧰** is both the LexicaLater game AND the floating "Outils" tools tray
+  (`components/tools/ToolSummon.tsx`, VoixLà + ChaTutor) that appears on
+  most exercise screens, including ones that have nothing to do with
+  LexicaLater (e.g. ÉcouTexte, WorDrill).
+
+Whether to change either of those two glyphs is Dan's call, undecided as of
+this entry — flagged here so the next session does not have to rediscover
+it.
