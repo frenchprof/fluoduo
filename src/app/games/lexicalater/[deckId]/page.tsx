@@ -1,4 +1,5 @@
 import BackLink from "@/components/BackLink";
+import ChestArt, { CHEST_GOLD } from "@/components/ChestArt";
 import Lexicalator, { type LexEntry } from "@/games/lexicalator/Lexicalator";
 import AuthGate from "@/components/AuthGate";
 import GameLanding from "@/components/GameLanding";
@@ -25,7 +26,7 @@ export default async function ConveyorPage({
   const collection = CURATED.find((c) => c.id === deckId);
   if (!collection) {
     return (
-      <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+      <GameFrame title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>} exitHref="/games/lexicalater" progress={null}>
         <p className="p-6 text-[color:var(--cahier-ink-soft)]">No deck <code>{deckId}</code>.</p>
       </GameFrame>
     );
@@ -36,9 +37,9 @@ export default async function ConveyorPage({
   if (!isLexReady(collection) && !hasPairs(collection)) {
     return (
       <AuthGate what="play">
-        <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
+        <GameFrame title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>} exitHref="/games/lexicalater" progress={null}>
           <div className="mx-auto max-w-md px-6 py-20 text-center text-[color:var(--cahier-ink)]">
-            <p className="text-4xl" aria-hidden>🧰</p>
+            <ChestArt tint={CHEST_GOLD} className="mx-auto block w-[52px]" />
             <p className="mt-3 text-xl font-black">LexicaLater is being prepared for “{collection.title}”.</p>
             <BackLink fallback="/games/lexicalater" className="cahier-btn mt-5 inline-block">← Back</BackLink>
           </div>

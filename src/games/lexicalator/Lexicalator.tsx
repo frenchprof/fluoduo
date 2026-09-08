@@ -14,12 +14,13 @@
  * demand longer words. Syllables are hand-authored (see lib/syllabify.ts).
  */
 
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { logEvent } from "@/lib/firebase/usage";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
+import ChestArt, { CHEST_GOLD, type ChestTint } from "@/components/ChestArt";
 import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
@@ -104,96 +105,7 @@ const keyW = (s: string) => Math.max(40, 24 + s.length * 15);
 // appear in slightly different colors because it's hard to see if we brought
 // down the chests desired"). A chest keeps its livery from the lane through
 // the drag ghost into the assembly bay, and no two lane chests share one.
-type ChestTint = { body: string; lid: string; edge: string };
 
-/**
- * A DRAWN TREASURE CHEST (Dan, 8 Sep, with a sketch: *"could the chests look
- * more like this"*). The chest used to be a rounded rectangle with a darker
- * strip across the top — a card standing in for a chest. His drawing is the
- * thing itself: a domed lid, cream metal straps down the barrel, a lock plate
- * with a keyhole, plank lines, and a shadow on the paper under it.
- *
- * SVG, NOT AN IMAGE. It is drawn in the chest's own livery — the deck's colour
- * runs through the wood while the straps and the plate stay cream — so the
- * fifteen liveries still tell the chests apart, and it scales from the 96px
- * lane chest to the bay's without a second asset. It costs one inline element
- * per chest, and there are three on screen.
- *
- * `body` and `lid` are CSS gradients, which SVG cannot take as a fill, so the
- * gradient is rebuilt here as a linearGradient from the two stops in the
- * string. A livery that stops being a two-stop gradient falls back to the raw
- * value, which a flat colour already is.
- */
-function gradStops(css: string): [string, string] {
-  const m = css.match(/(#[0-9a-f]{3,8})[^#]*(#[0-9a-f]{3,8})/i);
-  return m ? [m[1], m[2]] : [css, css];
-}
-
-function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; open?: boolean; className?: string }) {
-  const id = useId();
-  const [w1, w2] = gradStops(tint.body);
-  // The livery's `lid` value is its own darker shade — what the faces turned
-  // away from the light need, so the receding end takes it.
-  const [shade] = gradStops(tint.lid);
-  // The metal is the same on every chest; the livery colours the WOOD.
-  const G1 = "#f7d878";
-  const G2 = "#d69f22";
-  const ink = "#4a3a12";
-  // The lid outline, needed twice: once to draw it and once to clip its planks.
-  const LID = "M8 46 Q8 29 18 23.5 L76 23.5 Q86 18 86 35 L66 46 Z";
-  return (
-    <svg viewBox="0 0 96 88" className={className} aria-hidden focusable="false">
-      <defs>
-        <linearGradient id={`${id}w`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={w1} /><stop offset="1" stopColor={w2} /></linearGradient>
-        <linearGradient id={`${id}g`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={G1} /><stop offset="1" stopColor={G2} /></linearGradient>
-        <clipPath id={`${id}c`}><path d={LID} /></clipPath>
-      </defs>
-      <ellipse cx="47" cy="83" rx="38" ry="3.4" fill="rgba(0,0,0,0.15)" />
-
-      {/* FROM THE CORNER, AND THE ARCH IS ON THE END (Dan, 8 Sep, twice: first
-          *"the chestboxes will look like chestboxes if they are viewed from the
-          corner rather than from the front or side"*, then *"the rounded top is
-          only visible from the side though, you mixed up side and front once
-          again"*).
-          Both notes are the same geometry, and I had it backwards. A chest lid
-          is a half-cylinder lying LEFT TO RIGHT. Along that axis you see the
-          curved surface, which reads as a band with a STRAIGHT crown — no arch.
-          The arch is the cylinder's END CAP, and it is only ever visible on the
-          END face. So the front is flat-topped and the arch belongs to the
-          receding right, in the same plane as the body's end face.
-
-          THE DEPTH IS ONE VECTOR, (+20, −11), used by the body's end, the lid's
-          end cap and both gold bands, so the box holds together.
-
-          THE END CAP IS TWO QUADRATICS, not an arc, and the control points are
-          derived rather than eyeballed: the surface leaves the chord vertically
-          at each end and is travelling along the depth vector at the crown, so
-          each control sits where those two tangents meet — (66, 29) and
-          (86, 18) for a radius of 17. */}
-      <path d="M66 46 L86 35 V67 L66 78 Z" fill={shade} stroke={ink} strokeWidth="1.8" strokeLinejoin="round" />
-      <path d="M8 46 H66 V78 H8 Z" fill={`url(#${id}w)`} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
-      <path d="M10 56 H64 M10 66 H64" stroke={ink} strokeWidth="0.8" opacity="0.2" />
-
-      <g transform={open ? "rotate(-12 8 46)" : undefined}>
-        <path d={LID} fill={`url(#${id}w)`} stroke={ink} strokeWidth="2" strokeLinejoin="round" />
-        {/* the planks run along the cylinder, so they are straight and level */}
-        <g clipPath={`url(#${id}c)`}>
-          <path d="M0 33 H96 M0 40 H96" stroke={ink} strokeWidth="0.8" opacity="0.18" />
-        </g>
-        <path d="M66 46 Q66 29 76 23.5 Q86 18 86 35 Z" fill={shade} stroke={ink} strokeWidth="1.8" strokeLinejoin="round" />
-      </g>
-
-      {/* the gold band under the lid, and the one round the foot */}
-      <path d="M8 43 H66 L86 32 V37 L66 48 H8 Z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.5" strokeLinejoin="round" />
-      <path d="M8 71 H66 L86 60 V67 L66 78 H8 Z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.5" strokeLinejoin="round" />
-
-      {/* the lock — on the FRONT face, across the joint, and only there */}
-      <rect x="30" y="41" width="13" height="15" rx="2.4" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.7" />
-      <circle cx="36.5" cy="46.5" r="2" fill={ink} />
-      <path d="M36.5 47.5 l-1.3 4.6 h2.6 z" fill={ink} />
-    </svg>
-  );
-}
 const CHEST_TINTS: ChestTint[] = [
   { body: "linear-gradient(180deg,#ffe08a,#eaa61c)", lid: "linear-gradient(180deg,#c8860f,#96600c)", edge: "#7a4e0a" }, // or
   { body: "linear-gradient(180deg,#ffd3de,#e56a8f)", lid: "linear-gradient(180deg,#c04a6e,#8f2d4c)", edge: "#7a2438" }, // rose
@@ -755,7 +667,7 @@ export default function Lexicalator({
 
   return (
     <GameFrame
-      title="🧰 LexicaLater"
+      title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>}
       exitHref={exitHref}
       progress={{ done: cleared, total: quota }}
       hearts={{ left: lives, total: START_LIVES }}
@@ -768,11 +680,11 @@ export default function Lexicalator({
         { label: "😤 Hard", active: hard, onClick: () => setHard((h) => !h) },
       ]}
       record={<div className="flex flex-wrap gap-2">{tresorChips}</div>}
-      recordTitle="🧰 Your treasure"
+      recordTitle={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> Your treasure</>}
       background="linear-gradient(180deg, var(--region-heights-band) 0%, var(--cahier-paper) 60%)"
     >
     <div ref={rootRef} className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
-      <CreditsSplash game="LexicaLater" emoji="🧰" />
+      <CreditsSplash game="LexicaLater" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
@@ -968,7 +880,7 @@ export default function Lexicalator({
           was forged against, and where that word lives on the path. */}
       {over && (
         <GameOver
-          emoji="🧰"
+          emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />}
           title="Out of lives!"
           score={<>{score} · level {level}</>}
           won={false}

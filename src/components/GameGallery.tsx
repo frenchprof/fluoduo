@@ -27,7 +27,7 @@
  * Tokens only.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
 import BottomSheet from "@/components/BottomSheet";
@@ -80,7 +80,9 @@ export default function GameGallery({
 }: {
   /** CahierShell's `active` key. */
   activityKey: string;
-  emoji: string;
+  /** The game's own mark. A ReactNode, not a string: LexicaLater's is the
+   * drawn chest (ChestArt), not a glyph — see components/ChestArt.tsx. */
+  emoji: ReactNode;
   name: string;
   /** In course order. */
   entries: GalleryEntry[];

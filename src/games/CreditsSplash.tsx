@@ -11,7 +11,7 @@
  * their first tile until the credits clear keep working unchanged.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 export const CREDITS_SEEN_KEY = "fluolingo:credits.seen";
 
@@ -35,7 +35,9 @@ export default function CreditsSplash({
   onDone,
 }: {
   game: string;
-  emoji: string;
+  /** The game's own mark. A ReactNode, not a string: LexicaLater's is the
+   * drawn chest (ChestArt), not a glyph — see components/ChestArt.tsx. */
+  emoji: ReactNode;
   onDone?: () => void;
 }) {
   // null = not decided yet (prerender + first client paint agree: nothing).

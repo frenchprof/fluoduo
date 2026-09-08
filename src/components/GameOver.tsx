@@ -83,7 +83,9 @@ export default function GameOver({
   onExit,
   extra,
 }: {
-  emoji: string;
+  /** The game's own mark. A ReactNode, not a string: LexicaLater's is the
+   * drawn chest (ChestArt), not a glyph — see components/ChestArt.tsx. */
+  emoji: ReactNode;
   /** "Terminus", "Appel de marge !", "All matched!" — the game's own word for the end. */
   title: ReactNode;
   score?: ReactNode;

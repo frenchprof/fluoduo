@@ -6,6 +6,81 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 8 Sep — the chest is on file, and Match It became two exercises (Peers)
+
+Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
+
+**THE CHEST IS A DRAWING NOW, in `src/components/ChestArt.tsx`.** What it
+replaces is 🧰 — the TOOLBOX emoji, which stood in for a chest in six places
+while also being the real icon of the in-exercise tools tray. One glyph, two
+meanings, and neither of them a chest.
+
+It took four rounds of Dan sending it back, and every round was the same fault
+seen from a different side:
+
+    "the strap makes the chest look off"        straps painted on a flat front
+    "the chests i know have not straps"         there were never straps — gold
+                                                trim round wood panels
+    "your drawing mixes up the side view with   a front elevation is a shape;
+     the front lock … viewed from the corner"   a chest is a BOX or it is nothing
+    "the rounded top is only visible from the   the lid is a half-cylinder lying
+     side though, you mixed up side and front"  left-to-right: along that axis
+                                                you see the curved SURFACE (a
+                                                band with a straight crown), and
+                                                the arch is its END CAP
+
+Lesson worth keeping: three of those four rounds were spent fixing what was
+PAINTED on a wrong projection. No amount of restyling the straps could have
+worked, because the drawing was the wrong view of the object.
+
+**Where it shows and where it does not.** `GameOver.emoji`, `CreditsSplash.emoji`
+and `GameGallery.emoji` were widened from `string` to `ReactNode` (a string is
+one, so nothing else changed), which puts the chest on the game's front door,
+its ⋯ menu, its help sheet, its treasure sheet, the credits splash and the
+game-over card. **The registry emoji in `src/content/activities.ts` and the tile
+in `MenuGrid.tsx` are still 🧰 and that is Dan's call to make** — all twenty
+activities carry a text emoji there, and swapping one for an SVG would make
+LexicaLater the odd tile out.
+
+**`verify19b`'s ratchet caught the move and was answered with an exemption, not
+a rebaseline.** A drawing's hexes are PIGMENTS, so `ChestArt.tsx` joins
+`highlighterMarks.ts` as an exempt file (a new `DRAWINGS` set — the test is
+"would this be a .svg on disk if SVG could take a prop?"), and the baseline was
+lowered by exactly its eight (494 → 486) so the exemption left no slack behind
+it. That is the precedent the file's own comment records from 505 → 494.
+
+**MATCH IT (`/games/matching`) IS NOW TWO EXERCISES, not one orphan game.** Dan
+picked options 1 and 2 of three. `src/lib/collections/pairChests.ts` is the one
+place that answers "what is a matching pair?", and it projects each authored
+join two ways: into LexicaLater as a two-keyhole chest (`fixed`, so the level
+re-cut leaves it alone), and into GramMarathon as a gap-fill item. Option 3 —
+Letris columns — was accepted and then withdrawn by Dan the same hour, and is
+fully reverted; `letris.columns[].prefix` already encodes the left half if it
+is ever wanted back.
+
+`verify153-pair-chests.py` holds both projections, break-tested five ways. The
+two traps it exists for are not obvious: the projected sentence must end in a
+FULL STOP (`gapSentence` uses final punctuation to tell a sentence from a grid
+label — the transport bug), and the gap must be the RIGHT half (« Vous tournez
+___ », never « ___ à droite »).
+
+**Also on this branch, earlier the same day:** the map's plates turn over at
+nightfall (`verify150`, all 24 hours swept in a browser, worst 9.7:1);
+`/welcome`, the pre-home landing page, with the scene as the page and the
+horizon band held clear (`verify151`); the 2D map's fit inside its frame
+(`verify152` — and its first version LIED, passing the fault it existed to
+catch, because clicking the 2D/3D switch silently did nothing and it measured
+the wrong view; it seeds `fluo.homeMapView` now and fails if the scene is
+absent); and the map's near foreground, which was bare BY CONSTRUCTION — every
+scenery pass started at z ≈ 0.15, the start of the course, while the camera
+sits about 1.16 stops behind goal 1. Measured: 6 of 196 sprites in the bottom
+third before, 71 of 278 after.
+
+**Shared files this branch touches**, for the integration lane:
+`.github/workflows/verify.yml` (four `run:` lines), `verify/verify19b.py` and
+`verify/visual-baseline.json`, `src/components/GameOver.tsx`,
+`src/components/GameGallery.tsx`, `src/games/CreditsSplash.tsx`, and this file.
+
 ## 8 Sep — the second sweep: 23 gone, ten `keep/` markers planted
 
 Sole editor of STATUS.md in this commit: fluoduo-main.
