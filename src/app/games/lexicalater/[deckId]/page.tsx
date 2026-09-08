@@ -6,6 +6,7 @@ import GameFrame from "@/components/GameFrame";
 import { CURATED } from "@/content/collections";
 import { displayFr, prefixTokens } from "@/lib/collections/display";
 import { isLexReady, lexBase, lexReadyItems } from "@/lib/collections/lexReady";
+import { hasPairs, pairChests, pairDecoys } from "@/lib/collections/pairChests";
 
 export function generateStaticParams() {
   return CURATED.map((c) => ({ deckId: c.id }));
@@ -32,7 +33,7 @@ export default async function ConveyorPage({
 
   // Not yet hand-syllabified → the game isn't available for this deck (rather
   // than falling back to the retired ConveyorMatch). Same frame, empty board.
-  if (!isLexReady(collection)) {
+  if (!isLexReady(collection) && !hasPairs(collection)) {
     return (
       <AuthGate what="play">
         <GameFrame title="🧰 LexicaLater" exitHref="/games/lexicalater" progress={null}>
@@ -77,14 +78,30 @@ export default async function ConveyorPage({
       say: displayFr(it, collection),
     };
   });
-  const decoys = collection.gameConfig?.lexicalator?.decoys ?? [];
+  // PHRASE CHESTS (8 Sep). A deck that authors matching pairs — « Vous
+  // tournez » + « à droite » — deals them as two-keyhole chests alongside its
+  // word chests. It is the same mechanic Match It ran on its own page, in the
+  // game that already stitches parts back together, with a tile, a gallery and
+  // a spacing ladder it does not have to grow for itself.
+  //
+  // ON A PAIRS DECK THE PHRASES ARE THE WHOLE GAME. The first build dealt them
+  // ALONGSIDE the deck's word chests and the lane came out muddled: « arrivé »
+  // arrived as a one-keyhole chest of its own, next to « You exit / leave from
+  // the metro station » with two — and the belt carried whole sentences
+  // (« Vous traversez le passage piéton ») beside the halves they are made of.
+  // On a deck like this the halves' job is to be KEYS, not chests; a chest for
+  // a bare half teaches nothing the sentence does not.
+  const phrases = hasPairs(collection) ? pairChests(collection) : [];
+  const decoys = phrases.length
+    ? pairDecoys(collection)
+    : (collection.gameConfig?.lexicalator?.decoys ?? []);
   return (
     <AuthGate what="play">
       {/* The game sits IN a page (Dan, 7 Sep: "can we have them embedded like
           the map, (with option to go full screen)") — the band names the
           activity above the board, and ⛶ on the game bar takes it full. */}
       <GameLanding activityKey="lexicalator" bleed>
-        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={entries} decoys={decoys} deckId={collection.id} />
+        <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={phrases.length ? phrases : entries} decoys={decoys} deckId={collection.id} />
       </GameLanding>
     </AuthGate>
   );

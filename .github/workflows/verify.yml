@@ -433,6 +433,9 @@ jobs:
       - name: "The map fills its notebook, and never scrolls sideways (8 Sep)"
         run: python3 verify/verify152-map-fit.py
 
+      - name: "Matching pairs resolve, and play as LexicaLater chests (8 Sep)"
+        run: python3 verify/verify153-pair-chests.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

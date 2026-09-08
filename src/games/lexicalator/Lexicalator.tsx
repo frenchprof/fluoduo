@@ -25,7 +25,23 @@ import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
 import { shuffle } from "@/lib/shuffle";
 
-export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
+export type LexEntry = {
+  id: string;
+  fr: string;
+  en: string;
+  syllables: string[];
+  say?: string;
+  /**
+   * THE JOINTS ARE THE POINT, LEAVE THEM ALONE (8 Sep). A normal chest is
+   * re-cut for the level: whole word at 1, hand-authored syllables at 2–3,
+   * random spelling chunks at 4+. A PHRASE chest — « Vous tournez » + « à
+   * droite » — is not a word broken into pieces, it is two pieces that make a
+   * sentence, and its two keyholes ARE the exercise. Re-cutting it at level 1
+   * hands the learner the whole sentence as one key, and at level 4 it
+   * shatters into letter chunks that cross the joint.
+   */
+  fixed?: boolean;
+};
 
 const START_LIVES = 3;
 const LANE = 3; // chests on the lane at once
@@ -40,7 +56,8 @@ const minSylForLevel = (l: number) => (l <= 1 ? 1 : l <= 2 ? 2 : 3);
 //          syllabation not a concern; re-rolled every deal so the same word
 //          spells differently each time.
 const SPELL_LEVEL = 4;
-function gearEntry<E extends { fr: string; syllables: string[] }>(level: number, e: E): E {
+function gearEntry<E extends { fr: string; syllables: string[]; fixed?: boolean }>(level: number, e: E): E {
+  if (e.fixed) return e; // a phrase chest: its joints are the exercise
   if (level >= SPELL_LEVEL) return { ...e, syllables: chunkSpelling(e.fr) };
   if (level <= 1) return { ...e, syllables: [e.fr.trim()] };
   return e;
@@ -350,9 +367,20 @@ export default function Lexicalator({
     // Fake keys match the level's joints: level 1 (whole words) baits with
     // OTHER words of the deck; spelling mode with mutated real chunks (one
     // vowel off); the syllable levels with the deck's hand-authored decoys.
+    //
+    // A FIXED CHEST HAS NO "LEVEL 1" (8 Sep). The level-1 bait is other whole
+    // ANSWERS of the deck, which is fair when a chest's one keyhole holds a
+    // whole word. A phrase chest's keyholes hold HALVES, so baiting with whole
+    // sentences — « Vous sortez de la station de métro » beside a two-hole
+    // lock — is not a temptation, it is a give-away: the wrong keys are the
+    // only ones too long to fit. Deals like that take the deck's authored
+    // halves instead, at every level.
+    const fixedLane = chests.some((c) => c.entry.fixed);
     const usable =
-      level <= 1
+      level <= 1 && !fixedLane
         ? shuffle(entries.map((e) => e.fr.trim()).filter((w) => !real.has(w) && !isPartialOfMono(w) && !isPartOfLaneWord(w))).slice(0, 4)
+        : fixedLane
+        ? decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d))
         : level >= SPELL_LEVEL
           ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m) && !isPartOfLaneWord(m)))].slice(0, 6)
           : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d));
