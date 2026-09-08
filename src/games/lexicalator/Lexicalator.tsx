@@ -131,68 +131,49 @@ function gradStops(css: string): [string, string] {
 
 function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; open?: boolean; className?: string }) {
   const id = useId();
-  const [b1, b2] = gradStops(tint.body);
-  const ink = tint.edge;
-  // Warm ivory, not paper-white. Pure cream against a mid-tone livery read as
-  // two painted stripes rather than two bands of metal.
-  const BAND = "#f6ead0";
+  const [w1, w2] = gradStops(tint.body);
+  // The metal is the SAME on every chest, and the wood is what the livery
+  // colours. Dan's reference (8 Sep) is a row of classic chests: gold trim, a
+  // wooden lid and body between it, one small lock plate at the joint — and NO
+  // straps at all, which is what he was pointing at ("i mean the chests i know
+  // have not straps"). Three earlier drafts hung straps on it; they were never
+  // in the drawing.
+  const G1 = "#f7d878";
+  const G2 = "#d69f22";
+  const ink = "#4a3a12";
   return (
     <svg viewBox="0 0 104 96" className={className} aria-hidden focusable="false">
       <defs>
-        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={b1} /><stop offset="1" stopColor={b2} /></linearGradient>
-        <linearGradient id={`${id}l`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={b1} /><stop offset="1" stopColor={b2} /></linearGradient>
-        {/* THE STRAPS ARE CLIPPED TO THE WOOD. Drawn as plain strokes they
-            overshot: a round cap adds half the 8-unit width, so the lid straps
-            rose above the dome's own silhouette and the barrel straps hung
-            past the base band's rounded foot. Clipping to the two shapes is
-            exact at every size, where trimming the endpoints by hand is one
-            number that is right for one radius. */}
-        <clipPath id={`${id}cl`}><path d="M8 46 V40 A49 49 0 0 1 96 40 V46 z" /></clipPath>
-        <clipPath id={`${id}cb`}><path d="M12 38 h80 v40 h2 v6 a3 3 0 0 1 -3 3 H13 a3 3 0 0 1 -3 -3 v-6 h2 z" /></clipPath>
+        <linearGradient id={`${id}w`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={w1} /><stop offset="1" stopColor={w2} /></linearGradient>
+        <linearGradient id={`${id}g`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={G1} /><stop offset="1" stopColor={G2} /></linearGradient>
       </defs>
-      <ellipse cx="52" cy="90" rx="42" ry="4.5" fill="rgba(0,0,0,0.14)" />
+      <ellipse cx="52" cy="90" rx="40" ry="4" fill="rgba(0,0,0,0.14)" />
 
-      {/* THE BARREL, and a base band along the foot. */}
-      <path d="M12 44 h80 v38 a3 3 0 0 1 -3 3 H15 a3 3 0 0 1 -3 -3 z"
-            fill={`url(#${id}b)`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
-      <path d="M16 58 H88 M16 70 H88" stroke={ink} strokeWidth="1" opacity="0.25" />
-      <path d="M10 78 h84 v6 a3 3 0 0 1 -3 3 H13 a3 3 0 0 1 -3 -3 z"
-            fill={`url(#${id}b)`} stroke={ink} strokeWidth="2.4" strokeLinejoin="round" />
-
-      {/* THE LID, and the rail it closes onto. It OVERHANGS the barrel by 4
-          units a side and wears the barrel's own colour, only shaded — the
-          first draft filled it with the livery's separate dark `lid` value and
-          the chest came out as a dark arch standing on a pale box. */}
+      {/* THE LID — a gold rim with the wood inside it. The rim is drawn as the
+          whole lid shape with the wood laid over it 4 units in, which is
+          cheaper and rounder than stroking an arc, and gives the trim the same
+          thickness all the way round the dome.
+          THE DOME'S RADIUS IS NOT ARBITRARY: the chord is 84 wide, so r = 42
+          would be a semicircle rising 42 units, clean off the top of the box —
+          an earlier draft did exactly that and rendered a lid clipped flat.
+          r = 49 lifts it 26, which is a chest lid. */}
       <g transform={open ? "rotate(-14 12 44)" : undefined}>
-        <path d="M8 44 V40 A49 49 0 0 1 96 40 V44 z"
-              fill={`url(#${id}l)`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
-        <path d="M8 40 A49 49 0 0 1 96 40" fill="rgba(0,0,0,0.16)" stroke="none" opacity="0.45" />
-        <rect x="8" y="38" width="88" height="8" rx="2" fill={`url(#${id}b)`} stroke={ink} strokeWidth="2.4" />
-        {/* the straps over the lid, with their rivets */}
-        {/* THE LID STRAPS BEND (Dan: "the strap makes the chest look off").
-            They were straight lines drawn across a domed lid, which is what
-            was wrong: a strap goes OVER a curve, and a vertical stripe on a
-            dome reads as paint on the surface rather than metal around the
-            object. These bow outward as they rise and close toward the crown,
-            which is the shape a band takes over a barrel lid. */}
-        <g clipPath={`url(#${id}cl)`}>
-          <path d="M30 46 C26 30 30 18 40 11 M74 46 C78 30 74 18 64 11" fill="none" stroke={BAND} strokeWidth="5.5" />
-          <path d="M30 46 C26 30 30 18 40 11 M74 46 C78 30 74 18 64 11" fill="none" stroke={ink} strokeWidth="1" opacity="0.55" />
-        </g>
+        <path d="M8 44 V40 A49 49 0 0 1 96 40 V44 z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+        <path d="M12 43 V39 A46 46 0 0 1 92 39 V43 z" fill={`url(#${id}w)`} stroke={ink} strokeWidth="1.2" />
+        <path d="M20 28 A38 38 0 0 1 84 28" fill="none" stroke={ink} strokeWidth="0.9" opacity="0.22" />
       </g>
 
-      {/* and down the barrel, foot to base band */}
-      <g clipPath={`url(#${id}cb)`}>
-        <path d="M30 40 V92 M74 40 V92" stroke={BAND} strokeWidth="5.5" />
-        <path d="M30 40 V92 M74 40 V92" stroke={ink} strokeWidth="1" opacity="0.55" />
-      </g>
-      <circle cx="30" cy="64" r="1.6" fill={ink} opacity="0.55" />
-      <circle cx="74" cy="64" r="1.6" fill={ink} opacity="0.55" />
+      {/* THE BODY — the same gold-frame-and-wood-panel, with the frame left
+          thicker along the foot so it reads as the chest's base band. */}
+      <path d="M12 47 h80 v32 a3 3 0 0 1 -3 3 H15 a3 3 0 0 1 -3 -3 z" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" strokeLinejoin="round" />
+      <rect x="16" y="51" width="72" height="21" rx="2" fill={`url(#${id}w)`} stroke={ink} strokeWidth="1.2" />
+      <path d="M18 58 H86 M18 65 H86" stroke={ink} strokeWidth="0.9" opacity="0.22" />
 
-      {/* the lock plate straddling the rail, and its keyhole */}
-      <rect x="43" y="36" width="18" height="22" rx="3" fill={BAND} stroke={ink} strokeWidth="2.2" />
-      <circle cx="52" cy="44" r="2.8" fill={ink} />
-      <path d="M52 45 l-1.8 7 h3.6 z" fill={ink} />
+      {/* the band where the lid closes onto the body, and the lock across it */}
+      <rect x="12" y="40" width="80" height="7" rx="2" fill={`url(#${id}g)`} stroke={ink} strokeWidth="2.2" />
+      <rect x="45" y="38" width="14" height="16" rx="2.5" fill={`url(#${id}g)`} stroke={ink} strokeWidth="1.9" />
+      <circle cx="52" cy="44" r="2.1" fill={ink} />
+      <path d="M52 45 l-1.4 5 h2.8 z" fill={ink} />
     </svg>
   );
 }
