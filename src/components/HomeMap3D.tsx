@@ -476,28 +476,50 @@ function NatureSprite({ type, size, scale, scaleY, tall }: { type: NatureType; s
   const mid = type === "pine" ? PINE_MID : LEAF_MID;
   const light = type === "pine" ? LEAF_MID : LEAF_LIGHT;
   const shadow: CSSProperties = { width: Math.round(cW * 0.55), height: Math.max(2, Math.round(4 * scale * scaleY)), background: "rgba(0,0,0,0.10)", borderRadius: "50%", marginTop: 1 };
-  // A TUFT OF GRASS — three blades fanning from one root, no trunk and no
-  // shadow. It is the cheapest thing on screen and there are hundreds of
-  // them, so it is three <span>s and nothing else.
+  // A TUFT OF GRASS — blades fanning from one root, no trunk and no shadow.
+  // It is the cheapest thing on screen and there are hundreds of them, so it
+  // is a handful of <span>s and nothing else.
+  //
+  // FIVE BLADES, NOT THREE, AND NO TWO TUFTS ALIKE (8 Sep). Three fat blades
+  // at a fixed ±26° draw an ARROW, and once the near ground was actually full
+  // of them the foreground read as a field of arrows in rows — denser than
+  // before and less like grass. The blades are thinner (0.075 of the tuft's
+  // width, was 0.12), there are five of them, and the fan angle, each blade's
+  // height and the whole tuft's lean vary per instance.
+  //
+  // THE VARIATION IS DERIVED FROM `size`, which is already unique-ish per item
+  // and is the only per-item number this sprite is given. Passing a seed down
+  // would mean threading one through every call site for a decoration; a hash
+  // of the size is enough to break the grid, and it stays deterministic, which
+  // is the property the whole scene is built on.
   if (type === "grass") {
     const gh = Math.max(1, Math.round(size * 0.9 * scale));
-    const gw = Math.max(1, Math.round(size * 0.12 * scale));
+    const gw = Math.max(1, Math.round(size * 0.075 * scale));
     if (gh < 2) return null;
+    const v = (n: number) => {
+      const x = Math.sin(size * 12.9898 + n * 78.233) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    const fan = 16 + v(1) * 16;          // 16–32° between the outer blades
+    const lean = (v(2) - 0.5) * 14;      // the whole tuft leans a little
     return (
-      <div className="pointer-events-none relative" style={{ width: Math.max(2, Math.round(size * 0.6 * scale)), height: gh }}>
-        {[-1, 0, 1].map((k) => (
+      <div
+        className="pointer-events-none relative"
+        style={{ width: Math.max(2, Math.round(size * 0.6 * scale)), height: gh, transform: `rotate(${lean}deg)`, transformOrigin: "bottom center" }}
+      >
+        {[-2, -1, 0, 1, 2].map((k) => (
           <span
             key={k}
             className="absolute bottom-0"
             style={{
               left: "50%",
               width: gw,
-              height: k === 0 ? gh : Math.round(gh * 0.72),
-              background: k === 0 ? PINE_MID : LEAF_MID,
+              height: Math.max(1, Math.round(gh * (1 - Math.abs(k) * 0.17) * (0.78 + v(k + 5) * 0.3))),
+              background: k % 2 === 0 ? PINE_MID : LEAF_MID,
               borderRadius: `${gw}px ${gw}px 0 0`,
               transformOrigin: "bottom center",
-              transform: `translateX(-50%) rotate(${k * 26}deg)`,
-              opacity: 0.9,
+              transform: `translateX(-50%) rotate(${k * (fan / 2)}deg)`,
+              opacity: 0.88,
             }}
           />
         ))}
@@ -729,12 +751,24 @@ export default function HomeMap3D({
   // same numbers PerspectiveBg draws it with.
   const LAT_SPREAD = 1.9;
   const VERGE = 0.75; // world units of clear ground between road edge and prop (covers the bead-swell and the round-9 taller, wider flanks)
-  const placeAt = (z: number, side: 1 | -1, lat: number): Projected | null => {
+  // GRASS KEEPS ALMOST NONE OF IT (8 Sep). The stay-clear rule was written for
+  // things that STAND — a tree or a shop parked on the tarmac is a mistake, and
+  // 0.75 world units of clearance is what it takes to keep a wide crown off the
+  // road. Ground cover is not one of those things: grass grows to the kerb.
+  //
+  // Left at 0.75 it was the reason the near foreground was bare. Near the
+  // camera the road's own half-width reads back as 0.85 world units, so
+  // `hwWorld + VERGE` = 1.6 — and at 1440x900 that is 576px of guaranteed empty
+  // ground on EACH side of the road, right where the picture is biggest.
+  // Measured on the landing page before this: 136 sprites on screen and 10 of
+  // them in the bottom third. The land only started at arm's length.
+  const GRASS_VERGE = 0.06;
+  const placeAt = (z: number, side: 1 | -1, lat: number, verge = VERGE): Projected | null => {
     if (vw === 0) return null;
     const centre = project(pathXAt(z), z - camZ, camZ, vw, vh);
     if (!centre) return null;
     const hwWorld = Math.max(vw * 0.11, vw * 0.34 * Math.pow(centre.scale, 1.6)) / (vw * 0.4 * centre.scale);
-    const off = Math.max(lat * LAT_SPREAD, hwWorld + VERGE);
+    const off = Math.max(lat * LAT_SPREAD, hwWorld + verge);
     return project(pathXAt(z) + side * off, z - camZ, camZ, vw, vh);
   };
 
@@ -833,7 +867,7 @@ export default function HomeMap3D({
 
                   {/* Trees & bushes */}
                   {NATURE_ITEMS.map((item) => {
-                    const p0 = placeAt(item.z, item.side, item.lat);
+                    const p0 = placeAt(item.z, item.side, item.lat, item.type === "grass" ? GRASS_VERGE : VERGE);
                     if (!p0) return null;
                     const p = { ...p0, scale: p0.scale * PROP_DAMP };
                     // OFF THE SIDE OF THE SCREEN IS NOT DRAWN (8 Sep). How far

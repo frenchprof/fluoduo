@@ -84,15 +84,51 @@ export function sRand(seed: number) {
 export type NatureType = "round" | "pine" | "bush" | "grass";
 export type NatureItem = { id: string; z: number; side: 1 | -1; lat: number; type: NatureType; size: number; giant?: boolean };
 
-/** Trees and bushes along both verges, skipping where a prop stands. */
+/**
+ * Trees and bushes along both verges, skipping where a prop stands.
+ *
+ * IT STARTS BEFORE THE ROAD DOES (8 Sep). Every pass below used to begin at
+ * z ≈ 0.1–0.2, which reads as "the start of the course" and is not where the
+ * CAMERA starts: the camera sits about 1.16 stops behind stop 1 so the current
+ * goal stands whole near the bottom edge, and it can be dragged a further
+ * MAX_BEHIND back. So the nearest 1.3 stops of ground — the bottom fifth of
+ * the frame, where the picture is biggest — had nothing planted in it AT ALL,
+ * on the one view every learner and every visitor to the landing page meets
+ * first. Measured before: 196 nature sprites on a 1440×900 scene, 116 of them
+ * packed in one band at the horizon and ZERO below 80% of the frame.
+ *
+ * `FROM` is negative for that reason. `pathXAt` clamps to the fifty stops, so
+ * the road runs dead straight back there and the scenery simply lines it.
+ */
+const FROM = -2.6;
+
+/**
+ * WHERE A WORLD'S GATE SIGN STANDS — « WELCOME VILLAGE · 0/10 » and its four
+ * siblings. The renderer puts one just before each region's first stop, at
+ * `unit * 10 - 0.6`, and it is the only text in the scene that says WHERE you
+ * are, so nothing may stand in front of it.
+ *
+ * It matters now and did not before: the first gate is at z = -0.6, which was
+ * outside the planted range until `FROM` went negative, and the very first
+ * near tree planted there covered the sign on the landing page. Depth was not
+ * the bug — the tree really is nearer — so raising the sign's z-index would
+ * have been a lie about the scene. Clearing a slot is the truthful fix.
+ *
+ * TREES ONLY. Grass is ankle-high and cannot hide a sign; excluding it too
+ * would leave a bald patch at each gate, which is the fault this whole change
+ * set out to remove.
+ */
+const GATE_Z = [0, 1, 2, 3, 4].map((unit) => unit * 10 - 0.6);
+const nearGate = (z: number) => GATE_Z.some((g) => Math.abs(z - g) < 0.55);
+
 export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): NatureItem[] {
   const out: NatureItem[] = [];
   let i = 0;
-  let z = 0.1;
+  let z = FROM;
   let lastGiant = -9;
   while (z < until) {
     for (const side of [1, -1] as const) {
-      const blocked = items.some((r) => r.side === side && Math.abs(r.z - z) < 0.85);
+      const blocked = items.some((r) => r.side === side && Math.abs(r.z - z) < 0.85) || nearGate(z);
       if (!blocked && sRand(i * 3 + (side === 1 ? 0 : 17)) > 0.10) {
         const tr = sRand(i * 7 + (side === 1 ? 0 : 5));
         // GIANTS (Dan, 2026-08-20 round 10: "occasionally some items need to
@@ -138,10 +174,10 @@ export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): Natu
   // not as distance). A phone never sees past about lat 1.25, so these cost
   // it nothing but a cull.
   let j = 0;
-  let fz = 0.2;
+  let fz = FROM;
   while (fz < until) {
     for (const side of [1, -1] as const) {
-      if (sRand(j * 31 + (side === 1 ? 0 : 13)) > 0.28) {
+      if (!nearGate(fz) && sRand(j * 31 + (side === 1 ? 0 : 13)) > 0.28) {
         const tr = sRand(j * 19 + (side === 1 ? 0 : 3));
         // REAL, FULL-HEIGHT TREES OUT THERE (Dan, 8 Sep: "grass and real
         // full-height trees"). The first draft of this pass planted 30–56px
@@ -163,22 +199,35 @@ export function placeNature(items: RItem[] = ROADSIDE_ITEMS, until = 49.6): Natu
   // GRASS (Dan, 8 Sep). Trees alone leave the ground a flat colour field. Low
   // tufts, thick and close together, are what makes it read as GROUND — and
   // they carry the perspective, because a near tuft is inches high on screen
-  // and a far one is a speck. Three per slot across the whole width, both
+  // and a far one is a speck. Five per slot across the whole width, both
   // sides, on their own tight spacing.
+  //
+  // THE SIZES SAY WHAT THE COMMENT ALREADY CLAIMED. 12–26px is a speck at the
+  // horizon AND a speck underfoot: at the camera a tuft drew 23px tall on a
+  // 900px frame, which is not "inches high", it is lawn seen from a first-floor
+  // window. 22–52 gives the near ground a foreground to be, and costs the
+  // distance nothing — perspective divides it away.
+  //
+  // AND THEY LEAN TOWARD THE KERB. The lateral was spread evenly from 0.16 to
+  // 2.56, so only about a quarter of every slot's tufts landed in the band
+  // beside the road — the part of the ground the camera is closest to and sees
+  // most of. Squaring the random pulls the distribution in without capping it:
+  // the far field still gets its speckle, the verge gets a bank of grass.
   let g = 0;
-  let gz = 0.15;
+  let gz = FROM;
   while (gz < until) {
     for (const side of [1, -1] as const) {
-      for (let k = 0; k < 3; k++) {
+      for (let k = 0; k < 5; k++) {
         const seed = g * 53 + k * 7 + (side === 1 ? 0 : 29);
         if (sRand(seed) > 0.34) {
+          const spread = sRand(seed * 5);
           out.push({
             id: `g${g}${side}${k}`,
             z: gz + sRand(seed * 3) * 0.18,
             side,
-            lat: 0.16 + sRand(seed * 5) * 2.4, // verge to far field
+            lat: 0.16 + spread * spread * 2.4, // kerb to far field, weighted to the kerb
             type: "grass",
-            size: 12 + Math.round(sRand(seed * 11) * 14),
+            size: 22 + Math.round(sRand(seed * 11) * 30),
           });
         }
       }
