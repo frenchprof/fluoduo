@@ -6,6 +6,53 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 8 Sep — the second sweep: 23 gone, ten `keep/` markers planted
+
+Sole editor of STATUS.md in this commit: fluoduo-main.
+
+**The 33 never-PR'd branches are settled, Dan's way — each one accounted for
+before anything moved** (Dan: *"you cannot just do that, you need to tell me
+precisely what each one of them was supposed to do"* … *"because they were
+there for a reason!"*).
+
+**23 deleted** (Dan's word, conditional on double confirmation, which ran:
+`merge-base --is-ancestor` AND a zero `rev-list` count per branch, and the
+structural third guarantee — their commits ARE main's history, so nothing
+deletable existed beyond the pointer): all seventeen `cursor/*-4216`, plus
+numbus-french-numbers-game, text-generators-vocabulary,
+teacher-collapsible-sections-sort, sio-instructional-objectives,
+case-…-status, and 3d-map-from-live. Swept via branch-sweep run 2.
+
+**Ten `keep/` branches now mark the work main never took — NEVER delete
+these** (Dan: *"tag them as such but do not delete those"*; the proxy 403s
+tag pushes, so they are branches, created API-side, and this commit adds
+`keep/` to the sweep workflow's protected set):
+
+    keep/old-project-archive    the ORIGINAL project, whole (419 commits,
+                                no shared history — the app's pre-fluoduo past)
+    keep/french4-scaling-plan   French 4 (A2 Atelier) plan + 40-SIO intake CSV
+    keep/hand-font-chars        byline hand: full French character strokes
+    keep/hand-font-build        the toolchain that BUILT FluOlinGo Hand (woff2)
+    keep/origin-animation       the origin-of-the-name animation, Dan's spec
+    keep/acronym-reveal         sentence-folds-into-initials component + GIF
+    keep/saga-map-objectives    the /carte saga map + 50 authored objectives
+    keep/fish-audio-tts         Fish Audio TTS proxy + static bank generator
+    keep/landing-page           the stranger's landing at / (verify107 unclaimed)
+    keep/content-sweep-aug02    the 2 Aug 13-commit content sweep — see below
+
+**Salvage audit of the three Dan named:** `landing-page` is live salvage (the
+recapture base — Landing.tsx, RootGate, three webp shots, its check number
+still free). `fish-audio-tts` is a working alternative voice engine, no trace
+on main, dormant until wanted. `content-sweep-aug02` splits three ways:
+covered on main since (VocabulaRain sentence flash, LexicaLater spoken
+phrase, beige chest, the Match It guide column); superseded by later rulings
+(the LAF1201 banner removal — layout.tsx says the banner STAYS, decided
+17 Aug; likely the SIO-042A Unit-4 recut, which the settled 50-stop course
+never took); and possibly still missing — the item-level content fixes
+(ConjugaZone reflexive doubling, Matching placeholder TTS, GramMarathon
+rules, the SIO-006/013/022/030/034/036/039/041 scope fixes, LexicaLater live
+wrong-fragments and euros/prix) need a line-by-line pass nobody has done.
+
 ## ⚠️ FLUODUO-MAIN, READ FIRST — three commits are on `main` unQC'd, and the deploy is yours to fire
 
 *Dan, 8 Sep, asked for a deploy and then: **"send to fluoduo main first"**. So
