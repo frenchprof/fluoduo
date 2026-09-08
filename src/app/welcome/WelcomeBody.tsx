@@ -22,9 +22,9 @@
  * frosted glass: the 3D scene fills the viewport edge to edge, and everything
  * else is placed where it does not stand in front of the road.
  *
- *   the sky, top third        the mark, the welcome, the promise
+ *   the sky, top third        the mark, and one line that spells the name
  *   the horizon               NOTHING. This is the view.
- *   the near ground, bottom   one glass pill: « Start my journey »
+ *   the near ground, bottom   one glass pill: « Start now »
  *
  * THE GLASS IS ONE PILL, NOT A PANEL. The first build put the words on a
  * frosted sheet across the middle and Dan's answer was that it blocked the
@@ -37,18 +37,16 @@
  * headline over that sky reads the same number, so the page is one piece of
  * weather rather than a light caption pasted on a dark photograph. Practical
  * consequence, measured: the sky's top band is dark at every hour of the 24
- * EXCEPT dawn, where it is rgb(192,80,42) — white on that is 4.75:1, fine for
- * a display headline and not fine for the subline. Hence the scrim, which is
+ * EXCEPT dawn, where it is rgb(192,80,42) — white on that is 4.75:1, enough
+ * for display type and thin for anything smaller. Hence the scrim, which is
  * confined to the top 30% (the horizon sits at 34%) and fades to nothing well
  * above it: the sky it darkens is sky the road was never in.
  *
  * WHAT IS NOT ON THIS PAGE, deliberately. No stat row, no feature list, no
- * screenshots of the activities, no second CTA. Dan asked what belongs in the
- * other slots and the honest answer under this repo's own litmus test — text
- * that, removed, does not stop you finding the answer is redundant — is that
- * a landing page has exactly two questions to answer (what is this, how do I
- * start) and they are answered above. The slots stay empty until he fills
- * them.
+ * screenshots of the activities, no second CTA — and, since 8 Sep, no second
+ * line of prose either (*"too many words: pls keep it short"*). One line and
+ * one button. A landing page has two questions to answer, what is this and how
+ * do I start, and each of them now has exactly one answer on screen.
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -57,6 +55,9 @@ import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
 import { clockHour, nightness } from "@/lib/map3d/sky";
+
+/** The four letters the brand is built from: Fluency On Linguistic Goals. */
+const CAP = "text-[1.3em] font-black leading-none text-white";
 
 export default function WelcomeBody() {
   // Progress lives in localStorage, which the static export must not read at
@@ -128,26 +129,47 @@ export default function WelcomeBody() {
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
       <div className="pointer-events-none absolute inset-x-0 top-[14%] flex flex-col items-center px-6 text-center sm:top-[13%]">
-        {/* THE SKY IS THE MARGIN, and it is only as deep as the screen is
-            tall: the skyline sits at 29% of the frame, so a phone HELD
-            SIDEWAYS has about 113px of it. Measured on the first build at
-            844×390, the two-line subline ran from 113 to 171 — straight across
-            the horizon and over goals 5 and 6, which is the exact thing Dan
-            sent the first design back for. Below 480px of height the headline
-            shrinks and the subline goes: the promise is worth a line of sky,
-            not a line of road. */}
+        {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
+            words: pls keep it short: 'Building your Fluency on Linguistic
+            Goals' (make the relevant letters stand out)"*, then *"the Welcome
+            to FluOLinGo still has to appear before that line though"*).
+            Two lines, and the second is the reason the first is not just a
+            greeting: its raised F · O · L · G spell the name directly above it,
+            so « FluOLinGo » stops being a word nobody can parse. The two-line
+            paragraph of prose this replaced said less in three times the words.
+            THE LETTERS ARE RAISED BY SIZE AND WEIGHT, NOT BY COLOUR. A colour
+            has to survive a sky that runs from midnight blue through dawn
+            orange to noon blue — highlighter yellow reads on three of those and
+            vanishes on the fourth. 1.3em at full white against 78% white holds
+            at every hour, which is the same reason the label plates switch
+            rather than fade.
+            THE SKY IS ALSO THE MARGIN, and only as deep as the screen is tall:
+            the skyline sits at 29% of the frame, so a phone HELD SIDEWAYS has
+            about 113px of it. Measured on the first build at 844×390, a
+            two-line promise ran 113–171 — across the horizon and over goals 5
+            and 6, the exact thing Dan sent the first design back for. Below
+            480px of height both lines shrink to fit that band, and
+            verify151 measures it rather than trusting the arithmetic. */}
         <h1
-          className="text-[2rem] font-black leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)] sm:text-5xl [@media(max-height:480px)]:text-[1.5rem]"
+          className="text-[1.75rem] font-black leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)] sm:text-[2.9rem] [@media(max-height:480px)]:text-[1.35rem]"
           style={{ fontFamily: "var(--font-fluohand-stack)" }}
         >
           Welcome to FluOLinGo
         </h1>
         <p
-          className="mt-2 max-w-[24rem] text-[0.9rem] leading-snug text-white/85 drop-shadow-[0_1px_10px_rgba(0,0,0,0.7)] sm:mt-3 sm:max-w-[34rem] sm:text-lg [@media(max-height:480px)]:hidden"
-          style={{ fontFamily: "var(--font-body-stack)" }}
+          className="mt-1.5 text-[0.95rem] font-bold leading-[1.15] text-white/80 drop-shadow-[0_1px_12px_rgba(0,0,0,0.7)] sm:mt-2.5 sm:text-[1.55rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.8rem]"
+          style={{ fontFamily: "var(--font-fluohand-stack)" }}
         >
-          accompanying you in your language learning, towards fluency and the
-          confidence to use it
+          {/* One span per raised letter, and the sentence given once to a
+              screen reader — otherwise it reads out four stray characters. */}
+          <span aria-hidden>
+            Building your{" "}
+            <span className={CAP}>F</span>luency{" "}
+            <span className={CAP}>o</span>n{" "}
+            <span className={CAP}>L</span>inguistic{" "}
+            <span className={CAP}>G</span>oals
+          </span>
+          <span className="sr-only">Building your Fluency on Linguistic Goals</span>
         </p>
       </div>
 
@@ -158,15 +180,22 @@ export default function WelcomeBody() {
       <div className="absolute inset-x-0 bottom-[7%] flex flex-col items-center gap-3 px-6">
         <Link
           href="/"
-          className="rounded-full border px-7 py-3 text-base font-black tracking-tight transition hover:-translate-y-0.5 sm:text-lg"
+          // MORE PROMINENT, ON DAN'S INSTRUCTION the same day — bigger type,
+          // deeper pill, a stronger border and a lift on hover. Still
+          // content-sized: no control wears the page's width, and on this page
+          // a full-width bar would be a wall laid across the road.
+          // On a phone held sideways the whole page is 390px tall, and the
+          // prominent pill measured 96px of it — a lid over the near ground and
+          // over goal 1. It keeps its weight and loses its bulk there.
+          className="rounded-full border-2 px-10 py-4 text-xl font-black tracking-tight transition hover:-translate-y-0.5 sm:px-12 sm:py-5 sm:text-2xl [@media(max-height:480px)]:px-8 [@media(max-height:480px)]:py-2.5 [@media(max-height:480px)]:text-lg"
           style={{
             // The glass: what is behind the pill blurs, the pill's own words
             // do not. Dan, on the panel version: the CTA should be "crystal
             // clear" while the surface it sits on is translucent.
             backdropFilter: "blur(10px) saturate(1.2)",
             WebkitBackdropFilter: "blur(10px) saturate(1.2)",
-            background: night > 0.45 ? "rgba(22,18,34,0.55)" : "rgba(255,255,255,0.62)",
-            borderColor: night > 0.45 ? "rgba(255,255,255,0.35)" : "rgba(40,32,26,0.28)",
+            background: night > 0.45 ? "rgba(22,18,34,0.68)" : "rgba(255,255,255,0.78)",
+            borderColor: night > 0.45 ? "rgba(255,255,255,0.5)" : "rgba(40,32,26,0.4)",
             color: night > 0.45 ? "var(--cahier-paper)" : "var(--cahier-ink)",
             boxShadow: "0 6px 28px rgba(0,0,0,0.35)",
             // The same 1.2s the map's label plates use, so the whole page
@@ -174,7 +203,7 @@ export default function WelcomeBody() {
             transition: "background-color 1.2s ease, color 1.2s ease, border-color 1.2s ease, transform 0.15s ease",
           }}
         >
-          Start my journey
+          Start now
         </Link>
       </div>
     </main>
