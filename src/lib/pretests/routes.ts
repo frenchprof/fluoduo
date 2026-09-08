@@ -38,12 +38,14 @@ export function pretestHref(pretestId: string): string {
  * Unit 0's ten banks, keyed by the stop rather than by a pre-test id — they are
  * generated from the stop's own questions, not authored as files.
  *
- * These pool into the merged run too, with ONE exception that is deliberate and
- * is Dan's own rule rather than a limitation: `speculearnPool` drops `multi`
- * questions, which are graded on the exact SET of picks and are therefore not
- * multiple choice. Only SIO-010 has any (3 of its 21). They stay reachable at
- * `/pretests/unit0/SIO-010`, which still builds; they are simply not part of a
- * run that is defined as MCQ.
+ * These all pool into the merged run. Three of SIO-010's did not, briefly:
+ * they asked the learner to tick SEVERAL greetings and were graded on the exact
+ * set of picks, which is not multiple choice, so `speculearnPool` dropped them.
+ * Shown the three, Dan rewrote them himself (2026-09-08) so that each has one
+ * right answer — « which can be used to say both hello AND goodbye », « which
+ * is the LEAST appropriate with a client », « which CAN be used with a single
+ * person ». All 21 of SIO-010's questions are in the run now, and the drop in
+ * `speculearnPool` stays as the guard for the next one authored that way.
  */
 export function unit0PretestHref(sioId: string): string {
   return speculearnHref(sioId);

@@ -476,12 +476,15 @@ function leaveEnchante(you: YouRole, register: "informal" | "formal" | "group"):
 function sio010Questions(register: "informal" | "formal" | "group", you: YouRole): Unit0Question[] {
   if (register === "formal") {
     return [
-      { multi: true, title: "Which of these are appropriate greetings with a business client?", options: [
-        { v: "Bonjour, madame.", ok: true },
-        { v: "Bonjour, monsieur.", ok: true },
-        { v: "Bonsoir, madame.", ok: true },
-        { v: "Salut !", ok: false, why: "Salut is casual — too familiar for a client." },
-        { v: "Coucou !", ok: false, why: "Coucou is very informal — friends and family only." },
+      // PICK ONE, not tick-several (Dan, 2026-09-08). Three of the five used to
+      // be right. Dan turned the question round — which is the WORST fit — and
+      // took « Salut » out, leaving « Coucou » as the single wrong register in
+      // a field of three correct ones.
+      { title: "Which of these is the LEAST appropriate with a business client?", options: [
+        { v: "Coucou !", ok: true },
+        { v: "Bonjour, madame.", ok: false, why: "That is exactly right with a client." },
+        { v: "Bonjour, monsieur.", ok: false, why: "That is exactly right with a client." },
+        { v: "Bonsoir, madame.", ok: false, why: "Right too — bonsoir is the evening bonjour." },
       ] },
       { title: "You ask the client their name. You say:", options: [
         { v: "Comment vous vous appelez ?", ok: true },
@@ -508,12 +511,16 @@ function sio010Questions(register: "informal" | "formal" | "group", you: YouRole
   }
   if (register === "group") {
     return [
-      { multi: true, title: "Which of these are appropriate greetings with more than one person?", options: [
-        { v: "Bonjour à tous !", ok: true },
-        { v: "Salut tout le monde !", ok: true },
-        { v: "Bonjour !", ok: true },
-        { v: "Bonjour, monsieur.", ok: false, why: "Monsieur addresses ONE man — a group takes à tous / tout le monde." },
-        { v: "Au revoir tout le monde !", ok: false, why: "That's a goodbye, not a greeting." },
+      // PICK ONE, not tick-several (Dan, 2026-09-08). Three of the five were
+      // right. Dan took the bare « Bonjour ! » out — it fits one person and a
+      // room equally, so it could never separate the two — and turned the
+      // question round to ask which of what is LEFT still works on one person.
+      // Exactly one does, and it is the only one carrying a singular address.
+      { title: "Which of these CAN be used when addressing a single person?", options: [
+        { v: "Bonjour, monsieur.", ok: true },
+        { v: "Bonjour à tous !", ok: false, why: "À tous means 'to everyone' — that needs a room, not one person." },
+        { v: "Salut tout le monde !", ok: false, why: "Tout le monde means 'everybody' — one person is just Salut !" },
+        { v: "Au revoir tout le monde !", ok: false, why: "Tout le monde is a group — and this is a goodbye, not a greeting." },
       ] },
       { title: "You ask the group their names. You say:", options: [
         { v: "Comment vous vous appelez ?", ok: true },
@@ -539,12 +546,19 @@ function sio010Questions(register: "informal" | "formal" | "group", you: YouRole
     ];
   }
   return [
-    { multi: true, title: "Which of these are appropriate greetings with another university student?", options: [
+    // PICK ONE, not tick-several (Dan, 2026-09-08). This asked "which of these
+    // are appropriate greetings with another university student?" and had three
+    // right answers, so it was graded on the exact SET of ticks — the only
+    // interaction of its kind in fifty goals, and the one thing that kept goal
+    // 10 out of the merged SpecuLearn. Dan rephrased it himself so that exactly
+    // one option is right: « Salut » is the only one of the five that works at
+    // both ends of a meeting.
+    { title: "Which of these can be used to say both hello AND goodbye to close friends?", options: [
       { v: "Salut !", ok: true },
-      { v: "Bonjour !", ok: true },
-      { v: "Coucou !", ok: true },
-      { v: "Bonjour, monsieur.", ok: false, why: "Monsieur is formal address — over-formal for a fellow student." },
-      { v: "Au revoir !", ok: false, why: "That's a goodbye, not a greeting." },
+      { v: "Bonjour !", ok: false, why: "Bonjour is hello only — leaving, you say au revoir." },
+      { v: "Coucou !", ok: false, why: "Coucou is hello only, and only with people very close to you." },
+      { v: "Bonjour, monsieur.", ok: false, why: "Hello only — and monsieur is formal address, not for a friend." },
+      { v: "Au revoir !", ok: false, why: "Au revoir is goodbye only." },
     ] },
     { title: "You ask the other student their name. You say:", options: [
       { v: "Comment tu t'appelles ?", ok: true },

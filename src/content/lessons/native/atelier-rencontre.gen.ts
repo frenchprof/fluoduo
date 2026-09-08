@@ -21,10 +21,18 @@
  * exactly one way. Nothing is invented, selected or re-typed: the card IS the
  * authored question.
  *
- * THE GREETING STEP IS EXCLUDED. It is `multi: true` — several greetings are
- * right — and a DiceQuestion has one `correct`. Offering it here would grade a
- * correct answer wrong. It stays in the pre-test, where the multi-select UI
- * exists; six steps remain, which is exactly the "≥6/7" the competence asks.
+ * THE GREETING STEP IS EXCLUDED, AND `produces` IS WHY. The other six steps ask
+ * the learner to PRODUCE a line — every one of their titles ends « You say: »,
+ * and a Dice card's whole job is that line. The greeting step asks a judgement
+ * instead: which greeting says both hello and goodbye, which is least
+ * appropriate with a client, which still works on one person. There is no line
+ * to produce, so there is no card to build.
+ *
+ * It was excluded for a different reason until 2026-09-08 — it was `multi: true`,
+ * several greetings were right, and a DiceQuestion has one `correct`. Dan
+ * rewrote all three greeting questions that day so each has a single answer
+ * (see unit0-questions.ts), which removed that reason and left this one. Six
+ * steps remain either way, which is exactly the "≥6/7" the competence asks.
  *
  * Loadable by `node --experimental-strip-types`, so the axes can be executed
  * rather than read: unit0-questions.ts imports nothing at all, and the path
@@ -43,17 +51,17 @@ import { SIO010_SITUATIONS } from "../../sios/unit0-questions.ts";
  * would silently re-point every label to the wrong question.
  */
 export const STEPS = [
-  { key: "greet", label: "greet", multi: true },
-  { key: "ask", label: "ask their name", multi: false },
-  { key: "give", label: "give your name", multi: false },
-  { key: "spelling", label: "ask the spelling", multi: false },
-  { key: "spell", label: "spell your own", multi: false },
-  { key: "meet", label: "nice to meet you", multi: false },
-  { key: "leave", label: "take leave", multi: false },
+  { key: "greet", label: "greet", produces: false },
+  { key: "ask", label: "ask their name", produces: true },
+  { key: "give", label: "give your name", produces: true },
+  { key: "spelling", label: "ask the spelling", produces: true },
+  { key: "spell", label: "spell your own", produces: true },
+  { key: "meet", label: "nice to meet you", produces: true },
+  { key: "leave", label: "take leave", produces: true },
 ] as const;
 
-/** The steps a single-answer card can be built from. */
-export const ASKABLE = STEPS.filter((s) => !s.multi);
+/** The steps whose authored question asks for a LINE — see the header. */
+export const ASKABLE = STEPS.filter((s) => s.produces);
 
 /** The correct line for one audience at one step, from the authored options. */
 export function answerAt(situationIndex: number, stepIndex: number): string {
