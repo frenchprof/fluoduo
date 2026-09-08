@@ -14,7 +14,7 @@
  * demand longer words. Syllables are hand-authored (see lib/syllabify.ts).
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { logEvent } from "@/lib/firebase/usage";
 import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
@@ -105,6 +105,71 @@ const keyW = (s: string) => Math.max(40, 24 + s.length * 15);
 // down the chests desired"). A chest keeps its livery from the lane through
 // the drag ghost into the assembly bay, and no two lane chests share one.
 type ChestTint = { body: string; lid: string; edge: string };
+
+/**
+ * A DRAWN TREASURE CHEST (Dan, 8 Sep, with a sketch: *"could the chests look
+ * more like this"*). The chest used to be a rounded rectangle with a darker
+ * strip across the top — a card standing in for a chest. His drawing is the
+ * thing itself: a domed lid, cream metal straps down the barrel, a lock plate
+ * with a keyhole, plank lines, and a shadow on the paper under it.
+ *
+ * SVG, NOT AN IMAGE. It is drawn in the chest's own livery — the deck's colour
+ * runs through the wood while the straps and the plate stay cream — so the
+ * fifteen liveries still tell the chests apart, and it scales from the 96px
+ * lane chest to the bay's without a second asset. It costs one inline element
+ * per chest, and there are three on screen.
+ *
+ * `body` and `lid` are CSS gradients, which SVG cannot take as a fill, so the
+ * gradient is rebuilt here as a linearGradient from the two stops in the
+ * string. A livery that stops being a two-stop gradient falls back to the raw
+ * value, which a flat colour already is.
+ */
+function gradStops(css: string): [string, string] {
+  const m = css.match(/(#[0-9a-f]{3,8})[^#]*(#[0-9a-f]{3,8})/i);
+  return m ? [m[1], m[2]] : [css, css];
+}
+
+function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; open?: boolean; className?: string }) {
+  const id = useId();
+  const [b1, b2] = gradStops(tint.body);
+  const [l1, l2] = gradStops(tint.lid);
+  const ink = tint.edge;
+  const BAND = "#fdf6e4";
+  return (
+    <svg viewBox="0 0 100 92" className={className} aria-hidden focusable="false">
+      <defs>
+        <linearGradient id={`${id}b`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={b1} /><stop offset="1" stopColor={b2} /></linearGradient>
+        <linearGradient id={`${id}l`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={l1} /><stop offset="1" stopColor={l2} /></linearGradient>
+      </defs>
+      {/* the shadow it casts on the paper */}
+      <ellipse cx="50" cy="83" rx="40" ry="4.5" fill="rgba(0,0,0,0.13)" />
+      {/* the barrel */}
+      <path d="M8 40 h84 v36 a3 3 0 0 1 -3 3 H11 a3 3 0 0 1 -3 -3 z"
+            fill={`url(#${id}b)`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
+      {/* plank lines */}
+      <path d="M12 55 H88 M12 67 H88" stroke={ink} strokeWidth="1" opacity="0.28" />
+      {/* THE DOME. The chord is 84 wide, so the radius sets how far the lid
+          rises: r = 42 is a semicircle (42 units, clean off the top of the
+          box — the first draft drew a lid that was simply clipped flat).
+          r = 47 lifts it 26, which is a chest. */}
+      <g transform={open ? "rotate(-15 10 38)" : undefined}>
+        <path d="M8 40 V36 A47 47 0 0 1 92 36 V40 z"
+              fill={`url(#${id}l)`} stroke={ink} strokeWidth="2.6" strokeLinejoin="round" />
+        <path d="M8 40 H92" stroke={ink} strokeWidth="2" />
+        {/* the two straps, over the lid */}
+        <path d="M25 40 V18 M75 40 V18" stroke={BAND} strokeWidth="7.5" strokeLinecap="round" />
+        <path d="M25 40 V18 M75 40 V18" stroke={ink} strokeWidth="1.2" fill="none" opacity="0.5" />
+      </g>
+      {/* and down the barrel */}
+      <path d="M25 40 V79 M75 40 V79" stroke={BAND} strokeWidth="7.5" />
+      <path d="M25 40 V79 M75 40 V79" stroke={ink} strokeWidth="1.2" opacity="0.5" />
+      {/* the lock plate and its keyhole, straddling the lid line */}
+      <rect x="41" y="35" width="18" height="22" rx="3" fill={BAND} stroke={ink} strokeWidth="2" />
+      <circle cx="50" cy="43" r="2.8" fill={ink} />
+      <path d="M50 44 l-1.8 7 h3.6 z" fill={ink} />
+    </svg>
+  );
+}
 const CHEST_TINTS: ChestTint[] = [
   { body: "linear-gradient(180deg,#ffe08a,#eaa61c)", lid: "linear-gradient(180deg,#c8860f,#96600c)", edge: "#7a4e0a" }, // or
   { body: "linear-gradient(180deg,#ffd3de,#e56a8f)", lid: "linear-gradient(180deg,#c04a6e,#8f2d4c)", edge: "#7a2438" }, // rose
@@ -718,13 +783,16 @@ export default function Lexicalator({
             <button key={c.entry.id} type="button"
               onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
-              className="relative w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
-              style={{ borderColor: liveryOf(c.entry.fr, c.tint, level).edge, background: liveryOf(c.entry.fr, c.tint, level).body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <span className="flex items-center justify-center" style={{ height: 10, background: liveryOf(c.entry.fr, c.tint, level).lid }}>
-                <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
-              </span>
+              // THE CHEST IS A DRAWING NOW (Dan's sketch, 8 Sep). The card that
+              // stood in for it — a rounded rectangle with a darker strip on
+              // top — is gone; what is left of the button is a transparent hit
+              // area holding the drawing, its label and its lock. Nothing about
+              // the drag, the letter key or the slot bars changes.
+              className="relative w-36 cursor-grab touch-none rounded-lg text-center transition active:cursor-grabbing"
+              style={{ opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
+              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[112px]" />
               {laneIdx < 26 && <span aria-hidden className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded bg-white/85 text-[10px] font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{String.fromCharCode(65 + laneIdx)}</span>}
-              <span className="block px-2 pt-1 text-sm font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
+              <span className="block px-2 pt-1 text-sm font-black leading-tight" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
                 {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
                   const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
@@ -751,12 +819,12 @@ export default function Lexicalator({
           </div>
         )}
         {active && (
-          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: liveryOf(active.entry.fr, active.tint, level).edge, borderBottomWidth: 6, background: liveryOf(active.entry.fr, active.tint, level).body, boxShadow: "0 12px 24px -14px rgba(0,0,0,.5)" }}>
-            {/* the opened lid */}
-            <div className="flex items-center justify-center" style={{ height: 14, background: liveryOf(active.entry.fr, active.tint, level).lid }}>
-              <span style={{ width: 18, height: 6, borderRadius: 2, background: "#ffe9a8" }} />
-            </div>
-            <div className="px-4 py-3">
+          <div className="text-center">
+            {/* THE CHEST IN THE BAY, with its lid hinged open — same drawing as
+                the lane's, one prop apart, so the chest you dragged down is
+                visibly the chest you are now filling. */}
+            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[162px]" />
+            <div className="-mt-2 px-4 py-3">
             <div className="mb-3 text-lg font-black" style={{ color: liveryOf(active.entry.fr, active.tint, level).edge }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
