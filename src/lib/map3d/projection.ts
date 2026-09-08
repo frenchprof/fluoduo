@@ -25,6 +25,33 @@
 // sits fully visible near the bottom edge, never cut.
 export const HORIZON_Y = 0.34; // the road's CREST — stops vanish behind this rounded shoulder
 export const SKYLINE_Y = 0.29; // the true sky line, far above the crest — the distant vista lives between
+
+/**
+ * MORE SKY, ON THE LANDING PAGE ONLY (Dan, 8 Sep, over his own mocks: *"i
+ * actually extended the sky to show more sky"*, *"so it lands now roughly 1/3
+ * sky, and 2/3 land"*).
+ *
+ * The two constants above are FRACTIONS OF THE BOX, not of the window, so the
+ * horizon can be moved for one surface without moving it for any other: render
+ * the scene into a box this many times the visible height and let the bottom
+ * hang past the fold. At 1.12 the skyline lands at 0.29 × 1.12 ≈ 33% of the
+ * window and the crest at 0.34 × 1.12 ≈ 38% — a third of sky, which is what
+ * Dan asked for in words. 1.3 was tried first, off the mock's measured 37%
+ * skyline, and it cropped goal 1 off the bottom: the lift scales the whole
+ * scene, so sky bought at the top is ground sold at the bottom.
+ *
+ * WHY NOT JUST RAISE HORIZON_Y. It is shared: /map, Home's postcard and the
+ * embed all read it, verify25c pins it, and verify124 and verify127 are
+ * measured against it. A landing page wanting a taller sky is not a reason to
+ * move the horizon under fifty stops on the map a learner uses every day.
+ *
+ * WHAT IT COSTS, and it is a real cost: the bottom 12% of the scene is
+ * cropped, which is the nearest stretch of the ground that was dressed on
+ * 8 Sep. What reaches the bottom of the window is the scene's ~89% line, which
+ * is still planted — verify151 keeps counting sprites there so this cannot
+ * quietly empty the foreground out again.
+ */
+export const WELCOME_SKY_LIFT = 1.12;
 export const CAMERA_Y = 0.97; // the eye line sits just above the box's bottom
 export const FOCAL = 6.2; // view depth, in stop units — rows spread linearly across it
 // Dan's capture, round 5: the path is FULL of stations — five or six in the

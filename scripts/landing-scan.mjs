@@ -66,8 +66,15 @@ const num = (name, fallback) => {
   const m = proj.match(new RegExp(`export const ${name}\\s*=\\s*([0-9.]+)`));
   return m ? Number(m[1]) : fallback;
 };
-const SKYLINE_Y = num("SKYLINE_Y", 0.29);
-const HORIZON_Y = num("HORIZON_Y", 0.34);
+// THE LANDING PAGE LIFTS ITS OWN HORIZON (8 Sep). The scene is rendered into a
+// box WELCOME_SKY_LIFT times the window's height, so the sky takes about the
+// top third — Dan: "i actually extended the sky to show more sky", "so it
+// lands now roughly 1/3 sky, and 2/3 land". The band this scan protects has to
+// travel with it, or it would guard empty sky and leave the real horizon open.
+// Read, not typed in twice, for the same reason the two below are.
+const SKY_LIFT = num("WELCOME_SKY_LIFT", 1);
+const SKYLINE_Y = num("SKYLINE_Y", 0.29) * SKY_LIFT;
+const HORIZON_Y = num("HORIZON_Y", 0.34) * SKY_LIFT;
 // The sky IS the place for the welcome, so the band starts exactly where the
 // sky stops. Text that ends above the skyline is the design; text that crosses
 // it is standing on the land.
