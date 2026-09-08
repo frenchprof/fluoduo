@@ -29,6 +29,7 @@ import { useCallback, useRef } from "react";
 import GoalCard from "@/components/GoalCard";
 import SnapFeed from "@/components/SnapFeed";
 import { SIOS } from "@/content/sios";
+import { syncScrollUrl } from "@/lib/swipeRail";
 
 export default function SioScroller({ id }: { id: string }) {
   const current = useRef(id);
@@ -42,7 +43,12 @@ export default function SioScroller({ id }: { id: string }) {
     const sid = SIOS[i]?.id;
     if (sid && sid !== current.current) {
       current.current = sid;
-      window.history.replaceState(null, "", `/sio/${sid}`);
+      // `syncScrollUrl`, not a bare replaceState: since 7 Sep the goals run
+      // INSIDE the cahier's iframe, so rewriting this document's address moves
+      // a URL nobody can see. A learner could flick through all fifty goals
+      // with the bar still reading /sio/SIO-001 — reload, or Share, and you
+      // were back at goal 1. The helper moves both.
+      syncScrollUrl(`/sio/${sid}`);
     }
   }, []);
 

@@ -431,3 +431,30 @@ your scan and your push, and no amount of care closes that window. So the
 check runs at push time, every time. Only numbers your branch adds are tested,
 so `main` can never go red for someone else's branch, and the branch that
 merges first keeps the number.
+
+**BEFORE YOU RENUMBER A SECOND TIME, DIFF THE BRANCH AGAINST `main`** (Dan,
+2026-09-07). A renumber is cheap and feels like progress, which is exactly why
+it is worth stopping after the first one to ask a different question.
+
+On the night of 6–7 Sep one branch renumbered FOUR times — 110, then 111/112,
+then 117/118, then 119 — each move correct when it was made and each overtaken
+before CI finished, because main was landing pull requests faster than a CI run
+takes. The fourth failure was the same message as the first. What none of them
+said is the thing that was actually true from about the third one on: **main had
+already taken the work.** The checks being fought over were merged, under other
+numbers, and the branch was competing with itself.
+
+```
+git fetch origin main
+git diff --stat origin/main HEAD -- src/          # is any of it still mine?
+git ls-tree --name-only origin/main verify/       # is my check already there?
+```
+
+If the files come back identical, the branch is finished: close the pull
+request and stop, rather than renumbering into a race you have already won.
+
+`verify-wiring` catches the collision; it cannot tell you the collision no
+longer matters. And if a renumber IS the right answer, **leave headroom** —
+take a number well clear of the contested band (140 when the highest claimed is
+126), because a number adjacent to the frontier will be claimed again while
+your CI runs.

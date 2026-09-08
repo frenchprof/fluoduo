@@ -45,6 +45,14 @@ function serpentine<T>(items: T[]): T[] {
   return out;
 }
 
+/** How far a row-end hairpin swings out past the last stop, and the least it
+ *  ever swings — a turn shorter than this reads as a kink, not a corner. */
+const HAIRPIN_REACH = 0.62;
+const HAIRPIN_MIN = 16;
+/** The cord's own width, and the disc that swells it at each stop. */
+const ROAD_W = 7;
+const BEAD_R = 7;
+
 export default function Map2DGrid({
   progress,
   activeId,
@@ -59,7 +67,9 @@ export default function Map2DGrid({
 }) {
   const activeIdx = activeId ? SIOS.findIndex((s) => s.id === activeId) : -1;
   const boxRef = useRef<HTMLDivElement | null>(null);
-  const [route, setRoute] = useState<{ travelled: string; ahead: string }>({ travelled: "", ahead: "" });
+  const [route, setRoute] = useState<{ travelled: string; ahead: string; beads: { x: number; y: number }[] }>(
+    { travelled: "", ahead: "", beads: [] },
+  );
 
   // The route, measured. Node centres are read from the laid-out DOM (in
   // course order, via data-stop) because the grid's geometry depends on the
@@ -69,24 +79,32 @@ export default function Map2DGrid({
     const box = boxRef.current;
     if (!box) return;
     const b = box.getBoundingClientRect();
-    /* THE ROAD IS DRAWN IN UNZOOMED UNITS; THE RECTS COME BACK ZOOMED.
-     *
-     * The map's zoom control and its pinch gesture both set CSS `zoom` on an
-     * ancestor of this box. `getBoundingClientRect()` reports the RESULT of
-     * that zoom, but the <svg> the polyline lives in is inside the same zoomed
-     * subtree, so its own coordinate system is in UNZOOMED units — the browser
-     * scales the finished drawing. Feeding zoomed offsets into it therefore
-     * spreads the road out by exactly the zoom factor, anchored at the top
-     * left. Measured at 150%: stop 1 was 31px from its road vertex, stop 2 was
-     * 68px, and it grew with every stop along the route. That is Dan's
-     * *"the stops get detached from the route"*, and it happens at ANY zoom
-     * other than 100% — a pinch is simply the fastest way to reach one.
-     *
-     * `offsetWidth` is the same box in unzoomed layout pixels, so their ratio
-     * IS the zoom in force, whatever set it and however many ancestors
-     * contributed. It is 1 when nothing is zooming, which makes this a no-op
-     * on every other surface that mounts the grid. */
-    const scale = box.offsetWidth > 0 ? b.width / box.offsetWidth : 1;
+
+    /* THE ROAD IS MEASURED IN ONE SPACE AND DRAWN IN ANOTHER, and that is the
+       whole of this bug (Dan, 2026-09-07, shown the postcard on Home: *"The
+       pinching issue is not solved right?"* — it was not).
+       `getBoundingClientRect` answers in POST-zoom CSS pixels; an SVG inside
+       the zoomed subtree consumes its `points` as PRE-zoom user units and is
+       then scaled with everything else. So under a CSS `zoom` the road paints
+       at `zoom x` the stop positions — compressed toward the top-left corner,
+       which is exactly what "detached from the stops" looks like.
+       Measured on the built export, Home's postcard at zoom 0.44:
+           stop 5 centre  x = 247      polyline point 4  x = 247
+           where that point ACTUALLY paints  x = 109   (247 x 0.44)
+       TWO SURFACES CARRY A CSS ZOOM, so this was never only Home's: MapBody
+       wraps this grid in `zoom: zoomPct/100` for its own - / + control, and
+       `usePinchZoom` drives that same number. The 7 Sep fix below listened to
+       `visualViewport` — the BROWSER's pinch — and that was the wrong pinch:
+       the app's own pinch changes CSS zoom, which resizes the box, fires the
+       ResizeObserver, and redraws just as wrongly as before. Dividing here
+       fixes all three at once, and any future zoomed embedding with them.
+       `currentCSSZoom` is the browser's own answer (Chrome 128+); the width
+       ratio is the same number for anything older. */
+    const zoomed = box as HTMLElement & { currentCSSZoom?: number };
+    const k = zoomed.currentCSSZoom
+      ?? (box.offsetWidth > 0 ? b.width / box.offsetWidth : 1);
+    const scale = Number.isFinite(k) && k > 0 ? k : 1;
+
     const pts: { x: number; y: number }[] = [];
     for (const s of SIOS) {
       const el = box.querySelector(`[data-stop="${s.id}"]`);
@@ -97,11 +115,41 @@ export default function Map2DGrid({
         y: (r.top + r.height / 2 - b.top) / scale,
       });
     }
-    const seg = (from: number, to: number) =>
-      pts.slice(from, to + 1).map((p) => `${Math.round(p.x)},${Math.round(p.y)}`).join(" ");
+    /* A PATH, NOT A POLYLINE, so the row ends can TURN (Dan, 2026-09-07, with
+       a drawing: *"that line should also show at the end of each row between
+       rows"*). The stops snake five to a row, so the 5th and the 6th sit in the
+       same column and a polyline joined them with a bare vertical stub, mostly
+       hidden behind the band edge and the two stops. A road that reaches the
+       end of a row and turns is what Dan drew — a hairpin swinging out past the
+       last stop and back down into the next row, the way a real route doubles
+       back. Which side it swings to follows the stop: the serpentine ends right
+       on even rows and left on odd ones, so the sign comes from the point's own
+       x against the middle rather than from a parity anyone has to keep in step
+       with `serpentine()`. */
+    const mid = pts.reduce((a, q) => a + q.x, 0) / pts.length;
+    const path = (from: number, to: number) => {
+      if (to <= from) return "";
+      let d = `M ${Math.round(pts[from].x)} ${Math.round(pts[from].y)}`;
+      for (let i = from; i < to; i++) {
+        const a = pts[i], q = pts[i + 1];
+        // The 5th stop of a row is the last one; the 6th opens the next.
+        if ((i + 1) % 5 !== 0) { d += ` L ${Math.round(q.x)} ${Math.round(q.y)}`; continue; }
+        const out = a.x >= mid ? 1 : -1;
+        const reach = Math.max(HAIRPIN_MIN, Math.abs(q.y - a.y) * HAIRPIN_REACH);
+        d += ` C ${Math.round(a.x + out * reach)} ${Math.round(a.y)},`
+          + ` ${Math.round(q.x + out * reach)} ${Math.round(q.y)},`
+          + ` ${Math.round(q.x)} ${Math.round(q.y)}`;
+      }
+      return d;
+    };
     const last = pts.length - 1;
     const t = activeIdx >= 0 ? activeIdx : last;
-    setRoute({ travelled: t > 0 ? seg(0, t) : "", ahead: t < last ? seg(t, last) : "" });
+    setRoute({
+      travelled: path(0, t),
+      ahead: path(t, last),
+      // A bead where the road meets each stop. See the render for what it does.
+      beads: pts.map((q) => ({ x: Math.round(q.x), y: Math.round(q.y) })),
+    });
   }, [activeIdx]);
 
   useEffect(() => {
@@ -156,7 +204,11 @@ export default function Map2DGrid({
 
   return (
     <div ref={boxRef} className="relative">
-      <svg aria-hidden className="pointer-events-none absolute inset-0 z-[1] h-full w-full">
+      {/* `overflow-visible`: the row-end hairpins swing out PAST the last stop
+          of a row, and the outermost stops sit close to this box's edge, so the
+          default SVG clip would cut the turns in half — the one thing Dan asked
+          to be able to see. */}
+      <svg aria-hidden className="pointer-events-none absolute inset-0 z-[1] h-full w-full overflow-visible">
         {/* THE ROAD HAS A BODY (6 Sep). Between fifty raised stops a 4px flat
             stroke read as paint on the band rather than something laid on it.
             Travelled is now a CORD: a dark under-edge one pixel low, the accent
@@ -165,26 +217,61 @@ export default function Map2DGrid({
             ResizeObserver redraws. Ahead is a GROOVE cut into the band: the
             dark dashes sit a pixel high with a white catch-light under them,
             which is the same light-from-above the stops use. */}
-        {route.travelled && (
-          <>
-            <polyline points={route.travelled} fill="none" strokeWidth="6"
-              stroke="color-mix(in oklab, var(--cahier-ink) 30%, transparent)"
-              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1.5)" />
-            <polyline points={route.travelled} fill="none" strokeWidth="5"
-              stroke={accent ?? "var(--cahier-ink)"} strokeLinejoin="round" strokeLinecap="round" />
-            <polyline points={route.travelled} fill="none" strokeWidth="1.5"
-              stroke="color-mix(in oklab, white 55%, transparent)"
-              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 -1.5)" />
-          </>
-        )}
+        {/* ONE SOLID ROAD, DARK AND THICK (Dan, 2026-09-07, with a drawing:
+            *"we don't want to see dotted lines, but solid darker thicker line
+            that even seems to almost 'bulge' the stop along the line where it
+            passes"*).
+
+            WHY IT LOOKED DOTTED EVERYWHERE, which is the part worth recording:
+            the dashes were never a style choice about the road, they were the
+            AHEAD half of a travelled/ahead grammar — and a learner standing on
+            stop 1 has forty-nine stops ahead, so the whole map was dashes. The
+            distinction survives, in colour rather than in dots: the stretch you
+            have walked takes your accent, the stretch to come takes the ink.
+            Both are the same solid cord, so the map reads as one road either
+            way, which is what it is.
+
+            THE BEAD IS THE BULGE. The road passes UNDER the stops (z-[1] on
+            this svg, the nodes above it), so on its own it simply disappears
+            behind each one and reappears. A disc at every centre, a shade wider
+            than the cord, swells the line exactly where a stop sits on it — the
+            stop looks threaded onto the road rather than laid beside it. It is
+            drawn first so the cord runs over its own bead and the two read as
+            one shape. */}
+        {route.beads.map((q, i) => (
+          <circle key={i} cx={q.x} cy={q.y} r={BEAD_R}
+            fill={i <= (activeIdx >= 0 ? activeIdx : route.beads.length - 1)
+              ? (accent ?? "var(--cahier-ink)")
+              : "var(--cahier-ink)"} />
+        ))}
         {route.ahead && (
           <>
-            <polyline points={route.ahead} fill="none" strokeWidth="3"
-              stroke="color-mix(in oklab, white 75%, transparent)" strokeDasharray="2 7"
-              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1)" />
-            <polyline points={route.ahead} fill="none" strokeWidth="3"
-              stroke="var(--cahier-line-strong)" strokeDasharray="2 7"
-              strokeLinejoin="round" strokeLinecap="round" />
+            {/* The under-edge, one pixel low: the road has a body, not a
+                painted stripe. Same three-stroke cord the travelled half has
+                used since 6 Sep, in ink instead of the accent. */}
+            <path d={route.ahead} fill="none" strokeWidth={ROAD_W + 2}
+              stroke="color-mix(in oklab, var(--cahier-ink) 35%, transparent)"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1.5)" />
+            {/* NO CATCH-LIGHT ON THIS HALF. The travelled cord earns one — it
+                is the accent, a raised thing you have laid down behind you. On
+                the ink road a white hairline down the middle read as a SEAM,
+                and forty-nine of the fifty stops are ahead, so that seam was
+                the map. Dan drew one solid dark line; this is one solid dark
+                line, with only the under-edge that keeps it off the paper. */}
+            <path d={route.ahead} fill="none" strokeWidth={ROAD_W}
+              stroke="var(--cahier-ink)" strokeLinejoin="round" strokeLinecap="round" />
+          </>
+        )}
+        {route.travelled && (
+          <>
+            <path d={route.travelled} fill="none" strokeWidth={ROAD_W + 2}
+              stroke="color-mix(in oklab, var(--cahier-ink) 35%, transparent)"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 1.5)" />
+            <path d={route.travelled} fill="none" strokeWidth={ROAD_W}
+              stroke={accent ?? "var(--cahier-ink)"} strokeLinejoin="round" strokeLinecap="round" />
+            <path d={route.travelled} fill="none" strokeWidth="1.5"
+              stroke="color-mix(in oklab, white 55%, transparent)"
+              strokeLinejoin="round" strokeLinecap="round" transform="translate(0 -1.5)" />
           </>
         )}
       </svg>

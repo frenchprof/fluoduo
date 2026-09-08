@@ -741,6 +741,13 @@ export default function HomeMap3D({
           ref={boxRef}
           tabIndex={0}
           aria-label="Course map, 3D — scroll to travel the road"
+          /* LOOKING AROUND IS NOT READING TO AN END (7 Sep). This box scrolls,
+             but dragging it pans the road — so without this, reaching its
+             bottom and pushing once more would throw a learner off the map and
+             into SpecuLearn. `data-no-scroll-on` is the escape hatch
+             `useScrollOn` reads, the same shape `data-no-rail-swipe` gives the
+             sideways drag. */
+          data-no-scroll-on
           className="home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
