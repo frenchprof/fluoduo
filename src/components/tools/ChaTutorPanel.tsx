@@ -5,7 +5,7 @@
  * AMBIENT TOOLS) so the same panel can live in two places:
  *
  *   · the standalone /tutor page (no props) — behaviour unchanged;
- *   · the in-exercise 🧰 card, where the trainer hands over `context` (which
+ *   · the in-exercise 🛠️ card, where the trainer hands over `context` (which
  *     activity, which item) so "why is this wrong?" works without retyping.
  *     The context shows as a small yellow chip over the conversation and is
  *     prepended to what /api/tutor reads.
@@ -37,7 +37,7 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 
 // Dan, 5 Sep: "The ChaTutor's opening line is WAY TOO LONG !" — the 50-word
 // capability tour failed his litmus test (the input box already invites
-// typing, and the 🧰 chip already says where you are). The greeting greets.
+// typing, and the 🛠️ chip already says where you are). The greeting greets.
 const GREETING = "Bonjour ! 👋 « Je peux t'aider ? »";
 
 // Minimal typings for the (still-prefixed) Web Speech recognition API.
@@ -317,7 +317,7 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
           /* The context chip — what this chat already knows. Yellow, like the
              learner's own balloons: it stands in for what they'd have typed. */
           <p className="inline-flex max-w-full items-center gap-1.5 self-start rounded-full border-2 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)] px-3 py-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-            <span aria-hidden>🧰</span>
+            <span aria-hidden>🛠️</span>
             <span className="truncate">
               {context.title}
               {context.item && <> · <span lang="fr">« {context.item} »</span></>}
@@ -339,7 +339,7 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
             {/* The conversation scrolls INSIDE this box (intended: the input
                 stays reachable below) — but let it use the real viewport
                 height instead of a stingy 55vh (Dan, 2026-07-12). Inside the
-                🧰 card the box shrinks so the input stays on the sheet. */}
+                🛠️ card the box shrinks so the input stays on the sheet. */}
             <div
               className={`flex flex-col gap-2.5 overflow-y-auto rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner ${
                 context ? "max-h-[30dvh] min-h-[9rem]" : "max-h-[calc(100dvh-16rem)] min-h-[16rem]"

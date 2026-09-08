@@ -1,6 +1,6 @@
 "use client";
 
-/** The bug-report inbox — everything students submitted via the 💬 feedback
+/** The bug-report inbox — everything students submitted via the 🐞 feedback
  *  button (rules: anonymous create, admin-only read). Newest first. */
 
 import { useEffect, useState } from "react";

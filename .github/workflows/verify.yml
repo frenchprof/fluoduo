@@ -447,6 +447,11 @@ jobs:
       - name: "No pre-test stacks its questions down one page (8 Sep)"
         run: python3 verify/verify171-pretest-feeds.py
 
+      # 💬 was the Skills door AND the report-a-bug button; 🧰 was a game AND
+      # the Outils tray. Both were live on one screen and took weeks to spot.
+      - name: "No glyph means two different things (9 Sep)"
+        run: python3 verify/verify190-glyph-collisions.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

@@ -144,7 +144,7 @@ const SURFACE_ALL = new Set([
   "GramMarathon Final",
   "SpecuLearn",
   "VocabulaRain",
-  "LexicaLater",
+  "LexicaLocker",
   "Flip It",
   "Complete It",
   "Dice",

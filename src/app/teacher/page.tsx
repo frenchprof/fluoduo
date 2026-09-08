@@ -13,7 +13,7 @@
  *                  time-on-task estimate, item responses, event trail)
  *   🕹️ Activities  games / decks / supplements / flashcard reviews
  *   💡 Pretests    gap report: per item miss rates + top wrong picks
- *   💬 Feedback    the bug-report inbox
+ *   🐞 Feedback    the bug-report inbox
  * The events + leaderboard streams are fetched ONCE here and shared by all
  * panels; the per-student stores (answer logs) are fetched ONCE too, through
  * a small pool as soon as the roster is known, and handed to every panel
@@ -52,7 +52,7 @@ const PANELS = [
   { key: "activities", label: "🕹️ Activities" },
   { key: "pretests", label: "💡 Pretests" },
   { key: "gaps", label: "🧱 Gaps" },
-  { key: "feedback", label: "💬 Feedback" },
+  { key: "feedback", label: "🐞 Feedback" },
 ] as const;
 type PanelKey = (typeof PANELS)[number]["key"];
 

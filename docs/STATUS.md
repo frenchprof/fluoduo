@@ -6,6 +6,67 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 8 Sep, night — four lanes landed, production synchronised, glyphs deduped (fluoduo-main)
+
+Sole editor of STATUS.md in this commit: fluoduo-main (`qc/icon-glyph-swap`).
+
+**PRODUCTION AND STAGING ARE BOTH ON MAIN.** Dan: *"push both staging and
+production to the same main synhronised"*. `deploy-live` run 32 put `4b826f4`
+live, run 33 put `92684ff` live, and `92684ff` is main's tip. Everything below
+is in production unless it says otherwise.
+
+Merged this session, in order: #225, #226, #231, #233, #236, #237, #238, #241,
+#242, #243, #244, #245, #248. Closed with reasons: #229, #204, #240, #239.
+
+**HOME NO LONGER SHOWS THE MAP (#248).** Dan, pointing at the postcard:
+*"retire the unresponsive 2d map with start here button. we have replaced that
+with the new landing page that peers has edited"*, then *"we don't need this
+anymore"*. Three checks were RETARGETED rather than switched off — `verify80`
+is now inverted (Home must render no map, AND at least one door to `/map` must
+survive somewhere), `verify124` lost only its postcard section, `verify25b`
+went from "exactly one map link" to "at most one".
+
+**OPEN, AND IT IS DAN'S CALL: THE MAP HAS NO DOOR.** Not on Home, not in the ☰
+menu, not in the top bar. Only side routes reach the fifty stops — the 404
+page, an empty deck, the profile. That is why `verify80` now insists a door
+exists *somewhere*; "somewhere" is currently nowhere a learner would look. A
+Map tile in the ☰ grid is the one-line fix when he says so.
+
+**NO GLYPH MEANS TWO THINGS ANY MORE.** 💬 was the Skills door AND the floating
+report-a-bug button; 🧰 was a game AND the floating Outils tray — both pairs
+live on one screen (open WorDrill and you met each twice). Dan approved all
+four swaps and the rename: 🐞 bug button · 🤹 Skills · 🛠️ Outils tray · 🔐
+LexicaLocker, which retires the name LexicaLater. **Key `lexicalator` and route
+`/games/lexicalater` are unchanged** — the Memo-rename precedent.
+
+Two QC findings on top of the lane's branch, both worth knowing:
+
+- **AGENTS.md asserted both glyphs at once.** The fix was recorded at the foot
+  of the file while the *permanent* names ruling near the top still read 💬
+  Skills. A session reading top-down would have reverted it in good faith. Both
+  now read 🤹, with the reason attached.
+- **`verify190` keys on DESTINATION, not on a list of blessed pairs.** 👤 is
+  already used twice — the User family door and the Profile activity — and that
+  is NOT the fault, because both are `/profil`: one place reached two ways. The
+  9 Sep fault was one picture with two unrelated outcomes. So a future
+  family/activity pair needs no maintenance here.
+
+Break-testing found a fault in that check itself, which is the transferable
+part: re-glyphing the tray back to 🧰 PASSED, because `ToolSummon.tsx` explains
+its own glyph four times in its header comment, so the file still contained 🛠️
+in prose while the button rendered the collision again. That is the same trap
+`verify19b`, `verify152` and `verify153` each hit — a check that cannot tell
+code from prose reads its own documentation as evidence. Comments are stripped
+now. A fifth test pins the variation-selector problem: a game taking 🛠 without
+the invisible U+FE0F is the same picture to a learner and a different string to
+Python, and a byte compare waves it through.
+
+**Still open, none of it started:** `/map?view=3d` deep links are broken by the
+iframe move; old `#SIO-nnn` popup links are dead (StopPopup retirement is
+queued); Say It / Match It / Diced Practice retirement rulings are unanswered.
+**The deploy token (`LIVE_DEPLOY_TOKEN`) expires Fri 2 Oct 2026** — regenerate
+before then or production deploys stop.
+
 ## 8 Sep, later — the chest on file, and Match It becomes two exercises (Peers)
 
 Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).

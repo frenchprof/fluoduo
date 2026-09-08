@@ -15,7 +15,7 @@
 /**
  * 🔊 VoixLà (Le Studio TTS) — the standalone page. The player itself now
  * lives in components/tools/VoixLaPanel (5 Sep, AMBIENT TOOLS extraction) so
- * the 🧰 in-exercise card can mount the same panel; this page passes no props
+ * the 🛠️ in-exercise card can mount the same panel; this page passes no props
  * and keeps its shell, wall and behaviour unchanged — type freely, ▶ speaks
  * what is typed, ✏️ checks on demand. (The card runs corrects-first instead:
  * handed text is checked before anything is voiced.)

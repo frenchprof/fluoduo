@@ -88,7 +88,10 @@ export const FAMILIES: Family[] = [
   { key: "review", name: "FluOLin Revise", emoji: "🔄", href: "/reviser" },
   // Same fault, same fix: the emoji used to open ConjugaZone, one of six.
   // 💬 (Dan, 2026-08-31) — the skills are speaking skills; 💪 moved on.
-  { key: "skills", name: "FluOLin Skills", emoji: "💬", href: "/skills" },
+  // 🤹 (Dan, 2026-09-09) — 💬 was ALSO the floating "report a bug" button
+  // (FeedbackButton.tsx), live on top of Skills screens at the same time as
+  // this door. Skills gets its own glyph; the bug button becomes 🐞.
+  { key: "skills", name: "FluOLin Skills", emoji: "🤹", href: "/skills" },
   { key: "user", name: "FluOLin User", emoji: "👤", href: "/profil" },
 ];
 
@@ -193,7 +196,13 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   // and evidence tags below stay — they describe answers already given.
   { key: "numbers", name: "Numbers", emoji: "🔢", family: "svplay", href: "/games/numbers", blurb: "Numbers by ear — NumBus and NumBourse." },
   { key: "vocabularain", name: "VocabulaRain", emoji: "🌧️", family: "svplay", href: "/games/vocabularain", blurb: "Words fall — catch them in the right clause." },
-  { key: "lexicalator", name: "LexicaLater", emoji: "🧰", family: "svplay", href: "/games/lexicalater", blurb: "Stitch word parts back together." },
+  // LEXICALATER IS RETIRED FOR GOOD (Dan, 2026-09-09): "LexicaLocker" now,
+  // and 🔐 instead of 🧰 — 🧰 was ALSO the floating "Outils" tools button
+  // (ToolSummon.tsx) that opens VoixLà/ChaTutor on most exercise screens,
+  // including ones that have nothing to do with this game. KEY and ROUTE
+  // stay `lexicalator` / `/games/lexicalater` — the Memo-rename precedent:
+  // a display rename never touches keys or routes.
+  { key: "lexicalator", name: "LexicaLocker", emoji: "🔐", family: "svplay", href: "/games/lexicalater", blurb: "Stitch word parts back together." },
 
   // ── 5 · FluOlin User ──────────────────────────────────────────────────────
   // MY PROGRESS IS SWALLOWED BY PROFILE (Dan, 2026-08-31). /profil and /moi

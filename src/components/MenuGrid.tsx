@@ -62,7 +62,9 @@ const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
   { pen: PEN.svplay, band: PEN.svplay, label: familyName("svplay"), cells: [
     { kind: "one", emoji: "🔢", name: "NumBus", href: "/games/numbers" },
     { kind: "one", emoji: "🌧️", name: "VocabulaRain", href: "/games/vocabularain" },
-    { kind: "one", emoji: "🧰", name: "LexicaLater", href: "/games/lexicalater" },
+    // LexicaLocker (Dan, 2026-09-09) — renamed from LexicaLater, 🔐 instead
+    // of 🧰: see the registry entry in activities.ts for why.
+    { kind: "one", emoji: "🔐", name: "LexicaLocker", href: "/games/lexicalater" },
   ]},
   { pen: PEN.skills, band: PEN.skills, label: familyName("skills"), cells: [
     { kind: "two", a: { emoji: "🔊", name: "VoixLà", href: "/tts" }, b: { emoji: "🎙️", name: "WorDrill", href: "/practice/wordrill" } },
