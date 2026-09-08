@@ -290,10 +290,25 @@ export default function WelcomeBody() {
           STILL CONTENT-SIZED. The standing rule is that no single control
           wears the page's width, and on this page a full-width bar would also
           be a wall laid across the road. */}
-      <div className="absolute inset-x-0 bottom-[2.5%] flex flex-col items-center px-6">
+      {/* A GAP BETWEEN THE COIN AND STOP 1 (Dan, 8 Sep, over the first
+          render: *"why is the ENTER button so close to the 1 button? Can
+          there be gap?"*). Measured before touching it, and it was worse
+          than close — the two OVERLAPPED: on a 1440x900 desktop ENTER's top
+          edge sat 20px ABOVE stop 1's bottom, and on a 390x844 phone they
+          touched at 1px. The camera frames the current goal near the foot of
+          the road, and for a visitor with no progress that goal is stop 1,
+          so the coin and the first stop are always competing for the same
+          band of ground.
+
+          The coin is bottom-anchored, so trimming its height pushes its TOP
+          down — which is the edge that was colliding. Height comes off rather
+          than width: an ellipse seen in perspective is flat, so a shorter
+          coin reads MORE like the stops it imitates, and the width (and so
+          the prominence Dan asked for) is untouched. */}
+      <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
         <Link
           href="/"
-          className="rounded-[50%] px-16 py-6 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-6 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-4 [@media(max-height:480px)]:text-xl"
+          className="rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
             background: "var(--fam-user)",
             color: "var(--cahier-ink)",
