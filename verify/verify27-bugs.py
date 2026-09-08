@@ -214,7 +214,14 @@ check(not copies, "no private Fisher–Yates copy outside shuffle.ts", f"private
 # the same file by relative path. The rule is "one shuffle", not "one spelling".
 users = [f for f in SRC
          if 'from "@/lib/shuffle"' in CODE[f] or 'lib/shuffle.ts"' in CODE[f]]
-check(len(users) >= 20, f"{len(users)} files import the one shuffle (>= 20)", f"only {len(users)} files import shuffle.ts")
+# THE FLOOR MOVES WHEN A ROUTE RETIRES, and that is not the same as a shuffle
+# going private again — which is what the two checks above actually hold. It was
+# 20 until 2026-09-08, when `/pretests/picture/<deck>` became a forward and its
+# 472-line runner (one of the importers) was deleted: 32 of its 50 pages had
+# only ever rendered "No picture pretest available", and the question it ran is
+# in `speculearnPool` now. Lower the floor when a caller legitimately goes; do
+# not lower it to make a private copy fit.
+check(len(users) >= 19, f"{len(users)} files import the one shuffle (>= 19)", f"only {len(users)} files import shuffle.ts")
 check("stableShuffle" in CODE["src/app/decks/[id]/mcq/Content.tsx"] and "mulberry32" in CODE["src/app/practice/grammarathon/finale/FinaleContent.tsx"],
       "seeded shuffles (deck MCQ, Finale) kept their generators", "a seeded shuffle was lost")
 
