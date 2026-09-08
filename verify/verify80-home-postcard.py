@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
 """
-Home's postcard: pinned 2D, one bare door, the CTA said on the picture.
+Home carries no map postcard — the map is shown properly, elsewhere.
 
-THIS FILE WAS verify80-home-view-switch until 7 Sep — a check whose whole
-subject was Home's 2D/3D switch. Dan retired the subject: *"on the home page
-we are seeing the wrong map. it should be the tightened 2D or the 2D ones.
-Across it we can have the CTA 'Enter the map'"*. That supersedes his 1 Sep
-switch spec (label-in-track, promise-keeping navigation), which lives on
-where the choice still exists — /map's PillSwitch, pinned by verify25b/c.
+THIS CHECK HAS BEEN INVERTED TWICE, and the trail matters more than the
+assertions, because each turn superseded the last:
 
-What is pinned now, and why each would regress silently:
+  verify80-home-view-switch   Home had a 2D/3D switch (Dan, 1 Sep).
+  verify80-home-postcard      The switch went; a pinned 2D postcard under an
+                              « Enter the map » band took its place (7 Sep:
+                              *"it should be the tightened 2D … Across it we
+                              can have the CTA 'Enter the map'"*).
+  THIS                        The postcard goes too (8 Sep). Shown a
+                              screenshot of it, Dan: *"retire the
+                              unresponsive 2d map with start here button. we
+                              have replaced that with the new landing page
+                              that peers has edited"*, then *"we don't need
+                              this anymore"*.
 
-  1  THE POSTCARD IS THE 2D GRID, unconditionally — no HomeMap3D import, no
-     view state. A "helpful" re-adding of the flip quietly reintroduces the
-     wrong-map complaint this rewrite answers.
-  2  ONE BARE DOOR. The stretched link says /map with NO view param, so the
-     map opens in the learner's own saved view. A ?view spelled here is the
-     silent view-reset Dan killed on 1 Sep, reborn.
-  3  THE CTA RIDES THE PICTURE and presses nothing itself: pointer-events
-     none, aria-hidden, content-sized (never a full-width control). Two
-     tappable layers on one card is how ghost-tap bugs are born; the pill
-     is caption, the card is the button.
-  4  NO SWITCH ON HOME. PillSwitch stays a /map (and Réglages) control.
+WHY IT WENT, so the next session does not helpfully restore it. /welcome now
+opens on the 3D map at full height — the map as a picture, done properly. The
+postcard was a 0.44-zoom crop of the 2D grid on a page that is about
+continuing, and on a desktop the band laid its words across stop 23. It also
+READ as broken: the band is `pointer-events-none` by design, so it looks like
+a button that ignores you, which is the "unresponsive" in Dan's word for it.
+
+WHAT THIS PINS. Only that Home does not render a map. It says nothing about
+/map, /welcome or the 3D scene — those are verify25b/c, 151 and 152. A map on
+Home is the specific thing three rulings in a row have now removed.
 
 Run from the repo root:  python3 verify/verify80-home-postcard.py
 """
@@ -34,28 +39,50 @@ if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
 home = open("src/app/HomeDashboard.tsx", encoding="utf-8").read()
-# Comments stripped for the code-shape scans (verify19b's lesson: a check
-# that cannot tell code from prose reports the documentation as the defect —
-# the comment recording the switch's retirement legitimately names it).
+# Comments stripped before every code-shape scan (verify19b's lesson): the
+# comment that RECORDS this retirement legitimately names Map2DGrid and
+# « Enter the map », and a check that cannot tell code from prose would
+# report its own documentation as the defect.
 code = re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", home)
 code = re.sub(r"(?m)^\s*//.*$", "", code)
 
-ok("HomeMap3D" not in code and "view3d" not in code,
-   "the postcard is 2D unconditionally — no flip, no view state",
-   "a 3D flip is back on Home — Dan, 7 Sep: 'it should be the tightened 2D'")
-ok('href="/map"' in home and "?view" not in home,
-   "the one door is bare /map — the learner's saved view survives the trip",
-   "Home spells a view onto the map link — the 1 Sep silent-reset defect reborn")
-ok("Enter the map" in home,
-   "the CTA is said on the picture",
-   "the 'Enter the map' CTA is gone from the postcard")
-m = re.search(r"<span[^>]*aria-hidden[^>]*pointer-events-none[^>]*>\s*Enter the map|pointer-events-none[\s\S]{0,400}Enter the map", home)
-ok(m is not None,
-   "the CTA presses nothing — the card stays the one button",
-   "the CTA is tappable in its own right — two layers on one card is how ghost taps begin")
+ok("Map2DGrid" not in code,
+   "Home renders no 2D map grid",
+   "the map postcard is back on Home — Dan, 8 Sep: 'we don't need this anymore'")
+
+ok("HomeMap3D" not in code and "HomeMap" not in code,
+   "Home renders no map scene either — /welcome is where the map is shown",
+   "a map scene is back on Home; the showcase belongs to /welcome")
+
+ok("Enter the map" not in code,
+   "no « Enter the map » band",
+   "the retired CTA band is back on Home")
+
 ok("PillSwitch" not in code,
    "no view switch on Home — the choice lives on /map",
-   "the home view switch is back — its subject was retired on 7 Sep")
+   "the home view switch is back; its subject was retired on 7 Sep")
+
+# The postcard was Home's ONLY door to /map, so its removal is also the
+# moment the map could be stranded. This does not demand a door on Home —
+# Dan removed the one that was there — but it does demand that SOME door
+# exists somewhere a learner can reach, so the fifty stops never become a
+# page only a typed address opens.
+doors = []
+for root, _dirs, fs in os.walk("src"):
+    for f in fs:
+        if not f.endswith((".tsx", ".ts")):
+            continue
+        p = os.path.join(root, f)
+        if p.replace(os.sep, "/").startswith("src/app/map/"):
+            continue  # the map linking to itself is not a way in
+        t = open(p, encoding="utf-8").read()
+        if re.search(r'href=(?:"|\{")/map"|href:\s*"/map"|push\("/map"\)', t):
+            doors.append(p.replace(os.sep, "/"))
+ok(len(doors) >= 1,
+   f"the map still has {len(doors)} door(s) outside itself: "
+   + ", ".join(sorted(os.path.basename(d) for d in doors)[:4]),
+   "NOTHING links to /map any more — the fifty stops are reachable only by "
+   "typing the address")
 
 print("\n".join("  ok    " + s for s in OK))
 if FAIL: print("\n".join("  FAIL  " + s for s in FAIL))

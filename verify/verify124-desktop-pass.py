@@ -88,23 +88,22 @@ check(re.search(r"\{tabs\.length > 0 && \(", frame) is not None,
       "tabs array that is an empty rail still taking its width, leaving a bite "
       "out of the desk beside the paper")
 
-# 2 ── the postcard: a ratio on wide screens, the phone's crop untouched.
-crop = re.search(r'className="(h-\[\d+px\][^"]*)"\s+style=\{\{ zoom: 0\.44 \}\}', home)
-check(crop is not None,
-      "Home's map postcard still has its fixed crop as the base size",
-      "the postcard's base height is gone. That fixed crop IS the phone's "
-      "design — 293×153, the deliberate glimpse — and without it as the base "
-      "the phone inherits whatever the desktop was given")
-cls = crop.group(1) if crop else ""
-check("sm:aspect-[" in cls,
-      "wide cards size by ratio instead of a fixed slice of map",
-      "the postcard has no `sm:aspect-…`, so it keeps one height at every "
-      "width: 293×153 on a phone but 764×153 on a desktop, a 5:1 letterbox "
-      "showing three rows of fifty stops")
-check(cls.startswith("h-[330px]") and "sm:h-auto" in cls,
-      "the phone keeps its exact 330px crop; only `sm` and up take the ratio",
-      "the phone's crop has changed. Whatever the desktop needed, 293×153 is "
-      "the shape Dan designed for the phone and it must survive a desktop fix")
+# 2 ── THE POSTCARD IS GONE, so its three assertions went with it.
+#
+# They pinned a card that no longer exists: Home's cropped 2D map under the
+# « Enter the map » band. Dan retired it on 8 Sep, shown a screenshot of it —
+# *"retire the unresponsive 2d map with start here button. we have replaced
+# that with the new landing page that peers has edited"*, then *"we don't
+# need this anymore"*.
+#
+# THIS IS A RETARGET, NOT A RELAXATION, and the difference is where the
+# ruling went rather than whether it survives. What these three held was
+# "the postcard must not letterbox on a desktop" — a rule about a card. The
+# card is retired, so the rule has no subject here; `verify80-home-postcard`
+# now fails if any map comes back to Home, which is the stronger claim and
+# the one Dan actually made. Section 1 above is untouched: the deck's view
+# tabs and CahierFrame's rail are the rest of the same desktop pass and are
+# still live.
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

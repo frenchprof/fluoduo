@@ -122,9 +122,19 @@ raw = re.findall(r'href=\{?[`"]/map\?[^`"]*[`"]', home)
 check(not raw,
       "Home never spells a ?view of its own — the map keeps the learner's choice",
       f"Home hand-writes a viewed /map link: {raw[:2]} — the silent view-reset Dan killed on 1 Sep is back")
-check(home.count('href="/map"') == 1 and "mapHref" not in home,
-      "the postcard's stretched link is the one door to the map, bare",
-      "Home's map links changed shape — the card is meant to be the only door, with no view param")
+# SUPERSEDED AGAIN, 8 Sep: the postcard itself is retired (Dan, shown a
+# screenshot of it: *"we don't need this anymore"*), so Home now spells NO
+# map link at all and "exactly one" would fail on a page that is correct.
+# What survives is the half that was never about the card: any map link Home
+# ever carries must be BARE and singular. Today that is vacuously true at
+# zero; if a Map door comes back to this page it is guarded on arrival
+# rather than after the next regression. `verify80-home-postcard` is what
+# now holds the absence of the map itself.
+n_map = home.count('href="/map"')
+check(n_map <= 1 and "mapHref" not in home,
+      f"Home spells {n_map} map link(s) — bare, and never more than one",
+      "Home has grown more than one map door, or a computed mapHref — the "
+      "card was the single bare door and its replacement must be too")
 check(not os.path.isfile("src/components/RoadMap.tsx") and "RoadMap" not in home,
       "RoadMap.tsx is gone and nothing in HomeDashboard renders it",
       "RoadMap is still around / rendered")

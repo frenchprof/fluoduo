@@ -26,7 +26,6 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Map2DGrid from "@/components/Map2DGrid";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
@@ -400,99 +399,22 @@ export default function HomeDashboard() {
           of each other, one counting DAYS and one counting STOPS, and nothing
           on the screen saying which was which. */}
 
-      {/* 🗺️ The Map as a POSTCARD (Dan, 2026-08-21): a read-only snapshot
-          of the learner's stretch of the course — the course mark, drawn.
-          Inert on purpose (pointer-events off): a finger can't catch it, a
-          tap anywhere is the door to the real map on /map. */}
-      {/* The snapshot contains the map's own links, so the door to /map is
-          a STRETCHED sibling link over the top — an <a> may not contain an
-          <a>. `inert` keeps the frozen map's controls out of the tab order
-          and the a11y tree. */}
-      <div
-        className="relative mt-2 overflow-hidden rounded-2xl border-2 transition hover:-translate-y-0.5"
-        style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)", boxShadow: "var(--shadow-card)" }}
-      >
-        {/* One more layer between the page and the picture (Dan, 2026-08-22):
-            the snapshot sits in a recessed mat, so it reads as a mounted
-            photo — a surface you scroll PAST, never a control. The mat plus
-            `inert` + pointer-events-none below mean no gesture over it can
-            ever catch: a finger going down the page glides over. */}
-        <div className="p-2 pb-0" aria-hidden>
-          <div
-            inert
-            className="pointer-events-none select-none overflow-hidden rounded-xl"
-            style={{ boxShadow: "inset 0 2px 8px rgba(0,0,0,0.18), inset 0 0 0 1.5px var(--cahier-line)" }}
-          >
-            {/* PINNED 2D (Dan, 7 Sep: "on the home page we are seeing the
-                wrong map. it should be the tightened 2D" — supersedes the
-                2 Sep flip-in-place, whose switch left with it). The postcard
-                is a picture of where you are; the 2D/3D choice lives where
-                it matters, on /map. */}
-            {/* THE REAL MAP (Dan, 7 Sep: "the home page map ought to be at
-                least one of the two real maps, it is the wrong map now (an
-                older version)"). Map2DGrid is the map /map itself renders —
-                same pens, same stops — zoomed to postcard size and cropped;
-                HomeMap (patch 25's drawing) retires from this card. */}
-            {/* A RATIO, NOT A HEIGHT (7 Sep, the desktop pass). This crop was
-                `h-[330px]`, a fixed slice of map height at EVERY card width —
-                so the postcard was 293×153 on a phone (right) and 764×153 on a
-                1440px desktop: a 5:1 letterbox showing three rows of stops with
-                the « Enter the map » band lying across the third. The card got
-                wider with the screen and never got taller.
+      {/* THE MAP POSTCARD IS RETIRED (Dan, 8 Sep, over a screenshot of it:
+          *"retire the unresponsive 2d map with start here button. we have
+          replaced that with the new landing page that peers has edited"*,
+          then, shown it again: *"we don't need this anymore"*).
 
-                THE PHONE KEEPS ITS EXACT CROP and only the wide card changes,
-                because 153px at 293px wide is a deliberate glimpse and there is
-                no room on a phone for more. Above `sm` the card takes a ratio
-                instead — scale-invariant, so it survives the 0.44 zoom with no
-                arithmetic against it.
+          It was a cropped Map2DGrid under a glassmorphic « Enter the map »
+          band, with a stretched link carrying the tap. What killed it is
+          the thing that replaced it: /welcome opens on the 3D map at full
+          height, so Home was showing a squeezed second copy of a picture the
+          app already shows properly somewhere else. On a desktop the crop
+          also laid the words across stop 23, which is the "unresponsive"
+          Dan saw — the band is pointer-events-none by design and reads as a
+          dead button.
 
-                3.7 IS DAN'S PICK, from three heights rendered side by side
-                (8 Sep): a tight letterbox, a middle, and one showing the whole
-                map. He chose the middle — more of the journey than the
-                letterbox, without the card growing to dominate the page. The
-                number is not a taste, it is what puts the card at that height:
-                748px wide on a 1440 desktop, so 748/3.7 = 202px, against
-                748/3.2 = 234px before. The phone is byte-for-byte unchanged —
-                277×145 either way, because below `sm` the ratio never applies
-                and `h-[330px]` × the 0.44 zoom still rules. */}
-            <div className="h-[330px] overflow-hidden sm:h-auto sm:aspect-[3.7]" style={{ zoom: 0.44 }}>
-              <Map2DGrid progress={progress} activeId={activeId} accent={accent} />
-            </div>
-          </div>
-          {/* THE DOOR, SAID ON THE PICTURE (Dan, 7 Sep: "Across it we can
-              have the CTA 'Enter the map'"). A content-sized pill, centred —
-              never spanning (the no-full-width rule). Visual only: the
-              stretched link below carries the tap, so the whole card stays
-              one door and the pill needs no second handler. */}
-          {/* GLASSMORPHIC, PER DAN (7 Sep: "i meant it as a (glassmorphic)
-              layer over the map leaving the underneath pass through in a
-              blur manner"). A translucent band across the card's foot: the
-              stops glow through the blur, the words float on it. Still
-              visual-only — the stretched link is the one door. */}
-          <span
-            aria-hidden
-            className="pointer-events-none fluo-btn-hand absolute inset-x-2 bottom-2 flex items-center justify-center rounded-xl border px-4 py-2.5 text-lg"
-            /* rgba, not a color-mix-to-transparent: the mix computed to full
-               transparency in the first capture and the words floated bare on
-               the stops. The blur is the garnish; the tint is the glass. */
-            style={{
-              background: "rgba(250, 247, 238, 0.62)",
-              backdropFilter: "blur(7px)",
-              WebkitBackdropFilter: "blur(7px)",
-              borderColor: "rgba(49, 38, 32, 0.35)",
-              color: "var(--cahier-ink)",
-              boxShadow: "0 1px 8px rgba(49,38,32,0.18)",
-            }}
-          >
-            Enter the map
-          </span>
-        </div>
-        <Link
-          href="/map"
-          aria-label="Enter the map — the course map, full screen"
-          className="absolute inset-0 z-10"
-        />
-      </div>
+          verify80 is inverted with it: it used to pin the postcard's shape
+          and now fails if a map postcard comes back to this page. */}
     </>
   );
 }
