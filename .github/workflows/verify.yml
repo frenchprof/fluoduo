@@ -433,6 +433,9 @@ jobs:
       - name: "The map fills its notebook, and never scrolls sideways (8 Sep)"
         run: python3 verify/verify152-map-fit.py
 
+      - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
+        run: python3 verify/verify140-speculearn-merged.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
