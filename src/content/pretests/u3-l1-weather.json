@@ -116,8 +116,7 @@
         "froid": "froid is genuinely cold — it wouldn't prompt « c'est agréable ».",
         "frais et froid": "frais and froid are different temperatures — you can't stack both.",
         "fraîche": "fraîche is feminine — after impersonal il fait the adjective stays masculine: frais."
-      },
-      "transFirst": true
+      }
     },
     {
       "id": "06-du-vent",
@@ -271,8 +270,7 @@
         "Comment il fait": "Comment doesn’t combine with il fait for weather — the question is Quel temps fait-il ?",
         "Quel temps est-il": "est is for the time (Quelle heure est-il ?) — weather uses faire: Quel temps fait-il ?",
         "Qu'est-ce que le temps": "Not a real French structure."
-      },
-      "transFirst": true
+      }
     }
   ],
   "recap": [

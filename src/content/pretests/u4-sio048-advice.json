@@ -112,7 +112,6 @@
       ],
       "fullSentence": "Vous devez étudier pour le quiz.",
       "sentenceTrans": "You must study for the quiz.",
-      "transFirst": true,
       "whyWrong": {
         "devons": "That's the nous form — vous devez.",
         "doivent": "That's the ils form — vous devez.",
@@ -150,7 +149,6 @@
       ],
       "fullSentence": "Elles doivent boire plus d'eau.",
       "sentenceTrans": "They must drink more water.",
-      "transFirst": true,
       "whyWrong": {
         "doit": "That's the singular elle form — elles doivent.",
         "devez": "That's the vous form — elles doivent.",
@@ -169,7 +167,6 @@
       ],
       "fullSentence": "Il ne faut pas manger trop de sucre.",
       "sentenceTrans": "One mustn't eat too much sugar.",
-      "transFirst": true,
       "whyWrong": {
         "faux": "faux means 'false' — the verb is falloir: il ne faut pas.",
         "peux": "peux is the je/tu form — with il the necessity verb is faut.",
@@ -188,7 +185,6 @@
       ],
       "fullSentence": "On peut acheter des légumes frais au marché.",
       "sentenceTrans": "You can buy fresh vegetables at the market.",
-      "transFirst": true,
       "whyWrong": {
         "peux": "peux is the je/tu form — on takes peut.",
         "pouvez": "pouvez is the vous form — on takes peut.",
@@ -207,7 +203,6 @@
       ],
       "fullSentence": "Pour bien dormir, vous ne devez pas boire de café le soir.",
       "sentenceTrans": "To sleep well, you mustn't drink coffee in the evening.",
-      "transFirst": true,
       "whyWrong": {
         "devons": "devons is the nous form — vous devez.",
         "doivent": "doivent is the ils/elles form — vous devez.",

@@ -35,7 +35,6 @@
       ],
       "fullSentence": "J'ai besoin d'un hôtel.",
       "sentenceTrans": "I need a hotel.",
-      "transFirst": true,
       "whyWrong": {
         "envie": "avoir envie de means 'to feel like/want' — 'need' is avoir besoin.",
         "faim": "faim means 'hunger' — 'need a hotel' is avoir besoin.",

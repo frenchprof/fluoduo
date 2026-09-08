@@ -17,7 +17,6 @@
       ],
       "fullSentence": "Il est midi. Vous avez faim ?",
       "sentenceTrans": "It's noon. Are you hungry?",
-      "transFirst": true,
       "whyWrong": {
         "soif": "soif means 'thirsty'; the noon cue is hunger — avoir faim.",
         "froid": "froid means 'cold', not hungry — avoir faim.",
