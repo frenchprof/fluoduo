@@ -15,11 +15,23 @@
 import type { Collection, Item } from "./schema";
 import { CURATED } from "@/content/collections";
 import { isPlayableGap } from "./gapSentence";
+import { pairGapItems } from "./pairChests";
 
 const MIN_GAPPED = 4;
 
+/**
+ * The items GramMarathon actually plays: the deck's hand-gapped ones, plus the
+ * gap-fill projection of any matching pairs it authors (Dan, 8 Sep, option 1 —
+ * « Vous tournez ___ » with the completions as the bank).
+ *
+ * ONE FUNCTION, EVERY CALL SITE. The docstring above records what it cost the
+ * last time this question was answered in five places at once: three decks were
+ * silently unplayable because the readiness gate and the game itself filtered
+ * differently. A deck's pairs must not reopen that — the gate, the tab and the
+ * game all read this.
+ */
 export function gappedItems(c: Collection): Item[] {
-  return c.items.filter(isPlayableGap);
+  return [...c.items.filter(isPlayableGap), ...pairGapItems(c)];
 }
 
 export function isGramMarathonReady(c: Collection | undefined): boolean {

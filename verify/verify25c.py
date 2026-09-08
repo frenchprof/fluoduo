@@ -187,7 +187,16 @@ check("prefers-reduced-motion" in m3 and '"smooth" : "auto"' in m3, "reduced mot
 check(".home-map-bob, .home-map3d-pulse, .home-map3d-ring { animation: none; }" in css, "reduced motion: no bob / pulse / ring (globals.css)", "bob/pulse/ring not disabled under reduced motion")
 check("onFocusCapture" in m3 and "data-cam" in m3, "keyboard focus travels the camera to the stop", "focus does not travel")
 check(".home-map3d-stage { overflow: clip; }" in css, "the stage is overflow: clip", "stage not overflow: clip")
-check('aria-label="Course map, 3D' in m3 and "aria-current" in m3, "aria: the box is labelled, the current stop is aria-current", "aria labels missing")
+# The box's label is now CONDITIONAL — the landing page renders the scene as a
+# still, where "scroll to travel the road" would announce a gesture that has
+# been switched off (8 Sep). So this looks for the label TEXT rather than for
+# `aria-label="` immediately followed by it, and insists BOTH labels survive:
+# the travelling one and the still one. Pinned to one spelling, it failed a
+# file that had gained a label rather than lost one.
+check('"Course map, 3D' in m3 and "a still view of the road" in m3 and "aria-label" in m3
+      and "aria-current" in m3,
+      "aria: the box is labelled in both modes, the current stop is aria-current",
+      "aria labels missing")
 
 # 6 · tokens only
 HEX = re.compile(r"#[0-9a-fA-F]{3,8}\b")

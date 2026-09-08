@@ -1,7 +1,7 @@
 {
-  "note": "Ratchet for the visual pass. These may fall, never rise.",
+  "note": "Ratchet for the visual pass. These may fall, never rise. raw_hex 494 -> 482 on 8 Sep: ChestArt.tsx became an exempt DRAWING (see verify19b.py), and the ceiling came down by the 2 that move really took off the count PLUS the 10 of unclaimed drift already sitting between main's baseline and its actual count \u2014 an exemption must not bank drift as headroom.",
   "counts": {
-    "raw_hex_in_components": 494,
+    "raw_hex_in_components": 482,
     "stock_tailwind_classes": 745,
     "files_with_raw_hex": 53
   }

@@ -34,7 +34,7 @@ import { type ShellTab } from "@/components/TabFlap";
 import { getLetrisSet } from "@/games/letris/sets";
 import { composeBanksForDeck } from "@/games/compose/banks";
 import FirstTour from "@/components/FirstTour";
-import { isPlayableGap } from "@/lib/collections/gapSentence";
+import { gappedItems } from "@/lib/collections/gramMarathonReady";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
@@ -395,7 +395,7 @@ export function deckActivityTabs(collectionId: string): ShellTab[] {
     // Resurrected as a NAMED activity (Dan, 2026-07-22) — the per-deck typed
     // sprint, distinct from the Final's authored bank. Only for decks whose
     // items carry gaps, so the marathon is never empty.
-    ...(curatedDeck?.items?.some(isPlayableGap)
+    ...(curatedDeck && gappedItems(curatedDeck).length > 0
       ? [registryTab("grammarathon", `/practice/grammarathon/${collectionId}`)]
       : []),
     // né « Say It » — renamed WorDrill (Dan, 2026-07-19); key stays "say" so

@@ -42,6 +42,38 @@ HARD, SOFT = [], []
 # set as short as its reason.
 PALETTE_SOURCES = {"src/content/highlighterMarks.ts"}
 
+# DRAWINGS — files whose whole job is to BE a picture.
+#
+# The same exemption from the other side. `ChestArt.tsx` is the app's treasure
+# chest: an SVG of wood, gold and ink, drawn over four rounds of Dan sending it
+# back. Its eight hexes are a picture's PIGMENTS — the gold's two stops, the
+# ink it is outlined in, the default livery's wood — not interface colour that
+# a token could carry. « the chestboxes will look like chestboxes if they are
+# viewed from the corner » is not a question a design token can answer.
+#
+# It is exempt for the same reason globals.css is outside the scan, and it is
+# held to the same bargain: an exemption must not leave slack behind it.
+#
+# THE ARITHMETIC, measured at the gate rather than assumed, because the first
+# telling of it was wrong in a way worth keeping. The drawing did NOT simply
+# move out of Lexicalator.tsx: that file lost 2 counted hexes, while the chest
+# arrived with 8, so 6 of the pigments are new — the redrawn chest is not the
+# old one relocated. Counted totals, by running this check on both trees:
+#
+#     main         baseline 494, actual 484   ->  10 of slack, inherited
+#     this patch   baseline 482, actual 482   ->   0
+#
+# So the ceiling comes down 12, not 8: the 2 the move really took off, plus
+# the 10 of drift that had accumulated on main and that nobody had claimed.
+# Lowering only by the exemption's size would have banked that drift as
+# permanent headroom, which is the failure this bargain exists to prevent.
+#
+# A component that draws a BUTTON in hex does not belong here. The test is
+# whether the file would be a .svg on disk if SVG could take a prop.
+DRAWINGS = {"src/components/ChestArt.tsx"}
+
+EXEMPT = PALETTE_SOURCES | DRAWINGS
+
 
 def files(ext):
     out = []
@@ -50,7 +82,7 @@ def files(ext):
         out += [
             p for f in fs
             if f.endswith(ext)
-            and (p := os.path.join(root, f)).replace(os.sep, "/") not in PALETTE_SOURCES
+            and (p := os.path.join(root, f)).replace(os.sep, "/") not in EXEMPT
         ]
     return out
 

@@ -20,12 +20,29 @@ import { speak } from "@/games/letris/speech";
 import { chiptune } from "@/games/audio/chiptune";
 import { sfx } from "@/games/audio/sfx";
 import CreditsSplash from "@/games/CreditsSplash";
+import ChestArt, { CHEST_GOLD, type ChestTint } from "@/components/ChestArt";
 import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
 import { shuffle } from "@/lib/shuffle";
 
-export type LexEntry = { id: string; fr: string; en: string; syllables: string[]; say?: string };
+export type LexEntry = {
+  id: string;
+  fr: string;
+  en: string;
+  syllables: string[];
+  say?: string;
+  /**
+   * THE JOINTS ARE THE POINT, LEAVE THEM ALONE (8 Sep). A normal chest is
+   * re-cut for the level: whole word at 1, hand-authored syllables at 2–3,
+   * random spelling chunks at 4+. A PHRASE chest — « Vous tournez » + « à
+   * droite » — is not a word broken into pieces, it is two pieces that make a
+   * sentence, and its two keyholes ARE the exercise. Re-cutting it at level 1
+   * hands the learner the whole sentence as one key, and at level 4 it
+   * shatters into letter chunks that cross the joint.
+   */
+  fixed?: boolean;
+};
 
 const START_LIVES = 3;
 const LANE = 3; // chests on the lane at once
@@ -40,7 +57,8 @@ const minSylForLevel = (l: number) => (l <= 1 ? 1 : l <= 2 ? 2 : 3);
 //          syllabation not a concern; re-rolled every deal so the same word
 //          spells differently each time.
 const SPELL_LEVEL = 4;
-function gearEntry<E extends { fr: string; syllables: string[] }>(level: number, e: E): E {
+function gearEntry<E extends { fr: string; syllables: string[]; fixed?: boolean }>(level: number, e: E): E {
+  if (e.fixed) return e; // a phrase chest: its joints are the exercise
   if (level >= SPELL_LEVEL) return { ...e, syllables: chunkSpelling(e.fr) };
   if (level <= 1) return { ...e, syllables: [e.fr.trim()] };
   return e;
@@ -87,7 +105,7 @@ const keyW = (s: string) => Math.max(40, 24 + s.length * 15);
 // appear in slightly different colors because it's hard to see if we brought
 // down the chests desired"). A chest keeps its livery from the lane through
 // the drag ghost into the assembly bay, and no two lane chests share one.
-type ChestTint = { body: string; lid: string; edge: string };
+
 const CHEST_TINTS: ChestTint[] = [
   { body: "linear-gradient(180deg,#ffe08a,#eaa61c)", lid: "linear-gradient(180deg,#c8860f,#96600c)", edge: "#7a4e0a" }, // or
   { body: "linear-gradient(180deg,#ffd3de,#e56a8f)", lid: "linear-gradient(180deg,#c04a6e,#8f2d4c)", edge: "#7a2438" }, // rose
@@ -350,9 +368,20 @@ export default function Lexicalator({
     // Fake keys match the level's joints: level 1 (whole words) baits with
     // OTHER words of the deck; spelling mode with mutated real chunks (one
     // vowel off); the syllable levels with the deck's hand-authored decoys.
+    //
+    // A FIXED CHEST HAS NO "LEVEL 1" (8 Sep). The level-1 bait is other whole
+    // ANSWERS of the deck, which is fair when a chest's one keyhole holds a
+    // whole word. A phrase chest's keyholes hold HALVES, so baiting with whole
+    // sentences — « Vous sortez de la station de métro » beside a two-hole
+    // lock — is not a temptation, it is a give-away: the wrong keys are the
+    // only ones too long to fit. Deals like that take the deck's authored
+    // halves instead, at every level.
+    const fixedLane = chests.some((c) => c.entry.fixed);
     const usable =
-      level <= 1
+      level <= 1 && !fixedLane
         ? shuffle(entries.map((e) => e.fr.trim()).filter((w) => !real.has(w) && !isPartialOfMono(w) && !isPartOfLaneWord(w))).slice(0, 4)
+        : fixedLane
+        ? decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d))
         : level >= SPELL_LEVEL
           ? [...new Set([...real].map(mutateChunk).filter((m): m is string => !!m && !real.has(m) && !isPartOfLaneWord(m)))].slice(0, 6)
           : decoys.filter((d) => !real.has(d) && !isPartialOfMono(d) && !isPartOfLaneWord(d));
@@ -638,7 +667,7 @@ export default function Lexicalator({
 
   return (
     <GameFrame
-      title="🧰 LexicaLater"
+      title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLater</>}
       exitHref={exitHref}
       progress={{ done: cleared, total: quota }}
       hearts={{ left: lives, total: START_LIVES }}
@@ -651,11 +680,11 @@ export default function Lexicalator({
         { label: "😤 Hard", active: hard, onClick: () => setHard((h) => !h) },
       ]}
       record={<div className="flex flex-wrap gap-2">{tresorChips}</div>}
-      recordTitle="🧰 Your treasure"
+      recordTitle={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> Your treasure</>}
       background="linear-gradient(180deg, var(--region-heights-band) 0%, var(--cahier-paper) 60%)"
     >
     <div ref={rootRef} className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
-      <CreditsSplash game="LexicaLater" emoji="🧰" />
+      <CreditsSplash game="LexicaLater" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} />
       <style>{`
         @keyframes lxscroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
         @keyframes lxrattle{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px) rotate(-4deg)}75%{transform:translateX(4px) rotate(4deg)}}
@@ -690,13 +719,16 @@ export default function Lexicalator({
             <button key={c.entry.id} type="button"
               onClick={(e) => { if (e.detail === 0) pickChest(c.entry.id); }}
               onPointerDown={(e) => startDrag(e, c.entry.id)}
-              className="relative w-36 cursor-grab touch-none overflow-hidden rounded-lg border-2 border-b-4 text-center transition active:cursor-grabbing"
-              style={{ borderColor: liveryOf(c.entry.fr, c.tint, level).edge, background: liveryOf(c.entry.fr, c.tint, level).body, boxShadow: "inset 0 -2px 0 rgba(0,0,0,.15)", opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <span className="flex items-center justify-center" style={{ height: 10, background: liveryOf(c.entry.fr, c.tint, level).lid }}>
-                <span style={{ width: 12, height: 4, borderRadius: 1, background: "#ffe9a8" }} />
-              </span>
+              // THE CHEST IS A DRAWING NOW (Dan's sketch, 8 Sep). The card that
+              // stood in for it — a rounded rectangle with a darker strip on
+              // top — is gone; what is left of the button is a transparent hit
+              // area holding the drawing, its label and its lock. Nothing about
+              // the drag, the letter key or the slot bars changes.
+              className="relative w-36 cursor-grab touch-none rounded-lg text-center transition active:cursor-grabbing"
+              style={{ opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
+              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[112px]" />
               {laneIdx < 26 && <span aria-hidden className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded bg-white/85 text-[10px] font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{String.fromCharCode(65 + laneIdx)}</span>}
-              <span className="block px-2 pt-1 text-sm font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
+              <span className="block px-2 pt-1 text-sm font-black leading-tight" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
                 {(hard ? [c.entry.syllables.length] : c.entry.syllables).map((s, i) => {
                   const doneSlot = hard ? c.filled.some(Boolean) : c.filled[i];
@@ -723,12 +755,12 @@ export default function Lexicalator({
           </div>
         )}
         {active && (
-          <div className="overflow-hidden rounded-xl border-2 text-center" style={{ borderColor: liveryOf(active.entry.fr, active.tint, level).edge, borderBottomWidth: 6, background: liveryOf(active.entry.fr, active.tint, level).body, boxShadow: "0 12px 24px -14px rgba(0,0,0,.5)" }}>
-            {/* the opened lid */}
-            <div className="flex items-center justify-center" style={{ height: 14, background: liveryOf(active.entry.fr, active.tint, level).lid }}>
-              <span style={{ width: 18, height: 6, borderRadius: 2, background: "#ffe9a8" }} />
-            </div>
-            <div className="px-4 py-3">
+          <div className="text-center">
+            {/* THE CHEST IN THE BAY, with its lid hinged open — same drawing as
+                the lane's, one prop apart, so the chest you dragged down is
+                visibly the chest you are now filling. */}
+            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[162px]" />
+            <div className="-mt-2 px-4 py-3">
             <div className="mb-3 text-lg font-black" style={{ color: liveryOf(active.entry.fr, active.tint, level).edge }}>{active.entry.en}</div>
             {hard ? (
               <div className="mx-auto flex min-h-[3rem] min-w-[8rem] items-center justify-center rounded-xl border-2 border-dashed px-4 text-xl font-black" style={{ borderColor: "#e08600", color: "#0c4a6e" }}>
@@ -848,7 +880,7 @@ export default function Lexicalator({
           was forged against, and where that word lives on the path. */}
       {over && (
         <GameOver
-          emoji="🧰"
+          emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />}
           title="Out of lives!"
           score={<>{score} · level {level}</>}
           won={false}

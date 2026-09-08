@@ -581,6 +581,8 @@ export default function HomeMap3D({
   onOpenUnit,
   onOpenSio,
   fill = false,
+  still = false,
+  skyLift = 1,
 }: {
   progress: Progress;
   activeId?: string;
@@ -602,6 +604,37 @@ export default function HomeMap3D({
    * scene built for it.
    */
   fill?: boolean;
+  /**
+   * A PICTURE, NOT A PLACE (Dan, 8 Sep, over his own mock of the landing
+   * page: *"it supposed to be a static image, not a movable 3d page"*).
+   *
+   * The scene has no drag handler and never had one — what MOVES it is the
+   * scroll. The box is `overflow-y-auto` over a spacer as long as the road,
+   * and the stage sticks while the camera is re-projected from the scroll
+   * offset, so travelling the road IS scrolling the box. On a landing page
+   * that is the wrong offer twice over: the first thing a visitor does on a
+   * tall-looking page is scroll it, and here that walks the camera off down
+   * the road before they have read the one line on the screen.
+   *
+   * So `still` freezes the two ways in: the box stops scrolling, and the
+   * whole scene stops taking pointers — the fifty stops, the gate signs and
+   * the finish arch are all inert. What is left is a painting of the road at
+   * this learner's own position, at this hour's sky.
+   *
+   * IT IS STILL THE LIVE SCENE, not a baked image, and that is the point:
+   * a picture rendered once would show one road at one hour to everyone, so a
+   * learner four units in would be greeted by somebody else's start, at
+   * midnight, at noon.
+   */
+  still?: boolean;
+  /**
+   * Render the scene into a box this many times the visible height, so the
+   * horizon sits lower in the window and there is more sky above it. The
+   * overflow hangs past the fold and is clipped by the page. 1 = unchanged.
+   * See WELCOME_SKY_LIFT in projection.ts for why this is per-surface rather
+   * than a new HORIZON_Y.
+   */
+  skyLift?: number;
   /** Tapping a world's gate sign — the parent shows that unit's list. */
   onOpenUnit?: (unit: number) => void;
   /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
@@ -793,8 +826,10 @@ export default function HomeMap3D({
       <div className={fill ? "relative h-full" : "relative"}>
         <div
           ref={boxRef}
-          tabIndex={0}
-          aria-label="Course map, 3D — scroll to travel the road"
+          // A still scene is not a control: no tab stop, and it says what it
+          // is rather than offering a gesture it will not answer.
+          tabIndex={still ? -1 : 0}
+          aria-label={still ? "The course map — a still view of the road" : "Course map, 3D — scroll to travel the road"}
           /* LOOKING AROUND IS NOT READING TO AN END (7 Sep). This box scrolls,
              but dragging it pans the road — so without this, reaching its
              bottom and pushing once more would throw a learner off the map and
@@ -803,14 +838,23 @@ export default function HomeMap3D({
              sideways drag. */
           data-no-scroll-on
           className={fill
-            ? "home-map3d-box relative h-full overflow-y-auto overflow-x-hidden"
+            ? `home-map3d-box relative h-full overflow-x-hidden ${still ? "overflow-y-hidden" : "overflow-y-auto"}`
             : "home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"}
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
           style={{
             maxHeight: fill ? "none" : "68vh",
+            // The lift: a taller box, same fractions, so the horizon falls
+            // further down the window. Only set when asked for, so every
+            // other surface keeps `h-full` exactly as it was.
+            ...(skyLift !== 1 ? { height: `${skyLift * 100}%` } : null),
             borderColor: "var(--cahier-line-strong)", background: PAPER,
-            boxShadow: fill ? "none" : "var(--shadow-card)", touchAction: "pan-y",
+            boxShadow: fill ? "none" : "var(--shadow-card)",
+            // `still` takes both ways in at once: `none` stops the box
+            // scrolling under a finger, and pointerEvents stops the fifty
+            // stops, the gate signs and the finish arch being tappable.
+            touchAction: still ? "none" : "pan-y",
+            pointerEvents: still ? "none" : undefined,
             /* THE LABELS FOLLOW THE SUN TOO (Dan, 8 Sep: could it "land day
                when it's daytime and night when it is night time, with the
                fonts adapting accordingly?").
@@ -921,8 +965,13 @@ export default function HomeMap3D({
                     );
                   })}
 
-                  {/* World gate signs: the region icon over a place-name pill (tap = open the unit) */}
-                  {gates.map((g) => {
+                  {/* World gate signs: the region icon over a place-name pill (tap = open the unit).
+                      NOT ON A STILL. Dan's three mocks of the landing page show
+                      the road and nothing else — no place-name pill, no unit
+                      tally. They are the map's HUD, they are unreadable when
+                      they cannot be tapped, and the lifted scene clips the
+                      nearest one against the bottom edge. */}
+                  {(still ? [] : gates).map((g) => {
                     if (!g) return null;
                     const { r, px, py, scale, reveal } = g;
                     const icon = Math.max(18, Math.round(96 * scale));

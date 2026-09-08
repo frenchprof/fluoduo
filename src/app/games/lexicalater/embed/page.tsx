@@ -10,6 +10,7 @@
  * The chrome is hidden by CSS in a framed document (`html[data-embed]` in
  * globals.css), so nothing here had to change to lose its notebook.
  */
+import ChestArt, { CHEST_GOLD } from "@/components/ChestArt";
 import GameGallery, { type GalleryEntry } from "@/components/GameGallery";
 import { CURATED } from "@/content/collections";
 import { isLexReadyId } from "@/lib/collections/lexReady";
@@ -21,5 +22,5 @@ export default function LexicalatorIndexPage() {
   const entries: GalleryEntry[] = CURATED.filter((c) => isLexReadyId(c.id))
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9))
     .map((c) => ({ id: c.id, href: `/games/lexicalater/${c.id}`, title: shortTitle(c.id, c.title), unit: c.unit ?? null, deckId: c.id }));
-  return <GameGallery activityKey="lexicalator" emoji="🧰" name="LexicaLater" entries={entries} />;
+  return <GameGallery activityKey="lexicalator" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} name="LexicaLater" entries={entries} />;
 }

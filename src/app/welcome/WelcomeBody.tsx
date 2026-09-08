@@ -54,7 +54,7 @@ import HomeMap3D from "@/components/HomeMap3D";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
-import { clockHour, nightness } from "@/lib/map3d/sky";
+import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
 
 /** The four letters the brand is built from: Fluency On Linguistic Goals.
  *  COLOURED, ON DAN'S MOCK (8 Sep: "text bigger and More like this with the
@@ -63,6 +63,44 @@ import { clockHour, nightness } from "@/lib/map3d/sky";
  *  as vars so the ratchet counts no new hex; the drop shadow both lines
  *  already wear is what keeps them legible on the dawn band. */
 const CAP = "text-[1.3em] font-black leading-none";
+/** The dark ground each line of the greeting sits on, from Dan's three mocks
+ *  of 8 Sep. Translucent, so the sky reads through it and the page stays one
+ *  picture rather than a caption pasted over a photograph. */
+const BAND = "rgba(10,12,32,0.52)";
+
+/**
+ * A BLACK OUTLINE ON EVERY LETTER (Dan, 8 Sep: *"the letters forming the
+ * title and the subtitle should have black outline to withstand any sky
+ * color"*).
+ *
+ * The sky here is not a background, it is a clock: it runs from midnight blue
+ * through dawn orange to noon blue and back, so any single drop shadow is
+ * tuned for one hour and thin at another. An outline does not care what is
+ * behind it.
+ *
+ * `paintOrder: "stroke fill"` is what makes it an outline rather than damage.
+ * `-webkit-text-stroke` alone draws the stroke CENTRED on the letterform, so
+ * half of it eats inward and a hand face at 4.4rem comes out visibly thinner
+ * and muddier — worst on the thin joins of « u » and « n ». Painting the
+ * stroke first and the fill over it keeps the letter its own width and puts
+ * the whole stroke outside.
+ *
+ * The width is in `em`, not px, so the subline at 1.8rem and the name at
+ * 4.4rem wear the same weight of line rather than the subline wearing a
+ * proportionally fatter one.
+ */
+const OUTLINE = {
+  WebkitTextStrokeWidth: "0.055em",
+  // The CSS keyword, not a bare hex triple: this file carried no raw hex
+  // before the outline, and verify19b's ratchet counts FILES that hold one as
+  // well as values — so one stroke colour would have moved 53 to 54.
+  // (And the ratchet greps the raw source, comments included, which is why
+  // this note spells none. Third time today a check has read its own
+  // documentation as the defect — verify152 and verify153 both strip comments
+  // first for exactly this reason; verify19b's ratchet still does not.)
+  WebkitTextStrokeColor: "black",
+  paintOrder: "stroke fill",
+} as const;
 const BRAND: Record<string, string> = {
   F: "var(--fam-svplay)", // pink
   o: "var(--fam-goals)", // green
@@ -91,7 +129,6 @@ export default function WelcomeBody() {
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
   const [progress, setProgress] = useState<Progress>(defaultProgress);
-  const [hour, setHour] = useState(12);
   useEffect(() => {
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setProgress(loadProgress());
@@ -99,17 +136,13 @@ export default function WelcomeBody() {
     window.addEventListener("fluolingo:progress-updated", sync);
     return () => window.removeEventListener("fluolingo:progress-updated", sync);
   }, []);
-  useEffect(() => {
-    // The same clock the scene reads, on the same once-a-minute tick, and the
-    // same `?hour=` override — so a screenshot of this page at 23:00 has a
-    // night sky AND night type, instead of one of each.
-    const tick = () => setHour(clockHour(window.location.search));
-    tick();
-    const id = setInterval(tick, 60_000);
-    return () => clearInterval(id);
-  }, []);
 
-  const night = nightness(hour);
+  // NO CLOCK ON THIS PAGE ANY MORE. It used to read the hour so the CTA's
+  // glass could turn over with the sky and the type could switch palettes at
+  // dusk. Neither survives Dan's 8 Sep mocks: the way in is the map's own
+  // orange coin at every hour, and the greeting is white with a black outline
+  // precisely so it does NOT need to know what the sky is doing. The scene
+  // still reads the clock — that is where the hour belongs.
   const activeId = nextSioId(progress);
 
   return (
@@ -125,6 +158,8 @@ export default function WelcomeBody() {
           activeId={activeId}
           accent={equippedAccent(progress)}
           fill
+          still
+          skyLift={WELCOME_SKY_LIFT}
         />
       </div>
 
@@ -155,7 +190,7 @@ export default function WelcomeBody() {
           a swipe that starts on the headline still travels the road — the
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[14%] flex flex-col items-center px-6 text-center sm:top-[13%]">
+      <div className="pointer-events-none absolute inset-x-0 top-[4%] flex flex-col items-center px-6 text-center sm:top-[4%]">
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
@@ -181,16 +216,39 @@ export default function WelcomeBody() {
             like this with the colors on F, O, L and G". Both lines grew a
             step at every breakpoint; the name's own F·O·L·G light up in the
             same four pens as the subline's capitals, so the word and its
-            meaning wear one system. */}
+            meaning wear one system.
+
+            BIGGER AGAIN, AND ON ITS OWN BAND — Dan, 8 Sep, over three mocks
+            of this page in one message ("this is closer to what i would
+            like"). All three show the same two things:
+
+              · THE GREETING BREAKS. « Welcome to » sits over « FluOLinGo »
+                even on a wide desktop, where it would otherwise fit on one
+                line. That is the point: broken, the name gets a line of its
+                own at full size and reads as the MARK rather than as the tail
+                of a sentence.
+              · EACH LINE WEARS ITS OWN DARK BAND, hugging the words rather
+                than a panel behind the block. That is what an inline
+                background does, one band per line, which is why the bands in
+                his mock are three different widths.
+
+            The band replaces the drop shadow's job at the size the type is
+            now: a 5rem hand face over a moonlit sky needs a ground, not a
+            glow. It is translucent, so the sky still shows through it and the
+            page is still one picture. */}
         <h1
-          className="text-[2.1rem] font-black leading-[1.05] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.6)] sm:text-[3.6rem] [@media(max-height:480px)]:text-[1.5rem]"
-          style={{ fontFamily: "var(--font-fluohand-stack)" }}
+          className="text-[3.2rem] font-black leading-[1.02] text-white sm:text-[4.4rem] [@media(max-height:480px)]:text-[1.6rem]"
+          style={{ fontFamily: "var(--font-fluohand-stack)", ...OUTLINE }}
         >
-          Welcome to <BrandName word="FluOLinGo" />
+          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>Welcome to</span>
+          <br />
+          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>
+            <BrandName word="FluOLinGo" />
+          </span>
         </h1>
         <p
-          className="mt-2 text-[1.15rem] font-bold leading-[1.15] text-white/90 drop-shadow-[0_1px_12px_rgba(0,0,0,0.7)] sm:mt-3 sm:text-[1.95rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
-          style={{ fontFamily: "var(--font-fluohand-stack)" }}
+          className="mt-1.5 inline-block px-4 py-0.5 text-[1.35rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.8rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
+          style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
         >
           {/* One span per raised letter, and the sentence given once to a
               screen reader — otherwise it reads out four stray characters. */}
@@ -205,40 +263,65 @@ export default function WelcomeBody() {
         </p>
       </div>
 
-      {/* THE ONE ACTION, on the one piece of glass. Low in the frame, over
-          near ground, so the horizon above it stays whole. Content-sized: a
-          button never wears the page's width (the standing rule) — and here
-          a full-width bar would also be a wall across the road. */}
-      <div className="absolute inset-x-0 bottom-[7%] flex flex-col items-center gap-3 px-6">
+      {/* THE ONE ACTION — A COIN ON THE ROAD (Dan, 8 Sep, with his own mock
+          of this page: *"this is closer to what i would like"*, showing a
+          large orange ellipse reading ENTER standing on the near stretch of
+          road where the glass pill used to be).
+
+          It is the map's own stop coin, scaled up. That is the whole idea and
+          it is why this reads better than the pill did: every stop on the
+          road behind it is a coin, so the way in is the first one — you are
+          not pressing a button that sits ON a picture of a road, you are
+          stepping onto the road. `border-radius: 50%` makes it a true ellipse
+          rather than a stadium, because a stop is a disc seen in perspective.
+
+          THE SHADOW IS THE COIN'S LANGUAGE, not a drop shadow: a hard step of
+          darker orange directly under the disc (the side wall you see because
+          it is lit from above) and a soft cast beneath that. It is
+          `.fluo-stop--up`'s recipe at landing-page scale — see globals.css,
+          where the reasoning is written out: everything that describes depth
+          sits at the BOTTOM, which is the only place a raised disc lit from
+          above can show it.
+
+          ORANGE AS A VAR, not a hex: `--fam-user` is the app's own 55°
+          orange, the same one stop 1 wears three inches above it, so the
+          ratchet counts nothing new and the two cannot drift apart.
+
+          STILL CONTENT-SIZED. The standing rule is that no single control
+          wears the page's width, and on this page a full-width bar would also
+          be a wall laid across the road. */}
+      {/* A GAP BETWEEN THE COIN AND STOP 1 (Dan, 8 Sep, over the first
+          render: *"why is the ENTER button so close to the 1 button? Can
+          there be gap?"*). Measured before touching it, and it was worse
+          than close — the two OVERLAPPED: on a 1440x900 desktop ENTER's top
+          edge sat 20px ABOVE stop 1's bottom, and on a 390x844 phone they
+          touched at 1px. The camera frames the current goal near the foot of
+          the road, and for a visitor with no progress that goal is stop 1,
+          so the coin and the first stop are always competing for the same
+          band of ground.
+
+          The coin is bottom-anchored, so trimming its height pushes its TOP
+          down — which is the edge that was colliding. Height comes off rather
+          than width: an ellipse seen in perspective is flat, so a shorter
+          coin reads MORE like the stops it imitates, and the width (and so
+          the prominence Dan asked for) is untouched. */}
+      <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
         <Link
           href="/"
-          // MORE PROMINENT, ON DAN'S INSTRUCTION the same day — bigger type,
-          // deeper pill, a stronger border and a lift on hover. Still
-          // content-sized: no control wears the page's width, and on this page
-          // a full-width bar would be a wall laid across the road.
-          // On a phone held sideways the whole page is 390px tall, and the
-          // prominent pill measured 96px of it — a lid over the near ground and
-          // over goal 1. It keeps its weight and loses its bulk there.
-          // AND MORE PROMINENT AGAIN (Dan, 8 Sep, over the mock: "The Start
-          // now is not prominent enough") — a size up at every breakpoint, a
-          // thicker border, a deeper shadow. Still content-sized.
-          className="rounded-full border-[3px] px-12 py-5 text-2xl font-black tracking-tight transition hover:-translate-y-0.5 sm:px-16 sm:py-6 sm:text-3xl [@media(max-height:480px)]:px-9 [@media(max-height:480px)]:py-3 [@media(max-height:480px)]:text-xl"
+          className="rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
-            // The glass: what is behind the pill blurs, the pill's own words
-            // do not. Dan, on the panel version: the CTA should be "crystal
-            // clear" while the surface it sits on is translucent.
-            backdropFilter: "blur(10px) saturate(1.2)",
-            WebkitBackdropFilter: "blur(10px) saturate(1.2)",
-            background: night > 0.45 ? "rgba(22,18,34,0.68)" : "rgba(255,255,255,0.78)",
-            borderColor: night > 0.45 ? "rgba(255,255,255,0.5)" : "rgba(40,32,26,0.4)",
-            color: night > 0.45 ? "var(--cahier-paper)" : "var(--cahier-ink)",
-            boxShadow: "0 8px 36px rgba(0,0,0,0.45)",
-            // The same 1.2s the map's label plates use, so the whole page
-            // turns over together at dusk instead of in two steps.
-            transition: "background-color 1.2s ease, color 1.2s ease, border-color 1.2s ease, transform 0.15s ease",
+            background: "var(--fam-user)",
+            color: "var(--cahier-ink)",
+            // THE SLAB, from his mocks: the coin's own side wall in darker
+            // orange, then a hard BLACK step under that, then the soft cast.
+            // Three layers, all at the bottom — the same reasoning
+            // `.fluo-stop--up` is written from, at four times the size.
+            boxShadow:
+              "0 12px 0 color-mix(in oklab, var(--fam-user) 58%, black), 0 26px 0 rgba(0,0,0,0.72), 0 34px 34px rgba(0,0,0,0.45)",
+            transition: "transform 0.15s ease",
           }}
         >
-          Start now
+          Enter
         </Link>
       </div>
     </main>
