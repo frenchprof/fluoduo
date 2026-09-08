@@ -133,7 +133,9 @@ function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; ope
   const id = useId();
   const [b1, b2] = gradStops(tint.body);
   const ink = tint.edge;
-  const BAND = "#fdf6e4";
+  // Warm ivory, not paper-white. Pure cream against a mid-tone livery read as
+  // two painted stripes rather than two bands of metal.
+  const BAND = "#f6ead0";
   return (
     <svg viewBox="0 0 104 96" className={className} aria-hidden focusable="false">
       <defs>
@@ -167,18 +169,22 @@ function ChestArt({ tint, open = false, className = "" }: { tint: ChestTint; ope
         <path d="M8 40 A49 49 0 0 1 96 40" fill="rgba(0,0,0,0.16)" stroke="none" opacity="0.45" />
         <rect x="8" y="38" width="88" height="8" rx="2" fill={`url(#${id}b)`} stroke={ink} strokeWidth="2.4" />
         {/* the straps over the lid, with their rivets */}
+        {/* THE LID STRAPS BEND (Dan: "the strap makes the chest look off").
+            They were straight lines drawn across a domed lid, which is what
+            was wrong: a strap goes OVER a curve, and a vertical stripe on a
+            dome reads as paint on the surface rather than metal around the
+            object. These bow outward as they rise and close toward the crown,
+            which is the shape a band takes over a barrel lid. */}
         <g clipPath={`url(#${id}cl)`}>
-          <path d="M30 46 V8 M74 46 V8" stroke={BAND} strokeWidth="8" />
-          <path d="M30 46 V8 M74 46 V8" stroke={ink} strokeWidth="1.3" fill="none" opacity="0.5" />
+          <path d="M30 46 C26 30 30 18 40 11 M74 46 C78 30 74 18 64 11" fill="none" stroke={BAND} strokeWidth="5.5" />
+          <path d="M30 46 C26 30 30 18 40 11 M74 46 C78 30 74 18 64 11" fill="none" stroke={ink} strokeWidth="1" opacity="0.55" />
         </g>
-        <circle cx="30" cy="26" r="1.6" fill={ink} opacity="0.55" />
-        <circle cx="74" cy="26" r="1.6" fill={ink} opacity="0.55" />
       </g>
 
       {/* and down the barrel, foot to base band */}
       <g clipPath={`url(#${id}cb)`}>
-        <path d="M30 40 V92 M74 40 V92" stroke={BAND} strokeWidth="8" />
-        <path d="M30 40 V92 M74 40 V92" stroke={ink} strokeWidth="1.3" opacity="0.5" />
+        <path d="M30 40 V92 M74 40 V92" stroke={BAND} strokeWidth="5.5" />
+        <path d="M30 40 V92 M74 40 V92" stroke={ink} strokeWidth="1" opacity="0.55" />
       </g>
       <circle cx="30" cy="64" r="1.6" fill={ink} opacity="0.55" />
       <circle cx="74" cy="64" r="1.6" fill={ink} opacity="0.55" />
