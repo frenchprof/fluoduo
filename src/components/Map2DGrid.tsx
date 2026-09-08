@@ -282,7 +282,7 @@ export default function Map2DGrid({
             id={`unit-band-${unit}`}
             role="group"
             aria-label={UNIT_META[unit]?.label}
-            className="fluo-band grid grid-cols-5 justify-items-center gap-y-1 rounded-xl px-1.5 py-1"
+            className="fluo-band grid grid-cols-5 justify-items-center gap-y-1 rounded-xl px-1.5 py-1 sm:gap-y-2 sm:px-3 sm:py-2 lg:gap-y-3 lg:px-4 lg:py-3"
             style={{ background: `color-mix(in oklab, ${UNIT_ACCENTS[unit]} 14%, var(--cahier-paper-raised))` }}
           >
             {serpentine(SIOS.filter((s) => s.unit === unit)).map((s) => {
@@ -328,7 +328,7 @@ export default function Map2DGrid({
                   // forty of the fifty stops wore it. The kind colour moves from
                   // a `border` to an inset ring inside .fluo-stop, which costs
                   // no layout — 44px stays 44px, the touch floor holds.
-                  className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active ? "fluo-node-active" : ""}`}
+                  className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} relative z-[2] flex h-11 w-11 items-center justify-center rounded-full text-sm font-black sm:h-12 sm:w-12 sm:text-base lg:h-14 lg:w-14 lg:text-lg ${active ? "fluo-node-active" : ""}`}
                   // TWO SHADES OF ONE PEN (Dan, 6 Sep, choosing option B of
                   // three shown at 44px). Reached stops are filled with the
                   // pen at full strength; stops still ahead take its wash. The
@@ -402,7 +402,7 @@ export default function Map2DGrid({
             aria-label="GramMarathon Final"
             // The door stands PROUDEST of anything on the map — it is the one
             // node that is a place, and it is what the whole road leads to.
-            className="fluo-stop fluo-stop--up z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg"
+            className="fluo-stop fluo-stop--up z-[2] flex h-11 w-11 items-center justify-center rounded-full text-lg sm:h-12 sm:w-12 lg:h-14 lg:w-14"
             style={{
               ["--fluo-stop-kind" as string]: "var(--cahier-ink)",
               background: "var(--cahier-paper-raised)",

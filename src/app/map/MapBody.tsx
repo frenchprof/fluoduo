@@ -154,13 +154,28 @@ export default function MapBody() {
           for English text. Please use the FluOLinGo or Patrick Hand font …
           so that it occupies one line maximum"). One line is enforced, not
           hoped for: nowrap plus a viewport clamp that shrinks the hand face
-          before it ever wraps. */}
-      <p className="fluo-band-hand whitespace-nowrap text-[clamp(13px,4.3vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
+          before it ever wraps.
+
+          THE CLAMP WAS TUNED FOR A FULL-WIDTH PAGE, and this line has run
+          inside an iframe since 7 Sep — where `vw` is the FRAME's width, not
+          the phone's. On a 320px phone the notebook leaves the frame 247px and
+          this line measured 252px of content in 201px: the frame scrolled
+          sideways and the sentence ran off the paper (QC, 8 Sep). 4.3vw → 4.05
+          and the floor 13px → 10px, which is what it takes to keep Dan's one
+          line at that width. A 390px phone loses about half a pixel of face. */}
+      <p className="fluo-band-hand whitespace-nowrap text-[clamp(10px,4.05vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
         In FluOLinGo-land, there are 50 color-coded goals to conquer:
       </p>
 
-      {/* ONE control row, fixed for both views: switch left, zoom right. */}
-      <div className="mb-2 mt-1.5 flex items-center justify-between gap-3">
+      {/* ONE control row, fixed for both views: switch left, zoom right.
+          IT WRAPS ON A NARROW DESK (QC, 8 Sep). Inside the notebook a 320px
+          phone leaves the frame 247px, and the switch, the bookmark and the
+          zoom measured 308px on one line — so the frame scrolled sideways and
+          the % sign sat off the paper. Nothing here shrinks well (the switch is
+          a fixed pill, the well has to hold three digits), so the row is
+          allowed to become two lines instead, right-aligned under the switch.
+          Above that width it is one line exactly as before. */}
+      <div className="mb-2 mt-1.5 flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
         {/* THE SAME SWITCH AS HOME'S, which is where it should have been all
             along (Dan, 2026-09-02: "Map of FluOLinGo page is missing the 2D-3D
             switch that is a copy of the one on the homepage"). PillSwitch's own
@@ -185,7 +200,7 @@ export default function MapBody() {
             onFlip={(next) => setView(next ? "3d" : "2d")}
           />
         </div>
-        <span className="flex shrink-0 items-center gap-2">
+        <span className="ml-auto flex shrink-0 items-center gap-2">
         {/* THE BOOKMARK, left of the zoom (Dan, 2 Sep: "could that editable
             indicator be placed to the left of zoom control") — the same
             editable stop number Home's well carries, in this row's mono
@@ -229,7 +244,13 @@ export default function MapBody() {
             // A WELL: the app's word for a value you read and type into,
             // rather than a key you press (Dan, 7 Sep: "the zoom counter is
             // not showing any 3D depression like the 2D control is showing").
-            className="neo-well w-[52px] rounded-lg px-1 py-1 text-center leading-none"
+            /* w-[62px], not 52 (QC, 8 Sep). At 52px "100" measured 58px of content
+               and the browser scrolled the leading digit out of sight: a desktop
+               read « 00 » at 100% and « ?00 » at 200%. A phone was fine, which
+               is why it survived — the mono face is set from a smaller step
+               there. Three digits is the widest this field can ever hold
+               (max=200), and 68 leaves room for the datalist arrow beside them. */
+            className="neo-well w-[68px] rounded-lg px-1 py-1 text-center leading-none"
             style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">

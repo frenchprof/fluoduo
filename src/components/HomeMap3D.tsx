@@ -49,7 +49,7 @@ import { SIOS, UNIT_META } from "@/content/sios";
 import { CHAPTERS, CLASS_FLAG_SIO } from "@/content/chapters";
 import { sioKind, sioSecondary, KIND_LABEL } from "@/content/sioKinds";
 import { isSioDone, type Progress } from "@/lib/progress";
-import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE, KindLegend } from "@/components/HomeMap";
+import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE } from "@/components/HomeMap";
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, nightness, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
@@ -1317,7 +1317,11 @@ export default function HomeMap3D({
           </button>
         )}
       </div>
-      {!fill && <KindLegend />}
+      {/* NO LEGEND HERE (QC, 8 Sep). MapBody — the only host that mounts this
+          scene — draws one under the map for BOTH views, so the 3D view was
+          printing the four kinds twice, one row under the other. The 2D view
+          showed one, which is how it went unnoticed: you only meet the pair
+          by flipping the switch. One legend, drawn by the host, serves both. */}
     </div>
   );
 }
