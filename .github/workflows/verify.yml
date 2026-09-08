@@ -415,6 +415,7 @@ jobs:
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
         run: python3 verify/verify127-map-road.py
+
       - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
         run: python3 verify/verify140-speculearn-merged.py
 
@@ -435,9 +436,6 @@ jobs:
 
       - name: "Matching pairs resolve, and play as LexicaLater chests (8 Sep)"
         run: python3 verify/verify153-pair-chests.py
-
-      - name: "One SpecuLearn per goal, opening on question one (7 Sep)"
-        run: python3 verify/verify140-speculearn-merged.py
 
       # Dan asked for the end-of-page scroll one level in — between questions
       # of the same lesson. Ungated it would ANSWER a question nobody read.
