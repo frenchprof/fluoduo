@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify153 — a deck's matching pairs are playable, and they play in LexicaLater.
+"""verify153 — a deck's matching pairs are playable, in both homes Dan chose.
 
 Dan, 8 Sep, on what to do with « Match It »: *"i accept 1, 2, and 3"* — and
 option 2 was *"Into LexicaLater — its neighbour in Games stitches word parts
@@ -35,9 +35,34 @@ ANSWERS of the deck, which on a phrase deck means baiting a two-hole lock with
 whole sentences — not a temptation, a give-away, since the wrong keys are the
 only ones too long to fit.
 
-Break-tested three ways: dropping the `fixed` early return from gearEntry;
-pointing a pair at an id the deck does not have; and taking the role tag off a
-left. Each names its own failure.
+AND THE SAME PAIRS ARE A GAP-FILL — option 1 of Dan's three: *"Into ComposeIt
+or GramMarathon — the content is already a sentence in two halves, which is
+what a gap-fill is. « Vous tournez ___ » with the eight completions as options
+is the same exercise with a home, an existing tile and spacing that already
+works."* `pairGapItems` projects each join into an item with a `gap`, so the
+deck reaches GramMarathon with no new content and nothing to keep in step.
+
+TWO PROPERTIES OF THAT PROJECTION ARE LOAD-BEARING and neither is obvious.
+
+The sentence must END IN A FULL STOP. `gapSentence` decides which of `fr` and
+`example` holds the gap, and its test for "a sentence rather than a grid label"
+is final punctuation — gapSentence.ts is the record of what a missing one cost:
+transport dealt « ? train » instead of « J'y vais ? moto » on twelve cards.
+
+The gap must be the RIGHT half. « Vous tournez ___ » is the exercise the deck
+is for; « ___ à droite » would be asking which verb takes a completion, which
+is not a thing this deck teaches.
+
+AND THERE IS ONE POOL. gapSentence.ts exists because five call sites answered
+"which items does this deck play?" separately and three decks turned out to be
+silently unplayable — the readiness gate said yes, the game found nothing. A
+DERIVED question set would reopen that immediately, so the gate, the tab and
+the game all read `gappedItems` and nothing filters its own copy.
+
+Break-tested five ways: dropping the `fixed` early return from gearEntry;
+pointing a pair at an id the deck does not have; taking the role tag off a
+left; gapping the left half instead of the right; and dropping the full stop.
+Each names its own failure.
 
 Run from the repo root:  python3 verify/verify153-pair-chests.py
 """
@@ -56,6 +81,17 @@ def check(cond, good, bad):
 
 def read(rel):
     return open(os.path.join(ROOT, rel), encoding="utf-8").read()
+
+
+def code(rel):
+    """The file with its comments stripped.
+
+    The first version of the two "nothing filters its own copy" checks grepped
+    the raw source and failed a correct file, because the comment that EXPLAINS
+    why the filter was removed names it. Same trap verify152 hit an hour
+    earlier with `.cahier-page`."""
+    src = re.sub(r"/\*.*?\*/", "", read(rel), flags=re.S)
+    return re.sub(r"^\s*//.*$", "", src, flags=re.M)
 
 
 # ── the content ─────────────────────────────────────────────────────────────
@@ -130,6 +166,45 @@ check("pairDecoys(collection)" in page,
       "the belt is fed the deck's own other halves as decoys",
       "the phrase lane has lost its decoys — every key on the belt would then be a key "
       "the lane needs, and there is no choice left to make")
+
+# ── the gap-fill projection ─────────────────────────────────────────────────
+pc = read("src/lib/collections/pairChests.ts")
+gmr = read("src/lib/collections/gramMarathonReady.ts")
+gmc = code("src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx")
+shell = code("src/components/CahierShell.tsx")
+
+check(re.search(r"gap: ch\.syllables\[1\]", pc) is not None,
+      "the blank is the COMPLETION — « Vous tournez ___ »",
+      "the gap-fill blanks the wrong half. « ___ à droite » asks which verb takes a "
+      "completion, which is not what this deck teaches; the deck is for which completion "
+      "a verb phrase takes")
+check(re.search(r'fr: `\$\{ch\.fr\}\.`', pc) is not None,
+      "each projected sentence ends in a full stop, so gapSentence reads it as a sentence",
+      "the projected sentences have lost their final punctuation. `gapSentence` uses it to "
+      "tell a sentence from a grid label — without it the item falls to the `example` "
+      "branch, and gapSentence.ts records what that cost transport: twelve cards dealt "
+      "« ? train » instead of « J'y vais ? moto »")
+check("pairGapItems(c)" in gmr,
+      "gappedItems includes the pairs' gap-fill projection",
+      "gappedItems no longer includes the projected pairs, so a pairs deck offers "
+      "GramMarathon nothing and the tab either vanishes or opens an empty marathon")
+check("isPlayableGap" not in gmc and "gappedItems" in gmc,
+      "GramMarathon plays gappedItems — it does not filter its own copy",
+      "GramMarathonContent filters `deck.items` for itself again. That is the exact split "
+      "gapSentence.ts was written to close: the readiness gate and the game answered "
+      "'which items play?' differently and three decks were silently unplayable")
+check("isPlayableGap" not in shell and "gappedItems" in shell,
+      "the deck's GramMarathon tab appears on the same pool the game plays",
+      "CahierShell decides the tab on its own filter again, so the tab and the game can "
+      "disagree about whether a deck has questions")
+
+for did in decks_with_pairs:
+    d = json.load(open(os.path.join(COLL, f"{did}.json"), encoding="utf-8"))
+    n = len(((d.get("gameConfig") or {}).get("matching") or {}).get("pairs") or [])
+    check(n >= 4,
+          f"{did}: {n} projected questions — enough for a marathon (MIN_GAPPED is 4)",
+          f"{did} authors only {n} pair(s). GramMarathon needs four to offer itself, so "
+          "the deck would carry a tab that opens a two-question 'marathon'")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

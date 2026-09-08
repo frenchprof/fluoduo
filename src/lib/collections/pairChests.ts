@@ -84,3 +84,40 @@ export function pairDecoys(c: Collection): string[] {
   const roled = (role: string) => c.items.filter((it: Item) => (it.tags ?? []).includes(role));
   return [...roled("role:left"), ...roled("role:right")].map((it) => it.fr.trim());
 }
+
+/**
+ * THE SAME PAIRS, AS GAP-FILL ITEMS — option 1 of Dan's three, 8 Sep: *"Into
+ * ComposeIt or GramMarathon — the content is already a sentence in two halves,
+ * which is what a gap-fill is. « Vous tournez ___ » with the eight completions
+ * as options is the same exercise with a home, an existing tile and spacing
+ * that already works."*
+ *
+ * A GramMarathon question is an item with a `gap`: it shows that item's
+ * sentence with the gap blanked and offers the deck's OTHER gaps as the word
+ * bank. A pair is already both halves of that — the sentence is the join, the
+ * gap is the completion, and the bank fills itself with every other completion
+ * in the deck. So this is a projection, not new content.
+ *
+ * THE FULL STOP IS LOad-BEARING. `gapSentence` decides which of `fr` and
+ * `example` holds the gap, and its test for "this is a sentence rather than a
+ * grid label" is final punctuation — see gapSentence.ts, where a missing one
+ * made transport's cards deal « ? train » instead of « J'y vais ? moto ».
+ * These sentences end in a full stop so they read as pattern A and `fr` wins.
+ *
+ * DERIVED, NOT AUTHORED, and that is the point: the deck's fifteen joins stay
+ * the single source. Writing the sentences into the JSON as well would be
+ * fifteen more items to keep in step with the pairs, and gapSentence.ts is the
+ * record of what happens in this repo when two places answer one question.
+ */
+export function pairGapItems(c: Collection): Item[] {
+  return pairChests(c).map((ch) => ({
+    id: `gap-${ch.id}`,
+    fr: `${ch.fr}.`,
+    en: ch.en,
+    // The completion is the blank; the verb phrase stays on the page. « Vous
+    // tournez ___ » is the exercise, never « ___ à droite » — the deck teaches
+    // which completion a verb phrase takes, not which verb takes a completion.
+    gap: ch.syllables[1],
+    tags: ["role:gap"],
+  }));
+}
