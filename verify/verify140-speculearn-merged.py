@@ -244,6 +244,7 @@ AUDITED_OFF = [
     "u3-l1-weather/05-il-fait-frais",
     "u3-l1-weather/12-quel-temps-fait-il",
     "u3-sio039/u3-sio039-02",
+    "u4-sio041/u4-sio041-01",
     "u4-sio041/u4-sio041-03",
     "u4-sio045/u4-sio045-03",
     "u4-sio046/u4-sio046-02",
@@ -288,9 +289,9 @@ ok(not back,
    f"these were audited and cleared, and the flag is back on them: {back[:5]} — "
    f"see {AUDIT_DOC} for why each one came off")
 # The ateliers' 34 are generated, so only the authored JSON is counted here.
-ok(still == 26,
+ok(still == 25,
    f"{still} authored items still show their English first — the audit's own number",
-   f"{still} authored items show their English first, not the 26 the audit left. "
+   f"{still} authored items show their English first, not the 25 the audit left. "
    f"A sweep in either direction is the thing this number exists to catch; if the change "
    f"is deliberate, audit the new ones in {AUDIT_DOC} and move the number with them")
 
