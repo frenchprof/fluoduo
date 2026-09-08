@@ -53,57 +53,50 @@ never took); and possibly still missing — the item-level content fixes
 rules, the SIO-006/013/022/030/034/036/039/041 scope fixes, LexicaLater live
 wrong-fragments and euros/prix) need a line-by-line pass nobody has done.
 
-## ⚠️ FLUODUO-MAIN, READ FIRST — three commits are on `main` unQC'd, and the deploy is yours to fire
+## 7–8 Sep — three commits went straight onto `main` from the pre-tests lane
 
-*Dan, 8 Sep, asked for a deploy and then: **"send to fluoduo main first"**. So
-this is the handover, and nothing is being deployed by the pre-tests lane.*
+*Not a request to anyone: a record. Dan said **"push to main for deploy ok"**,
+so these went in without the integration lane's gate. An earlier draft of this
+note read as a handover addressed to fluoduo-main and said the deploy was
+theirs to fire — that was this lane misreading "main" as the coordinating agent
+when Dan meant the BRANCH. Dan, 8 Sep: **"there are two unfortunate meanings to
+the Main and you unfortunately got the wrong one."*** Worth keeping in mind
+whenever an instruction says "main" in this repo.
 
-**WHAT NEEDS YOUR EYES.** Everything up to and including PR #225 went through
-you. These three did NOT — Dan told this lane *"push to main for deploy ok"*
-earlier in the day, and they went straight in (each one green on `main` before
-the next was pushed):
+**WHAT WENT IN UNGATED**, each green on `main` before the next was pushed:
 
 | commit | what |
 |---|---|
 | `140e47be` | scrolling past the end of a page carries you to the next station; two edge arrows |
-| `209c8e1d` | the map's road detached under any CSS zoom — the 7 Sep pinch fix had addressed a case that was never broken |
+| `209c8e1d` | the map's road detached under any CSS zoom — the earlier pinch fix had addressed a case that was never broken |
 | `ecbe561b` | the road becomes one solid line with turns at the row ends |
 
-`main` is at `11ca3fee` (those three plus your #228 merged in). **CI green on it,
-run 612.**
+**THE SHARED FILES**, the ones another lane is most likely to be sitting on:
 
-**THE SHARED FILES, which is what a merge gate is for.** Nothing here collided at
-the time, but these are the ones another lane is most likely to be sitting on:
+    src/lib/swipeRail.ts             + RAIL_URL_MESSAGE, syncScrollUrl
+    src/components/EmbedFrame.tsx    handles the new URL-only message
+    src/components/useRailSwipe.ts   same-station path changes now post up
+    src/app/layout.tsx               mounts <RailArrows/> inside TopLevelOnly
+    src/components/Map2DGrid.tsx     the road: measurement AND shape
+    verify/verify117-swipe-rail.py   widened; 121 widened to six games
 
-    src/lib/swipeRail.ts        + RAIL_URL_MESSAGE, syncScrollUrl
-    src/components/EmbedFrame.tsx   handles the new URL-only message
-    src/components/useRailSwipe.ts  same-station path changes now post up
-    src/app/layout.tsx          mounts <RailArrows/> inside TopLevelOnly
-    src/components/Map2DGrid.tsx    the road: measurement AND shape
-    verify/verify117-swipe-rail.py  widened; 121 widened to six games
-
-**WHAT I WOULD LOOK AT HARDEST, in order:**
+**WHAT IS WORTH A SECOND LOOK, and why this lane could not settle it:**
 
 1. **`useScrollOn` on a real phone.** Its three guards were each found by
-   driving, and the second one is the subtle one: a gesture only counts if it
-   BEGAN at the end, or the flick that arrives at the bottom throws you off the
-   page mid-read. I could only test with synthetic touches.
-2. **The road's hairpins at the two extreme zooms.** `verify127` proves the road
-   lands on its stops (worst 1px at 200%), but nothing proves the TURNS look
-   right at 40% or 200% — that is an eye question.
-3. **`overflow-visible` on the road's svg.** Needed or the turns are clipped in
-   half; it also means the road can now paint outside the map box. It looked
-   clean at 390px and 1280px, but a narrow desk margin elsewhere could show it.
+   driving, and the second is the subtle one: a gesture only counts if it BEGAN
+   at the end, or the flick that arrives at the bottom throws you off the page
+   mid-read. Only synthetic touches were available here.
+2. **The road's hairpins at 40% and 200%.** `verify127` proves the road lands on
+   its stops (worst 1px at 200%); nothing proves the TURNS look right, which is
+   an eye question.
+3. **`overflow-visible` on the road's svg.** Needed, or the turns are clipped in
+   half — it also lets the road paint outside the map box. Clean at 390px and
+   1280px; a narrower desk margin elsewhere could show it.
 
-**ONE THING I COULD NOT SETTLE, and did not touch:** on Home, the « Enter the
-map » glass band's blur did not render in my headless captures, so the words sit
-bare over stops 23 and 28. That is #224's work, not this lane's, and it may be
-a headless limitation rather than a fault — worth one look on a real phone
-before anyone changes it.
-
-**THE DEPLOY IS NOT FIRED.** `deploy-live` is yours as the last step of a QC
-round; production is still on the build from before `140e47be`.
-
+**AND ONE THING FOUND BUT NOT TOUCHED:** on Home the « Enter the map » glass
+band's blur did not render in headless captures, so the words sit bare over
+stops 23 and 28. That is #224's work, and it may be a headless limitation rather
+than a fault — worth one look on a real phone before anyone changes it.
 
 ## 7 Sep, morning — the grid menu, the glass map, and ConjugaZone's LAST move
 
