@@ -85,18 +85,33 @@ FluencyOnLinguisticGoals"*). Identifiers, storage keys (`fluolingo:*`) and
 the font files (`FluOlinGoHand-*.woff2`) keep their existing spellings —
 renaming those breaks things without a learner ever seeing the difference.
 
+> ⚠️ **THE LIST BELOW IS SUPERSEDED. There are SEVEN families now, not six,
+> and Skills is retired.** See *"The ☰ menu is SEVEN families now"* at the
+> foot of this file (Dan, 2026-09-09) for the list that is true today:
+>
+>     🧑‍🏫 Lesson · 📝 Practice · 🔄 Revise · 🎮 Games · 💬 Oral · 🛠️ Tools · 👤 User
+>
+> What survives from the 31 Aug ruling is its SHAPE, and that part is still
+> permanent: one fixed name and one fixed icon per family, living once in
+> `FAMILIES`, with everything else derived; keys and routes never move when a
+> display name does. Only the membership changed.
+>
+> This pointer exists because the file contradicted itself twice in one day.
+> The 9 Sep entry says it supersedes this section — but it says so four
+> hundred lines below it, and a session reads top-down. The stale copy is
+> always the one that looks authoritative.
+
 **The six families are called by these names and wear these icons, and no
-others** (Dan, same day):
+others** (Dan, 2026-08-31 — see the supersession notice above):
 
-    🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 🤹 Skills · 👤 User
+    🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User
 
-SKILLS WORE 💬 UNTIL 2026-09-09, when Dan moved it to 🤹 — not a change of
-mind about the family, but the fix to a COLLISION: 💬 was also the floating
-"report a bug" button, so opening WorDrill put the Skills door and the bug
-button on screen wearing the same glyph. The bug button took 🐞 and the
-family took 🤹. The ruling itself — one fixed icon per family, living once in
-`FAMILIES` — is unchanged, and the reasoning is at the foot of this file
-under the emoji stock-take.
+SKILLS BRIEFLY WORE 🤹, on 2026-09-09, and the reason is worth keeping even
+though the family is gone: 💬 was ALSO the floating "report a bug" button, so
+opening WorDrill put the Skills door and the bug button on screen wearing one
+glyph. The bug button took 🐞 and the family took 🤹 — then, later the same
+day, Skills was retired entirely and 💬 came back as **Oral**, which is why
+🤹 appears nowhere in the app today.
 
 They live once, in `FAMILIES` (`src/content/activities.ts`), as
 `FluOLin <Name>`; everything else derives. Registry KEYS stay as they are
@@ -515,9 +530,11 @@ time as a 7-row grid, and this ruling SUPERSEDES "The names — permanent
     🧑‍🏫 Lesson · 📝 Practice · 🔄 Revise · 🎮 Games · 💬 Oral · 🛠️ Tools · 👤 User
 
 **SKILLS IS RETIRED**, split into two new families:
-- **Oral** (💬 — yes, the glyph 🤹 just took off Skills; it now means a
-  DIFFERENT, smaller family) — VoixLà, WorDrill, ÉcouTexte: the three that
-  put French in your mouth or ear.
+- **Oral** (💬 — the glyph taken OFF Skills a few hours earlier, when 🤹
+  replaced it to clear the bug-button collision. Skills is gone now, the bug
+  button is 🐞, so 💬 is free and comes back meaning a DIFFERENT, smaller
+  family) — VoixLà, WorDrill, ÉcouTexte: the three that put French in your
+  mouth or ear.
 - **Tools** (🛠️ — same glyph ToolSummon's own floating door already wore;
   no collision, they're now the same idea) — ChaTutor, ComposeIt.
 
