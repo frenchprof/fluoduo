@@ -29,10 +29,12 @@ ruling and reasoning. Summary of what changed:
   (7 families × 4 rungs) pinned in `verify96-family-hues.py`.
 - **The ☰ menu's row bands are solid `--fam-*-ink`**, not the 8 Sep's
   15%-alpha wash — Dan sent the pale version back the same day.
-- **`/skills` and `/practice` hub pages retired**, both now redirect (to
-  VoixLà and SpecuLearn respectively) rather than being deleted outright.
-  **`/games` is NOT retired** — Dan hedged ("nearly all", not "all") and it
-  has no clean single-activity redirect target; ask him before touching it.
+- **All three hub pages retired** — `/skills`, `/practice` and `/games` now
+  redirect (to VoixLà, SpecuLearn and VocabulaRain respectively) rather
+  than being deleted outright. Games was hedged on first ("nearly all",
+  not "all" — none of its three games is an obvious single door) and
+  confirmed a few messages later ("retire /games"). `FAMILY_HUBS` in
+  `activities.ts` is now empty.
 - **Seven activities** (MémoiRecall, GramMarathon, VocabulaRain,
   LexicaLocker, WorDrill, ÉcouTexte, ComposeIt) traded their own
   deck/unit-picker hub for ONE shared pop-up, `ActivityGoalPicker.tsx` — a
@@ -49,9 +51,10 @@ ruling and reasoning. Summary of what changed:
   opened scrolled off-screen because it wasn't portalled — fixed with
   `createPortal(..., document.body)`, matching `ToolSummon`/`BottomSheet`.
 
+**RESOLVED since the note above was first written:** `/games` retires too
+(Dan: "retire /games") → redirects to `/games/vocabularain`.
+
 **STILL OPEN, not yet answered by Dan:**
-- Whether `/games` should retire too, and if so, where it should redirect
-  (its three members are all pop-up-gated — no obvious single door).
 - The SIO-per-page swipe-chain feature (map ↔ SpecuLearn ↔ MneMemo ↔
   MémoiRecall ↔ ConjugaZone ↔ WorDrill ↔ ÉcouTexte, one URL per SIO) that
   the Lesson row's "Goals" tile will eventually open — Dan said he has

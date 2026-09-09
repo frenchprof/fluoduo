@@ -83,9 +83,12 @@ export const FAMILIES: Family[] = [
   // Name unchanged from 31 Aug ("Revise") — a "Review" rename was tried
   // and reverted the same day (9 Sep) DéjàRevu became ErroReview. 🔄 unchanged.
   { key: "review", name: "FluOLin Revise", emoji: "🔄", href: "/reviser" },
-  // Games — unchanged name, emoji and route; only the colour moves (was
-  // pink, now Skills' old violet — Skills itself retired the same day).
-  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games" },
+  // Games — unchanged name and emoji; colour moved (was pink, now Skills'
+  // old violet). href points straight at VocabulaRain now — Games' hub
+  // retired 2026-09-09 ("retire /games"), the last of the three (Dan
+  // hedged on it first as "nearly all" the hubs, then confirmed it too).
+  // /games itself still exists as a redirect for old links/bookmarks.
+  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games/vocabularain" },
   // ORAL (NEW, 2026-09-09) — half of retired Skills: VoixLà, WorDrill,
   // ÉcouTexte, the three activities that put French in your mouth or ear.
   // href is a DELIBERATE DOOR to VoixLà (see DELIBERATE_DOOR below) — Oral
@@ -355,17 +358,18 @@ export function activitiesInFamilyOrder(): Activity[] {
  */
 // PRACTICE'S HUB RETIRED TOO (Dan, 2026-09-09, looking at the grid menu:
 // "all those hub pages have been made redundant by the pop ups... nearly
-// all"). Skills went first, split into Oral and Tools; Practice is the
-// second — SpecuLearn and MémoiRecall both have doors of their own
-// (MémoiRecall's now the slider pop-up), so the aggregating page a learner
-// used to land on has nothing left to do that the ☰ menu does not. /games
-// is the one Dan hedged on ("nearly all") — it stays a hub for now,
-// unresolved, rather than guessed into a redirect with nowhere good to
-// land (its three members are ALL pop-up-gated; there is no single
-// "deliberate door" activity page the way SpecuLearn was for Practice).
-const FAMILY_HUBS: Record<string, FamilyKey> = {
-  games: "svplay",
-};
+// all"). Skills went first, split into Oral and Tools; Practice followed —
+// SpecuLearn and MémoiRecall both have doors of their own (MémoiRecall's
+// now the slider pop-up), so the aggregating page a learner used to land
+// on has nothing left to do that the ☰ menu does not.
+//
+// GAMES WAS THE ONE DAN HEDGED ON ("nearly all") — its three members are
+// ALL pop-up-gated, so there is no single member page as obviously "the"
+// door the way SpecuLearn was for Practice. He confirmed it anyway
+// ("retire /games") a few messages later: VocabulaRain's own gallery is
+// the pick (DELIBERATE_DOOR below), the same shape of call as Oral→VoixLà.
+// No family has a hub page of its own left.
+const FAMILY_HUBS: Record<string, FamilyKey> = {};
 
 /**
  * The families whose door is deliberately ONE activity's page, and which one.
@@ -390,6 +394,10 @@ const FAMILY_HUBS: Record<string, FamilyKey> = {
  *   practice SpecuLearn — Practice's hub retired 2026-09-09 alongside
  *           Skills'; SpecuLearn is the first thing a learner does for a
  *           goal, so it is the door.
+ *   svplay  VocabulaRain — Games' hub retired 2026-09-09 too (Dan: "retire
+ *           /games"), the last of the three. None of its three members is
+ *           obviously THE door the way SpecuLearn was for Practice; picked
+ *           for being the middle one of NumBus / VocabulaRain / LexicaLocker.
  */
 export const DELIBERATE_DOOR: Record<string, string> = {
   review: "reviser",
@@ -397,6 +405,7 @@ export const DELIBERATE_DOOR: Record<string, string> = {
   oral: "tts",
   tools: "tutor",
   practice: "speculearn",
+  svplay: "vocabularain",
 };
 
 /** The family a hub page is the hub OF, or undefined for any other page. */

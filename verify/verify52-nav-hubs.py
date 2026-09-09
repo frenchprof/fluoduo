@@ -105,48 +105,26 @@ for key, name, _emoji, href in FAMILIES:
        f"{name} -> {href} is a real route",
        f"{name} points at {href}, but {page} does not exist")
 
-# ── 3 · the one remaining hub renders the hub, for the right family ─────────
-# Games RUNS IN A FRAME since 2026-09-07 (Dan: *"EVERYTHING (LIKE THE MAP) MUST
-# NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*), so the hub itself
-# moved to `<route>/embed` and the route is the notebook around it. The rule
-# is unchanged — that door opens that family's hub — but it now takes two
-# files, and a host without a twin is a page with nothing on it.
-#
-# PRACTICE LEFT THIS LOOP 2026-09-09, alongside Skills — see the FAMILY_HUBS
-# note below. Games is the one Dan hedged on ("nearly all" of the hub pages
-# are redundant): its three activities are ALL pop-up-gated now, so there is
-# no single "deliberate door" the way SpecuLearn was for Practice.
-for route, key in (("src/app/games/page.tsx", "games"),):
-    src = nocomment(read(route))
-    embed_path = route.replace("/page.tsx", "/embed/page.tsx")
-    embed = nocomment(read(embed_path)) if os.path.exists(os.path.join(ROOT, embed_path)) else ""
-    where = embed if embed else src
-    ok("<FamilyHub" in where and f'activeKey="{key}"' in where,
-       f"{route} opens <FamilyHub activeKey=\"{key}\">",
-       f"{route} no longer reaches <FamilyHub activeKey=\"{key}\"> — neither the "
-       f"route nor its embed twin renders it")
-    if embed:
-        ok("EmbedFrame" in src and "/embed" in src,
-           f"{route} hosts its embed twin in the cahier",
-           f"{route} has an embed twin but does not host it — the door opens a "
-           f"page with nothing on it")
-
+# ── 3 · no family has a hub page of its own left ────────────────────────────
+# ALL THREE HUBS ARE RETIRED NOW (2026-09-09): Skills first, then Practice,
+# then Games (Dan hedged on Games as "nearly all" of the hub pages being
+# redundant, then confirmed it: "retire /games"). Each retired hub's route
+# still exists — it redirects rather than disappearing outright, so a
+# bookmark or an old link still lands somewhere — but none of them renders
+# <FamilyHub> any more, and FAMILY_HUBS is empty.
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}
-# SKILLS AND PRACTICE BOTH LEFT THIS SET 2026-09-09 (Dan, looking at the new
-# grid ☰ menu: "all those hub pages have been made redundant by the pop
-# ups... nearly all"). Skills' hub retired first (/skills now redirects to
-# VoixLà); Practice followed the same day (/practice now redirects to
-# SpecuLearn) — SpecuLearn and MémoiRecall both have doors of their own
-# (MémoiRecall's now the slider pop-up), so the page a learner used to land
-# on has nothing left to do the grid menu does not. Games is the ONE Dan
-# hedged on ("nearly all") — it keeps its hub, unresolved, because its three
-# members are all pop-up-gated and there is no single activity to make a
-# deliberate door out of the way SpecuLearn was for Practice.
-ok(hub_keys == {"games": "svplay"},
-   "FAMILY_HUBS maps only games->svplay now",
-   f"FAMILY_HUBS is {hub_keys or 'unreadable'} — expected just {{'games': 'svplay'}}")
+ok(hub_keys == {},
+   "FAMILY_HUBS is empty — no family has a hub page of its own any more",
+   f"FAMILY_HUBS is {hub_keys or 'unreadable'}, expected empty — every family's "
+   "hub retired 2026-09-09")
+for retired_route in ("src/app/skills/page.tsx", "src/app/practice/page.tsx", "src/app/games/page.tsx"):
+    body = nocomment(read(retired_route))
+    ok("<FamilyHub" not in body,
+       f"{retired_route} no longer renders <FamilyHub> — its hub is retired",
+       f"{retired_route} still renders <FamilyHub> — FAMILY_HUBS says it "
+       "shouldn't be a hub any more")
 
 # ── 4 · a hub page must be COLOURED, or it is a white page with a white band ─
 site_fam = re.search(r"SITE_FAMILY:\s*Record<[^>]*>\s*=\s*\{(.*?)\n\};", ACT_C, re.S)
