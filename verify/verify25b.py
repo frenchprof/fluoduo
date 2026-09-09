@@ -108,6 +108,46 @@ check('useState<MapView>("3d")' in carte,
       "MapBody seeds 3D, so the prerendered HTML is not the flat grid",
       "MapBody still seeds useState<MapView>(\"2d\") — the static export paints "
       "2D for everyone before the store is read, so the 3D default flashes")
+
+# THE FIFTY STOPS OWN THEIR FOUR PENS (2026-09-09, "restore the colors on the
+# map"). This is the check that was missing when the accident happened.
+#
+# KIND_COLOR pointed the four kinds at four FAMILY tokens, so the stops had no
+# palette of their own. Recolouring the ☰ menu to Dan's 12-swatch brand palette
+# therefore recoloured all fifty stops as a side effect — blue→teal,
+# pink→violet, orange→grey, green→yellow, washes with them. He spotted it in a
+# screenshot; nothing in verify/ did.
+#
+# AND NOTHING WOULD HAVE. Every existing assertion says the stops read ONE
+# palette through sioKind(), which stayed TRUE the entire time — the palette
+# simply moved underneath it. An assertion about structure cannot see a change
+# of value. So this one names the tokens: the map's pens are --sio-*, and a
+# --fam-* in KIND_COLOR means the two taxonomies have been coupled again.
+home_map = strip_comments(read("src/components/HomeMap.tsx"))
+kind_block = home_map[home_map.find("KIND_COLOR"):home_map.find("KIND_WASH") + 400]
+check(all(f"var(--sio-{k})" in kind_block
+          for k in ("vocab", "grammar", "phrases", "production")),
+      "the stops' four pens are the map's own --sio-* tokens",
+      "KIND_COLOR/KIND_WASH no longer read --sio-* — if they point at --fam-* "
+      "again the fifty stops will silently follow the next menu recolour, "
+      "which is exactly what happened on 9 Sep")
+check("--fam-" not in kind_block,
+      "no family token leaks into the stops' palette",
+      "a --fam-* token is back in the stops' palette: a stop's KIND and a menu "
+      "FAMILY are different taxonomies and must move independently")
+_css = read("src/app/globals.css")
+_want = {"--sio-vocab": "#1ca6ff", "--sio-grammar": "#ff4eb2",
+         "--sio-phrases": "#ff9037", "--sio-production": "#00dd3e"}
+_wrong = []
+for _t, _v in _want.items():
+    _m = re.search(_t + r":\s*(#[0-9a-fA-F]{6})", _css)
+    _got = _m.group(1) if _m else "missing"
+    if _got.lower() != _v:
+        _wrong.append(_t + " is " + _got + ", not " + _v)
+check(not _wrong,
+      "the four pens hold the colours Dan asked to have back",
+      "the map's stop colours have drifted from the ones restored on 9 Sep: "
+      + "; ".join(_wrong))
 # RE-POINTED 2 Sep, CROSS-LANE — read this before reverting it.
 # Dan: "Map of FluOLinGo page is missing the 2D-3D switch that is a copy of the
 # one on the homepage." The map's segmented 2D|3D pair is now the shared

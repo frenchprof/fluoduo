@@ -75,20 +75,36 @@ import { ChalkboardIcon, IdBadgeIcon, GiftIcon, SignpostIcon, BasketIcon } from 
  * offered and turned down, because it takes the fluorescence out. It is to
  * move the numeral to page ink, which measures 4.92–8.05 on the same fills.
  */
+/* THE MAP'S OWN FOUR PENS, not the menu's (2026-09-09).
+ *
+ * These pointed at --fam-review / --fam-svplay / --fam-user / --fam-goals
+ * until Dan saw the map after the ☰ menu was recoloured to his 12-swatch
+ * palette and asked what had happened to the stops. Nothing had touched the
+ * map: the stops had no palette of their own and were borrowing four FAMILY
+ * tokens, so recolouring the menu recoloured all fifty — blue→teal,
+ * pink→violet, orange→grey, green→yellow. He asked for them back ("restore
+ * the colors on the map"), and the borrow is what made the accident possible,
+ * so the values now live in globals.css as --sio-* and the coupling is gone.
+ *
+ * No check caught it, which is the part worth remembering: every one of them
+ * asserts the stops read ONE palette through sioKind(), and that stayed true
+ * the whole time. The palette moved underneath the assertion. verify25b now
+ * pins the four tokens by name.
+ */
 export const KIND_COLOR: Record<SioKind, string> = {
-  vocab: "var(--fam-review)",       // blue
-  grammar: "var(--fam-svplay)",     // pink
-  phrases: "var(--fam-user)",       // orange
-  production: "var(--fam-goals)",   // green
+  vocab: "var(--sio-vocab)",           // blue
+  grammar: "var(--sio-grammar)",       // pink
+  phrases: "var(--sio-phrases)",       // orange
+  production: "var(--sio-production)", // green
 };
 
 /** The pale shade of the same four pens — what a stop still ahead is filled
  *  with, so the two shades carry progress across the whole circle. */
 export const KIND_WASH: Record<SioKind, string> = {
-  vocab: "var(--fam-review-wash)",
-  grammar: "var(--fam-svplay-wash)",
-  phrases: "var(--fam-user-wash)",
-  production: "var(--fam-goals-wash)",
+  vocab: "var(--sio-vocab-wash)",
+  grammar: "var(--sio-grammar-wash)",
+  phrases: "var(--sio-phrases-wash)",
+  production: "var(--sio-production-wash)",
 };
 
 /** The five regions (Design's place names, 17 Aug 2026), one per unit, and
