@@ -24,7 +24,7 @@
  * (8 Sep), corrected 9 Sep ("too light... the darkest shade in there").
  */
 import Link from "next/link";
-import { familyName } from "@/content/activities";
+import { familyName, activity } from "@/content/activities";
 import { SIO_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
@@ -207,8 +207,29 @@ export default function MenuGrid({
                   className={TILE}
                   style={{ borderColor: row.pen }}
                 >
-                  <span aria-hidden className="text-lg leading-none">🔢</span>
-                  <span className={NAME}>NumBus</span>
+                  {/* THE TILE READS "Numbers", FROM THE REGISTRY (Dan,
+                      2026-09-09: "NumBus appears twice, once as a menu item in
+                      the grid menu, and another in the next pop up, but maybe
+                      we should call the menu item Numbers instead").
+
+                      He was right, and the registry already agreed with him:
+                      activities.ts has held `name: "Numbers", emoji: "🔢",
+                      blurb: "Numbers by ear — NumBus and NumBourse"` the whole
+                      time. This tile hard-coded "NumBus" over the top of it, so
+                      a learner tapped NumBus only to be asked "NumBus or
+                      NumBourse?" — two doors sharing one name, which the names
+                      ruling forbids for exactly this reason.
+
+                      DERIVED, NOT RETYPED. Spelling "Numbers" here would fix
+                      today's screen and leave the next rename to drift again;
+                      the house rule is that the registry is where a name lives
+                      once and everything else reads it. The `??` keeps a tile
+                      on screen if the key is ever renamed, rather than
+                      rendering a blank button. */}
+                  <span aria-hidden className="text-lg leading-none">
+                    {activity("numbers")?.emoji ?? "🔢"}
+                  </span>
+                  <span className={NAME}>{activity("numbers")?.name ?? "Numbers"}</span>
                 </button>
               );
             }

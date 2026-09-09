@@ -22,10 +22,17 @@
  * depressed space"). It sits in a `.neo-well` — the app's existing "value
  * pressed INTO the paper" style (Home's stop well, the map's zoom readout)
  * — and is a real `<input>` under the display digits, so typing "37" and
- * the slider both drive the same number. Every OTHER control here
- * (Confirm, the NumBus/NumBourse tiles) is a `.neo-key` — the paired
- * "stands OUT of the paper" style — per Dan's same message: "the other
- * buttons must be protruding buttons."
+ * the slider both drive the same number.
+ *
+ * BUTTONS ARE THE APP'S STANDARD ONES (Dan, 2026-09-09: "can you make the
+ * buttons like the others we have on the website" — the first `.neo-key`
+ * pass didn't match anything else in the app). Confirm is `.fluo-btn`, the
+ * same chunky press-button used by BetaNotice's "Got it!" and
+ * FeedbackButton's submit. The NumBus/NumBourse tiles toggle between
+ * `.fluo-btn-ghost` (unselected, outline) and `.fluo-btn` (selected,
+ * filled) — the app had no existing selectable-tile pattern to copy, so
+ * this pairs its two existing button variants rather than inventing a
+ * third style.
  *
  * DESKTOP: A CENTRED, CONTENT-SIZED CARD (Dan: "the pop up must only
  * occupy the middle of the page, just sufficient space for the slider and
@@ -193,7 +200,7 @@ export function GoalSliderPicker({
       </div>
 
       <div className="flex justify-center">
-        <button type="button" onClick={() => onConfirm(stop)} className="neo-key rounded-xl px-8 py-2.5 text-base font-black text-[color:var(--cahier-ink)]">
+        <button type="button" onClick={() => onConfirm(stop)} className="fluo-btn px-8 py-2.5 text-base">
           Confirm
         </button>
       </div>
@@ -224,15 +231,15 @@ export function TwoChoicePicker({
             type="button"
             onClick={() => setPicked(o.key)}
             aria-pressed={picked === o.key}
-            className={`neo-key flex flex-1 flex-col items-center gap-1.5 rounded-xl px-2 py-4 ${picked === o.key ? "ring-2 ring-[color:var(--dopa-streak)] ring-offset-2" : ""}`}
+            className={`flex flex-1 flex-col items-center gap-1.5 px-2 py-4 ${picked === o.key ? "fluo-btn" : "fluo-btn-ghost"}`}
           >
             <span aria-hidden className="text-3xl leading-none">{o.emoji}</span>
-            <span className="text-sm font-black text-[color:var(--cahier-ink)]">{o.name}</span>
+            <span className="text-sm font-black">{o.name}</span>
           </button>
         ))}
       </div>
       <div className="flex justify-center">
-        <button type="button" onClick={() => onConfirm(picked)} className="neo-key rounded-xl px-8 py-2.5 text-base font-black text-[color:var(--cahier-ink)]">
+        <button type="button" onClick={() => onConfirm(picked)} className="fluo-btn px-8 py-2.5 text-base">
           Confirm
         </button>
       </div>
