@@ -43,7 +43,14 @@ import { loadMapView, saveMapView, type MapView } from "@/lib/mapView";
 
 export default function MapBody() {
   const [progress, setProgress] = useState<Progress>(defaultProgress());
-  const [mapView, setMapView] = useState<MapView>("2d");
+  // 3D BEFORE THE STORE IS READ, not only after it. The site is a static
+  // export, so this initial value is what the prerendered HTML paints for
+  // EVERYONE; the saved choice only arrives in the mount effect below. Left at
+  // "2d" the default would be 3D in name while still showing every learner the
+  // flat grid first and then flipping — the flash landing on exactly the
+  // majority Dan just moved to 3D. Seeded here it goes the other way: no
+  // flip for an unsaved learner, one only for someone who chose 2D.
+  const [mapView, setMapView] = useState<MapView>("3d");
   const router = useRouter();
   const [openSioId, setOpenSioId] = useState<string | null>(null);
   const [zoomPct, setZoomPct] = useState(100);

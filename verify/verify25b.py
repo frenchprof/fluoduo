@@ -85,6 +85,29 @@ check('MAP_VIEW_KEY = "fluo.homeMapView"' in view_mod,
 check("loadMapView()" in carte and "saveMapView(" in carte,
       "MapBody reads and writes that choice through the shared module",
       "MapBody no longer calls loadMapView/saveMapView — it has its own storage access again")
+# THE DEFAULT IS 3D (Dan, 2026-09-09: "the map should land on 3d by default
+# (unless the 2d is requested via the switch)"). Two halves, and BOTH are
+# needed or the default is a lie:
+#
+#   loadMapView() must fall back to 3d   — what an unsaved learner gets
+#   MapBody's useState must SEED 3d      — what the prerendered HTML paints
+#
+# The site is a static export, so that initial value is the first thing every
+# learner sees, before localStorage is readable. Getting only the first half
+# right leaves the default nominally 3D while still flashing the flat grid at
+# everyone — worst for exactly the majority this ruling moved to 3D.
+#
+# Matched on the comparison rather than a bare "3d", because the reader tests
+# for "2d" and returns 3d — the easy way to break this is to flip the test back
+# and leave a `"3d"` sitting elsewhere in the file looking reassuring.
+check('=== "2d" ? "2d" : "3d"' in view_mod,
+      "an unsaved learner lands on 3D — only an explicit 2D choice is 2D",
+      "loadMapView no longer falls back to 3d — Dan, 9 Sep: 'the map should "
+      "land on 3d by default (unless the 2d is requested via the switch)'")
+check('useState<MapView>("3d")' in carte,
+      "MapBody seeds 3D, so the prerendered HTML is not the flat grid",
+      "MapBody still seeds useState<MapView>(\"2d\") — the static export paints "
+      "2D for everyone before the store is read, so the 3D default flashes")
 # RE-POINTED 2 Sep, CROSS-LANE — read this before reverting it.
 # Dan: "Map of FluOLinGo page is missing the 2D-3D switch that is a copy of the
 # one on the homepage." The map's segmented 2D|3D pair is now the shared
