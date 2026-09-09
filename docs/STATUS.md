@@ -6,6 +6,61 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 9 Sep — housekeeping: RailGroups retired, #246 landed (integration lane)
+
+Sole editor of STATUS.md in this commit: this session (`qc/retire-railgroups`).
+
+**MERGED AND DEPLOYED SINCE THE ENTRY BELOW:** #257 (`cd0fc5c`, deploy run
+#41) and #258 (`8aef134`, deploy run #42). Production is on `8aef134`.
+
+**#258 IS PEERS' #246, REPLAYED.** Their branch dropped the landing page's
+corner wordmark (Dan: *"what could possibly be the purpose of that small
+'FluOLinGo' wordmark ... now that the title says the name in large letters
+just below it?"*). Its base was `92684ff`, ten pull requests back, and
+`WelcomeBody.tsx` took three of those in the meantime — the F·O·L·G letters
+cut to two colours, the ENTER coin repainted stop-1 orange, the camera pinned
+to the start of the road. All three sit BELOW the `<header>` this removes, so
+the replay was genuinely non-overlapping; #246 is closed with that written on
+it so Peers does not redo it.
+
+**RAILGROUPS IS GONE.** It was the six coloured flaps from 3 Sep; the 3x5 grid
+replaced them in the ☰ on 7 Sep, and `verify29`'s own comment then kept the
+file "for MenuSplash until that surface is re-judged". MenuSplash was judged
+and retired earlier today, which spent the last reason to keep it — and it was
+not inert while it sat there: `owningFamily` still mapped `"goals"`, a family
+renamed Lesson when the menu became seven, so a session reading it would have
+found a confident account of an architecture that had changed twice under it.
+
+**FIVE ASSERTIONS RETIRED WITH THEIR SUBJECT.** `verify29` read the file for
+the accordion's absence, each flap's href and wash, the hand on its labels,
+and the registry helper. All five described a component nothing rendered:
+they would have passed forever and blocked whoever finally deleted the file.
+"RailGroups exists" is inverted instead — the shape `verify29` already uses
+for MenuSplash — and break-tested.
+
+**AND A KNOCK-ON FOUND BY A CHECK, NOT BY READING.** `text-[17px]` had exactly
+one user in the app and it was this file, so the deletion left a fluid-type
+ramp rule matching nothing. `verify106` fails on precisely that, by design, so
+the ladder cannot fill with steps for text nobody sets. Rule removed with a
+note to restore it beside the first class that needs it again.
+
+**STILL OPEN FOR DAN — the Cloudflare connector.** The `cloudflare/skills`
+plugin and the `cloudflare` MCP server are installed in THIS container (13
+skills, `mcp.cloudflare.com`), but a container is thrown away when the session
+ends and the MCP's sign-in cannot run in a non-interactive session. Dan
+authorises it once at claude.ai → Settings → Connectors; a NEW session after
+that can do the f1–f4 subdomain work. Measured today: `fluolingo.com` resolves
+to `172.67.173.191`, a Cloudflare address — so the zone is already on
+Cloudflare and the subdomains are four custom-domain entries on the Pages
+project, not a migration. The 3 Sep note below saying fluolingo.com is GitHub
+Pages is OUT OF DATE.
+
+**AND THE THING THAT DECISION TURNS ON:** progress is stored per web address,
+so a learner who has been working at `fluolingo.com` arrives at
+`f1.fluolingo.com` with an empty profile. Nobody has enough progress for that
+to hurt yet, which is the argument for doing it now — but it is Dan's call and
+he has been told.
+
 ## 9 Sep — Home shows the road, and the postcard is destroyed (integration lane)
 
 Sole editor of STATUS.md in this commit: this session (`qc/home-3d-map`),
