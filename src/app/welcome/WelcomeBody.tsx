@@ -48,9 +48,10 @@
  * one button. A landing page has two questions to answer, what is this and how
  * do I start, and each of them now has exactly one answer on screen.
  */
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
+import CoursePicker from "@/components/CoursePicker";
+import { courseFromHost } from "@/content/courses";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
@@ -148,6 +149,27 @@ export default function WelcomeBody() {
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
   const [progress, setProgress] = useState<Progress>(defaultProgress);
+  /** ENTER opens the course choice (Dan, 2026-09-09) rather than walking
+   *  straight through to Home. */
+  const [picking, setPicking] = useState(false);
+
+  // A COURSE SUBDOMAIN NEVER SEES THIS PAGE (Dan, asked directly: "f1 goes
+  // straight to the map"). The greeting is the front door of the SITE —
+  // fluolingo.com, every visit, which is what he chose — while f1..f4 are
+  // where a learner works daily, and a door they open twenty times a day
+  // should not make them knock.
+  //
+  // Decided by HOSTNAME, and it has to happen here rather than in a config
+  // file: the site is a static export, so one build serves all five addresses
+  // and there is no server to route on. Which means this is also the only
+  // place that can know, and it cannot know during prerender — hence the
+  // effect. `replace`, so Back does not bounce through the greeting.
+  useEffect(() => {
+    if (courseFromHost(window.location.hostname)) {
+      window.location.replace("/map");
+    }
+  }, []);
+
   useEffect(() => {
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setProgress(loadProgress());
@@ -355,8 +377,9 @@ export default function WelcomeBody() {
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
       <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
-        <Link
-          href="/home"
+        <button
+          type="button"
+          onClick={() => setPicking(true)}
           className="rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
             background: "var(--sio-phrases)",
@@ -371,8 +394,10 @@ export default function WelcomeBody() {
           }}
         >
           Enter
-        </Link>
+        </button>
       </div>
+
+      {picking && <CoursePicker onClose={() => setPicking(false)} />}
     </main>
   );
 }
