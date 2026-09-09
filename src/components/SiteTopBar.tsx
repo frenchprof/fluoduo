@@ -33,7 +33,6 @@ import StopBookmark from "@/components/StopBookmark";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
-import MenuSplash from "@/components/MenuSplash";
 import MenuGrid from "@/components/MenuGrid";
 import { useActivityPicker } from "@/components/ActivityGoalPicker";
 import AccountButton from "@/components/AccountButton";
@@ -75,7 +74,6 @@ export default function SiteTopBar({
     document.addEventListener("pointerdown", close, true);
     return () => document.removeEventListener("pointerdown", close, true);
   }, [menuOpen]);
-  const [quickGuideOpen, setQuickGuideOpen] = useState(false);
 
   // The Revise due count rides the bottom bar's 🔄 slot. Since 5 Sep a
   // learner can untick that slot — or the whole bar — in Réglages, and the
@@ -193,7 +191,6 @@ export default function SiteTopBar({
             <div className="absolute left-0 top-full z-50 mt-1 max-h-[80vh] overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-[color:var(--cahier-paper-raised)] shadow-lg">
               <MenuGrid
                 onNavigate={() => setMenuOpen(false)}
-                onHelp={() => setQuickGuideOpen(true)}
                 picker={picker}
               />
             </div>
@@ -277,7 +274,6 @@ export default function SiteTopBar({
         </div>
       </div>
     </div>
-      {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
     </>
   );
 }
