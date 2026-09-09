@@ -143,13 +143,12 @@ const NAME = "fluo-btn-hand block w-full truncate text-[13px] leading-tight text
 
 export default function MenuGrid({
   onNavigate,
-  onHelp,
   picker,
 }: {
-  /** Close the dropdown — called on every door. */
+  /** Close the dropdown — called on every door, Help included now that it
+   *  is one (2026-09-09: Help navigates to /guide instead of summoning a
+   *  second grid, so it no longer needs a callback of its own). */
   onNavigate: () => void;
-  /** The Help tile summons the quick-guide splash instead of navigating. */
-  onHelp: () => void;
   /** Opens the SIO-slider / two-choice pop-ups. Owned by the CALLER
    *  (SiteTopBar), not created here — `onNavigate` closes this whole
    *  component (the ☰ dropdown unmounts it), so any state or modal a picker
@@ -183,12 +182,35 @@ export default function MenuGrid({
               return <div key={key} aria-hidden />;
             }
             if (cell.kind === "help") {
+              // HELP OPENS THE MANUAL, NOT A SECOND GRID (Dan, 2026-09-09:
+              // "help should open to a 'How to use' manuel, not another grid
+              // menu. We can retire the older grid menu that it opens to").
+              //
+              // It used to open MenuSplash — a twenty-tile grid built on
+              // 19 Aug, when this ☰ menu did not exist and the help button was
+              // the only way to reach the whole app. MenuSplash's own header
+              // recorded that it had REPLACED a quick-guide popup, on the
+              // grounds that "what a learner reached for that button to do was
+              // GO somewhere". That was true then and is not now: this grid is
+              // the going-somewhere door, so a second grid behind Help was the
+              // same answer given twice, and the question nobody could answer
+              // any more was "how does this app work?".
+              //
+              // /guide is that answer and already exists — the learner
+              // tutorial, written to Dan's July notes ("a new user might be
+              // quite lost", then "way too wordy — succinct yet clear"). So
+              // this is a door being pointed at the right room, not a page
+              // being built.
+              //
+              // A LINK, not a button, so it matches every other tile here:
+              // middle-click and long-press offer "open in new tab", which a
+              // manual is exactly the sort of page to want open beside you.
               return (
-                <button key={key} type="button" onClick={() => { onNavigate(); onHelp(); }}
-                        className={TILE} style={{ borderColor: row.pen }}>
+                <Link key={key} href="/guide" onClick={onNavigate}
+                      className={TILE} style={{ borderColor: row.pen }}>
                   <span aria-hidden className="text-lg leading-none">🆘</span>
                   <span className={NAME}>Help</span>
-                </button>
+                </Link>
               );
             }
             if (cell.kind === "numbers") {

@@ -192,8 +192,8 @@ function TopBar({ collectionId }: { collectionId: string }) {
          identical reason, which the note here had got wrong: it claimed to be
          "the only help this page has", and it never was. It mounted HelpDot,
          whose whole purpose is pages OUTSIDE the CahierShell — the immersive
-         games, which have no ☰ — and it opens MenuSplash. The ☰ two
-         centimetres above it opens MenuSplash too, from its « MENU » row. Two
+         games, which have no ☰ — and it opened the same twenty-tile grid the
+         ☰ two centimetres above it opened from its « MENU » row. Two
          doors to one room, on one screen, and it made the deck the only band
          in the app with a fourth thing on it (Dan, seeing the strips lined up:
          "what is with the question mark on the deck strip"). */
