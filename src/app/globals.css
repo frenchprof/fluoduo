@@ -2125,6 +2125,35 @@ h3.cahier-display { font-size: var(--fs-h3); }
      see the note above. */
   --fam-user: #9ca3af;  --fam-user-ink: #4b5563;  --fam-user-wash: #e5e7eb;         /* Grey (pending: not in the 12) — User */
 
+  /* ── THE FIFTY STOPS' OWN FOUR PENS ────────────────────────────────────
+     What the map's legend names: vocabulary · grammar · expressions ·
+     communication. These are the colours the map had before 2026-09-09, put
+     back at Dan's word ("restore the colors on the map").
+
+     THEY LIVE HERE BECAUSE THEY USED TO LIVE NOWHERE. `KIND_COLOR` in
+     HomeMap.tsx pointed the four kinds straight at four FAMILY tokens —
+     --fam-review, --fam-svplay, --fam-user, --fam-goals — so the stops had
+     no palette of their own, they were borrowing the menu's. When the ☰ menu
+     was recoloured to Dan's 12-swatch brand palette that same day, all fifty
+     stops silently changed with it: blue→teal, pink→violet, orange→grey,
+     green→yellow, washes and all. Nobody asked for it and no check saw it,
+     because every check asserts the stops read ONE palette through
+     `sioKind()` — which stayed true while the palette moved underneath them.
+
+     A STOP'S KIND AND A MENU FAMILY ARE DIFFERENT TAXONOMIES. "This goal
+     teaches vocabulary" and "this activity lives under Revise" answer
+     different questions and are free to move independently; sharing a token
+     was convenience, and convenience is what coupled them. Recolouring one
+     must never recolour the other, so the map now owns its four pens and
+     verify25b pins them.
+
+     Change these when the MAP's colours should change, never as a side
+     effect of a family edit. */
+  --sio-vocab: #1ca6ff;       --sio-vocab-wash: #d0e9ff;        /* blue   */
+  --sio-grammar: #ff4eb2;     --sio-grammar-wash: #ffdaea;      /* pink   */
+  --sio-phrases: #ff9037;     --sio-phrases-wash: #ffdec9;      /* orange */
+  --sio-production: #00dd3e;  --sio-production-wash: #c3f5c3;   /* green  */
+
   /* THE PAGE GROUND (Dan, 2026-08-30: "apply the new dopamine look
      EVERYWHERE"). The same six hues at 97.5% lightness — about a quarter of
      the wash's strength — so a page is its family's paper rather than grey
