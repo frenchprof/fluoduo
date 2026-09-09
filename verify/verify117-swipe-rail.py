@@ -77,9 +77,20 @@ keys = re.findall(r'key:\s*"([a-z]+)"', rail)
 # NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*). Every station is work on a goal;
 # where you stand against the class is not. Both pages stay reachable through
 # the 👤 User family — they simply get no horizontal swipe.
+# DAN REWROTE THE TAIL ON 2026-09-08, station by station: "MémoiRecall — swipe
+# left for ConjugaZone", then an hour later "can you swap the WorDrill (comes
+# first) and ConjugaZone (last)", and he closed the list himself with "[end of
+# left swipe]". So the three skills that belong to ONE lesson are three columns
+# again, in his order, and Games is off the chain.
+#
+# This is not the 7 Sep hub decision taken twice. That day six skills became one
+# column because dragging through ChaTutor, VoixLà and ComposeIt was "a walk
+# through a list nobody thinks of as ordered". These three ARE ordered — say it,
+# hear it, conjugate it, on one lesson — and the other three are not in the
+# chain at all. Skills is still a hub PAGE; it is no longer a station.
 EXPECTED = [
     "map", "goals", "speculearn", "lesson", "flip",
-    "skills", "svplay",
+    "wordrill", "ecoutexte", "conjugaison",
 ]
 if keys != EXPECTED:
     fails.append(
@@ -97,16 +108,47 @@ if "move(-1)" not in rail or "forward: move(1)" not in rail:
         "    and the rule has been written down ever since."
     )
 
-# A hub swallows its own doors: standing on one of them, BACK is the hub.
-if "hub" not in rail or "normalise(hub) !== here" not in rail:
+# THE HUB RULE AND ITS TWO USERS PARTED COMPANY ON 2026-09-08.
+#
+# It was written on 7 Sep for a real fault: standing on ChaTutor, rightwards had
+# to be « Skills » and not « ComposeIt », because the six skills are doors off
+# one page rather than a row of stations. Then Dan rewrote the tail and neither
+# Skills nor Games is a station any more — so the two `hub:` lines this used to
+# demand by name are correctly gone, and demanding them would now be demanding
+# the chain he replaced.
+#
+# The MECHANISM stays, and the invariant is the pair: a station may declare a
+# hub, and if any does, the code that honours it must still be there. Assert
+# them against each other rather than either alone — that way the rule cannot
+# rot while unused, and a hub cannot come back to code that ignores it.
+declares_hub = re.search(r'^\s*hub:\s*"', rail, re.M) is not None
+honours_hub = "normalise(hub) !== here" in rail
+if declares_hub and not honours_hub:
     fails.append(
-        "The hub rule is gone. Dan, 7 Sep: on ChaTutor, rightwards is « Skills »,\n"
-        "    not « ComposeIt » — the six skills are doors off one page, not a row\n"
-        "    of stations, and the way out of a door is back through it."
+        "A station declares `hub:` but railNeighbours no longer honours it.\n"
+        "    Dan, 7 Sep: on a door off a hub, rightwards is the hub itself — the\n"
+        "    way out of a door is back through it."
     )
-for hub_href in ['hub: "/skills"', 'hub: "/games"']:
-    if hub_href not in rail:
-        fails.append(f"{hub_href} is gone — Dan named both hubs by name.")
+
+# THE LESSON IS IN CONJUGAZONE'S ADDRESS, and this is the load-bearing half of
+# Dan's own question (2026-09-08): *"will it be able to return via the swipe
+# right way from ConjugaZone back through the entire chain?"* All fifty lessons
+# share `/conjugaison`, so a right swipe reads the lesson from `?deck=` or it
+# reads nothing. `?v=` cannot stand in (two lessons can share a verb) and the
+# remembered deck cannot either — a bookmark, a shared link or a dropped tab
+# has no memory to read, and the swipe would land on somebody else's lesson.
+if "deck=${deck}" not in rail:
+    fails.append(
+        "ConjugaZone's station no longer puts the lesson in its address.\n"
+        "    One page serves all fifty lessons, so without `?deck=` a right swipe\n"
+        "    off it cannot know whose ÉcouTexte to go back to."
+    )
+if not re.search(r'deck=\(\[\^&#\]\+\)', rail):
+    fails.append(
+        "swipeRail no longer READS `?deck=` back out of the address.\n"
+        "    Writing it and not reading it is worse than neither: the URL claims a\n"
+        "    lesson the rail ignores."
+    )
 
 # The two pages Dan struck off must not creep back as stations.
 for gone in ['"/leaderboard"', '"/profil"']:

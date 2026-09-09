@@ -132,51 +132,76 @@ export const RAIL: RailStation[] = [
     at: (p) => p.startsWith("/practice/flip-it"),
   },
   {
-    key: "skills",
-    name: "Skills",
-    // ONE COLUMN, SIX DOORS. ConjugaZone · ÉcouTexte · WorDrill · VoixLà ·
-    // ComposeIt · ChaTutor were six columns for a day, which made a sideways
-    // drag on ChaTutor a walk through a list nobody thinks of as ordered —
-    // and put four screens between MémoiRecall and the games.
-    href: () => "/skills",
-    hub: "/skills",
-    at: (p) =>
-      p === "/skills" ||
-      p === "/conjugaison" ||
-      p === "/tts" ||
-      p === "/tutor" ||
-      p.startsWith("/practice/ecoutexte") ||
-      p.startsWith("/practice/wordrill") ||
-      p.startsWith("/games/compose"),
+    key: "wordrill",
+    name: "WorDrill",
+    /* THE THREE SKILLS ARE THREE COLUMNS AGAIN, IN DAN'S ORDER (2026-09-08).
+       He wrote the whole chain out station by station — "MémoiRecall … swipe
+       left for ConjugaZone", then corrected himself an hour later: *"can you
+       swap the WorDrill (comes first) and ConjugaZone (last)"*. So the tail is
+       WorDrill → ÉcouTexte → ConjugaZone, and it ENDS there ("[end of left
+       swipe]").
+
+       This reverses the 7 Sep hub, and the reversal is narrower than it looks
+       rather than a decision taken twice. That day six skills became one
+       column because a sideways drag through ChaTutor, VoixLà and ComposeIt
+       was "a walk through a list nobody thinks of as ordered". These three ARE
+       ordered — say it, hear it, conjugate it, on one lesson — and the other
+       three are not in the chain at all. Skills stays a hub PAGE for the ☰ and
+       the bottom bar; what it is no longer is a station.
+
+       WorDrill's per-lesson address already exists: `/practice/say-it/<deck>`
+       is the same engine the unit-picker page compiles. */
+    href: (deck) => (deck ? `/practice/say-it/${deck}` : "/practice/wordrill"),
+    at: (p) => p.startsWith("/practice/wordrill") || p.startsWith("/practice/say-it"),
   },
   {
-    key: "svplay",
-    name: "Games",
-    // The same, for Numbers (NumBus + NumBourse inside it, in Dan's own
-    // bracket), VocabulaRain and LexicaLater.
-    href: () => "/games",
-    hub: "/games",
-    at: (p) =>
-      p === "/games" ||
-      p.startsWith("/games/numbers") ||
-      p.startsWith("/games/numbus") ||
-      p.startsWith("/games/numbourse") ||
-      p.startsWith("/games/vocabularain") ||
-      p.startsWith("/games/lexicalater") ||
-      p.startsWith("/games/matching"),
+    key: "ecoutexte",
+    name: "ÉcouTexte",
+    /* NOT PER-LESSON YET, and this href is the honest placeholder for that.
+       ÉcouTexte generates its mini-texts from a UNIT, not a deck — there is no
+       `/practice/ecoutexte/<deck>` to point at — so a learner swiping left off
+       WorDrill reaches the general page until that scoping is built. */
+    href: () => "/practice/ecoutexte",
+    at: (p) => p.startsWith("/practice/ecoutexte"),
   },
-  // THE CHAIN ENDS AT GAMES. Dan, 2026-09-07: *"LEADERBOARD AND PROFILE SHOULD
-  // NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. They were the last two columns
-  // for a day and they do not belong: every station before them is WORK ON A
-  // GOAL — guess it, read it, drill it, play it — and where you stand against
-  // the class is not work. Swiping through the course should not end up at
-  // your own profile any more than reading a book ends at the library card.
-  //
-  // Out of the RAIL is not out of the app: 👤 User is a family in the bottom
-  // bar and the ☰, which is how both pages are reached. Off the rail they
-  // simply get no horizontal swipe at all — `railIndex` returns -1 and
-  // `railNeighbours` answers null in both directions, the same as Home, the
-  // guide and Réglages.
+  {
+    key: "conjugaison",
+    name: "ConjugaZone",
+    /* ONE PAGE, THE LESSON IN ITS ADDRESS (Dan, 2026-09-08: *"ConjugaZone page
+       would land on the same single conjugazone page but land on the particular
+       verbs that we have assigned for that lesson"*, and then the question that
+       decides the shape of it — *"will it be able to return via the swipe right
+       way from ConjugaZone back through the entire chain?"*).
+
+       It can only do that if the lesson is IN THE URL. All fifty lessons share
+       `/conjugaison`, so a right swipe has nothing to read; `?v=` alone cannot
+       stand in for it, because two lessons can share a verb. The remembered
+       deck cannot either — open this page from a bookmark, a link sent to a
+       student, or after the phone dropped the tab, and there is no memory to
+       read, so the swipe would land on somebody else's lesson or on a picker.
+       `?deck=` survives all three.
+
+       The `v=` list is not written here: the deck → verbs table is Dan's own
+       split of the 67 verbs across the lessons, and until he has signed it off
+       this station carries the deck and lets the page choose the verbs. */
+    href: (deck) => (deck ? `/conjugaison?deck=${deck}` : "/conjugaison"),
+    at: (p) => p === "/conjugaison",
+  },
+  /* THE CHAIN ENDS AT CONJUGAZONE (Dan, 2026-09-08, closing his own list:
+     "[end of left swipe]"). GAMES WAS THE LAST COLUMN AND IS NOT ANY MORE.
+
+     It goes for the reason Leaderboard and Profile went on 7 Sep — "LEADERBOARD
+     AND PROFILE SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT" — and the reason
+     generalises rather than being about those two pages: every station in this
+     list is WORK ON ONE GOAL, guessed, read, drilled, said, heard, conjugated.
+     A game is not about a goal; NumBus, VocabulaRain and LexicaLater each stand
+     on their own and none of them takes a deck from the lesson you just left.
+
+     Out of the RAIL is not out of the app: 🎮 Games is a family in the bottom
+     bar and in the ☰, which is how all four are reached. Off the rail they
+     simply get no horizontal swipe — `railIndex` answers -1 and
+     `railNeighbours` answers null both ways, the same as Home, the guide,
+     Réglages, and now Skills. */
 ];
 
 /**
@@ -192,6 +217,11 @@ export const RAIL: RailStation[] = [
  */
 function normalise(path: string): string {
   const p = path
+    // THE QUERY IS NOT PART OF THE COLUMN (2026-09-08). ConjugaZone carries its
+    // lesson in `?deck=` — one page, fifty lessons — so `/conjugaison?deck=aimer`
+    // and `/conjugaison` are the same station and must both match `at`. The deck
+    // itself is read by `deckFromPath` below, before this strips it.
+    .replace(/[?#].*$/, "")
     .replace(/\.html$/, "")
     // Trailing slashes come off FIRST. `/map/embed/` is how a static host
     // serves that page, and testing for `/embed$` before the slash is gone
@@ -213,6 +243,15 @@ export function railIndex(path: string): number {
 
 /** The deck a path is working on, read off the path itself. */
 export function deckFromPath(path: string): string | null {
+  /* THE LESSON MAY BE IN THE QUERY, and on exactly one station it always is.
+     Dan asked whether a single-page ConjugaZone could still swipe right through
+     the whole chain (2026-09-08); it can only do so if the page says which
+     lesson it is showing, and `?deck=` is that. Read it BEFORE `normalise`
+     throws the query away, and accept it only on the station that issues it —
+     a `?deck=` bolted onto any other address would be a second way of saying
+     what that address already says, and the two would drift. */
+  const q = path.match(/[?&]deck=([^&#]+)/);
+  if (q && normalise(path) === "/conjugaison") return decodeURIComponent(q[1]);
   const p = normalise(path);
   const seg = p.split("/").filter(Boolean);
   const after = (...prefix: string[]) => {

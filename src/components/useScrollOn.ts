@@ -56,7 +56,10 @@ export default function useScrollOn(): void {
 
   usePullPastEnd(() => {
     if (firedFor.current === path) return;
-    const { forward } = railNeighbours(path, deckFromPath(path) ?? recalledRailDeck());
+    // Read the live address, not the rendered path — ConjugaZone's lesson is
+    // in `?deck=` and `usePathname()` does not carry it. See useRailSwipe.
+    const here = path + (typeof window !== "undefined" ? window.location.search : "");
+    const { forward } = railNeighbours(path, deckFromPath(here) ?? recalledRailDeck());
     if (!forward) return;
     firedFor.current = path;
 

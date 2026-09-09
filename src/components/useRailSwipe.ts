@@ -132,7 +132,13 @@ export default function useRailSwipe(): void {
       const dy = endPt.y - startPt.y;
       if (Math.abs(dx) < MIN_PX || Math.abs(dx) < Math.abs(dy) * RATIO) return;
       // The deck of the page you are on, or the one you were last working on.
-      const { back, forward } = railNeighbours(path, deckFromPath(path) ?? recalledRailDeck());
+      /* THE QUERY IS READ HERE, NOT AT RENDER. `usePathname()` drops it, and
+         ConjugaZone keeps its lesson in `?deck=` — so a right swipe off it
+         would have had no idea which lesson to go back to. `useSearchParams`
+         would force a Suspense boundary on a static export; the live address
+         is right here in the handler and costs nothing. */
+      const here = path + (typeof window !== "undefined" ? window.location.search : "");
+      const { back, forward } = railNeighbours(path, deckFromPath(here) ?? recalledRailDeck());
       const go = dx > 0 ? back : forward;
       if (!go) return;
       /* A FRAMED STATION DOES NOT NAVIGATE ITSELF (Dan, 2026-09-07: everything
