@@ -256,7 +256,6 @@ export default function HomeMap({
   focusUnit,
   onOpenUnit,
   onOpenSio,
-  postcard,
 }: {
   progress: Progress;
   activeId?: string;
@@ -268,11 +267,12 @@ export default function HomeMap({
   onOpenUnit?: (unit: number) => void;
   /** Tapping a stop — the parent opens that SIO (in the unit list under the map). */
   onOpenSio?: (unit: number, id: string) => void;
-  /** POSTCARD mode (Dan, 2026-08-21): a bare, read-only snapshot for Home —
-   *  no unit chips, no legend, no zoom, a short box landed on the learner's
-   *  current band. The parent wraps it in a link to /map and turns
-   *  pointer events off. */
-  postcard?: boolean;
+  /* POSTCARD MODE IS GONE (Dan, 2026-09-09: "please throw that postcard away
+     forever"). It was a prop that stripped this map to a bare 280px snapshot —
+     no unit chips, no legend, no zoom — for the parent to wrap in a link and
+     turn pointer events off. Nothing had passed it since 8 Sep, so it sat here
+     as a mode waiting to be revived; Home shows the real 3D scene now, with
+     stops that answer a tap. verify80 fails if the prop comes back. */
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [boxW, setBoxW] = useState(0);
@@ -361,7 +361,7 @@ export default function HomeMap({
   return (
     <div className="home-map">
       {/* Unit chips: one tap = that band on screen. */}
-      {!postcard && <div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-1">
+      <div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-1">
         {GEO.bands.map((b) => {
           const isOpen = b.unit === openUnit;
           const inUnit = b.unit < 5 ? SIOS.filter((s) => s.unit === b.unit) : [];
@@ -387,7 +387,7 @@ export default function HomeMap({
             </button>
           );
         })}
-      </div>}
+      </div>
 
       {/* The map box — Design's bordered scroll box. Vertical swipes snap
           band to band; the zoom scales the whole sheet. */}
@@ -395,8 +395,8 @@ export default function HomeMap({
         ref={boxRef}
         className="home-map-box overflow-auto rounded-2xl border"
         style={{
-          height: postcard ? 280 : 520,
-          maxHeight: postcard ? undefined : "68vh",
+          height: 520,
+          maxHeight: "68vh",
           borderColor: "var(--cahier-line-strong)",
           background: "var(--cahier-paper-raised)",
           boxShadow: "var(--shadow-card)",
@@ -558,7 +558,7 @@ export default function HomeMap({
         </div>
       </div>
 
-      {!postcard && <KindLegend>
+      <KindLegend>
         {/* Zoom, compact: − [nn] + % */}
         <span className="fluo-mono flex shrink-0 items-center gap-1 text-[11px] font-bold text-[color:var(--cahier-ink-faint)]" aria-label="Zoom">
           <button
@@ -622,7 +622,7 @@ export default function HomeMap({
           </button>
           %
         </span>
-      </KindLegend>}
+      </KindLegend>
     </div>
   );
 }
