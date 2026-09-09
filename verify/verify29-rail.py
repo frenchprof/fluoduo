@@ -48,12 +48,14 @@ check(not os.path.isfile("src/components/GuideSplash.tsx"),
       "GuideSplash is gone — the Menu replaced it",
       "GuideSplash.tsx still exists alongside MenuSplash — two popups on one button")
 
-# 1 · six families in Dan's order
+# 1 · SEVEN families now (2026-09-09: Skills retired, split into Oral and
+# Tools), in Dan's grid-menu row order: Lesson · Practice · Review · Games ·
+# Oral · Tools · User.
 fams = re.findall(r'\{ key: "([a-z]+)", name: "FluOL?in', reg)
-WANT = ["goals", "practice", "svplay", "review", "skills", "user"]
+WANT = ["goals", "practice", "review", "svplay", "oral", "tools", "user"]
 check(fams == WANT,
-      f"six families in Dan's 19 Aug order: {' · '.join(fams)}",
-      f"family order is {fams}, expected {WANT} (2a→2b→2e→2c→2d→2f)")
+      f"seven families in Dan's 9 Sep row order: {' · '.join(fams)}",
+      f"family order is {fams}, expected {WANT}")
 
 # 2 · the rail is grouped, not flat
 # `<RailGroups`, not "RailGroups": the import line and the comment explaining
@@ -139,12 +141,18 @@ EXPECT = {
     # family, where his 3x5 menu screenshot also drew it.
     "practice": {"speculearn", "lesson", "flip"},
     "review":   {"reviser", "grammarathon", "conjugaison"},
-    "skills":   {"ecoutexte", "wordrill", "tts", "compose", "tutor"},
+    # SKILLS RETIRED 2026-09-09, split into Oral (the three spoken ones) and
+    # Tools (the two summonable helpers) — see AGENTS.md and the FAMILIES
+    # comment in activities.ts.
+    "oral":     {"ecoutexte", "wordrill", "tts"},
+    "tools":    {"compose", "tutor"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.
     "svplay":   {"numbers", "vocabularain", "lexicalator"},
-    "user":     {"leaderboard", "profil"},
+    # SETTINGS JOINED USER 2026-09-09 — the grid menu's third User slot
+    # (Réglages had a page but no tile before).
+    "user":     {"leaderboard", "profil", "reglages"},
 }
 rows = re.findall(r'\{ key: "([a-z0-9]+)", name: "[^"]+".*?family: "([a-z]+)"', reg)
 for fam, want in EXPECT.items():
@@ -163,11 +171,12 @@ check("grid-cols-4" in menu,
 check("sm:grid-cols-5" not in menu,
       "the Menu stays 4x4 at every width (Dan, 31 Aug: '16 (4x4)')",
       "the Menu widens to five across again — sixteen tiles leave a hole there")
-check(len(rows) == 16,
-      f"the registry holds sixteen activities ({len(rows)}) — Dan's 4x4",
-      f"the registry holds {len(rows)} activities, expected 16 — Dan's 4x4 "
+check(len(rows) == 17,
+      f"the registry holds seventeen activities ({len(rows)}) — Dan's 4x4 plus Settings",
+      f"the registry holds {len(rows)} activities, expected 17 — Dan's 4x4 "
       "(31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under one "
-      "Numbers hub, My Progress folded into Profile). If a tile is added or "
+      "Numbers hub, My Progress folded into Profile) plus Settings, added to "
+      "the User row 2026-09-09. If a tile is added or "
       "removed, change this number on purpose.")
 check(">Menu<" in menu or "Menu</h2>" in menu,
       "the popup calls itself Menu",

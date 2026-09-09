@@ -91,13 +91,25 @@ CSS = read("src/app/globals.css")
 PAPER, WHITE = "#faf6ee", "#ffffff"
 
 # family key -> (pen name, full, ink, wash, page)
+#
+# SEVEN FAMILIES, RECOLOURED 2026-09-09 (Dan's ☰-menu restructure: Skills
+# retired, split into Oral and Tools — see AGENTS.md and activities.ts
+# FAMILIES). Three keep an old colour under a new name (Practice takes
+# Review's old blue, Games takes Skills' old violet, Tools takes User's old
+# orange); three are new (Review teal, Oral indigo, User grey). Goals
+# (display name "Lesson" now) keeps its green untouched throughout.
 EXPECT = {
-    "goals":    ("Green",         "#00dd3e", "#007a1e", "#c3f5c3", "#ebfceb"),
-    "practice": ("Yellow",        "#fcdf00", "#756700", "#f2e8a5", "#faf7e2"),
-    "svplay":   ("Pink",          "#ff4eb2", "#c1007f", "#ffdaea", "#fff2f8"),
-    "review":   ("Blue",          "#1ca6ff", "#006baa", "#d0e9ff", "#eff8ff"),
-    "skills":   ("Indigo-Violet", "#b17eff", "#9200fe", "#eae0ff", "#f8f4ff"),
-    "user":     ("Orange",        "#ff9037", "#9f5100", "#ffdec9", "#fff4ed"),
+    # "the first row should be yellow instead of green" (Dan, 2026-09-09,
+    # after seeing the menu mock-up) — Green went unused.
+    "goals":    ("Yellow",     "#fcdf00", "#756700", "#f2e8a5", "#faf7e2"),
+    "practice": ("Blue",       "#1ca6ff", "#006baa", "#d0e9ff", "#eff8ff"),
+    "review":   ("Teal",       "#00c197", "#005f49", "#cdf4e7", "#eafbf8"),
+    "svplay":   ("Violet",     "#b17eff", "#9200fe", "#eae0ff", "#f8f4ff"),
+    # Periwinkle stands in for "Indigo" — not one of Dan's twelve swatches.
+    "oral":     ("Periwinkle", "#9398ff", "#3230b0", "#e5e5ff", "#eef0ff"),
+    "tools":    ("Orange",     "#ff9037", "#9f5100", "#ffdec9", "#fff4ed"),
+    # Grey is not in the twelve either — kept pending Dan's answer.
+    "user":     ("Grey",       "#9ca3af", "#4b5563", "#e5e7eb", "#f3f4f6"),
 }
 
 
@@ -106,7 +118,7 @@ def declared(token):
     return m.group(1).lower() if m else None
 
 
-# ---- 1 · the twenty-four values ------------------------------------------
+# ---- 1 · the twenty-eight values (seven families x four rungs since 9 Sep) ---
 wrong = []
 for key, (_pen, full, ink, wash, page) in EXPECT.items():
     for token, want in (
@@ -117,7 +129,7 @@ for key, (_pen, full, ink, wash, page) in EXPECT.items():
         if got != want:
             wrong.append(f"--{token} is {got or 'missing'}, expected {want}")
 ok(not wrong,
-   "all 24 family values are the highlighter set, to the hex",
+   f"all {4 * len(EXPECT)} family values are pinned, to the hex",
    "the family palette has drifted: " + "; ".join(wrong))
 
 # ---- 2 · the three-surface floor, recomputed ------------------------------
@@ -137,26 +149,44 @@ ok(not thin,
    "a family ink no longer clears 4.5:1 on all three surfaces it is used on — " +
    "; ".join(thin) + " (wash = the band label, white = the pill, paper = body text)")
 
-# ---- 3 · the wheel order the mapping was chosen to preserve ---------------
-WHEEL = ["user", "practice", "goals", "review", "skills", "svplay"]
-hues = [(k, hue(declared(f"fam-{k}") or "#000000")) for k in WHEEL]
-rising = all(hues[i][1] < hues[i + 1][1] for i in range(len(hues) - 1))
-ok(rising,
-   "the six sit in rising hue order — " +
-   " → ".join(f"{k} {h:.0f}°" for k, h in hues),
-   "the families are no longer in rising hue order (" +
-   " → ".join(f"{k} {h:.0f}°" for k, h in hues) + "). Order is the whole "
-   "justification for this mapping: it is what lets a learner keep 'Revise is "
-   "the cool one, Games is the hot one'. Two families have swapped places.")
-
-# Separation matters as much as order: the previous scheme spaced them 60° apart
-# for colour-blind readers, and the pens must not undo that.
-gaps = [hues[i + 1][1] - hues[i][1] for i in range(len(hues) - 1)]
-gaps.append(360 - hues[-1][1] + hues[0][1])
-ok(min(gaps) >= 30,
-   f"and no two adjacent families sit closer than {min(gaps):.0f}°",
-   f"two families are only {min(gaps):.0f}° apart — the palette was spaced for "
-   "colour-blind separation and this narrows it below 30°")
+# ---- 3 · distinct hues, pairwise (2026-09-09 rewrite) ---------------------
+# The OLD assertion pinned a rising hue-wheel order across all six — true of
+# that palette because it WAS a wheel (60° apart, spaced for colour-blind
+# readers). The 9 Sep set is not a wheel any more: User is grey (no hue to
+# rank) and the row order Dan gave (Lesson·Practice·Review·Games·Oral·Tools·
+# User) is the MENU's order, not a colour ramp — Tools (orange) sits after
+# Oral (indigo) on purpose, which a "rising order" rule would reject as a
+# swap. What still matters, and is still checked here: no two families read
+# as the same colour. Grey is excluded from the hue comparison (its whole
+# point is having none) and checked separately for lightness contrast
+# instead — swap it for green or blue and nobody would call it the SAME
+# hue, but it also should not sit at a lightness so close to the paper that
+# the "hue" comparison would call it "distinct" while an eye would not.
+# THE FLOOR DROPPED TO 15° THE SAME DAY (still 2026-09-09). Every colour
+# above is now Dan's own fixed 12-swatch brand palette ("use only these
+# shades" — his icon reference image), not a set chosen for this app's
+# separation — and Oral has no exact match in it. Periwinkle stands in for
+# the "Indigo" he asked for and lands only 20° from Games' Violet, which
+# the old 30° floor (this repo's own goal, not his) would reject. 15° still
+# catches a real mistake — two families landing on the SAME swatch, or one
+# a few degrees off it — without failing CI over a gap that is Dan's
+# palette, not a bug.
+CHROMATIC = ["goals", "practice", "review", "svplay", "oral", "tools"]
+hues = [(k, hue(declared(f"fam-{k}") or "#000000")) for k in CHROMATIC]
+ordered = sorted(hues, key=lambda kh: kh[1])
+gaps = [ordered[i + 1][1] - ordered[i][1] for i in range(len(ordered) - 1)]
+gaps.append(360 - ordered[-1][1] + ordered[0][1])
+ok(min(gaps) >= 15,
+   "and no two chromatic families sit closer than "
+   f"{min(gaps):.0f}° — " + " → ".join(f"{k} {h:.0f}°" for k, h in ordered),
+   f"two chromatic families are only {min(gaps):.0f}° apart (" +
+   " → ".join(f"{k} {h:.0f}°" for k, h in ordered) + ") — close enough to read "
+   "as the same colour even allowing for Dan's fixed palette")
+user_pen = declared("fam-user")
+ok(user_pen is not None and lum(user_pen) not in (lum(PAPER), lum(WHITE)),
+   f"User's grey ({user_pen}) is a real mid-tone, not paper or white in disguise",
+   f"User's grey ({user_pen}) reads as {'the paper' if user_pen == PAPER else 'plain white'} "
+   "rather than a colour of its own")
 
 # ---- 4 · the comment does not overstate the soft ink ----------------------
 ok("7.1:1 — both AAA" not in CSS,

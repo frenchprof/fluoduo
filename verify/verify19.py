@@ -119,10 +119,17 @@ check('registryTab("complete"' not in shell,
 # reason: a family whose shortcut points at another family's page has no door.
 # The map is Goals' front door and Home still opens it — verify25b asserts
 # that, so this no longer needs to.
-check('"/practice"' in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
-      "the Practice family reaches its own hub, not another family's page",
-      "the Practice family does not point at /practice — it is orphaned, or it has "
-      "gone back to borrowing /map, which belongs to Goals")
+#
+# AMENDED AGAIN, 2026-09-09. Practice's hub page retired the same day Skills'
+# did (Dan: "made redundant by the pop ups") — SpecuLearn and MémoiRecall both
+# have doors of their own, so the RULE this check exists for ("not orphaned,
+# not borrowing another family's page") is now satisfied by pointing straight
+# at SpecuLearn, Practice's own DELIBERATE_DOOR (verify52 asserts that
+# mapping). /practice itself still exists as a redirect for old links.
+check('"/practice/speculearn"' in open("src/content/activities.ts", encoding="utf-8").read().split("export const FAMILIES")[-1],
+      "the Practice family reaches SpecuLearn, its own deliberate door",
+      "the Practice family does not point at /practice/speculearn — it is orphaned, "
+      "or it has gone back to borrowing /map, which belongs to Goals")
 # Look at the SLOTS, not the file. The first version grepped the whole module
 # and failed on the word "Accueil" inside the comment explaining why Accueil is
 # not in the bar (2026-08-10).

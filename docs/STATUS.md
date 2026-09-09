@@ -6,6 +6,67 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 9 Sep — the ☰ menu becomes seven families, on branch (this session)
+
+Sole editor of STATUS.md in this commit: this session
+(`claude/grid-menu-7families`), rebased on top of `4b826f4`/`b08b14b`.
+
+Dan redrew the ☰ menu from five rows to seven, live over several messages —
+see AGENTS.md ("The ☰ menu is SEVEN families now, not six") for the full
+ruling and reasoning. Summary of what changed:
+
+- **Skills retired**, split into **Oral** (VoixLà, WorDrill, ÉcouTexte) and
+  **Tools** (ChaTutor, ComposeIt). Goals renamed **Lesson** on every
+  learner-visible surface (same key `goals`, same route `/`).
+- **DéjàRevu renamed ErroReview** (❌, was 🔖); the Revise family keeps its
+  name (an intermediate "Review" rename was tried and reverted the same day).
+- **Settings joins the User row** — a real `ACTIVITIES` entry now
+  (`reglages`), where before it had a page but no tile.
+- **Recoloured to Dan's fixed 12-swatch brand palette** ("use only these
+  shades") — Lesson=Yellow, Practice=Blue, Revise=Teal, Games=Violet,
+  Tools=Orange exactly; Oral=Periwinkle and User=grey are the two that
+  aren't in the twelve, both his explicit picks when asked. All 28 values
+  (7 families × 4 rungs) pinned in `verify96-family-hues.py`.
+- **The ☰ menu's row bands are solid `--fam-*-ink`**, not the 8 Sep's
+  15%-alpha wash — Dan sent the pale version back the same day.
+- **`/skills` and `/practice` hub pages retired**, both now redirect (to
+  VoixLà and SpecuLearn respectively) rather than being deleted outright.
+  **`/games` is NOT retired** — Dan hedged ("nearly all", not "all") and it
+  has no clean single-activity redirect target; ask him before touching it.
+- **Seven activities** (MémoiRecall, GramMarathon, VocabulaRain,
+  LexicaLocker, WorDrill, ÉcouTexte, ComposeIt) traded their own
+  deck/unit-picker hub for ONE shared pop-up, `ActivityGoalPicker.tsx` — a
+  50-stop slider defaulting to the learner's current stop, editable by
+  tapping the number directly. **NumBus** gets a separate, simpler
+  two-choice pop-up (NumBus vs NumBourse).
+- **ÉcouTexte's pop-up is a known, documented gap** — no per-SIO route
+  exists for it yet, so its Confirm always lands on the plain topic picker
+  regardless of the chosen stop.
+- Two real bugs found only by DRIVING the built app (not visible from
+  reading the code): the picker's own state/modal was unmounting itself
+  because it lived inside `MenuGrid`, which unmounts on every navigate —
+  fixed by hoisting `useActivityPicker()` up to `SiteTopBar`; and the modal
+  opened scrolled off-screen because it wasn't portalled — fixed with
+  `createPortal(..., document.body)`, matching `ToolSummon`/`BottomSheet`.
+
+**STILL OPEN, not yet answered by Dan:**
+- Whether `/games` should retire too, and if so, where it should redirect
+  (its three members are all pop-up-gated — no obvious single door).
+- The SIO-per-page swipe-chain feature (map ↔ SpecuLearn ↔ MneMemo ↔
+  MémoiRecall ↔ ConjugaZone ↔ WorDrill ↔ ÉcouTexte, one URL per SIO) that
+  the Lesson row's "Goals" tile will eventually open — Dan said he has
+  someone else building this separately. **Do not build it in this lane**;
+  the Lesson row's Goals tile still points at `/` (Home) as a placeholder
+  until that work lands and tells this repo where to point it.
+
+Verified before handing over: `tsc --noEmit` clean, full build green
+(`NEXT_PUBLIC_OPEN_APP=1`), every `verify/` script passing (six of them —
+verify19, verify24, verify29-rail, verify33-family, verify52-nav-hubs,
+verify96-family-hues, verify106-fluidtype, verify19b — needed updating for
+the new family shape; each carries its own dated comment explaining why).
+Screenshotted the finished 7-row menu and both pop-ups (slider + NumBus
+two-choice) against the real built app before calling this done.
+
 ## 8 Sep, night — four lanes landed, production synchronised, glyphs deduped (fluoduo-main)
 
 Sole editor of STATUS.md in this commit: fluoduo-main (`qc/icon-glyph-swap`).

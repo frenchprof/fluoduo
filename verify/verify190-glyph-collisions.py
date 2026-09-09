@@ -110,9 +110,9 @@ def entries(opener):
 families = entries("export const FAMILIES")
 activities = entries("const RAW_ACTIVITIES")
 
-check(len(families) == 6,
-      f"all 6 families read out of FAMILIES ({', '.join(n for n, _, _ in families)})",
-      f"expected 6 families in FAMILIES, parsed {len(families)} — this check "
+check(len(families) == 7,
+      f"all 7 families read out of FAMILIES ({', '.join(n for n, _, _ in families)})",
+      f"expected 7 families in FAMILIES, parsed {len(families)} — this check "
       "cannot guard what it cannot see, so fix the parse before trusting a pass")
 check(len(activities) >= 15,
       f"{len(activities)} activities read out of RAW_ACTIVITIES",
@@ -144,6 +144,17 @@ for path, glyph, what in CHROME:
 # still cannot slip past. The floating controls get a sentinel destination of
 # their own: a button that opens a tray goes nowhere a page goes, so it can
 # never legitimately share with one.
+#
+# ONE NAMED EXCEPTION, added 2026-09-09 the same day this file was written:
+# Dan drew the new 7-family grid menu HIMSELF with 🛠️ Tools (ChaTutor,
+# ComposeIt) — the same glyph ToolSummon's own floating "Outils" tray
+# already wore (VoixLà, ChaTutor). Unlike the 💬/🧰 faults this file exists
+# to catch, this one is not an accident nobody noticed: it is Dan's own
+# pick, made knowing the tray existed, because the two are the same idea
+# (summonable help) even though their member lists don't quite match. Named
+# here, one pair, rather than widening the destination rule generally.
+ALLOWED_SHARED = {("FluOLin Tools (family)", "the floating Outils tray (VoixLà · ChaTutor)")}
+
 owners = {}
 for name, glyph, href in families:
     owners.setdefault(fold(glyph), {}).setdefault(href, []).append(f"{name} (family)")
@@ -152,10 +163,16 @@ for name, glyph, href in activities:
 for path, glyph, what in CHROME:
     owners.setdefault(fold(glyph), {}).setdefault(f"\0{path}", []).append(what)
 
+ALLOWED_SETS = {frozenset(pair) for pair in ALLOWED_SHARED}
 clashes = {}
 for glyph, by_dest in owners.items():
-    if len(by_dest) > 1:
-        clashes[glyph] = [" / ".join(who) for who in by_dest.values()]
+    if len(by_dest) <= 1:
+        continue
+    who_lists = list(by_dest.values())
+    flat = frozenset(w for who in who_lists for w in who)
+    if flat in ALLOWED_SETS:
+        continue
+    clashes[glyph] = [" / ".join(who) for who in who_lists]
 
 shared_ok = sum(1 for by_dest in owners.values()
                 if len(by_dest) == 1 and len(next(iter(by_dest.values()))) > 1)
@@ -166,17 +183,26 @@ check(not clashes,
       "9 Sep — a learner meets both and neither reading is right: "
       + "; ".join(f"{g} -> {' AND '.join(who)}" for g, who in sorted(clashes.items())))
 
-# ---- 3 · the two glyphs that caused this cannot quietly return --------------
+# ---- 3 · the glyphs that caused this cannot quietly return -----------------
 # Narrower than 2 on purpose: 2 catches a collision, this catches the specific
-# regression of putting Skills or the bug button back onto 💬 in a patch that
-# moves the OTHER one out of the way at the same time — no collision, but Dan's
+# regression of putting the bug button's old glyph back in a patch that moves
+# something else out of the way at the same time — no collision, but Dan's
 # ruling reversed. Named one by one, the verify105 precedent, so this never
 # becomes a sweep for "emoji we dislike".
-skills = {n: g for n, g, _ in families}.get("FluOLin Skills", "")
-check(fold(skills) == fold("🤹"),
-      "FluOLin Skills wears 🤹 (Dan, 2026-09-09)",
-      f"FluOLin Skills wears {skills or '(nothing)'}, not 🤹 — Dan moved this "
-      "off 💬 on 9 Sep because the bug button shared it")
+#
+# SKILLS ITSELF RETIRED THE SAME DAY (later in the same conversation), split
+# into Oral and Tools — so "Skills wears 🤹" stopped being a thing to check
+# within the hour it became true. What still matters from the original fix:
+# 💬 is free to mean Oral now (Skills, its old owner, is gone), and Tools'
+# 🛠️ is the ONE deliberate exception check 2 names above.
+oral = {n: g for n, g, _ in families}.get("FluOLin Oral", "")
+check(fold(oral) == fold("💬"),
+      "FluOLin Oral wears 💬 (Dan, 2026-09-09, after Skills retired)",
+      f"FluOLin Oral wears {oral or '(nothing)'}, not 💬")
+tools = {n: g for n, g, _ in families}.get("FluOLin Tools", "")
+check(fold(tools) == fold("🛠️"),
+      "FluOLin Tools wears 🛠️ (Dan, 2026-09-09 — the one deliberate share, see check 2)",
+      f"FluOLin Tools wears {tools or '(nothing)'}, not 🛠️")
 locker = {n: g for n, g, _ in activities}.get("LexicaLocker", "")
 check(fold(locker) == fold("🔐"),
       "LexicaLocker wears 🔐, and is spelled LexicaLocker",
