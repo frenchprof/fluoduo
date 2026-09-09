@@ -53,6 +53,7 @@ import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
+import { SIOS } from "@/content/sios";
 import { equippedAccent } from "@/lib/economy";
 import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
 
@@ -161,7 +162,26 @@ export default function WelcomeBody() {
   // orange coin at every hour, and the greeting is white with a black outline
   // precisely so it does NOT need to know what the sky is doing. The scene
   // still reads the clock — that is where the hour belongs.
-  const activeId = nextSioId(progress);
+  // THE CAMERA IS PINNED TO STOP 1, NOT TO THE LEARNER (Dan, 2026-09-09,
+  // sending a mock of this page: *"it is the sky that is the problem, it is
+  // the stops (we are supposed to show the orange start button and stop 1)
+  // with sufficient skyline to display the Welcome text."*)
+  //
+  // It used to read `nextSioId(progress)` — the learner's own next stop — the
+  // same call Home's map makes, because this page was built from that one. On
+  // a dashboard that is right: show me where I am. On the FRONT DOOR it is
+  // wrong, and invisibly so, because it looks perfect to anyone testing with
+  // an empty profile. A learner at stop 30 opened the app and met stops 28-33
+  // with the ENTER coin among them, the greeting hanging over a stretch of
+  // road that means nothing to a visitor, and the composition Dan drew — the
+  // orange coin standing at the foot of the road, stop 1 just above it, sky
+  // enough above THAT for the welcome — simply gone.
+  //
+  // So the door always shows the beginning of the road. The scene still reads
+  // the clock (the sky turns over with the real hour, which Dan asked for on
+  // 8 Sep and has not withdrawn) and still paints the learner's own ticks and
+  // accent — what is fixed is the CAMERA, and nothing else.
+  const activeId = SIOS[0]?.id ?? nextSioId(progress);
 
   return (
     // .fluo-embed hides FluOLinGo's own furniture — footer, feedback button,
