@@ -209,7 +209,7 @@ export default function SiteTopBar({
             current <-- FluOLinGo in the top should be on the left rather
             than in the middle"): the wordmark now sits AGAINST the ☰, and
             everything after it is pushed right by this margin. */}
-        <Link href="/" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+        <Link href="/home" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
           {active !== "home" && <>← </>}
           {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
               same FluOLinGo font but with the KALLANG wave effect and
@@ -249,7 +249,7 @@ export default function SiteTopBar({
               (Dan, 2026-07-15). */}
           {/* !important — .cahier-btn's own display rule beats a bare
               `hidden` utility. */}
-          <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
+          <Link href="/home" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
             🏠
           </Link>
           {/* ⌛ My learning history — always visible (Dan, 2026-07-25).

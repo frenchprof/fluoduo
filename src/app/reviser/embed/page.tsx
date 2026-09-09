@@ -133,7 +133,7 @@ export default function ReviserPage() {
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">
               Practise any objective&rsquo;s deck and its words will come back here when they&rsquo;re due.
             </p>
-            <Link href="/" className="fluo-btn fluo-btn-sm mt-4 inline-block">← Back to the path</Link>
+            <Link href="/home" className="fluo-btn fluo-btn-sm mt-4 inline-block">← Back to the path</Link>
           </div>
         ) : done ? (
           <div className="space-y-4">

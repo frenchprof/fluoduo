@@ -884,7 +884,7 @@ export default function SayItContent({
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
               <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
-              {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
+              {embedded && <Link href="/home" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
         )}
