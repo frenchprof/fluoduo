@@ -1,1 +1,0 @@
-{"compilerOptions": {"outDir": ".", "rootDir": "../src", "module": "commonjs", "target": "es2020", "skipLibCheck": true, "noEmitOnError": false, "allowImportingTsExtensions": true, "rewriteRelativeImportExtensions": true, "baseUrl": "..", "paths": {"@/*": ["src/*"]}}, "files": ["../src/lib/dayKey.ts", "../src/lib/progressMerge.ts"]}
