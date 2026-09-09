@@ -20,12 +20,19 @@
  * Menu — which asked "which activity?" before the learner had been asked
  * "which stop?", and then had to ask again.
  *
- * The Map postcard, matted and inert, still sits below; the COURSE MAP still
- * lives at /map, and the old `/?unit=N#SIO-0XX` deep links are still
- * forwarded so printed QR codes and bookmarks survive.
+ * THE MAP BELOW IS THE REAL ONE (Dan, 9 Sep: "Home, and put the 3D map on
+ * it" / "not the postcard pls" / "please throw that postcard away forever").
+ * The 3D scene at its own height, wired to `onOpenSio` — tap stop 7 and you
+ * are at stop 7's page. What used to sit here was a matted, inert 2D crop
+ * under a dead « Enter the map » band; that mode has been deleted from
+ * HomeMap.tsx as well, so there is nothing left to revive.
+ *
+ * /map still owns the zoom, the legend and the 2D view.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
@@ -66,6 +73,7 @@ const BYLINE_STROKES = [
 
 
 export default function HomeDashboard() {
+  const router = useRouter();
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
@@ -154,6 +162,12 @@ export default function HomeDashboard() {
   // in the top bar.
   const accent = equippedAccent(progress);
 
+  // A stop on Home's map opens the goal's own page, exactly as it does on
+  // /map — same handler, same destination. Two maps that answer a tap
+  // differently would be two maps.
+  const openSio = (_unit: number, id: string) => {
+    router.push(`/sio/${id}`);
+  };
 
   return (
     <>
@@ -399,22 +413,35 @@ export default function HomeDashboard() {
           of each other, one counting DAYS and one counting STOPS, and nothing
           on the screen saying which was which. */}
 
-      {/* THE MAP POSTCARD IS RETIRED (Dan, 8 Sep, over a screenshot of it:
-          *"retire the unresponsive 2d map with start here button. we have
-          replaced that with the new landing page that peers has edited"*,
-          then, shown it again: *"we don't need this anymore"*).
+      {/* THE ROAD ITSELF, ON HOME (Dan, 9 Sep: "Home, and put the 3D map on
+          it", then, immediately: *"not the postcard pls"*).
 
-          It was a cropped Map2DGrid under a glassmorphic « Enter the map »
-          band, with a stretched link carrying the tap. What killed it is
-          the thing that replaced it: /welcome opens on the 3D map at full
-          height, so Home was showing a squeezed second copy of a picture the
-          app already shows properly somewhere else. On a desktop the crop
-          also laid the words across stop 23, which is the "unresponsive"
-          Dan saw — the band is pointer-events-none by design and reads as a
-          dead button.
+          THE POSTCARD IS STILL RETIRED, and the distinction is the whole of
+          this section. What Dan threw out on 8 Sep — *"retire the
+          unresponsive 2d map with start here button"* — was a 0.44-zoom crop
+          of the 2D GRID under a glassmorphic « Enter the map » band, with a
+          stretched link carrying the tap. It read as broken because it WAS
+          inert: the band is pointer-events-none by design, so a desktop got
+          the words laid across stop 23 and a tap that went nowhere near the
+          stop it landed on.
 
-          verify80 is inverted with it: it used to pin the postcard's shape
-          and now fails if a map postcard comes back to this page. */}
+          What is here instead is the real scene at its own height, the same
+          component /map draws, with the same `onOpenSio` — tap stop 7 and
+          you are at stop 7's page. No crop, no overlay band, no wrapping
+          link. `fill` and `still` are both off on purpose: `fill` is for
+          /welcome, where the sky has to reach the top of the window, and
+          `still` freezes the scene for a page that is showing a PICTURE of
+          the map. Home is showing the map.
+
+          verify80 is retargeted with it: it stops asserting "no map on Home"
+          and starts asserting "no POSTCARD on Home" — no 2D crop, no view
+          switch, no dead CTA band — which is what all three rulings from 1
+          to 9 Sep were actually about. */}
+      <section aria-label="Course map" className="mt-5">
+        <div className="relative" style={{ touchAction: "pan-y" }}>
+          <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
+        </div>
+      </section>
     </>
   );
 }

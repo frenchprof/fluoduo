@@ -6,6 +6,59 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 9 Sep — Home shows the road, and the postcard is destroyed (integration lane)
+
+Sole editor of STATUS.md in this commit: this session (`qc/home-3d-map`),
+branched from `7600e28`.
+
+Dan asked where ENTER should land now that there is no course picker, and
+answered himself: ***"Home, and put the 3D map on it"*** — then, before a line
+was written, ***"not the postcard pls"***, and then ***"please throw that
+postcard away forever"***.
+
+**WHAT THE PAGE LOOKED LIKE BEFORE.** Empty. `/home` was the greeting band,
+the three keys (Continue / Next / Rewind) and forty centimetres of blank
+notebook paper down to the footer — measured by driving the built export at
+430×932 and at 1280×900. That is what removing the postcard on 8 Sep left
+behind.
+
+**WHAT IT SHOWS NOW.** `HomeMap3D` at its own height, the same component and
+the same `onOpenSio` that `/map` uses. Driven and measured on the built
+export: seven stops in the DOM, and tapping SIO-004 lands on `/sio/SIO-004`
+from Home and from the map embed alike — the same destination from both.
+`fill` and `still` are both off: `fill` is `/welcome`'s shape (sky to the top
+of the window) and `still` freezes the scene for a page showing a PICTURE of
+the map. Home is showing the map.
+
+**AND THE POSTCARD MODE IS DELETED, not left dormant.** `HomeMap` carried a
+`postcard` prop that stripped it to a bare 280px snapshot — no unit chips, no
+legend, no zoom — for a parent to wrap in a link and turn pointer events off.
+Nothing had passed it since 8 Sep. That is exactly the state a check has to
+catch: a mode with no callers reads as a feature to the next session that
+finds it, and this one has now been asked for and thrown away twice.
+
+**`verify80` IS RETARGETED A THIRD TIME** (view switch → postcard → no map →
+this). Read the three rulings from 1 to 9 Sep together and the constant was
+never "a map on Home" — it was the POSTCARD: a cropped 2D grid under a
+`pointer-events-none` « Enter the map » band, which is the "unresponsive" in
+Dan's own word for it. It now pins the live scene (present, wired to
+`onOpenSio`, not `still`, not `fill`), pins that none of the postcard's parts
+came back, and pins that the `postcard` prop is gone from `HomeMap.tsx`. All
+four new assertions were break-tested — remove `onOpenSio`, add `still`, swap
+in `Map2DGrid`, restore: fail, fail, fail, pass.
+
+**SUPERSEDES "HOME NO LONGER SHOWS THE MAP (#248)" below**, and closes the
+open question under it ("THE MAP HAS NO DOOR"): the ☰ menu's Lesson row has a
+Map tile since the seven-families work, and `verify80` counts seven doors to
+`/map` outside itself.
+
+**ONE THING FOUND AND NOT TOUCHED.** The region band label inside the scene is
+clipped at the box's left edge — Home reads « ELCOME VILLAGE · 0/10 » at
+1280px. Measured on both surfaces: `/map/embed` clips it identically (label at
+x=86 in a box starting at x=139). Pre-existing in the shared component, on the
+map as much as on Home, so it is not this branch's to fix — but it is now
+visible on a page every learner sees.
+
 ## 9 Sep — the ☰ menu becomes seven families, on branch (this session)
 
 Sole editor of STATUS.md in this commit: this session
