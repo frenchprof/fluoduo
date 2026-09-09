@@ -1,4 +1,4 @@
-// landing-scan — /welcome shows the road, and asks one thing.
+// landing-scan — the landing page (`/`) shows the road, and asks one thing.
 //
 // Dan sent the first build of this page back in one sentence:
 //
@@ -137,7 +137,7 @@ const bad = [];
 
 for (const [label, viewport, checks] of VIEWS) {
   const page = await browser.newPage({ viewport });
-  await page.goto(`http://localhost:${PORT}/welcome`, { waitUntil: "domcontentloaded" });
+  await page.goto(`http://localhost:${PORT}/`, { waitUntil: "domcontentloaded" });
   await page.waitForTimeout(2600);
   const m = await page.evaluate(MEASURE, [BAND_TOP, BAND_BOTTOM]);
   await page.close();

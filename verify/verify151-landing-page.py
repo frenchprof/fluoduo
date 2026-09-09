@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify151 — /welcome shows the road, and asks one thing.
+"""verify151 — the landing page (`/`) shows the road, and asks one thing.
 
 Dan asked for a pre-home landing page on 7 Sep — *"It will be used as a
 pre-home page landing page… The question is what are the items on this
@@ -97,11 +97,13 @@ if fail:
     sys.exit(1)
 print("  ok   the scene fills the page, and the page is sized to the visible screen")
 
-probe = os.path.join(ROOT, "out/welcome.html")
+# THE LANDING PAGE IS THE ROOT SINCE 2026-09-09 (Dan: "the first i see must
+# be the one with Welcome to FluOLinGo in the horizon", and, asked, on every
+# visit). It was /welcome; that address still exists and forwards here, so the
+# page to probe is out/index.html.
+probe = os.path.join(ROOT, "out/index.html")
 if not os.path.isfile(probe):
-    probe = os.path.join(ROOT, "out/welcome/index.html")
-if not os.path.isfile(probe):
-    print("FAIL  out/ has no /welcome — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
+    print("FAIL  out/ has no root page — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
     sys.exit(1)
 
 sys.exit(subprocess.run(["node", "scripts/landing-scan.mjs"], cwd=ROOT).returncode)

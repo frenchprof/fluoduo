@@ -90,7 +90,7 @@ function DeckPageInner({ id }: { id: string }) {
     setDeleting(true);
     try {
       await deleteCollection(state.collection.id);
-      router.push("/");
+      router.push("/home");
     } catch (e) {
       alert(e instanceof Error ? e.message : "Delete failed.");
       setDeleting(false);
@@ -147,7 +147,7 @@ function NotFound({ id }: { id: string }) {
         We couldn’t find a deck with id <code className="rounded bg-[var(--cahier-hover)] px-1.5 py-0.5">{id}</code>. It may have been deleted, or it isn’t shared with you.
       </p>
       <div className="mt-5 flex justify-center gap-3">
-        <Link href="/" className="fluo-btn fluo-btn-ghost">
+        <Link href="/home" className="fluo-btn fluo-btn-ghost">
           ← Home
         </Link>
         <Link href="/decks/new" className="fluo-btn">

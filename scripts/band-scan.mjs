@@ -39,14 +39,20 @@ const PORT = 4183;
    the page rather than about the band. Kept as a list with reasons because an
    exemption without one is how a fault becomes a convention. */
 const EXEMPT = new Map([
-  ["/", "Home keeps its hero instead of a band (CahierShell: active !== 'home')."],
+  // Home moved to /home on 2026-09-09 when the landing page took the root.
+  ["/home", "Home keeps its hero instead of a band (CahierShell: active !== 'home')."],
   ["/map/standalone", "The deliberately BARE map for other people's pages — it draws no cahier at all."],
   // The pre-home landing page (Dan, 8 Sep). A coloured strip IS notebook
   // furniture — it names the page you are on inside the app — and this page is
   // the door in front of the app. The scene fills it edge to edge and a band
   // would be a bar laid across the sky, which is where the welcome lives.
   // verify151 is what holds this page's layout instead.
-  ["/welcome", "The door: the 3D scene fills the screen and there is no cahier to label."],
+  // THE DOOR MOVED TO THE ROOT on 2026-09-09 (Dan: "the first i see must be
+  // the one with Welcome to FluOLinGo in the horizon"). /welcome still exists
+  // as a forward, so both addresses are exempt: the old one renders nothing
+  // but a redirect, and a redirect has no band either.
+  ["/", "The door: the 3D scene fills the screen and there is no cahier to label."],
+  ["/welcome", "The door's old address — a forward to /, so it draws no band."],
   // Both /hidden pages are `robots: noindex`, reachable only by typing the URL,
   // and exist so Dan can look at ONE thing at a size: the origin animation, and
   // the language sorter. Chrome around them is the thing being excluded. They

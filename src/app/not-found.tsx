@@ -43,7 +43,7 @@ export default function NotFound() {
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-2">
-        <Link href="/" className="fluo-btn">
+        <Link href="/home" className="fluo-btn">
           ▶ Home
         </Link>
         <Link href="/map" className="cahier-btn">

@@ -46,7 +46,7 @@ export default function PracticePage({ collectionId, embedded = false }: { colle
               doesn&rsquo;t have sorting groups yet.
             </p>
             <div className="mt-5 flex justify-center gap-3">
-              <Link href="/" className="fluo-btn fluo-btn-ghost">
+              <Link href="/home" className="fluo-btn fluo-btn-ghost">
                 ← Home
               </Link>
             </div>
@@ -571,7 +571,7 @@ function Recap({
           <button type="button" onClick={onRestart} className="fluo-btn fluo-btn-lg">
             Sort again
           </button>
-          <Link href="/" className="fluo-btn fluo-btn-ghost">
+          <Link href="/home" className="fluo-btn fluo-btn-ghost">
             ← Back to lessons
           </Link>
         </div>

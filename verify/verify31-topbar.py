@@ -127,7 +127,15 @@ ok(slot is not None and "truncate" in slot.group(1) and "min-w-0" in slot.group(
 #
 # The anchor is now the home link itself, which is what the rule is about: it
 # is the bar's yield slot at any width, in any face.
-mark = re.search(r'<Link href="/" className="([^"]*)"', nocom_shell)
+#
+# AND THE HOME LINK MOVED ON 2026-09-09, from `/` to `/home`, when the welcome
+# page took the root (Dan: "the first i see must be the one with Welcome to
+# FluOLinGo in the horizon"). This is the second time this anchor has gone
+# stale for a reason that has nothing to do with truncation — the first was a
+# font change on 1 Sep, recorded above — so it matches EITHER address rather
+# than being re-pinned to today's. The rule is about the wordmark yielding, and
+# it should not go red the next time the app's front door is renamed.
+mark = re.search(r'<Link href="/(?:home)?" className="([^"]*)"', nocom_shell)
 mk = mark.group(1) if mark else ""
 ok("min-w-0" in mk and "truncate" in mk and "shrink" in mk,
    "the wordmark truncates rather than pushing the icons off",

@@ -90,7 +90,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
           <span aria-hidden>▶</span> Continue
         </button>
       ) : (
-        <Link href="/" className={CONTINUE_STYLE}>
+        <Link href="/home" className={CONTINUE_STYLE}>
           <span aria-hidden>▶</span> Continue
         </Link>
       )}
