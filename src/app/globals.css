@@ -553,13 +553,16 @@ html, body { overscroll-behavior-x: none; }
    be unity." So these five accents draw from the six-pen tokens — ink for
    the accent (it colours text in places, and ink is the role that may),
    wash for the tint — and the mapping is semantic, not decorative:
-   RE-DRILLS is Revise's business (blue), SKILLS is the Skills family
-   (violet), FRILLS/showcase is User (orange), ILLS surfaces practice
-   problems (yellow), and the fifth take goals-green. The old
-   teal/amber/lime pre-highlighter quads died here. */
+   RE-DRILLS is Review's business (now teal, since the 2026-09-09 recolour —
+   was blue), SKILLS took the old Skills family's slot (now Oral's indigo,
+   since Skills itself retired the same day), FRILLS/showcase is User
+   (now grey — was orange), ILLS surfaces practice problems (still Practice's
+   colour, now blue instead of yellow), and the fifth takes goals-green,
+   untouched throughout. The old teal/amber/lime pre-highlighter quads died
+   here. */
 .fluo-h-1 { --fluo-card-accent: var(--fam-review-ink); --fluo-card-tint: var(--fam-review-wash); }
 .fluo-h-2 { --fluo-card-accent: var(--fam-practice-ink); --fluo-card-tint: var(--fam-practice-wash); }
-.fluo-h-3 { --fluo-card-accent: var(--fam-skills-ink); --fluo-card-tint: var(--fam-skills-wash); }
+.fluo-h-3 { --fluo-card-accent: var(--fam-oral-ink); --fluo-card-tint: var(--fam-oral-wash); }
 .fluo-h-4 { --fluo-card-accent: var(--fam-user-ink); --fluo-card-tint: var(--fam-user-wash); }
 .fluo-h-5 { --fluo-card-accent: var(--fam-goals-ink); --fluo-card-tint: var(--fam-goals-wash); }
 
@@ -2094,12 +2097,33 @@ h3.cahier-display { font-size: var(--fs-h3); }
      paper (body text). Worst case across all six: 4.52:1, 5.52:1, 5.12:1,
      against 4.53 / 5.54 / 5.14 for the colours these replace.
      verify96-family-hues.py pins all twenty-four and recomputes the floor. */
-  --fam-user: #ff9037;  --fam-user-ink: #9f5100;  --fam-user-wash: #ffdec9;         /*  55° orange  */
-  --fam-practice: #fcdf00;  --fam-practice-ink: #756700;  --fam-practice-wash: #f2e8a5;  /* 100° yellow  */
-  --fam-goals: #00dd3e;  --fam-goals-ink: #007a1e;  --fam-goals-wash: #c3f5c3;      /* 145° green   */
-  --fam-review: #1ca6ff;  --fam-review-ink: #006baa;  --fam-review-wash: #d0e9ff;   /* 245° blue    */
-  --fam-skills: #b17eff;  --fam-skills-ink: #9200fe;  --fam-skills-wash: #eae0ff;   /* 300° violet  */
-  --fam-svplay: #ff4eb2;  --fam-svplay-ink: #c1007f;  --fam-svplay-wash: #ffdaea;   /* 350° pink    */
+  /* SEVEN FAMILIES, NOT SIX (Dan, 2026-09-09: the burger-menu redesign that
+     retired Skills and split it into Oral and Tools — see AGENTS.md), RECOLOURED
+     THE SAME DAY to Dan's fixed 12-swatch brand palette (his icon reference
+     image: Pink/Orange/Yellow/Green/Blue/Violet/Teal/Sky/Periwinkle/Magenta/
+     Amber/Olive, one exact hex each — "use only these shades"). Five map
+     cleanly: Lesson=Green, Practice=Blue, Revise=Teal, Games=Violet,
+     Tools=Orange. TWO DO NOT, and this is flagged rather than guessed:
+       Oral    Dan said "Indigo", which is not one of the twelve. Periwinkle
+               (#9398ff) is the closest thing in the set and stands in for it
+               here — his call to keep or swap.
+       User    Dan said "Grey", also not in the twelve — none of the twelve
+               reads as neutral. --fam-user keeps the grey it had rather than
+               force-fit a vivid swatch that was never meant to be neutral;
+               STILL PENDING HIS ANSWER.
+     verify96 pins all 28 values and recomputes the 4.5:1 floor on
+     wash/white/paper for every ink. */
+  --fam-goals: #fcdf00;  --fam-goals-ink: #756700;  --fam-goals-wash: #f2e8a5;      /* Yellow — Lesson  */
+  --fam-practice: #1ca6ff;  --fam-practice-ink: #006baa;  --fam-practice-wash: #d0e9ff;  /* Blue   — Practice */
+  --fam-review: #00c197;  --fam-review-ink: #005f49;  --fam-review-wash: #cdf4e7;   /* Teal   — Revise  */
+  --fam-svplay: #b17eff;  --fam-svplay-ink: #9200fe;  --fam-svplay-wash: #eae0ff;   /* Violet — Games   */
+  /* PERIWINKLE STANDS IN FOR "INDIGO" — not one of the twelve swatches; see
+     the note above. */
+  --fam-oral: #9398ff;  --fam-oral-ink: #3230b0;  --fam-oral-wash: #e5e5ff;         /* Periwinkle — Oral (pending: not in the 12) */
+  --fam-tools: #ff9037;  --fam-tools-ink: #9f5100;  --fam-tools-wash: #ffdec9;      /* Orange — Tools   */
+  /* GREY IS NOT IN THE TWELVE EITHER — kept as-is pending Dan's answer;
+     see the note above. */
+  --fam-user: #9ca3af;  --fam-user-ink: #4b5563;  --fam-user-wash: #e5e7eb;         /* Grey (pending: not in the 12) — User */
 
   /* THE PAGE GROUND (Dan, 2026-08-30: "apply the new dopamine look
      EVERYWHERE"). The same six hues at 97.5% lightness — about a quarter of
@@ -2124,9 +2148,10 @@ h3.cahier-display { font-size: var(--fs-h3); }
      don't want outliers". It left the Memo, the guide and the quick guide as
      the only three grounds in the app that did not name a family. Removed
      with its rule, not merely unwired — see the note by `.cahier-surface`. */
-  --fam-user-page: #fff4ed;      --fam-practice-page: #faf7e2;
-  --fam-goals-page: #ebfceb;     --fam-review-page: #eff8ff;
-  --fam-skills-page: #f8f4ff;    --fam-svplay-page: #fff2f8;
+  --fam-goals-page: #faf7e2;     --fam-practice-page: #eff8ff;
+  --fam-review-page: #eafbf8;    --fam-svplay-page: #f8f4ff;
+  --fam-oral-page: #eef0ff;      --fam-tools-page: #fff4ed;
+  --fam-user-page: #f3f4f6;
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
@@ -2135,7 +2160,8 @@ h3.cahier-display { font-size: var(--fs-h3); }
 .fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); }
 .fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); }
 .fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); }
-.fam-skills   { --fam: var(--fam-skills);   --fam-ink: var(--fam-skills-ink);   --fam-wash: var(--fam-skills-wash);   --fam-page: var(--fam-skills-page); }
+.fam-oral     { --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); }
+.fam-tools    { --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); }
 .fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
@@ -2330,6 +2356,49 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -3px -3px 7px color-mix(in oklab, white 35%, transparent);
 }
 .neo-key:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 4px; }
+
+/* THE GOAL SLIDER (Dan, 2026-09-09) — the ☰ menu's SIO-picker pop-up
+   (ActivityGoalPicker.tsx). A plain `<input type="range">` skinned so it
+   reads as one more piece of cahier hardware, not a browser default: a
+   grooved track (an inset well, the same language as .neo-well) with a
+   round .neo-key thumb standing proud of it. Tokens only, both engines
+   (-webkit-/-moz-) styled identically since a range input's internals
+   cannot be reached with one rule. */
+.fluo-goal-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--cahier-paper-2);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 30%, transparent),
+    inset 2px 2px 4px color-mix(in oklab, var(--cahier-ink) 18%, transparent);
+}
+.fluo-goal-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--cahier-paper-raised);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
+    -3px -3px 6px color-mix(in oklab, white 92%, transparent),
+    3px 5px 8px color-mix(in oklab, var(--cahier-ink) 35%, transparent);
+  cursor: pointer;
+}
+.fluo-goal-slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--cahier-paper-raised);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
+    -3px -3px 6px color-mix(in oklab, white 92%, transparent),
+    3px 5px 8px color-mix(in oklab, var(--cahier-ink) 35%, transparent);
+  cursor: pointer;
+}
+.fluo-goal-slider:focus-visible { outline: 3px solid var(--dopa-focus); outline-offset: 4px; }
 
 /* ─── THE MAP'S STOPS: the same material, at a fiftieth of the size ─────────
    Dan, 6 Sep, after Malewicz on tactility: "make them really 3D stand out".

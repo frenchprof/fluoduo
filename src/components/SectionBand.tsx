@@ -27,7 +27,11 @@
  */
 import type { ReactNode } from "react";
 
-export type Family = "goals" | "practice" | "svplay" | "review" | "skills" | "user" | "none";
+// Skills retired 2026-09-09, split into Oral and Tools — see FamilyKey in
+// content/activities.ts, which this duplicates rather than imports (a
+// server/client boundary reason lost to history — kept in sync by hand,
+// which is exactly how it drifted here).
+export type Family = "goals" | "practice" | "svplay" | "review" | "oral" | "tools" | "user" | "none";
 
 export default function SectionBand({
   family,

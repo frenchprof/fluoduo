@@ -23,7 +23,7 @@
  * deliberate, not alphabetical:
  *
  *   Goals   the sequence you actually do for one objective
- *   Review  automatic first, then the one you choose
+ *   Revise  automatic first, then the one you choose
  *   Skills  forms → receptive → productive
  *   SvPlay  gentlest first
  *   User    what you know → where you stand → who you are → settings
@@ -39,59 +39,64 @@
  *             the other 49 links were 404s)
  */
 
-export type FamilyKey = "goals" | "practice" | "review" | "skills" | "svplay" | "user";
+export type FamilyKey = "goals" | "practice" | "review" | "svplay" | "oral" | "tools" | "user";
 
 export type Family = { key: FamilyKey; name: string; emoji: string; href: string };
 
 /**
- * The six families, in Dan's order (2026-08-19). What changed from the five:
+ * SEVEN FAMILIES, NOT SIX (Dan, 2026-09-09, redrawing the ☰ grid menu).
+ * Skills is RETIRED — its five activities split across two new families,
+ * Oral (the spoken ones: VoixLà, WorDrill, ÉcouTexte) and Tools (the
+ * summonable helpers: ChaTutor, ComposeIt). Goals is renamed Lesson on
+ * every learner-visible surface (Map + the goal itself + Help now live
+ * together there) but KEEPS its key, `goals` — the Memo-rename precedent:
+ * a display rename never touches the key or the route.
  *
- *   · GOALS is no longer the five pre-lesson activities — it is the fifty
- *     objectives themselves, by unit and then by goal. It is what a learner
- *     opens to ask "what am I supposed to be able to do?", so it leads.
- *   · The five activities that used to sit under Goals (guess → lesson →
- *     dice → cards → produce) are now PRACTICE. Same five, same order, a
- *     name that says what you do with them.
+ * Dan's row order for the ☰ grid:
  *
- * Order is Dan's, 19 Aug — 2a → 2b → 2e → 2c → 2d → 2f, with Pre-Lesson and
- * Goals confirmed as the same tab:
+ *   🧑‍🏫 Lesson · 📝 Practice · 🔄 Revise · 🎮 Games · 💬 Oral · 🛠️ Tools · 👤 User
  *
- *   Goals · Practice · Games · Revise · Skills · User
+ * "Revise" is UNCHANGED from the 31 Aug ruling — a "Review" rename was
+ * tried mid-conversation, paired with DéjàRevu becoming ErroReview, and
+ * Dan's own later, clearer table spelled it Revise again, so that is what
+ * stands. DéjàRevu → ErroReview happened regardless (see below).
  *
- * Play sits third, straight after the practice you have just done; the two
- * heavier families (Review, Skills) follow it.
+ * COLOUR: three families keep an old colour under a new name — Practice
+ * takes Revise's old blue, Games takes Skills' old violet, Tools takes
+ * User's old orange — and three are new: Revise is teal, Oral is a
+ * Periwinkle standing in for "Indigo" (not one of Dan's 12 swatches), User
+ * is grey (not in the 12 either — his call, keep it). Lesson (ex-Goals)
+ * keeps its green — until HE changed that too: "the first row should be
+ * yellow instead of green." See globals.css for the 28 pinned values and
+ * verify96 for the contrast floor.
  */
 export const FAMILIES: Family[] = [
-  { key: "goals", name: "FluOLin Goals", emoji: "🎯", href: "/" },
-  // 🏋️ (Dan, 2026-08-31) — the same mark the lesson's Pract. tab wears
-  // since #108, so "practice" is one glyph everywhere.
-  // /practice since 1 Sep, not /map. The 🏋️ slot pointed at the learning
-  // path because Practice had no page of its own — the same fault 🎮 and
-  // 💪 had, fixed on 30 Aug by giving them a hub. The map is Goals', and
-  // Home still opens it (verify25b).
-  { key: "practice", name: "FluOLin Practice", emoji: "🏋️", href: "/practice" },
-  // /games, not /games/vocabularain (Dan, 2026-08-30, on the bottom bar:
-  // "can we first establish if those are really the five that we need
-  // anchored below? the most likely shortcuts needed by learners should go
-  // there"). The five slots were right; two of the doors were not. A learner
-  // tapping 🎮 got whichever game happened to be first in the registry, and
-  // the other three had no shortcut at all.
-  // "Games", not "SvPlay" and not "Play" (Dan, 2026-08-31): Home's hero key
-  // is now CONTINUE (your current stop), so the family door says what is
-  // behind it and no two doors share a name. Key stays "svplay" — the
-  // Memo-rename precedent: display renames never touch keys or routes.
-  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games" },
-  // "Revise" with 🔄 (Dan, 2026-08-31), superseding his 21 Aug 🔖 pick.
-  // The 21 Aug rule itself stands: 🔁 — ÉcouTexte's "Listen again" mark —
-  // stays banned as a destination glyph (verify25 pins it off Home); 🔄 is
-  // a different character and was Dan's explicit choice.
+  // 🧑‍🏫, not 🎯 (Dan, 2026-09-09) — the family now holds Map, the goal
+  // itself and Help together, so it wears a teacher rather than a target.
+  // href stays "/" — Home is still Lesson's door until the SIO-per-page
+  // work (a separate, larger piece Dan has someone else building) lands.
+  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/" },
+  // 📝 (Dan, 2026-09-09), retiring 🏋️. href points straight at SpecuLearn
+  // now — Practice's hub page retired the same day (DELIBERATE_DOOR below);
+  // /practice itself still exists as a redirect for old links/bookmarks.
+  { key: "practice", name: "FluOLin Practice", emoji: "📝", href: "/practice/speculearn" },
+  // Name unchanged from 31 Aug ("Revise") — a "Review" rename was tried
+  // and reverted the same day (9 Sep) DéjàRevu became ErroReview. 🔄 unchanged.
   { key: "review", name: "FluOLin Revise", emoji: "🔄", href: "/reviser" },
-  // Same fault, same fix: the emoji used to open ConjugaZone, one of six.
-  // 💬 (Dan, 2026-08-31) — the skills are speaking skills; 💪 moved on.
-  // 🤹 (Dan, 2026-09-09) — 💬 was ALSO the floating "report a bug" button
-  // (FeedbackButton.tsx), live on top of Skills screens at the same time as
-  // this door. Skills gets its own glyph; the bug button becomes 🐞.
-  { key: "skills", name: "FluOLin Skills", emoji: "🤹", href: "/skills" },
+  // Games — unchanged name, emoji and route; only the colour moves (was
+  // pink, now Skills' old violet — Skills itself retired the same day).
+  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games" },
+  // ORAL (NEW, 2026-09-09) — half of retired Skills: VoixLà, WorDrill,
+  // ÉcouTexte, the three activities that put French in your mouth or ear.
+  // href is a DELIBERATE DOOR to VoixLà (see DELIBERATE_DOOR below) — Oral
+  // has no hub page of its own, on purpose: the old /skills hub is exactly
+  // the kind of page this grid menu retires.
+  { key: "oral", name: "FluOLin Oral", emoji: "💬", href: "/tts" },
+  // TOOLS (NEW, 2026-09-09) — the other half of retired Skills: ChaTutor and
+  // ComposeIt, the two summonable helpers (see ToolSummon.tsx's own 🛠️).
+  // Deliberate door to ChaTutor, same reasoning as Oral.
+  { key: "tools", name: "FluOLin Tools", emoji: "🛠️", href: "/tutor" },
+  // User — unchanged route; grey now, was orange (Tools took the orange).
   { key: "user", name: "FluOLin User", emoji: "👤", href: "/profil" },
 ];
 
@@ -168,11 +173,17 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   // Dan's own classification of CompleteIt — so the standalone drill was the
   // same exercise offered twice under a second name.
 
-  // ── 2 · FluOlin Review — automatic first, then the one you choose ─────────
-  { key: "reviser", name: "DéjàRevu", emoji: "🔖", family: "review", href: "/reviser", blurb: "Comes back when you're about to forget it." },
+  // ── 2 · FluOlin Revise — automatic first, then the one you choose ─────────
+  // DÉJÀREVU IS RENAMED ERROREVIEW (Dan, 2026-09-09, the same day the family
+  // itself briefly became "Review" and then reverted to "Revise" — this
+  // rename stuck regardless): same activity, same key, same route — the
+  // spaced-review queue is untouched, only its name and glyph change.
+  // ❌, not 🔖 — 🔖 is retired with the name.
+  { key: "reviser", name: "ErroReview", emoji: "❌", family: "review", href: "/reviser", blurb: "Comes back when you're about to forget it." },
+  // GramMarathon: one of the seven whose hub gallery is replaced by the
+  // SIO-slider pop-up (ActivityGoalPicker.tsx) — see MenuGrid.tsx.
   { key: "grammarathon", name: "GramMarathon", short: "GramMarath", emoji: "🏃", family: "review", href: "/practice/grammarathon", blurb: "Gap-fill sprint across a whole deck." },
 
-  // ── 3 · FluOlin Skills — forms → receptive → productive ───────────────────
   /* CONJUGAZONE SITS IN BLUE — the Revise family (Dan, 2026-09-07, his
      LAST word on a placement that moved twice in one day: "in case you
      haven't noticed ConjugaZone is now part of the Practice series" in the
@@ -181,13 +192,23 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
      the grid and the registry agree. The move changes its hue, its spine,
      the family its band names, and which hub a rightward swipe returns it
      to; the band (prod, rust) is untouched — band says what is asked,
-     family says where it lives. */
+     family says where it lives. (Blue itself moved on 9 Sep to Practice —
+     ConjugaZone stays in the REVISE family, which is teal now.) */
   { key: "conjugaison", name: "ConjugaZone", emoji: "🔤", family: "review", href: "/conjugaison", blurb: "Verb endings until they come without thinking." },
-  { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "skills", href: "/practice/ecoutexte", blurb: "Hear a mini-text, fill in the words." },
-  { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "skills", href: "/practice/wordrill", blurb: "Say it out loud — the mic grades you." },
-  { key: "tts", name: "VoixLà", emoji: "🔊", family: "skills", href: "/tts", blurb: "Type French, hear it back, get it checked." },
-  { key: "compose", name: "ComposeIt", emoji: "🧩", family: "skills", href: "/games/compose", blurb: "Play a scene; your writing gets corrected." },
-  { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "skills", href: "/tutor", blurb: "Ask anything, in French or English." },
+
+  // ── 3a · FluOlin Oral — the three that put French in your mouth or ear ────
+  // Half of Skills, retired 2026-09-09 — see FAMILIES above. WorDrill and
+  // ÉcouTexte are two more of the seven slider-gated activities.
+  { key: "ecoutexte", name: "ÉcouTexte", emoji: "🎧", family: "oral", href: "/practice/ecoutexte", blurb: "Hear a mini-text, fill in the words." },
+  { key: "wordrill", name: "WorDrill", emoji: "🎙️", family: "oral", href: "/practice/wordrill", blurb: "Say it out loud — the mic grades you." },
+  { key: "tts", name: "VoixLà", emoji: "🔊", family: "oral", href: "/tts", blurb: "Type French, hear it back, get it checked." },
+
+  // ── 3b · FluOlin Tools — the two summonable helpers ────────────────────────
+  // The other half of retired Skills. ComposeIt is one of the seven
+  // slider-gated activities; ChaTutor keeps its plain door (it is a chat,
+  // not a deck — there is nothing for a stop number to pick between).
+  { key: "compose", name: "ComposeIt", emoji: "🧩", family: "tools", href: "/games/compose", blurb: "Play a scene; your writing gets corrected." },
+  { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "tools", href: "/tutor", blurb: "Ask anything, in French or English." },
 
   // ── 4 · FluOlin SvPlay — gentlest first ───────────────────────────────────
   // NumBus + NumBourse share ONE hub tile (Dan, 2026-08-31: "park NumBus /
@@ -211,6 +232,9 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   // the account chip; Profile is the one tile.
   { key: "leaderboard", name: "Leaderboard", emoji: "🏆", family: "user", href: "/leaderboard", blurb: "Where you sit against the class." },
   { key: "profil", name: "Profile", emoji: "👤", family: "user", href: "/profil", blurb: "Your learning, streak, XP, badges." },
+  // SETTINGS JOINS THE USER ROW (Dan, 2026-09-09) — Réglages had a page
+  // (/reglages) but no menu tile; the grid menu's third User slot is it.
+  { key: "reglages", name: "Settings", emoji: "⚙️", family: "user", href: "/reglages", blurb: "Bottom bar, sound, and the rest of your preferences." },
 ];
 
 /**
@@ -295,7 +319,8 @@ const FAMILY_PEN: Record<FamilyKey, string> = {
   practice: "var(--fam-practice)",
   svplay: "var(--fam-svplay)",
   review: "var(--fam-review)",
-  skills: "var(--fam-skills)",
+  oral: "var(--fam-oral)",
+  tools: "var(--fam-tools)",
   user: "var(--fam-user)",
 };
 
@@ -304,7 +329,8 @@ const FAMILY_WASH: Record<FamilyKey, string> = {
   practice: "var(--fam-practice-wash)",
   svplay: "var(--fam-svplay-wash)",
   review: "var(--fam-review-wash)",
-  skills: "var(--fam-skills-wash)",
+  oral: "var(--fam-oral-wash)",
+  tools: "var(--fam-tools-wash)",
   user: "var(--fam-user-wash)",
 };
 
@@ -322,21 +348,23 @@ export function activitiesInFamilyOrder(): Activity[] {
 
 /**
  * The families that have a hub PAGE of their own, by the `active` key that
- * page passes to the shell. Goals is Home, Practice is the map, Review is the
+ * page passes to the shell. Goals is Home, Practice is the map, Revise is the
  * Reviser and User is /moi — four families whose hub already existed under
  * another name. These two did not, so a family shortcut had to point at one
  * arbitrary member (`/games/vocabularain`, `/conjugaison`) until 2026-08-30.
  */
+// PRACTICE'S HUB RETIRED TOO (Dan, 2026-09-09, looking at the grid menu:
+// "all those hub pages have been made redundant by the pop ups... nearly
+// all"). Skills went first, split into Oral and Tools; Practice is the
+// second — SpecuLearn and MémoiRecall both have doors of their own
+// (MémoiRecall's now the slider pop-up), so the aggregating page a learner
+// used to land on has nothing left to do that the ☰ menu does not. /games
+// is the one Dan hedged on ("nearly all") — it stays a hub for now,
+// unresolved, rather than guessed into a redirect with nowhere good to
+// land (its three members are ALL pop-up-gated; there is no single
+// "deliberate door" activity page the way SpecuLearn was for Practice).
 const FAMILY_HUBS: Record<string, FamilyKey> = {
   games: "svplay",
-  skills: "skills",
-  // Practice joined them on 1 Sep. Its door was /map — the learning path,
-  // which belongs to Goals — so 🏋️ opened someone else's page and the two
-  // activities that DO have doors of their own (SpecuLearn, 4Mémoire) had no
-  // shortcut at all. Memo has no href and is reached from a stop, so the hub
-  // lists two: exactly Dan's rule for it, "except when one item is not
-  // active, then it does not appear".
-  practice: "practice",
 };
 
 /**
@@ -356,8 +384,20 @@ const FAMILY_HUBS: Record<string, FamilyKey> = {
  *           page, and My Progress's tile folded into Profile on 31 Aug
  *           ("MyProgress should be swallowed by Profile"). The account chip
  *           still opens /moi; User is not in the bottom bar at all.
+ *   oral    VoixLà — no hub page exists or is planned; a bottom-bar 💬 tap
+ *           needs ONE destination and VoixLà is the lightest of the three.
+ *   tools   ChaTutor, same reasoning — a chat needs no picker in front of it.
+ *   practice SpecuLearn — Practice's hub retired 2026-09-09 alongside
+ *           Skills'; SpecuLearn is the first thing a learner does for a
+ *           goal, so it is the door.
  */
-export const DELIBERATE_DOOR: Record<string, string> = { review: "reviser", user: "profil" };
+export const DELIBERATE_DOOR: Record<string, string> = {
+  review: "reviser",
+  user: "profil",
+  oral: "tts",
+  tools: "tutor",
+  practice: "speculearn",
+};
 
 /** The family a hub page is the hub OF, or undefined for any other page. */
 export function hubFamily(activeKey: string | undefined): Family | undefined {
@@ -394,7 +434,7 @@ export function activity(key: string): Activity | undefined {
 /** Only the ones with a gallery/index page, in family order — this is the
  *  flap rail and the HELP grid, and now they cannot disagree. */
 export function navigableActivities(): Activity[] {
-  const order: FamilyKey[] = ["goals", "practice", "svplay", "review", "skills", "user"];
+  const order: FamilyKey[] = ["goals", "practice", "review", "svplay", "oral", "tools", "user"];
   return ACTIVITIES.filter((a) => a.href !== null).sort(
     (a, b) => order.indexOf(a.family) - order.indexOf(b.family),
   );
@@ -444,12 +484,14 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   numbus: "svplay", numbourse: "svplay", matching: "svplay",
   reviser: "review",
   moi: "user", leaderboard: "user", profil: "user", reglages: "user", teacher: "user",
-  skills: "skills",
-  // conjugaison sits in BLUE with its activity entry (Dan, 7 Sep, final) —
-  // the two must agree or the fallback contradicts the registry it backs up.
+  // conjugaison sits in the REVIEW family with its activity entry (Dan,
+  // 7 Sep, final) — the two must agree or the fallback contradicts the
+  // registry it backs up.
   conjugaison: "review",
-  tts: "skills", tutor: "skills", wordrill: "skills",
-  ecoutexte: "skills", compose: "skills",
+  // Skills retired 2026-09-09 — its pages fall into Oral or Tools now,
+  // matching the activity rows above.
+  tts: "oral", wordrill: "oral", ecoutexte: "oral",
+  tutor: "tools", compose: "tools",
 };
 
 /**

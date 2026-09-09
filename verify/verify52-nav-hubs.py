@@ -54,8 +54,10 @@ ACT_C = nocomment(ACT)
 FAMILIES = re.findall(
     r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*emoji:\s*"([^"]+)",\s*href:\s*"([^"]+)"\s*\}',
     ACT_C)
-ok(len(FAMILIES) == 6, "six families parsed from the registry",
-   f"expected 6 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
+# SEVEN since 2026-09-09 — Skills retired, split into Oral and Tools (see
+# activities.ts FAMILIES and AGENTS.md).
+ok(len(FAMILIES) == 7, "seven families parsed from the registry",
+   f"expected 7 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
 
 ACTIVITIES = re.findall(
     r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*(?:short:\s*"[^"]*",\s*)?emoji:\s*"[^"]*",\s*'
@@ -103,14 +105,18 @@ for key, name, _emoji, href in FAMILIES:
        f"{name} -> {href} is a real route",
        f"{name} points at {href}, but {page} does not exist")
 
-# ── 3 · the two hubs render the hub, for the right family ───────────────────
-# Skills and Games RUN IN A FRAME since 2026-09-07 (Dan: *"EVERYTHING (LIKE THE
-# MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*), so the hub
-# itself moved to `<route>/embed` and the route is the notebook around it. The
-# rule is unchanged — that door opens that family's hub — but it now takes two
+# ── 3 · the one remaining hub renders the hub, for the right family ─────────
+# Games RUNS IN A FRAME since 2026-09-07 (Dan: *"EVERYTHING (LIKE THE MAP) MUST
+# NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*), so the hub itself
+# moved to `<route>/embed` and the route is the notebook around it. The rule
+# is unchanged — that door opens that family's hub — but it now takes two
 # files, and a host without a twin is a page with nothing on it.
-for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.tsx", "skills"),
-                   ("src/app/practice/page.tsx", "practice")):
+#
+# PRACTICE LEFT THIS LOOP 2026-09-09, alongside Skills — see the FAMILY_HUBS
+# note below. Games is the one Dan hedged on ("nearly all" of the hub pages
+# are redundant): its three activities are ALL pop-up-gated now, so there is
+# no single "deliberate door" the way SpecuLearn was for Practice.
+for route, key in (("src/app/games/page.tsx", "games"),):
     src = nocomment(read(route))
     embed_path = route.replace("/page.tsx", "/embed/page.tsx")
     embed = nocomment(read(embed_path)) if os.path.exists(os.path.join(ROOT, embed_path)) else ""
@@ -128,12 +134,19 @@ for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.ts
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}
-# Practice joined on 1 Sep — its door was /map, which is Goals' page, so the
-# 🏋️ slot opened another family's front door and SpecuLearn and 4Mémoire had no
-# shortcut of their own. Same fault 🎮 and 💪 had before 30 Aug.
-ok(hub_keys == {"games": "svplay", "skills": "skills", "practice": "practice"},
-   "FAMILY_HUBS maps games->svplay, skills->skills and practice->practice",
-   f"FAMILY_HUBS is {hub_keys or 'unreadable'} — the hub pages and the families disagree")
+# SKILLS AND PRACTICE BOTH LEFT THIS SET 2026-09-09 (Dan, looking at the new
+# grid ☰ menu: "all those hub pages have been made redundant by the pop
+# ups... nearly all"). Skills' hub retired first (/skills now redirects to
+# VoixLà); Practice followed the same day (/practice now redirects to
+# SpecuLearn) — SpecuLearn and MémoiRecall both have doors of their own
+# (MémoiRecall's now the slider pop-up), so the page a learner used to land
+# on has nothing left to do the grid menu does not. Games is the ONE Dan
+# hedged on ("nearly all") — it keeps its hub, unresolved, because its three
+# members are all pop-up-gated and there is no single activity to make a
+# deliberate door out of the way SpecuLearn was for Practice.
+ok(hub_keys == {"games": "svplay"},
+   "FAMILY_HUBS maps only games->svplay now",
+   f"FAMILY_HUBS is {hub_keys or 'unreadable'} — expected just {{'games': 'svplay'}}")
 
 # ── 4 · a hub page must be COLOURED, or it is a white page with a white band ─
 site_fam = re.search(r"SITE_FAMILY:\s*Record<[^>]*>\s*=\s*\{(.*?)\n\};", ACT_C, re.S)

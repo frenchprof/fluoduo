@@ -126,11 +126,12 @@ for key, href in (("speculearn", "/practice/speculearn"),
           f"registry: {key} → {href}",
           f"registry: {key} does not point at {href}")
 fam = reg.split("export const FAMILIES")[-1]
-# AMENDED 1 Sep, same move as verify19's: Practice has its own hub now, so it
-# no longer borrows the map. See FAMILY_HUBS in activities.ts.
-check('"/practice"' in fam,
-      "registry: the Practice family opens its own hub",
-      "the Practice family no longer opens /practice")
+# AMENDED 2026-09-09, same move as verify19's: Practice's hub retired
+# (Dan: "made redundant by the pop ups") — the family now opens SpecuLearn
+# directly, its own DELIBERATE_DOOR. /practice still exists as a redirect.
+check('"/practice/speculearn"' in fam,
+      "registry: the Practice family opens SpecuLearn, its deliberate door",
+      "the Practice family no longer opens /practice/speculearn")
 
 # ---- 4 · the ghost is derived, and the row keeps its place -----------------
 check("cellHref(" in land,
