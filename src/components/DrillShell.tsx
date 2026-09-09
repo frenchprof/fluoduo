@@ -40,7 +40,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { activity as activityInfo, bandOf, familyName, familyOf } from "@/content/activities";
+import { activity as activityInfo, familyName, familyOf, stripOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import usePullPastEnd from "@/components/usePullPastEnd";
@@ -222,7 +222,9 @@ export default function DrillShell({
   // The band over a drill is coloured by what the drill ASKS, not by which
   // menu family it lives under (Dan, 2026-08-26). Family still drives the
   // rail and the Menu; this is the activity's own page.
-  const bandKey = activity ? bandOf(activity) : null;
+  // The colour a learner SEES. `stripOf` is the band's hue unless the
+  // activity owns one (ConjugaZone's teal, 8 Sep) — see content/activities.ts.
+  const bandKey = activity ? stripOf(activity) : null;
   // Resolved only when the finish row is up — ledger + progress are the
   // device's own localStorage, so this never runs during prerender (a finish
   // screen is always reached by interaction).

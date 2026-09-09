@@ -931,10 +931,19 @@ html, body { overscroll-behavior-x: none; }
      edge onto the desk. Unit coordinates: local x24 is the page's padding
      edge; x18-24 is the family border; x8 is where the wire's outer arc
      turns, out on the desk. The second layer paints the 12px cover zone in
-     the page's family ink, continuing the border the wire crosses. Wire
-     colours are baked in (a data URI cannot read custom properties). */
+     the page's own colour, continuing the border the wire crosses. Wire
+     colours are baked in (a data URI cannot read custom properties).
+
+     THAT COVER ZONE IS THE "LEFT STRIP" (Dan, 2026-09-08: *"let's use the
+     same color for both the top strip and the left strip?"*). It read
+     `--fam-ink` alone, so ConjugaZone showed a teal heading band over a blue
+     binding — the 6px border beside it had already been matched and the wide
+     strip had not, which looked like a bug rather than two facts. `--band`
+     wins here for the same reason and with the same fallback: a page with no
+     band of its own keeps its family's ink, which is every page this rule
+     coloured before today. */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='62' height='26' viewBox='0 0 62 26'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbfdff'/%3E%3Cstop offset='0.35' stop-color='%23d8dce2'/%3E%3Cstop offset='0.6' stop-color='%239aa0a8'/%3E%3Cstop offset='1' stop-color='%23565b63'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23141820' stop-opacity='0.3'/%3E%3Cstop offset='1' stop-color='%23141820' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='24' y='0' width='16' height='26' fill='url(%23g)'/%3E%3Cellipse cx='49' cy='13.5' rx='5.2' ry='4.2' fill='%231e1a14' opacity='0.88'/%3E%3Cg transform='rotate(-7 29 13)'%3E%3Cellipse cx='29' cy='13.4' rx='21' ry='5.8' fill='none' stroke='%232c2f35' stroke-width='4.4' opacity='0.3'/%3E%3Cellipse cx='29' cy='12.9' rx='21' ry='5.6' fill='none' stroke='url(%23c)' stroke-width='3.1'/%3E%3C/g%3E%3Cellipse cx='50.8' cy='13.4' rx='2.7' ry='2.4' fill='%231e1a14'/%3E%3C/svg%3E"),
-    linear-gradient(to right, transparent 0 24px, var(--fam-ink, #82868f) 24px 36px, transparent 36px);
+    linear-gradient(to right, transparent 0 24px, var(--band, var(--fam-ink, #82868f)) 24px 36px, transparent 36px);
   background-repeat: repeat-y;
   pointer-events: none;
 }
@@ -1854,8 +1863,16 @@ h3.cahier-display { font-size: var(--fs-h3); }
    is a silent no-spine again, and a grep for one name misses half the app.
    Both roots now wear `cahier-surface`, so the colour is keyed on what a
    surface IS rather than on which component drew it. */
+/* ONE COLOUR PER PAGE (Dan, 2026-09-08: *"let's use the same color for both
+   the top strip and the left strip?"*). The spine used to wear the FAMILY's
+   ink while the heading band above it wore the activity's — two true things
+   said in two colours on one screen, so ConjugaZone would have been a teal
+   band over a blue spine. `--band` wins where a page sets one, and the family
+   ink stays the fallback for every page that has no band at all (Home, the
+   guide, Réglages, the family hubs), which is where the spine came from
+   before this. */
 .cahier-surface[class*="fam-"] {
-  border-left: 6px solid var(--fam-ink, transparent);
+  border-left: 6px solid var(--band, var(--fam-ink, transparent));
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
@@ -2193,12 +2210,26 @@ h3.cahier-display { font-size: var(--fs-h3); }
 :root {
   --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
   --band-prod: #e88c00;    --band-create: #f350ff;
+  /* TEAL IS ONE ACTIVITY'S, NOT A BRANCH'S (Dan, 2026-09-08: "ConjugaZone
+     pages should be in Teal colored strip ok"). The five above are the
+     evidence ladder — what an exercise demands — and ConjugaZone shares
+     `prod` with GramMarathon and WorDrill, which is true and stays true in
+     the teacher's record. This is the sixth hue and it belongs to ConjugaZone
+     alone; `stripOf()` in content/activities.ts is what hands it out. Chosen
+     against --band-recog (#00b2f6) rather than in isolation: the two are the
+     only cool hues here, and teal has to read as a different station from the
+     bright blue at a glance on a 12px strip. It is the TEAL PEN's block from
+     highlighterMarks.ts, not a teal chosen by eye — Dan, 6 Sep: "every color
+     on the web can only be one of these", and verify120 measures the hue. The
+     first attempt (#00a396) sat 15 degrees off it and the check said so. */
+  --band-teal: #00c197;
 }
 .band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
 .band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
 .band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); }
 .band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
 .band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); }
+.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); }
 
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next

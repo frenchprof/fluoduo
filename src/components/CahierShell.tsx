@@ -38,7 +38,7 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
-import { TAB_ICONS, activity, bandOf, familyName, familyOf, familyShort, hubFamily } from "@/content/activities";
+import { TAB_ICONS, activity, familyName, familyOf, familyShort, hubFamily, stripOf } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { stopForDeck } from "@/lib/stopTag";
 import { speculearnHref } from "@/lib/speculearn/route";
@@ -90,7 +90,7 @@ export default function CahierShell({
   const famKey = familyOf(active);
   // What the page ASKS, where it is an activity — the band over it takes
   // this over the family (Dan, 2026-08-26). Section pages keep the family.
-  const bandKey = bandOf(active);
+  const bandKey = stripOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOLinGo" — tabs, history, bookmarks and screen-reader
