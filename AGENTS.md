@@ -572,18 +572,18 @@ listing every member of a family) existed because the OLD menu couldn't
 list nineteen activities at once; the new one does, so the aggregating
 page in between has nothing left to do.
 
-**Retired so far, both the same way** — the route stays and forwards
-(never delete a URL outright; a bookmark or an old link must still land
-somewhere), to that family's `DELIBERATE_DOOR` activity:
+**All three are retired now** — the route stays and forwards (never delete
+a URL outright; a bookmark or an old link must still land somewhere), to
+that family's `DELIBERATE_DOOR` activity:
 - `/skills` → redirects to `/tts` (VoixLà)
 - `/practice` → redirects to `/practice/speculearn` (SpecuLearn)
-
-**`/games` is the one Dan hedged on** ("nearly all", not "all") — it KEEPS
-its hub, unresolved. Unlike Skills and Practice, none of Games' three
-members (NumBus, VocabulaRain, LexicaLocker) has a page you'd redirect to
-without a picker in front of it — they're all three pop-up-gated (see
-below). Do not retire `/games` without asking him first; `FAMILY_HUBS` in
-`activities.ts` still lists it on purpose.
+- `/games` → redirects to `/games/vocabularain` (VocabulaRain) — the one
+  Dan hedged on ("nearly all", not "all") when asked, then confirmed
+  ("retire /games") a few messages later. Unlike Skills and Practice, none
+  of Games' three members (NumBus, VocabulaRain, LexicaLocker) has an
+  obviously-THE-door page — they're all three pop-up-gated (see below) —
+  so VocabulaRain is a pick among equals, not a clear answer. `FAMILY_HUBS`
+  in `activities.ts` is now empty: no family has a hub page of its own left.
 
 ## Seven activities traded their hub-gallery for ONE pop-up — same day
 

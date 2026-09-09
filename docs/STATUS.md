@@ -29,10 +29,12 @@ ruling and reasoning. Summary of what changed:
   (7 families × 4 rungs) pinned in `verify96-family-hues.py`.
 - **The ☰ menu's row bands are solid `--fam-*-ink`**, not the 8 Sep's
   15%-alpha wash — Dan sent the pale version back the same day.
-- **`/skills` and `/practice` hub pages retired**, both now redirect (to
-  VoixLà and SpecuLearn respectively) rather than being deleted outright.
-  **`/games` is NOT retired** — Dan hedged ("nearly all", not "all") and it
-  has no clean single-activity redirect target; ask him before touching it.
+- **All three hub pages retired** — `/skills`, `/practice` and `/games` now
+  redirect (to VoixLà, SpecuLearn and VocabulaRain respectively) rather
+  than being deleted outright. Games was hedged on first ("nearly all",
+  not "all" — none of its three games is an obvious single door) and
+  confirmed a few messages later ("retire /games"). `FAMILY_HUBS` in
+  `activities.ts` is now empty.
 - **Seven activities** (MémoiRecall, GramMarathon, VocabulaRain,
   LexicaLocker, WorDrill, ÉcouTexte, ComposeIt) traded their own
   deck/unit-picker hub for ONE shared pop-up, `ActivityGoalPicker.tsx` — a
@@ -49,9 +51,10 @@ ruling and reasoning. Summary of what changed:
   opened scrolled off-screen because it wasn't portalled — fixed with
   `createPortal(..., document.body)`, matching `ToolSummon`/`BottomSheet`.
 
+**RESOLVED since the note above was first written:** `/games` retires too
+(Dan: "retire /games") → redirects to `/games/vocabularain`.
+
 **STILL OPEN, not yet answered by Dan:**
-- Whether `/games` should retire too, and if so, where it should redirect
-  (its three members are all pop-up-gated — no obvious single door).
 - The SIO-per-page swipe-chain feature (map ↔ SpecuLearn ↔ MneMemo ↔
   MémoiRecall ↔ ConjugaZone ↔ WorDrill ↔ ÉcouTexte, one URL per SIO) that
   the Lesson row's "Goals" tile will eventually open — Dan said he has
@@ -71,13 +74,28 @@ two-choice) against the real built app before calling this done.
 
 Sole editor of STATUS.md in this commit: fluoduo-main (`qc/icon-glyph-swap`).
 
-**PRODUCTION AND STAGING ARE BOTH ON MAIN.** Dan: *"push both staging and
-production to the same main synhronised"*. `deploy-live` run 32 put `4b826f4`
-live, run 33 put `92684ff` live, and `92684ff` is main's tip. Everything below
-is in production unless it says otherwise.
+**PRODUCTION TRACKS MAIN.** Dan: *"push both staging and production to the same
+main synhronised"*. `deploy-live` runs 32, 33 and 35 put `4b826f4`, `92684ff`
+and `b08b14b` live in turn. Everything below is in production unless it says
+otherwise.
+
+**DO NOT WRITE A COMMIT SHA HERE AND CALL IT "MAIN'S TIP".** The first draft of
+this entry did, and it was stale within the hour — twice — because the lane
+that writes STATUS is also the lane that merges, so main moves immediately
+after. What is durable is the RULE (production follows main, deployed by
+`deploy-live` once verify is green); the SHA is a fact about one minute. Check
+the live tip with `git rev-parse origin/main` and the newest successful
+`deploy-live` run, never by reading this paragraph.
+
+AND DO NOT FIRE THE DEPLOY THE MOMENT A MERGE LANDS. Run 34 failed for exactly
+that: fired ~15 seconds after #249 merged, before main's own verify run
+existed, so the guard refused with *"verify on b08b14b…: missing"*. Nothing
+broke — that is the guard working — but the run is red in the history for no
+reason. Main's verify takes about nine minutes; wait for it.
 
 Merged this session, in order: #225, #226, #231, #233, #236, #237, #238, #241,
-#242, #243, #244, #245, #248. Closed with reasons: #229, #204, #240, #239.
+#242, #243, #244, #245, #248, #249, #250. Closed with reasons: #229, #204,
+#240, #239.
 
 **HOME NO LONGER SHOWS THE MAP (#248).** Dan, pointing at the postcard:
 *"retire the unresponsive 2d map with start here button. we have replaced that
