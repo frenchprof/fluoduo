@@ -38,7 +38,7 @@ if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
 reg   = read("src/content/activities.ts")
-rail  = read("src/components/RailGroups.tsx")
+# RailGroups retired 2026-09-09 too — see the second inverted check below.
 # MenuSplash retired 2026-09-09 — see the inverted check below.
 shell = read("src/components/CahierShell.tsx")
 # The ☰ dropdown left CahierShell on 2026-08-31 — Dan wanted the menu reachable
@@ -49,7 +49,22 @@ shell = read("src/components/CahierShell.tsx")
 # is exactly how a stale duplicate survives.
 topbar = read("src/components/SiteTopBar.tsx")
 
-check(bool(rail), "RailGroups exists", "src/components/RailGroups.tsx missing")
+# INVERTED 2026-09-09, for the same reason as MenuSplash below and by the same
+# ruling that retired it. RailGroups was the SIX coloured flaps Dan asked for on
+# 3 Sep; his 3x5 grid replaced them in the ☰ on 7 Sep ("replace the burger menu
+# that comes down like this with this 3x5 grid instead"), and this file's own
+# comment then kept the component on disk "for MenuSplash until that surface is
+# re-judged". MenuSplash was judged on 9 Sep and retired, which spent the last
+# reason to keep RailGroups.
+#
+# It was not inert while it sat there. It still spoke the SIX-family world —
+# its `owningFamily` maps "goals", a family renamed Lesson when the menu became
+# seven — so a session reading it would have found a confident, obsolete account
+# of an architecture that had already changed twice under it.
+check(not os.path.isfile("src/components/RailGroups.tsx"),
+      "RailGroups is gone — the ☰ grid is the menu",
+      "src/components/RailGroups.tsx is back; Dan replaced the flaps with the "
+      "3x5 grid on 7 Sep and MenuSplash, its last caller, retired on 9 Sep")
 # INVERTED 2026-09-09. This asserted "MenuSplash exists" — the twenty-tile
 # grid the Help button opened. Dan retired it: *"help should open to a 'How to
 # use' manuel, not another grid menu. We can retire the older grid menu that it
@@ -142,15 +157,15 @@ check(bool(rail_block) and "RailGroups" not in rail_block,
 # announced) is now: no disclosure exists to announce, and the units are
 # reached through Home/the map — so the claims become: every flap navigates,
 # and every flap wears its own family's colour.
-check("aria-expanded" not in rail and "sessionStorage" not in rail,
-      "the accordion is gone — flaps are doors, not folders",
-      "the accordion is back; children tabs were retired on Dan's word, 2 Sep")
-check("f.href" in rail and re.search(r"--fam-\$\{f\.key\}-wash", rail) is not None,
-      "each flap links to its family hub and wears that family's wash",
-      "a flap is plain or dead — Dan: 'plain to colored tabs please'")
-check("fluo-band-hand" in rail,
-      "the flap labels take FluOLinGo Hand",
-      "Dan, 2 Sep: 'oh use FluOLinGo font for those tabs!'")
+# THE THREE FLAP-SHAPE ASSERTIONS RETIRED WITH THEIR SUBJECT (9 Sep). They
+# pinned the accordion's absence, each flap's href and family wash, and the
+# FluOLinGo Hand on its label — all true of a component nothing renders any
+# more. A check that describes deleted code is worse than no check: it passes
+# forever, and it blocks whoever finally deletes the file.
+#
+# What they were really protecting has a live owner. The ☰ grid's colours are
+# verify96 (the twelve-swatch palette, exact hexes); its rows and their order
+# are section 1 above, which reads Dan's seven families out of FAMILIES.
 
 # 3 · each family holds exactly what Dan listed
 EXPECT = {
@@ -227,9 +242,8 @@ check("HELP!" not in shell and "HELP!" not in topbar,
 # grid that replaced it lists Dan's seven rows by hand, tile for tile from his
 # own drawing, so "reads the registry through the shared helper" is not a rule
 # it was ever built to obey — asserting it here would fail a correct file.
-check("activitiesIn(" in rail,
-      "the rail reads the registry per family",
-      "the rail hand-keeps its own activity list")
+# The rail's half of this rule retired with the rail, 9 Sep — same reasoning as
+# the Menu's half directly above: the file it described is deleted.
 
 print("\nthe grouped rail + the Menu (19 Aug)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)
