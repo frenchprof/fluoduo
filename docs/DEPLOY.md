@@ -127,3 +127,39 @@ the file and the Pages / Cloudflare bindings.
 A **staging** custom domain (`staging.fluoli.ngo` or
 `staging.fluolingo.withdrchan.com`) belongs on the **staging** Pages project
 only — `docs/STAGING.md`.
+
+### The four course addresses — f1 to f4 (10 Sep 2026, NOT YET DONE)
+
+Dan wants one address per course: `f1.fluolingo.com` … `f4.fluolingo.com`.
+Probed 10 Sep from a session: none of the four has a DNS record yet, so a
+browser gets nothing at all (not a 404 — no answer). `fluolingo.com` itself
+is on Cloudflare (it resolves to a Cloudflare address), so this is four
+custom-domain entries on the live Pages project, not a domain move.
+
+**No agent can add them.** The Cloudflare connector a session gets carries
+tools for Workers, KV, D1, R2 and Hyperdrive only — nothing for Pages
+custom domains or DNS records — and no API token is present in a session.
+Checked twice on 10 Sep. So this is a one-minute-each dashboard job for Dan:
+
+1. Cloudflare dashboard → **Workers & Pages** → the live project (the one
+   whose `*.pages.dev` is `fluoguo.pages.dev`) → **Custom domains** →
+   **Set up a custom domain**.
+2. Type `f1.fluolingo.com` → **Continue** → **Activate domain**. Because the
+   `fluolingo.com` zone is already on this Cloudflare account, Cloudflare
+   writes the CNAME record itself; there is nothing to paste at a registrar.
+3. Repeat for `f2`, `f3`, `f4`.
+4. Wait for each row to say **Active** (usually under a minute), then open
+   `https://f1.fluolingo.com/` — it should show the same welcome page as
+   `fluoli.ngo`.
+
+**What you get today: four doors into the same room.** Nothing in the app
+reads its own hostname (a hostname-to-course switch was built once and
+dropped with the course picker, on Dan's instruction), so all four addresses
+serve the same French 1 site until the courses behind f2–f4 exist. That is
+reserving the names, which Dan chose to do now.
+
+**One thing to know before sending learners there:** progress is stored per
+web address (browser storage is scoped to the hostname). A learner who has
+been working at `fluoli.ngo` arrives at `f1.fluolingo.com` with an empty
+profile. Nobody has enough progress for that to hurt yet, which is the
+argument for switching addresses now rather than later.
