@@ -30,6 +30,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit, settle } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4187;
@@ -159,6 +160,24 @@ async function dismissHints() {
   }
 }
 
+/* What `settle` waits for: the map is on screen with its stops laid out — the
+   things MEASURE/read() then measure. NOT converted elsewhere in this file: the
+   waits that follow a zoom CLICK are waiting for an animation to come to rest,
+   which is not a question the DOM answers, so those stay on the clock. */
+const MAP_READY = `
+  (() => {
+    const ready = (d) =>
+      !!d.querySelector(".home-map3d-box, [data-stop]") &&
+      d.querySelectorAll("[data-stop]").length > 0;
+    if (ready(document)) return true;
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { continue; }
+      if (d && ready(d)) return true;
+    }
+    return false;
+  })()`;
+
 const bad = [];
 function judge(label, r) {
   if (r.err) { bad.push(`${label}: ${r.err}`); console.log(`  ✗ ${label} — ${r.err}`); return; }
@@ -179,8 +198,10 @@ function judge(label, r) {
 // division by currentCSSZoom is a no-op, which is exactly how this fault hid
 // the first time.
 
-await page.goto(`http://localhost:${PORT}/map`, { waitUntil: "domcontentloaded" });
-await page.waitForTimeout(2600); await dismissHints(); await page.waitForTimeout(500);
+// WAIT FOR THE MAP, NOT FOR THE CLOCK — this replaced a flat 2600+500ms sleep.
+await visit(page, `http://localhost:${PORT}/map`, MAP_READY);
+await dismissHints();
+await settle(page, MAP_READY);
 judge("/map at 100%", await read());
 
 const frame = page.frames().find((f) => f.url().includes("/embed")) ?? page.mainFrame();
@@ -214,8 +235,10 @@ judge("/map after a pinch", await read());
 // from there only walks back to 1.0 — a "low" case that measures the very
 // zoom 100% already covers. `zoomPct` is component state, so a reload starts
 // at 100 and ten presses hit the 30% floor.
-await page.goto(`http://localhost:${PORT}/map`, { waitUntil: "domcontentloaded" });
-await page.waitForTimeout(2600); await dismissHints(); await page.waitForTimeout(500);
+// WAIT FOR THE MAP, NOT FOR THE CLOCK — this replaced a flat 2600+500ms sleep.
+await visit(page, `http://localhost:${PORT}/map`, MAP_READY);
+await dismissHints();
+await settle(page, MAP_READY);
 const lowFrame = page.frames().find((f) => f.url().includes("/embed")) ?? page.mainFrame();
 const minus = lowFrame.getByRole("button", { name: /^−$|^-$|zoom out/i });
 if (await minus.count().catch(() => 0)) {

@@ -31,6 +31,7 @@ import { createServer } from "node:http";
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit, FRAMES_SETTLED, visibleSomewhere } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4183;
@@ -96,8 +97,8 @@ function routePatterns(dir = "src/app", prefix = "") {
    dynamic segment. Two, not one, because one instance does not represent the
    route — /games/lexicalater/[deckId] renders a "being prepared" screen for a
    deck that is not syllabified yet and the game itself for one that is, and
-   only the second has the fault. Two samples cost 1.4s each and catch a
-   branch; every instance would mean 90 pre-tests, 59 lessons and 50 stops.
+   only the second has the fault. Two samples catch a branch; every instance
+   would mean 90 pre-tests, 59 lessons and 50 stops.
    A pattern with no instance in out/ is skipped rather than failed — that is a
    build-coverage question, and verify-wiring owns it. */
 function instances(dir) {
@@ -164,10 +165,16 @@ for (const pattern of patterns) {
   if (!urls.length) { skipped++; continue; }
   let note = "";
   for (const url of urls) {
-    await page.goto(`http://localhost:${PORT}${url}`, { waitUntil: "domcontentloaded" });
-    // The band is server-rendered, but a framed page needs its frame to load and
-    // `html[data-embed]` to be stamped before its band's display is decided.
-    await page.waitForTimeout(1400);
+    // WAIT FOR THE STRIP, NOT FOR THE CLOCK. This replaced a flat 1400ms sleep on
+    // every one of the 77 URLs — 108 of this scan's 115 seconds. What the sleep was
+    // buying is spelled out here instead: the frame of a framed station has loaded
+    // and stamped `html[data-embed]` (which is what decides its band's display),
+    // AND a strip is actually painted. Waiting for the strip itself, rather than
+    // only for the frames, is load-bearing: /games/lexicalater/[deckId] and
+    // /decks/[id]/study build theirs after their deck data arrives, and a version
+    // that waited only for frames disagreed with itself between runs.
+    await visit(page, `http://localhost:${PORT}${url}`,
+      `${FRAMES_SETTLED} && ${visibleSomewhere(".page-band")}`);
     const seen = [];
     for (const f of page.frames()) {
       const r = await probe(f).catch(() => []);

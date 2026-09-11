@@ -44,6 +44,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4187;
@@ -136,12 +137,40 @@ const corner = (f) =>
     };
   });
 
+/* WAIT FOR THE SHEET, NOT FOR THE CLOCK — this replaced two flat 1500ms sleeps.
+   The condition is what both loops below then measure: a drawn sheet of paper, in
+   the page or in its frame. A framed station's frame must have loaded and stamped
+   `html[data-embed]` first, because that attribute is what decides whether the
+   frame draws a sheet of its own — which is the whole fault this scan looks for. */
+const SHEET_READY = `
+  (() => {
+    const SEL = ".cahier-page, .cahier-surface, .cahier-drill";
+    const lit = (d) => {
+      for (const el of d.querySelectorAll(SEL)) {
+        if (el.getBoundingClientRect().height >= 1) return true;
+      }
+      return false;
+    };
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { return true; }
+      if (!d || d.readyState !== "complete") return false;
+      if (!d.documentElement.hasAttribute("data-embed")) return false;
+    }
+    if (lit(document)) return true;
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { continue; }
+      if (d && lit(d)) return true;
+    }
+    return false;
+  })()`;
+
 const bad = [];
 for (const [route] of ONE_SHEET) {
   const url = resolveFile(route) ? route : null;
   if (!url) { bad.push(`${route}: not exported — the list names a route that does not exist.`); continue; }
-  await page.goto(`http://localhost:${PORT}${url}`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1500);
+  await visit(page, `http://localhost:${PORT}${url}`, SHEET_READY);
   let total = 0;
   const per = [];
   for (const f of page.frames()) {
@@ -155,8 +184,7 @@ for (const [route] of ONE_SHEET) {
 
 for (const route of CORNER) {
   if (!resolveFile(route)) continue;
-  await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(1500);
+  await visit(page, `http://localhost:${PORT}${route}`, SHEET_READY);
   let seen = false;
   for (const f of page.frames()) {
     const c = await corner(f).catch(() => null);
