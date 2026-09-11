@@ -77,9 +77,20 @@ keys = re.findall(r'key:\s*"([a-z]+)"', rail)
 # NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*). Every station is work on a goal;
 # where you stand against the class is not. Both pages stay reachable through
 # the 👤 User family — they simply get no horizontal swipe.
+# DAN REWROTE THE TAIL ON 2026-09-08, station by station: "MémoiRecall — swipe
+# left for ConjugaZone", then an hour later "can you swap the WorDrill (comes
+# first) and ConjugaZone (last)", and he closed the list himself with "[end of
+# left swipe]". So the three skills that belong to ONE lesson are three columns
+# again, in his order, and Games is off the chain.
+#
+# This is not the 7 Sep hub decision taken twice. That day six skills became one
+# column because dragging through ChaTutor, VoixLà and ComposeIt was "a walk
+# through a list nobody thinks of as ordered". These three ARE ordered — say it,
+# hear it, conjugate it, on one lesson — and the other three are not in the
+# chain at all. Skills is still a hub PAGE; it is no longer a station.
 EXPECTED = [
     "map", "goals", "speculearn", "lesson", "flip",
-    "skills", "svplay",
+    "wordrill", "ecoutexte", "conjugaison",
 ]
 if keys != EXPECTED:
     fails.append(
@@ -97,16 +108,47 @@ if "move(-1)" not in rail or "forward: move(1)" not in rail:
         "    and the rule has been written down ever since."
     )
 
-# A hub swallows its own doors: standing on one of them, BACK is the hub.
-if "hub" not in rail or "normalise(hub) !== here" not in rail:
+# THE HUB RULE AND ITS TWO USERS PARTED COMPANY ON 2026-09-08.
+#
+# It was written on 7 Sep for a real fault: standing on ChaTutor, rightwards had
+# to be « Skills » and not « ComposeIt », because the six skills are doors off
+# one page rather than a row of stations. Then Dan rewrote the tail and neither
+# Skills nor Games is a station any more — so the two `hub:` lines this used to
+# demand by name are correctly gone, and demanding them would now be demanding
+# the chain he replaced.
+#
+# The MECHANISM stays, and the invariant is the pair: a station may declare a
+# hub, and if any does, the code that honours it must still be there. Assert
+# them against each other rather than either alone — that way the rule cannot
+# rot while unused, and a hub cannot come back to code that ignores it.
+declares_hub = re.search(r'^\s*hub:\s*"', rail, re.M) is not None
+honours_hub = "normalise(hub) !== here" in rail
+if declares_hub and not honours_hub:
     fails.append(
-        "The hub rule is gone. Dan, 7 Sep: on ChaTutor, rightwards is « Skills »,\n"
-        "    not « ComposeIt » — the six skills are doors off one page, not a row\n"
-        "    of stations, and the way out of a door is back through it."
+        "A station declares `hub:` but railNeighbours no longer honours it.\n"
+        "    Dan, 7 Sep: on a door off a hub, rightwards is the hub itself — the\n"
+        "    way out of a door is back through it."
     )
-for hub_href in ['hub: "/skills"', 'hub: "/games"']:
-    if hub_href not in rail:
-        fails.append(f"{hub_href} is gone — Dan named both hubs by name.")
+
+# THE LESSON IS IN CONJUGAZONE'S ADDRESS, and this is the load-bearing half of
+# Dan's own question (2026-09-08): *"will it be able to return via the swipe
+# right way from ConjugaZone back through the entire chain?"* All fifty lessons
+# share `/conjugaison`, so a right swipe reads the lesson from `?deck=` or it
+# reads nothing. `?v=` cannot stand in (two lessons can share a verb) and the
+# remembered deck cannot either — a bookmark, a shared link or a dropped tab
+# has no memory to read, and the swipe would land on somebody else's lesson.
+if "deck=${deck}" not in rail:
+    fails.append(
+        "ConjugaZone's station no longer puts the lesson in its address.\n"
+        "    One page serves all fifty lessons, so without `?deck=` a right swipe\n"
+        "    off it cannot know whose ÉcouTexte to go back to."
+    )
+if not re.search(r'deck=\(\[\^&#\]\+\)', rail):
+    fails.append(
+        "swipeRail no longer READS `?deck=` back out of the address.\n"
+        "    Writing it and not reading it is worse than neither: the URL claims a\n"
+        "    lesson the rail ignores."
+    )
 
 # The two pages Dan struck off must not creep back as stations.
 for gone in ['"/leaderboard"', '"/profil"']:
@@ -137,17 +179,49 @@ HANDLERS = {
     SRC / "components" / "useRailSwipe.ts": "the sideways drag",
     SRC / "components" / "useScrollOn.ts": "the end of a vertical scroll",
 }
+# TWO AXES, ONE FILE (2026-09-08). The sideways drag asks `railNeighbours` for
+# the next ACTIVITY; the vertical pull asks `sioNeighbours` for the next GOAL.
+# Either satisfies the rule, because the rule was never about one function name
+# — it is that a handler which navigates takes its destination from
+# lib/swipeRail.ts rather than spelling a route inside itself, which is how the
+# app came to have two ideas of "forward" on 6 Sep.
+#
+# SCANNED WITH COMMENTS STRIPPED, and that is not fussiness: useScrollOn's own
+# header explains that it reads sioNeighbours "not railNeighbours", so a raw
+# text search found the old name in the sentence saying it had stopped using it
+# and passed. A check green on its own documentation is the failure verify40
+# names in its header, met here in the wild.
+def code_only(src):
+    src = re.sub(r"/\*[\s\S]*?\*/", "", src)
+    return re.sub(r"^\s*//.*$", "", src, flags=re.M)
+
 for h, what in HANDLERS.items():
     if not h.exists():
         fails.append(f"components/{h.name} is gone — the rail has no reader for {what}.")
         continue
-    if "railNeighbours" not in h.read_text(encoding="utf-8"):
+    body = code_only(h.read_text(encoding="utf-8"))
+    if "railNeighbours" not in body and "sioNeighbours" not in body:
         fails.append(
-            f"components/{h.name} no longer asks railNeighbours where to go.\n"
-            "    A handler that navigates must read the one chain; a route spelled\n"
-            "    inside a gesture handler is how the app came to have two ideas of\n"
-            "    'forward' on 6 Sep."
+            f"components/{h.name} no longer asks lib/swipeRail.ts where to go.\n"
+            "    A handler that navigates must read the one chain — railNeighbours\n"
+            "    for the next activity, sioNeighbours for the next goal. A route\n"
+            "    spelled inside a gesture handler is how the app came to have two\n"
+            "    ideas of 'forward' on 6 Sep."
         )
+
+# AND THE VERTICAL AXIS IS THE COURSE, not the chain. Dan, 2026-09-08, of every
+# station in turn: "swipe up and down to the next or previous SIO". Before that
+# the end of a scroll carried a learner to the next STATION, which is now the
+# sideways drag's job alone — one finger, one meaning, per direction. If this
+# ever reads railNeighbours again, down and left have gone back to meaning the
+# same thing.
+scroll = code_only((SRC / "components" / "useScrollOn.ts").read_text(encoding="utf-8"))
+if "sioNeighbours" not in scroll:
+    fails.append(
+        "useScrollOn no longer moves along the GOALS. Downwards is the course —\n"
+        "    goal 23 to goal 24, same activity, its own address — and the next\n"
+        "    ACTIVITY is what the sideways drag is for."
+    )
 
 # The end-of-scroll gesture's three guards, each pinned against the failure it
 # was written for. Every one of them was found by DRIVING the built export, and
@@ -196,18 +270,33 @@ if scroll_on.exists():
         if token not in text:
             fails.append(f"usePullPastEnd lost `{token}`.\n    {why}")
 
-# …AND THE RAIL MUST NOT OPT OUT OF IT. `whenNothingScrolls` exists for
-# DrillShell, whose answer to a stray flick is "press Continue on a question you
-# already answered". The rail's answer is "leave the page", and on /skills or
-# /games — shorter than the screen, so trivially at their end — that would fire
-# on the first flick anywhere.
-rail = SRC / "components" / "useScrollOn.ts"
-if rail.exists() and "whenNothingScrolls" in rail.read_text(encoding="utf-8"):
+# …AND THE RAIL MAY NOW OPT OUT OF IT, which reverses a rule written on the
+# morning of 8 Sep and is worth saying why rather than just deleting.
+#
+# That rule said the rail must never pass `whenNothingScrolls`, because a page
+# shorter than the screen is trivially at its end and one flick anywhere would
+# carry a learner off. True while downwards meant LEAVE THIS ACTIVITY.
+#
+# Dan's grid, the same day, made downwards mean the next GOAL in the SAME
+# activity — gentle, and undone by pulling up again — and `sioNeighbours`
+# answers null for anything off the rail, so Home, the guide, Réglages, Skills
+# and Games cannot fire at all. What protects a learner is no longer "the page
+# must scroll" but "the page must be a station on a goal".
+#
+# Measured, because without it the feature does not work where Dan asked for it:
+# a lesson arrived at by pulling down opens on its level picker, where the
+# finger is not over the panel scroller, so nothing scrolled under it and three
+# pulls in a row did nothing. A drill card does not scroll at all.
+#
+# So what is pinned is the replacement guard, not the old one: the vertical
+# pull must take its destination from sioNeighbours, which is the thing that
+# refuses every page that is not a station.
+scroll_src = (SRC / "components" / "useScrollOn.ts").read_text(encoding="utf-8")
+if "whenNothingScrolls" in scroll_src and "sioNeighbours" not in scroll_src:
     fails.append(
-        "useScrollOn passes `whenNothingScrolls`.\n"
-        "    That opt-out is for a caller whose answer is harmless on a stray flick.\n"
-        "    The rail NAVIGATES: on a page shorter than the screen every scroller is\n"
-        "    already at its bottom, so one flick anywhere would carry a learner off."
+        "useScrollOn acts on a page that does not scroll, but no longer asks\n"
+        "    sioNeighbours where to go. That pairing is what keeps a stray flick\n"
+        "    safe: off the rail there IS no next goal, so nothing fires."
     )
 
 for f in sorted(SRC.rglob("*.tsx")) + sorted(SRC.rglob("*.ts")):

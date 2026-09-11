@@ -6,6 +6,52 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — the pre-tests lane is current with main and HANDED OVER (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`, merge `e5c2ee0e`).
+
+**Dan: *"pls make merge to fluo duo main"*.** The branch was six ahead and
+seventeen behind; it is now merged up to main and pushed, for fluoduo-main to
+land. Nothing on it is merged by this lane.
+
+**WHAT IS ON IT**, all shipped and driven earlier this week:
+
+- the map stop as a coin, with a clean top edge (Dan's red arc removed);
+- scroll-on-to-the-next-QUESTION inside a drill, gated so it never answers an
+  unread one (`usePullPastEnd`, verify170);
+- Unit 0 and the picture pre-tests retired to forwards (verify171, which
+  DRIVES every old address because the forward is client-side);
+- the eight-station swipe chain — map · goals · SpecuLearn · MneMemo ·
+  MémoiRecall · WorDrill · ÉcouTexte · ConjugaZone — plus the up/down axis
+  that moves the SAME station one goal along (`sioNeighbours`, verify117);
+- per-lesson ÉcouTexte: fifty stops onto fifteen scenarios (verify172);
+- Dan's approved verb split, 67 verbs across 50 lessons with ten deliberately
+  empty, wired into ConjugaZone (`src/content/lessonVerbs.ts`, verify173);
+- ConjugaZone's teal strip, and one colour per page — top bar and left spine
+  take the same `--band` (`stripOf()` beside `bandOf()`, verify36).
+
+**THE ONE SEMANTIC COLLISION WITH MAIN, recorded rather than silently fixed.**
+Main gave the TEAL PEN (`#00c197`) to the Revise family the same week this lane
+gave it to ConjugaZone's strip, so one hex now means two things. They never
+share a screen — a family colour paints the ☰ row, a strip paints a page's
+edges — and ConjugaZone happens to SIT in the Revise row, so its tile and its
+page agree. Dan's ruling stands (*"ignore the repo's color pattern based on
+activity type and family"*); the note is in `globals.css` beside the token, and
+the comment that called teal "the one left spare" is corrected.
+
+**OPEN FOR DAN, shown to him in pictures on 11 Sep**: whether `verify120`'s
+6-degree hue window should tighten to the exact pen value for the six
+`--band-*` tokens. The window exists so tints and inks of the same pen stay
+legal (`--fam-review-ink`, `--cahier-hl-edge`), so tightening would apply to
+those six tokens only. Break-tested: `#00a396` is caught at 15 degrees off;
+`#3fbfa0`, a teal that is not a pen, passes. His call.
+
+**VERIFIED ON THE MERGED TREE**: `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1
+npm run build` green, all 124 verify checks pass, and the twenty source files
+this branch touches lint with one warning inherited from main (PR #176's unused
+`attemptAt` in `EcouTexte.tsx`).
+
 ## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,

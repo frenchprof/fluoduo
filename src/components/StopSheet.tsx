@@ -23,7 +23,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { deckActivityTabs } from "@/components/CahierShell";
 import ActivityIcon from "@/components/ActivityIcon";
-import { bandOf } from "@/content/activities";
+import { stripOf } from "@/content/activities";
 import { SIOS } from "@/content/sios";
 
 export default function StopSheet({
@@ -124,7 +124,7 @@ export default function StopSheet({
 
         <ul className="flex flex-col gap-2">
           {tabs.map((t) => {
-            const band = bandOf(t.key);
+            const band = stripOf(t.key);
             return (
               <li key={t.key}>
                 <Link

@@ -566,6 +566,40 @@ export function bandOf(activeKey: string | undefined): BandKey | null {
   return BAND[activeKey] ?? null;
 }
 
+/**
+ * THE STRIP'S COLOUR, WHICH IS NOT ALWAYS THE BAND'S.
+ *
+ * Dan, 2026-09-08: *"ConjugaZone pages should be in Teal colored strip ok"*.
+ *
+ * `BAND` above answers a different question — what the exercise DEMANDS of the
+ * learner — and it is not free to move, because `verify62` asserts it agrees
+ * with what `lib/evidence.ts` stores in the teacher's record. ConjugaZone is
+ * `prod`, the same demand as GramMarathon and WorDrill, and that is true and
+ * must stay true. Repainting `--band-prod` teal would have recoloured those
+ * two as well; moving ConjugaZone to another band would have made the page
+ * claim one thing and the stored evidence another, which is the exact drift
+ * verify62 was written for after Sorting spent five days doing it.
+ *
+ * So the two questions get two answers. The band still says what the exercise
+ * asks; this says what colour the learner sees, and an activity may own that
+ * outright. Everything that PAINTS reads this one — the page strip, the drill
+ * shell, the stop sheet's keys, the menu icon — so a teal ConjugaZone is teal
+ * everywhere rather than teal on its page and orange in the ☰.
+ */
+export type StripKey = BandKey | "teal";
+
+const OWN_STRIP: Record<string, StripKey> = {
+  conjugaison: "teal",
+};
+
+/** The colour class an activity's surfaces wear. Its own where it has one,
+ *  otherwise its band's. Null means the page paints itself. */
+export function stripOf(activeKey: string | undefined): StripKey | null {
+  if (!activeKey) return null;
+  if (SELF_COLOURED.has(activeKey)) return null;
+  return OWN_STRIP[activeKey] ?? bandOf(activeKey);
+}
+
 /* Pages you READ rather than answer used to take a sand-coloured ground here,
  * through `READING` and `isReadingSurface()`. Dan chose the sand blind on
  * 30 Aug; on 6 Sep, shown the eleven activity pages side by side, he retired

@@ -56,6 +56,7 @@ import { TAB_ICONS } from "@/content/activities";
 import { speak } from "@/games/letris/speech";
 import { getPretestForSio } from "@/content/pretests";
 import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
+import { addressWindow } from "@/lib/addressWindow";
 import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
 import { HOME_HREF } from "@/lib/routes";
@@ -105,26 +106,9 @@ function poolFor(sioId: string): PoolItem[] {
   return built;
 }
 
-/**
- * THE WINDOW WHOSE ADDRESS A LEARNER CAN SEE.
- *
- * This run lives in an iframe inside the cahier (Dan, 2026-09-07: *"EVERYTHING
- * … MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES"*), and a frame's own src
- * is `…/embed` with no hash on it — so a bookmark written here would be
- * written on a URL nobody can see, and read back as empty. Measured: the
- * address bar said `#q9` and the run opened on question one, every time.
- *
- * Same origin, so the parent is simply readable; standalone, the parent IS
- * this window and the same code works unchanged.
- */
-function addressWindow(): Window {
-  try {
-    if (window.parent !== window && window.parent.location.origin === window.location.origin) {
-      return window.parent;
-    }
-  } catch {}
-  return window;
-}
+/* `addressWindow` moved to lib/addressWindow.ts on 2026-09-11 — ConjugaZone
+   needed the same thing for `?deck=`, and two copies of it is how the two
+   would come to disagree about which window is the address. */
 
 /** Which question the address is pointing at. 1-based for a human reading it;
  *  `#q1` is the first, which is what a learner would guess. */

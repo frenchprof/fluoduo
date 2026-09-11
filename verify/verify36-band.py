@@ -157,6 +157,19 @@ for b in BANDS:
 reg = strip_comments(read("src/content/activities.ts"))
 ok("export function bandOf" in reg, "bandOf() is exported from the registry",
    "bandOf() is missing — nothing can colour by demand")
+# THE PAINTERS READ stripOf, NOT bandOf, SINCE 2026-09-08 (Dan: "ConjugaZone
+# pages should be in Teal colored strip ok"). `bandOf` still answers what the
+# exercise DEMANDS — verify62 holds it against the teacher's record — and
+# `stripOf` answers what colour that is, which an activity may now own outright.
+# The rule this check exists for is unchanged and is the reason it follows the
+# rename rather than being deleted: a surface must take its fill from the one
+# table, never from a hue of its own.
+ok("export function stripOf" in reg, "stripOf() is exported from the registry",
+   "stripOf() is missing — the painting surfaces have no one table to read")
+ok(re.search(r"stripOf[\s\S]{0,400}OWN_STRIP\[activeKey\] \?\? bandOf", reg) is not None,
+   "stripOf falls back to the band, so an activity without its own colour still has one",
+   "stripOf no longer falls back to bandOf — an activity with no colour of its own\n"
+   "     would go unpainted, which is how a page ends up borrowing a hue at random")
 EXPECT = {"pretest": "guess", "speculearn": "guess", "lesson": "lesson",
           "dice": "recog", "flip": "recog", "matching": "recog",
           "vocabularain": "recog", "lexicalator": "recog",
@@ -180,7 +193,7 @@ ok("var(--band, var(--fam-ink" in pb,
    "PageBand does not prefer --band — the demand axis is not painted")
 for f in ("src/components/DrillShell.tsx", "src/components/CahierShell.tsx"):
     src = read(f)
-    ok("bandOf" in src and "band-${bandKey}" in src,
+    ok("stripOf" in src and "band-${bandKey}" in src,
        f"{os.path.basename(f)} puts the band class on its page",
        f"{os.path.basename(f)} does not apply band-*")
 
@@ -208,9 +221,9 @@ def _nocomment(src):
     return _re.sub(r"^\s*//.*$", "", src, flags=_re.M)
 
 _icon = _nocomment(open("src/components/ActivityIcon.tsx", encoding="utf-8").read())
-_ok = "bandOf(activityKey)" in _icon and "var(--band" in _icon
+_ok = "stripOf(activityKey)" in _icon and "var(--band" in _icon
 (PASS if _ok else FAIL).append(
-    "ActivityIcon.tsx is the one banded tile (bandOf + var(--band))"
+    "ActivityIcon.tsx is the one banded tile (stripOf + var(--band))"
     if _ok else "ActivityIcon.tsx missing, or it no longer derives its fill from bandOf")
 
 # A hand-rolled copy is a SMALL SQUARE tile filled with the band — a grid box
