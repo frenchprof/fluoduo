@@ -57,10 +57,10 @@ export default function UserPage() {
     <CahierShell
       tabs={tabsWithActive(siteTabs(), "home")}
       active="profil"
-      band={{ title: current.title }}
+      band={{ title: current.label }}
     >
       <UserTabs active={tab} onPick={pick} />
-      <EmbedFrame src={current.embed} title={current.title} />
+      <EmbedFrame src={current.embed} title={current.label} />
     </CahierShell>
   );
 }

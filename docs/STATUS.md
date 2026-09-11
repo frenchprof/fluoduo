@@ -8396,5 +8396,26 @@ eslint on every touched file.
 - **The Me panel's own insides** — the U0–U4 grid still has no key, THRILLS is
   still last though it is the only row that is never empty, and FRILLS still
   reads EMPTY. Shown to Dan as a mock-up; not built, pending his word.
-- **A naming wrinkle:** the tab and band say **Me**, the ☰ menu still says
-  **Profile**. Same page, two names — Dan to pick one.
+- ~~A naming wrinkle: the tab says **Me**, the ☰ menu says **Profile**.~~
+  **RESOLVED THE SAME DAY, and it was never Dan's to resolve.** He looked at
+  the live app and said *"i see User and Profile, i do not see Me"* — because
+  « Me » existed only on this branch. It was invented here; the mock-up he
+  approved happened to carry it, which let it pass as decided. Then: *"use the
+  same words colors and emojis"*. So the strip no longer writes any of them
+  down. `userTabs.ts` reads `activities.ts` for the label and the glyph, and
+  the colour is the User family's own pen and wash:
+
+      👤 Profile · 🏆 Leaderboard · ⌛ History · ⚙️ Settings
+
+  History is the one tab with no registry entry — it is not a menu tile (the
+  9 Sep grid gives User three) — so it names itself there and wears the ⌛ the
+  top bar has meant « my learning history » with since 2026-07-25.
+
+  THE LESSON, because it is the second time this session: a mock-up is a
+  QUESTION, and everything in it that was not asked about is still unasked. A
+  reader cannot tell which words in a picture are the proposal and which are
+  filler, so anything invented inside one has to be named as invented when the
+  picture is sent — or it gets approved by accident.
+
+  Measured at 320 / 360 / 390px: the four tabs total 303px at the narrowest,
+  and no label is clipped at any width.

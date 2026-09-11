@@ -22,6 +22,14 @@
  * Dan picked this shape over four pages sharing a strip (2026-09-11), because
  * the panel then swaps without a page load and nothing flashes.
  *
+ * THE WORDS, GLYPHS AND COLOUR ARE THE APP'S, NOT THIS FILE'S (Dan, same day:
+ * *"use the same words colors and emojis"*). The first draft of this strip said
+ * « Me » and « Board »; the ☰ menu has always said Profile and Leaderboard, and
+ * two names for one page is the fault this whole change exists to end. Labels
+ * and emoji come from `userTabs.ts`, which reads the registry; the colour is
+ * the User family's own pen and wash — the same grey the ☰ flap and the page
+ * spine already wear — so the strip cannot drift from the menu that leads to it.
+ *
  * NOT covered by "no control spans the whole width": that rule is about ONE
  * control wearing the page's width. This is four sharing it, like the bottom
  * bar's five.
@@ -63,14 +71,15 @@ export default function UserTabs({
                   }
                 : undefined
             }
-            className="fluo-hit44 flex-1 px-1 py-2 text-center text-[11.5px] font-extrabold no-underline"
+            className="fluo-hit44 flex flex-1 items-center justify-center gap-1.5 px-1 py-2 text-center no-underline"
             style={{
               color: on ? "var(--cahier-ink)" : "var(--cahier-ink-soft)",
-              background: on ? "var(--cahier-paper)" : "transparent",
-              boxShadow: on ? "inset 0 -3px 0 var(--fluo-hl)" : "none",
+              background: on ? "var(--fam-user-wash)" : "transparent",
+              boxShadow: on ? "inset 0 -3px 0 var(--fam-user-ink)" : "none",
             }}
           >
-            {t.label}
+            <span aria-hidden className="text-[13px] leading-none">{t.emoji}</span>
+            <span className="whitespace-nowrap text-[11.5px] font-extrabold">{t.label}</span>
           </a>
         );
       })}
