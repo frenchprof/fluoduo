@@ -2,18 +2,35 @@
  * /profil/embed — Profile, running inside the cahier rather than drawing one.
  *
  * Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER
- * PAGES IN IFRAMES (EMBEDDED)"*, and then *"proceed the remaining unframed
- * surfaces"*. `/profil` is the page a learner opens; this is what runs in the
- * frame it holds, and it is the SAME component the page rendered directly
- * before, so the two cannot drift.
+ * PAGES IN IFRAMES (EMBEDDED)"*. `/profil` is the page a learner opens; this is
+ * what runs in the frame it holds.
  *
- * The chrome is hidden by CSS in a framed document (`html[data-embed]` in
- * globals.css), so nothing here had to change to lose its notebook.
+ * ── IT USED TO DRAW A SECOND NOTEBOOK (Dan, 2026-09-11: *"Profiles, ChaTutor
+ *    page looks doubleframed"*) ────────────────────────────────────────────
+ *
+ * This file rendered `CahierShell` — the notebook — while already being loaded
+ * INSIDE a `CahierShell`. `html[data-embed]` (globals.css) hides the shell's
+ * FURNITURE in a framed document (site bar, band, coils, shadow, radius, family
+ * spine), and that was taken for "nothing is left". Two things were left, and
+ * they are the two that make a sheet look like a sheet: `.cahier-page`'s paper
+ * and its 32px ruling, and `.cahier-foolscap`'s 28px ruling. So a SECOND sheet
+ * was laid on the page's own, starting 48px in from the left — the well's
+ * gutter, where the coils are — and the join showed: measured on the built app
+ * at 390px, the ruled lines in that 48px strip sit at one height and the ones
+ * inside the frame at another, and some stop dead at the frame's edge.
+ *
+ * `/map/embed` is the shape that was already right: it renders the map and no
+ * notebook. This renders the profile and no notebook. The frame is transparent
+ * (`html[data-embed] body`, globals.css) so the page's ONE sheet — paper,
+ * ruling and all — runs straight through it.
+ *
+ * THE BAND WENT WITH THE SHELL, AND LOSES NOTHING: `band={{ title: "Moi" }}`
+ * was already hidden here by `html[data-embed] .cahier-page > .page-band`,
+ * because the page around the frame draws the strip. The padding replaces what
+ * the shell's own well gave this content — `html[data-embed]
+ * .cahier-foolscap`'s 0.75rem sides and the well's 1.25rem top and bottom — so
+ * nothing moves but the paper. ProfileContent constrains its own body.
  */
-import CahierShell from "@/components/CahierShell";
-import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import ProfileContent from "@/components/ProfileContent";
-
 /**
  * 🎖️ Profil — the SAME page as /moi since the 2026-08-22 merge.
  *
@@ -25,21 +42,14 @@ import ProfileContent from "@/components/ProfileContent";
  * because it is linked from the account chip, printed handouts and old
  * bookmarks — a live page beats a hop.
  */
+import ProfileContent from "@/components/ProfileContent";
+
 export const metadata = { title: "My Profile — FluOLinGo" };
 
 export default function Page() {
   return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="profil" band={{ title: "Moi" }}>
-      {/* The band is the SHELL's now (1 Sep) — drawn inside ProfileContent it
-          sat 20px lower than every other band on the site, because the content
-          well it lived in is padded and the shell's band is not. It can move
-          because it stopped needing anything only that component knows: the
-          title is the activity's name and the outcome count came off every
-          strip the same day.
-
-          No max-w wrapper either: a band centred inside 768px is not a band
-          that reaches the paper. ProfileContent constrains its own body. */}
+    <div className="touch-pan-y min-h-dvh px-3 py-5">
       <ProfileContent />
-    </CahierShell>
+    </div>
   );
 }
