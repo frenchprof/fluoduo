@@ -48,14 +48,12 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { loadProgress, setGoal, type Progress } from "@/lib/progress";
+import { loadProgress, type Progress } from "@/lib/progress";
 import { useAuthUser } from "@/lib/firebase/auth";
 import { loadLedger } from "@/lib/activityLedger";
 import { outcomeAccuracy, tierToken } from "@/lib/outcomeRows";
-import { COURSE_CODE, COURSE_LEVEL } from "@/lib/term";
-import { loadBookmark, nextGoalNumber } from "@/lib/continuer";
 import {
-  attemptedCount, goalCandidates, goalLine, nextAction, redrills, skillCoverage,
+  attemptedCount, nextAction, redrills, skillCoverage,
   type Accuracy,
 } from "@/lib/learnerModel";
 import { addBlocker, leftThisWeek, loadBlockers, weekKey, type Blocker } from "@/lib/blockers";
@@ -75,6 +73,19 @@ const ROWS = [
 ] as const;
 type RowKey = (typeof ROWS)[number]["key"];
 
+/** The grid's key: one word per colour, in the order a learner meets them.
+ *  The tokens are HeatStrip's own (`--tier-*`, `--cahier-line`), never a
+ *  hand-picked hex — verify19b's raw-hex ratchet, and so the key cannot say a
+ *  different green from the one on the tiles. */
+const LEGEND: { word: string; token: string; ring?: boolean }[] = [
+  { word: "STRONG", token: "var(--tier-good)" },
+  { word: "MIXED", token: "var(--tier-medium)" },
+  { word: "WEAK", token: "var(--tier-weak)" },
+  { word: "NEW", token: "var(--cahier-line)" },
+  { word: "DONE", token: "", ring: true },
+];
+
+
 const INK = "var(--cahier-ink)";
 const SOFT = "var(--cahier-ink-soft)";
 const LINE = "var(--cahier-line-strong)";
@@ -92,7 +103,6 @@ export default function ProfileContent() {
   const [open, setOpen] = useState<RowKey | null>("redrills");
   const [why, setWhy] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const [picking, setPicking] = useState(false);
   const [resp, setResp] = useState<Resp[] | null>(null);
   const [ledgerAcc, setLedgerAcc] = useState<Accuracy>({});
   const [blockers, setBlockers] = useState<Blocker[]>([]);
@@ -161,7 +171,6 @@ export default function ProfileContent() {
   const queue = useMemo(() => (p && now ? redrills(p, acc, now) : []), [p, acc, now]);
   const skills = useMemo(() => skillCoverage(acc), [acc]);
   const next = useMemo(() => (p && now ? nextAction(p, queue, now) : null), [p, queue, now]);
-  const goal = useMemo(() => (p && now ? goalLine(p, now) : null), [p, now]);
   const doneSet = useMemo(() => new Set(p?.doneSios ?? []), [p]);
 
   if (!p || now === null) return <p className="px-1 py-6 text-sm" style={{ color: SOFT }}>Loading your progress…</p>;
@@ -191,19 +200,12 @@ export default function ProfileContent() {
           component knows: the title became the activity's name ("Moi") this
           morning and the outcome count came off the strip with every other
           trailing number. profil/page.tsx and moi/page.tsx pass it. */}
-      {/* THE COURSE LINE MOVED HERE rather than being deleted (1 Sep). It was
-          the band's sub-line, and the band is one line now with no room for
-          it. It keeps the mono, uppercase, dot-separated form, so it still
-          reads as data.
-          JOURNEY, NOT CALENDAR (Dan's no-classes ruling, applied 6 Sep):
-          "WEEK 4" was the classroom's clock — a participant who enrolled
-          from Jakarta yesterday has no week 4. Their position on the path is
-          theirs: GOAL n / 50, the same figure Home's counter shows, from the
-          same nextGoalNumber derivation. */}
-      <p className="fluo-mono px-4 pt-2 text-[10px] font-bold tracking-[0.06em] text-[color:var(--cahier-ink-soft)] sm:px-6">
-        {user?.displayName ?? "Moi"} · {COURSE_CODE} · {COURSE_LEVEL} ·{" "}
-        {p ? `GOAL ${nextGoalNumber(p, loadBookmark()) ?? 50} / 50` : "GOAL — / 50"}
-      </p>
+      {/* THE COURSE LINE AND THE PINNED-GOAL STRIP ARE GONE (Dan, 2026-09-11:
+          "There is no need for the black strip and the words above the black
+          strip. Start directly after the 4 tabs with REDRILLS"). The line read
+          « Moi · LAF1201 · A1 · GOAL 22 / 50 »; the strip under it was the
+          black bar that opened the goal picker. The panel opens on the first
+          thing a learner acts on instead. */}
       {/* The body keeps the reading width the page wrapper used to give it —
           the band must be outside it, or a band centred inside 768px is not a
           band that reaches the paper. */}
@@ -213,36 +215,6 @@ export default function ProfileContent() {
           beside them. Phone: one column, the same order. */}
       <div className="grid items-start gap-0 lg:grid-cols-[340px_1fr] lg:gap-5 lg:px-4 lg:pt-4">
         <div className="lg:flex lg:flex-col lg:gap-3">
-          {/* ── The pinned goal. One line: which of the fifty, by when. The
-              can-do sentence appears only when you open it to change it —
-              the fifty are the catalogue, this is the commitment. ── */}
-          <button
-            type="button"
-            onClick={() => setPicking((v) => !v)}
-            aria-expanded={picking}
-            className="flex min-h-[48px] w-full items-center gap-2 px-4 py-3 text-left lg:rounded-xl"
-            style={{ background: INK, borderBottom: `3px solid ${INK}` }}
-          >
-            <span className="fluo-mono shrink-0 text-[9.5px] font-black tracking-[0.1em]" style={{ color: HL }}>GOAL</span>
-            {goal ? (
-              <>
-                <span className="fluo-mono truncate text-[11.5px] font-bold text-white">{goal.sio} · {goal.short.toUpperCase()}</span>
-                <span className="fluo-mono ml-auto shrink-0 text-[11.5px] font-bold text-white/70">BY {goal.by}</span>
-              </>
-            ) : (
-              <span className="fluo-mono text-[11.5px] font-bold text-white/70">PICK ONE OF THE FIFTY</span>
-            )}
-            <span aria-hidden className="shrink-0 text-sm text-white/60">{picking ? "▾" : "›"}</span>
-          </button>
-
-          {picking && (
-            <GoalPicker
-              current={p.goal?.sio ?? null}
-              by={p.goal?.by ?? null}
-              canDo={goal?.canDo ?? null}
-              onSave={(sio, by) => { setP(setGoal(sio, by)); setPicking(false); }}
-            />
-          )}
 
           {/* ── The one next action. Chartreuse because it is the only thing
               on the page that is an instruction. Sized to its text — no
@@ -326,11 +298,37 @@ export default function ProfileContent() {
                         </a>
                       ))}
                     </Tiles>
-                  ) : (
-                    <p className="text-sm" style={{ color: SOFT }}>Nothing waiting — practise anywhere and it lands here.</p>
-                  )}
-                  <div className="mt-3 border-t pt-3" style={{ borderColor: "color-mix(in oklab, var(--fluo-card-accent) 25%, transparent)" }}>
+                  ) : null /* Dan, 2026-09-11: "There shouldn't be any text
+                       between the green stripe REDRILL and the grid items
+                       below." The sentence said « Nothing waiting — practise
+                       anywhere and it lands here »; the count on the shut row
+                       already says 0 SIOS, so it was the same fact in prose. */}
+                  <div>
                     <HeatStrip values={acc as HeatValues} done={doneSet} hrefFor={indexHref} label="Syllabus, by outcome — your accuracy" />
+                    {/* THE GRID GETS A KEY (Dan, 2026-09-11: "there should be a
+                        legend below that grid to show what color tile means
+                        what in very concise one-word-per color legend. and in a
+                        single row"). Same complaint he made about the Index on
+                        24 Aug: fifty coloured squares and nothing saying what a
+                        colour is. One word each, one row, and the words are the
+                        app's own tiers — the swatches read their colour from
+                        the very tokens HeatStrip paints the cells with, so a
+                        palette change moves both. DONE is the ring, not a fill,
+                        which is why its swatch is drawn as an outline. */}
+                    <ul className="mt-2 flex list-none items-center gap-x-2.5 p-0">
+                      {LEGEND.map((l) => (
+                        <li key={l.word} className="flex items-center gap-1">
+                          <span
+                            aria-hidden
+                            className="inline-block h-2.5 w-2.5 rounded-[2px]"
+                            style={l.ring
+                              ? { background: "transparent", boxShadow: `inset 0 0 0 1.5px ${INK}` }
+                              : { background: l.token }}
+                          />
+                          <span className="fluo-mono whitespace-nowrap text-[9px] font-bold" style={{ color: SOFT }}>{l.word}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </>
               )}
@@ -519,63 +517,6 @@ function RewardMarks({ p }: { p: Progress }) {
   );
 }
 
-/** Pick one of the fifty, and a date. The can-do sentence shows HERE and only
- *  here — it is the criterion you judge yourself against, so it belongs at the
- *  moment you commit, not pinned to every screenful. */
-function GoalPicker({
-  current, by, canDo, onSave,
-}: {
-  current: string | null;
-  by: string | null;
-  canDo: string | null;
-  onSave: (sio: string | null, by: string | null) => void;
-}) {
-  const [sio, setSio] = useState(current ?? "");
-  const [date, setDate] = useState(by ?? "");
-  const picked = SIOS.find((s) => s.id === sio);
-  return (
-    <section className="px-4 py-3.5 lg:rounded-xl" style={{ background: PAPER, borderBottom: `3px solid ${INK}` }}>
-      {canDo && !picked && <p className="mb-2.5 text-[0.85rem] font-semibold leading-snug" style={{ color: SOFT }}>{canDo}</p>}
-      <label className="fluo-mono block text-[9.5px] font-black tracking-[0.1em]" style={{ color: SOFT }}>OUTCOME</label>
-      <select
-        value={sio}
-        onChange={(e) => setSio(e.target.value)}
-        className="mt-1 block min-h-[44px] w-full rounded-[9px] border-2 px-2 text-[0.85rem] font-bold"
-        style={{ borderColor: INK, background: PAPER, color: INK }}
-      >
-        <option value="">—</option>
-        {goalCandidates().map((s) => (
-          <option key={s.id} value={s.id}>{s.id} · {s.short}</option>
-        ))}
-      </select>
-      {picked && <p className="mt-2 text-[0.85rem] font-semibold leading-snug" style={{ color: INK }}>{picked.canDo}</p>}
-      <label className="fluo-mono mt-3 block text-[9.5px] font-black tracking-[0.1em]" style={{ color: SOFT }}>BY</label>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="mt-1 block min-h-[44px] w-full rounded-[9px] border-2 px-2 text-[0.85rem] font-bold"
-        style={{ borderColor: INK, background: PAPER, color: INK }}
-      />
-      <div className="mt-3 flex items-center gap-2">
-        <button
-          type="button"
-          disabled={!sio}
-          onClick={() => onSave(sio, date || null)}
-          className="min-h-[44px] rounded-[10px] px-5 text-[0.9rem] font-extrabold disabled:opacity-40"
-          style={{ background: INK, color: PAPER }}
-        >
-          Pin it
-        </button>
-        {current && (
-          <button type="button" onClick={() => onSave(null, null)} className="min-h-[44px] px-3 text-[0.85rem] font-bold" style={{ color: SOFT }}>
-            Clear
-          </button>
-        )}
-      </div>
-    </section>
-  );
-}
 
 /** The learner's own outcome table, as a file. Client-side: the data is
  *  already in the page, and a download needs no endpoint. */

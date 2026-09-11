@@ -152,9 +152,20 @@ check("TEMPLATES[s.skill](" in MODEL and "fetch(" not in MODEL and "await " not 
 check(re.search(r"goal\?:\s*\{\s*sio: string; by: string \| null\s*\}", PROGRESS) is not None,
       "the goal stores only WHICH outcome and BY WHEN",
       "the goal stores more than the commitment")
-check("canDo" in PROFILE and "GoalPicker" in PROFILE,
-      "the verbatim can-do appears when you open the goal, not on the pin",
-      "the can-do sentence is not behind the goal picker")
+# THE PINNED GOAL CAME OFF THE PROFILE (Dan, 2026-09-11: "There is no need for
+# the black strip and the words above the black strip. Start directly after the
+# 4 tabs with REDRILLS"). The black strip WAS the goal pin, and opening it was
+# the only way to set a goal-and-a-date, so the picker and the can-do sentence
+# behind it went with the strip.
+#
+# The storage is untouched — `progress.goal` still exists and still holds only
+# {sio, by}, asserted above — so nothing a learner already pinned is lost and
+# the feature can come back behind any control Dan wants. What this now guards
+# is that it stays GONE FROM THE PANEL rather than creeping back onto the top
+# of the page, and that no half-removed remnant is left behind.
+check("GoalPicker" not in PROFILE and "setPicking" not in PROFILE,
+      "the goal pin is off the profile panel, with no remnant left",
+      "the goal strip or its picker is back on the panel Dan asked to open on RE-DRILLS")
 check("weak: boolean" in MODEL and "due: boolean" in MODEL,
       "one queue, tagged with BOTH reasons (weak = accuracy, due = interval)",
       "the queue does not separate weak from due")

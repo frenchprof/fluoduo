@@ -30,6 +30,7 @@ import CahierShell from "@/components/CahierShell";
 import EmbedFrame from "@/components/EmbedFrame";
 import UserTabs from "@/components/UserTabs";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
+import { familyName } from "@/content/activities";
 import { TABS, tabFrom, type UserTabKey } from "@/content/userTabs";
 
 export default function UserPage() {
@@ -57,7 +58,14 @@ export default function UserPage() {
     <CahierShell
       tabs={tabsWithActive(siteTabs(), "home")}
       active="profil"
-      band={{ title: current.label }}
+      /* THE BAND NAMES THE PAGE, THE TABS NAME ITS PARTS (Dan, 2026-09-11:
+         "the name of the overarching title and the sub part names should not
+         repeat each other"). It said PROFILE directly above a tab saying
+         Profile — the same word twice, one line apart, telling a learner
+         nothing the second time. The band is the whole 👤 family now, taken
+         from FAMILIES so it is the ☰ menu's own word, and it no longer moves
+         when a tab does: you are still in User whichever panel is open. */
+      band={{ title: familyName("user") }}
     >
       <UserTabs active={tab} onPick={pick} />
       <EmbedFrame src={current.embed} title={current.label} />

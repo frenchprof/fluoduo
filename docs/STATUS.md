@@ -8419,3 +8419,39 @@ eslint on every touched file.
 
   Measured at 320 / 360 / 390px: the four tabs total 303px at the narrowest,
   and no label is clipped at any width.
+
+### Same day, later — the Profile panel, and one feature removed with it
+
+Dan, on the panel itself:
+
+1. *"The name of the overarching title and the sub part names should not repeat
+   each other"* — the band said PROFILE directly above a tab saying Profile.
+   **The band is the FAMILY now** (`familyName("user")` → « User », the ☰
+   menu's own word) and it no longer moves when a tab does: you are still in
+   User whichever panel is open. The tabs keep the registry's words.
+2. *"There is no need for the black strip and the words above the black strip.
+   Start directly after the 4 tabs with REDRILLS"* — gone: the course line
+   (« Moi · LAF1201 · A1 · GOAL 22 / 50 ») and the black pinned-goal bar.
+3. *"There shouldn't be any text between the green stripe REDRILL and the grid
+   items below"* — the « Nothing waiting » sentence is gone, and so is the rule
+   that used to separate it from the grid, which now separated nothing.
+4. *"Instead there should be a legend below that grid… one-word-per color…
+   in a single row"* — **STRONG · MIXED · WEAK · NEW · DONE**, one row at
+   320px. The swatches read `--tier-good/medium/weak` and `--cahier-line`, the
+   very tokens HeatStrip paints the cells with, so the key cannot say a
+   different green from the tiles. DONE is the ring, drawn as an outline.
+   (« UNTRIED » was the first word tried and it pushed DONE onto a second line
+   on a phone; « NEW » says the same thing in three letters.)
+
+**A FEATURE WENT WITH THE BLACK STRIP, AND DAN SHOULD KNOW.** That bar *was*
+the goal pin: tapping it opened `GoalPicker`, the only way in the app to pin
+one of the fifty AND a date. Removing the bar removed the picker, the verbatim
+can-do sentence behind it, and `setGoal`'s only caller. **The stored data is
+untouched** — `progress.goal` still holds `{sio, by}` — so nothing a learner
+pinned is lost and the feature can return behind any control Dan likes. The
+☰ menu's 1–50 slider is NOT the same thing: it picks what to practise now, with
+no date. `verify30` §5 now guards that the pin stays off the panel rather than
+that it exists, and says why.
+
+Nine lint warnings appeared when the strip went — imports and state only it
+used. All removed; the touched files are at zero.
