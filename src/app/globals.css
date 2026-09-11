@@ -2418,64 +2418,57 @@ h3.cahier-display { font-size: var(--fs-h3); }
    no-full-width-control rule forbids. The grid keeps its 6px gap; the rows
    themselves already truncate rather than overflow. */
 
-/* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
-   He sent the palette back — *"i am sorry your colors are very off. these are
-   the correct colors, you need to remedy"* — then the bands themselves,
-   *"these colors are wrrong"*, then the rule that settles it:
-   *"whatever it is, every color on the web can only be one of these"*, with
-   *"use black ink if you have to - for words"*.
+/* ── ONE BAND COLOUR LEFT, AND THAT IS THE WHOLE STORY ────────────────────
+   Dan, 2026-09-11, shown the six swatches and where each is actually drawn:
+   *"we don't [need] the five any more do we?"*, then *"yes do the cleanup,
+   keep prod"*.
 
-   The six family pens already WERE the palette's six pens; these five were a
-   separate hand-picked set matching nothing in it. `highlighterMarks.ts` is
-   the source now, and the two axes are the palette's two halves:
+   THERE WERE SIX. Five were the evidence ladder — guess, lesson, recog, prod,
+   create, five of the twelve marks taken raw at highlighter strength — and the
+   sixth was Teal, given to ConjugaZone alone on 8 Sep (*"ConjugaZone pages
+   should be in Teal colored strip ok"*). Each painted a page's heading strip
+   and its left spine.
 
-       the six PENS         -> the six families   (already true)
-       five of the six COMPLEMENTS -> the five phases
+   #292 ENDED THAT. `PageBand` reads `--strip` now, which every `fam-*` class
+   sets and no `band-*` class does, so a page's strip is its FAMILY's colour.
+   Driven on the built app rather than assumed: of the six, only `prod` is
+   still drawn anywhere. GramMarathon's finale is built on `band-prod`
+   throughout — its frame, its progress fill, two card borders and the hint and
+   check buttons read `var(--band)`, its pills read `var(--band-wash)` — and
+   #292 named that page a deliberate exemption, because there is no
+   `--strip-wash` and moving the borders alone would put a teal edge on an
+   amber fill.
 
-       guess   Periwinkle #9398ff      prod    Amber   #e88c00
-       lesson  Olive      #98b300      create  Magenta #f350ff
-       recog   Sky        #00b2f6      (Teal #00c197 is the sixth — see below)
+   SO THE OTHER FIVE ARE DELETED, not left unwired — the same precedent as the
+   reading-paper tokens on 6 Sep and the band complements just below: a token
+   nothing reads is a token the next person has to disprove. Their values, if
+   they are ever wanted again, are each pen's `block` in highlighterMarks.ts,
+   which is where they came from:
 
-   TAKEN RAW, at highlighter strength, which is why the words on them are
-   BLACK. White on these measures 1.84-2.84:1 and was unreadable; black
-   measures 8.18, 8.78, 8.70, 8.18 and 7.40 — every one clear. That is Dan's
-   ruling doing the work the old set needed a dimmed, off-palette colour for:
-   the ink moves so the colour does not have to.
+       guess Periwinkle #9398ff · lesson Olive #98b300 · recog Sky #00b2f6
+       create Magenta #f350ff   · teal Teal #00c197
 
-   NO COLOUR-BLIND SEPARATION RULE ANY MORE. The set these replace was chosen
-   by a search maximising deutan/protan separation, and no five of the twelve
-   can pass that bar — the palette sits at one lightness by design, so its
-   hues collapse in pairs (Sky/Magenta 0.009, Amber/Olive 0.013). Shown the
-   simulation and the numbers, Dan: *"don't care about color blindness pls"*,
-   *"it is NOT OUR CONCERN"*. Recorded here rather than quietly dropped, and
-   the checks that enforced it are removed in verify36 with the same quote —
-   a rule that is deleted for a reason should say whose reason. */
+   WHAT IS NOT DELETED, AND MUST NOT BE. `BAND`, `bandOf()` and `stripOf()` in
+   content/activities.ts are untouched. Those five NAMES are not decoration —
+   they are what kind of evidence an exercise produces, written into every
+   stored answer through lib/evidence.ts and shown to the teacher on /teacher
+   (« recognition », « constrained », « free »). `verify62` holds the two
+   tables together, after Sorting spent five days telling a learner one thing
+   and the record another. Dan, in the same breath as the cleanup: keep the
+   categories.
+
+   A CONSEQUENCE WORTH KNOWING before it puzzles someone. The shells still put
+   a `band-*` class on every page — verify36 requires it and `stripOf` still
+   hands the key out — so pages carry `band-guess`, `band-teal` and the rest.
+   They simply match no rule now and set nothing. ConjugaZone is still teal on
+   screen because REVISE is teal and ConjugaZone lives there, not because of
+   the token that used to do it.
+
+   BLACK INK ON THE BAND for the one that is left (Dan, 6 Sep: *"use black ink
+   if you have to - for words"*). Amber measures 8.18:1 against black, and
+   verify36 re-measures it rather than trusting this line. */
 :root {
-  --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
-  --band-prod: #e88c00;    --band-create: #f350ff;
-  /* TEAL IS ONE ACTIVITY'S, NOT A BRANCH'S (Dan, 2026-09-08: "ConjugaZone
-     pages should be in Teal colored strip ok"). The five above are the
-     evidence ladder — what an exercise demands — and ConjugaZone shares
-     `prod` with GramMarathon and WorDrill, which is true and stays true in
-     the teacher's record. This is the sixth hue and it belongs to ConjugaZone
-     alone; `stripOf()` in content/activities.ts is what hands it out. Chosen
-     against --band-recog (#00b2f6) rather than in isolation: the two are the
-     only cool hues here, and teal has to read as a different station from the
-     bright blue at a glance on a 12px strip. It is the TEAL PEN's block from
-     highlighterMarks.ts, not a teal chosen by eye — Dan, 6 Sep: "every color
-     on the web can only be one of these", and verify120 measures the hue. The
-     first attempt (#00a396) sat 15 degrees off it and the check said so.
-
-     TEAL IS NOW SPENT TWICE, and that is recorded rather than quietly fixed.
-     Main gave the same pen to the REVISE FAMILY the same week
-     (--fam-review: #00c197, a few lines up). The two never appear on one
-     surface — a family colour paints the ☰ grid tile and the family's own
-     hub, a strip paints one activity's page edges — but they are the same
-     hex, so a learner who reads teal as "Revise" on the menu meets it again
-     on ConjugaZone, which is Practice. Dan's word was *"ignore the repo's
-     color pattern based on activity type and family"*, so ConjugaZone keeps
-     it; whether the two should differ is his call. */
-  --band-teal: #00c197;
+  --band-prod: #e88c00;
 
   /* THE SIX BAND COMPLEMENTS WERE HERE, and they are DELETED rather than left
      unwired. They were right for exactly one day: the SIO scrap took the
@@ -2490,12 +2483,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
      highlighterMarks.ts — which is where they came from and the only place
      they should ever be copied from. */
 }
-.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
-.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
-.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); }
 .band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
-.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); }
-.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); }
 
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next

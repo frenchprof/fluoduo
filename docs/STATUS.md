@@ -430,6 +430,42 @@ npm run build` green, all 124 verify checks pass, and the twenty source files
 this branch touches lint with one warning inherited from main (PR #176's unused
 `attemptAt` in `EcouTexte.tsx`).
 
+## 11 Sep — the ☰ menu goes bright and bigger; the Guide is rewritten (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+Records work that landed as #282 (the rest of #275, replayed by the QC lane)
+and #290, both deployed: deploy runs 50 and 51.
+
+**THE ☰ MENU** (Dan: *"make the font on the grid menu bigger and maybe
+thicker, it is hardly legible now"*, then, sending the page-strip catalogue,
+*"the background needs to be brighter like this"*, then *"black font instead
+of white font ... for the leftmost cat names"*):
+- tile names 13px → 16px in the hand face; every one of the twenty still fits
+  whole at 390px (18px clips GramMarathon, 20px clips four — both shown to
+  Dan, 16 chosen). The face is already at its heaviest weight; "thicker" is
+  met by the size.
+- row bands `--fam-*-ink` → `--fam-*`, the bright base shade the heading
+  strips wear. SUPERSEDES the 9 Sep "darkest rung" ruling, which answered a
+  pale wash; AGENTS.md updated in the same commit. Vertical family labels are
+  the house ink (black); tile outlines take the dark rung so a cream tile
+  keeps an edge on yellow. Seven bands measured at verify96's seven hexes.
+
+**THE GUIDE** (Dan: *"can you rewrite the guide to make it clearer"*, then
+*"the activities are already on the menu"*). Two of its three one-liners had
+stopped being true — « Unité 0–4 flaps » were retired on 7 Sep. Five steps
+now, in the course's own order, each naming the real button on screen: Find
+your stop (▶ Continue) · Guess first (💡 SpecuLearn, before the lesson) ·
+Learn it (🔊 VoixLà) · Practise and play (the ☰ menu) · Come back
+(❌ ErroReview, ✓ green). The « ❓ HELP! » heading and the second Home button
+are gone. The activity grid went too, at Dan's word — the ☰ menu already
+lists every activity from the same registry — and `verify19c`, which once
+policed that grid's spelling, now holds that it stays gone. Measured at
+390×844: 1,439px → 988px, Continue ends at 787px, one screen.
+
+**SUBDOMAINS, CLOSED OUT THE SAME DAY:** Dan added f2, f3, f4 on the Pages
+project; all four `f*.fluolingo.com` answer 200 and the deployed build carries
+the CourseGate, so f2–f4 show the closed door and f1 the tagged welcome page.
+
 ## 11 Sep — SpecuLearn's landing loses its band; the number joins the title (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
