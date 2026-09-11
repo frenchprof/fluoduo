@@ -131,9 +131,9 @@ ok("MenuSplash" not in home,
 ok("StopSheet" not in home,
    "Home opens no stop sheet — the ☰ grid is the activities menu",
    "a StopSheet door is back on Home — the red key Dan removed has a ghost")
-ok("bandOf" in sheet,
-   "each row wears its demand band (verify36)",
-   "the sheet does not colour its rows by band")
+ok("stripOf" in sheet,
+   "each row wears its activity's colour (verify36)",
+   "the sheet does not colour its rows — a stop's activities become one grey list")
 
 # 5 · the keys are the dopamine roles, and Rewind sinks when nothing is due.
 # (--dopa-reward left with the ▦ key, 7 Sep — verify32 pins its absence.)

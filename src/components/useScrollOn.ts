@@ -20,14 +20,24 @@
  * a pre-test is not holding the phone sideways in their mind. They are
  * scrolling, and scrolling had run out.
  *
- * WHERE "THE NEXT PAGE" COMES FROM. Not from a second list: from the same
- * `lib/swipeRail.ts` chain the sideways drag reads, so the two can never
- * disagree about what follows what. That chain happens to be the course's own
- * order, which is why this reads as pedagogy rather than as a trick:
+ * WHERE DOWNWARDS LEADS, AND WHY IT CHANGED. Until 2026-09-08 the end of a
+ * scroll carried a learner to the next STATION — the last question of a
+ * pre-test landed on the lesson. Dan then laid the app out as a GRID (*"swipe
+ * up and down to the next or previous SIO … swipe left for [the next
+ * activity]"*, said of every station in turn), and under a grid those are two
+ * different axes:
  *
- *     the last goal      -> SpecuLearn for that goal
- *     the last question  -> MneMemo, the lesson it was guessing at
- *     the last panel     -> MémoiRecall, the flashcards
+ *     left / right    the activity      SpecuLearn -> MneMemo -> MémoiRecall
+ *     down / up       the course        goal 23 -> goal 24 -> goal 25
+ *
+ * So this reads `sioNeighbours` now, not `railNeighbours`: keep scrolling past
+ * the last question of goal 23's SpecuLearn and goal 24's SpecuLearn arrives,
+ * at its own address. The chain forward is the sideways drag's job and no
+ * longer this one's — one finger, one meaning, per direction.
+ *
+ * Both still come out of `lib/swipeRail.ts`, which is the point of that file:
+ * the sideways drag and this gesture read one list, so they cannot come to
+ * disagree about what follows what.
  *
  * THE GESTURE ITSELF IS NOT HERE ANY MORE — it is `usePullPastEnd`, shared
  * with DrillShell since 2026-09-08 (Dan: *"between questions of the same
@@ -44,22 +54,49 @@ import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import usePullPastEnd from "@/components/usePullPastEnd";
-import { RAIL_MESSAGE, deckFromPath, railNeighbours, recalledRailDeck } from "@/lib/swipeRail";
+import { RAIL_MESSAGE, deckFromPath, recalledRailDeck, sioNeighbours } from "@/lib/swipeRail";
 import { HOME_HREF } from "@/lib/routes";
 
 export default function useScrollOn(): void {
   const router = useRouter();
+  // BOTH SIDES OF A MERGE, 11 Sep, and the integration lane resolved it here
+  // rather than letting either branch win. #269 replaced every bare "/" used
+  // as a Home reference with HOME_HREF — the ✕ on every page had been landing
+  // a learner on the welcome door since Home moved to /home. #272 rewrote this
+  // hook for the eight-station swipe chain (railNeighbours -> sioNeighbours)
+  // and carries you on once per DIRECTION rather than once per page.
+  //
+  // The two changed the same four lines. Keeping only #269 loses the swipe
+  // rewrite; keeping only #272 silently restores the "/" fallback, which is
+  // the bug #269 exists to kill and which nothing would have reported — so
+  // both are kept, and verify210 fails the build if the "/" ever comes back.
   const path = usePathname() ?? HOME_HREF;
-  // One page carries you on ONCE. Reset on every navigation: a fresh page has
-  // a fresh end.
+  // One page carries you on ONCE PER DIRECTION. Reset on every navigation: a
+  // fresh page has a fresh end and a fresh top.
   const firedFor = useRef<string | null>(null);
   useEffect(() => { firedFor.current = null; }, [path]);
 
-  usePullPastEnd(() => {
-    if (firedFor.current === path) return;
-    const { forward } = railNeighbours(path, deckFromPath(path) ?? recalledRailDeck());
+  usePullPastEnd((dir) => {
+    /* THE INNERMOST DOCUMENT OWNS THE GESTURE. Every station runs inside the
+       cahier's iframe, and both documents mount this reader — so a pull past
+       the end was read twice, once by the station and once by the notebook
+       around it, and a learner moved two goals instead of one. The station is
+       the one that should answer (it is what the finger is actually on, and it
+       posts its destination up regardless), so the host stands down whenever it
+       is hosting one. */
+    if (typeof document !== "undefined" && document.querySelector("iframe[data-station-frame]")) return;
+    /* ONE CARRY PER PAGE, PER DIRECTION. The key is the address AND the way
+       the reader went: arriving at goal 24 by pulling down must not spend the
+       pull that would take them back up to 23. */
+    const spent = `${path}:${dir}`;
+    if (firedFor.current === spent) return;
+    // Read the live address, not the rendered path — ConjugaZone's lesson is
+    // in `?deck=` and `usePathname()` does not carry it. See useRailSwipe.
+    const here = path + (typeof window !== "undefined" ? window.location.search : "");
+    const { up, down } = sioNeighbours(path, deckFromPath(here) ?? recalledRailDeck());
+    const forward = dir === 1 ? down : up;
     if (!forward) return;
-    firedFor.current = path;
+    firedFor.current = spent;
 
     // THE FRAME GUARD — the station posts the destination up and the notebook
     // around it moves; navigating here would draw the cahier twice.
@@ -70,5 +107,25 @@ export default function useScrollOn(): void {
       return;
     }
     router.push(forward.href);
-  }, { resetKey: path });
+  }, {
+    resetKey: path,
+    /* A STATION THAT DOES NOT SCROLL STILL HAS A NEXT GOAL (2026-09-08).
+       `whenNothingScrolls` was refused to the rail this morning, and the reason
+       was sound at the time: downwards then meant LEAVE THIS ACTIVITY, and on a
+       page shorter than the screen every scroller is trivially at its end, so
+       one flick anywhere would have carried a learner off.
+
+       Dan's grid changed the stake. Downwards is the next GOAL in the SAME
+       activity now — gentle, and undone by pulling up again — and `sioNeighbours`
+       answers null for anything off the rail, so Home, the guide, Réglages,
+       Skills and Games cannot fire at all. What is left is the eight stations,
+       every one of which belongs to a goal.
+
+       And without it the grid simply does not work where Dan asked for it.
+       MEASURED on the built export: a lesson arrived at by pulling down opens
+       on its level picker, where the finger is not over the panel scroller —
+       so nothing scrolled under it, the rail refused, and three pulls in a row
+       did nothing. A drill card does not scroll at all. */
+    whenNothingScrolls: true,
+  });
 }

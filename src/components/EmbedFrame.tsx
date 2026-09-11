@@ -81,6 +81,15 @@ export default function EmbedFrame({
       <iframe
         src={src}
         title={title}
+        /* THE STATION INSIDE OWNS THE VERTICAL PULL, and this attribute is how
+           the notebook out here knows to stand down. Both documents run the
+           rail's reader, and a wheel that runs out inside the frame CHAINS to
+           the page behind it — so one pull past the end fired twice and carried
+           a learner two goals down the course instead of one (measured on the
+           lesson: SIO-025, 027, 029, every other goal skipped). The frame posts
+           its destination up either way, so nothing is lost by the host keeping
+           its hands off. See useScrollOn. */
+        data-station-frame=""
         /* THE KEYBOARD HAS TO LAND IN THE STATION. A drill answers to 1-4 and
            ↵ (useChoiceKeys), and those keys go to whichever DOCUMENT has focus
            — which, on a fresh page, is the notebook out here, not the station
