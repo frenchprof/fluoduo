@@ -37,7 +37,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
-import SectionBand from "@/components/SectionBand";
 import { siteTabs } from "@/components/siteTabs";
 import { activity } from "@/content/activities";
 import { SIOS, UNIT_META, type Sio } from "@/content/sios";
@@ -65,7 +64,6 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
     () => SIOS.map((s) => ({ sio: s, href: cellHref(activityKey, s) })),
     [activityKey],
   );
-  const have = rows.filter((r) => r.href).length;
 
   // Which unit opens first: the one the learner last pre-tested in, else the
   // one their next stop is in, else Unité 0.
@@ -103,13 +101,18 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
     // this one word is the whole fix. No unit flap is marked now, which is
     // honest: this page spans all five.
     <CahierShell tabs={siteTabs()} active={activityKey}>
+      {/* NO BAND ABOVE THE UNITS (Dan, 2026-09-11, crossing it out on a
+          screenshot: *"help me remove redundant text box above the units"*).
+          It said « 💡 SpecuLearn (Guess before you're taught. Pre-Tests live
+          here too.) 50/50 » directly under a heading strip that already says
+          SPECULEARN, and directly above five unit rows that each carry their
+          own count. Every word of it failed the litmus test: remove it and a
+          learner still finds their stop. The total is gone with it — the
+          count that earns its place is the one on a CLOSED unit, "10/10",
+          which describes what is folded away; a total over an open list is
+          furniture. Each unit's own count stays on its row. */}
       {(
-        <SectionBand
-          family={act.family}
-          label={`${act.emoji} ${act.name}`}
-          gloss={act.blurb}
-          pill={`${have}/50`}
-        >
+        <div className="px-3.5 py-3.5">
           <div ref={wrap} className="flex flex-col gap-2">
             {UNITS.map((u) => {
               const unitRows = rows.filter((r) => r.sio.unit === u);
@@ -148,7 +151,7 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
             Looking for something else at a stop?{" "}
             <Link href="/map" className="underline">Open the map</Link>.
           </p>
-        </SectionBand>
+        </div>
       )}
     </CahierShell>
   );
@@ -169,35 +172,28 @@ function Row({
 }) {
   const label = (
     <span className="flex min-w-0 flex-1 items-start gap-1.5 text-left">
-      {/* « 1. » NOT « (01) » — Dan, 2026-09-07: *"instead of circle number make
-          it just 1. 2. 3. in bolder font so that we don't waste the left side
-          space on the buttons"*.
-          The circle was 28px wide plus its gap on a cell that is 117px at
-          390px and 84px at 320px, and it was spending that on a decoration:
-          the ring, the tint and the leading zero all drew the eye without
-          telling a learner anything the digit alone does not. What is left is
-          the number, one weight bolder, sized with the title so the two sit on
-          the same line rather than the digit floating beside it. */}
-      <span
-        /* THE TITLE'S OWN INK, not an accent. The badge that was here asked for
-           `--fluo-card-accent`, which is only defined inside .fluo-h-0..5 — it
-           is unset on these cells, so the ring rendered in the inherited ink
-           and had been doing so all along. Naming the colour the number
-           actually takes is the honest version, and it is the right one
-           anyway: « 1. Je m'appelle… » reads as one line, which is the point
-           of putting the digit inline. */
-        className="shrink-0 text-[13px] font-black leading-tight tabular-nums text-[color:var(--fluo-ink)]"
-      >
-        {sio.num}.
-      </span>
-      {/* WRAPS, NEVER TRUNCATES (Dan, 2026-09-07: *"put buttons in two
-          columns"*). At two columns on a 390px phone a cell is 117px wide, and
-          `truncate` turned that into « Je m… », « Tu (t… » — and, worse, made
-          stops 05 and 06 both read « C'est… », two different goals wearing one
-          label. The title is the only thing that says which stop this is, so it
-          wraps onto as many lines as it needs and the cell grows to fit. */}
+      {/* THE NUMBER IS PART OF THE TITLE'S LINE, NOT A COLUMN BESIDE IT (Dan,
+          2026-09-11, an arrow at the wrapped title on « 11. Moi, toi, lui,
+          elle… »: *"optimise the space on each button"*).
+          On 7 Sep the circled badge became a bare « 1. » so the left of the
+          cell stopped being spent on decoration — but the digit still sat in
+          its OWN flex column, so a title that wrapped went on wrapping in the
+          narrow column to the RIGHT of it, with the width under the number
+          empty on every line but the first. At 117px per cell on a phone that
+          is a third of the button. The digit now starts the same run of text
+          as the title, so the second line begins at the cell's left edge like
+          any paragraph, and the short English gloss sits under both.
+          WRAPS, NEVER TRUNCATES (Dan, 7 Sep): `truncate` turned « Je m'appelle »
+          into « Je m… » and made two different stops both read « C'est… ».
+          The title is the only thing that says which stop this is, so it
+          wraps onto as many lines as it needs. THE ROW STAYS ONE HEIGHT:
+          the grid stretches both cells of a row to the taller one (`h-full`
+          on the button, default `align-items: stretch` on the grid), so a
+          three-line title beside a one-line one gives two equal boxes. */}
       <span className="min-w-0">
-        <span lang="fr" className="block hyphens-auto break-words text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">{sio.fr}</span>
+        <span lang="fr" className="block hyphens-auto break-words text-[13px] font-bold leading-tight text-[color:var(--fluo-ink)]">
+          <span className="font-black tabular-nums">{sio.num}.</span> {sio.fr}
+        </span>
         <span className="block break-words text-[0.7rem] leading-tight text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
       </span>
       {isLast && (
