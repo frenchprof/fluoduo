@@ -191,7 +191,11 @@ Cloudflare add-ons applied on the way out: the `withdrchan.com` zone has
 loader), and the `fluoli.ngo` zone has the Web Analytics beacon on. Rocket
 Loader is a known cause of a Next.js page that loads but does not respond,
 on one domain only; the toggle is `withdrchan.com` → Speed → Optimization →
-Content Optimization → Rocket Loader → off. Dan has been told.
+Content Optimization → Rocket Loader → off. **Dan switched it off on 11 Sep**
+(it had been on for months, from before FluOLinGo lived there); probed after:
+no rocket-loader on any address. The one line that still differs on
+withdrchan is Cloudflare's invisible bot-check snippet (`__CF$cv$params`,
+from Bot Fight Mode on that zone), which does not touch the app's scripts.
 
 `100::` is Cloudflare's reserved go-nowhere address. A redirect rule needs a
 PROXIED record on the name it redirects FROM, and this is the record to give
