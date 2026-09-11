@@ -38,7 +38,7 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
-import { TAB_ICONS, activity, familyName, familyOf, familyShort, hubFamily, stripOf } from "@/content/activities";
+import { TAB_ICONS, activity, familyEmoji, familyName, familyOf, familyShort, hubFamily, stripOf } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { stopForDeck } from "@/lib/stopTag";
 import { speculearnHref } from "@/lib/speculearn/route";
@@ -226,7 +226,7 @@ export default function CahierShell({
           <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
           {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} emoji={activity(active)?.emoji ?? familyEmoji(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
                    (globals.css, `.cahier-binding` z-index) — a real coil
                    crosses the cover strip, it does not stop at it. The ✕ stays
                    clickable: the binding is `pointer-events: none`. */ />

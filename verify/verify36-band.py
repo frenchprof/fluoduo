@@ -186,11 +186,52 @@ ok(got.get("dice") == "recog",
    "Sorting is Recognise — nothing is produced, the answer is on screen",
    "Sorting is not Recognise — evidence.ts's own definition names sorting into a column")
 
-# 5 · the band is what the page actually paints, with the family as fallback
+# 5 · WHAT THE PAGE ACTUALLY PAINTS IS THE FAMILY, THROUGH ONE TOKEN.
+#
+# REVERSED 2026-09-11, BY DAN, and the reversal is worth keeping in full
+# because the thing it reverses was right for four months and is still true.
+#
+# This used to assert `var(--band, var(--fam-ink` — the DEMAND axis first, the
+# family as fallback — under the 26 Aug ruling that a strip says what the
+# activity asks of you. Shown every band beside its family on 11 Sep, Dan chose
+# the family: *"use the left most column colors"*, the bright rung of the seven.
+#
+# WHAT THAT COSTS AND WHY HE IS RIGHT ANYWAY. The demand axis was legible —
+# guess / read / recognise / produce / create, five colours — but it cut across
+# the seven families a learner navigates by, so GramMarathon and ErroReview,
+# both Revise, wore orange and teal, while VocabulaRain and LexicaLocker, both
+# Games, wore the same sky blue as MémoiRecall, which is Practice. The ☰ menu,
+# the bottom bar and the left spine have said "family" since 9 Sep. One axis on
+# the furniture beats two that disagree.
+#
+# `BAND` ABOVE IS UNTOUCHED AND STILL CHECKED. It is what `lib/evidence.ts`
+# stores in the teacher's record, and verify62 holds the two together; what
+# changed is only what gets PAINTED. That separation is exactly what `stripOf`
+# was built for on 8 Sep, one question per function.
 pb = read("src/components/PageBand.tsx")
-ok("var(--band, var(--fam-ink" in pb,
-   "PageBand takes --band first and falls back to the family ink",
-   "PageBand does not prefer --band — the demand axis is not painted")
+ok("var(--strip, var(--fam-ink" in pb,
+   "PageBand takes --strip — the family's own colour — with the family ink behind it",
+   "PageBand no longer paints --strip; the seven families are not on the furniture")
+# ONE TOKEN, THREE SURFACES. The band, the 6px spine and the binding's cover
+# zone are the same strip seen in three places, and 8 Sep proved they come
+# apart the moment each names its own source (a teal ConjugaZone band over a
+# blue spine over a blue binding). They read one token or this fails.
+css = read("src/app/globals.css")
+for what, needle in (
+    ("the 6px spine", "border-left: 6px solid var(--strip"),
+    ("the binding's cover zone", "var(--strip, var(--fam-ink, #82868f))"),
+):
+    ok(needle in css,
+       f"{what} reads --strip, so it cannot drift from the band",
+       f"{what} names its own colour again — 8 Sep: one page, one colour, top and left")
+# And --strip is declared beside --fam on every family class rather than on
+# .cahier-surface: /decks/[id]'s band is drawn inside the content well and is
+# not on a surface, and keyed that way it was the one strip left on the dark
+# rung while every other went bright.
+ok(css.count("--strip: var(--fam-") >= 7,
+   "every family declares --strip beside --fam — a band off a surface still gets it",
+   "--strip is not declared per family; a band drawn inside a content well "
+   "(decks/[id]/CuratedDeckTable.tsx) falls back to the old dark rung")
 for f in ("src/components/DrillShell.tsx", "src/components/CahierShell.tsx"):
     src = read(f)
     ok("stripOf" in src and "band-${bandKey}" in src,

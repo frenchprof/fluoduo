@@ -438,6 +438,15 @@ export function familyName(key: FamilyKey): string {
   return f ? familyShort(f) : "";
 }
 
+/** The family's own glyph from a KEY — 🧑‍🏫 Lesson, 🎮 Games. What a band has
+ *  to hand when the page is not an activity and so has no emoji of its own
+ *  (the map, a goal, the guide, Réglages). Kept beside familyName because the
+ *  two are the same fallback, and a band showing one without the other is the
+ *  gap that made /moi open on bare paper on 7 Sep. */
+export function familyEmoji(key: FamilyKey): string {
+  return FAMILIES.find((x) => x.key === key)?.emoji ?? "";
+}
+
 /** Everything in one family, in its authored order. */
 export function activitiesIn(family: FamilyKey): Activity[] {
   return ACTIVITIES.filter((a) => a.family === family);

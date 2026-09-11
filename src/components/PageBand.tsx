@@ -53,6 +53,7 @@ import { HOME_HREF } from "@/lib/routes";
  */
 export default function PageBand({
   title,
+  emoji,
   goal,
   exitHref = HOME_HREF,
   exitLabel = "Close",
@@ -62,6 +63,14 @@ export default function PageBand({
    *  Pass it in its natural casing; the band uppercases it in CSS. Stop names
    *  stay in sentence case and do not belong here (Dan, 2026-09-05). */
   title: ReactNode;
+  /** The activity's own emoji, from the registry — 🏃 GramMarathon, 💡
+   *  SpecuLearn (Dan, 2026-09-11: *"can precede each title with the emoji?
+   *  we have fixed emojis for them"*). Never spelt here: the caller looks it
+   *  up by the page's key, so a glyph changes in `content/activities.ts` or it
+   *  does not change — the 9 Sep deduplication (🐞 🤹 🛠️ 🔐) is only worth
+   *  anything if one table owns them. `aria-hidden`, because the name beside
+   *  it already says which activity this is. */
+  emoji?: string;
   /** The goal's number, 1–50. Omitted on a page that belongs to no goal, and
    *  the circle is then not drawn rather than drawn empty. */
   goal?: number;
@@ -72,8 +81,8 @@ export default function PageBand({
 }) {
   return (
     <header
-      className={`page-band flex items-center gap-2 py-2 pl-4 pr-3 sm:pl-6 ${className}`}
-      style={{ background: "var(--band, var(--fam-ink, var(--cahier-ink)))", borderBottom: "3px solid var(--cahier-ink)" }}
+      className={`page-band flex items-center gap-2 py-3 pl-4 pr-3 sm:pl-6 ${className}`}
+      style={{ background: "var(--strip, var(--fam-ink, var(--cahier-ink)))", borderBottom: "3px solid var(--cahier-ink)" }}
     >
       {/* -my-1 keeps a 36px tap target without growing the band: the title
           line is 28px inside py-2, so an untrimmed control would add height
@@ -89,31 +98,38 @@ export default function PageBand({
           `truncate` cuts what is left — without the first, the second never
           fires and a long name pushes the goal circle off the band. */}
       <p className="min-w-0 flex-1 truncate leading-none">
-        {/* CAPITALS, AND BOLD (Dan, 2026-09-05: "the names of activities in
-            FULL caps", and "the titles of the pages can afford to be in thick
-            font"). The uppercase is done in CSS, not in the string, so the
-            accessible name a screen reader announces stays "SpecuLearn" and
-            not "S-P-E-C-U-L-E-A-R-N" — and so the one place that decides is
-            here rather than every caller.
+        {/* SPELT THE WAY THE NAME IS SPELT (Dan, 2026-09-11, shown the two side
+            by side: *"GramMarathon instead of GRAMMARATHON"*). This REVERSES
+            5 Sep's "the names of activities in FULL caps", and the reason that
+            ruling gave is the one thing that had to be answered rather than
+            dropped: caps were chosen because "the coloured strip name of
+            activity is a little too tiny", and capitals fill the em where
+            lower case leaves headroom above the x-height. So the type goes up
+            two steps and the band an extra 8px with it — otherwise spelling it
+            properly costs presence, which is what the caps bought.
 
-            It also answers "the coloured strip name of activity is a little
-            too tiny" for nothing: capitals fill the em where lowercase leaves
-            headroom, so the same --fs-h2 reads about as large as mixed case
-            two steps up. The band keeps its height.
+            What it buys back is the capital in the MIDDLE. GRAMMARATHON is one
+            unbroken block of letters; GramMarathon shows it is two words, and
+            so do WorDrill, VocabulaRain, ÉcouTexte and MémoiRecall. The names
+            were always stored this way — the shouting was only ever CSS, which
+            is also why a screen reader said "SpecuLearn" and not
+            "S-P-E-C-U-L-E-A-R-N" either way.
 
-            The letter-spacing is not decoration. A hand-lettered face set in
-            caps at a tight fit reads as a solid block; 0.045em is what
-            separates the letters again. */}
+            The letter-spacing goes with the caps that needed it: a
+            hand-lettered face set in CAPS at a tight fit reads as a solid
+            block and 0.045em was what separated the letters again. Mixed case
+            has its own ascenders and descenders doing that job. */}
         <span
-          className="fluo-band-hand uppercase leading-none tracking-[0.045em] text-black"
+          className="fluo-band-hand leading-none text-black"
           /* fontWeight inline, NOT `font-bold`: .fluo-band-hand declares
              font-weight 600 and globals.css is imported after Tailwind, so a
              utility of equal specificity loses to it. Measured: the class
              version computed to 600. The weight is not shared with the other
              users of .fluo-band-hand (the English on a practice card), so it
              belongs on the element rather than in the class. */
-          style={{ fontSize: "var(--fs-h2)", fontWeight: 700 }}
+          style={{ fontSize: "calc(var(--fs-h2) * 1.35)", fontWeight: 700 }}
         >
+          {emoji && <span aria-hidden className="mr-1.5">{emoji}</span>}
           {title}
         </span>
       </p>

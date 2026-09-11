@@ -40,7 +40,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
-import { activity as activityInfo, familyName, familyOf, stripOf } from "@/content/activities";
+import { activity as activityInfo, familyEmoji, familyName, familyOf, stripOf } from "@/content/activities";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import PageBand from "@/components/PageBand";
 import usePullPastEnd from "@/components/usePullPastEnd";
@@ -474,6 +474,11 @@ export default function DrillShell({
       {(act || famKey) && (
         <PageBand
           title={act?.name ?? familyName(famKey!)}
+          /* The activity's own glyph, from the registry (Dan, 11 Sep: "we have
+             fixed emojis for them") — never spelt here, so 🐞/🤹/🛠️/🔐 stay
+             deduplicated in one table. A drill with no registry row falls back
+             to its family's, the same pair the title falls back through. */
+          emoji={act?.emoji ?? familyEmoji(famKey!)}
           /* WHICH GOAL THIS IS (Dan, 1 Sep: "there are pages where there is
              no identity tag regarding which stop it belongs to", then, with a
              drawing, "a circle and the related goal number"). A drill named
