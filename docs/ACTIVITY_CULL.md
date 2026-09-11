@@ -88,7 +88,7 @@ is pragmatic rather than grammatical, and no current activity asks for it.
 | **DéjàRevu** 🔖 | Spaced review of everything due. A scheduler, not a drill. | **keep** — tier-neutral by design |
 | **WorDrill** 🎙️ | Say it; the mic grades the pronunciation. | **keep** — the only productive-speech surface |
 | **VoixLà** 🔊 | Hear it spoken. | **keep**, but it is a *feature* of other activities more than a destination |
-| **NumBus** 🚌 · **NumBourse** 📈 | Numbers, under time pressure. | **keep** — they serve three stops (7, 18, 45A) and nothing else does |
+| **NumBus** 🚌 · **NumBourse** 📈 | Numbers, under time pressure. | **keep** — they serve three stops (7, 18, 45) and nothing else does |
 
 ## What I would put to you, in one line each
 
