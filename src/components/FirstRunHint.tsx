@@ -35,7 +35,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
-import { ACTIVITY_HINTS } from "@/content/hints";
+import { ACTIVITY_HINTS, isGuided, stepText, type GuidedStep } from "@/content/hints";
+import GuidedSteps from "@/components/GuidedSteps";
 
 /** One key per activity, so dismissing one says nothing about the others. */
 const keyFor = (k: string) => `fluolingo:hint.${k}`;
@@ -44,6 +45,8 @@ export default function FirstRunHint({
   hintKey,
   title,
   children,
+  ctaLabel = "Got it",
+  onGot,
 }: {
   /** Stable, and never a display name — a rename must not re-open a hint the
    *  learner has already dismissed (the Memo-rename precedent). */
@@ -51,6 +54,14 @@ export default function FirstRunHint({
   title: string;
   /** The instruction. Short enough to read standing up. */
   children: ReactNode;
+  /** « Got it » unless the row goes on to walk them through it, when the
+   *  button is the start of the walk and says so. */
+  ctaLabel?: string;
+  /** Run after the card closes — the guided walk, where a row has one. The
+   *  dismissal (and the "do not show me again" tick) happens either way, so
+   *  a learner who ticks the box and is then walked through it once is not
+   *  asked again next time. */
+  onGot?: () => void;
 }) {
   // Starts CLOSED and opens from an effect: localStorage cannot be read
   // during render, and a server-rendered "open" would flash on every visit
@@ -104,6 +115,9 @@ export default function FirstRunHint({
       }
     }
     setOpen(false);
+    // The walk starts as the card leaves, not beside it — two overlays at once
+    // is the thing this is meant to replace.
+    onGot?.();
   };
 
   return createPortal(
@@ -146,7 +160,7 @@ export default function FirstRunHint({
           onClick={dismiss}
           className="cahier-btn cahier-btn-primary mt-3 w-full justify-center font-black"
         >
-          Got it
+          {ctaLabel}
         </button>
       </div>
     </div>,
@@ -167,12 +181,33 @@ export default function FirstRunHint({
  */
 export function ActivityFirstRun({ activityKey, on }: { activityKey: string | undefined; on: "drill" | "page" }) {
   const hint = activityKey ? ACTIVITY_HINTS[activityKey] : undefined;
+  const guided: GuidedStep[] = (hint?.steps ?? []).filter(isGuided);
+  // The card's own "Got it" is what starts a guided run: read the two lines,
+  // then be walked through them. Kept in one state here rather than inside
+  // FirstRunHint, so a row with no selectors is byte-for-byte what it was.
+  const [walking, setWalking] = useState(false);
   if (!hint || hint.on !== on) return null;
+
+  // A ROW WITH SELECTORS GUIDES; A ROW WITHOUT ONE ONLY TELLS, exactly as
+  // before. That is what lets the seventeen activities move one at a time
+  // instead of all on the day the pattern lands.
+  if (guided.length) {
+    return walking
+      ? <GuidedSteps steps={guided} onDone={() => setWalking(false)} />
+      : (
+        <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setWalking(true)}>
+          <ol className="ml-4 list-decimal space-y-1.5">
+            {hint.steps.map((s) => <li key={stepText(s)}>{stepText(s)}</li>)}
+          </ol>
+        </FirstRunHint>
+      );
+  }
+
   return (
     <FirstRunHint hintKey={activityKey!} title={hint.title}>
       <ol className="ml-4 list-decimal space-y-1.5">
         {hint.steps.map((s) => (
-          <li key={s}>{s}</li>
+          <li key={stepText(s)}>{stepText(s)}</li>
         ))}
       </ol>
     </FirstRunHint>

@@ -464,6 +464,13 @@ jobs:
       - name: "The map's wheel comes back, and the finger is left alone (11 Sep)"
         run: python3 verify/verify211-map-wheel.py
 
+      # A selector is a string in a content file and an attribute in a
+      # component, and nothing joins them. Rename one and the guide points at
+      # nothing — no error, just "Finding it…" on the run meant to teach the
+      # activity.
+      - name: "No guided step points at nothing (11 Sep)"
+        run: python3 verify/verify212-guided-steps.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

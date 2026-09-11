@@ -68,6 +68,13 @@ if not rows:
 for key, title, block in rows:
     if len(words(title)) > TITLE_MAX:
         fails.append(f'hints.ts {key}: title is {len(words(title))} words (max {TITLE_MAX}) — "{title}"')
+    # A STEP MAY NOW CARRY A SELECTOR (11 Sep, guided first runs), and the
+    # selector holds a quoted string of its own — `[data-tour="flip-card"]`.
+    # Counting every double-quoted string therefore counted each guided step
+    # twice, and this check failed a row of THREE steps for having six. The
+    # rule is right and unchanged; only the counting was fooled. The selectors
+    # come out first, so what is counted is the words a learner reads.
+    block = re.sub(r"selector:\s*'[^']*'", "", block)
     steps = [m.group(1) for m in re.finditer(r'"((?:[^"\\]|\\.)*)"', block)]
     if len(steps) > STEPS_MAX:
         fails.append(f"hints.ts {key}: {len(steps)} steps (max {STEPS_MAX}). Four steps means the screen needs the work, not the popup.")
