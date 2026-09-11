@@ -1962,6 +1962,60 @@ h3.cahier-display { font-size: var(--fs-h3); }
    Seven roles, one meaning each. ADDITIVE ONLY, and bound by the guardrails
    the approval carried:
 
+   SWEPT ONTO THE TWELVE, 11 Sep 2026. Dan: *"whatever it is, every color on
+   the web can only be one of these"*, and then *"do the dopa sweep onto the
+   twelve"*. Five of the seven roles now sit on a mark from
+   content/highlighterMarks.ts. Two do not, and the reason is arithmetic
+   rather than reluctance — see THE TWO REDS below.
+
+     joy     -> AMBER    #e88c00   (was #f8c20d, 23° away)
+     win     -> OLIVE    #98b300   (was #7be650, 18° away)
+     flow    -> GREEN    #00dd3e   (was #00c5c9, 52° away — see the squeeze)
+     focus   -> SKY      mono tone #00729f  (was #0075e3, 20°)
+     streak  -> PINK     mono tone #ba007a  (was #d42a8f, 0° — an exact match)
+
+   ASSIGNED AGAINST THE SEVEN FAMILIES, NOT THE SIX. The first pass of this
+   sweep used the 31 Aug roster and put `flow` on TEAL — which REVISE has owned
+   since 9 Sep, when Skills was retired and the families went to seven (Lesson
+   yellow, Practice blue, Revise teal, Games violet, Oral periwinkle, Tools
+   orange, User grey). Six marks are spoken for, so the free six are amber,
+   olive, green, sky, magenta and pink, and the assignment below is the one that
+   minimises the WORST mismatch across all five roles rather than the total.
+
+   WHY TWO OF THEM TAKE THE MONO TONE AND NOT THE MARK ITSELF. `focus`,
+   `streak` and `miss` are the three roles allowed to be drawn as a BARE mark —
+   a dot, a bar, a ring with no ink hairline under it — so they must clear
+   3:1 on paper unaided. The twelve are highlighter colours: pale by design.
+   Sky measures 2.24:1 and magenta 2.63:1, both under the floor, and the check
+   below caught exactly that when they were first written in. The palette
+   already defines a darker tone of every mark (MARKS_DEEP, and the mono
+   blocks), so these two take their own mark's mono tone: same hue, same
+   family of colour, enough weight to be seen alone. Deep was tried first and
+   is not enough either — sky deep #008bc1 carries a 3.84:1 label, under the
+   4.5 floor.
+
+   THE TWO REDS HAVE NOWHERE TO GO. `miss` (#db3834, wrong answers) and
+   `reward` (#f76143, level-up) sit at 27° and 33°. The twelve run pink 350°
+   -> orange 55°, a 65° jump with nothing in it: the palette has no red. Their
+   nearest marks are ORANGE — which the User family owns — at 28° and 22°, and
+   a wrong answer that turns orange stops reading as a warning. So they keep
+   their reds, which is the feedback exemption Dan granted on 7 Sep. Anything
+   else is a decision about the palette, not about these tokens.
+
+   THE SQUEEZE, AND WHY `flow` SITS 52° FROM ITS OWN HUE. Seven families and
+   seven roles is fourteen meanings for twelve marks, so something has to give.
+   `flow` (197°, a cyan) and `focus` (255°) both want the blue-green side, and
+   the only free mark there is SKY at 235°. `focus` is the nearer of the two and
+   takes it; `flow` falls back to GREEN at 52°, which is the worst fit in the
+   sweep and is recorded as such rather than dressed up. The alternative is to
+   let `flow` share TEAL with Revise — 27° away and a better colour — on the
+   grounds that the two axes were always separate systems (one says WHAT a thing
+   means, the other WHERE you are). That is a decision about the palette, not
+   about this file, so it is Dan's; nothing here shares a mark today.
+
+   The reds leaving is what makes even five fit: with `miss` and `reward` still
+   on the twelve there would be seven roles for six free marks.
+
      · The Cahier ground is untouchable. Nothing here redefines --cahier-paper,
        --cahier-ink or any structural token; the 60/30 stays exactly as it is.
      · The regions stay a separate system. --region-* is NOT folded in here —
@@ -1977,35 +2031,35 @@ h3.cahier-display { font-size: var(--fs-h3); }
    own and MUST keep the 2px ink hairline that carries their boundary —
    fill supplies energy, ink supplies contrast. */
 :root {
-  --dopa-joy:         oklch(84% 0.17 88);    /* #f8c20d · key actions */
-  --dopa-joy-ink:     oklch(50% 0.13 78);    /* #8b5700 · 5.66:1 */
-  --dopa-joy-wash:    oklch(95% 0.06 88);    /* #ffedc1 */
-  --dopa-joy-on:      var(--cahier-ink);     /* 8.91:1 */
+  --dopa-joy:         oklch(72% 0.16 65);    /* #e88c00 · key actions · AMBER */
+  --dopa-joy-ink:     oklch(52% 0.12 65);    /* #965800 · 5.28:1 */
+  --dopa-joy-wash:    oklch(94.5% 0.04 65);  /* #ffe8d3 */
+  --dopa-joy-on:      var(--cahier-ink);     /* 5.73:1 */
 
-  --dopa-win:         oklch(83% 0.21 138);   /* #7be650 · correct, growth */
-  --dopa-win-ink:     oklch(50% 0.14 145);   /* #1e7729 · 5.26:1 */
-  --dopa-win-wash:    oklch(94% 0.07 138);   /* #d5f7ca */
-  --dopa-win-on:      var(--cahier-ink);     /* 9.24:1 */
+  --dopa-win:         oklch(72% 0.17 120);   /* #98b300 · correct, growth · OLIVE */
+  --dopa-win-ink:     oklch(51% 0.12 120);   /* #5d6f00 · 5.21:1 */
+  --dopa-win-wash:    oklch(94.5% 0.07 120); /* #e6f4c0 */
+  --dopa-win-on:      var(--cahier-ink);     /* 6.15:1 */
 
-  --dopa-flow:        oklch(74% 0.14 197);   /* #00c5c9 · focus states */
-  --dopa-flow-ink:    oklch(48% 0.12 200);   /* #007078 · 5.43:1 */
-  --dopa-flow-wash:   oklch(94% 0.05 197);   /* #c5f6f7 */
-  --dopa-flow-on:     var(--cahier-ink);     /* 6.85:1 */
+  --dopa-flow:        oklch(78% 0.25 145);   /* #00dd3e · focus states · GREEN */
+  --dopa-flow-ink:    oklch(50% 0.16 145);   /* #00781c · 5.26:1 */
+  --dopa-flow-wash:   oklch(94.5% 0.07 145); /* #d0fad0 */
+  --dopa-flow-on:     var(--cahier-ink);     /* 7.99:1 */
 
   --dopa-reward:      oklch(68% 0.19 33);    /* #f76143 · level-up */
   --dopa-reward-ink:  oklch(50% 0.19 30);    /* #b71c0e · 6.15:1 */
   --dopa-reward-wash: oklch(93% 0.06 33);    /* #ffdacf */
   --dopa-reward-on:   var(--cahier-ink);     /* 4.69:1 */
 
-  --dopa-focus:       oklch(57% 0.19 254);   /* #0075e3 · primary action */
-  --dopa-focus-ink:   oklch(48% 0.19 254);   /* #0059c4 · 6.07:1 */
-  --dopa-focus-wash:  oklch(93% 0.05 254);   /* #d2eaff */
-  --dopa-focus-on:    #fff;                  /* 4.51:1 */
+  --dopa-focus:       oklch(52% 0.11 235);   /* #00729f · primary action · SKY, mono tone */
+  --dopa-focus-ink:   oklch(51% 0.11 235);   /* #006e9a · 5.27:1 */
+  --dopa-focus-wash:  oklch(94.5% 0.03 235); /* #daf1ff */
+  --dopa-focus-on:    #fff;                  /* 5.37:1 */
 
-  --dopa-streak:      oklch(59% 0.22 350);   /* #d42a8f · streaks, big wins */
-  --dopa-streak-ink:  oklch(50% 0.23 352);   /* #b80071 · 5.96:1 */
-  --dopa-streak-wash: oklch(93% 0.07 350);   /* #ffd5ee */
-  --dopa-streak-on:   #fff;                  /* 4.64:1 */
+  --dopa-streak:      oklch(52% 0.22 350);   /* #ba007a · streaks, big wins · PINK, mono tone */
+  --dopa-streak-ink:  oklch(54% 0.23 350);   /* #c40081 · 5.32:1 */
+  --dopa-streak-wash: oklch(94.5% 0.03 350); /* #ffe4f0 */
+  --dopa-streak-on:   #fff;                  /* 6.23:1 */
 
   --dopa-miss:        oklch(59% 0.20 27);    /* #db3834 · wrong answers */
   --dopa-miss-ink:    oklch(50% 0.20 27);    /* #bb0916 · 6.20:1 */
