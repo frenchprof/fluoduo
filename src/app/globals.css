@@ -2477,28 +2477,25 @@ h3.cahier-display { font-size: var(--fs-h3); }
      it; whether the two should differ is his call. */
   --band-teal: #00c197;
 
-  /* AND THE COMPLEMENT OF EACH BAND, same source and same reason as the family
-     complements above: Dan's *"complementary color to the above strip"*, and on
-     a lesson the strip above the SIO tag is the BAND — « MNEMEMO » in olive —
-     not the family, whose blue is up in the top bar. So the scrap has to read
-     whichever of the two is actually painting the strip over it.
+  /* THE SIX BAND COMPLEMENTS WERE HERE, and they are DELETED rather than left
+     unwired. They were right for exactly one day: the SIO scrap took the
+     opposite of the band above it, and that band was the activity's. #292 made
+     the heading band read `--strip`, which only the `fam-*` classes set, so
+     every band above a scrap is the family's now and `--fam-mouth` is the only
+     complement anything needs.
 
-         guess   Periwinkle -> #fcdf00     prod    Amber   -> #1ca6ff
-         lesson  Olive      -> #b17eff     create  Magenta -> #00dd3e
-         recog   Sky        -> #ff9037     teal    Teal    -> #ff4eb2
-
-     Each is that pen's own `mouth` from highlighterMarks.ts — its hue + 180 —
-     so these are the twelve marks' colours and not six new ones. */
-  --band-guess-mouth: #fcdf00;   --band-lesson-mouth: #b17eff;
-  --band-recog-mouth: #ff9037;   --band-prod-mouth: #1ca6ff;
-  --band-create-mouth: #00dd3e;  --band-teal-mouth: #ff4eb2;
+     Removed with their rule, as the reading-paper tokens were on 6 Sep: a
+     token nothing reads is a token the next person has to disprove. The
+     values, if they are ever wanted again, are each pen's `mouth` in
+     highlighterMarks.ts — which is where they came from and the only place
+     they should ever be copied from. */
 }
-.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); --band-mouth: var(--band-guess-mouth); }
-.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); --band-mouth: var(--band-lesson-mouth); }
-.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); --band-mouth: var(--band-recog-mouth); }
-.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); --band-mouth: var(--band-prod-mouth); }
-.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); --band-mouth: var(--band-create-mouth); }
-.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); --band-mouth: var(--band-teal-mouth); }
+.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
+.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
+.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); }
+.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
+.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); }
+.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); }
 
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next
@@ -3169,19 +3166,27 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   /* THE OPPOSITE OF THE STRIP ABOVE IT (Dan, 2026-09-11, arrow drawn at this
      tag: *"To be in complementary color to the above strip"*).
 
-     `--band-mouth` first, `--fam-mouth` second, and the order is the whole
-     point: the strip over the tag is the activity BAND where a page has one
-     (the lesson's Goal tab, under olive « MNEMEMO ») and the family's ink
-     where it does not (the goals page, under « GOALS » in Lesson yellow).
-     Keying only on the family painted an orange scrap under a green strip.
-     Both tokens are complements out of highlighterMarks.ts — see the two
-     token blocks — so the scrap turns with the page rather than naming a hue
-     here.
+     `--fam-mouth`, and ONLY that, since #292 — which is the second time this
+     one line has had to follow the band rather than lead it.
+
+     It read `--band-mouth` first, because the strip over the tag was the
+     activity BAND on a lesson (olive « MNEMEMO ») and the family's ink only
+     where there was no band. #292 made `PageBand` take `--strip`, which every
+     `fam-*` class sets and no `band-*` class does, so the band above the tag
+     is now ALWAYS the family's. The old order survived that change and went
+     silently wrong: on the lesson's Goal tab the scrap stayed violet — olive's
+     opposite — under a band that had become Practice blue. Measured on the
+     built app, not spotted by reading.
+
+     The lesson is the one this file keeps teaching: a token that names what
+     something IS survives a change; one that names where it happens to come
+     from does not. `--fam-mouth` is the complement of whatever paints the
+     band, because the band and the scrap now read the same family.
 
      The paper fallback is what it WAS, and it is still what the User family
      gets: grey is not one of the twelve, so it has no opposite and sets no
      mouth. A torn scrap on a page with no complement stays paper. */
-  background: var(--band-mouth, var(--fam-mouth, var(--cahier-paper-raised, var(--cahier-paper))));
+  background: var(--fam-mouth, var(--cahier-paper-raised, var(--cahier-paper)));
   clip-path: polygon(3.2% 3.2%, 11.0% 1.6%, 18.8% 6.0%, 26.6% 0.7%, 34.4% 5.3%, 42.2% 2.0%, 50.0% 6.2%, 57.8% 2.5%, 65.6% 6.4%, 73.4% 2.1%, 81.2% 1.2%, 89.0% 1.4%, 96.8% 3.2%, 95.7% 14.9%, 94.3% 26.6%, 94.2% 38.3%, 95.9% 50.0%, 95.4% 61.7%, 96.4% 73.4%, 98.2% 85.1%, 96.8% 96.8%, 89.0% 94.2%, 81.2% 95.3%, 73.4% 94.5%, 65.6% 95.1%, 57.8% 98.8%, 50.0% 99.3%, 42.2% 98.5%, 34.4% 93.7%, 26.6% 99.7%, 18.8% 94.5%, 11.0% 98.1%, 3.2% 96.8%, 1.4% 85.1%, 0.5% 73.4%, 1.1% 61.7%, 0.1% 50.0%, 4.0% 38.3%, 1.0% 26.6%, 1.0% 14.9%);
   /* The padding is generous on purpose: the tear eats into the box by up to
      6% a side, so text set tight to the edge would be bitten. */
