@@ -6,6 +6,36 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — SpecuLearn's landing loses its band; the number joins the title (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
+restarted from `e02700f`).
+
+Dan, over a screenshot of /practice/speculearn with the blue box crossed out
+and an arrow at « 11. Moi, toi, lui, elle… »: *"help me remove redundant text
+box above the units and to optimise the space on each button while ensuring
+the height remains consistent within the row"*.
+
+**THE BAND IS GONE** — « 💡 SpecuLearn (Guess before you're taught. Pre-Tests
+live here too.) 50/50 », sitting under a strip that already said SPECULEARN
+and over five unit rows each carrying its own count. Litmus test, every word.
+The 50/50 total went with it: a count earns its place on a CLOSED unit, not
+over an open list. `ActivityLanding.tsx` is shared, so GramMarathon and Flip
+It lose theirs too; `SectionBand` keeps its other four users.
+
+**THE NUMBER IS INLINE WITH THE TITLE.** Since 7 Sep « 11. » was a bare digit
+but still in its own flex column, so a wrapping title wrapped to the RIGHT of
+it and the width under the digit sat empty — a third of a 117px phone cell.
+It now starts the title's own run of text; the second line begins at the
+cell's left edge. Wraps, never truncates; the grid still stretches both cells
+of a row to the taller one.
+
+**MEASURED, Unité 1 at 390px, both cells of each row (before → after):**
+83→67 · 81→67 · 83→67 · 97→83 · 97→83, left and right equal in every row.
+Desktop rows 56 unchanged. Side-by-side sent to Dan. `verify24`, `verify36`,
+`verify87` and the full sweep green against the build (verify95 needs PIL,
+absent in this container, on main too).
+
 ## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
