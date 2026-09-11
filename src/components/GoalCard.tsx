@@ -28,13 +28,19 @@
  *
  * The box is `min-h` and not `h`: a can-do longer than any written so far
  * should overflow downward and push the icons rather than be clipped. Fifty
- * were measured at 390px, and re-measured on 2026-09-11 after the description
- * line went — see below for why the number dropped by more than half.
+ * were re-measured on 2026-09-11 after the description line went, at NINE
+ * widths rather than one — see below for why one number was not enough.
  */
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
-import type { Sio } from "@/content/sios";
+import { SIOS, type Sio } from "@/content/sios";
+
+/** The longest can-do of the fifty, rendered invisibly behind every one of
+ *  them so the words box is always exactly as tall as the tallest goal — see
+ *  the note at the box itself. Computed, not typed out: a longer goal written
+ *  next year raises the floor on its own. */
+const LONGEST_CAN_DO = SIOS.reduce((a, x) => (x.canDo.length > a.length ? x.canDo : a), "");
 
 export default function GoalCard({
   sio,
@@ -66,15 +72,45 @@ export default function GoalCard({
           content/sios.ts — this stops RENDERING it, it does not delete the
           course's own notes.
 
-          9rem = 144px, and that number is MEASURED, not chosen: all fifty
-          can-dos were re-measured at 390px with the gloss gone and the tallest
-          — SIO-005 and SIO-008, three lines each — need exactly 144. It was
-          21rem/336px when the box held a description too, which is why the
-          card in Dan's screenshot was a tall empty rectangle. Anything less
-          than the measurement and the icons hop between goals, which is the
-          thing he asked to stop on 7 Sep. */}
-      <div className={compact ? "" : "min-h-[9rem]"}>
-        <p className="text-base font-bold text-[color:var(--cahier-ink)]">{sio.canDo}</p>
+          NO BREAKPOINTS EITHER: THE TALLEST GOAL SETS THE FLOOR, AT EVERY
+          WIDTH. The box has to be at least as tall as the tallest can-do or
+          the icons hop between goals (Dan, 7 Sep). A NUMBER cannot do that
+          job, and two rounds of measuring is how that was learned:
+
+            · 9rem was measured at 390px alone. On a 360px phone the tallest
+              goal needs 168 and on a 320px one 192, so the box overflowed and
+              the icons hopped on exactly the two goals it was sized for.
+            · Stepping it by breakpoint fixed the overflow and bought a new
+              problem. This page runs INSIDE the cahier's iframe, so a media
+              query sees the FRAME, not the phone — 390px of device is 313px
+              of frame. Every breakpoint would have to be written in
+              frame-widths (284, 313, 350, 416…), and every one of them would
+              shift silently the day the notebook's padding changes.
+
+          So the floor is not a number at all. An invisible copy of the longest
+          can-do sits in the same grid cell as the real one, and the cell takes
+          the taller of the two. At 500px of device that is 96px where the
+          breakpoint scheme gave 168: the box is now exactly right at every
+          width instead of right at five of them, and it re-measures itself
+          when a goal is reworded. It held 21rem/336px when it carried a
+          description too, which is why the card in Dan's screenshot was a tall
+          empty rectangle.
+
+          `invisible` is visibility:hidden — it takes its space and draws
+          nothing; `aria-hidden` keeps it out of the accessibility tree, so a
+          screen reader still hears one can-do.
+
+          The empty paper under a SHORT goal is what remains, and it is the
+          price of the icons not hopping. That trade is Dan's to make. */}
+      <div className={compact ? "" : "grid"}>
+        <p className={`text-base font-bold text-[color:var(--cahier-ink)]${compact ? "" : " col-start-1 row-start-1"}`}>
+          {sio.canDo}
+        </p>
+        {!compact && (
+          <p aria-hidden className="invisible col-start-1 row-start-1 text-base font-bold">
+            {LONGEST_CAN_DO}
+          </p>
+        )}
       </div>
 
       {items.length > 0 && (
