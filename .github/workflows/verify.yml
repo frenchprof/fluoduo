@@ -447,6 +447,11 @@ jobs:
       - name: "No pre-test stacks its questions down one page (8 Sep)"
         run: python3 verify/verify171-pretest-feeds.py
 
+      # Fifteen scenarios, fifty lessons: a typo here draws a working page
+      # showing the wrong text, which no build error would ever catch.
+      - name: "Every lesson's ÉcouTexte is its own listening text (8 Sep)"
+        run: python3 verify/verify172-lesson-listening.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

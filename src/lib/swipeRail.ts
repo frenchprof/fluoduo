@@ -157,11 +157,14 @@ export const RAIL: RailStation[] = [
   {
     key: "ecoutexte",
     name: "ÉcouTexte",
-    /* NOT PER-LESSON YET, and this href is the honest placeholder for that.
-       ÉcouTexte generates its mini-texts from a UNIT, not a deck — there is no
-       `/practice/ecoutexte/<deck>` to point at — so a learner swiping left off
-       WorDrill reaches the general page until that scoping is built. */
-    href: () => "/practice/ecoutexte",
+    /* PER-LESSON SINCE 2026-09-08. ÉcouTexte builds its mini-texts from a UNIT,
+       not a deck, and offers fifteen scenarios through a dropdown — three per
+       unit — so this column used to land a learner on whatever the picker
+       happened to be showing. `content/textgen/lessonScenario.ts` says which of
+       a unit's three texts belongs to each stop, and the lesson route opens on
+       it with no dropdown at all: arriving from a lesson, the choice is already
+       made. The general page keeps its picker. */
+    href: (deck) => (deck ? `/practice/ecoutexte/${deck}` : "/practice/ecoutexte"),
     at: (p) => p.startsWith("/practice/ecoutexte"),
   },
   {
