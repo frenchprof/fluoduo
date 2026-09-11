@@ -3015,6 +3015,75 @@ input.fluo-bookmark:focus,
   .text-\[1\.9rem\] { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
   .text-\[3\.2rem\] { font-size: calc(3.2rem + var(--fs-step) * 3.20); }
   .text-\[4\.4rem\] { font-size: calc(4.4rem + var(--fs-step) * 4.40); }
+
+  /* ── AND THE TEN SIZES A PAGE ASKS FOR AT A BREAKPOINT ──────────────────
+     A LIVE FAULT, found by QC on 2026-09-11 and older than the rem block
+     that exposed it. Every rule above is `:root .text-[X]` — a pseudo-class
+     plus a class, so it outranks Tailwind's own `.sm\:text-[Y]`, which is a
+     class alone. The ramp therefore beat the page's OWN breakpoint override,
+     at every width, silently:
+
+       welcome, phone sideways   asked for 1.6rem   got 3.2rem ramped
+       welcome, desktop          asked for 4.4rem   got 3.2rem ramped
+       NumBus, desktop           asked for 38px     got 30px ramped
+
+     The first one is the one that matters and it is the fault Dan named on
+     the day this page was built — "You are COMPLETELY blocking the view of
+     my winding road horizon, which is the WHOLE POINT of this page." Held
+     sideways, the headline stayed at its portrait size and covered the road.
+     verify151 catches it; it did not fire until the rem sizes joined the
+     ramp, because until then no OVERRIDDEN size had a rule here to win with.
+
+     The three px ones have been dead since the ramp was written on 5 Sep.
+     Nothing failed: a size simply stopped changing at the breakpoint, which
+     is invisible unless you measure the two widths side by side.
+
+     So a variant spelling gets its own ramp rule, in its own media query,
+     nested here so it carries the same `:root` weight and wins on order.
+     `verify106` fails a new one that has none — the base list alone could
+     never have caught this, because the spelling it misses is not a base
+     spelling. */
+  @media (min-width: 40rem) {
+    .sm\:text-\[28px\]   { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+    .sm\:text-\[30px\]   { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
+    .sm\:text-\[38px\]   { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
+    .sm\:text-\[1\.2rem\]  { font-size: calc(1.2rem + var(--fs-step) * 1.20); }
+    .sm\:text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+    .sm\:text-\[1\.8rem\]  { font-size: calc(1.8rem + var(--fs-step) * 1.80); }
+    .sm\:text-\[1\.9rem\]  { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
+    .sm\:text-\[4\.4rem\]  { font-size: calc(4.4rem + var(--fs-step) * 4.40); }
+  }
+  @media (max-height: 480px) {
+    .\[\@media\(max-height\:480px\)\]\:text-\[0\.9rem\] { font-size: calc(0.9rem + var(--fs-step) * 0.90); }
+    .\[\@media\(max-height\:480px\)\]\:text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
+  }
+
+  /* ── THE ONE SCENE THE RAMP MUST NOT TOUCH ─────────────────────────────
+     The welcome page's three lines of sky type are a COMPOSITION: they are
+     sized by breakpoint against a horizon that is drawn on the page, and the
+     whole point of the page is that nothing crosses it. So they are already
+     adaptive to the screen — by a different mechanism — and the step applied
+     on top of that walks them back down over the road. Measured at 1440x900
+     with the ramp on: the subtitle crossed 10px into the horizon band, which
+     is the fault Dan named the day the page was built.
+
+     This is the `em` exemption's twin, and for the same stated reason: never
+     scale twice. It restates the page's own numbers rather than inventing
+     new ones, so /welcome renders exactly what shipped. The block is LAST in
+     the ramp and each selector carries one class more than the rules above,
+     so it wins on weight rather than on position. */
+  .welcome-sky-type .text-\[1rem\]     { font-size: 1rem; }
+  .welcome-sky-type .text-\[1\.35rem\] { font-size: 1.35rem; }
+  .welcome-sky-type .text-\[3\.2rem\]  { font-size: 3.2rem; }
+  @media (min-width: 40rem) {
+    .welcome-sky-type .sm\:text-\[1\.2rem\] { font-size: 1.2rem; }
+    .welcome-sky-type .sm\:text-\[1\.8rem\] { font-size: 1.8rem; }
+    .welcome-sky-type .sm\:text-\[4\.4rem\] { font-size: 4.4rem; }
+  }
+  @media (max-height: 480px) {
+    .welcome-sky-type .\[\@media\(max-height\:480px\)\]\:text-\[0\.9rem\] { font-size: 0.9rem; }
+    .welcome-sky-type .\[\@media\(max-height\:480px\)\]\:text-\[1\.6rem\] { font-size: 1.6rem; }
+  }
 }
 
 /* ===========================================================================

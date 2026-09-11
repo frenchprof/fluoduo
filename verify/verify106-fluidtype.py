@@ -105,6 +105,70 @@ ok(not orphans,
    "these ramp rules match nothing any more — delete them: "
    + ", ".join(f"text-[{s}]" for s in orphans))
 
+# ── AND THE SIZE A PAGE ASKS FOR AT A BREAKPOINT ───────────────────────────
+# The clause above reads BASE spellings only, and that is exactly the spelling
+# the fault of 11 Sep was not written in. Every ramp rule is `:root .text-[X]`
+# — a pseudo-class plus a class — so it outranks Tailwind's own `.sm\:text-[Y]`,
+# which is a class alone. A page's own breakpoint override therefore lost to the
+# ramp at every width, in silence:
+#
+#     welcome, phone sideways   asked 1.6rem   got 3.2rem ramped   <- covers the road
+#     welcome, desktop          asked 4.4rem   got 3.2rem ramped
+#     NumBus,  desktop          asked   38px   got   30px ramped
+#
+# The three px ones had been dead since the ramp was written on 5 Sep and
+# nothing noticed, because a size that stops changing at a breakpoint looks
+# like a size somebody chose. Only the welcome page had a check watching the
+# geometry (verify151), and it is what finally named this.
+#
+# So every variant spelling needs its own rule too, and this is what fails a
+# new one that has none.
+VARIANT = re.compile(r"((?:[a-z0-9]+|\[@media\([^)]*\)\]):text-\[[0-9]+(?:\.[0-9]+)?(?:px|rem)\])")
+variants = set()
+for dirpath, _dirs, files in os.walk(SRC):
+    for f in files:
+        if not f.endswith((".tsx", ".ts")):
+            continue
+        text = open(os.path.join(dirpath, f), encoding="utf-8").read()
+        variants.update(VARIANT.findall(text))
+
+def tw_class(spelling):
+    """The class name Tailwind emits for a spelling — it backslash-escapes
+       every character CSS would otherwise read as syntax."""
+    return "." + "".join(("\\" + c) if c in ".:()[]@" else c for c in spelling)
+
+unramped = sorted(v for v in variants if tw_class(v) not in css)
+ok(not unramped,
+   f"all {len(variants)} breakpoint text sizes ride the ramp too",
+   "these sizes are asked for at a breakpoint but the base ramp rule beats "
+   "them, so the breakpoint does nothing — give each one a rule in its own "
+   "media query in the ramp block: " + ", ".join(unramped))
+
+# ── the one scene that opts OUT, and stays one ─────────────────────────────
+# /welcome's three lines of sky type are sized by breakpoint against a horizon
+# drawn on the page; ramping them walks them down over the road, which is the
+# one thing that page exists not to do. So they opt out — the `em` exemption's
+# twin, never scale twice — and the opt-out is worth one clause here because
+# it is a hole in Dan's rule and a hole widens quietly. verify151 holds the
+# horizon itself; this holds the hole's size.
+#
+# AND IT STRIPS COMMENTS FIRST, because the note explaining the opt-out names
+# it — this check counted the explanation as a second use on its first run.
+# Third time in this repo a check has read its own documentation as the defect
+# (verify152 and verify153 carry the same line); it is cheaper to strip than
+# to remember not to write the word.
+def bare(src):
+    return re.sub(r"(?m)^\s*//.*$", "", re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", src))
+
+scene = sum(
+    bare(open(os.path.join(d, f), encoding="utf-8").read()).count("welcome-sky-type")
+    for d, _x, fs in os.walk(SRC) for f in fs if f.endswith((".tsx", ".ts")))
+ok(scene == 1,
+   "the ramp's one opt-out is still the welcome scene alone",
+   f"welcome-sky-type is on {scene} elements — it is an exemption for ONE "
+   "composed scene, not a way off the ramp. A page that needs it needs its "
+   "own reason written down first")
+
 # ── PAPER: the one place a pixel is the right answer ───────────────
 # The ramp adapts type to the VIEWPORT. A printed page has no viewport: the
 # ChaTutor transcript opens a fresh window, writes a stylesheet into it and
