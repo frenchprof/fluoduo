@@ -143,6 +143,26 @@ export function getLetrisSet(slug: string): LetrisSet | null {
   return REGISTRY[slug] ?? REGISTRY[DECK_SLUG_ALIASES[slug] ?? ""] ?? null;
 }
 
+
+/** THE ONE DERIVATION FROM A DECK TO ITS SET SLUG (2026-09-11).
+ *
+ *  It existed three times before this — CahierShell twice and DeckContent once
+ *  — each spelling `collectionId.replace("-letris", "")` by hand, and each
+ *  then building a URL from the UNRESOLVED id. That is a silent 404 waiting to
+ *  happen: `getLetrisSet` resolves aliases (`modaux-plans` -> `modaux`) so the
+ *  gate says yes, while `generateStaticParams` exports REGISTRY keys only, so
+ *  `/games/vocabularain/modaux-plans` was never built. Gate yes, page missing
+ *  — the exact shape `lib/collections/gapSentence.ts` records as this repo's
+ *  most expensive recurring bug.
+ *
+ *  So: this returns the slug that was actually EXPORTED, or null. Route from
+ *  it, gate on it, and the two cannot drift apart. */
+export function letrisSlugForDeck(collectionId: string): string | null {
+  const bare = collectionId.replace("-letris", "");
+  const canonical = REGISTRY[bare] ? bare : (DECK_SLUG_ALIASES[bare] ?? "");
+  return REGISTRY[canonical] ? canonical : null;
+}
+
 export function listLetrisSets({ includeExpert = false } = {}): LetrisSetMeta[] {
   return Object.entries(REGISTRY)
     .filter(([slug]) => includeExpert || !EXPERT_ONLY.has(slug))
