@@ -6,6 +6,58 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
+restarted from `53a15a3` after #260 merged).
+
+**Dan: *"do the wiring so f1 to f4 mean different courses"*.** Until now the
+four addresses were four doors into one room — nothing in the app read its own
+hostname (the 9 Sep course pop-up had that read, and it went with the pop-up).
+
+**WHAT IT DOES NOW**, driven on the built export as three hosts (Chromium
+resolves `*.localhost` to the machine, so one export on one port can be opened
+as `f1.localhost`, `f2.localhost` …):
+
+    fluoli.ngo / withdrchan / localhost   names no course  ->  the app as built, no tag
+    f1.fluolingo.com                      French 1, live   ->  the app, welcome page tagged « French 1 · A1 »
+    f2 / f3 / f4                          not written yet  ->  THE CLOSED DOOR on every route:
+                                                               name · level, "This course is not open
+                                                               yet.", one content-sized « Go to French 1 › »
+                                                               to the f1 host. No map, no ENTER, nothing
+                                                               of French 1.
+
+- **`src/content/courses.ts`** is the one list: f1 French 1 A1 (live), f2
+  French 2 A1, f3 French 3 A2, f4 French 4 A2. Opening a course is flipping
+  `live` there and nothing else. LAF1201 is recorded as `code` and never
+  rendered (Dan, 9 Sep: "No codes at all").
+- **`src/components/CourseGate.tsx`** wraps `{children}` in `layout.tsx`, reads
+  the hostname AFTER MOUNT (static export — same reason as `TopLevelOnly`) and
+  swaps in the door for a course that is not live. Publishes
+  `<html data-course="f1">`; `useCourse()` also says whether the ADDRESS named
+  the course, which is what the welcome tag keys on — so fluoli.ngo looks
+  exactly as it did and verify151's measurements are untouched.
+- **`verify195-courses.py`** pins the registry (keys f1–f4 in order, exactly one
+  live), no `code` outside the registry, the gate in the layout, and drives
+  five host/route cases through `scripts/course-scan.mjs`. Break-tested three
+  ways (f2 flipped live; gate removed from layout; `code` rendered in the
+  door): each fails on the one assertion it should. Wired into verify.yml after
+  the open build.
+
+**WHAT IS DELIBERATELY NOT HERE.** No pop-up, no picker: ENTER still walks to
+Home, as Dan chose on 9 Sep. f1 does NOT skip the welcome page — his later
+ruling ("the first i see must be the one with Welcome ... every time") wins
+over the earlier "f1 goes straight to the map". Progress is still per address.
+
+**ONE THING FOR DAN TO JUDGE ON THE PICTURE:** the « French 1 · A1 » tag under
+the subline on f1. It is the only place the app says which course it is; the
+litmus test could argue the address already says f1. Shown, not argued — one
+line to delete in `WelcomeBody.tsx` if he wants it gone.
+
+**LOCAL NOTE:** `verify95-icons.py` fails in this container for want of the
+Python image library (`PIL`), on main as much as here; every other check
+passes against this build.
+
 ## 10 Sep — the f1–f4 subdomains: connector reached the session, and still cannot do it
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).

@@ -152,11 +152,14 @@ Checked twice on 10 Sep. So this is a one-minute-each dashboard job for Dan:
    `https://f1.fluolingo.com/` — it should show the same welcome page as
    `fluoli.ngo`.
 
-**What you get today: four doors into the same room.** Nothing in the app
-reads its own hostname (a hostname-to-course switch was built once and
-dropped with the course picker, on Dan's instruction), so all four addresses
-serve the same French 1 site until the courses behind f2–f4 exist. That is
-reserving the names, which Dan chose to do now.
+**WHAT EACH ADDRESS MEANS (wired 11 Sep, Dan: "do the wiring so f1 to f4
+mean different courses").** One build serves every address; the page reads
+its own hostname after it loads and asks `src/content/courses.ts` which
+course that is. f1 runs the app as built and tags the welcome page « French 1
+· A1 ». f2, f3 and f4 show a closed door on every route — name, level, "not
+open yet", a link to French 1 — until their `live` flag is flipped in that
+one file. Addresses that name no course (fluoli.ngo, withdrchan, the
+pages.dev previews) run as French 1 with no tag. `verify195` drives all of it.
 
 **One thing to know before sending learners there:** progress is stored per
 web address (browser storage is scoped to the hostname). A learner who has
