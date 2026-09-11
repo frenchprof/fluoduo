@@ -36,6 +36,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit, settle } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4225;
@@ -111,6 +112,30 @@ const exe = process.env.ROAD_BROWSER
   ?? (existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null);
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 
+/* What `settle` waits for: the map is on screen with its stops laid out — the
+   things MEASURE/read() then measure. NOT converted elsewhere in this file: the
+   waits that follow a zoom CLICK are waiting for an animation to come to rest,
+   which is not a question the DOM answers, so those stay on the clock. */
+const MAP_READY = `
+  (() => {
+    // BOTH VIEWS, and they do not look alike: the 2D plan lays out [data-stop]
+    // markers, the 3D scene draws into .home-map3d-box and has none. A first cut
+    // demanded stops, which 3D can never satisfy, so every 3D view sat out the
+    // full timeout and the scan got SLOWER than the sleep it replaced (13s -> 40s,
+    // measured). The zoom well is the one control both views carry, and MEASURE
+    // reads it on every row.
+    const ready = (d) =>
+      !!d.querySelector('input[aria-label^="Zoom percent"]') &&
+      (d.querySelectorAll("[data-stop]").length > 0 || !!d.querySelector(".home-map3d-box"));
+    if (ready(document)) return true;
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { continue; }
+      if (d && ready(d)) return true;
+    }
+    return false;
+  })()`;
+
 const bad = [];
 async function run(label, width, height, view, checks) {
   const page = await browser.newPage({ viewport: { width, height } });
@@ -124,15 +149,15 @@ async function run(label, width, height, view, checks) {
   }, view);
   // Through /map, not straight to the embed: the notebook around the frame is
   // what narrows it, and every one of these faults is about that width.
-  await page.goto(`http://localhost:${PORT}/map`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(2600);
+  // WAIT FOR THE MAP, NOT FOR THE CLOCK — this replaced a flat 2600ms sleep per view.
+  await visit(page, `http://localhost:${PORT}/map`, MAP_READY);
   for (const l of ["Got it", "No thanks"]) {
     for (const f of page.frames()) {
       const e = f.getByRole("button", { name: l });
       if (await e.count().catch(() => 0)) await e.first().evaluate((x) => x.click()).catch(() => {});
     }
   }
-  await page.waitForTimeout(300);
+  await settle(page, MAP_READY);
   const frame = page.frames().find((f) => f.url().includes("/map/embed"));
   if (!frame) { bad.push(`${label}: /map has no map frame`); await page.close(); return; }
   const m = await frame.evaluate(MEASURE);

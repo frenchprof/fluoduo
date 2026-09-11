@@ -36,6 +36,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit, settle } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4189;
@@ -95,6 +96,30 @@ const READ = () => {
   return out;
 };
 
+/* The browser-side condition `settle` waits on: at least one plate laid out and
+   visible, in this document or any frame. Deliberately the same test READ makes
+   — a scan should wait for the thing it is about to measure, not for a proxy. */
+const PLATE_READY = `
+  (() => {
+    const lit = (d) => {
+      for (const el of d.querySelectorAll('[style*="var(--m3d-plate"]')) {
+        const r = el.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) continue;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === "hidden" || cs.display === "none") continue;
+        return true;
+      }
+      return false;
+    };
+    if (lit(document)) return true;
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { continue; }
+      if (d && lit(d)) return true;
+    }
+    return false;
+  })()`;
+
 const lum = ([r, g, b]) => {
   const c = [r, g, b].map((v) => {
     const s = v / 255;
@@ -150,10 +175,13 @@ for (let hour = 0; hour < 24; hour++) {
   // off its OWN search, which the outer page's query string never reaches; and
   // the 2D plan is the saved default, so `view=3d` is what puts the scene — and
   // its labels — on the screen at all.
-  await page.goto(`http://localhost:${PORT}/map/embed?view=3d&hour=${hour}`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(2400);
-  if (hour === 0) await dismissHints();
-  await page.waitForTimeout(400);
+  // WAIT FOR A PLATE, NOT FOR THE CLOCK. This replaced a flat 2400+400ms sleep on
+  // each of the 24 hours — 67 of this scan's 70 seconds. The condition is the same
+  // one READ applies below: a label plate that is laid out and big enough to be
+  // real. The scene builds itself in the frame, so a plate on screen IS the scene
+  // having rendered; nothing else here needs waiting for.
+  await visit(page, `http://localhost:${PORT}/map/embed?view=3d&hour=${hour}`, PLATE_READY);
+  if (hour === 0) { await dismissHints(); await settle(page, PLATE_READY); }
   const plates = await readAll();
   if (!plates.length) {
     bad.push(`hour ${hour}: no element reads --m3d-plate — the shared plate is gone, so each label is on its own again`);

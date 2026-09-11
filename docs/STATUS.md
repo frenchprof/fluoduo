@@ -6,6 +6,92 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — CI waits for the condition now, not the clock (verify lane)
+
+Dan, after a morning where the Actions allowance ran out and NOTHING could
+merge: *"yes, see what it takes to cut the 10 minutes"*.
+
+**MOST OF THE TEN AND A HALF MINUTES WAS SLEEP.** Measured on run #745 (main,
+10m31s), not estimated:
+
+    checkout + node + npm ci + pillow      30s    5%
+    tsc --noEmit                           18s    3%
+    building the app, THREE separate times 167s  27%
+    118 of the 129 checks                  30s    5%
+    the 11 checks that drive a browser    381s   61%
+
+Two plausible savings were measured and are DEAD — written down so the next
+session does not spend an afternoon on either. **Collapsing the 129 workflow
+steps saves nothing**: 118 of them finish in 30 seconds between them, a quarter
+of a second each. **Sharing one browser between the scans saves ~3 seconds**:
+launching Chromium costs 0.14s, measured three times.
+
+What it actually was: every browser scan loaded a page and then slept a flat
+1.4-2.8 seconds by `page.waitForTimeout(...)` — not for anything in particular,
+just long enough that whatever it wanted had surely happened.
+
+    verify126-band-strip    115s, of which 108s asleep   (77 pages x 1400ms)
+    verify150-night-plates   70s, of which  67s asleep   (24 hours x 2800ms)
+    verify171-pretest-feeds  29s, of which  19s asleep   (6 routes x 3100ms)
+
+Seven scans now wait for the thing they are about to measure, through the new
+`scripts/lib/settle.mjs`, which carries the reasoning. Measured on one machine,
+same `out/`, each compared against the version on `main`:
+
+    scan          before    after        output vs main
+    band-scan     113.1s ->  26.2s       identical
+    night-plate    69.9s ->   9.3s       identical
+    pretest        28.2s ->  12.2s       identical
+    sheet          17.9s ->   4.6s       identical
+    map-fit        13.2s ->   3.7s       identical
+    wheel          18.0s ->  11.0s       identical
+    road           14.9s ->   9.6s       identical
+    ---------------------------------------------------
+    total         275.2s ->  76.6s       -199s
+
+**AND THE FASTER VERSIONS STILL CATCH THINGS**, which is the half that matters.
+Faults were injected into the BUILT app and both versions run against them:
+
+  · the rule hiding a framed page's own strip deleted (the 11 Sep double-frame
+    fault): old failed in 113.0s naming 24 routes, new failed in 29.1s naming
+    the IDENTICAL 24.
+  · every map label forced grey-on-grey: old failed in 69.8s flagging 49 hours,
+    new failed in 8.9s flagging the same 49.
+  · the one-question-per-screen snap removed: both failed, identical output.
+
+**TWO THINGS WENT WRONG ON THE WAY, AND BOTH ARE THE POINT.**
+
+1 · **A first cut of the band scan was FLAKY and passed its own review.** It
+    waited for the page's FRAMES to load — which sounds equivalent to waiting
+    for the strip and is not. `/games/lexicalater/[deckId]` and
+    `/decks/[id]/study` build their strip after their deck data arrives, so two
+    runs of the same commit disagreed about whether they had one. A check that
+    fails at random is worse than a check that is slow. **Wait for the thing the
+    check measures, never for a proxy.**
+
+2 · **`landing-scan` IS NOT CONVERTED, on purpose.** The door animates in, so
+    its CTA arrives scaled at ~0.96 and grows: every condition tried read it at
+    379-384px where the sleep reads 394, and the reading drifted between runs.
+    Nothing failed — the test is whether a control spans 60% of the viewport,
+    and neither does — but a scan reporting a different number each run is one
+    waiting to flake. It was worth 7 seconds of 626. Left on the clock.
+
+`map-fit` also has to be recorded as a near-miss: a first condition demanded
+`[data-stop]` markers, which the 3D view HAS NONE OF, so every 3D view sat out
+the full timeout and the scan got SLOWER than the sleep — 13.2s to 40.0s. The
+zoom well is the one control both views carry. A condition that is never true
+is not a slow check, it is a broken one.
+
+Still on the table, NOT done, both Dan's call:
+  · **The app is built three times a run** (the closed build, the open rebuild,
+    and one inside `verify200`) — 167s, 27%. Whether the PII scans can read the
+    open build, and whether verify200 can reuse what is already on disk, needs
+    someone to decide what production-config coverage is worth.
+  · **Nothing stops the sleeps coming back.** AGENTS.md's own lesson is that a
+    rule not written into a check is not a rule. A check that fails on a new
+    `waitForTimeout` after a `goto` would hold this — not written, because it
+    claims a verify number and Dan asked for the sleeps, not a new check.
+
 ## 11 Sep — the goal card's doors join the family too (band lane, added to #285)
 
 Dan, shown a goal's seven doors in both: *"the goal sheet keys too, make them
