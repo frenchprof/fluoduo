@@ -60,14 +60,17 @@ export default function SioScroller({ id }: { id: string }) {
     <SnapFeed startAt={startAt} onIndex={onIndex} sectionClassName="justify-start px-1 pb-4 pt-6">
       {SIOS.map((s) => (
         <div key={s.id} id={`goal-${s.id}`} data-sio={s.id}>
-          {/* THE CARD HOLDS THE WORDS; THE ICONS SIT OUTSIDE IT (Dan: "the
-              icons can just be by themselves below that"). They used to be
-              inside the ruled box with everything else, which made them look
-              like part of the sentence rather than the ways into it. */}
+          {/* THE ICONS ARE BACK INSIDE THE BOX (Dan, 2026-09-11, drawing the
+              icons into the card and an arrow up to them from where they were).
+              This reverses his 7 Sep "the icons can just be by themselves below
+              that", and the screenshot is why: the words box is a measured
+              21rem that most goals do not fill, so the card ended as a tall
+              empty rectangle with its five doors stranded on the paper below
+              it. Inside, that empty space is what holds them at one height on
+              all fifty — the thing the fixed box was for in the first place. */}
           <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 px-4 pb-4 pt-3">
-            <GoalCard sio={s} textOnly />
+            <GoalCard sio={s} />
           </div>
-          <GoalCard sio={s} iconsOnly />
           {/* The count is the one thing a scroller cannot show: where you are
               in fifty when only one is on screen. */}
           <p className="mt-4 text-center text-[11px] font-bold text-[color:var(--fluo-ink-soft)]">

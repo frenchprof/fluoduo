@@ -39,6 +39,7 @@ import { buildItems, type DeckItem } from "@/lib/speculearn/deckWords";
 import { shuffle } from "@/lib/shuffle";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { stopForDeck } from "@/lib/stopTag";
+import { optionGridClass } from "@/lib/optionGrid";
 
 /** One playable card: the word, its grammar tag (colored), and its visual
  *  (photo for aliments, emoji elsewhere). s = aliments pack number. */
@@ -495,7 +496,11 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                   <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: v.t.it.color }} title="🔊">
                     {v.t.it.w} 🔊
                   </button>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
+                  {/* The picture choices had the same hard two columns, and
+                      the same fault on a wide sheet. Same floor as the word
+                      options: two across in a phone's frame, four on a
+                      laptop, decided by the space rather than a number. */}
+                  <div className="fluo-optiongrid fluo-optiongrid--std mt-3 gap-2">
                     {v.opts.map((o, i) => (
                       <button
                         key={o.w}
@@ -526,14 +531,23 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right word.</p>
                   <Visual it={v.t.it} className="mx-auto mt-2 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
-                  <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {/* THE SHARED GRID, not a second opinion (Dan, 2026-09-11:
+                      *"we are NOT dead set on just two columns"*). This was
+                      `grid-cols-1 sm:grid-cols-2` — its own rule, capped at
+                      two, and keyed on a breakpoint that inside the cahier's
+                      iframe fires at the FRAME's width rather than the
+                      phone's. `optionGridClass` is the one answer every drill
+                      already shares; `speculearn-options` is what makes the
+                      type grow with the sheet. */}
+                  <div className={`speculearn-options mt-3 ${optionGridClass(v.opts.map((o) => o.w), "gap-2")}`}>
                     {v.opts.map((o, i) => (
                       <button
                         key={o.w}
                         type="button"
                         onClick={() => pick(o)}
                         disabled={v.struckSet.has(o.w)}
-                        className={`rounded-xl border-2 px-3 py-2.5 text-base font-bold transition ${
+                        // No size class — the grid's clamp is the size.
+                        className={`rounded-xl border-2 px-3 py-2.5 font-bold transition ${
                           !v.locked && v.struckSet.has(o.w)
                             ? "border-slate-200 text-slate-300 line-through"
                             : v.locked
