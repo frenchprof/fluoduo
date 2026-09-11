@@ -2978,6 +2978,43 @@ input.fluo-bookmark:focus,
   .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
+
+  /* THE SAME RAMP, FOR THE SIZES WRITTEN IN rem (2026-09-11).
+     Dan: *"for font sizes, don't use absolute hard coded font sizes, we want
+     adaptive ones to the screen size"*. These were the half the ramp could not
+     see: `text-[0.7rem]` is not a pixel, so it honours a learner's browser text
+     setting, but it ignores the VIEWPORT — and the app's other sizes do not.
+     Measured by driving the built app before this block existed: on SpecuLearn
+     at 1500px, 50 deck labels sat at 11.2px while `text-[11px]` beside them had
+     grown to 15px. The nominally SMALLER size rendered larger. The ladder had a
+     rung missing, not a size too many.
+
+     `em` sizes are NOT here and must not be: `text-[1.3em]` is a multiple of its
+     parent, which is already on the ramp, so it rides along by construction.
+     Ramping it would apply the step twice. */
+  .text-\[0\.52rem\] { font-size: calc(0.52rem + var(--fs-step) * 0.52); }
+  .text-\[0\.55rem\] { font-size: calc(0.55rem + var(--fs-step) * 0.55); }
+  .text-\[0\.6rem\] { font-size: calc(0.6rem + var(--fs-step) * 0.60); }
+  .text-\[0\.65rem\] { font-size: calc(0.65rem + var(--fs-step) * 0.65); }
+  .text-\[0\.7rem\] { font-size: calc(0.7rem + var(--fs-step) * 0.70); }
+  .text-\[0\.85rem\] { font-size: calc(0.85rem + var(--fs-step) * 0.85); }
+  .text-\[0\.87rem\] { font-size: calc(0.87rem + var(--fs-step) * 0.87); }
+  .text-\[0\.9rem\] { font-size: calc(0.9rem + var(--fs-step) * 0.90); }
+  .text-\[0\.94rem\] { font-size: calc(0.94rem + var(--fs-step) * 0.94); }
+  .text-\[0\.95rem\] { font-size: calc(0.95rem + var(--fs-step) * 0.95); }
+  .text-\[1rem\] { font-size: calc(1rem + var(--fs-step) * 1.00); }
+  .text-\[1\.05rem\] { font-size: calc(1.05rem + var(--fs-step) * 1.05); }
+  .text-\[1\.2rem\] { font-size: calc(1.2rem + var(--fs-step) * 1.20); }
+  .text-\[1\.3rem\] { font-size: calc(1.3rem + var(--fs-step) * 1.30); }
+  .text-\[1\.35rem\] { font-size: calc(1.35rem + var(--fs-step) * 1.35); }
+  .text-\[1\.4rem\] { font-size: calc(1.4rem + var(--fs-step) * 1.40); }
+  .text-\[1\.5rem\] { font-size: calc(1.5rem + var(--fs-step) * 1.50); }
+  .text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
+  .text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+  .text-\[1\.8rem\] { font-size: calc(1.8rem + var(--fs-step) * 1.80); }
+  .text-\[1\.9rem\] { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
+  .text-\[3\.2rem\] { font-size: calc(3.2rem + var(--fs-step) * 3.20); }
+  .text-\[4\.4rem\] { font-size: calc(4.4rem + var(--fs-step) * 4.40); }
 }
 
 /* ===========================================================================
