@@ -25,7 +25,8 @@
  */
 import Link from "next/link";
 import { familyName, activity } from "@/content/activities";
-import { SIO_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { ECOUTEXTE_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { type StopActivityKey } from "@/lib/activityStops";
 import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
@@ -72,9 +73,10 @@ type Cell =
   | { kind: "one"; emoji: string; name: string; href: string }
   | { kind: "help" }
   | { kind: "blank" }
-  // A hub-gallery replaced by the 50-stop slider pop-up — `sioKey` is its
-  // entry in ActivityGoalPicker's SIO_HREF map.
-  | { kind: "picker"; emoji: string; name: string; sioKey: keyof typeof SIO_HREF }
+  // A hub-gallery replaced by the stop-chooser pop-up. `sioKey` names the
+  // activity in `lib/activityStops.ts`, which is also what decides WHICH of
+  // the fifty the chooser may offer — one key, one gate, one route.
+  | { kind: "picker"; emoji: string; name: string; sioKey: StopActivityKey }
   | { kind: "numbers" }; // the one non-SIO pop-up: NumBus or NumBourse
 
 // Each row wears a NAME at its start — "(very subtly!) label each row at the
@@ -121,7 +123,13 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   { band: PEN.oral, ink: INK.oral, label: familyName("oral"), cells: [
     { kind: "one", emoji: "🔊", name: "VoixLà", href: "/tts" },
     { kind: "picker", emoji: "🎙️", name: "WorDrill", sioKey: "wordrill" },
-    { kind: "picker", emoji: "🎧", name: "ÉcouTexte", sioKey: "ecoutexte" },
+    // ÉCOUTEXTE ASKS NOTHING (Dan, 11 Sep: "some of the pages have two pop ups
+    // before the activity" — one question, asked once). It was a picker cell,
+    // but its content is chosen by unit and topic and there is no per-stop
+    // route, so the pop-up took an answer it could not use and opened the
+    // topic picker regardless. A pop-up whose reply is discarded is worse
+    // than no pop-up: it teaches the learner their choice does not matter.
+    { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: ECOUTEXTE_HREF },
   ]},
   // TOOLS (NEW, 2026-09-09) — the other half: the two summonable helpers
   // (see ToolSummon.tsx's own 🛠️ door). ChaTutor is a chat, not a deck, so

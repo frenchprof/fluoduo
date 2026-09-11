@@ -6,7 +6,6 @@
  * unit hues (.fluo-h-*): one per step card, one per activity tile. The ✨
  * chip at the bottom left replays the guided tour.
  */
-import Link from "next/link";
 import GuideBody from "@/components/GuideBody";
 import CahierShell from "@/components/CahierShell";
 import { siteTabs, tabsWithActive } from "@/components/siteTabs";
@@ -19,13 +18,12 @@ export default function GuidePage() {
     // family and no band is the one shape the 1 Sep chrome pass missed.
     <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" band={{ title: "Guide" }}>
       <div className="mx-auto max-w-2xl px-3 py-5">
-        <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ HELP!</h1>
+        {/* NO « ❓ HELP! » HEADING AND NO SECOND HOME BUTTON (11 Sep rewrite).
+            The band above already says GUIDE, and « Start here 🏠 » went to
+            the same /home as the ▶ Continue inside GuideBody — two buttons,
+            one destination. Dan's litmus test, applied to a heading and a
+            control. */}
         <GuideBody />
-        <p className="mt-5">
-          <Link href="/home" className="fluo-h-1 inline-block rounded-full border-2 px-4 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5" style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}>
-            Start here 🏠
-          </Link>
-        </p>
       </div>
     </CahierShell>
   );

@@ -13,36 +13,32 @@
  * were written separately the tab would drift from the page it is a shortcut
  * to, which is how a learner ends up seeing two different accounts of one goal.
  *
- * NOTHING MOVES BETWEEN GOALS (Dan, 2026-09-07, with a photograph of a torn
- * scrap of paper): *"The SIO0xxx Unit ,,, words can look they were on piece of
- * paper pasted on? and perpetually at the same height. while the icons can just
- * be by themselves below that (also down from the same height onwards)"*.
+ * THE CARD HUGS ITS GOAL (Dan, 2026-09-11: *"let the icons move, hug the
+ * text"*), and this is the second half of a decision, not a slip. The first
+ * half was 7 Sep, with a photograph of a torn scrap of paper: *"The SIO0xxx
+ * Unit ,,, words can look they were on piece of paper pasted on? and
+ * perpetually at the same height. while the icons can just be by themselves
+ * below that (also down from the same height onwards)"*.
  *
- * The tag and the icons are the two things every one of the fifty goals has, in
- * the same shape. On a feed that shows one goal per screen they must therefore
- * land in the same place on all fifty, or a flick through the course reads as
- * fifty different pages rather than one page of fifty. So the card is a stack
- * of FIXED heights rather than a centred pile: the scrap sits at the top, the
- * words get a box of their own that does not grow or shrink with them, and the
- * icons begin wherever that box ends — the same y on every goal.
+ * That bought a still page at the price of empty paper. The words sat in a box
+ * sized to the LONGEST of the fifty, so the icons landed at one y on all of
+ * them — and on the shortest goal, a single line, roughly 120px of nothing
+ * stood between the sentence and its doors. Shown the two side by side, Dan
+ * chose the other trade: the icons may hop as he flicks, and no goal carries
+ * space it has not earned.
  *
- * The box is `min-h` and not `h`: a can-do longer than any written so far
- * should overflow downward and push the icons rather than be clipped. Fifty
- * were re-measured on 2026-09-11 after the description line went, at NINE
- * widths rather than one — see below for why one number was not enough.
+ * So the box is gone rather than shrunk. The scrap still pins to the top (it
+ * is above the words, so it never moved anyway); the words take the height
+ * they need; the icons begin where they end. What replaced the box is nothing
+ * at all — no min-height, no measured constant, no invisible twin — which is
+ * also why this is the version that cannot go stale when a goal is reworded.
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
 import { readUiPrefs } from "@/lib/uiPrefs";
-import { SIOS, type Sio } from "@/content/sios";
-
-/** The longest can-do of the fifty, rendered invisibly behind every one of
- *  them so the words box is always exactly as tall as the tallest goal — see
- *  the note at the box itself. Computed, not typed out: a longer goal written
- *  next year raises the floor on its own. */
-const LONGEST_CAN_DO = SIOS.reduce((a, x) => (x.canDo.length > a.length ? x.canDo : a), "");
+import type { Sio } from "@/content/sios";
 
 export default function GoalCard({
   sio,
@@ -84,10 +80,9 @@ export default function GoalCard({
         </span>
       </p>
 
-      {/* THE WORDS, in a box that does not resize with them. `compact` is the
-          lesson's Goal tab, where the card is one panel among four and there is
-          nothing to keep still — it sizes to its content as before. */}
-      {/* THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
+      {/* THE WORDS, and nothing around them.
+
+          THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
           « moi, toi, etc. — after a preposition, after c'est, or standing
           alone » on SIO-011). The litmus test's own case: the goal above it
           already says what the learner will be able to do, and the gloss is
@@ -95,46 +90,19 @@ export default function GoalCard({
           content/sios.ts — this stops RENDERING it, it does not delete the
           course's own notes.
 
-          NO BREAKPOINTS EITHER: THE TALLEST GOAL SETS THE FLOOR, AT EVERY
-          WIDTH. The box has to be at least as tall as the tallest can-do or
-          the icons hop between goals (Dan, 7 Sep). A NUMBER cannot do that
-          job, and two rounds of measuring is how that was learned:
+          AND THE BOX AROUND THEM IS GONE (Dan, same day, shown the card with
+          the gloss removed: *"let the icons move, hug the text"*). The words
+          had a floor as tall as the longest of the fifty, so the icons landed
+          at one y on every goal; on a one-line can-do that left about 120px of
+          empty paper between the sentence and its doors. He chose the other
+          trade. Nothing replaces the floor — no min-height, no measured
+          constant, no invisible twin sized off SIOS — so there is also nothing
+          left to go stale when a goal is reworded.
 
-            · 9rem was measured at 390px alone. On a 360px phone the tallest
-              goal needs 168 and on a 320px one 192, so the box overflowed and
-              the icons hopped on exactly the two goals it was sized for.
-            · Stepping it by breakpoint fixed the overflow and bought a new
-              problem. This page runs INSIDE the cahier's iframe, so a media
-              query sees the FRAME, not the phone — 390px of device is 313px
-              of frame. Every breakpoint would have to be written in
-              frame-widths (284, 313, 350, 416…), and every one of them would
-              shift silently the day the notebook's padding changes.
-
-          So the floor is not a number at all. An invisible copy of the longest
-          can-do sits in the same grid cell as the real one, and the cell takes
-          the taller of the two. At 500px of device that is 96px where the
-          breakpoint scheme gave 168: the box is now exactly right at every
-          width instead of right at five of them, and it re-measures itself
-          when a goal is reworded. It held 21rem/336px when it carried a
-          description too, which is why the card in Dan's screenshot was a tall
-          empty rectangle.
-
-          `invisible` is visibility:hidden — it takes its space and draws
-          nothing; `aria-hidden` keeps it out of the accessibility tree, so a
-          screen reader still hears one can-do.
-
-          The empty paper under a SHORT goal is what remains, and it is the
-          price of the icons not hopping. That trade is Dan's to make. */}
-      <div className={compact ? "" : "grid"}>
-        <p className={`text-base font-bold text-[color:var(--cahier-ink)]${compact ? "" : " col-start-1 row-start-1"}`}>
-          {sio.canDo}
-        </p>
-        {!compact && (
-          <p aria-hidden className="invisible col-start-1 row-start-1 text-base font-bold">
-            {LONGEST_CAN_DO}
-          </p>
-        )}
-      </div>
+          Worth keeping in view if it is ever revisited: the `compact` branch
+          (the lesson's Goal tab) always sized to its content, so this is the
+          two surfaces agreeing rather than a new behaviour on one of them. */}
+      <p className="text-base font-bold text-[color:var(--cahier-ink)]">{sio.canDo}</p>
 
       {items.length > 0 && (
         /* ICONS ONLY, THREE UP (Dan, 2026-09-07: *"Below grid of 3x3 buttons
