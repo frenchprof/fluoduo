@@ -73,7 +73,22 @@ def colour(name, depth=0):
 
 WHITE = (1.0, 1.0, 1.0)
 PAPER = colour("--cahier-paper")
-BANDS = ["guess", "lesson", "recog", "prod", "create"]
+# ONE BAND IS LEFT (Dan, 2026-09-11: *"yes do the cleanup, keep prod"*).
+#
+# It was all five. #292 moved every page strip onto the FAMILY colour
+# (`--strip`), which no `band-*` class sets, so four of the five stopped being
+# drawn anywhere — as did Teal, the sixth, added for ConjugaZone on 8 Sep.
+# Driven on the built app before deleting: `prod` alone survives, in
+# GramMarathon's finale, which #292 kept on this axis as a named exemption.
+#
+# THIS LIST IS THE BAND COLOURS, NOT THE BAND NAMES. `BAND` in
+# content/activities.ts still carries all five — guess, lesson, recog, prod,
+# create — because they say what kind of evidence an exercise produces and
+# that is written into every stored answer and shown on /teacher. verify62
+# holds those against lib/evidence.ts and is the check that matters for them.
+# Deleting a colour did not delete a category; do not "tidy" the other file to
+# match this one.
+BANDS = ["prod"]
 
 # 1 · every band token resolves, is one of the twelve, and carries BLACK TEXT.
 #
