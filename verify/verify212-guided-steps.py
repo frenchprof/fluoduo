@@ -70,17 +70,31 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(ROOT, "src")):
             continue
         present.update(re.findall(r'data-tour="([^"]+)"', open(full, encoding="utf-8").read()))
 
+# A STEP MAY NAME MORE THAN ONE ANCHOR, and every one of them is checked.
+#
+# GramMarathon types above `sm` and offers word-bank tiles below it, so its
+# step reads `[data-tour="gap-input"], [data-tour="gap-bank"]` and GuidedSteps
+# lights whichever is visible. The first version of this loop matched the whole
+# selector against ONE anchor pattern, so a comma made it fall through to the
+# "not a data-tour anchor" note — and the run then still printed "every one
+# points at a data-tour anchor that exists", about a step it had not looked at.
+# Renaming either half left it green. Splitting on the comma is the fix; the
+# lesson is that the skip path must never reach the all-clear.
 missing = []
+checked = 0
 for key, sel in named:
-    m = re.fullmatch(r'\[data-tour="([^"]+)"\]', sel)
-    if not m:
+    parts = [p.strip() for p in sel.split(",")]
+    anchors = [re.fullmatch(r'\[data-tour="([^"]+)"\]', p) for p in parts]
+    if not all(anchors):
         # A selector that is not a data-tour anchor is allowed, but it is a
         # class or a tag and those move without anyone noticing. Say so.
         print(f"  note {key}: '{sel}' is not a data-tour anchor — it will break "
               "silently the next time that markup is tidied")
         continue
-    if m.group(1) not in present:
-        missing.append(f"{key}: step points at [data-tour=\"{m.group(1)}\"], which exists nowhere under src/")
+    checked += 1
+    for m in anchors:
+        if m.group(1) not in present:
+            missing.append(f"{key}: step points at [data-tour=\"{m.group(1)}\"], which exists nowhere under src/")
 
 if missing:
     print(f"  FAIL {len(missing)} guided step(s) point at nothing:\n")
@@ -95,5 +109,8 @@ if not named:
 else:
     keys = sorted({k for k, _ in named})
     print(f"  ok   {len(named)} guided step(s) across {len(keys)} activity(ies): {', '.join(keys)}")
-    print("  ok   every one points at a data-tour anchor that exists")
+    # The count is of what was CHECKED, never of what was found. A step that
+    # took the note path above is not covered by this line, and saying so is
+    # the difference between a report and a reassurance.
+    print(f"  ok   {checked} of them name data-tour anchors, and every one of those exists")
 print("\nverify212: no guided step points at nothing.")

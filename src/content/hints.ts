@@ -124,8 +124,18 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Fill the gap",
     steps: [
-      "Tap a word from the bank, or type it, then Check.",
-      "One whole deck, end to end. The top bar is how far you are.",
+      // BOTH SURFACES: this activity types above `sm` and offers word-bank
+      // tiles below it, with the other one display:none. Naming one lit
+      // nothing on a phone.
+      { text: "Fill the gap here.", selector: '[data-tour="gap-input"], [data-tour="gap-bank"]' },
+      { text: "Then press Check.", selector: '[data-tour="drill-cta"]' },
+      // KEPT AS A PLAIN STEP, not dropped with the two it replaced. A mixed row
+      // reads in full on the card and walks only the steps that point at
+      // something — so a line about the SHAPE of the run, which has no one
+      // control to light, still gets said. This one is not on screen anywhere:
+      // every other drill opens by asking how long a run you want, and this is
+      // the one that does not.
+      "No length to pick here — it is one whole deck, end to end.",
     ],
   },
   reviser: {
@@ -158,10 +168,33 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Say it out loud",
     steps: [
-      "Tap 🎤 and say the French. The mic grades what it hears.",
+      // The length first, for the same reason MémoiRecall needs it: on arrival
+      // this activity is asking how long a run you want, and the mic does not
+      // exist until that is answered.
+      { text: "First, choose how long a run you want.", selector: '[data-tour="how-many"]' },
+      { text: "Tap the mic and say the French out loud.", selector: '[data-tour="wordrill-mic"]' },
+      // Kept from the plain row for the same reason as GramMarathon's third:
+      // 🔤 ESCALATES — one hint, then another, then the words — and nothing on
+      // the button says it does. A learner who taps it once and sees a letter
+      // has no way to learn that tapping again gives more.
       "🔊 plays a model. 🔤 gives a hint, then another, then the words.",
     ],
   },
+  // NOT GUIDED, AND THE REASON IS STRUCTURAL RATHER THAN A TO-DO. VoixLà was
+  // written as two guided steps on 11 Sep and the steps lit nothing at all.
+  // `/tts` is `CahierShell` + `EmbedFrame src="/tts/embed"`: the textarea and
+  // the ▶ Listen button are in the FRAMED document, and this row is mounted by
+  // the CahierShell of the OUTER one. A selector cannot cross that boundary —
+  // it is a different `document`, so `querySelectorAll` simply does not see
+  // them, and the run would sit on step 1 saying "Finding it…" forever.
+  //
+  // The same is true of every activity moved into a frame on 7 Sep. Guiding
+  // them means mounting the walk INSIDE the embed, which is a change to who
+  // owns the first run — and that question is already open, because `/tts`
+  // mounts `ActivityFirstRun` twice today (once per document, both with
+  // `active="tts"`), which is the double pop-up Dan reported the same day.
+  // Settle that first; adding a guide on top of it would be building on the
+  // bug. Plain text until then — which is exactly what it was before.
   tts: {
     on: "page",
     title: "Type, then listen",

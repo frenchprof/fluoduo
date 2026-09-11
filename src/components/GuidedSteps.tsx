@@ -54,6 +54,26 @@ export type GuidedStep = { text: string; selector: string };
 
 type Box = { top: number; left: number; width: number; height: number };
 
+/**
+ * A BOX IS NOT THE SAME AS BEING ON SCREEN, and both halves of that were found
+ * by driving the real app rather than reading it.
+ *
+ * DrillShell keeps its primary button mounted and `invisible` between
+ * questions, so it reports a full 580x52 rect while being unpressable — the
+ * tour lit a placeholder and waited for a tap that could never come.
+ * GramMarathon renders BOTH a text field and a word bank, one of them
+ * `display: none`, and which one is live depends on the width.
+ *
+ * `visibility`, `display` and `opacity` all still measure, so the rect alone
+ * cannot answer this.
+ */
+function isOnScreen(el: Element): boolean {
+  const cs = window.getComputedStyle(el);
+  if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) === 0) return false;
+  const r = el.getBoundingClientRect();
+  return r.width >= 2 && r.height >= 2;
+}
+
 export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; onDone: () => void }) {
   const [i, setI] = useState(0);
   const [box, setBox] = useState<Box | null>(null);
@@ -74,20 +94,18 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
     if (!step) return;
     let raf = 0;
     const measure = () => {
-      const el = document.querySelector(step.selector);
+      // THE FIRST VISIBLE MATCH, NOT THE FIRST MATCH. A control often has two
+      // bodies: GramMarathon types above `sm` and offers word-bank tiles below
+      // it, and both are in the DOM at once with one `display: none`. A step
+      // may therefore name both — `[data-tour="a"], [data-tour="b"]` — and
+      // this picks whichever the learner can actually see. Taking
+      // querySelector's first match lit nothing at all on a phone.
+      const el = [...document.querySelectorAll(step.selector)].find(isOnScreen) ?? null;
       elRef.current = el;
       if (!el) { setBox(null); return; }
       const r = el.getBoundingClientRect();
       if (r.width < 2 || r.height < 2) { setBox(null); return; }
-      // A BOX IS NOT THE SAME AS BEING ON SCREEN. DrillShell keeps its primary
-      // button mounted and `invisible` between questions, so it reports a full
-      // 580x52 rect while being unpressable — the tour lit a placeholder and
-      // waited for a tap that could never come. Found on the desktop run;
-      // `visibility: hidden` and `opacity: 0` both still measure.
-      const cs = window.getComputedStyle(el);
-      if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) === 0) {
-        setBox(null); return;
-      }
+
       setBox({ top: r.top, left: r.left, width: r.width, height: r.height });
     };
     measure();
