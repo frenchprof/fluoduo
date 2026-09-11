@@ -858,6 +858,12 @@ export default function LessonTabs({
       <div
         role="tablist"
         aria-label="Lesson sections"
+        /* data-tour: MneMemo's guided first run opens here (content/hints.ts).
+           The anchor lives in THIS component, which runs inside the lesson's
+           frame — the same document as the walk. The page tour that used to
+           teach this strip ran in the document OUTSIDE the frame and could
+           never see it; see the note in FirstTour.tsx. */
+        data-tour="lesson-tabs"
         className="sticky top-0 z-10 grid grid-cols-4 gap-1 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-[color:var(--cahier-paper)] pb-2"
       >
         {TABS.map((t) => {

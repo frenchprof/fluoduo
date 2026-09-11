@@ -85,12 +85,35 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       "Pick one anyway — wrong costs nothing.",
     ],
   },
+  // MNEMEMO NOW OWNS THE WHOLE FIRST RUN ON ITS PAGE (2026-09-11). Until today
+  // a learner arriving here got TWO offers of help at once: this card, and the
+  // « ✨ First time here? Quick tour! » sheet from the page tour. That tour was
+  // retired — it ran outside the lesson's frame and could not see a single one
+  // of its own targets, so it opened on its last step with both spotlights
+  // skipped (FirstTour.tsx has the measurements). What it taught that was worth
+  // keeping is step 1 below, and here it works: this row is mounted by
+  // DrillShell INSIDE the frame, the same document as the tab strip.
   lesson: {
     on: "drill",
     title: "Pick a level, then answer",
     steps: [
-      "★ Facile to 🎁 Bonus: same 12 cards, harder not longer.",
-      "💡 Idea and 📐 Forms are to read. 🏋️ Pract. is where you answer.",
+      // The strip first, because it is the one thing on this screen a learner
+      // cannot work out by looking: four tabs, and only one of them is where
+      // you answer. The level chooser below it is already labelled « Choose
+      // your level ».
+      //
+      // THE NAMES ARE THE ONES ON THE STRIP. This step first read « Path, Idea
+      // and Forms … Pract. » — the English labels Dan chose on 31 Aug and
+      // REVERSED on 5 Sep (*"i think we can use those french words, they are
+      // simple single words"*). Driving it is what showed the mismatch: the
+      // tabs render Goal · Idée · Formes · Exercice, so the guide was naming
+      // four tabs that are not on the screen it is pointing at. If these are
+      // renamed again, this line moves with them — LessonTabs' TABS is the
+      // source of truth.
+      { text: "Idée and Formes are to read. Exercice is where you answer.", selector: '[data-tour="lesson-tabs"]' },
+      // « Same 12 cards either way — harder, not shorter » is printed directly
+      // under these four buttons, so the step does not say it again.
+      { text: "You are in Exercice — choose a level to begin.", selector: '[data-tour="entry"]' },
     ],
   },
   // The one this all started from. Dan had the « Flip » CTA removed as

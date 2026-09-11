@@ -48,7 +48,18 @@ function tourFor(rawPath: string): Tour | null {
   // same pages as "/" and "/unit/1".
   let path = rawPath.replace(/\.html$/, "");
   if (path === "/index") path = "/";
-  if (path === "/" || path === "") {
+  // HOME IS `/home` NOW, AND THIS TOUR WAS ORPHANED BY THAT MOVE (11 Sep).
+  // When the ENTER coin landed, `/` became the landing page and the learner's
+  // own page moved to `/home` (lib/routes.ts). This branch still matched only
+  // `/`, so the home tour was offered on a page that has neither a Continue
+  // pill nor a bottom bar — and never on the page that has both. Measured on
+  // the built app: `a[title^="Continue"]` is 1 on /home and 0 on /.
+  //
+  // `/` KEEPS MATCHING deliberately: it is where a bookmark from before the
+  // move lands, and the landing page does not mount CahierShell, so nothing is
+  // offered there either way. Matching both costs nothing and means the tour
+  // cannot be lost again by the address moving back.
+  if (path === "/home" || path === "/" || path === "") {
     // Rebuilt to the approved flow mocks (2026-08-24). The old four steps
     // named surfaces that no longer exist (❓ HELP, ❓ Guide, tappable Home
     // goals), taught a desktop drag on phones, and step 2's buttons rendered
@@ -109,29 +120,42 @@ function tourFor(rawPath: string): Tour | null {
   // been reached: three of its four targets (thead, tbody, section.fluo-h-5)
   // are nowhere on the map page. A tour for a deleted page cannot be salvaged
   // by pointing it at a different one.
-  if (/^\/lessons\//.test(path)) {
-    // Rewritten 2026-08-28. The old three steps described the LessonFlow page
-    // patch 22 deleted: "Lire → Pratique → Générateur", chips that jump between
-    // parts, and a #lf-pratique anchor that exists nowhere in the codebase. It
-    // had been pointing at a screen that no longer existed for weeks, so it
-    // highlighted nothing and silently skipped — the same shape as the
-    // ÉcouTexte band, something that reports as present and does nothing. It
-    // got more wrong on 2026-08-28, when lessons started opening on the entry
-    // chooser the tour had never heard of.
-    //
-    // These steps name what is actually on screen, and the selectors are
-    // `data-tour` hooks in LessonPager rather than utility classes, so a
-    // styling change cannot quietly unhook the tour again. The axes step is
-    // skipped automatically on the lessons that declare no selectors.
-    return {
-      key: "lesson",
-      steps: [
-        { selector: '[data-tour="entry"]', action: "tap", text: "Choose where to start. All three are the same twelve cards — ★★★ is harder, not shorter." },
-        { selector: '[data-tour="axes"]', action: "tap", text: "Pin a subject or a verb — or 🎲 for a random mix." },
-        { text: "Then one card at a time. Wrong answers cost nothing — they teach." },
-      ],
-    };
-  }
+  // THE LESSON PAGE TOUR IS RETIRED (2026-09-11), and it had already stopped
+  // working on 7 Sep without anyone noticing — the same fortnight-long silent
+  // failure its own comment below describes, repeated.
+  //
+  // On 7 Sep the lesson moved into a frame: `/lessons/deck/<id>` became
+  // CahierShell + EmbedFrame, and LessonPager — which owns BOTH of this tour's
+  // targets — moved into `/lessons/deck/<id>/embed`. This component runs in the
+  // OUTER document and measures with `document.querySelectorAll`. A frame is a
+  // different document. Driven on the built app, 11 Sep:
+  //
+  //     [data-tour="entry"] in the document the tour searches:  0
+  //     [data-tour="entry"] in the document it actually lives in: 1
+  //
+  // So both spotlight steps skipped, and « Quick tour! » opened on 3/3 — one
+  // sentence in a box, on top of the activity's own instruction card, which is
+  // the double pop-up Dan reported on this page the same day.
+  //
+  // IT IS NOT MOVED INSIDE THE FRAME, because the activity's own first run is
+  // already in there and already teaches this. The `lesson` row in
+  // content/hints.ts now lights the tab strip and the level chooser from within
+  // the frame, where the anchors are. The axes step is not carried over: it
+  // renders only on lessons that declare axes, and where it does render it
+  // carries its own « Practise something specific » heading above real
+  // dropdowns — the litmus test deletes a line that says what is on screen.
+  //
+  // THE ✨ CHIP GOES WITH IT on this route, and that is the intended result
+  // rather than a casualty: the chip's one job is to replay THIS page's tour,
+  // and a tour that shows a single sentence is not one. Every other page type
+  // keeps both.
+  //
+  // THE GENERAL RULE THIS LEAVES BEHIND, since this is the THIRD tour in this
+  // file to be retired for pointing at a screen that had moved: a page tour may
+  // only teach what is in ITS OWN document. The moment a surface moves into a
+  // frame, its tour does not follow it — it goes quiet, which is the one
+  // failure nobody reports. verify213 drives each remaining tour and fails if
+  // its spotlights all skip.
   return null;
 }
 
