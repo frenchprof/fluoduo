@@ -127,10 +127,16 @@ export default function GoalCard({
            a long way apart, which is the opposite of a grid. Dan's reference is
            the HELP sheet, whose icons sit together. */
         <ul className={`${compact ? "mt-3" : "mt-4"} mx-auto grid w-fit grid-cols-3 gap-3`}>
-          {/* COLOURED BY LEARNING PHASE (Dan, 2026-09-05: *"we need color for
-              those items"*), from `bandOf` inside ActivityIcon — the same map
-              the map's stop sheet reads, so a Pre-Test is the same colour
-              whichever door a learner opens it from. */}
+          {/* COLOURED (Dan, 2026-09-05: *"we need color for those items"*) BY
+              FAMILY since 11 Sep, from `familyOf` inside ActivityIcon — Dan,
+              shown these seven doors in both: *"the goal sheet keys too, make
+              them family colors"*. It used to be the learning PHASE, which
+              grouped by kind of work: the two games and MémoiRecall all wore
+              sky because all three are "recognise". Now the three Practice
+              doors are one blue and the two Games doors one violet, and each
+              door matches its row in the ☰ and the strip on the page it opens.
+              One source either way, so a door is the same colour wherever a
+              learner meets it. */}
           {items.map((t) => (
             <li key={t.key}>
               <Link

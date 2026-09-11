@@ -90,6 +90,43 @@ check(not unwired,
       "these checks exist but CI never runs them — they guard nothing: "
       + ", ".join(unwired))
 
+# ---- 1b · one run per branch, and MAIN IS NEVER CANCELLED -----------------
+# Added 11 Sep, the day the account's Actions minutes ran out mid-morning and
+# every run in the repo — main included — died in 2-5 seconds with no logs.
+# The concurrency block is what stops a superseded run burning a full 10½
+# minutes on a commit nobody will look at again.
+#
+# THE EXEMPTION IS THE PART THAT NEEDS GUARDING, not the block. `deploy-live`
+# reads this workflow's check conclusion for the commit it is about to mirror,
+# and a CANCELLED run is not a green one. So `cancel-in-progress: true` written
+# flat — the form every tutorial shows, and the form someone will reach for
+# while tidying — would make any commit whose main run got superseded
+# permanently undeployable. Nothing else in the repo would notice: CI is
+# green, the merge is fine, and the deploy simply refuses, weeks later,
+# for a reason no one can see in the diff.
+conc = re.search(r"^concurrency:\n(?:[ \t]+.*\n)+", wf, re.M)
+check(conc is not None,
+      "the verify workflow groups its runs, so a superseded run is not paid for",
+      "no concurrency: block in the verify workflow — every push to a branch "
+      "runs the full suite to the end, including the ones already overtaken")
+if conc:
+    body = conc.group(0)
+    # THE GROUP LINE, not the block. Read over the whole block this passed with
+    # the group hard-coded to a constant, because `github.ref` also appears in
+    # the cancel-in-progress expression two lines down — the check was reading
+    # the exemption and calling it the key. Caught by break-testing it, which
+    # is the only reason it is written this way.
+    grp = re.search(r"^[ \t]*group:[ \t]*(.+)$", body, re.M)
+    check(grp is not None and "github.ref" in grp.group(1),
+          "the GROUP is keyed on the ref, so one branch never cancels another",
+          "the concurrency group is not keyed on github.ref — every branch "
+          "would share one group and each push would cancel another lane's run")
+    check("refs/heads/main" in body and "cancel-in-progress" in body,
+          "main is exempt from cancellation — deploy-live can still read its check",
+          "main is NOT exempt from cancel-in-progress. A cancelled run is not a "
+          "green one, so deploy-live would refuse that commit forever: see the "
+          "block's own comment in the workflow")
+
 # ---- 2 · the workflow names nothing that is gone --------------------------
 missing = [s for s in set(run_lines) if not os.path.isfile(f"verify/{s}")]
 check(not missing,
