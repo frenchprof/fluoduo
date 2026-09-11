@@ -727,6 +727,9 @@ export default function SayItContent({
                   <div className="relative">
                     <button
                       type="button"
+                      // data-tour: the guided first run lights the mic and
+                      // waits for the learner to press it (content/hints.ts).
+                      data-tour="wordrill-mic"
                       onClick={phase === "listening" ? stopRec : startListening}
                       aria-label={phase === "listening" ? "Stop" : "Start speaking"}
                       className={`flex h-[76px] w-[76px] items-center justify-center rounded-full text-2xl shadow-lg transition active:scale-95 ${
@@ -928,6 +931,12 @@ export default function SayItContent({
                   )}
                   <button
                     type="button"
+                    // data-tour: the SECOND mic. This file draws two — one in
+                    // the WorDrill layout (isWorDrill) and one in the Say It
+                    // card — and they are the same control in two dresses.
+                    // Anchoring only the first looked right and lit nothing on
+                    // the route that actually renders this one.
+                    data-tour="wordrill-mic"
                     onClick={phase === "idle" ? startListening : stopRec}
                     className={[
                       "flex h-20 w-20 items-center justify-center rounded-full text-3xl",
