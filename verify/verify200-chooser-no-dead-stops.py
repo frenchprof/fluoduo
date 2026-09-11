@@ -145,6 +145,25 @@ finally:
     for leftover in ("out/verify200-probe.html", "out/verify200-probe.txt"):
         if os.path.isfile(leftover):
             os.remove(leftover)
+    # AND LEAVE .next/ CLEAN, which the first version did not. Next writes a
+    # route-type file naming every page it built, so once the probe is deleted
+    # that file references a module that no longer exists and the NEXT
+    # `tsc --noEmit` in this working tree fails:
+    #
+    #   .next/types/validator.ts(771,39): error TS2307:
+    #     Cannot find module '../../src/app/verify200-probe/page.js'
+    #
+    # Harmless in CI, which always starts from a clean tree — and therefore
+    # exactly the kind of fault that only ever wastes a human's time. It bit
+    # three separate local typechecks before being fixed. The generated file
+    # is rebuilt by the next build, so removing it costs nothing.
+    validator = os.path.join(".next", "types", "validator.ts")
+    if os.path.isfile(validator):
+        try:
+            if "verify200-probe" in open(validator, encoding="utf-8").read():
+                os.remove(validator)
+        except OSError:
+            pass
 
 ok(bool(data), "the probe build produced the chooser's own offer list",
    "could not build the probe page — cannot verify the offers against the export")
