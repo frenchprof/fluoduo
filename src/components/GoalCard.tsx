@@ -28,34 +28,53 @@
  *
  * The box is `min-h` and not `h`: a can-do longer than any written so far
  * should overflow downward and push the icons rather than be clipped. Fifty
- * were measured at 390px; the longest needs three lines of can-do and three of
- * description, which is what the number below holds.
+ * were re-measured on 2026-09-11 after the description line went, at NINE
+ * widths rather than one — see below for why one number was not enough.
  */
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
-import type { Sio } from "@/content/sios";
+import { readUiPrefs } from "@/lib/uiPrefs";
+import { SIOS, type Sio } from "@/content/sios";
+
+/** The longest can-do of the fifty, rendered invisibly behind every one of
+ *  them so the words box is always exactly as tall as the tallest goal — see
+ *  the note at the box itself. Computed, not typed out: a longer goal written
+ *  next year raises the floor on its own. */
+const LONGEST_CAN_DO = SIOS.reduce((a, x) => (x.canDo.length > a.length ? x.canDo : a), "");
 
 export default function GoalCard({
   sio,
   compact,
-  textOnly,
-  iconsOnly,
 }: {
   sio: Sio;
   compact?: boolean;
-  /** The scrap and the words only — the goals page draws these inside its
-   *  ruled box and the icons outside it (Dan, 2026-09-07: "the icons can just
-   *  be by themselves below that"). */
-  textOnly?: boolean;
-  /** The icon grid only, for that same split. */
-  iconsOnly?: boolean;
 }) {
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
+
+  /* THE NAME UNDER THE TILE (Dan, 2026-09-11: *"it would help to add the name
+     of each activity below the tile by default) we can allow userss to remove
+     it in the settings"*). The setting is Réglages' existing "Icon labels"
+     row — one switch for the words under an icon, wherever they are — and it
+     now defaults ON; see lib/uiPrefs.ts for why the tiles get the opposite
+     answer to the bottom bar.
+
+     READ AFTER MOUNT, and `false` until then. The site is statically
+     exported, so a preference read during render would bake one learner's
+     choice into the HTML every other learner downloads. Starting false rather
+     than true means the labels appear rather than vanish on the first paint —
+     a label that flashes away reads as a bug, one that arrives reads as the
+     page finishing. */
+  const [labels, setLabels] = useState(false);
+  useEffect(() => {
+    const sync = () => setLabels(readUiPrefs().showNavLabels);
+    sync();
+    window.addEventListener("fluolingo:uiprefs", sync);
+    return () => window.removeEventListener("fluolingo:uiprefs", sync);
+  }, []);
   return (
     <>
-      {!iconsOnly && (
-        <>
       {/* THE TAG IS A TORN SCRAP, pasted on. `.goal-scrap` in globals.css holds
           the tear and the shadow; the wrapper is what pins it to one edge so it
           does not centre itself differently on a long id than a short one. */}
@@ -68,36 +87,72 @@ export default function GoalCard({
       {/* THE WORDS, in a box that does not resize with them. `compact` is the
           lesson's Goal tab, where the card is one panel among four and there is
           nothing to keep still — it sizes to its content as before. */}
-      {/* 21rem = 336px, and that number is MEASURED, not chosen: the natural
-          height of all fifty word-boxes was taken at 390px and the tallest —
-          SIO-006 — needs 335. Anything less and the icons hop on the goals that
-          overflow it, which is the thing Dan asked to stop.
-          SIO-006 is 42px taller than the next tallest, so if that one goal's
-          wording is ever cut this number should come down with it. */}
-      <div className={compact ? "" : "min-h-[21rem]"}>
-        <p className="text-base font-bold text-[color:var(--cahier-ink)]">{sio.canDo}</p>
-        {sio.description && (
-          <p className="mt-2 text-[14px] text-[color:var(--fluo-ink-soft)]">{sio.description}</p>
+      {/* THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
+          « moi, toi, etc. — after a preposition, after c'est, or standing
+          alone » on SIO-011). The litmus test's own case: the goal above it
+          already says what the learner will be able to do, and the gloss is
+          the lesson's job, not the goal's. `sio.description` stays in
+          content/sios.ts — this stops RENDERING it, it does not delete the
+          course's own notes.
+
+          NO BREAKPOINTS EITHER: THE TALLEST GOAL SETS THE FLOOR, AT EVERY
+          WIDTH. The box has to be at least as tall as the tallest can-do or
+          the icons hop between goals (Dan, 7 Sep). A NUMBER cannot do that
+          job, and two rounds of measuring is how that was learned:
+
+            · 9rem was measured at 390px alone. On a 360px phone the tallest
+              goal needs 168 and on a 320px one 192, so the box overflowed and
+              the icons hopped on exactly the two goals it was sized for.
+            · Stepping it by breakpoint fixed the overflow and bought a new
+              problem. This page runs INSIDE the cahier's iframe, so a media
+              query sees the FRAME, not the phone — 390px of device is 313px
+              of frame. Every breakpoint would have to be written in
+              frame-widths (284, 313, 350, 416…), and every one of them would
+              shift silently the day the notebook's padding changes.
+
+          So the floor is not a number at all. An invisible copy of the longest
+          can-do sits in the same grid cell as the real one, and the cell takes
+          the taller of the two. At 500px of device that is 96px where the
+          breakpoint scheme gave 168: the box is now exactly right at every
+          width instead of right at five of them, and it re-measures itself
+          when a goal is reworded. It held 21rem/336px when it carried a
+          description too, which is why the card in Dan's screenshot was a tall
+          empty rectangle.
+
+          `invisible` is visibility:hidden — it takes its space and draws
+          nothing; `aria-hidden` keeps it out of the accessibility tree, so a
+          screen reader still hears one can-do.
+
+          The empty paper under a SHORT goal is what remains, and it is the
+          price of the icons not hopping. That trade is Dan's to make. */}
+      <div className={compact ? "" : "grid"}>
+        <p className={`text-base font-bold text-[color:var(--cahier-ink)]${compact ? "" : " col-start-1 row-start-1"}`}>
+          {sio.canDo}
+        </p>
+        {!compact && (
+          <p aria-hidden className="invisible col-start-1 row-start-1 text-base font-bold">
+            {LONGEST_CAN_DO}
+          </p>
         )}
       </div>
 
-        </>
-      )}
-
-      {!textOnly && items.length > 0 && (
+      {items.length > 0 && (
         /* ICONS ONLY, THREE UP (Dan, 2026-09-07: *"Below grid of 3x3 buttons
            not in this form but the grid of icons only like we saw in the
            earlier 'HELP'"*).
 
-           It was a two-column list of labelled pills, and on a goal with seven
-           activities that is seven rows of text under a card that has already
-           said what the goal is — the litmus test's own case: the words
-           « MémoiRecall », « VocabulaRain » repeat what the icon and its
-           colour already carry.
+           It was a two-column list of labelled PILLS — seven rows of text
+           under a card that had already said what the goal is — and what the
+           litmus test cut on 7 Sep was that list, not the names. The grid is
+           the shape Dan asked for and it kept the names only in `title` and
+           an `sr-only` span.
 
-           The name has not been thrown away, it has moved: `title` on hover,
-           and the `sr-only` span, which is what a screen reader announces — an
-           icon-only link that announces nothing is a link nobody can use.
+           THE NAMES ARE BACK UNDER THE TILES (Dan, 2026-09-11: *"it would
+           help to add the name of each activity below the tile by default"*),
+           behind Réglages' "Icon labels" switch, which now defaults on. A
+           goal's five tiles are a different five each time and the icon is
+           the only thing on them, so the name is not repeating anything —
+           which is the litmus test's actual question.
 
            `w-fit` and centred, not three columns stretched across the card:
            three tiles spread over 290px of paper read as three separate things
@@ -115,11 +170,28 @@ export default function GoalCard({
                 title={t.label}
                 /* 44px, not the icon's own 40 — PR 192's tap floor. The tile
                    inside stays 40 and the ring around it takes the rest, so
-                   the target grows without the artwork changing size. */
-                className="grid h-11 w-11 place-items-center rounded-xl no-underline transition hover:scale-110"
+                   the target grows without the artwork changing size.
+
+                   WITH A LABEL the cell is a fixed 5rem wide so the three
+                   columns stay square with each other: the names run from
+                   « Idée » to « MémoiRecall », and letting each cell size to
+                   its own word would make a ragged grid out of a tidy one.
+                   80px holds the longest at 10px without hyphenating. */
+                className={`grid place-items-center rounded-xl no-underline transition hover:scale-110 ${
+                  labels ? "h-auto w-20 gap-1 py-1" : "h-11 w-11"
+                }`}
               >
                 <ActivityIcon activityKey={t.key} emoji={t.emoji} />
-                <span className="sr-only">{t.label}</span>
+                {/* The name is either DRAWN or announced, never both — a
+                    screen reader that meets the visible label and the
+                    sr-only one says every activity twice. */}
+                {labels ? (
+                  <span className="text-center text-[10px] font-bold leading-tight text-[color:var(--cahier-ink)]">
+                    {t.label}
+                  </span>
+                ) : (
+                  <span className="sr-only">{t.label}</span>
+                )}
               </Link>
             </li>
           ))}

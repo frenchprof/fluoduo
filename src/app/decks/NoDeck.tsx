@@ -9,10 +9,11 @@
 import { TAB_ICONS } from "@/content/activities";
 import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
+import { HOME_HREF } from "@/lib/routes";
 
 export default function NoDeck() {
   return (
-    <CahierShell tabs={[{ key: "home", ...TAB_ICONS.home, href: "/" }, { key: "map", ...TAB_ICONS.map, href: "/map" }]} active="index">
+    <CahierShell tabs={[{ key: "home", ...TAB_ICONS.home, href: HOME_HREF }, { key: "map", ...TAB_ICONS.map, href: "/map" }]} active="index">
       <div className="mx-auto max-w-md px-4 py-10 text-center">
         <div className="rounded-2xl border-2 p-8" style={{ borderColor: "var(--cahier-line)", background: "var(--cahier-paper-raised)" }}>
           <div className="text-5xl" aria-hidden>🗂️</div>

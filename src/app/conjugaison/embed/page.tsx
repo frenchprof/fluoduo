@@ -40,6 +40,9 @@ import { REQUIRE_SIGN_IN } from "@/lib/authConfig";
 import DrillShell, { type DrillFinish } from "@/components/DrillShell";
 import WordBank from "@/components/WordBank";
 import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
+import { lessonVerbs } from "@/content/lessonVerbs";
+import { addressSearch } from "@/lib/addressWindow";
+import { stopForDeck } from "@/lib/stopTag";
 import { gradeAnswer } from "@/lib/practice/cloze";
 import { recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -88,11 +91,33 @@ export default function ConjugaisonPage() {
   useActivityPlay("conjugaison");
   const user = useAuthUser(); // undefined = resolving, null = signed out
   const [picked, setPicked] = useState<string[]>(["etre", "avoir", "aller"]);
-  // Lesson pages deep-link their verbs: /conjugaison?v=vouloir,pouvoir
+  /* THE LESSON CHOOSES THE VERBS (Dan, 2026-09-08: *"ConjugaZone page would
+     land on the same single conjugazone page but land on the particular verbs
+     that we have assigned for that lesson"*, table approved 11 Sep).
+
+     TWO WAYS IN, and they are not the same thing:
+
+       ?deck=aimer-activites   the LESSON. content/lessonVerbs.ts says which of
+                               the 67 verbs belong to it — the address carries
+                               the lesson, never a copy of its verb list, so a
+                               bookmark cannot go stale the day a verb moves.
+       ?v=vouloir,pouvoir      EXACTLY these, whatever lesson you came from.
+                               Older, still honoured, and it wins where both are
+                               given: a hand-written list is a deliberate act.
+
+     Read after mount, not during render: the query is not part of the
+     prerendered HTML, so branching on it in render would mismatch on
+     hydration. And read from `addressSearch()` rather than `window.location`,
+     because this runs inside the cahier's iframe whose own src is
+     `/conjugaison/embed` with no query on it at all — measured, every lesson
+     drilled être / avoir / aller until this line. */
   useEffect(() => {
     try {
-      const v = new URLSearchParams(window.location.search).get("v");
-      const ids = (v ?? "").split(",").filter((id) => VERBS.some((x) => x.id === id));
+      const q = new URLSearchParams(addressSearch());
+      const spelled = (q.get("v") ?? "").split(",").filter((id) => VERBS.some((x) => x.id === id));
+      const stop = stopForDeck(q.get("deck"));
+      const fromLesson = stop ? lessonVerbs(stop.id).map((v) => v.id) : [];
+      const ids = spelled.length > 0 ? spelled : fromLesson;
       // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
       if (ids.length > 0) setPicked(ids);
     } catch {}

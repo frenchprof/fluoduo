@@ -53,6 +53,7 @@ import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE } from "@/components/HomeMa
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, nightness, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
+import { DEFAULTS, readUiPrefs } from "@/lib/uiPrefs";
 
 /* ── Camera travel ─────────────────────────────────────────────────────────
    scrollTop → camZ: the box's scroll height is the road's length. */
@@ -641,6 +642,51 @@ export default function HomeMap3D({
   onOpenSio?: (unit: number, id: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * WHICH WAY THE WHEEL GOES (Dan, 2026-09-11: *"the wheel is the wrong one"*).
+   *
+   * The box is a native scroll container and the road's length IS its scroll
+   * height, so both inputs arrive as the same `scrollTop`. They are not the
+   * same gesture, though, and Dan said so before I could get it wrong:
+   * *"there are two things: swipe down with finger, and scroll down with
+   * mouse. don't confuse them"*.
+   *
+   * A finger DRAGS the road — down brings it toward you — and that is direct
+   * manipulation, the half that was already right. A wheel SCROLLED the camera
+   * forward like a page. Flipping the container would have flipped both, so
+   * this flips the wheel alone: the wheel event is caught, cancelled, and the
+   * same distance applied the other way. Touch never fires `wheel`, so the
+   * finger keeps the platform's own behaviour untouched.
+   *
+   * NOT PASSIVE. `preventDefault()` on a wheel listener is ignored unless the
+   * listener says it might cancel, and React attaches its own as passive — so
+   * this is a real `addEventListener` with `{ passive: false }` rather than an
+   * `onWheel` prop, which would have silently done nothing.
+   *
+   * A STILL SCENE HAS NO SCROLL AT ALL (the door sets `overflow-y-hidden`), so
+   * the handler stands down there rather than cancelling a wheel that was
+   * never going to move anything.
+   */
+  const [wheelBack, setWheelBack] = useState(DEFAULTS.wheelDownComesBack);
+  useEffect(() => {
+    const read = () => setWheelBack(readUiPrefs().wheelDownComesBack);
+    read();
+    window.addEventListener("fluolingo:uiprefs", read);
+    return () => window.removeEventListener("fluolingo:uiprefs", read);
+  }, []);
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box || still || !wheelBack) return;
+    const onWheel = (e: WheelEvent) => {
+      // A sideways wheel (a trackpad's horizontal axis) is not ours to take.
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      box.scrollTop -= e.deltaY;
+    };
+    box.addEventListener("wheel", onWheel, { passive: false });
+    return () => box.removeEventListener("wheel", onWheel);
+  }, [still, wheelBack]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const { w: vw, h: vh } = size;
 
@@ -652,7 +698,21 @@ export default function HomeMap3D({
   // the eye line sits below the box (CAMERA_Y > 1), so a stop AT camZ is off
   // screen — backing off ~0.95 puts the current stop big and fully visible in
   // the lower third (Dan, 2026-08-20 camera).
-  const homeZ = Math.max(0, activeIdx) - 1.0;
+  //
+  // A STILL SCENE STANDS FURTHER BACK, because the door has furniture the map
+  // does not: the ENTER coin sits at the foot of the road, and 1.0 puts goal 1
+  // in exactly that band. Dan, 11 Sep: *"THE ENTER COIN IS STILL TOO CLOSE TO
+  // 1"* — and measured, they did not merely crowd, they OVERLAPPED at every
+  // size (desktop -40px, phone -9px, sideways -28px), after an earlier round
+  // had already trimmed the coin for this.
+  //
+  // TRIMMING THE COIN IS THE WRONG LEVER, which is why that attempt did not
+  // hold. The coin is bottom-anchored; goal 1's position is set by the CAMERA.
+  // Shaving the coin costs the prominence Dan asked for and still loses.
+  // At 1.6 the gap opens where the composition needs it: +54 / +90 / +18.
+  // 2.0 was rendered too — more air, but it empties the road and shrinks goal
+  // 1. Dan looked at both: "THIS IS FINE!"
+  const homeZ = Math.max(0, activeIdx) - (still ? 1.6 : 1.0);
 
   // The camera — starts ON the current stop (no landing flash).
   const [camZ, setCamZ] = useState(homeZ);
@@ -770,6 +830,32 @@ export default function HomeMap3D({
     const b = projected[i + 1];
     if (!a || !b) continue;
     segments.push({ x1: a.px, y1: a.py, x2: b.px, y2: b.py, sc: (a.scale + b.scale) / 2, i });
+  }
+  // THE DOOR IS THE ZEROTH STOP (Dan, 11 Sep: *"MAYB EJUST JOIN UP ENTER WITH
+  // 1?"*). On a still scene the road gains one more rung at the near end,
+  // running from a point one stop BEFORE goal 1 up to goal 1 — which is
+  // exactly where the ENTER coin stands. It is not a line drawn to a button:
+  // it is the road itself, projected one stop further back, so it carries the
+  // same curve, the same perspective width and the same treatment as every
+  // other rung. The coin sits on the end of it the way goal 1 sits on its own.
+  if (still && projected[0]) {
+    // pathXAt, NOT getWorldX(0): getWorldX is 1-based and indexes WX with
+    // (id - 1), so id 0 reads WX[-1] — undefined in JS, not an error. The
+    // whole projection then quietly produced NaN and returned null, and the
+    // rung simply did not draw: no warning, no exception, nothing on screen.
+    // pathXAt clamps z into the fifty stops, so at z = -1 it gives the road's
+    // x at its start: dead straight back from goal 1, which is what the road
+    // actually does behind the first stop.
+    const door = project(pathXAt(-1), -1 - camZ, camZ, vw, vh);
+    if (door) {
+      const g1 = projected[0];
+      segments.push({ x1: door.px, y1: door.py, x2: g1.px, y2: g1.py, sc: (door.scale + g1.scale) / 2, i: -1 });
+      // i = -1 puts the rung below every threshold, so it draws paved AND
+      // "travelled" — the centre channel takes the learner's accent. That was
+      // put to Dan as a fault to fix (nobody has walked the door rung) and he
+      // ruled the other way: "COLOR IS FINE!". So it stays accented, and this
+      // note exists so the next session does not helpfully correct it.
+    }
   }
   segments.sort((a, b) => a.sc - b.sc);
   const visibleStops = projected.filter((p): p is NonNullable<typeof p> => p !== null).sort((a, b) => b.t - a.t);

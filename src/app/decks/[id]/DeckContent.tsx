@@ -23,10 +23,11 @@ import {
 import type { Collection, Item } from "@/lib/collections/schema";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
 import CuratedDeckTable from "./CuratedDeckTable";
+import { HOME_HREF } from "@/lib/routes";
 
 export function deckTabs(id: string): ShellTab[] {
   return [
-    { key: "home", ...TAB_ICONS.home, href: "/" },
+    { key: "home", ...TAB_ICONS.home, href: HOME_HREF },
     { key: "deck", label: "Deck", emoji: "📖", href: `/decks/view?id=${id}` },
     { key: "study", label: "Study", emoji: "🃏", href: `/decks/study?id=${id}` },
     // Auto-MCQ only for user decks — curated decks have authored pretests.

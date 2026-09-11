@@ -316,6 +316,62 @@ a ban.** If Dan rules a thing out, it goes here AND into a check in the same
 patch — and the check takes a list, because the next ruling will not be about
 this font.
 
+# One sheet of paper, and the coils run up to the band — permanent (2026-09-11)
+
+**Dan, sending two screens: *"Profiles, ChaTutor page looks doubleframed"*.
+Then, shown a game's top-left corner: *"coils up to the band and also the
+corresponding vertical strip"*.** Two faults in the same corner.
+
+**A FRAMED STATION DRAWS NO SHEET.** Everything runs in the cahier in an iframe
+(7 Sep). `html[data-embed]` hides the shell's FURNITURE inside a frame — site
+bar, band, coils, shadow, radius, family spine — and for four days that was
+read as "nothing is left". Two things were left, and they are exactly the two
+that make a sheet look like a sheet:
+
+    .cahier-page      the paper, and a 32px ruling at background-position 0 64px
+    .cahier-foolscap  a 28px ruling
+
+So `/profil/embed` and `/tutor/embed`, each rendering a `CahierShell` inside a
+`CahierShell`, laid a SECOND sheet on the page's own — starting 48px in, the
+well's gutter where the coils live. Measured on the built app at 390px: the
+ruled lines in that 48px strip sit at one height and the ones inside the frame
+at another, and some stop dead at the frame's edge. No border anywhere, which
+is why it took a screenshot to name.
+
+`/map/embed` was already right and says so in its own docstring: it renders the
+map and no notebook. The two pages now do the same, and
+`html[data-embed] body { background: transparent }` lets the page's one sheet
+show through the frame. **That line is a no-op for every other station** —
+measured across all seventeen framed routes, each still paints an opaque
+`.cahier-page` / `.cahier-surface` over it. The remaining fifteen still draw
+their own sheet ON PURPOSE: Dan asked for two, and widening is his call.
+
+**THE COILS START AT THE BAND, NOT BELOW IT.** This REVERSES the 6 Sep note in
+CahierShell ("the coils live below the bar and the band"). That note was not
+wrong about its own reason — the loops overhang the page onto the desk and
+nothing can cover the desk, so coils beside the ☰ row would be half-loops
+floating next to the app's chrome — but it left the page's left edge changing
+width halfway down the screen: a 6px family spine beside the bar and the band,
+a 30px coil strip under it. Home has no band, so its coils started at its hero;
+Dan put the two side by side and named the step.
+
+Both shells open the binding region ABOVE the band now, the coils paint OVER it
+(`.cahier-binding { z-index: 3 }` against `.page-band`'s 2 — a real coil crosses
+the cover strip), and the band takes a 3rem left clearance so the rings do not
+cross its ✕. **The clearance is keyed on `.cahier-binding ~ .page-band`, not on
+PageBand's own padding**, because a band drawn INSIDE a content well
+(`decks/[id]/CuratedDeckTable.tsx`) is already clear of the coils and must not
+move. The binding still stops short of the SITE BAR, for the 6 Sep reason.
+
+**The same nesting broke `html[data-embed] .cahier-page > .page-band`**, whose
+child combinator no longer matched — every framed station drew its strip twice
+until verify126 caught it. It reads `.cahier-page .cahier-binding ~ .page-band`
+now, which says what it always meant: the band the coils run past, on a page.
+
+`verify230-one-sheet.py` holds both halves, in a browser, because both are
+geometry: a grep for `import CahierShell` flags the fifteen correct uses and
+would miss a station that grew the fault without importing anything.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.
@@ -557,12 +613,18 @@ the grey it already had (Dan: "keep the grey it has now"). All 12 exact
 hex values are pinned in `verify96-family-hues.py`'s `EXPECT` dict; change
 the palette there, never by eyeballing a screenshot.
 
-**The ☰ menu's row backgrounds are SOLID, the family's darkest rung — not a
-wash.** First try was a 15%-alpha tint (8 Sep's ruling); Dan sent it back
-the same day: *"you are using the very light shade which is too light...
-the darkest shade in there for the background"* — i.e. the same `--fam-ink`
-CSS token the page's own top strip and left spine already use. See
-`MenuGrid.tsx`'s `INK` map.
+**The ☰ menu's row backgrounds are SOLID, the family's BRIGHT base shade
+(11 Sep) — not a wash, and no longer the darkest rung.** First try was a
+15%-alpha tint (8 Sep); Dan sent it back the same day: *"you are using the
+very light shade which is too light... the darkest shade in there for the
+background"*, and the rows went to `--fam-ink`. On 11 Sep, sending the
+page-strip catalogue in the seven bright hues, he moved them again: *"the
+background needs to be brighter like this"*. So the band is `--fam-*`, the
+same pen the heading strips wear; the darkest rung now colours the tile
+outlines, and the vertical family label is BLACK (the house ink) — Dan,
+same day: *"black font instead of white font ... for the leftmost cat
+names"*. See `MenuGrid.tsx`'s `PEN` /
+`INK` maps.
 
 ## Hub pages are being retired, one family at a time — same day
 

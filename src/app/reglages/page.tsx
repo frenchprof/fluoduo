@@ -69,8 +69,8 @@ export default function ReglagesPage() {
               </span>
               <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
                 {prefs.showNavLabels
-                  ? "Icon labels are always shown."
-                  : "Tap and hold an icon to view its label."}
+                  ? "Names are shown under activity tiles and the bottom bar."
+                  : "Tiles show the icon only. Tap and hold one to see its name."}
               </span>
             </span>
             <input
@@ -79,6 +79,40 @@ export default function ReglagesPage() {
               checked={prefs.showNavLabels}
               disabled={!ready}
               onChange={(e) => set("showNavLabels", e.target.checked)}
+              className="fluo-switch mt-1"
+            />
+          </label>
+
+          {/* THE MAP'S WHEEL (Dan, 2026-09-11). He asked for the direction
+              changed AND for the learner to be able to change it back — and
+              he drew the line that matters himself: *"there are two things:
+              swipe down with finger, and scroll down with mouse. don't
+              confuse them"*. This switch is the WHEEL only. A finger drags
+              the road and always has; that half was already right, and
+              flipping the container would have flipped both.
+
+              One switch, not two. Nobody wants to configure their mouse and
+              their thumb separately.
+
+              The line under it says what the CURRENT position means, per
+              Dan's 5 Sep rule — not what the other one would do. */}
+          <label className="mt-4 flex items-start justify-between gap-3 border-t-2 pt-4" style={{ borderColor: "var(--cahier-line)" }}>
+            <span>
+              <span className="block font-bold text-[color:var(--cahier-ink)]">
+                Mouse wheel on the map
+              </span>
+              <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
+                {prefs.wheelDownComesBack
+                  ? "Rolling down brings the road toward you."
+                  : "Rolling down travels forward, away from you."}
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              checked={prefs.wheelDownComesBack}
+              disabled={!ready}
+              onChange={(e) => set("wheelDownComesBack", e.target.checked)}
               className="fluo-switch mt-1"
             />
           </label>

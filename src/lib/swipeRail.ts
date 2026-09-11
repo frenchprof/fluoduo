@@ -49,6 +49,7 @@ import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { speculearnHrefForDeck } from "@/lib/speculearn/route";
 // The deck -> stop lookup lives in ONE place (verify82). A second hand-written
 // `SIOS.find(s => s.collectionId === …)` is how two copies start disagreeing.
+import { lessonHasVerbs } from "@/content/lessonVerbs";
 import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
 
 export type RailStation = {
@@ -132,51 +133,91 @@ export const RAIL: RailStation[] = [
     at: (p) => p.startsWith("/practice/flip-it"),
   },
   {
-    key: "skills",
-    name: "Skills",
-    // ONE COLUMN, SIX DOORS. ConjugaZone · ÉcouTexte · WorDrill · VoixLà ·
-    // ComposeIt · ChaTutor were six columns for a day, which made a sideways
-    // drag on ChaTutor a walk through a list nobody thinks of as ordered —
-    // and put four screens between MémoiRecall and the games.
-    href: () => "/skills",
-    hub: "/skills",
-    at: (p) =>
-      p === "/skills" ||
-      p === "/conjugaison" ||
-      p === "/tts" ||
-      p === "/tutor" ||
-      p.startsWith("/practice/ecoutexte") ||
-      p.startsWith("/practice/wordrill") ||
-      p.startsWith("/games/compose"),
+    key: "wordrill",
+    name: "WorDrill",
+    /* THE THREE SKILLS ARE THREE COLUMNS AGAIN, IN DAN'S ORDER (2026-09-08).
+       He wrote the whole chain out station by station — "MémoiRecall … swipe
+       left for ConjugaZone", then corrected himself an hour later: *"can you
+       swap the WorDrill (comes first) and ConjugaZone (last)"*. So the tail is
+       WorDrill → ÉcouTexte → ConjugaZone, and it ENDS there ("[end of left
+       swipe]").
+
+       This reverses the 7 Sep hub, and the reversal is narrower than it looks
+       rather than a decision taken twice. That day six skills became one
+       column because a sideways drag through ChaTutor, VoixLà and ComposeIt
+       was "a walk through a list nobody thinks of as ordered". These three ARE
+       ordered — say it, hear it, conjugate it, on one lesson — and the other
+       three are not in the chain at all. Skills stays a hub PAGE for the ☰ and
+       the bottom bar; what it is no longer is a station.
+
+       WorDrill's per-lesson address already exists: `/practice/say-it/<deck>`
+       is the same engine the unit-picker page compiles. */
+    href: (deck) => (deck ? `/practice/say-it/${deck}` : "/practice/wordrill"),
+    at: (p) => p.startsWith("/practice/wordrill") || p.startsWith("/practice/say-it"),
   },
   {
-    key: "svplay",
-    name: "Games",
-    // The same, for Numbers (NumBus + NumBourse inside it, in Dan's own
-    // bracket), VocabulaRain and LexicaLater.
-    href: () => "/games",
-    hub: "/games",
-    at: (p) =>
-      p === "/games" ||
-      p.startsWith("/games/numbers") ||
-      p.startsWith("/games/numbus") ||
-      p.startsWith("/games/numbourse") ||
-      p.startsWith("/games/vocabularain") ||
-      p.startsWith("/games/lexicalater") ||
-      p.startsWith("/games/matching"),
+    key: "ecoutexte",
+    name: "ÉcouTexte",
+    /* PER-LESSON SINCE 2026-09-08. ÉcouTexte builds its mini-texts from a UNIT,
+       not a deck, and offers fifteen scenarios through a dropdown — three per
+       unit — so this column used to land a learner on whatever the picker
+       happened to be showing. `content/textgen/lessonScenario.ts` says which of
+       a unit's three texts belongs to each stop, and the lesson route opens on
+       it with no dropdown at all: arriving from a lesson, the choice is already
+       made. The general page keeps its picker. */
+    href: (deck) => (deck ? `/practice/ecoutexte/${deck}` : "/practice/ecoutexte"),
+    at: (p) => p.startsWith("/practice/ecoutexte"),
   },
-  // THE CHAIN ENDS AT GAMES. Dan, 2026-09-07: *"LEADERBOARD AND PROFILE SHOULD
-  // NOT BE INSIDE THIS CHAIN TAKE THEM OUT"*. They were the last two columns
-  // for a day and they do not belong: every station before them is WORK ON A
-  // GOAL — guess it, read it, drill it, play it — and where you stand against
-  // the class is not work. Swiping through the course should not end up at
-  // your own profile any more than reading a book ends at the library card.
-  //
-  // Out of the RAIL is not out of the app: 👤 User is a family in the bottom
-  // bar and the ☰, which is how both pages are reached. Off the rail they
-  // simply get no horizontal swipe at all — `railIndex` returns -1 and
-  // `railNeighbours` answers null in both directions, the same as Home, the
-  // guide and Réglages.
+  {
+    key: "conjugaison",
+    name: "ConjugaZone",
+    /* ONE PAGE, THE LESSON IN ITS ADDRESS (Dan, 2026-09-08: *"ConjugaZone page
+       would land on the same single conjugazone page but land on the particular
+       verbs that we have assigned for that lesson"*, and then the question that
+       decides the shape of it — *"will it be able to return via the swipe right
+       way from ConjugaZone back through the entire chain?"*).
+
+       It can only do that if the lesson is IN THE URL. All fifty lessons share
+       `/conjugaison`, so a right swipe has nothing to read; `?v=` alone cannot
+       stand in for it, because two lessons can share a verb. The remembered
+       deck cannot either — open this page from a bookmark, a link sent to a
+       student, or after the phone dropped the tab, and there is no memory to
+       read, so the swipe would land on somebody else's lesson or on a picker.
+       `?deck=` survives all three.
+
+       THE VERBS ARE NOT IN THE ADDRESS, and that is on purpose. `?deck=` is
+       already the whole answer — content/lessonVerbs.ts turns a lesson into its
+       verbs, and the page reads it there. Spelling them out as well would put
+       the same fact in two places, and the copy in a bookmarked URL would be
+       the stale one the day a verb moves. `?v=` still works, and still means
+       what it always did: drill exactly these, whatever lesson you came from.
+
+       AND A LESSON WITH NO VERBS IS STEPPED OVER. Ten of the fifty conjugate
+       nothing — alphabet, colours, numbers, nouns — so `has` sends a learner
+       swiping left off ÉcouTexte on SIO-003 to the end of the chain rather
+       than into an empty drill. Same rule as SpecuLearn's, one column along. */
+    href: (deck) => (deck ? `/conjugaison?deck=${deck}` : "/conjugaison"),
+    at: (p) => p === "/conjugaison",
+    has: (deck) => {
+      const stop = stopForDeck(deck);
+      return !deck || !stop || lessonHasVerbs(stop.id);
+    },
+  },
+  /* THE CHAIN ENDS AT CONJUGAZONE (Dan, 2026-09-08, closing his own list:
+     "[end of left swipe]"). GAMES WAS THE LAST COLUMN AND IS NOT ANY MORE.
+
+     It goes for the reason Leaderboard and Profile went on 7 Sep — "LEADERBOARD
+     AND PROFILE SHOULD NOT BE INSIDE THIS CHAIN TAKE THEM OUT" — and the reason
+     generalises rather than being about those two pages: every station in this
+     list is WORK ON ONE GOAL, guessed, read, drilled, said, heard, conjugated.
+     A game is not about a goal; NumBus, VocabulaRain and LexicaLater each stand
+     on their own and none of them takes a deck from the lesson you just left.
+
+     Out of the RAIL is not out of the app: 🎮 Games is a family in the bottom
+     bar and in the ☰, which is how all four are reached. Off the rail they
+     simply get no horizontal swipe — `railIndex` answers -1 and
+     `railNeighbours` answers null both ways, the same as Home, the guide,
+     Réglages, and now Skills. */
 ];
 
 /**
@@ -192,6 +233,11 @@ export const RAIL: RailStation[] = [
  */
 function normalise(path: string): string {
   const p = path
+    // THE QUERY IS NOT PART OF THE COLUMN (2026-09-08). ConjugaZone carries its
+    // lesson in `?deck=` — one page, fifty lessons — so `/conjugaison?deck=aimer`
+    // and `/conjugaison` are the same station and must both match `at`. The deck
+    // itself is read by `deckFromPath` below, before this strips it.
+    .replace(/[?#].*$/, "")
     .replace(/\.html$/, "")
     // Trailing slashes come off FIRST. `/map/embed/` is how a static host
     // serves that page, and testing for `/embed$` before the slash is gone
@@ -213,6 +259,15 @@ export function railIndex(path: string): number {
 
 /** The deck a path is working on, read off the path itself. */
 export function deckFromPath(path: string): string | null {
+  /* THE LESSON MAY BE IN THE QUERY, and on exactly one station it always is.
+     Dan asked whether a single-page ConjugaZone could still swipe right through
+     the whole chain (2026-09-08); it can only do so if the page says which
+     lesson it is showing, and `?deck=` is that. Read it BEFORE `normalise`
+     throws the query away, and accept it only on the station that issues it —
+     a `?deck=` bolted onto any other address would be a second way of saying
+     what that address already says, and the two would drift. */
+  const q = path.match(/[?&]deck=([^&#]+)/);
+  if (q && normalise(path) === "/conjugaison") return decodeURIComponent(q[1]);
   const p = normalise(path);
   const seg = p.split("/").filter(Boolean);
   const after = (...prefix: string[]) => {
@@ -302,6 +357,66 @@ export type RailMove = { href: string; name: string } | null;
 
 /** Where a sideways drag goes from here. `back` is rightwards, `forward` is
  *  leftwards. Either is null at the end of the rail, or off it. */
+/**
+ * THE OTHER AXIS: the same station, one GOAL along.
+ *
+ * Dan laid the whole thing out on 2026-09-08, and said the same sentence about
+ * every station in the list: *"swipe up and down to the next or previous SIO —
+ * swipe left for [the next activity] … swipes down to the next SIO (newURL), up
+ * to the previous SIO"*.
+ *
+ * So the app is a GRID, not a line. Across is the activity; down is the course:
+ *
+ *              SIO      SpecuLearn   MneMemo   MémoiRecall   WorDrill   …
+ *     goal 22   ·            ·          ·           ·           ·
+ *     goal 23   ·            ·          ·  YOU       ·           ·
+ *     goal 24   ·            ·          ·           ·           ·
+ *
+ * and moving down from MémoiRecall on goal 23 lands on MémoiRecall for goal 24
+ * — the same activity, the next goal, its own URL. That last part is the whole
+ * reason this cannot be a scroll inside one page: Dan asked for a new address
+ * each time, so a reload, a bookmark and a link all keep their place.
+ *
+ * THIS REPLACES WHAT THE END OF A SCROLL USED TO DO. On 7 Sep, reaching the
+ * bottom carried a learner to the next STATION — the last question of a
+ * pre-test landed on the lesson. Under the grid that is the LEFT swipe's job
+ * and downwards belongs to the course, so the two gestures stop meaning the
+ * same thing. One finger, one meaning, per direction.
+ *
+ * A STATION WITH NOTHING FOR THE NEXT GOAL IS STEPPED OVER, exactly as an empty
+ * column is stepped over going sideways: SpecuLearn skips a goal that has no
+ * questions rather than landing a learner on an empty run.
+ */
+export function sioNeighbours(path: string, deck: string | null): { up: RailMove; down: RailMove } {
+  const here = normalise(path);
+  const i = railIndex(here);
+  if (i < 0) return { up: null, down: null };
+  const station = RAIL[i];
+  /* WHICH GOAL AM I ON? The address answers it on the goals scroller
+     (`/sio/SIO-023`); everywhere else the deck does. A station standing on no
+     goal at all — ÉcouTexte's general page, WorDrill's unit picker — has no
+     place in the column to move from, so it offers no vertical move rather
+     than guessing at goal 1. */
+  const fromPath = here.startsWith("/sio/") ? here.slice(5) : null;
+  const stop = fromPath ? SIOS.find((s) => s.id === fromPath) : stopForDeck(deck);
+  if (!stop) return { up: null, down: null };
+  const at = SIOS.findIndex((s) => s.id === stop.id);
+  if (at < 0) return { up: null, down: null };
+
+  const move = (step: -1 | 1): RailMove => {
+    for (let j = at + step; j >= 0 && j < SIOS.length; j += step) {
+      const s = SIOS[j];
+      const d = s.collectionId ?? null;
+      if (station.has && !station.has(d)) continue;
+      const href = station.key === "goals" ? `/sio/${s.id}` : station.href(d);
+      if (normalise(href) === here) continue;
+      return { href, name: `${station.name} · goal ${s.num}` };
+    }
+    return null;
+  };
+  return { up: move(-1), down: move(1) };
+}
+
 export function railNeighbours(path: string, deck: string | null): { back: RailMove; forward: RailMove } {
   const here = normalise(path);
   const i = railIndex(here);

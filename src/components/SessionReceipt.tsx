@@ -20,6 +20,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import { HOME_HREF } from "@/lib/routes";
 
 export type ReceiptProps = {
   /** XP earned in this run, and how much of it the multiplier paid for. */
@@ -43,7 +44,7 @@ export type ReceiptProps = {
 
 export default function SessionReceipt({
   xp, mult = 1, right, total, streak,
-  strength, weakness, fixHref, againHref, onAgain, homeHref = "/",
+  strength, weakness, fixHref, againHref, onAgain, homeHref = HOME_HREF,
 }: ReceiptProps) {
   // A perfect run is worth saying so, once, and only when there was something
   // to be perfect at.

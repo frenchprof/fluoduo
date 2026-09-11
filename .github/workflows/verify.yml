@@ -411,6 +411,13 @@ jobs:
       - name: "Every page wears exactly one coloured strip at the top (7 Sep)"
         run: python3 verify/verify126-band-strip.py
 
+      # The same lesson one corner further in: a framed station drew a SECOND
+      # sheet of paper on the page's own, and the coils started below the band
+      # so the left edge changed width halfway down. Both are geometry, so both
+      # are measured on the rendered page rather than grepped.
+      - name: "One sheet per page, and the coils run up to the band (11 Sep)"
+        run: python3 verify/verify230-one-sheet.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
@@ -447,6 +454,16 @@ jobs:
       - name: "No pre-test stacks its questions down one page (8 Sep)"
         run: python3 verify/verify171-pretest-feeds.py
 
+      # Fifteen scenarios, fifty lessons: a typo here draws a working page
+      # showing the wrong text, which no build error would ever catch.
+      - name: "Every lesson's ÉcouTexte is its own listening text (8 Sep)"
+        run: python3 verify/verify172-lesson-listening.py
+
+      # Dan ruled on this split row by row over two days. A verb in two lessons
+      # is drilled twice and one in none is never taught — both silent.
+      - name: "Every lesson's ConjugaZone drills its own verbs (11 Sep)"
+        run: python3 verify/verify173-lesson-verbs.py
+
       # 💬 was the Skills door AND the report-a-bug button; 🧰 was a game AND
       # the Outils tray. Both were live on one screen and took weeks to spot.
       - name: "No glyph means two different things (9 Sep)"
@@ -458,6 +475,24 @@ jobs:
       - name: "The address decides the course — f2 shows the closed door (11 Sep)"
         run: python3 verify/verify195-courses.py
 
+      # A link left pointing at "/" still RESOLVES — nothing errors, the learner
+      # just lands on the front door. Which is how eighteen of them survived the
+      # move and reached Dan as "closing a page jumps to the Enter page".
+      - name: "A bare \"/\" never means Home (11 Sep)"
+        run: python3 verify/verify210-home-href.py
+
+      # Driven, not grepped: the flip is a cancelled wheel event, and
+      # preventDefault() is ignored on a passive listener — which is what
+      # React's own onWheel is. A source check would pass a dead flip.
+      - name: "The map's wheel comes back, and the finger is left alone (11 Sep)"
+        run: python3 verify/verify211-map-wheel.py
+
+      # A selector is a string in a content file and an attribute in a
+      # component, and nothing joins them. Rename one and the guide points at
+      # nothing — no error, just "Finding it…" on the run meant to teach the
+      # activity.
+      - name: "No guided step points at nothing (11 Sep)"
+        run: python3 verify/verify212-guided-steps.py
       # Builds once itself to ask the chooser's own functions what they offer,
       # then checks every answer against the exported pages.
       - name: "The stop chooser offers nothing that goes nowhere (11 Sep)"

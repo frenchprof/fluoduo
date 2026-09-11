@@ -38,13 +38,14 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
-import { TAB_ICONS, activity, bandOf, familyName, familyOf, familyShort, hubFamily } from "@/content/activities";
+import { TAB_ICONS, activity, familyName, familyOf, familyShort, hubFamily, stripOf } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { stopForDeck } from "@/lib/stopTag";
 import { speculearnHref } from "@/lib/speculearn/route";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { HOME_HREF } from "@/lib/routes";
 
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
@@ -90,7 +91,7 @@ export default function CahierShell({
   const famKey = familyOf(active);
   // What the page ASKS, where it is an activity — the band over it takes
   // this over the family (Dan, 2026-08-26). Section pages keep the family.
-  const bandKey = bandOf(active);
+  const bandKey = stripOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOLinGo" — tabs, history, bookmarks and screen-reader
@@ -203,24 +204,33 @@ export default function CahierShell({
               that cannot name itself should say what FAMILY it is in, which is
               always true and always something; saying nothing is the one answer
               that is never right. */}
-          {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
-                   (globals.css, `.page-band`), so it takes PageBand's own
-                   padding like every other band and its ✕ lands in the same
-                   place on every page. */ />
-          )}
+          {/* THE COILS START AT THE BAND (Dan, 2026-09-11, shown this corner:
+              *"coils up to the band and also the corresponding vertical
+              strip"*). They used to start BELOW it, and the page's left edge
+              therefore changed width halfway down the screen — a 6px family
+              spine beside the bar and the band, then a 30px coil strip under
+              it. Home has no band, so its coils started at its blue hero and
+              the two pages did not match; Dan met the step and named it.
 
-          {/* The coils live HERE, below the bar and the band, like a real
-              notebook's coils sit below its cover chrome (Dan's 6 Sep photos).
-              They used to span the whole page from top:0 and rely on the bar
-              and band painting over them — which worked while they were
-              clipped inside the page, but the loops now OVERHANG the page
-              edge onto the desk, and nothing can cover the desk. Anchoring
-              them to the content region is what keeps orphan half-loops from
-              floating beside the top bar. flex-1 stretches the region to the
-              page's bottom so short pages keep coils all the way down. */}
-          <div className="relative flex-1">
+              The binding region opens ABOVE the band now, so the rings and the
+              --fam-ink strip they carry run from the band's top to the page's
+              bottom and the edge is one width the whole way. It still does not
+              reach the SITE BAR: the loops overhang the page onto the desk
+              (Dan, 6 Sep: "it must go pass the edge"), nothing can cover the
+              desk, and coils beside the ☰ row would be half-loops floating
+              next to the app's chrome rather than binding a sheet.
+
+              `flex flex-col` because this region now holds two children rather
+              than one; `flex-1` still stretches it to the page's bottom so a
+              short page keeps its coils all the way down. */}
+          <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
+          {famKey && active !== "home" && band !== false && (
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+                   (globals.css, `.cahier-binding` z-index) — a real coil
+                   crosses the cover strip, it does not stop at it. The ✕ stays
+                   clickable: the binding is `pointer-events: none`. */ />
+          )}
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
