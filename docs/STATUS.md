@@ -6,6 +6,53 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 10 Sep — the f1–f4 subdomains: connector reached the session, and still cannot do it
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+
+Dan authorised the Cloudflare connector and opened a fresh session: *"do the
+subdomains"*, having been offered three options the day before (reserve all
+four names now / add f1 only / wire the app to read its hostname first). Doing
+the subdomains is the first of those: four custom-domain entries, all serving
+French 1 for now.
+
+**THE CONNECTOR IS LIVE HERE — and it is the wrong shape for the job.** Its
+tools were listed and called in this session (it returned the account's 18
+Workers). But the whole tool set is Workers, KV, D1, R2, Hyperdrive and a docs
+search. There is no tool for a Pages custom domain and none for a DNS record,
+and no API token exists in a session's environment. So the 9 Sep note below
+("a NEW session after that can do the f1–f4 subdomain work") was wrong about
+what the connector can do, not about whether it would connect.
+
+**MEASURED TODAY:** `f1`–`f4.fluolingo.com` have no DNS record at all;
+`fluolingo.com` resolves to Cloudflare and 302s to `fluolingo.withdrchan.com`;
+`fluoguo.pages.dev` answers 200. So the four entries go on the live Pages
+project, and Cloudflare will write the CNAMEs itself because the zone is
+already on the account.
+
+**WHAT LANDED:** the exact four-step dashboard recipe, in `docs/DEPLOY.md`
+under *"The four course addresses — f1 to f4"*, together with the two
+warnings Dan already has (all four addresses show French 1 today; progress is
+per hostname, so an address change starts a learner at zero). No `src/`
+change — the app does not read its hostname, by Dan's earlier instruction, and
+this session did not reintroduce that.
+
+**AN ODDITY, NOT TOUCHED:** a Worker called `fluoduo` was created on the
+account on 9 Sep 13:18 UTC, and its whole code is `return new Response("Hello
+world")`. It has no route and does nothing. It was almost certainly left by
+the 9 Sep session probing the connector; Dan can delete it from Workers &
+Pages whenever he likes.
+
+**11 Sep, SAME SESSION — f1 IS LIVE, and the root went dark for an hour.**
+Dan added f1 (Active, 200 on probe) and also tried the root and www, which
+stuck at *Verifying* because both names already carried the redirect to
+withdrchan. He chose to keep the redirect and removed the two rows — and the
+removal deleted their DNS records, so `fluolingo.com` answered nothing at all
+until two proxied `AAAA 100::` placeholders were added back. Full account and
+the zone's 3-record shape are in `docs/DEPLOY.md` under *"THE TRAP"*. Probed
+after the repair: root and www 302 to withdrchan, fluoli.ngo / withdrchan /
+f1 all 200. f2–f4 remain blank names for whenever Dan wants them.
+
 ## 9 Sep — housekeeping: RailGroups retired, #246 landed (integration lane)
 
 Sole editor of STATUS.md in this commit: this session (`qc/retire-railgroups`).
