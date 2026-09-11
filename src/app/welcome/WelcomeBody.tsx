@@ -359,9 +359,20 @@ export default function WelcomeBody() {
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
       <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
+        {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
+            PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
+            ENTER"*). The gold ring used to pulse on goal 1, which on a still
+            scene cannot be pressed at all; it is off there now, and the beat
+            moves here, to the only control on the page.
+
+            It is the map's own `home-map3d-pulse` rather than a second
+            animation invented for this page: same 2s, same 1.08, so the door
+            beats at the rhythm the current stop beats at once you are inside.
+            That rule already stands down under prefers-reduced-motion, which
+            is why there is no second guard here. */}
         <Link
           href="/home"
-          className="rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
+          className="home-map3d-pulse rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
             background: "var(--sio-phrases)",
             color: "var(--cahier-ink)",
