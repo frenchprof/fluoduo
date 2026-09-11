@@ -1953,9 +1953,17 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
      joy     -> AMBER    #e88c00   (was #f8c20d, 23° away)
      win     -> OLIVE    #98b300   (was #7be650, 18° away)
-     flow    -> TEAL     #00c197   (was #00c5c9, 27° away)
-     focus   -> SKY      mono tone #00729f  (was #0075e3)
-     streak  -> MAGENTA  mono tone #a800b3  (was #d42a8f)
+     flow    -> GREEN    #00dd3e   (was #00c5c9, 52° away — see the squeeze)
+     focus   -> SKY      mono tone #00729f  (was #0075e3, 20°)
+     streak  -> PINK     mono tone #ba007a  (was #d42a8f, 0° — an exact match)
+
+   ASSIGNED AGAINST THE SEVEN FAMILIES, NOT THE SIX. The first pass of this
+   sweep used the 31 Aug roster and put `flow` on TEAL — which REVISE has owned
+   since 9 Sep, when Skills was retired and the families went to seven (Lesson
+   yellow, Practice blue, Revise teal, Games violet, Oral periwinkle, Tools
+   orange, User grey). Six marks are spoken for, so the free six are amber,
+   olive, green, sky, magenta and pink, and the assignment below is the one that
+   minimises the WORST mismatch across all five roles rather than the total.
 
    WHY TWO OF THEM TAKE THE MONO TONE AND NOT THE MARK ITSELF. `focus`,
    `streak` and `miss` are the three roles allowed to be drawn as a BARE mark —
@@ -1977,11 +1985,19 @@ h3.cahier-display { font-size: var(--fs-h3); }
    their reds, which is the feedback exemption Dan granted on 7 Sep. Anything
    else is a decision about the palette, not about these tokens.
 
-   AND THE SIX FREE MARKS ARE SIX, FOR SEVEN ROLES. The families already took
-   one mark out of the palette each — orange, yellow, green, blue, violet,
-   pink — leaving amber, olive, teal, sky, periwinkle and magenta. Even
-   without the red problem the two axes cannot both be complete without
-   sharing a hue; the reds leaving is what makes the remaining five fit.
+   THE SQUEEZE, AND WHY `flow` SITS 52° FROM ITS OWN HUE. Seven families and
+   seven roles is fourteen meanings for twelve marks, so something has to give.
+   `flow` (197°, a cyan) and `focus` (255°) both want the blue-green side, and
+   the only free mark there is SKY at 235°. `focus` is the nearer of the two and
+   takes it; `flow` falls back to GREEN at 52°, which is the worst fit in the
+   sweep and is recorded as such rather than dressed up. The alternative is to
+   let `flow` share TEAL with Revise — 27° away and a better colour — on the
+   grounds that the two axes were always separate systems (one says WHAT a thing
+   means, the other WHERE you are). That is a decision about the palette, not
+   about this file, so it is Dan's; nothing here shares a mark today.
+
+   The reds leaving is what makes even five fit: with `miss` and `reward` still
+   on the twelve there would be seven roles for six free marks.
 
      · The Cahier ground is untouchable. Nothing here redefines --cahier-paper,
        --cahier-ink or any structural token; the 60/30 stays exactly as it is.
@@ -2008,10 +2024,10 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --dopa-win-wash:    oklch(94.5% 0.07 120); /* #e6f4c0 */
   --dopa-win-on:      var(--cahier-ink);     /* 6.15:1 */
 
-  --dopa-flow:        oklch(72% 0.14 170);   /* #00c197 · focus states · TEAL */
-  --dopa-flow-ink:    oklch(50% 0.10 170);   /* #00765b · 5.21:1 */
-  --dopa-flow-wash:   oklch(94.5% 0.07 170); /* #befde6 */
-  --dopa-flow-on:     var(--cahier-ink);     /* 6.35:1 */
+  --dopa-flow:        oklch(78% 0.25 145);   /* #00dd3e · focus states · GREEN */
+  --dopa-flow-ink:    oklch(50% 0.16 145);   /* #00781c · 5.26:1 */
+  --dopa-flow-wash:   oklch(94.5% 0.07 145); /* #d0fad0 */
+  --dopa-flow-on:     var(--cahier-ink);     /* 7.99:1 */
 
   --dopa-reward:      oklch(68% 0.19 33);    /* #f76143 · level-up */
   --dopa-reward-ink:  oklch(50% 0.19 30);    /* #b71c0e · 6.15:1 */
@@ -2023,10 +2039,10 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --dopa-focus-wash:  oklch(94.5% 0.03 235); /* #daf1ff */
   --dopa-focus-on:    #fff;                  /* 5.37:1 */
 
-  --dopa-streak:      oklch(52% 0.24 325);   /* #a800b3 · streaks, big wins · MAGENTA, mono tone */
-  --dopa-streak-ink:  oklch(54% 0.26 325);   /* #b200be · 5.36:1 */
-  --dopa-streak-wash: oklch(94.5% 0.05 325); /* #fee2ff */
-  --dopa-streak-on:   #fff;                  /* 6.33:1 */
+  --dopa-streak:      oklch(52% 0.22 350);   /* #ba007a · streaks, big wins · PINK, mono tone */
+  --dopa-streak-ink:  oklch(54% 0.23 350);   /* #c40081 · 5.32:1 */
+  --dopa-streak-wash: oklch(94.5% 0.03 350); /* #ffe4f0 */
+  --dopa-streak-on:   #fff;                  /* 6.23:1 */
 
   --dopa-miss:        oklch(59% 0.20 27);    /* #db3834 · wrong answers */
   --dopa-miss-ink:    oklch(50% 0.20 27);    /* #bb0916 · 6.20:1 */
