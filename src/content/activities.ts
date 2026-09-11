@@ -73,9 +73,18 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 export const FAMILIES: Family[] = [
   // 🧑‍🏫, not 🎯 (Dan, 2026-09-09) — the family now holds Map, the goal
   // itself and Help together, so it wears a teacher rather than a target.
-  // href stays "/" — Home is still Lesson's door until the SIO-per-page
-  // work (a separate, larger piece Dan has someone else building) lands.
-  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/" },
+  // Home is still Lesson's door until the SIO-per-page work (a separate,
+  // larger piece Dan has someone else building) lands. It used to say "/",
+  // which stopped meaning Home on 9 Sep when the welcome page took the root —
+  // so the Lesson tile walked a learner out of the app to the front door.
+  //
+  // A LITERAL, NOT `HOME_HREF`, and that is deliberate. This file is a content
+  // REGISTRY that tooling reads as text, not only as code: verify52 parses
+  // FAMILIES and ACTIVITIES with a regex that wants `href: "…"`, and verify82
+  // imports it from a bare node script where the `@/` alias does not resolve.
+  // Both went red on the constant. Components import HOME_HREF; the registry
+  // spells the address out.
+  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/home" },
   // 📝 (Dan, 2026-09-09), retiring 🏋️. href points straight at SpecuLearn
   // now — Practice's hub page retired the same day (DELIBERATE_DOOR below);
   // /practice itself still exists as a redirect for old links/bookmarks.

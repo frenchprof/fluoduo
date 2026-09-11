@@ -35,6 +35,7 @@ import { sioForDeck, sioForItem } from "@/lib/curriculum";
 import { nextStep, type NextStep } from "@/lib/nextStep";
 import { queueForReview } from "@/lib/progress";
 import { reviserHref } from "@/lib/reviser";
+import { HOME_HREF } from "@/lib/routes";
 
 export type GameMiss = {
   /** Curated item id when the game knows it — enables the ReVue queue and the
@@ -203,7 +204,7 @@ export default function GameOver({
             {next && <NextChip step={next} />}
             <button
               type="button"
-              onClick={() => router.push(next?.href ?? "/")}
+              onClick={() => router.push(next?.href ?? HOME_HREF)}
               className={`cahier-btn ml-auto shrink-0 justify-center font-black ${queueable.length === 0 ? "cahier-btn-primary" : ""}`}
             >
               Next ›

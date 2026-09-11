@@ -48,6 +48,7 @@ import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { HOME_HREF } from "@/lib/routes";
 
 export type DrillCta = {
   label: string;
@@ -230,7 +231,7 @@ export default function DrillShell({
     () => (finish ? nextStep(activity, { collectionId: deck }) : null),
     [finish, activity, deck],
   );
-  const goNext = () => router.push(next?.href ?? "/");
+  const goNext = () => router.push(next?.href ?? HOME_HREF);
   // WHY is closed whenever a new verdict lands — an explanation is asked
   // for, never carried over from the last question. (State adjusted during
   // render on the prop change, not in an effect.)

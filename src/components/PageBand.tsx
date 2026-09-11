@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { HOME_HREF } from "@/lib/routes";
 
 /**
  * The page's heading band — ONE structure site-wide, ONE LINE, three parts.
@@ -53,7 +54,7 @@ import type { ReactNode } from "react";
 export default function PageBand({
   title,
   goal,
-  exitHref = "/",
+  exitHref = HOME_HREF,
   exitLabel = "Close",
   className = "",
 }: {
