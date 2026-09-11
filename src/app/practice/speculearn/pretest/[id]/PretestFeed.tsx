@@ -58,6 +58,7 @@ import { getPretestForSio } from "@/content/pretests";
 import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
 import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
+import { HOME_HREF } from "@/lib/routes";
 import { speculearnPool, type PoolItem } from "@/lib/speculearn/pool";
 import { getSio } from "@/content/sios";
 import { goalNumber } from "@/lib/stopTag";
@@ -68,7 +69,7 @@ import type { Pretest } from "@/lib/pretests/schema";
 // A pre-test's tab rail deliberately does NOT link to Practice activities —
 // the pre/post boundary (PRETEST_BLUEPRINT.md).
 const PRETEST_TABS: ShellTab[] = [
-  { key: "home", ...TAB_ICONS.home, href: "/" },
+  { key: "home", ...TAB_ICONS.home, href: HOME_HREF },
   { key: "pretest", ...TAB_ICONS.pretest },
 ];
 

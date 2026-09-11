@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { loadProgress } from "@/lib/progress";
 import { continueSioId } from "@/lib/continuer";
+import { HOME_HREF } from "@/lib/routes";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
 const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
@@ -147,7 +148,7 @@ function readSeen(): Record<string, 1> {
 
 export default function FirstTour() {
   const drag = useDragFloat("fl.float.tour", { right: 16, bottom: 16 }, "left");
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname() ?? HOME_HREF;
   const tour = tourFor(pathname);
   const [mode, setMode] = useState<"hidden" | "offer" | "chip" | "tour">("hidden");
   /** Ticked on the offer sheet: « No thanks » then means never again. */

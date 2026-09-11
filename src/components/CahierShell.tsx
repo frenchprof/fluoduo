@@ -45,6 +45,7 @@ import { speculearnHref } from "@/lib/speculearn/route";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { HOME_HREF } from "@/lib/routes";
 
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
@@ -204,7 +205,7 @@ export default function CahierShell({
               always true and always something; saying nothing is the one answer
               that is never right. */}
           {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* No binding clearance any more — the band paints over the coils
                    (globals.css, `.page-band`), so it takes PageBand's own
                    padding like every other band and its ✕ lands in the same
                    place on every page. */ />

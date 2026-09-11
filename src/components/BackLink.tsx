@@ -9,9 +9,10 @@
  */
 import { useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { HOME_HREF } from "@/lib/routes";
 
 export default function BackLink({
-  fallback = "/",
+  fallback = HOME_HREF,
   className,
   children,
 }: {

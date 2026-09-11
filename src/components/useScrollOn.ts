@@ -45,10 +45,11 @@ import { usePathname, useRouter } from "next/navigation";
 
 import usePullPastEnd from "@/components/usePullPastEnd";
 import { RAIL_MESSAGE, deckFromPath, railNeighbours, recalledRailDeck } from "@/lib/swipeRail";
+import { HOME_HREF } from "@/lib/routes";
 
 export default function useScrollOn(): void {
   const router = useRouter();
-  const path = usePathname() ?? "/";
+  const path = usePathname() ?? HOME_HREF;
   // One page carries you on ONCE. Reset on every navigation: a fresh page has
   // a fresh end.
   const firedFor = useRef<string | null>(null);
