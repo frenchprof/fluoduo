@@ -6,6 +6,66 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
+
+**MERGED: #306** (the guided first run, five activities — ConjugaZone held on
+Dan's instruction, *"QC and land it except for the ConjugaZone part that i am
+not done vetting"*). **DEPLOYED** as run #56 and confirmed serving on
+`f1.fluolingo.com`, by finding #306's own hints text in a production chunk —
+not by reading the workflow's conclusion, which only says main was mirrored.
+
+**#308 is the QC of #307** (pre-tests lane). The lane's work lands whole: 23
+sizes written in `rem` were invisible to the type ramp, so `text-[0.7rem]`
+rendered 11.2px on a desktop while `text-[11px]` beside it had grown to 15px —
+the nominally smaller size rendering larger.
+
+**THE HANDOVER SAID `verify151` WAS ALREADY RED ON MAIN. IT WAS NOT**, and the
+reason it looked that way is the part worth keeping. The lane stashed its
+source and re-ran the check. **`verify151` reads `out/`, not `src/`** — stashing
+does not unbuild the app, so the check ran against the branch's own build and
+reported the branch's own fault as main's. Any check that drives the built
+export needs a REBUILD after a stash, or it is measuring the thing you just put
+away. Built both ways here: main green at all three sizes, the branch failing at
+phone-held-sideways.
+
+**AND THE FAULT UNDERNEATH IS OLDER THAN THAT BRANCH.** Every ramp rule is
+`:root .text-[X]` — a pseudo-class plus a class — so it outranks Tailwind's own
+`.sm\:text-[Y]`, which is a class alone. A page's OWN breakpoint override
+therefore lost to the ramp, at every width, in silence:
+
+    welcome, phone sideways   asked 1.6rem   got 3.2rem ramped   59.9px
+    welcome, desktop          asked 4.4rem   got 3.2rem ramped
+    NumBus,  desktop          asked   38px   got   30px ramped
+
+The three px ones have been dead **since the ramp was written on 5 Sep**.
+Nothing noticed: a size that stops changing at a breakpoint looks like a size
+somebody chose. Only `/welcome` had a check watching the geometry, which is why
+adding the rem rules is what finally named it — the headline sat at 59.9px
+where the page asks for 25.6px, on the road. Dan's own words, the day that page
+was built: *"You are COMPLETELY blocking the view of my winding road horizon,
+which is the WHOLE POINT of this page."*
+
+All ten variant spellings now carry their own ramp rule in their own media
+query. `verify106` gains a clause that fails a new one with none — the base
+list could never have caught this, because the spelling it misses is not a base
+spelling.
+
+**ONE SCENE OPTS OUT, and it is a decision, not a workaround.** With the
+breakpoints working again, `/welcome`'s three lines get grown twice — once by
+their own breakpoint, once by the ramp — and the subtitle crossed 10px into the
+horizon band. They are a COMPOSITION, sized against a horizon drawn on the
+page, so they are already adaptive to the screen by another mechanism.
+`welcome-sky-type` restates the page's own numbers, so `/welcome` renders
+exactly what shipped. This is the `em` exemption's twin: never scale twice.
+`verify106` holds the hole at one element, because a hole widens quietly — and
+that clause strips comments first, having counted its own explanation as a
+second use on its first run.
+
+**LEFT FOR DAN, NOT GUESSED AT:** whether the welcome hero should grow on big
+screens. Doing it means retuning numbers he approved by eye, so the QC left it
+rendering what production renders and put the choice to him with a before/after
+picture of the real app.
+
 ## 11 Sep — CI waits for the condition now, not the clock (verify lane)
 
 Dan, after a morning where the Actions allowance ran out and NOTHING could

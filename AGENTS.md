@@ -700,3 +700,42 @@ was breaking `position: fixed`'s containing block. Fixed the same way
 `document.body`. Neither bug was visible in a static reading of the code —
 both only showed up driving the real, built app, which is why this is
 written down as a warning and not just a diff.
+
+# No font size is nailed to a pixel — permanent (2026-09-05, restated 2026-09-11)
+
+**Dan, 5 Sep: *"the relative font size thingy should apply FluOLinGo wide, not
+just here."* Dan again, 11 Sep: *"for font sizes, don't use absolute hard coded
+font sizes, we want adaptive ones to the screen size."***
+
+He said it twice because it was in a check but not in this file, and a session
+reads this file. So, plainly: **every size in the app is `calc(Xrem + var(--fs-step) * M)`**,
+where `--fs-step` is a clamp declared in `:root` in `globals.css`. On a phone
+the step is zero, so the app renders at its designed size; on a desktop it
+opens to `0.36rem` and the whole ramp grows together. The `rem` base is the
+other half: a learner who raises their browser's text size raises the app with
+it, which a pixel can never do.
+
+    hard pixel   font-size: 15px             phone 15  ·  desktop 15
+    on the ramp  calc(0.9375rem + step*0.94) phone 15  ·  desktop ~20.6
+
+**You do not rewrite the 310 `text-[NNpx]` utilities** — `globals.css` redefines
+each distinct size once, in the ramp block, and wins because it is imported
+after Tailwind. Adding a NEW arbitrary size means adding one line there. That
+is the whole job.
+
+**`verify106-fluidtype.py` holds all three ways a size escapes Tailwind**: a
+`font-size: NNpx` in globals.css, a `fontSize: "NNpx"` inline, and — added
+11 Sep — a CSS block a component writes itself. The check also fails a ramp
+rule that matches nothing, so the ladder cannot silently fill with steps for
+text the app has stopped setting.
+
+**The one exemption is PAPER, and it is a list.** A printed page has no
+viewport: ChaTutor's `savePdf()` opens a window, writes a stylesheet into it
+and calls `print()`, so `18px` there is a sheet of paper, not debt. Sizing it
+off `--fs-step` would read the print window's width, which nobody looks at.
+The next exemption will not be that file, so it goes in the `PAPER` set with
+its reason beside it — never as a filename buried in a regex.
+
+This is the sibling of the mock-up rule, not an exception to it: a mock-up Dan
+is asked to judge must use this same scale, or the type he approves is not the
+type that ships.

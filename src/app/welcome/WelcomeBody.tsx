@@ -239,7 +239,21 @@ export default function WelcomeBody() {
           a swipe that starts on the headline still travels the road — the
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[4%] flex flex-col items-center px-6 text-center sm:top-[4%]">
+      {/* `welcome-sky-type` OPTS THIS BLOCK OUT OF THE TYPE RAMP, and the
+          reason is the one this page was built on. The ramp grows every size
+          with the viewport; the three lines below are a COMPOSITION, sized by
+          breakpoint against a drawn horizon, and growing them a second time
+          walks them back down over the road — the exact fault Dan named:
+          "You are COMPLETELY blocking the view of my winding road horizon,
+          which is the WHOLE POINT of this page." Measured at 1440x900 with the
+          ramp on, the subtitle crossed 10px into the horizon band.
+
+          This is the same exemption the ramp already makes for `em`, for the
+          same stated reason — a size that is already adaptive by another
+          mechanism must not have the step applied twice. The rule lives in
+          globals.css beside the ramp; verify106 holds the list, verify151
+          holds the horizon. */}
+      <div className="welcome-sky-type pointer-events-none absolute inset-x-0 top-[4%] flex flex-col items-center px-6 text-center sm:top-[4%]">
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
