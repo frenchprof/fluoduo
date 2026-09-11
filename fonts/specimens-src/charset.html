@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Regular.woff2)format("woff2");font-weight:400}
+@font-face{font-family:"PH";src:url(fonts/PatrickHand-latin.woff2)format("woff2")}
+@font-face{font-family:"PH";src:url(fonts/PatrickHand-latinext.woff2)format("woff2");unicode-range:U+100-24F}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;color:#111;font-family:-apple-system,system-ui,sans-serif;padding:26px 30px 30px}
+h1{font-size:12px;font-weight:600;color:#666;margin-bottom:4px}
+.sub{font-size:11px;color:#999;margin-bottom:16px;line-height:1.5}
+.pair{padding:7px 0 9px;border-bottom:1px solid #f2f2f2}
+.pair:last-child{border-bottom:0}
+.row{display:flex;align-items:baseline;gap:12px}
+.tag{flex:0 0 74px;font-size:9px;letter-spacing:.03em;text-transform:uppercase;color:#bbb;text-align:right}
+.tag.p{color:#e3a8c0}
+.fh{font-family:"FH";font-size:23px;line-height:1.35;color:#111}
+.ph{font-family:"PH";font-size:23px;line-height:1.35;color:#c02f6a}
+.miss{font-size:9.5px;color:#d08fa8;margin-left:8px;font-family:-apple-system,system-ui,sans-serif;white-space:nowrap}
+.nfh{font-family:"FH";font-size:46px;line-height:1.1;color:#111}
+.nph{font-family:"PH";font-size:46px;line-height:1.1;color:#c02f6a}
+.none{font-size:12px;color:#ccc;font-style:italic;font-family:-apple-system,system-ui,sans-serif}
+</style>
+<h1>FluOlinGo Hand Regular — every row against Patrick Hand 400</h1>
+<div class="sub">Patrick Hand in pink under each row. Characters Patrick Hand has no glyph for are dropped and counted, rather than shown in a silent fallback face.</div>
+<div class="pair namepair">
+  <div class="row"><div class="tag">FluOlinGo</div><div class="nfh">FluOlinGo</div></div>
+  <div class="row"><div class="tag p">Patrick</div><div class="nph">FluOlinGo</div></div>
+</div>
+<div id="out"></div>
+<script>
+const ROWS = [
+ "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+ "abcdefghijklmnopqrstuvwxyz",
+ "0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+ "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ",
+ "àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ",
+ "ĀĂĄĆĈĊČĎĐĒĖĘĚĞĠĢĦĨĪĮıIJĴĶĹĻĽŁŃŅŇŊŌŐŒŔŘŚŞŠŢŤŦŨŮŰŲŴŶŸŹŻŽ",
+ "āăąćĉċčďđēėęěğġģħĩīįıĳĵķĺļľłńņňŋōőœŕřśşšţťŧũůűųŵŷÿźżž",
+ "¡¿«»‹›„“”‘’•–—…†‡‰′″§¶©®™ºª",
+ "¢£¤¥€₹₽₩₺₴₿ ×÷±−≠≤≥≈∞√∑∏∫∂∆∅µπΩ¬",
+ "¼½¾⅓⅔⅛⅜⅝⅞ ⁰¹²³⁴⁵⁶⁷⁸⁹ ₀₁₂₃₄₅₆₇₈₉ ←↑→↓↔↕ ◊★☆♥✓✗",
+ "FluOlinGo · Français : « Où est le cœur de l’été ? » — Ça va !",
+ "FluOlinGo · Zażółć gęślą jaźń · Příliš žluťoučký kůň · Größenwahn",
+ "FluOlinGo · Señor, ¿cuántos años? · Đêm khuya · İstanbul’da · Ærø",
+];
+const c = document.createElement("canvas").getContext("2d");
+const ALL = ROWS.join("");
+function has(ch){
+  if (ch === " ") return true;
+  c.font = '23px "PH", monospace'; const a = c.measureText(ch).width;
+  c.font = '23px monospace';       const b = c.measureText(ch).width;
+  return Math.abs(a-b) > 0.01;
+}
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+(async () => {
+  // The faces must actually be loaded before canvas can measure them; waiting on
+  // document.fonts.ready is not enough when nothing in the DOM uses them yet.
+  await Promise.all([
+    document.fonts.load('23px "PH"', ALL),
+    document.fonts.load('23px "FH"', ALL),
+  ]);
+  // Sanity: if a plain capital reads as missing, the probe is broken, not the font.
+  if (!has("A")) { document.title = "PROBE-BROKEN"; }
+  document.getElementById("out").innerHTML = ROWS.map(r => {
+    const kept = [...r].filter(has).join("");
+    const missing = [...r].length - [...kept].length;
+    const phCell = kept.trim()
+      ? `<div class="ph">${esc(kept)}</div>${missing ? `<span class="miss">${missing} not in Patrick Hand</span>` : ""}`
+      : `<div class="none">nothing in this row exists in Patrick Hand</div>`;
+    return `<div class="pair">
+      <div class="row"><div class="tag">FluOlinGo</div><div class="fh">${esc(r)}</div></div>
+      <div class="row"><div class="tag p">Patrick</div>${phCell}</div>
+    </div>`;
+  }).join("");
+})();
+</script>

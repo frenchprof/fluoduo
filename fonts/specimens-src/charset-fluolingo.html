@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Regular.woff2)format("woff2");font-weight:400}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;color:#111;font-family:-apple-system,system-ui,sans-serif;padding:14px 20px}
+.label{font-size:8.5px;color:#777;margin-bottom:16px}
+.name{font-family:"FH";font-size:52px;line-height:1;padding:2px 0 22px}
+.line{font-family:"FH";font-size:23px;line-height:1.35;padding:9px 0 10px}
+</style>
+<div class="label">FluOlinGo Hand Regular · 414 codepoints</div>
+<div class="name">FluOlinGo</div>
+<div id="out"></div>
+<script>
+const ROWS = [
+ "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+ "abcdefghijklmnopqrstuvwxyz",
+ "0123456789 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+ "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞ",
+ "àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ",
+ "ĀĂĄĆĈĊČĎĐĒĖĘĚĞĠĢĦĨĪĮıĲĴĶĹĻĽŁŃŅŇŊŌŐŒŔŘŚŞŠŢŤŦŨŮŰŲŴŶŸŹŻŽ",
+ "āăąćĉċčďđēėęěğġģħĩīįıĳĵķĺļľłńņňŋōőœŕřśşšţťŧũůűųŵŷÿźżž",
+ "¡¿«»‹›„“”‘’•–—…†‡‰′″§¶©®™ºª",
+ "¢£¤¥€₹₽₩₺₴₿ ×÷±−≠≤≥≈∞√∑∏∫∂∆∅µπΩ¬",
+ "¼½¾⅓⅔⅛⅜⅝⅞ ⁰¹²³⁴⁵⁶⁷⁸⁹ ₀₁₂₃₄₅₆₇₈₉ ←↑→↓↔↕ ◊★☆♥✓✗",
+ "FluOlinGo · Français : « Où est le cœur de l’été ? » — Ça va !",
+ "FluOlinGo · Zażółć gęślą jaźń · Příliš žluťoučký kůň · Größenwahn",
+ "FluOlinGo · Señor, ¿cuántos años? · Đêm khuya · İstanbul’da · Ærø",
+];
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+document.getElementById("out").innerHTML = ROWS.map(r => `<div class="line">${esc(r)}</div>`).join("");
+</script>

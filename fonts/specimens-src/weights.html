@@ -1,0 +1,38 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Thin.woff2)format("woff2");font-weight:100}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-ExtraLight.woff2)format("woff2");font-weight:200}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Light.woff2)format("woff2");font-weight:300}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Regular.woff2)format("woff2");font-weight:400}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Medium.woff2)format("woff2");font-weight:500}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-SemiBold.woff2)format("woff2");font-weight:600}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Bold.woff2)format("woff2");font-weight:700}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-ExtraBold.woff2)format("woff2");font-weight:800}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Black.woff2)format("woff2");font-weight:900}
+@font-face{font-family:"PH";src:url(fonts/PatrickHand-latin.woff2)format("woff2")}
+@font-face{font-family:"PH";src:url(fonts/PatrickHand-latinext.woff2)format("woff2");unicode-range:U+100-24F}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;color:#111;font-family:-apple-system,system-ui,sans-serif;padding:26px 30px 34px}
+h1{font-size:12px;font-weight:600;color:#666;letter-spacing:.02em;margin-bottom:4px}
+.sub{font-size:11px;color:#999;margin-bottom:18px;line-height:1.5}
+.pair{padding:9px 0 11px;border-bottom:1px solid #f0f0f0}
+.pair:last-child{border-bottom:0}
+.row{display:flex;align-items:baseline;gap:14px}
+.tag{flex:0 0 96px;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:#b0b0b0;text-align:right;padding-top:2px}
+.fh{font-family:"FH";font-size:30px;line-height:1.28;color:#111}
+.ph{font-family:"PH";font-size:30px;line-height:1.28;color:#c02f6a}
+.pair .row+.row{margin-top:1px}
+.tag.p{color:#e0a0ba}
+</style>
+<h1>FluOlinGo Hand — nine weights, each against Patrick Hand 400</h1>
+<div class="sub">Patrick Hand (the current <code>--font-hand</code>, one weight only) repeated under every FluOlinGo weight, same size, so you can see which weight it sits closest to.</div>
+<div id="out"></div>
+<script>
+const S = "FluOlinGo 123 — Ça été où ?";
+const W = [["Thin",100],["ExtraLight",200],["Light",300],["Regular",400],["Medium",500],["SemiBold",600],["Bold",700],["ExtraBold",800],["Black",900]];
+document.getElementById("out").innerHTML = W.map(([n,w]) => `
+  <div class="pair">
+    <div class="row"><div class="tag">${n} ${w}</div><div class="fh" style="font-weight:${w}">${S}</div></div>
+    <div class="row"><div class="tag p">Patrick 400</div><div class="ph">${S}</div></div>
+  </div>`).join("");
+</script>

@@ -87,3 +87,54 @@ python3 build.py Regular              # single weight
   the majority cap height of 808.
 * Accented narrow letters (`Î Ï Ì Í`) keep the source font's advance of 220, so
   the mark overhangs to the left — the author's original choice, preserved.
+
+## Specimen sheets
+
+| File | What it shows |
+| --- | --- |
+| `specimen-regular.png` | the original inventory sheet — every row of the character set |
+| `specimen-weights.png` | the original nine-weight sheet, set in `Hambrgefonstiv` |
+| `specimen-weights-fluolingo.png` | the nine weights set in the app's own name |
+| `specimen-charset-fluolingo.png` | the character set, headed by the name |
+| `specimen-weights-vs-patrick.png` | each weight against **Patrick Hand 400** |
+| `specimen-charset-vs-patrick.png` | each character-set row against Patrick Hand 400 |
+
+The two `-vs-patrick` sheets exist because Patrick Hand is what the app
+currently loads as `--font-hand`, so it is the face this family would displace.
+Two things they settle:
+
+* **Patrick Hand runs ~22% larger at the same `font-size`.** Next's generated
+  fallback metrics give `size-adjust:81.43%` for Patrick Hand against
+  `66.54%` for `fluoHand`; the ratio is the size gap. Swapping one for the
+  other needs either a ~22% size bump or `size-adjust:122%` on the
+  `fluoHand` face, or everything set in it shrinks.
+* **Coverage diverges only past Latin Extended-A.** Patrick Hand renders every
+  letter row here, including the Polish/Czech/German and Vietnamese/Turkish
+  lines. It is missing 5 of the punctuation row, 21 of the currency-and-maths
+  row and 35 of the fractions/superscript/arrow row — which is the whole
+  argument for this family over it.
+
+### Rebuilding the sheets
+
+`specimens-src/` holds the generators: one HTML file per sheet, screenshotted
+with headless Chromium, then trimmed by `crop.py` (a dependency-free PNG
+cropper — there is no Pillow in the render environment).
+
+```bash
+cd specimens-src
+chrome --headless --hide-scrollbars --force-device-scale-factor=2 \
+       --window-size=1240,1500 --screenshot=raw.png file://$PWD/charset.html
+python3 crop.py raw.png ../specimen-charset-vs-patrick.png 46
+```
+
+Two things to know before you run it:
+
+* **Render tall, then crop.** Headless Chromium will not paint the last line
+  when the viewport hugs the content height — the line is in the DOM and
+  simply absent from the image. Give it headroom and trim afterwards.
+* **The `-vs-patrick` sheets need Patrick Hand.** They expect
+  `specimens-src/fonts/PatrickHand-latin.woff2` and `-latinext.woff2`, which
+  are not committed here: lift them from the app's own build output
+  (`out/_next/static/media/`, identified by the `@font-face` blocks in the
+  built CSS) so the comparison uses the exact subset the app serves. The
+  family woff2 files come from `../woff2/`.

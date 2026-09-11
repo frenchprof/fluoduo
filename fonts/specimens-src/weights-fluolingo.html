@@ -1,0 +1,24 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Thin.woff2)format("woff2");font-weight:100}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-ExtraLight.woff2)format("woff2");font-weight:200}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Light.woff2)format("woff2");font-weight:300}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Regular.woff2)format("woff2");font-weight:400}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Medium.woff2)format("woff2");font-weight:500}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-SemiBold.woff2)format("woff2");font-weight:600}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Bold.woff2)format("woff2");font-weight:700}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-ExtraBold.woff2)format("woff2");font-weight:800}
+@font-face{font-family:"FH";src:url(fonts/FluOlinGoHand-Black.woff2)format("woff2");font-weight:900}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#fff;color:#111;font-family:-apple-system,system-ui,sans-serif;padding:14px 18px}
+.label{font-size:8.5px;color:#777;letter-spacing:.01em;margin-bottom:14px}
+.line{font-family:"FH";font-size:29px;line-height:1;padding:14px 0 15px}
+</style>
+<div class="label">FluOlinGo Hand · weight family</div>
+<div id="out"></div>
+<script>
+const S = "FluOlinGo 123 — Ça été où ?";
+const W = [["Thin",100],["ExtraLight",200],["Light",300],["Regular",400],["Medium",500],["SemiBold",600],["Bold",700],["ExtraBold",800],["Black",900]];
+document.getElementById("out").innerHTML =
+  W.map(([n,w]) => `<div class="line" style="font-weight:${w}">${S} ${n}</div>`).join("");
+</script>
