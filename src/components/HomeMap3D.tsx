@@ -53,6 +53,7 @@ import { KIND_COLOR, KIND_WASH, REGIONS, ARENA_PLACE } from "@/components/HomeMa
 import { HORIZON_Y, SKYLINE_Y, FULL_AHEAD, N_STOPS, getWorldX, pathXAt, cameraForward, project, zOrder, type Projected } from "@/lib/map3d/projection";
 import { getSkyColors, sunPosition, nightness, clockHour, CLOUDS, STARS } from "@/lib/map3d/sky";
 import { ROADSIDE_ITEMS, NATURE_ITEMS, type RBuild, type RProp, type NatureType } from "@/lib/map3d/scene";
+import { DEFAULTS, readUiPrefs } from "@/lib/uiPrefs";
 
 /* ── Camera travel ─────────────────────────────────────────────────────────
    scrollTop → camZ: the box's scroll height is the road's length. */
@@ -641,6 +642,51 @@ export default function HomeMap3D({
   onOpenSio?: (unit: number, id: string) => void;
 }) {
   const boxRef = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * WHICH WAY THE WHEEL GOES (Dan, 2026-09-11: *"the wheel is the wrong one"*).
+   *
+   * The box is a native scroll container and the road's length IS its scroll
+   * height, so both inputs arrive as the same `scrollTop`. They are not the
+   * same gesture, though, and Dan said so before I could get it wrong:
+   * *"there are two things: swipe down with finger, and scroll down with
+   * mouse. don't confuse them"*.
+   *
+   * A finger DRAGS the road — down brings it toward you — and that is direct
+   * manipulation, the half that was already right. A wheel SCROLLED the camera
+   * forward like a page. Flipping the container would have flipped both, so
+   * this flips the wheel alone: the wheel event is caught, cancelled, and the
+   * same distance applied the other way. Touch never fires `wheel`, so the
+   * finger keeps the platform's own behaviour untouched.
+   *
+   * NOT PASSIVE. `preventDefault()` on a wheel listener is ignored unless the
+   * listener says it might cancel, and React attaches its own as passive — so
+   * this is a real `addEventListener` with `{ passive: false }` rather than an
+   * `onWheel` prop, which would have silently done nothing.
+   *
+   * A STILL SCENE HAS NO SCROLL AT ALL (the door sets `overflow-y-hidden`), so
+   * the handler stands down there rather than cancelling a wheel that was
+   * never going to move anything.
+   */
+  const [wheelBack, setWheelBack] = useState(DEFAULTS.wheelDownComesBack);
+  useEffect(() => {
+    const read = () => setWheelBack(readUiPrefs().wheelDownComesBack);
+    read();
+    window.addEventListener("fluolingo:uiprefs", read);
+    return () => window.removeEventListener("fluolingo:uiprefs", read);
+  }, []);
+  useEffect(() => {
+    const box = boxRef.current;
+    if (!box || still || !wheelBack) return;
+    const onWheel = (e: WheelEvent) => {
+      // A sideways wheel (a trackpad's horizontal axis) is not ours to take.
+      if (Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      e.preventDefault();
+      box.scrollTop -= e.deltaY;
+    };
+    box.addEventListener("wheel", onWheel, { passive: false });
+    return () => box.removeEventListener("wheel", onWheel);
+  }, [still, wheelBack]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const { w: vw, h: vh } = size;
 
