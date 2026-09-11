@@ -26,6 +26,7 @@
 import Link from "next/link";
 import { familyName, activity } from "@/content/activities";
 import { SIO_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
 // palette lives in globals.css (Dan's fixed 12-swatch brand set, 2026-09-09:
@@ -43,12 +44,15 @@ const PEN = {
   tools: "var(--fam-tools)",
 } as const;
 
-// The row BANDS take the family's darkest rung, not the pen (Dan, 2026-09-09,
-// after seeing the pale-wash version: "you are using the very light shade
-// which is too light... the darkest shade in there for the background" —
-// the same `--fam-*-ink` rung the page's top strip and left spine already
-// use). Tiles keep their raised-paper ground on top, so the effect is light
-// cards on a solid, saturated band.
+// THE ROW BANDS ARE THE FAMILY'S BRIGHT BASE SHADE (Dan, 2026-09-11, sending
+// the page-strip catalogue in the seven bright hues: "the background needs
+// to be brighter like this"). This SUPERSEDES the 9 Sep ruling that put the
+// darkest rung behind each row — that ruling was made against a pale
+// 15%-alpha wash, and "darkest" was the answer to "too light", not a
+// preference for dark over bright. The band is now the same solid pen the
+// page heading strips wear, so the menu and the strips read as one system.
+// The darkest rung moves to the tile outlines, so they still read on yellow;
+// the vertical family label is the house ink — black — at Dan's word.
 const INK = {
   goals: "var(--fam-goals-ink)",
   practice: "var(--fam-practice-ink)",
@@ -77,17 +81,17 @@ type Cell =
 // start to identify what each row is about" (Dan, 7 Sep, picking over the
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
-const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
+const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // LESSON (Dan, 2026-09-09) — Map, the goal itself, and Help now live
   // together. "Goals" still opens Home for now: the per-SIO page ("Goal =
   // Specific Instructional Objective") is a separate, larger piece Dan has
   // someone else building — this tile will point there once it lands.
-  { pen: PEN.goals, band: INK.goals, label: familyName("goals"), cells: [
+  { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "one", emoji: "🧭", name: "Map", href: "/map" },
-    { kind: "one", emoji: "🎯", name: "Goals", href: "/" },
+    { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
     { kind: "help" },
   ]},
-  { pen: PEN.practice, band: INK.practice, label: familyName("practice"), cells: [
+  { band: PEN.practice, ink: INK.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
     // MneMemo has no page of its own — it is reached from a stop (see its
     // registry entry, href: null). /practice USED to be that door (the
@@ -99,12 +103,12 @@ const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
   ]},
   // "Review", not "Revise" — DéjàRevu is renamed ErroReview the same day
   // (Dan, 2026-09-09); see the registry entry in activities.ts.
-  { pen: PEN.review, band: INK.review, label: familyName("review"), cells: [
+  { band: PEN.review, ink: INK.review, label: familyName("review"), cells: [
     { kind: "one", emoji: "🔤", name: "ConjugaZone", href: "/conjugaison" },
     { kind: "one", emoji: "❌", name: "ErroReview", href: "/reviser" },
     { kind: "picker", emoji: "🏃", name: "GramMarathon", sioKey: "grammarathon" },
   ]},
-  { pen: PEN.svplay, band: INK.svplay, label: familyName("svplay"), cells: [
+  { band: PEN.svplay, ink: INK.svplay, label: familyName("svplay"), cells: [
     { kind: "numbers" },
     { kind: "picker", emoji: "🌧️", name: "VocabulaRain", sioKey: "vocabularain" },
     // LexicaLocker (Dan, 2026-09-09) — renamed from LexicaLater, 🔐 instead
@@ -114,7 +118,7 @@ const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
   // ORAL (NEW, 2026-09-09) — half of retired Skills: the three that put
   // French in your mouth or ear. VoixLà has one page and needs no picker;
   // WorDrill and ÉcouTexte are two more of the seven slider-gated tiles.
-  { pen: PEN.oral, band: INK.oral, label: familyName("oral"), cells: [
+  { band: PEN.oral, ink: INK.oral, label: familyName("oral"), cells: [
     { kind: "one", emoji: "🔊", name: "VoixLà", href: "/tts" },
     { kind: "picker", emoji: "🎙️", name: "WorDrill", sioKey: "wordrill" },
     { kind: "picker", emoji: "🎧", name: "ÉcouTexte", sioKey: "ecoutexte" },
@@ -123,12 +127,12 @@ const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
   // (see ToolSummon.tsx's own 🛠️ door). ChaTutor is a chat, not a deck, so
   // it keeps a plain link; the third slot is deliberately blank, per Dan's
   // own grid ("ChaT. - Compo. - [Blank]").
-  { pen: PEN.tools, band: INK.tools, label: familyName("tools"), cells: [
+  { band: PEN.tools, ink: INK.tools, label: familyName("tools"), cells: [
     { kind: "one", emoji: "🤖", name: "ChaTutor", href: "/tutor" },
     { kind: "picker", emoji: "🧩", name: "ComposeIt", sioKey: "compose" },
     { kind: "blank" },
   ]},
-  { pen: GREY, band: GREY_INK, label: familyName("user"), cells: [
+  { band: GREY, ink: GREY_INK, label: familyName("user"), cells: [
     { kind: "one", emoji: "👤", name: "User", href: "/profil" },
     { kind: "one", emoji: "🏆", name: "Leaderboard", href: "/leaderboard" },
     { kind: "one", emoji: "⚙️", name: "Settings", href: "/reglages" },
@@ -139,7 +143,17 @@ const TILE =
   "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
-const NAME = "fluo-btn-hand block w-full truncate text-[13px] leading-tight text-[color:var(--cahier-ink)]";
+/* BIGGER, AND TRUNCATION IS THE PRICE DAN CHOSE (2026-09-11: *"make the font
+   on the grid menu bigger and maybe thicker, it is hardly legible now. It is
+   OK to truncate some long names"*). 13px in the hand face on a 90px tile
+   was the size that let every name fit whole, and it was not readable. 16px
+   is a fifth larger; the face is already at its heaviest weight (800, the
+   ExtraBold file in layout.tsx — there is no 900 to reach for), so "thicker"
+   is met by the size, which is what makes a hand face's strokes wider. The
+   longest names (Leaderboard, GramMarathon, VocabulaRain, LexicaLocker) may
+   now end in an ellipsis on a narrow phone; the emoji above each one is the
+   other half of its identity, and Dan accepted the trade. */
+const NAME = "fluo-btn-hand block w-full truncate text-[16px] leading-tight text-[color:var(--cahier-ink)]";
 
 export default function MenuGrid({
   onNavigate,
@@ -170,7 +184,10 @@ export default function MenuGrid({
           className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
           style={{ background: row.band }}
         >
-          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-white/80">
+          {/* BLACK, NOT WHITE AND NOT THE FAMILY'S DARK RUNG (Dan, 2026-09-11:
+              "black font instead of white font over these background for the
+              leftmost cat names"). The house ink is the app's black. */}
+          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black uppercase tracking-[0.12em] leading-none text-[color:var(--cahier-ink)]">
             {row.label}
           </span>
           {row.cells.map((cell, c) => {
@@ -207,7 +224,7 @@ export default function MenuGrid({
               // manual is exactly the sort of page to want open beside you.
               return (
                 <Link key={key} href="/guide" onClick={onNavigate}
-                      className={TILE} style={{ borderColor: row.pen }}>
+                      className={TILE} style={{ borderColor: row.ink }}>
                   <span aria-hidden className="text-lg leading-none">🆘</span>
                   <span className={NAME}>Help</span>
                 </Link>
@@ -227,7 +244,7 @@ export default function MenuGrid({
                     );
                   }}
                   className={TILE}
-                  style={{ borderColor: row.pen }}
+                  style={{ borderColor: row.ink }}
                 >
                   {/* THE TILE READS "Numbers", FROM THE REGISTRY (Dan,
                       2026-09-09: "NumBus appears twice, once as a menu item in
@@ -262,7 +279,7 @@ export default function MenuGrid({
                   type="button"
                   onClick={() => { onNavigate(); picker.openSlider(cell.sioKey, cell.emoji, cell.name); }}
                   className={TILE}
-                  style={{ borderColor: row.pen }}
+                  style={{ borderColor: row.ink }}
                 >
                   <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                   <span className={NAME}>{cell.name}</span>
@@ -271,7 +288,7 @@ export default function MenuGrid({
             }
             return (
               <Link key={key} href={cell.href} onClick={onNavigate}
-                    className={TILE} style={{ borderColor: row.pen }} lang="fr">
+                    className={TILE} style={{ borderColor: row.ink }} lang="fr">
                 <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                 <span className={NAME}>{cell.name}</span>
               </Link>

@@ -73,9 +73,18 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 export const FAMILIES: Family[] = [
   // 🧑‍🏫, not 🎯 (Dan, 2026-09-09) — the family now holds Map, the goal
   // itself and Help together, so it wears a teacher rather than a target.
-  // href stays "/" — Home is still Lesson's door until the SIO-per-page
-  // work (a separate, larger piece Dan has someone else building) lands.
-  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/" },
+  // Home is still Lesson's door until the SIO-per-page work (a separate,
+  // larger piece Dan has someone else building) lands. It used to say "/",
+  // which stopped meaning Home on 9 Sep when the welcome page took the root —
+  // so the Lesson tile walked a learner out of the app to the front door.
+  //
+  // A LITERAL, NOT `HOME_HREF`, and that is deliberate. This file is a content
+  // REGISTRY that tooling reads as text, not only as code: verify52 parses
+  // FAMILIES and ACTIVITIES with a regex that wants `href: "…"`, and verify82
+  // imports it from a bare node script where the `@/` alias does not resolve.
+  // Both went red on the constant. Components import HOME_HREF; the registry
+  // spells the address out.
+  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/home" },
   // 📝 (Dan, 2026-09-09), retiring 🏋️. href points straight at SpecuLearn
   // now — Practice's hub page retired the same day (DELIBERATE_DOOR below);
   // /practice itself still exists as a redirect for old links/bookmarks.
@@ -555,6 +564,40 @@ export function bandOf(activeKey: string | undefined): BandKey | null {
   if (!activeKey) return null;
   if (SELF_COLOURED.has(activeKey)) return null;
   return BAND[activeKey] ?? null;
+}
+
+/**
+ * THE STRIP'S COLOUR, WHICH IS NOT ALWAYS THE BAND'S.
+ *
+ * Dan, 2026-09-08: *"ConjugaZone pages should be in Teal colored strip ok"*.
+ *
+ * `BAND` above answers a different question — what the exercise DEMANDS of the
+ * learner — and it is not free to move, because `verify62` asserts it agrees
+ * with what `lib/evidence.ts` stores in the teacher's record. ConjugaZone is
+ * `prod`, the same demand as GramMarathon and WorDrill, and that is true and
+ * must stay true. Repainting `--band-prod` teal would have recoloured those
+ * two as well; moving ConjugaZone to another band would have made the page
+ * claim one thing and the stored evidence another, which is the exact drift
+ * verify62 was written for after Sorting spent five days doing it.
+ *
+ * So the two questions get two answers. The band still says what the exercise
+ * asks; this says what colour the learner sees, and an activity may own that
+ * outright. Everything that PAINTS reads this one — the page strip, the drill
+ * shell, the stop sheet's keys, the menu icon — so a teal ConjugaZone is teal
+ * everywhere rather than teal on its page and orange in the ☰.
+ */
+export type StripKey = BandKey | "teal";
+
+const OWN_STRIP: Record<string, StripKey> = {
+  conjugaison: "teal",
+};
+
+/** The colour class an activity's surfaces wear. Its own where it has one,
+ *  otherwise its band's. Null means the page paints itself. */
+export function stripOf(activeKey: string | undefined): StripKey | null {
+  if (!activeKey) return null;
+  if (SELF_COLOURED.has(activeKey)) return null;
+  return OWN_STRIP[activeKey] ?? bandOf(activeKey);
 }
 
 /* Pages you READ rather than answer used to take a sand-coloured ground here,

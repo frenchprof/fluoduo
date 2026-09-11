@@ -64,6 +64,13 @@
  *      marks any scroller like that, the same escape-hatch shape
  *      `data-no-rail-swipe` gives the sideways drag.
  *
+ * IT READS BOTH DIRECTIONS SINCE 2026-09-08. Dan's grid puts the course on the
+ * vertical axis — *"swipes down to the next SIO (newURL), up to the previous
+ * SIO"* — so a pull past the TOP is as real a gesture as a pull past the end,
+ * and the guards are the mirror of each other: a gesture counts only if it
+ * began with everything already at the top, and a page that cannot scroll has
+ * a top as trivially as it has an end. `onPull` is told which way it went.
+ *
  * THIS FILE NEVER NAVIGATES, deliberately. It reads a finger and calls back.
  * Where the pull leads is the caller's to answer — from `railNeighbours` for
  * the rail, from the visible CTA for a drill — so the two can never come to
@@ -84,6 +91,41 @@ const GESTURE_GAP_MS = 260;
 /** A scroller is "at the bottom" within this many px — sub-pixel layout and
  *  zoom both leave a fractional remainder that never reaches exactly zero. */
 const SLOP = 2;
+/**
+ * How far into a gesture a scroller may still prove it was at its end.
+ *
+ * A SNAPPING SCROLLER LIES FOR A FRAME AT A TIME, and that is what this is for.
+ * Measured on the lesson (a `scroll-snap-type: y mandatory` feed of panels),
+ * parked at 2144 of 2144 and pushed six notches: the reading came back
+ * false / true / false / true / false / true. Each notch nudges the scroller
+ * off its last panel and the snap animation pulls it back, so a sample taken
+ * mid-animation says "not at the end" about a scroller that has not gone
+ * anywhere. One such sample on the FIRST notch disqualified the whole gesture,
+ * which is why a learner could carry on from a page they had just loaded and
+ * then never again from the page they landed on.
+ *
+ * So "the gesture began at the end" is allowed to be settled within the first
+ * few notches rather than decided by one instant. It cannot weaken guard 2:
+ * the flick that ARRIVES at the bottom carries hundreds of pixels before it
+ * gets there, so it is long past this window by the time the scroller is at
+ * its end and can never latch.
+ */
+const SETTLE_PX = 120;
+/**
+ * How long a freshly arrived page ignores the pull.
+ *
+ * THE FLICK THAT BRINGS YOU HERE MUST NOT TAKE YOU ON. A carry navigates, the
+ * new page mounts a fresh reader, and the notches still arriving from the same
+ * flick land on it — with nothing about them to say they belong to the gesture
+ * that just fired somewhere else. Measured on the lesson: six notches of 70px
+ * carried a learner SIO-025 to 027 to 029, every other goal skipped, while one
+ * notch of 200px moved exactly one goal at a time.
+ *
+ * `startedAtEnd` cannot catch this on its own, because a page that does not
+ * scroll is trivially at both its ends the moment it appears — which is most
+ * of them once the caller opts out of guard 1.
+ */
+const ARRIVAL_MS = 500;
 
 function scrollableAncestors(from: Element | null): HTMLElement[] {
   const out: HTMLElement[] = [];
@@ -110,9 +152,10 @@ function scrollableAncestors(from: Element | null): HTMLElement[] {
   return out;
 }
 
-/** Every scroller under this point, all of them at their bottom, and at least
- *  one of them a real reading flow. False when there is no end here. */
-function endedHere(target: EventTarget | null, opts: PullOptions): boolean {
+/** Every scroller under this point, all of them at the END this pull is headed
+ *  for, and at least one of them a real reading flow. False when there is no
+ *  such end here. `dir` is 1 for the bottom, -1 for the top. */
+function endedHere(target: EventTarget | null, opts: PullOptions, dir: 1 | -1): boolean {
   const el = target instanceof Element ? target : document.body;
   // GUARD 3 — a pan surface is not a reading flow. `heedHatch: false` is for
   // the ONE caller that plants the hatch itself: DrillShell marks its page so
@@ -123,7 +166,9 @@ function endedHere(target: EventTarget | null, opts: PullOptions): boolean {
   // GUARD 1 — nothing scrolls, so there is no end of a scroll to reach…
   // …unless the caller has nothing below to be missed. See the header.
   if (!boxes.length) return opts.whenNothingScrolls === true;
-  return boxes.every((b) => b.scrollTop >= b.scrollHeight - b.clientHeight - SLOP);
+  return dir === 1
+    ? boxes.every((b) => b.scrollTop >= b.scrollHeight - b.clientHeight - SLOP)
+    : boxes.every((b) => b.scrollTop <= SLOP);
 }
 
 /**
@@ -148,7 +193,12 @@ export type PullOptions = {
   heedHatch?: boolean;
 };
 
-export default function usePullPastEnd(onPull: () => void, options: PullOptions = {}): void {
+export default function usePullPastEnd(
+  /** Called once a deliberate pull has been spent. `dir` is 1 for a pull past
+   *  the bottom, -1 for one past the top. */
+  onPull: (dir: 1 | -1) => void,
+  options: PullOptions = {},
+): void {
   const { resetKey = null } = options;
   const cb = useRef(onPull);
   // A live ref, written during render on purpose: the listeners below are
@@ -157,11 +207,13 @@ export default function usePullPastEnd(onPull: () => void, options: PullOptions 
   // eslint-disable-next-line react-hooks/refs
   cb.current = onPull;
   const pull = useRef(0);
+  /** When this page became answerable — see ARRIVAL_MS. */
+  const armedAt = useRef(0);
   const optsRef = useRef(options);
   // eslint-disable-next-line react-hooks/refs
   optsRef.current = options;
 
-  useEffect(() => { pull.current = 0; }, [resetKey]);
+  useEffect(() => { pull.current = 0; armedAt.current = Date.now(); }, [resetKey]);
 
   useEffect(() => {
     let idle: ReturnType<typeof setTimeout> | null = null;
@@ -169,14 +221,40 @@ export default function usePullPastEnd(onPull: () => void, options: PullOptions 
     // Did the gesture now in progress BEGIN with the page already at its end?
     // Only such a gesture may carry a reader on — see guard 2 in the header.
     let startedAtEnd = false;
+    /** Which end the gesture in progress began at, if it began at one. */
+    let startedDir: 1 | -1 = 1;
+    /** How far this gesture has travelled before it counted for anything —
+     *  the window in which a snapping scroller may still settle. */
+    let seen = 0;
+    /** ONE CARRY PER GESTURE. Without this a single flick fires again and
+     *  again: firing clears `startedAtEnd`, and the settle window above then
+     *  re-arms it a few notches later. Measured on the lesson — six notches of
+     *  70px carried a learner three goals down the course in one pull, which
+     *  reads as the app running away with them. A spent gesture stays spent
+     *  until the finger lifts or the wheel pauses. */
+    let spent = false;
     let lastWheel = 0;
 
     const reset = () => { pull.current = 0; };
 
     function advance(by: number, target: EventTarget | null) {
-      if (by <= 0) { reset(); return; }
-      if (!endedHere(target, optsRef.current)) { reset(); return; }
+      // A pull is judged in the direction its own gesture started in: one that
+      // began at the bottom only counts while it keeps going down, and one that
+      // began at the top only while it keeps going up. Reversing mid-gesture
+      // spends it, which is what a reader who changed their mind means.
+      if (by === 0 || spent) return;
+      // The gesture that carried a learner here is still arriving. Let it land.
+      if (Date.now() - armedAt.current < ARRIVAL_MS) { reset(); return; }
+      const dir: 1 | -1 = by > 0 ? 1 : -1;
+      if (dir !== startedDir) { reset(); return; }
+      const atEnd = endedHere(target, optsRef.current, dir);
+      seen += Math.abs(by);
+      // A snap animation can make one sample lie; give it the first few notches
+      // to tell the truth. See SETTLE_PX.
+      if (!startedAtEnd && atEnd && seen <= SETTLE_PX) startedAtEnd = true;
+      if (!atEnd) { reset(); return; }
       if (!startedAtEnd) { reset(); return; }
+      by = Math.abs(by);
 
       pull.current += by;
       if (idle) clearTimeout(idle);
@@ -188,14 +266,19 @@ export default function usePullPastEnd(onPull: () => void, options: PullOptions 
       // begin at the end all over again.
       reset();
       startedAtEnd = false;
-      cb.current();
+      seen = 0;
+      spent = true;
+      cb.current(startedDir);
     }
 
     const onWheel = (e: WheelEvent) => {
       const now = e.timeStamp || Date.now();
       // A new gesture begins where the last one left off by more than a beat.
       if (now - lastWheel > GESTURE_GAP_MS) {
-        startedAtEnd = endedHere(e.target, optsRef.current);
+        startedDir = e.deltaY >= 0 ? 1 : -1;
+        startedAtEnd = endedHere(e.target, optsRef.current, startedDir);
+        seen = 0;
+        spent = false;
         reset();
       }
       lastWheel = now;
@@ -204,7 +287,14 @@ export default function usePullPastEnd(onPull: () => void, options: PullOptions 
 
     const onTouchStart = (e: TouchEvent) => {
       touchY = e.touches[0]?.clientY ?? null;
-      startedAtEnd = endedHere(e.target, optsRef.current);
+      /* A TOUCH HAS NOT MOVED YET, so which end it began at cannot be known
+         here. Both are recorded and the first move settles it — a finger that
+         goes up is reading on, one that goes down is going back. */
+      startedAtEnd = endedHere(e.target, optsRef.current, 1)
+        || endedHere(e.target, optsRef.current, -1);
+      startedDir = endedHere(e.target, optsRef.current, 1) ? 1 : -1;
+      seen = 0;
+      spent = false;
       reset();
     };
     const onTouchMove = (e: TouchEvent) => {
@@ -212,10 +302,17 @@ export default function usePullPastEnd(onPull: () => void, options: PullOptions 
       if (y == null || touchY == null) return;
       // The finger moving UP drags the content down — the same direction a
       // positive wheel delta means.
-      advance(touchY - y, e.target);
+      const by = touchY - y;
+      // The first real movement of a touch settles which end it is pulling
+      // from, where the page is at BOTH ends (a card that does not scroll).
+      if (pull.current === 0 && by !== 0) {
+        const d: 1 | -1 = by > 0 ? 1 : -1;
+        if (endedHere(e.target, optsRef.current, d)) startedDir = d;
+      }
+      advance(by, e.target);
       touchY = y;
     };
-    const onTouchEnd = () => { touchY = null; startedAtEnd = false; reset(); };
+    const onTouchEnd = () => { touchY = null; startedAtEnd = false; startedDir = 1; seen = 0; spent = false; reset(); };
 
     const opts = { passive: true } as const;
     window.addEventListener("wheel", onWheel, opts);

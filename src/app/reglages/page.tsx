@@ -69,8 +69,8 @@ export default function ReglagesPage() {
               </span>
               <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
                 {prefs.showNavLabels
-                  ? "Icon labels are always shown."
-                  : "Tap and hold an icon to view its label."}
+                  ? "Names are shown under activity tiles and the bottom bar."
+                  : "Tiles show the icon only. Tap and hold one to see its name."}
               </span>
             </span>
             <input

@@ -28,6 +28,7 @@ import { notePracticeDay } from "@/lib/progress";
 import { frenchNumber, frenchDigits } from "./frenchNumbers";
 import { holdDigitKeys } from "@/lib/useChoiceKeys";
 import { buildEvidence } from "@/lib/evidence";
+import { HOME_HREF } from "@/lib/routes";
 
 const START_LIVES = 3;
 const QUOTA = 6; // trades to close a level
@@ -390,7 +391,7 @@ export default function NumBourse() {
   return (
     <GameFrame
       title="📈 NumBourse"
-      exitHref="/"
+      exitHref={HOME_HREF}
       progress={{ done: doneCount, total: QUOTA }}
       hearts={{ left: lives, total: START_LIVES }}
       score={<>{score} · L{level}</>}
@@ -601,7 +602,7 @@ export default function NumBourse() {
           misses={misses}
           fallbackSio="SIO-007"
           onReplay={reset}
-          exitHref="/"
+          exitHref={HOME_HREF}
         />
       )}
     </div>

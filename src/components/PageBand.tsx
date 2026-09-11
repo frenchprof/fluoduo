@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { HOME_HREF } from "@/lib/routes";
 
 /**
  * The page's heading band — ONE structure site-wide, ONE LINE, three parts.
@@ -53,7 +54,7 @@ import type { ReactNode } from "react";
 export default function PageBand({
   title,
   goal,
-  exitHref = "/",
+  exitHref = HOME_HREF,
   exitLabel = "Close",
   className = "",
 }: {
@@ -119,8 +120,27 @@ export default function PageBand({
       {goal != null && (
         <span
           aria-label={`Goal ${goal}`}
+          /* THE CHIP CARRIES AN INK EDGE (Dan, 2026-09-09, looking at the
+             bands side by side: *"the horizontal strips for conjugazone and
+             mnememo looks off"*).
+
+             Measured, on the built export: the chip's chartreuse sits at hue
+             71 degrees and MneMemo's band at 69 — TWO DEGREES APART. On every
+             other band the two are 35 to 166 degrees apart, so the pill reads
+             as an object; on the lesson's olive it read as a lighter smudge of
+             the band it sits on. Luminance was never the problem (the fill is
+             1.8-2.0:1 against all five bands alike), which is why this is an
+             EDGE and not a different fill: an outline separates the chip on a
+             band of any hue, and the other four keep the colour they have.
+
+             A shadow ring rather than a border, so the 36px height the band's
+             one-line rule depends on does not grow by 4px. */
           className="fluo-mono -my-1 flex h-9 shrink-0 items-center gap-0.5 rounded-full px-2 text-[13px] font-black leading-none"
-          style={{ background: "var(--cahier-hl)", color: "var(--cahier-ink)" }}
+          style={{
+            background: "var(--cahier-hl)",
+            color: "var(--cahier-ink)",
+            boxShadow: "0 0 0 2px var(--cahier-ink)",
+          }}
         >
           <span aria-hidden>🎯</span>
           <span aria-hidden>{goal}</span>

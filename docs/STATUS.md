@@ -6,6 +6,148 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — one sheet of paper, and the coils reach the band (double-frame lane, branch, NOT merged)
+
+Branch `claude/double-frame-fix`. Handed to fluoduo-main; **not merged by this
+lane.**
+
+**WHAT DAN SAW.** *"Profiles, ChaTutor page looks doubleframed"*, with two phone
+screens. Reproduced on the built app before anything was touched, per the brief.
+
+**WHAT IT WAS.** `/profil/embed` and `/tutor/embed` each rendered a
+`CahierShell` — the notebook — while already loaded inside one.
+`html[data-embed]` hides the shell's furniture in a frame (bar, band, coils,
+shadow, radius, spine) and that was read as "nothing is left". What was left is
+the paper and two rulings, so a second sheet sat on the page's own, inset 48px
+— the well's gutter, where the coils are. Measured at 390px: the ruled lines in
+that strip sit at one height, the ones inside the frame at another, and some
+stop dead at the frame's edge. No border anywhere, which is why it needed a
+picture to name.
+
+Fixed at the cause, following `/map/embed`, which was already right: the two
+embed routes render their content and no notebook, and
+`html[data-embed] body { background: transparent }` lets the page's one sheet
+show through. That line is a **no-op for every other station** — measured
+across all seventeen framed routes, each still paints an opaque
+`.cahier-page` / `.cahier-surface` over it.
+
+**THE OTHER FIFTEEN STILL HAVE THE SHAPE, DELIBERATELY.** `/moi`, `/tts`,
+`/reviser`, `/sio/[id]`, `/practice/wordrill`, `/practice/ecoutexte`,
+`/conjugaison`, `/games/numbers` and the three `GameGallery` embeds all render a
+CahierShell inside a frame. Dan asked for two; widening is his call, not this
+lane's. They are one line each in `ONE_SHEET` (scripts/sheet-scan.mjs) when he
+says so.
+
+**AND THE CORNER.** Dan, same session, shown a game's top-left corner: *"coils
+up to the band and also the corresponding vertical strip"*. The binding opened
+BELOW the band, so a page's left edge was a 6px family spine beside the bar and
+the band and a 30px coil strip under it — it changed width halfway down. Home
+has no band and so started its coils at its hero; the two side by side is what
+he met. **This reverses the 6 Sep "coils below the bar and the band" note**, and
+the reason that note gave still holds at the top: the binding stops short of the
+SITE BAR, because the loops overhang onto the desk and nothing can cover a desk.
+
+Both shells open the binding region above the band; `.cahier-binding` takes
+`z-index: 3` so the rings paint over the strip (a real coil crosses the cover);
+`.cahier-binding ~ .page-band` takes a 3rem left clearance so they do not cross
+the ✕. The sibling combinator is load-bearing: a band drawn inside a content
+well (`decks/[id]/CuratedDeckTable.tsx`) has no binding sibling and must not
+move.
+
+**ONE REGRESSION, CAUGHT BY A CHECK AND NOT BY ME.** Nesting the band one level
+deeper broke `html[data-embed] .cahier-page > .page-band`, whose child
+combinator stopped matching — every framed station drew its strip twice.
+verify126 failed on `/sio/[id]`, `/skills` and `/tts`. The selector is
+`.cahier-page .cahier-binding ~ .page-band` now, which says what it always
+meant.
+
+**Files touched:** `src/app/profil/embed/page.tsx`, `src/app/tutor/embed/page.tsx`,
+`src/app/globals.css` (**shared**), `src/components/CahierShell.tsx` (**shared**,
+five branches in flight on it), `src/components/DrillShell.tsx` (**shared**),
+`scripts/sheet-scan.mjs` (new), `verify/verify230-one-sheet.py` (new),
+`.github/workflows/verify.yml`, `AGENTS.md`, `docs/STATUS.md`.
+
+**Gate:** `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1 next build` clean, ESLint
+clean on the four source files, every `verify/*.py` green. verify230 was
+break-tested four ways (the shell restored, the z-index dropped, the clearance
+removed, the binding pushed below the band) and each produced its own message.
+
+## 11 Sep — the pre-tests lane is current with main and HANDED OVER (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`, merge `e5c2ee0e`).
+
+**Dan: *"pls make merge to fluo duo main"*.** The branch was six ahead and
+seventeen behind; it is now merged up to main and pushed, for fluoduo-main to
+land. Nothing on it is merged by this lane.
+
+**WHAT IS ON IT**, all shipped and driven earlier this week:
+
+- the map stop as a coin, with a clean top edge (Dan's red arc removed);
+- scroll-on-to-the-next-QUESTION inside a drill, gated so it never answers an
+  unread one (`usePullPastEnd`, verify170);
+- Unit 0 and the picture pre-tests retired to forwards (verify171, which
+  DRIVES every old address because the forward is client-side);
+- the eight-station swipe chain — map · goals · SpecuLearn · MneMemo ·
+  MémoiRecall · WorDrill · ÉcouTexte · ConjugaZone — plus the up/down axis
+  that moves the SAME station one goal along (`sioNeighbours`, verify117);
+- per-lesson ÉcouTexte: fifty stops onto fifteen scenarios (verify172);
+- Dan's approved verb split, 67 verbs across 50 lessons with ten deliberately
+  empty, wired into ConjugaZone (`src/content/lessonVerbs.ts`, verify173);
+- ConjugaZone's teal strip, and one colour per page — top bar and left spine
+  take the same `--band` (`stripOf()` beside `bandOf()`, verify36).
+
+**THE ONE SEMANTIC COLLISION WITH MAIN, recorded rather than silently fixed.**
+Main gave the TEAL PEN (`#00c197`) to the Revise family the same week this lane
+gave it to ConjugaZone's strip, so one hex now means two things. They never
+share a screen — a family colour paints the ☰ row, a strip paints a page's
+edges — and ConjugaZone happens to SIT in the Revise row, so its tile and its
+page agree. Dan's ruling stands (*"ignore the repo's color pattern based on
+activity type and family"*); the note is in `globals.css` beside the token, and
+the comment that called teal "the one left spare" is corrected.
+
+**OPEN FOR DAN, shown to him in pictures on 11 Sep**: whether `verify120`'s
+6-degree hue window should tighten to the exact pen value for the six
+`--band-*` tokens. The window exists so tints and inks of the same pen stay
+legal (`--fam-review-ink`, `--cahier-hl-edge`), so tightening would apply to
+those six tokens only. Break-tested: `#00a396` is caught at 15 degrees off;
+`#3fbfa0`, a teal that is not a pen, passes. His call.
+
+**VERIFIED ON THE MERGED TREE**: `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1
+npm run build` green, all 124 verify checks pass, and the twenty source files
+this branch touches lint with one warning inherited from main (PR #176's unused
+`attemptAt` in `EcouTexte.tsx`).
+
+## 11 Sep — SpecuLearn's landing loses its band; the number joins the title (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
+restarted from `e02700f`).
+
+Dan, over a screenshot of /practice/speculearn with the blue box crossed out
+and an arrow at « 11. Moi, toi, lui, elle… »: *"help me remove redundant text
+box above the units and to optimise the space on each button while ensuring
+the height remains consistent within the row"*.
+
+**THE BAND IS GONE** — « 💡 SpecuLearn (Guess before you're taught. Pre-Tests
+live here too.) 50/50 », sitting under a strip that already said SPECULEARN
+and over five unit rows each carrying its own count. Litmus test, every word.
+The 50/50 total went with it: a count earns its place on a CLOSED unit, not
+over an open list. `ActivityLanding.tsx` is shared, so GramMarathon and Flip
+It lose theirs too; `SectionBand` keeps its other four users.
+
+**THE NUMBER IS INLINE WITH THE TITLE.** Since 7 Sep « 11. » was a bare digit
+but still in its own flex column, so a wrapping title wrapped to the RIGHT of
+it and the width under the digit sat empty — a third of a 117px phone cell.
+It now starts the title's own run of text; the second line begins at the
+cell's left edge. Wraps, never truncates; the grid still stretches both cells
+of a row to the taller one.
+
+**MEASURED, Unité 1 at 390px, both cells of each row (before → after):**
+83→67 · 81→67 · 83→67 · 97→83 · 97→83, left and right equal in every row.
+Desktop rows 56 unchanged. Side-by-side sent to Dan. `verify24`, `verify36`,
+`verify87` and the full sweep green against the build (verify95 needs PIL,
+absent in this container, on main too).
+
 ## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
@@ -8269,3 +8411,47 @@ about. Cleared per `AGENTS.md`:
 found nothing. The same shape as both of theirs.
 
 tsc clean, build clean, 43 verify scripts green, touched files at 0 lint errors.
+
+## 11 Sep — no intermediate stop: verify49 tightened, two live docs corrected
+
+Dan: **"there should not be any intermediate stop."** The spine already obeys
+that — `sios.json` is fifty stops, ids `SIO-001`–`SIO-050`, `num` 1–50,
+integers, no gaps — since the 5 Sep change that made `SIO-045A`/45.5 into
+`SIO-045`/45. Nothing in the data needed changing. What needed changing was the
+check that was supposed to protect it, and two docs that still quoted the old
+number as current.
+
+**`verify49-renumber-3435.py` was permitting exactly what it should forbid.**
+Its lockstep test parsed ids as `SIO-(\d+)([A-Z]?)` and, when a letter suffix
+was present, *expected* `num` to be N + 0.5 — the half-step was written into
+the check as a documented allowance. It passed only because no id carries a
+suffix any more. Put `SIO-045A`/45.5 back and the check would have waved it
+through. Now:
+
+- ids must match `SIO-\d{3}` exactly — a letter suffix fails to parse;
+- `num` must be an `int` (a float 45.5, or a string "45", fails);
+- and a second assertion says the spine is **1..50 exactly** — no gaps, no
+  duplicates, nothing out of range — so a stop can be neither slipped between
+  two numbers nor dropped without going red.
+
+Break-tested on **7 mutations, all red, none vacuous**: letter-suffixed id ·
+half-step num · both together (the pre-5-Sep state) · num as a string ·
+duplicate num · out-of-range num · a dropped stop. The suffix-only mutation is
+caught by the lockstep test while the spine test still passes, which is
+correct — the two assertions cover different failures.
+
+**Docs corrected** — both are live working documents, not records:
+`ACTIVITY_CULL.md` said NumBus/NumBourse serve stops "(7, 18, 45A)";
+`SYLLABUS_TIERS.md` had a tier row numbered `45.5` and a "Note 45A:".
+Left alone deliberately: STATUS's own past entries, `SIO-045A-numbering-report.md`,
+`CSV_SPEC_REASSIGNMENT.md` and `SYLLABUS_AUDIT_2026-08-23.md` say 45A because
+they record what was true when written. `u4-sio045a-nombres.json` keeps its
+filename — renaming content files breaks stored learner records, and
+`pretests/index.ts` already maps `"SIO-045"` onto it.
+
+Green the way CI runs it: `tsc --noEmit`, wall `npm run build` + its 97 checks,
+then `NEXT_PUBLIC_OPEN_APP=1 npm run build` + the remaining 25. **122 verify
+scripts, all passing.** (Container note: `node_modules` here was a fortnight
+stale, which failed six playwright-core scripts and one Pillow one for reasons
+that had nothing to do with the change — `npm ci` and `pip install pillow`
+first if the same thing happens again.)
