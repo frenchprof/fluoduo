@@ -79,6 +79,9 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
   const [box, setBox] = useState<Box | null>(null);
   const elRef = useRef<Element | null>(null);
   const doneRef = useRef(false);
+  /** The step we have already scrolled to, so the guide brings a control into
+   *  view once and then leaves the learner's own scrolling alone. */
+  const broughtRef = useRef(-1);
 
   const finish = () => {
     if (doneRef.current) return;
@@ -105,6 +108,27 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
       if (!el) { setBox(null); return; }
       const r = el.getBoundingClientRect();
       if (r.width < 2 || r.height < 2) { setBox(null); return; }
+
+      // BEING IN THE DOCUMENT IS NOT BEING ON THE SCREEN, and this was the
+      // second half of that lesson, found the same way as the first — driving
+      // MneMemo. Its four tabs SCROLL rather than swap, so every panel stays
+      // mounted and measurable while only one is in view. Tapping a tab
+      // advanced the walk correctly and then lit a control a screen and a half
+      // further down: the learner got a page dimmed edge to edge, a bright hole
+      // nowhere, and a caption card positioned off the bottom with it. A guide
+      // that dims everything and points at something you cannot see is worse
+      // than no guide.
+      //
+      // So bring it into view — ONCE per step. Repeating it would fight a
+      // learner who scrolls away on purpose, which is their right: after this,
+      // the outline simply tracks the control wherever they put it.
+      const off = r.bottom < 0 || r.top > window.innerHeight
+        || r.right < 0 || r.left > window.innerWidth;
+      if (off && broughtRef.current !== i) {
+        broughtRef.current = i;
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+        return; // the next poll, 150ms on, measures where it landed
+      }
 
       setBox({ top: r.top, left: r.left, width: r.width, height: r.height });
     };
@@ -151,9 +175,24 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
   // bottom — then above it. A guide that needs scrolling to read is not one.
   const below = box ? box.top + box.height + 12 : 0;
   const capBelow = box ? below + 120 < window.innerHeight : true;
+  // AND WHEREVER IT ENDS UP, IT STAYS ON THE SCREEN. The two placements above
+  // are both relative to the control, so a control near either edge — or one
+  // being scrolled toward, mid-flight — put the words where they could not be
+  // read. The clamp is the backstop the arithmetic cannot provide: the caption
+  // is the only part of this that MUST always be legible, because it is the
+  // only part that says what to do.
+  const capTop = box
+    ? Math.min(Math.max(8, capBelow ? below : box.top - 104), Math.max(8, window.innerHeight - 132))
+    : null;
 
   return createPortal(
-    <div aria-live="polite" className="pointer-events-none fixed inset-0 z-[70]">
+    // `data-guided-steps` IS FOR THE CHECK, and it is here because the obvious
+    // handle was not unique. verify220 first looked for `[aria-live="polite"]`
+    // and found ÉcouTexte's own player announcements — « ⏯ play · 🐇🐌 speed »
+    // — sitting earlier in the document, so it read a live region that is not
+    // this one and reported a working walk as broken. A check that names a
+    // shared attribute is testing whatever happens to be first.
+    <div data-guided-steps aria-live="polite" className="pointer-events-none fixed inset-0 z-[70]">
       {/* The dimmer, with a hole. One element: the ring's own huge spread IS
           the dim, so the bright patch and the dark rest can never disagree. */}
       {box && (
@@ -176,7 +215,7 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
       <div
         className="pointer-events-none absolute left-1/2 w-[min(22rem,88vw)] -translate-x-1/2 rounded-xl border-2 px-4 py-3 text-center shadow-lg"
         style={{
-          top: box ? (capBelow ? below : Math.max(8, box.top - 104)) : "38%",
+          top: capTop ?? "38%",
           background: "var(--cahier-paper-raised)",
           borderColor: "var(--cahier-ink)",
           color: "var(--cahier-ink)",
