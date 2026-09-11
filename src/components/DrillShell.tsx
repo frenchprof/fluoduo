@@ -459,6 +459,18 @@ export default function DrillShell({
 
           A page that cannot name itself says what family it is in, which is
           always true; saying nothing is the one answer that is never right. */}
+      {/* THE COILS START AT THE BAND (Dan, 2026-09-11, shown a game's top-left
+          corner: *"coils up to the band and also the corresponding vertical
+          strip"*). The binding used to live inside the well BELOW the band, so
+          a drill's left edge was a 6px family spine beside the bar and the band
+          and a 30px coil strip under it — the edge changed width halfway down.
+          This region opens above the band now, in the same place and for the
+          same reason as CahierShell's, so the two shells still match (Dan,
+          2026-09-06: "can you standardise pls, i don't want outliers"). It
+          still stops short of the SITE BAR — the loops overhang onto the desk
+          and nothing can cover the desk. */}
+      <div className="relative flex min-h-0 flex-1 flex-col">
+        <div className="cahier-binding" aria-hidden />
       {(act || famKey) && (
         <PageBand
           title={act?.name ?? familyName(famKey!)}
@@ -485,8 +497,7 @@ export default function DrillShell({
           className="shrink-0"
         />
       )}
-      <div className="cahier-foolscap relative flex min-h-0 flex-1 flex-col">
-        <div className="cahier-binding" aria-hidden />
+      <div className="cahier-foolscap flex min-h-0 flex-1 flex-col">
         {/* Clear the coils, which bind the LEFT edge (Dan, 2026-08-30: "the
             binding should be on the left, not on the right"). Between the
             30 Aug mirroring and that correction the two disagreed — the coils
@@ -784,6 +795,7 @@ export default function DrillShell({
         )}
       </div>
         </div>
+      </div>
       </div>
       {/* The phone bar is fixed — hold its height open so the footer (and
           the tray) always clear it. The height is the floor the bar itself

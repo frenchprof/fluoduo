@@ -917,6 +917,22 @@ html, body { overscroll-behavior-x: none; }
    them, and 16px everywhere else, so the ✕ sat at three different x positions
    across the site. One stacking context fixes both. */
 .page-band { position: relative; z-index: 2; }
+/* THE COILS CROSS THE BAND (Dan, 2026-09-11: *"coils up to the band and also
+   the corresponding vertical strip"*). The binding region opens above the band
+   in both shells now, so without this the band — z-index 2 — would paint over
+   the rings and nothing would look any different. A real coil runs across the
+   cover strip; it does not stop at it. `pointer-events: none` on the binding
+   is what keeps the band's ✕ clickable underneath. */
+.cahier-binding { z-index: 3; }
+/* …AND THE BAND GIVES THEM ROOM. The coils occupy the first 38px of the page
+   plus their 8px punch-hole shadow, and the band's ✕ sat at 16px — so the rings
+   crossed the one control every band must keep visible and tappable. The
+   sibling combinator is the point: this applies to a band the coils actually
+   run past (both shells render `.cahier-binding` immediately before it), and
+   not to a band drawn INSIDE a content well, which is already clear of them
+   (decks/[id]/CuratedDeckTable.tsx). One value at every width, because the
+   coils are one width at every width. */
+.cahier-binding ~ .page-band { padding-left: 3rem; }
 .cahier-binding {
   position: absolute;
   /* 24px LEFT OF THE PAGE (Dan, 6 Sep, after two photos of real coil
@@ -2887,11 +2903,21 @@ html[data-embed] body > footer { display: none !important; }
    it names the family and the page around the frame draws that already, so a
    second one is a duplicate. Inside a DRILL the same strip carries the ✕, the
    goal chip and the progress — it is the drill, not decoration — so hiding it
-   there would take a learner's only way out of a run. Hence the child
-   combinator: `.cahier-page > .page-band` is the page's, `.cahier-drill`'s is
-   its own. A host page for a drill therefore passes `band={false}`, or the
-   learner meets two. */
-html[data-embed] .cahier-page > .page-band { display: none !important; }
+   there would take a learner's only way out of a run. So the selector has to
+   name the page's band and not the drill's: `.cahier-page`'s is the page's,
+   `.cahier-drill`'s is its own. A host page for a drill therefore passes
+   `band={false}`, or the learner meets two.
+
+   IT USED TO BE A CHILD COMBINATOR, `.cahier-page > .page-band`, and that
+   broke on 2026-09-11 when the coils moved up to meet the band: the band is a
+   child of the binding's region now, not of `.cahier-page` itself, so the rule
+   stopped matching and every framed station drew its strip twice. verify126
+   caught it, which is the whole reason it exists. `.cahier-binding ~` is the
+   replacement and is not a workaround for the nesting — it says exactly what
+   the old one meant to say: the band the COILS RUN PAST, on a page. A band
+   drawn inside a content well (decks/[id]/CuratedDeckTable.tsx) has no binding
+   sibling and a drill's root is not `.cahier-page`, so neither is touched. */
+html[data-embed] .cahier-page .cahier-binding ~ .page-band { display: none !important; }
 
 /* The desk is the grey surround the sheet sits on. Inside a frame the sheet IS
    the frame, so the surround is wasted width on a phone — measured at 390px,
@@ -2911,6 +2937,19 @@ html[data-embed] .cahier-foolscap { padding-left: 0.75rem !important; padding-ri
 html[data-embed] .cahier-page,
 html[data-embed] .cahier-drill { border-left: 0 !important; }
 
+/* AND THE FRAME ITSELF IS SEE-THROUGH, so the page's ONE sheet runs through it.
+   Dan, 2026-09-11: *"Profiles, ChaTutor page looks doubleframed"*. A station
+   that draws no shell of its own — /profil/embed and /tutor/embed since that
+   day, /map/embed's shape — has nothing left painting paper, and `body`'s
+   --background would then show as a slab of desk colour inside the notebook.
+   Transparent, and the sheet the page already drew is the one you see.
+
+   IT CHANGES NOTHING FOR THE STATIONS THAT STILL DRAW A SHELL. Every other
+   framed route renders a `.cahier-page` (CahierShell / DrillShell) or a
+   `.cahier-surface` (/map/embed), each of them opaque and `min-height: 100dvh`
+   — they paint over this, so the line is an enabler for the two pages above
+   and a no-op for the rest. verify230 holds both halves. */
+html[data-embed] body { background: transparent; }
 /* A FRAMED STATION KEEPS ITS OWN SCROLL (2026-09-08).
    When a scroller inside an iframe reaches its end the browser CHAINS the rest
    of the gesture to the page behind it — so the notebook around the frame got
