@@ -182,6 +182,17 @@ The repair, and the shape the zone has today (3 records, probed 11 Sep):
     www.fluolingo.com   AAAA   100::              proxied   -> same
     f1.fluolingo.com    CNAME  fluoguo.pages.dev  proxied   -> the app
 
+**THEY ARE ONE SITE, EVEN THOUGH THE SOURCE DIFFERS.** Probed 11 Sep: the
+page from `fluolingo.withdrchan.com` is 26,381 bytes and the one from
+`fluoli.ngo` is 24,101, and a session (and Dan) read that as two separate
+sites. Same script files, same build stamp — the difference is per-DOMAIN
+Cloudflare add-ons applied on the way out: the `withdrchan.com` zone has
+**Rocket Loader** on (it rewrites every `<script>` tag and injects its own
+loader), and the `fluoli.ngo` zone has the Web Analytics beacon on. Rocket
+Loader is a known cause of a Next.js page that loads but does not respond,
+on one domain only; the toggle is `withdrchan.com` → Speed → Optimization →
+Content Optimization → Rocket Loader → off. Dan has been told.
+
 `100::` is Cloudflare's reserved go-nowhere address. A redirect rule needs a
 PROXIED record on the name it redirects FROM, and this is the record to give
 it. So: **a name that only forwards must never be added as a Pages custom
