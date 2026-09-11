@@ -69,12 +69,29 @@ function tourFor(rawPath: string): Tour | null {
       key: "home",
       steps: [
         { selector: 'a[title^="Continue"]', action: "tap", text: "Continue — your next stop on the path." },
-        // "Your tabs", not "five tabs": since 5 Sep the learner picks them
-        // in Réglages, so the count can be anything from one to six — and
-        // when they are all removed this step's selector matches nothing,
-        // which the measure effect already skips over. (Peers' language
-        // pass wanted "Five tabs." here; the count was true when written.)
-        { selector: "nav.cahier-bottombar", action: "tap", text: "Your tabs — press and hold one for its name." },
+        // ☰, NOT THE BOTTOM BAR (Dan, 2026-09-11: *"the beginning first
+        // landing on the home page: the current tour is broken"*).
+        //
+        // This step used to read « Your tabs — press and hold one for its
+        // name » and point at `nav.cahier-bottombar`. Dan removed that bar on
+        // 6 Sep — *"can we remove the bottom nav menu"* — and `bottomNav`
+        // defaults to `[]`, so BottomBar returns null before rendering a
+        // `<nav>` at all. Measured on /home: zero `nav.cahier-bottombar`, zero
+        // `<nav>` of any kind.
+        //
+        // The step therefore matched nothing and the measure effect stepped
+        // over it — the SILENT skip this file has now been bitten by four
+        // times. What a learner saw was the tour jumping « 1/3 » straight to
+        // « 3/3 », having been taught one thing out of three.
+        //
+        // The comment that stood here even predicted it: *"when they are all
+        // removed this step's selector matches nothing, which the measure
+        // effect already skips over"*. That was written as reassurance. It was
+        // a description of the bug, and it aged into one a day later.
+        //
+        // ☰ is what replaced the bar, and it does not have the bar's problem:
+        // it is on every page, for every learner, not an opt-in.
+        { selector: '[data-tour="site-menu"]', action: "tap", text: "☰ opens everything — every family, every activity." },
         { kind: "play", text: "Start here" },
       ],
     };

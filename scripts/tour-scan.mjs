@@ -139,10 +139,20 @@ for (const r of ROUTES) {
       await page.waitForTimeout(700);
       // The step counter FirstTour prints ("1/3"). Landing on the last step
       // immediately means every spotlight before it skipped.
-      const counter = await page.evaluate(() => {
-        const m = document.body.innerText.match(/\b(\d+)\/(\d+)\b/);
+      //
+      // READ IT FROM THE TOUR, NOT FROM THE PAGE. `document.body.innerText`
+      // also carries the learner's own progress — Home prints « 0/10 » beside
+      // the path — and a bare \d+/\d+ match picked that up instead, reporting
+      // the home tour as sitting on step 0 of 10.
+      const readCounter = () => page.evaluate(() => {
+        const el = [...document.querySelectorAll("div,p,span")]
+          .filter((n) => /^\s*\d+\/\d+\s*$/.test(n.textContent || ""))
+          .filter((n) => n.closest(".fixed") && !n.querySelector("div,p,span"))
+          .pop();
+        const m = el?.textContent?.match(/(\d+)\/(\d+)/);
         return m ? { at: +m[1], of: +m[2] } : null;
       });
+      const counter = await readCounter();
       const litSomething = await page.evaluate(() =>
         !!document.querySelector('[data-tour], nav.cahier-bottombar, a[title^="Continue"]'));
       const dead = !counter
@@ -162,6 +172,39 @@ for (const r of ROUTES) {
                   `pinned as broken in scripts/tour-scan.mjs. Remove the \`broken\` note in the ` +
                   `same patch that fixed it — an exemption that outlives its problem is how the ` +
                   `next dead tour gets waved through.`);
+      } else {
+        // NO STEP MAY BE SKIPPED, and this is the assertion the earlier one
+        // was too weak to make. "Did it open on the last step" only catches a
+        // tour where EVERY spotlight is dead. The home tour had two live steps
+        // and one dead one, so it passed — while a learner watched the counter
+        // go « 1/3 » then « 3/3 » and got two thirds of a tour.
+        //
+        // A skipped step is FirstTour working as designed (a conditional
+        // target that is absent is meant to be stepped over), so the only
+        // honest test is to walk the whole thing and see which numbers come
+        // up. Dan, 11 Sep: *"the current tour is broken"* — this is what it
+        // takes to have the build say that first.
+        const seen = [counter.at];
+        for (let n = 0; n < counter.of + 2; n += 1) {
+          const next = page.getByRole("button", { name: /^(Next|Done|Finish)/i });
+          if (!(await next.count())) break;
+          await next.first().click();
+          await page.waitForTimeout(450);
+          const c = await readCounter();
+          if (!c) break;
+          if (c.at === seen[seen.length - 1]) break;
+          seen.push(c.at);
+        }
+        const want = Array.from({ length: counter.of }, (_, n) => n + 1);
+        const missing = want.filter((n) => !seen.includes(n));
+        if (missing.length) {
+          fail.push(`${r.path}: the "${r.tour}" tour SKIPS step(s) ${missing.join(", ")} of ` +
+                    `${counter.of} — it ran ${seen.join(" -> ")}. A step whose selector matches ` +
+                    `nothing is stepped over in silence, so the learner is taught ` +
+                    `${seen.length} of ${counter.of} things and watches the counter jump. Either ` +
+                    `the control moved (check for an /embed) or it is gone — the bottom bar this ` +
+                    `tour used to teach was removed on 6 Sep and nothing said so for five days.`);
+        }
       }
     }
   } else if (tourOffer) {
