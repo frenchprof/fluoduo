@@ -35,7 +35,10 @@ export default function HowManyQuestions({
       <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
         How many questions?
       </p>
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      {/* data-tour: the guided first run starts HERE, not on the card — this
+          is the first thing a learner has to do, and until it is done the
+          activity's own controls do not exist yet (content/hints.ts). */}
+      <div data-tour="how-many" className="flex flex-wrap items-center justify-center gap-3">
         {lengths.map((n) => (
           <button
             key={String(n)}

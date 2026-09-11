@@ -613,12 +613,18 @@ the grey it already had (Dan: "keep the grey it has now"). All 12 exact
 hex values are pinned in `verify96-family-hues.py`'s `EXPECT` dict; change
 the palette there, never by eyeballing a screenshot.
 
-**The ☰ menu's row backgrounds are SOLID, the family's darkest rung — not a
-wash.** First try was a 15%-alpha tint (8 Sep's ruling); Dan sent it back
-the same day: *"you are using the very light shade which is too light...
-the darkest shade in there for the background"* — i.e. the same `--fam-ink`
-CSS token the page's own top strip and left spine already use. See
-`MenuGrid.tsx`'s `INK` map.
+**The ☰ menu's row backgrounds are SOLID, the family's BRIGHT base shade
+(11 Sep) — not a wash, and no longer the darkest rung.** First try was a
+15%-alpha tint (8 Sep); Dan sent it back the same day: *"you are using the
+very light shade which is too light... the darkest shade in there for the
+background"*, and the rows went to `--fam-ink`. On 11 Sep, sending the
+page-strip catalogue in the seven bright hues, he moved them again: *"the
+background needs to be brighter like this"*. So the band is `--fam-*`, the
+same pen the heading strips wear; the darkest rung now colours the tile
+outlines, and the vertical family label is BLACK (the house ink) — Dan,
+same day: *"black font instead of white font ... for the leftmost cat
+names"*. See `MenuGrid.tsx`'s `PEN` /
+`INK` maps.
 
 ## Hub pages are being retired, one family at a time — same day
 

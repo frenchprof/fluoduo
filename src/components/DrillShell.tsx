@@ -742,6 +742,9 @@ export default function DrillShell({
             type="button"
             onClick={cta?.onClick}
             disabled={!cta || cta.disabled || !!feedback}
+            // data-tour: a guided first run lights this button and waits for
+            // the learner to press it (GuidedSteps, content/hints.ts).
+            data-tour="drill-cta"
             className={`cahier-btn cahier-btn-primary justify-center disabled:opacity-40 ${secondary && !feedback ? "col-span-3" : "col-span-5"} ${!cta && !feedback ? "invisible" : ""}`}
           >
             {cta?.label ?? "…"}
