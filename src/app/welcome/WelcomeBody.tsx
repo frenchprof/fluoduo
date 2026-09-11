@@ -51,8 +51,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
+import { useCourse } from "@/components/CourseGate";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
+import { SIOS } from "@/content/sios";
 import { equippedAccent } from "@/lib/economy";
 import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
 
@@ -101,12 +103,30 @@ const OUTLINE = {
   WebkitTextStrokeColor: "black",
   paintOrder: "stroke fill",
 } as const;
+/* TWO COLOURS, NOT FOUR, AND THEY COME FROM THE MAP (Dan, 2026-09-09: *"the
+   two colored F O L G have reverted to 4 again. I only need 2 colors, since we
+   are at it, can we use the colors that are the colors visible on the stop
+   buttons, the ones in blue and pink."*)
+
+   THEY "REVERTED" BECAUSE THEY WERE BORROWED. These four letters pointed at
+   four FAMILY tokens, so the ☰ menu's recolour to Dan's 12-swatch palette
+   moved every one of them without anyone touching this page — pink→violet,
+   green→yellow, blue→teal. It is the same fault, on the same day, as the fifty
+   stops silently following that recolour: a surface with no palette of its own
+   inherits whatever happens to the palette it is borrowing.
+
+   So they take the MAP's own pens now, the ones a learner can see on the stop
+   buttons two hundred pixels below this line: --sio-vocab blue and
+   --sio-grammar pink, alternating F·O·L·G. Those belong to the map, not to the
+   menu, so the next family recolour cannot reach them — and the welcome page
+   now matches the road it is a picture of, which is what makes the pairing
+   read as deliberate rather than decorative. */
 const BRAND: Record<string, string> = {
-  F: "var(--fam-svplay)", // pink
-  o: "var(--fam-goals)", // green
-  O: "var(--fam-goals)",
-  L: "var(--fam-review)", // blue
-  G: "var(--dopa-flow)", // teal
+  F: "var(--sio-vocab)",   // blue — the vocabulary stops
+  o: "var(--sio-grammar)", // pink — the grammar stops
+  O: "var(--sio-grammar)",
+  L: "var(--sio-vocab)",   // blue
+  G: "var(--sio-grammar)", // pink
 };
 /** The name with its four letters lit — one span per character, spoken once. */
 function BrandName({ word }: { word: string }) {
@@ -129,6 +149,12 @@ export default function WelcomeBody() {
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
   const [progress, setProgress] = useState<Progress>(defaultProgress);
+  // WHICH COURSE THIS DOOR OPENS ON (Dan, 2026-09-11: "do the wiring so f1 to
+  // f4 mean different courses"). Shown ONLY when the address names a course —
+  // f1.fluolingo.com reads « French 1 · A1 » under the greeting; fluoli.ngo
+  // and withdrchan, which name none, look exactly as they did. On an address
+  // that says f1 the tag is what tells a learner the app agrees with it.
+  const { course, named } = useCourse();
   useEffect(() => {
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setProgress(loadProgress());
@@ -143,7 +169,26 @@ export default function WelcomeBody() {
   // orange coin at every hour, and the greeting is white with a black outline
   // precisely so it does NOT need to know what the sky is doing. The scene
   // still reads the clock — that is where the hour belongs.
-  const activeId = nextSioId(progress);
+  // THE CAMERA IS PINNED TO STOP 1, NOT TO THE LEARNER (Dan, 2026-09-09,
+  // sending a mock of this page: *"it is the sky that is the problem, it is
+  // the stops (we are supposed to show the orange start button and stop 1)
+  // with sufficient skyline to display the Welcome text."*)
+  //
+  // It used to read `nextSioId(progress)` — the learner's own next stop — the
+  // same call Home's map makes, because this page was built from that one. On
+  // a dashboard that is right: show me where I am. On the FRONT DOOR it is
+  // wrong, and invisibly so, because it looks perfect to anyone testing with
+  // an empty profile. A learner at stop 30 opened the app and met stops 28-33
+  // with the ENTER coin among them, the greeting hanging over a stretch of
+  // road that means nothing to a visitor, and the composition Dan drew — the
+  // orange coin standing at the foot of the road, stop 1 just above it, sky
+  // enough above THAT for the welcome — simply gone.
+  //
+  // So the door always shows the beginning of the road. The scene still reads
+  // the clock (the sky turns over with the real hour, which Dan asked for on
+  // 8 Sep and has not withdrawn) and still paints the learner's own ticks and
+  // accent — what is fixed is the CAMERA, and nothing else.
+  const activeId = SIOS[0]?.id ?? nextSioId(progress);
 
   return (
     // .fluo-embed hides FluOLinGo's own furniture — footer, feedback button,
@@ -173,18 +218,22 @@ export default function WelcomeBody() {
         style={{ background: "linear-gradient(to bottom, rgba(6,8,24,0.55), rgba(6,8,24,0.22) 55%, transparent)" }}
       />
 
-      {/* THE TOP NAV, ON THE SKY (Dan: "the night sky could serve as
-          background for the top nav"). It is a mark and nothing else: a link
-          back to a page you have not reached yet is not navigation, it is a
-          way to leave. */}
-      <header className="pointer-events-none absolute inset-x-0 top-0 flex items-center gap-2 px-5 pt-4 sm:px-8 sm:pt-6">
-        <span
-          className="text-xl font-black tracking-tight text-white/90 sm:text-2xl"
-          style={{ fontFamily: "var(--font-fluohand-stack)", textShadow: "0 1px 12px rgba(0,0,0,0.55)" }}
-        >
-          <BrandName word="FluOLinGo" />
-        </span>
-      </header>
+      {/* NO CORNER WORDMARK. There was one — "the night sky could serve as
+          background for the top nav", 7 Sep — and it earned its place while
+          the greeting was one modest line. It stopped earning it the moment
+          the name became the biggest thing on the screen: the mark and the h1
+          said « FluOLinGo » twice, eighty pixels apart, in the same hand and
+          the same four colours.
+
+          Dan, 9 Sep: *"what could possibly be the purpose of that small
+          'FluOLinGo' wordmark ... now that the title says the name in large
+          letters just below it"*. None — and the litmus test at the top of
+          AGENTS.md had already answered it: text that can be removed without
+          costing the reader anything is redundant. A mark identifies a page
+          whose content does not; this page's content IS its name.
+
+          It was not navigation either. It linked nowhere, because there is
+          nowhere behind a door. */}
 
       {/* THE WELCOME, IN THE SKY. `pointer-events-none` on the whole block so
           a swipe that starts on the headline still travels the road — the
@@ -261,6 +310,15 @@ export default function WelcomeBody() {
           </span>
           <span className="sr-only">Building your Fluency on Linguistic Goals</span>
         </p>
+        {named && course && (
+          <p
+            data-course-tag={course.key}
+            className="mt-1.5 inline-block px-3 py-0.5 text-[1rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.2rem] [@media(max-height:480px)]:hidden"
+            style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
+          >
+            {course.name} · {course.level}
+          </p>
+        )}
       </div>
 
       {/* THE ONE ACTION — A COIN ON THE ROAD (Dan, 8 Sep, with his own mock
@@ -283,9 +341,20 @@ export default function WelcomeBody() {
           sits at the BOTTOM, which is the only place a raised disc lit from
           above can show it.
 
-          ORANGE AS A VAR, not a hex: `--fam-user` is the app's own 55°
-          orange, the same one stop 1 wears three inches above it, so the
-          ratchet counts nothing new and the two cannot drift apart.
+          ORANGE AS A VAR, not a hex — and as the MAP's var since 2026-09-09.
+          This line used to name `--fam-user` and claim, in these words, that
+          it was "the same one stop 1 wears three inches above it, so the two
+          cannot drift apart". The intent was right and the token was wrong:
+          `--fam-user` is a MENU family colour, and when the ☰ was recoloured
+          to Dan's 12-swatch palette it went orange → GREY, taking this coin
+          with it while stop 1 stayed orange. The comment asserting they could
+          not drift was sitting directly above the code that let them.
+
+          So it reads `--sio-phrases` now — the map's own orange, the literal
+          pen stop 1 is drawn with — which is what Dan asked for ("the START
+          button needs to be in orange like stop 1") and what the old comment
+          had always meant. Same bargain as before on the ratchet: a var, not
+          a hex, so nothing new is counted.
 
           STILL CONTENT-SIZED. The standing rule is that no single control
           wears the page's width, and on this page a full-width bar would also
@@ -306,18 +375,29 @@ export default function WelcomeBody() {
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
       <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
+        {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
+            PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
+            ENTER"*). The gold ring used to pulse on goal 1, which on a still
+            scene cannot be pressed at all; it is off there now, and the beat
+            moves here, to the only control on the page.
+
+            It is the map's own `home-map3d-pulse` rather than a second
+            animation invented for this page: same 2s, same 1.08, so the door
+            beats at the rhythm the current stop beats at once you are inside.
+            That rule already stands down under prefers-reduced-motion, which
+            is why there is no second guard here. */}
         <Link
-          href="/"
-          className="rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
+          href="/home"
+          className="home-map3d-pulse rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
-            background: "var(--fam-user)",
+            background: "var(--sio-phrases)",
             color: "var(--cahier-ink)",
             // THE SLAB, from his mocks: the coin's own side wall in darker
             // orange, then a hard BLACK step under that, then the soft cast.
             // Three layers, all at the bottom — the same reasoning
             // `.fluo-stop--up` is written from, at four times the size.
             boxShadow:
-              "0 12px 0 color-mix(in oklab, var(--fam-user) 58%, black), 0 26px 0 rgba(0,0,0,0.72), 0 34px 34px rgba(0,0,0,0.45)",
+              "0 12px 0 color-mix(in oklab, var(--sio-phrases) 58%, black), 0 26px 0 rgba(0,0,0,0.72), 0 34px 34px rgba(0,0,0,0.45)",
             transition: "transform 0.15s ease",
           }}
         >

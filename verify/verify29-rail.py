@@ -15,9 +15,16 @@ What this asserts:
      shell, and the Unité flaps are Goals' children rather than a tier.
   3  Every family's children come from the registry (Goals' from the units),
      and each family holds exactly the activities Dan listed.
-  4  The Menu is a grid of all twenty tiles, and says Menu, not HELP.
-  5  Nothing hand-keeps a second list — the rail and the Menu both read the
-     registry through the shared order helper.
+  4  RETIRED 2026-09-09 with its subject. This described MenuSplash — the
+     twenty-tile popup Help used to open. Dan: "help should open to a 'How to
+     use' manuel, not another grid menu. We can retire the older grid menu
+     that it opens to." The file is gone, so the assertions about its shape
+     went with it rather than being kept alive against nothing. In their place,
+     at the top: MenuSplash must STAY gone, and both help doors — the ☰ tile
+     and HelpDot — must point at /guide.
+  5  Nothing hand-keeps a second list — the RAIL reads the registry through
+     the shared order helper. (The Menu's half of this went with 4: the ☰ grid
+     that replaced it lists Dan's seven rows by hand, from his own drawing.)
 
 Run from the repo root:  python3 verify/verify29-rail.py
 """
@@ -31,8 +38,8 @@ if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
 reg   = read("src/content/activities.ts")
-rail  = read("src/components/RailGroups.tsx")
-menu  = read("src/components/MenuSplash.tsx")
+# RailGroups retired 2026-09-09 too — see the second inverted check below.
+# MenuSplash retired 2026-09-09 — see the inverted check below.
 shell = read("src/components/CahierShell.tsx")
 # The ☰ dropdown left CahierShell on 2026-08-31 — Dan wanted the menu reachable
 # from a drill too, and the way to give DrillShell the same bar without a second
@@ -42,18 +49,61 @@ shell = read("src/components/CahierShell.tsx")
 # is exactly how a stale duplicate survives.
 topbar = read("src/components/SiteTopBar.tsx")
 
-check(bool(rail), "RailGroups exists", "src/components/RailGroups.tsx missing")
-check(bool(menu), "MenuSplash exists", "src/components/MenuSplash.tsx missing")
+# INVERTED 2026-09-09, for the same reason as MenuSplash below and by the same
+# ruling that retired it. RailGroups was the SIX coloured flaps Dan asked for on
+# 3 Sep; his 3x5 grid replaced them in the ☰ on 7 Sep ("replace the burger menu
+# that comes down like this with this 3x5 grid instead"), and this file's own
+# comment then kept the component on disk "for MenuSplash until that surface is
+# re-judged". MenuSplash was judged on 9 Sep and retired, which spent the last
+# reason to keep RailGroups.
+#
+# It was not inert while it sat there. It still spoke the SIX-family world —
+# its `owningFamily` maps "goals", a family renamed Lesson when the menu became
+# seven — so a session reading it would have found a confident, obsolete account
+# of an architecture that had already changed twice under it.
+check(not os.path.isfile("src/components/RailGroups.tsx"),
+      "RailGroups is gone — the ☰ grid is the menu",
+      "src/components/RailGroups.tsx is back; Dan replaced the flaps with the "
+      "3x5 grid on 7 Sep and MenuSplash, its last caller, retired on 9 Sep")
+# INVERTED 2026-09-09. This asserted "MenuSplash exists" — the twenty-tile
+# grid the Help button opened. Dan retired it: *"help should open to a 'How to
+# use' manuel, not another grid menu. We can retire the older grid menu that it
+# opens to."*
+#
+# The claim flips rather than disappearing, because the failure this file now
+# has to catch is the opposite one: a second grid menu growing back behind Help
+# while the ☰ grid is already the way to go somewhere. MenuSplash's own header
+# recorded that it had replaced a quick-guide popup on the grounds that "what a
+# learner reached for that button to do was GO somewhere" — true in August,
+# when there was no ☰ grid, and false once there was. Two grids answered the
+# going-somewhere question twice and left "how does this app work?" unanswered.
+check(not os.path.isfile("src/components/MenuSplash.tsx"),
+      "MenuSplash is retired — Help opens the manual, not a second grid",
+      "src/components/MenuSplash.tsx is back — Help must open /guide, the "
+      "manual, not another grid menu (Dan, 2026-09-09)")
 check(not os.path.isfile("src/components/GuideSplash.tsx"),
-      "GuideSplash is gone — the Menu replaced it",
-      "GuideSplash.tsx still exists alongside MenuSplash — two popups on one button")
+      "GuideSplash is gone too — /guide is the one manual",
+      "GuideSplash.tsx is back — the manual lives at /guide, as a page, and a "
+      "popup copy of it is the duplicate this line has guarded since August")
+# AND HELP ACTUALLY POINTS AT IT. The two checks above are absences, and an
+# absence cannot tell you the door leads anywhere — deleting the splash and
+# leaving Help inert would satisfy both. The ☰'s Help tile and HelpDot (the "?"
+# on the immersive pages, which have no ☰) must each name /guide.
+helpdot = read("src/components/HelpDot.tsx")
+grid    = read("src/components/MenuGrid.tsx")
+check('href="/guide"' in helpdot and 'href="/guide"' in grid,
+      "both help doors — the ☰ tile and HelpDot — open /guide",
+      "a help door does not point at /guide: the ☰ tile and HelpDot must both "
+      "open the manual (Dan, 2026-09-09)")
 
-# 1 · six families in Dan's order
+# 1 · SEVEN families now (2026-09-09: Skills retired, split into Oral and
+# Tools), in Dan's grid-menu row order: Lesson · Practice · Review · Games ·
+# Oral · Tools · User.
 fams = re.findall(r'\{ key: "([a-z]+)", name: "FluOL?in', reg)
-WANT = ["goals", "practice", "svplay", "review", "skills", "user"]
+WANT = ["goals", "practice", "review", "svplay", "oral", "tools", "user"]
 check(fams == WANT,
-      f"six families in Dan's 19 Aug order: {' · '.join(fams)}",
-      f"family order is {fams}, expected {WANT} (2a→2b→2e→2c→2d→2f)")
+      f"seven families in Dan's 9 Sep row order: {' · '.join(fams)}",
+      f"family order is {fams}, expected {WANT}")
 
 # 2 · the rail is grouped, not flat
 # `<RailGroups`, not "RailGroups": the import line and the comment explaining
@@ -107,15 +157,15 @@ check(bool(rail_block) and "RailGroups" not in rail_block,
 # announced) is now: no disclosure exists to announce, and the units are
 # reached through Home/the map — so the claims become: every flap navigates,
 # and every flap wears its own family's colour.
-check("aria-expanded" not in rail and "sessionStorage" not in rail,
-      "the accordion is gone — flaps are doors, not folders",
-      "the accordion is back; children tabs were retired on Dan's word, 2 Sep")
-check("f.href" in rail and re.search(r"--fam-\$\{f\.key\}-wash", rail) is not None,
-      "each flap links to its family hub and wears that family's wash",
-      "a flap is plain or dead — Dan: 'plain to colored tabs please'")
-check("fluo-band-hand" in rail,
-      "the flap labels take FluOLinGo Hand",
-      "Dan, 2 Sep: 'oh use FluOLinGo font for those tabs!'")
+# THE THREE FLAP-SHAPE ASSERTIONS RETIRED WITH THEIR SUBJECT (9 Sep). They
+# pinned the accordion's absence, each flap's href and family wash, and the
+# FluOLinGo Hand on its label — all true of a component nothing renders any
+# more. A check that describes deleted code is worse than no check: it passes
+# forever, and it blocks whoever finally deletes the file.
+#
+# What they were really protecting has a live owner. The ☰ grid's colours are
+# verify96 (the twelve-swatch palette, exact hexes); its rows and their order
+# are section 1 above, which reads Dan's seven families out of FAMILIES.
 
 # 3 · each family holds exactly what Dan listed
 EXPECT = {
@@ -139,12 +189,18 @@ EXPECT = {
     # family, where his 3x5 menu screenshot also drew it.
     "practice": {"speculearn", "lesson", "flip"},
     "review":   {"reviser", "grammarathon", "conjugaison"},
-    "skills":   {"ecoutexte", "wordrill", "tts", "compose", "tutor"},
+    # SKILLS RETIRED 2026-09-09, split into Oral (the three spoken ones) and
+    # Tools (the two summonable helpers) — see AGENTS.md and the FAMILIES
+    # comment in activities.ts.
+    "oral":     {"ecoutexte", "wordrill", "tts"},
+    "tools":    {"compose", "tutor"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.
     "svplay":   {"numbers", "vocabularain", "lexicalator"},
-    "user":     {"leaderboard", "profil"},
+    # SETTINGS JOINED USER 2026-09-09 — the grid menu's third User slot
+    # (Réglages had a page but no tile before).
+    "user":     {"leaderboard", "profil", "reglages"},
 }
 rows = re.findall(r'\{ key: "([a-z0-9]+)", name: "[^"]+".*?family: "([a-z]+)"', reg)
 for fam, want in EXPECT.items():
@@ -156,33 +212,38 @@ check(not [f for _, f in rows if f == "goals"],
       "Goals carries no activity rows — its children are the fifty objectives",
       "an activity is still filed under goals — the 19 Aug regrouping is undone")
 
-# 4 · the Menu is Dan's 4x4
-check("grid-cols-4" in menu,
-      "the Menu grid is four across",
-      "the Menu grid is not grid-cols-4")
-check("sm:grid-cols-5" not in menu,
-      "the Menu stays 4x4 at every width (Dan, 31 Aug: '16 (4x4)')",
-      "the Menu widens to five across again — sixteen tiles leave a hole there")
-check(len(rows) == 16,
-      f"the registry holds sixteen activities ({len(rows)}) — Dan's 4x4",
-      f"the registry holds {len(rows)} activities, expected 16 — Dan's 4x4 "
+# 4 · RETIRED WITH THEIR SUBJECT, 2026-09-09 — not relaxed.
+#
+# Four assertions here described MenuSplash's own shape: four columns, never
+# five, a heading reading "Menu", and no "HELP!" left on it. Dan retired the
+# whole surface ("we can retire the older grid menu that it opens to"), so
+# they no longer describe anything. A check kept alive against a deleted file
+# is worse than a deleted check: it reads as coverage while asserting nothing.
+#
+# What SURVIVES is everything that was never about the popup — the registry
+# count below, the HELP! label on the rail and the bar, and the rail's own
+# source-of-truth rule. The popup's replacement, the ☰ grid, is pinned by
+# verify33-family and by the MenuGrid assertions above; its layout is Dan's
+# seven rows, not a 4x4, so re-pointing these at it would have asserted the
+# wrong shape in the right file.
+check(len(rows) == 17,
+      f"the registry holds seventeen activities ({len(rows)}) — Dan's 4x4 plus Settings",
+      f"the registry holds {len(rows)} activities, expected 17 — Dan's 4x4 "
       "(31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under one "
-      "Numbers hub, My Progress folded into Profile). If a tile is added or "
+      "Numbers hub, My Progress folded into Profile) plus Settings, added to "
+      "the User row 2026-09-09. If a tile is added or "
       "removed, change this number on purpose.")
-check(">Menu<" in menu or "Menu</h2>" in menu,
-      "the popup calls itself Menu",
-      "the popup does not say Menu")
-check("HELP!" not in shell and "HELP!" not in topbar and "HELP!" not in menu,
-      "no HELP! label survives on the rail or the popup",
-      "a HELP! label is still on the rail or the popup")
+check("HELP!" not in shell and "HELP!" not in topbar,
+      "no HELP! label survives on the rail or the bar",
+      "a HELP! label is still on the rail or the bar")
 
 # 5 · one source of truth
-check("activitiesInFamilyOrder" in menu,
-      "the Menu reads the registry through the shared family-order helper",
-      "the Menu hand-keeps its own order")
-check("activitiesIn(" in rail,
-      "the rail reads the registry per family",
-      "the rail hand-keeps its own activity list")
+# The Menu's half of this rule retired with the Menu (see section 4). The ☰
+# grid that replaced it lists Dan's seven rows by hand, tile for tile from his
+# own drawing, so "reads the registry through the shared helper" is not a rule
+# it was ever built to obey — asserting it here would fail a correct file.
+# The rail's half of this rule retired with the rail, 9 Sep — same reasoning as
+# the Menu's half directly above: the file it described is deleted.
 
 print("\nthe grouped rail + the Menu (19 Aug)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)

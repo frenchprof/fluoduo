@@ -22,12 +22,23 @@ export type MapView = "2d" | "3d";
 
 export const MAP_VIEW_KEY = "fluo.homeMapView";
 
-/** The saved choice, or 2D when there is none (or storage is blocked). */
+/** The saved choice, or 3D when there is none (or storage is blocked).
+ *
+ * THE DEFAULT IS 3D (Dan, 2026-09-09: *"the map should land on 3d by default
+ * (unless the 2d is requested via the switch)"*). It was 2D until then, left
+ * over from when the flat grid was the only map there was.
+ *
+ * Read the comparison carefully: it tests for "2d", not for "3d". That IS the
+ * change, and it is the easy thing to get backwards. Only a learner who has
+ * explicitly chosen 2D — through the switch, or a `?view=2d` link, both of
+ * which save — gets 2D. Anything else (no key yet, a blocked store, a value
+ * from some future build this one does not recognise) lands on 3D.
+ */
 export function loadMapView(): MapView {
   try {
-    return window.localStorage.getItem(MAP_VIEW_KEY) === "3d" ? "3d" : "2d";
+    return window.localStorage.getItem(MAP_VIEW_KEY) === "2d" ? "2d" : "3d";
   } catch {
-    return "2d";
+    return "3d";
   }
 }
 

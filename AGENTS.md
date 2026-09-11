@@ -85,10 +85,33 @@ FluencyOnLinguisticGoals"*). Identifiers, storage keys (`fluolingo:*`) and
 the font files (`FluOlinGoHand-*.woff2`) keep their existing spellings —
 renaming those breaks things without a learner ever seeing the difference.
 
+> ⚠️ **THE LIST BELOW IS SUPERSEDED. There are SEVEN families now, not six,
+> and Skills is retired.** See *"The ☰ menu is SEVEN families now"* at the
+> foot of this file (Dan, 2026-09-09) for the list that is true today:
+>
+>     🧑‍🏫 Lesson · 📝 Practice · 🔄 Revise · 🎮 Games · 💬 Oral · 🛠️ Tools · 👤 User
+>
+> What survives from the 31 Aug ruling is its SHAPE, and that part is still
+> permanent: one fixed name and one fixed icon per family, living once in
+> `FAMILIES`, with everything else derived; keys and routes never move when a
+> display name does. Only the membership changed.
+>
+> This pointer exists because the file contradicted itself twice in one day.
+> The 9 Sep entry says it supersedes this section — but it says so four
+> hundred lines below it, and a session reads top-down. The stale copy is
+> always the one that looks authoritative.
+
 **The six families are called by these names and wear these icons, and no
-others** (Dan, same day):
+others** (Dan, 2026-08-31 — see the supersession notice above):
 
     🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User
+
+SKILLS BRIEFLY WORE 🤹, on 2026-09-09, and the reason is worth keeping even
+though the family is gone: 💬 was ALSO the floating "report a bug" button, so
+opening WorDrill put the Skills door and the bug button on screen wearing one
+glyph. The bug button took 🐞 and the family took 🤹 — then, later the same
+day, Skills was retired entirely and 💬 came back as **Oral**, which is why
+🤹 appears nowhere in the app today.
 
 They live once, in `FAMILIES` (`src/content/activities.ts`), as
 `FluOLin <Name>`; everything else derives. Registry KEYS stay as they are
@@ -464,7 +487,8 @@ your CI runs.
 Dan asked (9 Sep) for emojis to be replaced by SVG icons everywhere, and for
 that decision to be recorded. Before any SVG existed, a stock-take of every
 emoji-as-icon place turned up a mix-up: Dan thought icons like the six family
-glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User)
+glyphs (🎯 Goals · 🏋️ Practice · 🎮 Games · 🔄 Revise · 💬 Skills · 👤 User —
+Skills has since become 🤹, see below)
 were already SVGs in the app; they are plain emoji characters (the OS/browser
 draws them — e.g. the "abc" box next to ConjugaZone is just the 🔤 emoji,
 not a picture file). No SVGs were ever supplied.
@@ -476,18 +500,141 @@ its emoji glyphs.** The six families keep wearing 🎯 🏋️ 🎮 🔄 💬 �
 every other emoji-as-icon in the app stays an emoji. Nothing in the code
 changed under this proposal — it never reached step 1 of its own sequence.
 
-The stock-take did surface one real, still-open finding, unrelated to the
-SVG question: **the same emoji is reused for two unrelated things in two
-places**, live at once:
-- **💬** is both the Skills family door AND the floating "report a bug"
-  button (`components/FeedbackButton.tsx`) that sits on top of many pages,
-  including Skills activities themselves (e.g. open WorDrill and both the
-  Skills-family 💬 and the bug-report 💬 are on screen at once).
-- **🧰** is both the LexicaLater game AND the floating "Outils" tools tray
-  (`components/tools/ToolSummon.tsx`, VoixLà + ChaTutor) that appears on
-  most exercise screens, including ones that have nothing to do with
-  LexicaLater (e.g. ÉcouTexte, WorDrill).
+The stock-take did surface one real finding, unrelated to the SVG question:
+**the same emoji was reused for two unrelated things in two places**, live
+at once — 💬 was both the Skills family door and the floating "report a
+bug" button; 🧰 was both the LexicaLater game and the floating "Outils"
+tools tray (VoixLà + ChaTutor) that appears on most exercise screens.
 
-Whether to change either of those two glyphs is Dan's call, undecided as of
-this entry — flagged here so the next session does not have to rediscover
-it.
+**Dan's fix, same day (9 Sep) — four glyphs, one rename, resolved:**
+
+    🐞  the bug-report button (was 💬)         components/FeedbackButton.tsx
+    🤹  FluOLin Skills (was 💬)                 content/activities.ts FAMILIES
+    🛠️  the Outils tools tray (was 🧰)          components/tools/ToolSummon.tsx
+    🔐  LexicaLocker (was 🧰, name was LexicaLater) content/activities.ts, MenuGrid.tsx
+
+**LexicaLater is retired for good — call it LexicaLocker everywhere.** Same
+key (`lexicalator`) and route (`/games/lexicalater`), display name only —
+the Memo-rename precedent. Concrete example: open WorDrill (a Skills
+exercise) and you now see 🐞 (report a bug) and 🛠️ (Outils — VoixLà /
+ChaTutor) floating on screen together, and neither is 🤹 (Skills, the
+family WorDrill lives in) or 🔐 (LexicaLocker, an unrelated game). No glyph
+in the app means two different things any more.
+
+# The ☰ menu is SEVEN families now, not six — permanent (2026-09-09)
+
+**Same day as the 🤹/🐞/🛠️/🔐 fix above, Dan redrew the whole ☰ menu**, this
+time as a 7-row grid, and this ruling SUPERSEDES "The names — permanent
+(2026-08-31)" wherever the two disagree. The names, in his own words:
+
+    🧑‍🏫 Lesson · 📝 Practice · 🔄 Revise · 🎮 Games · 💬 Oral · 🛠️ Tools · 👤 User
+
+**SKILLS IS RETIRED**, split into two new families:
+- **Oral** (💬 — the glyph taken OFF Skills a few hours earlier, when 🤹
+  replaced it to clear the bug-button collision. Skills is gone now, the bug
+  button is 🐞, so 💬 is free and comes back meaning a DIFFERENT, smaller
+  family) — VoixLà, WorDrill, ÉcouTexte: the three that put French in your
+  mouth or ear.
+- **Tools** (🛠️ — same glyph ToolSummon's own floating door already wore;
+  no collision, they're now the same idea) — ChaTutor, ComposeIt.
+
+**Lesson replaces Goals** on every learner-visible surface — same registry
+key (`goals`), same route (`/`), display-rename only. Its three tiles are
+Map, the goal itself, and Help (which moved out of the old last row).
+
+**"Revise", not "Review"** — Dan's own table (9 Sep, later in the same
+conversation) spells it Revise, reverting an intermediate "Review" this
+session tried first. **DéjàRevu is renamed ErroReview** (❌, was 🔖) the
+same day — same key (`reviser`), same route (`/reviser`).
+
+**Colour: Dan's fixed 12-swatch brand palette, "use only these shades."**
+Five map cleanly onto family names: Lesson=Yellow, Practice=Blue,
+Revise=Teal, Games=Violet, Tools=Orange. **Two do not, and are flagged
+rather than guessed**: Oral is "Indigo", not one of the twelve — Periwinkle
+(#9398ff) stands in for it, Dan's own pick when asked. User is "Grey", also
+not one of the twelve — none of the twelve reads as neutral, so it keeps
+the grey it already had (Dan: "keep the grey it has now"). All 12 exact
+hex values are pinned in `verify96-family-hues.py`'s `EXPECT` dict; change
+the palette there, never by eyeballing a screenshot.
+
+**The ☰ menu's row backgrounds are SOLID, the family's darkest rung — not a
+wash.** First try was a 15%-alpha tint (8 Sep's ruling); Dan sent it back
+the same day: *"you are using the very light shade which is too light...
+the darkest shade in there for the background"* — i.e. the same `--fam-ink`
+CSS token the page's own top strip and left spine already use. See
+`MenuGrid.tsx`'s `INK` map.
+
+## Hub pages are being retired, one family at a time — same day
+
+**Dan, looking at the finished grid menu: *"all those hub pages have been
+made redundant by the pop ups... nearly all"*.** A hub page (a `FamilyHub`
+listing every member of a family) existed because the OLD menu couldn't
+list nineteen activities at once; the new one does, so the aggregating
+page in between has nothing left to do.
+
+**All three are retired now** — the route stays and forwards (never delete
+a URL outright; a bookmark or an old link must still land somewhere), to
+that family's `DELIBERATE_DOOR` activity:
+- `/skills` → redirects to `/tts` (VoixLà)
+- `/practice` → redirects to `/practice/speculearn` (SpecuLearn)
+- `/games` → redirects to `/games/vocabularain` (VocabulaRain) — the one
+  Dan hedged on ("nearly all", not "all") when asked, then confirmed
+  ("retire /games") a few messages later. Unlike Skills and Practice, none
+  of Games' three members (NumBus, VocabulaRain, LexicaLocker) has an
+  obviously-THE-door page — they're all three pop-up-gated (see below) —
+  so VocabulaRain is a pick among equals, not a clear answer. `FAMILY_HUBS`
+  in `activities.ts` is now empty: no family has a hub page of its own left.
+
+## Seven activities traded their hub-gallery for ONE pop-up — same day
+
+**Dan: *"instead of leading to a hub page, each of these will go directly
+to the relevant page (if there is only one) OR a pop-up will ask if they
+wish to visit the activity for the current Goal (SIO)"*.** MémoiRecall,
+GramMarathon, VocabulaRain, LexicaLocker, WorDrill, ÉcouTexte and ComposeIt
+each used to open a deck/unit picker of their own — seven different
+pickers, one per activity. They now all open the SAME pop-up:
+`GoalSliderPicker` in `src/components/ActivityGoalPicker.tsx` — a 1-to-50
+slider that opens already pointing at the learner's current stop (the same
+number the ☰'s own 🎯 badge computes), lands on whichever deck that stop's
+`SIOS[stop-1].collectionId` names, and has NO fallback list of decks at
+all: slide or type a number, Confirm, go.
+
+**The number is tappable to edit directly** (Dan: *"it would be good if it
+could appear as a depressed space"*) — it sits in a `.neo-well` (the app's
+existing "value pressed into the paper" style) with a real `<input>`
+under the display digits. **Every other control in the pop-up is a
+`.neo-key`** (the paired "stands out of the paper" style) — Confirm, and
+the NumBus/NumBourse tiles in the second pop-up.
+
+**NumBus gets a DIFFERENT, simpler pop-up** — Dan: *"it will just ask to
+pick between NumBus or NumBourse. --> Confirm button"* — because there is
+no goal involved, just two games. `TwoChoicePicker` in the same file.
+
+**ÉCOUTEXTE IS A KNOWN GAP.** Its content is picked by unit/topic, not by a
+per-SIO deck route — there is no `/practice/ecoutexte/<id>` for the
+slider's answer to steer. Its pop-up still opens (Dan named it as one of
+the seven) but Confirm always lands on the plain topic picker, regardless
+of what stop was chosen. Documented in the file, not silently faked.
+
+**ON DESKTOP THE POP-UP IS A CENTRED, CONTENT-SIZED CARD, not a sheet**
+(Dan: *"the pop up must only occupy the middle of the page, just
+sufficient space for the slider and field and OK button"*) — this is why
+`ActivityGoalPicker.tsx` has its OWN small modal rather than reusing
+`BottomSheet`, which pins to the bottom edge even on desktop.
+
+**THE PICKER'S STATE LIVES IN `SiteTopBar`, NOT IN `MenuGrid`** — found by
+driving the built app, twice. First bug: a picker tile calls `onNavigate`
+in the same click that opens its pop-up; `onNavigate` closes the ☰
+dropdown, which unmounts `MenuGrid` — and the picker's own `useState` and
+its rendered modal lived inside `MenuGrid`, so both vanished in the same
+tick they were created. The pop-up simply never appeared. Fix: hoist
+`useActivityPicker()` to `SiteTopBar` (which does not unmount on navigate)
+and pass the result down as a `picker` prop; render `picker.modal` OUTSIDE
+the `{menuOpen && …}` block. Second bug, found the same way right after:
+the modal rendered inline (not portalled) opened centred against the wrong
+box and appeared scrolled half off the top of the screen — some ancestor
+was breaking `position: fixed`'s containing block. Fixed the same way
+`ToolSummon` and `BottomSheet` already avoid it: `createPortal` to
+`document.body`. Neither bug was visible in a static reading of the code —
+both only showed up driving the real, built app, which is why this is
+written down as a warning and not just a diff.

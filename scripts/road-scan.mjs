@@ -123,6 +123,23 @@ const exe = process.env.ROAD_BROWSER
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 const page = await ctx.newPage();
+
+// THE 2D VIEW IS SEEDED, because /map no longer opens in it (2026-09-09:
+// "the map should land on 3d by default (unless the 2d is requested via the
+// switch)"). Everything this file measures — the SVG road and the stop
+// centres it must line up with — belongs to Map2DGrid, so a fresh context
+// now lands on the 3D scene and the scan reports "no road found in any
+// frame" on all four cases. That is not the fault this file exists to catch;
+// it is the file looking at the wrong map.
+//
+// Seeded rather than clicked, and rather than `?view=2d`: map-fit-scan.mjs
+// records that the query never reaches the map (the frame reads its own
+// search), and a click depends on the switch being hittable before the scene
+// has settled. addInitScript runs before every navigation on this page, so it
+// covers both goto calls below.
+await page.addInitScript(() => {
+  try { window.localStorage.setItem("fluo.homeMapView", "2d"); } catch {}
+});
 const cdp = await ctx.newCDPSession(page);
 
 async function read() {

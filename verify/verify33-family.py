@@ -64,7 +64,7 @@ def colour(name, depth=0):
     return hexc(v) if v.startswith("#") else None
 
 PAPER, INK = colour("--cahier-paper"), colour("--cahier-ink")
-FAMS = ["goals", "practice", "svplay", "review", "skills", "user"]
+FAMS = ["goals", "practice", "svplay", "review", "oral", "tools", "user"]
 
 for f in FAMS:
     full, ink, wash = colour(f"--fam-{f}"), colour(f"--fam-{f}-ink"), colour(f"--fam-{f}-wash")

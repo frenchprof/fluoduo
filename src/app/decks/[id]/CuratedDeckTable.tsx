@@ -125,7 +125,7 @@ export default function CuratedDeckTable({ collection }: { collection: Collectio
         <div className="cahier-binding" aria-hidden />
         <div className="mx-auto max-w-3xl px-4 py-10 pl-16 text-center text-[color:var(--cahier-ink-soft)]">
           No flippable vocab in <code>{collection.id}</code>.{" "}
-          <Link href="/" className="font-bold text-[color:var(--cahier-ink)] underline">Home</Link>
+          <Link href="/home" className="font-bold text-[color:var(--cahier-ink)] underline">Home</Link>
         </div>
       </main>
     );
@@ -192,8 +192,8 @@ function TopBar({ collectionId }: { collectionId: string }) {
          identical reason, which the note here had got wrong: it claimed to be
          "the only help this page has", and it never was. It mounted HelpDot,
          whose whole purpose is pages OUTSIDE the CahierShell — the immersive
-         games, which have no ☰ — and it opens MenuSplash. The ☰ two
-         centimetres above it opens MenuSplash too, from its « MENU » row. Two
+         games, which have no ☰ — and it opened the same twenty-tile grid the
+         ☰ two centimetres above it opened from its « MENU » row. Two
          doors to one room, on one screen, and it made the deck the only band
          in the app with a fourth thing on it (Dan, seeing the strips lined up:
          "what is with the question mark on the deck strip"). */

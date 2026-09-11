@@ -127,3 +127,104 @@ the file and the Pages / Cloudflare bindings.
 A **staging** custom domain (`staging.fluoli.ngo` or
 `staging.fluolingo.withdrchan.com`) belongs on the **staging** Pages project
 only — `docs/STAGING.md`.
+
+### The four course addresses — f1 to f4 (10 Sep 2026, NOT YET DONE)
+
+Dan wants one address per course: `f1.fluolingo.com` … `f4.fluolingo.com`.
+Probed 10 Sep from a session: none of the four has a DNS record yet, so a
+browser gets nothing at all (not a 404 — no answer). `fluolingo.com` itself
+is on Cloudflare (it resolves to a Cloudflare address), so this is four
+custom-domain entries on the live Pages project, not a domain move.
+
+**No agent can add them.** The Cloudflare connector a session gets carries
+tools for Workers, KV, D1, R2 and Hyperdrive only — nothing for Pages
+custom domains or DNS records — and no API token is present in a session.
+Checked twice on 10 Sep. So this is a one-minute-each dashboard job for Dan:
+
+1. Cloudflare dashboard → **Workers & Pages** → the live project (the one
+   whose `*.pages.dev` is `fluoguo.pages.dev`) → **Custom domains** →
+   **Set up a custom domain**.
+2. Type `f1.fluolingo.com` → **Continue** → **Activate domain**. Because the
+   `fluolingo.com` zone is already on this Cloudflare account, Cloudflare
+   writes the CNAME record itself; there is nothing to paste at a registrar.
+3. Repeat for `f2`, `f3`, `f4`.
+4. Wait for each row to say **Active** (usually under a minute), then open
+   `https://f1.fluolingo.com/` — it should show the same welcome page as
+   `fluoli.ngo`.
+
+**WHAT EACH ADDRESS MEANS (wired 11 Sep, Dan: "do the wiring so f1 to f4
+mean different courses").** One build serves every address; the page reads
+its own hostname after it loads and asks `src/content/courses.ts` which
+course that is. f1 runs the app as built and tags the welcome page « French 1
+· A1 ». f2, f3 and f4 show a closed door on every route — name, level, "not
+open yet", a link to French 1 — until their `live` flag is flipped in that
+one file. Addresses that name no course (fluoli.ngo, withdrchan, the
+pages.dev previews) run as French 1 with no tag. `verify195` drives all of it.
+
+**One thing to know before sending learners there:** progress is stored per
+web address (browser storage is scoped to the hostname). A learner who has
+been working at `fluoli.ngo` arrives at `f1.fluolingo.com` with an empty
+profile. Nobody has enough progress for that to hurt yet, which is the
+argument for switching addresses now rather than later.
+
+**DONE, 10–11 Sep: f1 is live.** Dan added `f1.fluolingo.com`; it went
+Active at once and answers 200. f2–f4 are still blank names and will do the
+same whenever he adds them.
+
+**THE TRAP, so nobody springs it twice.** Dan also tried adding
+`fluolingo.com` and `www.fluolingo.com` as custom domains. Both sat at
+*Verifying — Complete DNS setup* because each name already had a DNS record
+(the redirect to `fluolingo.withdrchan.com`). He wanted the redirect kept, so
+he removed the two rows — and Cloudflare, which had already swapped in its own
+records while "verifying", took the records away with the rows. For an hour
+on 11 Sep `fluolingo.com` had NO DNS record: not a bounce, not a 404, nothing.
+
+The repair, and the shape the zone has today (3 records, probed 11 Sep):
+
+    fluolingo.com       AAAA   100::              proxied   -> redirect rule fires -> 302 withdrchan
+    www.fluolingo.com   AAAA   100::              proxied   -> same
+    f1.fluolingo.com    CNAME  fluoguo.pages.dev  proxied   -> the app
+
+**THEY ARE ONE SITE, EVEN THOUGH THE SOURCE DIFFERS.** Probed 11 Sep: the
+page from `fluolingo.withdrchan.com` is 26,381 bytes and the one from
+`fluoli.ngo` is 24,101, and a session (and Dan) read that as two separate
+sites. Same script files, same build stamp — the difference is per-DOMAIN
+Cloudflare add-ons applied on the way out: the `withdrchan.com` zone has
+**Rocket Loader** on (it rewrites every `<script>` tag and injects its own
+loader), and the `fluoli.ngo` zone has the Web Analytics beacon on. Rocket
+Loader is a known cause of a Next.js page that loads but does not respond,
+on one domain only; the toggle is `withdrchan.com` → Speed → Optimization →
+Content Optimization → Rocket Loader → off. **Dan switched it off on 11 Sep**
+(it had been on for months, from before FluOLinGo lived there); probed after:
+no rocket-loader on any address. The one line that still differs on
+withdrchan is Cloudflare's invisible bot-check snippet (`__CF$cv$params`,
+from Bot Fight Mode on that zone), which does not touch the app's scripts.
+
+**LEAVE BOT FIGHT MODE ON. Dan, 11 Sep: *"Leave Bot Fight Mode as it
+is."*** This is written down because the difference LOOKS like a defect and
+the obvious fix is the wrong one. A session comparing two addresses finds
+them unequal, traces it to a zone setting, and switches the setting off to
+make the numbers match — trading a security control for a tidy diff nobody
+asked for.
+
+Measured on 11 Sep, so the next session does not have to re-derive it:
+
+    f1.fluolingo.com           24,101 bytes
+    fluoli.ngo                 24,101 bytes   byte-identical to f1
+    fluolingo.withdrchan.com   25,039 bytes   +938
+
+    the bot-check block                938 bytes
+    the gap                            938 bytes
+    remainder                            0 bytes
+
+So the bot check is not *a* difference, it is *the* difference — the gap
+closes to zero when you subtract it. Everything else matches: all three
+serve the same 17 script chunks (same build), and Cloudflare Pages
+Analytics is on ALL of them, not just one. **The app code is identical on
+every address; the page source is not, and that is correct.**
+
+`100::` is Cloudflare's reserved go-nowhere address. A redirect rule needs a
+PROXIED record on the name it redirects FROM, and this is the record to give
+it. So: **a name that only forwards must never be added as a Pages custom
+domain**, and if one is ever removed from that list, check DNS the same
+minute.

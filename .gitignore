@@ -63,3 +63,8 @@ work/**/*.png
 
 # Agent worktrees (session-local working copies; auto-cleaned)
 .claude/worktrees/
+
+# Scratch from verify112-vs-last-week.py — it builds a throwaway tsconfig
+# here while it runs. Committed by accident on 2026-09-09 by a `git add -A`
+# that ran while a sweep was mid-flight; ignored so it cannot happen again.
+.tmp-verify-vslastweek/

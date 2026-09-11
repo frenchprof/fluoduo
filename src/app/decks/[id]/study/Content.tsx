@@ -61,7 +61,7 @@ function NotFound() {
       <div className="text-6xl" aria-hidden>🤷</div>
       <h2 className="mt-3 text-xl font-black text-slate-900">Deck not found</h2>
       <p className="mt-1 text-sm text-slate-600">It may have been deleted, or isn’t shared with you.</p>
-      <Link href="/" className="fluo-btn fluo-btn-ghost mt-5 inline-flex">← Home</Link>
+      <Link href="/home" className="fluo-btn fluo-btn-ghost mt-5 inline-flex">← Home</Link>
     </div>
   );
 }

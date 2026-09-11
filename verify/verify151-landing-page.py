@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify151 — /welcome shows the road, and asks one thing.
+"""verify151 — the landing page (`/`) shows the road, and asks one thing.
 
 Dan asked for a pre-home landing page on 7 Sep — *"It will be used as a
 pre-home page landing page… The question is what are the items on this
@@ -82,6 +82,28 @@ if not re.search(r"<HomeMap3D[^>]*\bfill\b", body, flags=re.S):
     fail.append("/welcome no longer renders the scene with `fill` — the map goes back to "
                 "being a card on the page instead of being the page")
 
+# THE CAMERA IS PINNED TO THE START OF THE ROAD (Dan, 2026-09-09, sending a
+# mock of this page: "it is the stops (we are supposed to show the orange
+# start button and stop 1) with sufficient skyline to display the Welcome
+# text").
+#
+# It read `nextSioId(progress)` — the learner's OWN next stop — because this
+# page was built from Home's map, where showing you where you are is exactly
+# right. On the front door it is wrong, and it is INVISIBLE to anyone testing
+# with an empty profile: a learner at stop 30 met stops 28-33, the ENTER coin
+# among them, and Dan's composition simply gone. Measured before and after in
+# a browser, seeding thirty finished stops: 28-33 became 1-7.
+#
+# Matched on the absence of the progress-following call rather than on the
+# presence of SIOS[0], because the fault is "the camera follows the learner"
+# and there are several ways to write that. `progress` itself is still passed
+# — the learner's own ticks and accent still paint. Only the CAMERA is fixed.
+if re.search(r"activeId\s*=\s*nextSioId\s*\(", body):
+    fail.append("the landing page's camera follows the learner again "
+                "(activeId = nextSioId): a learner at stop 30 opens the app to "
+                "stops 28-33 instead of the orange ENTER and stop 1, and it looks "
+                "perfect to anyone testing with an empty profile")
+
 # The page must be as tall as the screen and no taller. 100dvh, not 100vh:
 # a phone measures vh against its TALLEST chrome state, so a vh page hides its
 # own bottom — the CTA — behind the address bar on arrival.
@@ -97,11 +119,13 @@ if fail:
     sys.exit(1)
 print("  ok   the scene fills the page, and the page is sized to the visible screen")
 
-probe = os.path.join(ROOT, "out/welcome.html")
+# THE LANDING PAGE IS THE ROOT SINCE 2026-09-09 (Dan: "the first i see must
+# be the one with Welcome to FluOLinGo in the horizon", and, asked, on every
+# visit). It was /welcome; that address still exists and forwards here, so the
+# page to probe is out/index.html.
+probe = os.path.join(ROOT, "out/index.html")
 if not os.path.isfile(probe):
-    probe = os.path.join(ROOT, "out/welcome/index.html")
-if not os.path.isfile(probe):
-    print("FAIL  out/ has no /welcome — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
+    print("FAIL  out/ has no root page — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
     sys.exit(1)
 
 sys.exit(subprocess.run(["node", "scripts/landing-scan.mjs"], cwd=ROOT).returncode)

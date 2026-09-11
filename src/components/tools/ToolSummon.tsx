@@ -1,12 +1,16 @@
 "use client";
 
 /**
- * 🧰 ToolSummon — the in-exercise door to the two tools (Dan, 5 Sep, AMBIENT
+ * 🛠️ ToolSummon — the in-exercise door to the two tools (Dan, 5 Sep, AMBIENT
  * TOOLS: "ChaTutor as a floating consult, VoixLà summonable wherever French
  * is typed; the OUTILS row is the address, not the life").
  *
- * One floating 🧰 button (cahier paper, ink border) sits fixed above the
- * green 💬 feedback bubble. Tapping it opens a small tray — 🔊 VoixLà ·
+ * 🛠️, not 🧰 (Dan, 2026-09-09) — 🧰 was ALSO LexicaLocker's icon (see
+ * activities.ts), live on screen at once on exercises that have nothing to
+ * do with that game.
+ *
+ * One floating 🛠️ button (cahier paper, ink border) sits fixed above the
+ * green 🐞 feedback bubble. Tapping it opens a small tray — 🔊 VoixLà ·
  * 🤖 ChaTutor — and tapping a row slides a BottomSheet card up OVER the
  * exercise. The exercise NEVER closes or navigates: close the card and it is
  * exactly as left.
@@ -54,7 +58,7 @@ export default function ToolSummon({
    *  Dan, 5 Sep: "Voix-Là is for TTS. and it does NOT make any sense to
    *  have it im EcouTexte": the exercise's whole job is already speaking
    *  French at the learner, and TTS there could read the answer aloud.
-   *  With a single tool the 🧰 opens its card directly — a one-row tray
+   *  With a single tool the 🛠️ opens its card directly — a one-row tray
    *  is a middle step with nothing to choose. */
   tools?: Card[];
   /** A card slid over the exercise — park the mic, hold the audio. */
@@ -88,7 +92,7 @@ export default function ToolSummon({
 
   return createPortal(
     <>
-      {/* The door: 46px round, cahier paper + ink border, above the 💬
+      {/* The door: 46px round, cahier paper + ink border, above the 🐞
           feedback bubble (bottom-right ~20px). */}
       <button
         type="button"
@@ -99,7 +103,7 @@ export default function ToolSummon({
         className="fixed bottom-[132px] right-[14px] z-50 flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] text-xl shadow-lg transition-transform hover:brightness-95 active:scale-95"
         style={{ background: "var(--cahier-paper-raised)" }}
       >
-        🧰
+        🛠️
       </button>
 
       {/* The tray: two rows, one per tool. A tap outside puts it away. */}

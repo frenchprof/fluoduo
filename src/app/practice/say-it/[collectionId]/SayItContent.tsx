@@ -258,7 +258,7 @@ export default function SayItContent({
     recRef.current = null;
   }, []);
 
-  // 🧰 While a tool card is open the mic must not run — the card speaks, and
+  // 🛠️ While a tool card is open the mic must not run — the card speaks, and
   // the recognizer would transcribe the tool's voice and grade the browser
   // instead of the learner (same reason listenModel refuses while listening).
   // The recognition is ABANDONED, not stopped: its handlers are detached
@@ -361,7 +361,7 @@ export default function SayItContent({
   }, [cards, seedRun]);
 
   const startListening = useCallback(() => {
-    if (toolOpenRef.current) return; // a 🧰 card owns the audio right now
+    if (toolOpenRef.current) return; // a 🛠️ card owns the audio right now
     const c = cardRef.current;
     if (!c) return;
     const win = window as any;
@@ -831,7 +831,7 @@ export default function SayItContent({
           </div>
         </div>
 
-        {/* 🧰 The summonable tools (5 Sep) — WorDrill only, not the say-it
+        {/* 🛠️ The summonable tools (5 Sep) — WorDrill only, not the say-it
             deck pages or the SIO popup (first pass: the three Skills
             trainers). The chip shows the prompt the learner can SEE (the
             French only once they have earned or asked for it); VoixLà is
@@ -884,7 +884,7 @@ export default function SayItContent({
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
               <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
-              {embedded && <Link href="/" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
+              {embedded && <Link href="/home" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
           </div>
         )}

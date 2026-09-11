@@ -83,9 +83,9 @@ Dan's brief — the lexique table is the natural home, not the dice.
 | 33 | Places in town | place nouns | feeds 26, 35 |
 | 41 | Food & meals | foods | feeds 42 |
 | 44 | Shops & market | shops + goods | the exchange is Tier 3 |
-| 45.5 | Numbers 70–99 | numerals | **soixante-dix is generative** (1) |
+| 45 | Numbers 70–99 | numerals | **soixante-dix is generative** (1) |
 
-Note 45A: French 70–99 is arithmetic, not vocabulary — 4×20+10+9. That one has
+Note 45: French 70–99 is arithmetic, not vocabulary — 4×20+10+9. That one has
 a rule and could take a Tier 1 treatment.
 
 ## Tier 3 · Phraseology — 9 phrase stops + 6 ateliers = 15, ONE strand

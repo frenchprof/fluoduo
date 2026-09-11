@@ -22,7 +22,7 @@ export default function GuidePage() {
         <h1 className="cahier-display text-2xl font-black text-[color:var(--cahier-ink)]">❓ HELP!</h1>
         <GuideBody />
         <p className="mt-5">
-          <Link href="/" className="fluo-h-1 inline-block rounded-full border-2 px-4 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5" style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}>
+          <Link href="/home" className="fluo-h-1 inline-block rounded-full border-2 px-4 py-1.5 text-sm font-black text-white shadow-[3px_3px_0_rgba(0,0,0,0.15)] transition hover:-translate-y-0.5" style={{ background: "var(--fluo-card-accent)", borderColor: "var(--fluo-card-accent)" }}>
             Start here 🏠
           </Link>
         </p>

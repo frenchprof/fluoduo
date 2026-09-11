@@ -33,8 +33,8 @@ import StopBookmark from "@/components/StopBookmark";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
-import MenuSplash from "@/components/MenuSplash";
 import MenuGrid from "@/components/MenuGrid";
+import { useActivityPicker } from "@/components/ActivityGoalPicker";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import { type ShellTab } from "@/components/TabFlap";
@@ -55,6 +55,13 @@ export default function SiteTopBar({
   nested?: boolean;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  // Owned HERE, not inside MenuGrid (Dan, 2026-09-09's slider/two-choice
+  // pop-ups) — a picker cell calls `onNavigate` in the same click that opens
+  // it, which closes the ☰ dropdown and unmounts MenuGrid. A picker's own
+  // state and modal have to live one level up or they would unmount in the
+  // same tick they open (found by driving the built app: the modal never
+  // appeared, because it already had by the time React re-rendered).
+  const picker = useActivityPicker();
   // Tap-away for the ☰ dropdown (Dan, 2026-07-20): a capture-phase document
   // listener sees every pointerdown regardless of z-order, which the old
   // full-screen catcher div did not on pages with their own stacking context.
@@ -67,7 +74,6 @@ export default function SiteTopBar({
     document.addEventListener("pointerdown", close, true);
     return () => document.removeEventListener("pointerdown", close, true);
   }, [menuOpen]);
-  const [quickGuideOpen, setQuickGuideOpen] = useState(false);
 
   // The Revise due count rides the bottom bar's 🔄 slot. Since 5 Sep a
   // learner can untick that slot — or the whole bar — in Réglages, and the
@@ -185,10 +191,14 @@ export default function SiteTopBar({
             <div className="absolute left-0 top-full z-50 mt-1 max-h-[80vh] overflow-y-auto rounded-lg border-2 border-[color:var(--cahier-ink)]/20 bg-[color:var(--cahier-paper-raised)] shadow-lg">
               <MenuGrid
                 onNavigate={() => setMenuOpen(false)}
-                onHelp={() => setQuickGuideOpen(true)}
+                picker={picker}
               />
             </div>
           )}
+          {/* Rendered OUTSIDE the `menuOpen &&` block on purpose — see the
+              `picker` comment above. The dropdown can be long gone by the
+              time a picker pop-up needs to be on screen. */}
+          {picker.modal}
         </div>
         {/* text-xl, not the text-lg it wore in the display face: FluOLinGo Hand
             has a smaller x-height and the wordmark lost presence at 18px next
@@ -199,7 +209,7 @@ export default function SiteTopBar({
             current <-- FluOLinGo in the top should be on the left rather
             than in the middle"): the wordmark now sits AGAINST the ☰, and
             everything after it is pushed right by this margin. */}
-        <Link href="/" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+        <Link href="/home" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
           {active !== "home" && <>← </>}
           {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
               same FluOLinGo font but with the KALLANG wave effect and
@@ -239,7 +249,7 @@ export default function SiteTopBar({
               (Dan, 2026-07-15). */}
           {/* !important — .cahier-btn's own display rule beats a bare
               `hidden` utility. */}
-          <Link href="/" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
+          <Link href="/home" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
             🏠
           </Link>
           {/* ⌛ My learning history — always visible (Dan, 2026-07-25).
@@ -264,7 +274,6 @@ export default function SiteTopBar({
         </div>
       </div>
     </div>
-      {quickGuideOpen && <MenuSplash onClose={() => setQuickGuideOpen(false)} />}
     </>
   );
 }

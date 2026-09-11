@@ -54,8 +54,10 @@ ACT_C = nocomment(ACT)
 FAMILIES = re.findall(
     r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*emoji:\s*"([^"]+)",\s*href:\s*"([^"]+)"\s*\}',
     ACT_C)
-ok(len(FAMILIES) == 6, "six families parsed from the registry",
-   f"expected 6 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
+# SEVEN since 2026-09-09 — Skills retired, split into Oral and Tools (see
+# activities.ts FAMILIES and AGENTS.md).
+ok(len(FAMILIES) == 7, "seven families parsed from the registry",
+   f"expected 7 families, parsed {len(FAMILIES)} — has the shape of FAMILIES changed?")
 
 ACTIVITIES = re.findall(
     r'\{\s*key:\s*"([a-z]+)",\s*name:\s*"([^"]+)",\s*(?:short:\s*"[^"]*",\s*)?emoji:\s*"[^"]*",\s*'
@@ -103,37 +105,26 @@ for key, name, _emoji, href in FAMILIES:
        f"{name} -> {href} is a real route",
        f"{name} points at {href}, but {page} does not exist")
 
-# ── 3 · the two hubs render the hub, for the right family ───────────────────
-# Skills and Games RUN IN A FRAME since 2026-09-07 (Dan: *"EVERYTHING (LIKE THE
-# MAP) MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES (EMBEDDED)"*), so the hub
-# itself moved to `<route>/embed` and the route is the notebook around it. The
-# rule is unchanged — that door opens that family's hub — but it now takes two
-# files, and a host without a twin is a page with nothing on it.
-for route, key in (("src/app/games/page.tsx", "games"), ("src/app/skills/page.tsx", "skills"),
-                   ("src/app/practice/page.tsx", "practice")):
-    src = nocomment(read(route))
-    embed_path = route.replace("/page.tsx", "/embed/page.tsx")
-    embed = nocomment(read(embed_path)) if os.path.exists(os.path.join(ROOT, embed_path)) else ""
-    where = embed if embed else src
-    ok("<FamilyHub" in where and f'activeKey="{key}"' in where,
-       f"{route} opens <FamilyHub activeKey=\"{key}\">",
-       f"{route} no longer reaches <FamilyHub activeKey=\"{key}\"> — neither the "
-       f"route nor its embed twin renders it")
-    if embed:
-        ok("EmbedFrame" in src and "/embed" in src,
-           f"{route} hosts its embed twin in the cahier",
-           f"{route} has an embed twin but does not host it — the door opens a "
-           f"page with nothing on it")
-
+# ── 3 · no family has a hub page of its own left ────────────────────────────
+# ALL THREE HUBS ARE RETIRED NOW (2026-09-09): Skills first, then Practice,
+# then Games (Dan hedged on Games as "nearly all" of the hub pages being
+# redundant, then confirmed it: "retire /games"). Each retired hub's route
+# still exists — it redirects rather than disappearing outright, so a
+# bookmark or an old link still lands somewhere — but none of them renders
+# <FamilyHub> any more, and FAMILY_HUBS is empty.
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}
-# Practice joined on 1 Sep — its door was /map, which is Goals' page, so the
-# 🏋️ slot opened another family's front door and SpecuLearn and 4Mémoire had no
-# shortcut of their own. Same fault 🎮 and 💪 had before 30 Aug.
-ok(hub_keys == {"games": "svplay", "skills": "skills", "practice": "practice"},
-   "FAMILY_HUBS maps games->svplay, skills->skills and practice->practice",
-   f"FAMILY_HUBS is {hub_keys or 'unreadable'} — the hub pages and the families disagree")
+ok(hub_keys == {},
+   "FAMILY_HUBS is empty — no family has a hub page of its own any more",
+   f"FAMILY_HUBS is {hub_keys or 'unreadable'}, expected empty — every family's "
+   "hub retired 2026-09-09")
+for retired_route in ("src/app/skills/page.tsx", "src/app/practice/page.tsx", "src/app/games/page.tsx"):
+    body = nocomment(read(retired_route))
+    ok("<FamilyHub" not in body,
+       f"{retired_route} no longer renders <FamilyHub> — its hub is retired",
+       f"{retired_route} still renders <FamilyHub> — FAMILY_HUBS says it "
+       "shouldn't be a hub any more")
 
 # ── 4 · a hub page must be COLOURED, or it is a white page with a white band ─
 site_fam = re.search(r"SITE_FAMILY:\s*Record<[^>]*>\s*=\s*\{(.*?)\n\};", ACT_C, re.S)

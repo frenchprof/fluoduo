@@ -6,6 +6,353 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
+restarted from `53a15a3` after #260 merged).
+
+**Dan: *"do the wiring so f1 to f4 mean different courses"*.** Until now the
+four addresses were four doors into one room — nothing in the app read its own
+hostname (the 9 Sep course pop-up had that read, and it went with the pop-up).
+
+**WHAT IT DOES NOW**, driven on the built export as three hosts (Chromium
+resolves `*.localhost` to the machine, so one export on one port can be opened
+as `f1.localhost`, `f2.localhost` …):
+
+    fluoli.ngo / withdrchan / localhost   names no course  ->  the app as built, no tag
+    f1.fluolingo.com                      French 1, live   ->  the app, welcome page tagged « French 1 · A1 »
+    f2 / f3 / f4                          not written yet  ->  THE CLOSED DOOR on every route:
+                                                               name · level, "This course is not open
+                                                               yet.", one content-sized « Go to French 1 › »
+                                                               to the f1 host. No map, no ENTER, nothing
+                                                               of French 1.
+
+- **`src/content/courses.ts`** is the one list: f1 French 1 A1 (live), f2
+  French 2 A1, f3 French 3 A2, f4 French 4 A2. Opening a course is flipping
+  `live` there and nothing else. LAF1201 is recorded as `code` and never
+  rendered (Dan, 9 Sep: "No codes at all").
+- **`src/components/CourseGate.tsx`** wraps `{children}` in `layout.tsx`, reads
+  the hostname AFTER MOUNT (static export — same reason as `TopLevelOnly`) and
+  swaps in the door for a course that is not live. Publishes
+  `<html data-course="f1">`; `useCourse()` also says whether the ADDRESS named
+  the course, which is what the welcome tag keys on — so fluoli.ngo looks
+  exactly as it did and verify151's measurements are untouched.
+- **`verify195-courses.py`** pins the registry (keys f1–f4 in order, exactly one
+  live), no `code` outside the registry, the gate in the layout, and drives
+  five host/route cases through `scripts/course-scan.mjs`. Break-tested three
+  ways (f2 flipped live; gate removed from layout; `code` rendered in the
+  door): each fails on the one assertion it should. Wired into verify.yml after
+  the open build.
+
+**WHAT IS DELIBERATELY NOT HERE.** No pop-up, no picker: ENTER still walks to
+Home, as Dan chose on 9 Sep. f1 does NOT skip the welcome page — his later
+ruling ("the first i see must be the one with Welcome ... every time") wins
+over the earlier "f1 goes straight to the map". Progress is still per address.
+
+**ONE THING FOR DAN TO JUDGE ON THE PICTURE:** the « French 1 · A1 » tag under
+the subline on f1. It is the only place the app says which course it is; the
+litmus test could argue the address already says f1. Shown, not argued — one
+line to delete in `WelcomeBody.tsx` if he wants it gone.
+
+**LOCAL NOTE:** `verify95-icons.py` fails in this container for want of the
+Python image library (`PIL`), on main as much as here; every other check
+passes against this build.
+
+## 10 Sep — the f1–f4 subdomains: connector reached the session, and still cannot do it
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+
+Dan authorised the Cloudflare connector and opened a fresh session: *"do the
+subdomains"*, having been offered three options the day before (reserve all
+four names now / add f1 only / wire the app to read its hostname first). Doing
+the subdomains is the first of those: four custom-domain entries, all serving
+French 1 for now.
+
+**THE CONNECTOR IS LIVE HERE — and it is the wrong shape for the job.** Its
+tools were listed and called in this session (it returned the account's 18
+Workers). But the whole tool set is Workers, KV, D1, R2, Hyperdrive and a docs
+search. There is no tool for a Pages custom domain and none for a DNS record,
+and no API token exists in a session's environment. So the 9 Sep note below
+("a NEW session after that can do the f1–f4 subdomain work") was wrong about
+what the connector can do, not about whether it would connect.
+
+**MEASURED TODAY:** `f1`–`f4.fluolingo.com` have no DNS record at all;
+`fluolingo.com` resolves to Cloudflare and 302s to `fluolingo.withdrchan.com`;
+`fluoguo.pages.dev` answers 200. So the four entries go on the live Pages
+project, and Cloudflare will write the CNAMEs itself because the zone is
+already on the account.
+
+**WHAT LANDED:** the exact four-step dashboard recipe, in `docs/DEPLOY.md`
+under *"The four course addresses — f1 to f4"*, together with the two
+warnings Dan already has (all four addresses show French 1 today; progress is
+per hostname, so an address change starts a learner at zero). No `src/`
+change — the app does not read its hostname, by Dan's earlier instruction, and
+this session did not reintroduce that.
+
+**AN ODDITY, NOT TOUCHED:** a Worker called `fluoduo` was created on the
+account on 9 Sep 13:18 UTC, and its whole code is `return new Response("Hello
+world")`. It has no route and does nothing. It was almost certainly left by
+the 9 Sep session probing the connector; Dan can delete it from Workers &
+Pages whenever he likes.
+
+**11 Sep, SAME SESSION — f1 IS LIVE, and the root went dark for an hour.**
+Dan added f1 (Active, 200 on probe) and also tried the root and www, which
+stuck at *Verifying* because both names already carried the redirect to
+withdrchan. He chose to keep the redirect and removed the two rows — and the
+removal deleted their DNS records, so `fluolingo.com` answered nothing at all
+until two proxied `AAAA 100::` placeholders were added back. Full account and
+the zone's 3-record shape are in `docs/DEPLOY.md` under *"THE TRAP"*. Probed
+after the repair: root and www 302 to withdrchan, fluoli.ngo / withdrchan /
+f1 all 200. f2–f4 remain blank names for whenever Dan wants them.
+
+## 9 Sep — housekeeping: RailGroups retired, #246 landed (integration lane)
+
+Sole editor of STATUS.md in this commit: this session (`qc/retire-railgroups`).
+
+**MERGED AND DEPLOYED SINCE THE ENTRY BELOW:** #257 (`cd0fc5c`, deploy run
+#41) and #258 (`8aef134`, deploy run #42). Production is on `8aef134`.
+
+**#258 IS PEERS' #246, REPLAYED.** Their branch dropped the landing page's
+corner wordmark (Dan: *"what could possibly be the purpose of that small
+'FluOLinGo' wordmark ... now that the title says the name in large letters
+just below it?"*). Its base was `92684ff`, ten pull requests back, and
+`WelcomeBody.tsx` took three of those in the meantime — the F·O·L·G letters
+cut to two colours, the ENTER coin repainted stop-1 orange, the camera pinned
+to the start of the road. All three sit BELOW the `<header>` this removes, so
+the replay was genuinely non-overlapping; #246 is closed with that written on
+it so Peers does not redo it.
+
+**RAILGROUPS IS GONE.** It was the six coloured flaps from 3 Sep; the 3x5 grid
+replaced them in the ☰ on 7 Sep, and `verify29`'s own comment then kept the
+file "for MenuSplash until that surface is re-judged". MenuSplash was judged
+and retired earlier today, which spent the last reason to keep it — and it was
+not inert while it sat there: `owningFamily` still mapped `"goals"`, a family
+renamed Lesson when the menu became seven, so a session reading it would have
+found a confident account of an architecture that had changed twice under it.
+
+**FIVE ASSERTIONS RETIRED WITH THEIR SUBJECT.** `verify29` read the file for
+the accordion's absence, each flap's href and wash, the hand on its labels,
+and the registry helper. All five described a component nothing rendered:
+they would have passed forever and blocked whoever finally deleted the file.
+"RailGroups exists" is inverted instead — the shape `verify29` already uses
+for MenuSplash — and break-tested.
+
+**AND A KNOCK-ON FOUND BY A CHECK, NOT BY READING.** `text-[17px]` had exactly
+one user in the app and it was this file, so the deletion left a fluid-type
+ramp rule matching nothing. `verify106` fails on precisely that, by design, so
+the ladder cannot fill with steps for text nobody sets. Rule removed with a
+note to restore it beside the first class that needs it again.
+
+**STILL OPEN FOR DAN — the Cloudflare connector.** The `cloudflare/skills`
+plugin and the `cloudflare` MCP server are installed in THIS container (13
+skills, `mcp.cloudflare.com`), but a container is thrown away when the session
+ends and the MCP's sign-in cannot run in a non-interactive session. Dan
+authorises it once at claude.ai → Settings → Connectors; a NEW session after
+that can do the f1–f4 subdomain work. Measured today: `fluolingo.com` resolves
+to `172.67.173.191`, a Cloudflare address — so the zone is already on
+Cloudflare and the subdomains are four custom-domain entries on the Pages
+project, not a migration. The 3 Sep note below saying fluolingo.com is GitHub
+Pages is OUT OF DATE.
+
+**AND THE THING THAT DECISION TURNS ON:** progress is stored per web address,
+so a learner who has been working at `fluolingo.com` arrives at
+`f1.fluolingo.com` with an empty profile. Nobody has enough progress for that
+to hurt yet, which is the argument for doing it now — but it is Dan's call and
+he has been told.
+
+## 9 Sep — Home shows the road, and the postcard is destroyed (integration lane)
+
+Sole editor of STATUS.md in this commit: this session (`qc/home-3d-map`),
+branched from `7600e28`.
+
+Dan asked where ENTER should land now that there is no course picker, and
+answered himself: ***"Home, and put the 3D map on it"*** — then, before a line
+was written, ***"not the postcard pls"***, and then ***"please throw that
+postcard away forever"***.
+
+**WHAT THE PAGE LOOKED LIKE BEFORE.** Empty. `/home` was the greeting band,
+the three keys (Continue / Next / Rewind) and forty centimetres of blank
+notebook paper down to the footer — measured by driving the built export at
+430×932 and at 1280×900. That is what removing the postcard on 8 Sep left
+behind.
+
+**WHAT IT SHOWS NOW.** `HomeMap3D` at its own height, the same component and
+the same `onOpenSio` that `/map` uses. Driven and measured on the built
+export: seven stops in the DOM, and tapping SIO-004 lands on `/sio/SIO-004`
+from Home and from the map embed alike — the same destination from both.
+`fill` and `still` are both off: `fill` is `/welcome`'s shape (sky to the top
+of the window) and `still` freezes the scene for a page showing a PICTURE of
+the map. Home is showing the map.
+
+**AND THE POSTCARD MODE IS DELETED, not left dormant.** `HomeMap` carried a
+`postcard` prop that stripped it to a bare 280px snapshot — no unit chips, no
+legend, no zoom — for a parent to wrap in a link and turn pointer events off.
+Nothing had passed it since 8 Sep. That is exactly the state a check has to
+catch: a mode with no callers reads as a feature to the next session that
+finds it, and this one has now been asked for and thrown away twice.
+
+**`verify80` IS RETARGETED A THIRD TIME** (view switch → postcard → no map →
+this). Read the three rulings from 1 to 9 Sep together and the constant was
+never "a map on Home" — it was the POSTCARD: a cropped 2D grid under a
+`pointer-events-none` « Enter the map » band, which is the "unresponsive" in
+Dan's own word for it. It now pins the live scene (present, wired to
+`onOpenSio`, not `still`, not `fill`), pins that none of the postcard's parts
+came back, and pins that the `postcard` prop is gone from `HomeMap.tsx`. All
+four new assertions were break-tested — remove `onOpenSio`, add `still`, swap
+in `Map2DGrid`, restore: fail, fail, fail, pass.
+
+**SUPERSEDES "HOME NO LONGER SHOWS THE MAP (#248)" below**, and closes the
+open question under it ("THE MAP HAS NO DOOR"): the ☰ menu's Lesson row has a
+Map tile since the seven-families work, and `verify80` counts seven doors to
+`/map` outside itself.
+
+**ONE THING FOUND AND NOT TOUCHED.** The region band label inside the scene is
+clipped at the box's left edge — Home reads « ELCOME VILLAGE · 0/10 » at
+1280px. Measured on both surfaces: `/map/embed` clips it identically (label at
+x=86 in a box starting at x=139). Pre-existing in the shared component, on the
+map as much as on Home, so it is not this branch's to fix — but it is now
+visible on a page every learner sees.
+
+## 9 Sep — the ☰ menu becomes seven families, on branch (this session)
+
+Sole editor of STATUS.md in this commit: this session
+(`claude/grid-menu-7families`), rebased on top of `4b826f4`/`b08b14b`.
+
+Dan redrew the ☰ menu from five rows to seven, live over several messages —
+see AGENTS.md ("The ☰ menu is SEVEN families now, not six") for the full
+ruling and reasoning. Summary of what changed:
+
+- **Skills retired**, split into **Oral** (VoixLà, WorDrill, ÉcouTexte) and
+  **Tools** (ChaTutor, ComposeIt). Goals renamed **Lesson** on every
+  learner-visible surface (same key `goals`, same route `/`).
+- **DéjàRevu renamed ErroReview** (❌, was 🔖); the Revise family keeps its
+  name (an intermediate "Review" rename was tried and reverted the same day).
+- **Settings joins the User row** — a real `ACTIVITIES` entry now
+  (`reglages`), where before it had a page but no tile.
+- **Recoloured to Dan's fixed 12-swatch brand palette** ("use only these
+  shades") — Lesson=Yellow, Practice=Blue, Revise=Teal, Games=Violet,
+  Tools=Orange exactly; Oral=Periwinkle and User=grey are the two that
+  aren't in the twelve, both his explicit picks when asked. All 28 values
+  (7 families × 4 rungs) pinned in `verify96-family-hues.py`.
+- **The ☰ menu's row bands are solid `--fam-*-ink`**, not the 8 Sep's
+  15%-alpha wash — Dan sent the pale version back the same day.
+- **All three hub pages retired** — `/skills`, `/practice` and `/games` now
+  redirect (to VoixLà, SpecuLearn and VocabulaRain respectively) rather
+  than being deleted outright. Games was hedged on first ("nearly all",
+  not "all" — none of its three games is an obvious single door) and
+  confirmed a few messages later ("retire /games"). `FAMILY_HUBS` in
+  `activities.ts` is now empty.
+- **Seven activities** (MémoiRecall, GramMarathon, VocabulaRain,
+  LexicaLocker, WorDrill, ÉcouTexte, ComposeIt) traded their own
+  deck/unit-picker hub for ONE shared pop-up, `ActivityGoalPicker.tsx` — a
+  50-stop slider defaulting to the learner's current stop, editable by
+  tapping the number directly. **NumBus** gets a separate, simpler
+  two-choice pop-up (NumBus vs NumBourse).
+- **ÉcouTexte's pop-up is a known, documented gap** — no per-SIO route
+  exists for it yet, so its Confirm always lands on the plain topic picker
+  regardless of the chosen stop.
+- Two real bugs found only by DRIVING the built app (not visible from
+  reading the code): the picker's own state/modal was unmounting itself
+  because it lived inside `MenuGrid`, which unmounts on every navigate —
+  fixed by hoisting `useActivityPicker()` up to `SiteTopBar`; and the modal
+  opened scrolled off-screen because it wasn't portalled — fixed with
+  `createPortal(..., document.body)`, matching `ToolSummon`/`BottomSheet`.
+
+**RESOLVED since the note above was first written:** `/games` retires too
+(Dan: "retire /games") → redirects to `/games/vocabularain`.
+
+**STILL OPEN, not yet answered by Dan:**
+- The SIO-per-page swipe-chain feature (map ↔ SpecuLearn ↔ MneMemo ↔
+  MémoiRecall ↔ ConjugaZone ↔ WorDrill ↔ ÉcouTexte, one URL per SIO) that
+  the Lesson row's "Goals" tile will eventually open — Dan said he has
+  someone else building this separately. **Do not build it in this lane**;
+  the Lesson row's Goals tile still points at `/` (Home) as a placeholder
+  until that work lands and tells this repo where to point it.
+
+Verified before handing over: `tsc --noEmit` clean, full build green
+(`NEXT_PUBLIC_OPEN_APP=1`), every `verify/` script passing (six of them —
+verify19, verify24, verify29-rail, verify33-family, verify52-nav-hubs,
+verify96-family-hues, verify106-fluidtype, verify19b — needed updating for
+the new family shape; each carries its own dated comment explaining why).
+Screenshotted the finished 7-row menu and both pop-ups (slider + NumBus
+two-choice) against the real built app before calling this done.
+
+## 8 Sep, night — four lanes landed, production synchronised, glyphs deduped (fluoduo-main)
+
+Sole editor of STATUS.md in this commit: fluoduo-main (`qc/icon-glyph-swap`).
+
+**PRODUCTION TRACKS MAIN.** Dan: *"push both staging and production to the same
+main synhronised"*. `deploy-live` runs 32, 33 and 35 put `4b826f4`, `92684ff`
+and `b08b14b` live in turn. Everything below is in production unless it says
+otherwise.
+
+**DO NOT WRITE A COMMIT SHA HERE AND CALL IT "MAIN'S TIP".** The first draft of
+this entry did, and it was stale within the hour — twice — because the lane
+that writes STATUS is also the lane that merges, so main moves immediately
+after. What is durable is the RULE (production follows main, deployed by
+`deploy-live` once verify is green); the SHA is a fact about one minute. Check
+the live tip with `git rev-parse origin/main` and the newest successful
+`deploy-live` run, never by reading this paragraph.
+
+AND DO NOT FIRE THE DEPLOY THE MOMENT A MERGE LANDS. Run 34 failed for exactly
+that: fired ~15 seconds after #249 merged, before main's own verify run
+existed, so the guard refused with *"verify on b08b14b…: missing"*. Nothing
+broke — that is the guard working — but the run is red in the history for no
+reason. Main's verify takes about nine minutes; wait for it.
+
+Merged this session, in order: #225, #226, #231, #233, #236, #237, #238, #241,
+#242, #243, #244, #245, #248, #249, #250. Closed with reasons: #229, #204,
+#240, #239.
+
+**HOME NO LONGER SHOWS THE MAP (#248).** Dan, pointing at the postcard:
+*"retire the unresponsive 2d map with start here button. we have replaced that
+with the new landing page that peers has edited"*, then *"we don't need this
+anymore"*. Three checks were RETARGETED rather than switched off — `verify80`
+is now inverted (Home must render no map, AND at least one door to `/map` must
+survive somewhere), `verify124` lost only its postcard section, `verify25b`
+went from "exactly one map link" to "at most one".
+
+**OPEN, AND IT IS DAN'S CALL: THE MAP HAS NO DOOR.** Not on Home, not in the ☰
+menu, not in the top bar. Only side routes reach the fifty stops — the 404
+page, an empty deck, the profile. That is why `verify80` now insists a door
+exists *somewhere*; "somewhere" is currently nowhere a learner would look. A
+Map tile in the ☰ grid is the one-line fix when he says so.
+
+**NO GLYPH MEANS TWO THINGS ANY MORE.** 💬 was the Skills door AND the floating
+report-a-bug button; 🧰 was a game AND the floating Outils tray — both pairs
+live on one screen (open WorDrill and you met each twice). Dan approved all
+four swaps and the rename: 🐞 bug button · 🤹 Skills · 🛠️ Outils tray · 🔐
+LexicaLocker, which retires the name LexicaLater. **Key `lexicalator` and route
+`/games/lexicalater` are unchanged** — the Memo-rename precedent.
+
+Two QC findings on top of the lane's branch, both worth knowing:
+
+- **AGENTS.md asserted both glyphs at once.** The fix was recorded at the foot
+  of the file while the *permanent* names ruling near the top still read 💬
+  Skills. A session reading top-down would have reverted it in good faith. Both
+  now read 🤹, with the reason attached.
+- **`verify190` keys on DESTINATION, not on a list of blessed pairs.** 👤 is
+  already used twice — the User family door and the Profile activity — and that
+  is NOT the fault, because both are `/profil`: one place reached two ways. The
+  9 Sep fault was one picture with two unrelated outcomes. So a future
+  family/activity pair needs no maintenance here.
+
+Break-testing found a fault in that check itself, which is the transferable
+part: re-glyphing the tray back to 🧰 PASSED, because `ToolSummon.tsx` explains
+its own glyph four times in its header comment, so the file still contained 🛠️
+in prose while the button rendered the collision again. That is the same trap
+`verify19b`, `verify152` and `verify153` each hit — a check that cannot tell
+code from prose reads its own documentation as evidence. Comments are stripped
+now. A fifth test pins the variation-selector problem: a game taking 🛠 without
+the invisible U+FE0F is the same picture to a learner and a different string to
+Python, and a byte compare waves it through.
+
+**Still open, none of it started:** `/map?view=3d` deep links are broken by the
+iframe move; old `#SIO-nnn` popup links are dead (StopPopup retirement is
+queued); Say It / Match It / Diced Practice retirement rulings are unanswered.
+**The deploy token (`LIVE_DEPLOY_TOKEN`) expires Fri 2 Oct 2026** — regenerate
+before then or production deploys stop.
+
 ## 8 Sep, later — the chest on file, and Match It becomes two exercises (Peers)
 
 Sole editor of STATUS.md in this commit: Peers (`claude/peers-vd2h6h`).
@@ -7922,3 +8269,47 @@ about. Cleared per `AGENTS.md`:
 found nothing. The same shape as both of theirs.
 
 tsc clean, build clean, 43 verify scripts green, touched files at 0 lint errors.
+
+## 11 Sep — no intermediate stop: verify49 tightened, two live docs corrected
+
+Dan: **"there should not be any intermediate stop."** The spine already obeys
+that — `sios.json` is fifty stops, ids `SIO-001`–`SIO-050`, `num` 1–50,
+integers, no gaps — since the 5 Sep change that made `SIO-045A`/45.5 into
+`SIO-045`/45. Nothing in the data needed changing. What needed changing was the
+check that was supposed to protect it, and two docs that still quoted the old
+number as current.
+
+**`verify49-renumber-3435.py` was permitting exactly what it should forbid.**
+Its lockstep test parsed ids as `SIO-(\d+)([A-Z]?)` and, when a letter suffix
+was present, *expected* `num` to be N + 0.5 — the half-step was written into
+the check as a documented allowance. It passed only because no id carries a
+suffix any more. Put `SIO-045A`/45.5 back and the check would have waved it
+through. Now:
+
+- ids must match `SIO-\d{3}` exactly — a letter suffix fails to parse;
+- `num` must be an `int` (a float 45.5, or a string "45", fails);
+- and a second assertion says the spine is **1..50 exactly** — no gaps, no
+  duplicates, nothing out of range — so a stop can be neither slipped between
+  two numbers nor dropped without going red.
+
+Break-tested on **7 mutations, all red, none vacuous**: letter-suffixed id ·
+half-step num · both together (the pre-5-Sep state) · num as a string ·
+duplicate num · out-of-range num · a dropped stop. The suffix-only mutation is
+caught by the lockstep test while the spine test still passes, which is
+correct — the two assertions cover different failures.
+
+**Docs corrected** — both are live working documents, not records:
+`ACTIVITY_CULL.md` said NumBus/NumBourse serve stops "(7, 18, 45A)";
+`SYLLABUS_TIERS.md` had a tier row numbered `45.5` and a "Note 45A:".
+Left alone deliberately: STATUS's own past entries, `SIO-045A-numbering-report.md`,
+`CSV_SPEC_REASSIGNMENT.md` and `SYLLABUS_AUDIT_2026-08-23.md` say 45A because
+they record what was true when written. `u4-sio045a-nombres.json` keeps its
+filename — renaming content files breaks stored learner records, and
+`pretests/index.ts` already maps `"SIO-045"` onto it.
+
+Green the way CI runs it: `tsc --noEmit`, wall `npm run build` + its 97 checks,
+then `NEXT_PUBLIC_OPEN_APP=1 npm run build` + the remaining 25. **122 verify
+scripts, all passing.** (Container note: `node_modules` here was a fortnight
+stale, which failed six playwright-core scripts and one Pillow one for reasons
+that had nothing to do with the change — `npm ci` and `pip install pillow`
+first if the same thing happens again.)

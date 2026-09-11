@@ -8,10 +8,17 @@ so that locating a place sits beside asking for directions at 36.
 
 That is a two-line change to a JSON file and a genuinely dangerous one, because
 of an invariant nobody had ever written down: **a SIO's id and its `num` are in
-lockstep** — `SIO-034` always has `num: 34` — unbroken across all fifty, with
-`SIO-045` at 45.5 as the one deliberate half-step. Every renumber in this
-project's history has honoured it, including Dan's own of 012-014 and 022-028
-on 2026-07-01.
+lockstep** — `SIO-034` always has `num: 34` — unbroken across all fifty. Every
+renumber in this project's history has honoured it, including Dan's own of
+012-014 and 022-028 on 2026-07-01.
+
+The spine carried one exception until 2026-09-05: `SIO-045A` at `num` 45.5, a
+stop inserted into a retired number's gap. Dan retired the exception too —
+*"if there is no more 45 but only 45A or 45.5, then make that the 45"* — and
+ruled afterwards that **there should be no intermediate stop at all**. So the
+lockstep check below no longer tolerates a letter suffix or a half-step: the
+spine is fifty stops numbered 1 to 50, integers, no gaps. What used to be the
+documented exception is now the thing this check exists to catch.
 
 The consequence is the dangerous part. Because the number moves the ID, and the
 ID is what every store on the learner's device is keyed by, a renumber silently
@@ -27,7 +34,8 @@ The second is EXECUTED against real blob shapes, not read.
 
 What this asserts:
 
-  1  id and num are in lockstep for all 50 SIOs, `SIO-045` -> 45.5 included.
+  1  id and num are in lockstep for all 50 SIOs, and the spine is exactly
+     1..50: integer nums, no letter-suffixed ids, no gaps, no duplicates.
      This is the invariant the whole renumber rests on, and it was implicit
      until it nearly got broken.
   2  The order Dan asked for: 33 Places, 34 Questions, 35 Où est, 36 Directions.
@@ -67,18 +75,39 @@ check(len(sios) == 50, f"{len(sios)} SIOs", f"expected 50 SIOs, found {len(sios)
 
 drift = []
 for s in sios:
-    m = re.fullmatch(r"SIO-(\d+)([A-Z]?)", s["id"])
+    # No letter suffix, and no half-step. Both were once allowed, to slot a
+    # stop into a retired number's gap; Dan retired that device on 2026-09-05
+    # and ruled there should be no intermediate stop. An id like SIO-045A or a
+    # num like 45.5 is what this check is now for, so it must not parse.
+    m = re.fullmatch(r"SIO-(\d{3})", s["id"])
     if not m:
-        drift.append(f"{s['id']} is not SIO-NNN"); continue
-    # A letter suffix is a deliberate insertion into a retired number's gap
-    # (SIO-045 sits at 45.5, between 45 and 46).
-    expect = int(m.group(1)) + (0.5 if m.group(2) else 0)
-    if s.get("num") != expect:
-        drift.append(f"{s['id']} has num {s.get('num')}, expected {expect}")
+        drift.append(f"{s['id']} is not SIO-NNN (three digits, no suffix)"); continue
+    expect = int(m.group(1))
+    num = s.get("num")
+    if not isinstance(num, int) or isinstance(num, bool):
+        drift.append(f"{s['id']} has num {num!r}, which is not a whole number"); continue
+    if num != expect:
+        drift.append(f"{s['id']} has num {num}, expected {expect}")
 check(not drift,
-      "id and num are in lockstep across all 50 (SIO-045 at 45.5 included)",
+      "id and num are in lockstep across all 50, integers with no suffixes",
       "a SIO's id and number have come apart, so the map label and the id "
       "shown to the learner now disagree: " + "; ".join(drift))
+
+# The spine itself: 1..50 exactly, so a stop can be neither inserted between
+# two numbers nor dropped without this failing.
+nums = sorted(s.get("num") for s in sios if isinstance(s.get("num"), int))
+missing = [n for n in range(1, 51) if n not in nums]
+extra = [n for n in nums if n < 1 or n > 50]
+dupes = sorted({n for n in nums if nums.count(n) > 1})
+faults = "; ".join(filter(None, [
+    f"missing {missing}" if missing else "",
+    f"out of range {extra}" if extra else "",
+    f"duplicated {dupes}" if dupes else "",
+    f"{len(sios) - len(nums)} with a non-integer num" if len(nums) != len(sios) else "",
+]))
+check(nums == list(range(1, 51)),
+      "the spine is 1..50 with no gaps, no duplicates and no intermediate stop",
+      "the spine is no longer a clean 1..50" + (f": {faults}" if faults else ""))
 
 by_id = {s["id"]: s for s in sios}
 

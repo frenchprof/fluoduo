@@ -91,7 +91,7 @@ export default function FlipItPage({ collectionId }: { collectionId: string }) {
         <div className="cahier-binding" aria-hidden />
         <div className="mx-auto max-w-3xl px-4 py-10 pl-16 text-center text-[color:var(--cahier-ink-soft)]">
           No flippable vocab in <code>{collectionId}</code>.{" "}
-          <Link href="/" className="font-bold text-[color:var(--cahier-ink)] underline">Home</Link>
+          <Link href="/home" className="font-bold text-[color:var(--cahier-ink)] underline">Home</Link>
         </div>
       </main>
     );
