@@ -48,10 +48,11 @@
  * (`/practice/ecoutexte`); the slider's number does not yet steer it.
  * Flagged here rather than silently faked.
  */
-import { useEffect, useId, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useMemo, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
+import { playableStops, stopHref, type StopActivityKey } from "@/lib/activityStops";
 import { loadBookmark, nextGoalNumber } from "@/lib/continuer";
 import { loadProgress } from "@/lib/progress";
 
@@ -64,10 +65,10 @@ function currentStop(): number {
   return n && n >= 1 && n <= TOTAL ? n : 1;
 }
 
-function clampStop(n: number): number {
-  if (!Number.isFinite(n)) return 1;
-  return Math.min(TOTAL, Math.max(1, Math.round(n)));
-}
+/* clampStop retired with the slider (11 Sep). It kept a dragged or typed
+   number inside 1-50 — a job that only exists when any number in that range is
+   a legal answer. The pad offers a fixed set of goals instead, so there is no
+   number to clamp: what is not offered cannot be chosen. */
 
 /** Modal shell shared by both pickers below — centred and content-sized at
  *  every width (see the file header for why this is not BottomSheet).
@@ -130,73 +131,158 @@ function PickerModal({
 }
 
 /**
- * The 50-stop slider. `onConfirm` receives the chosen stop number; the
- * caller resolves it to a URL (per-activity — see ActivityPickerLink below)
- * and navigates.
+ * THE STOP CHOOSER — a pad of the goals this activity can actually play,
+ * with a field to find one by name.
+ *
+ * IT WAS A 1-TO-50 SLIDER, and Dan, 11 Sep: *"Many activities simply do not
+ * exist for all the lessons. so replace the slider with choice of stops to
+ * pick from"*, then, plainly: ***"just don't allow anyone to land on 'there
+ * is nothing here'"***.
+ *
+ * WHAT THE SLIDER DID. It offered 1-50 for every activity and built a URL from
+ * `SIOS[stop-1].collectionId` with no gate at all. Driven on the built export,
+ * across the six activities that ask this question, it offered 300 choices and
+ * 97 of them went nowhere — and in two different ways, which is why counting
+ * 404s alone understates it:
+ *
+ *     ComposeIt      12/50 playable   the rest 404 — it has café banks, not goals
+ *     VocabulaRain   33/50            its sets live in their own registry
+ *     GramMarathon   27/50   <- the page EXISTS for all fifty and opens EMPTY
+ *     LexicaLocker   31/50   <- likewise
+ *     MémoiRecall    50/50
+ *     WorDrill       50/50
+ *
+ * The two marked ones are the dangerous shape: nothing 404s, the activity just
+ * has nothing to show. That is `lib/collections/gapSentence.ts`'s recurring bug
+ * and it is why the gate here is `lib/activityStops.ts`, which asks each
+ * activity's OWN source — never a second opinion re-derived in the UI.
+ *
+ * WHY A PAD AND A FIELD, both (Dan, shown three candidates: *"can we have
+ * multiple of these"*, then picking the combination). The pad shows every
+ * playable goal at once and costs one tap; the field is for when you know the
+ * word and not the number. One question, two ways to answer it. The gaps in
+ * the pad are deliberate — they say, at a glance, that this activity has
+ * nothing in that part of the course, which a filtered list would hide.
+ *
+ * The chosen goal names itself in the `.neo-well` underneath, so the pad stays
+ * numeric (the map numbers the stops; the number IS the name a learner
+ * carries) without the learner having to guess what 23 is.
  */
-export function GoalSliderPicker({
+export function GoalPadPicker({
   emoji,
   name,
+  stops,
   onConfirm,
   onClose,
 }: {
   emoji: string;
   name: string;
+  /** The goals this activity can play — from `playableStops()`, never 1-50. */
+  stops: number[];
   onConfirm: (stop: number) => void;
   onClose: () => void;
 }) {
-  const [stop, setStop] = useState<number>(() => currentStop());
-  const [editing, setEditing] = useState<string | null>(null);
-  const inputId = useId();
+  const live = useMemo(() => new Set(stops), [stops]);
+  // Open on the learner's own stop when this activity can play it, else the
+  // nearest it can — never on a number that goes nowhere.
+  const [stop, setStop] = useState<number>(() => {
+    const want = currentStop();
+    if (live.has(want)) return want;
+    return stops.reduce((b, n) => (Math.abs(n - want) < Math.abs(b - want) ? n : b), stops[0] ?? 1);
+  });
+  const [q, setQ] = useState("");
+  const fieldId = useId();
 
-  const commitEdit = () => {
-    if (editing === null) return;
-    if (editing.trim() !== "") setStop(clampStop(Number(editing)));
-    setEditing(null);
-  };
+  const chosen = SIOS[stop - 1];
+  const query = q.trim().toLowerCase();
+  const hits = query
+    ? SIOS.filter((s) => live.has(s.num) && (s.topic.toLowerCase().includes(query) || String(s.num) === query))
+    : [];
+
+  if (!stops.length) {
+    return (
+      <PickerModal title={<><span aria-hidden>{emoji}</span> {name}</>} onClose={onClose}>
+        <p className="px-2 py-4 text-center text-sm text-[color:var(--cahier-ink-soft)]">
+          Nothing to play here yet.
+        </p>
+      </PickerModal>
+    );
+  }
 
   return (
-    <PickerModal title={<><span aria-hidden>{emoji}</span> {name} — which Goal?</>} onClose={onClose}>
-      {/* The well: a depressed space (Dan's own word) holding a real number
-          input, so tapping it and typing edits the same value the slider
-          drags — two ways to the one number, never two numbers. */}
-      <label htmlFor={inputId} className="sr-only">Goal number, 1 to {TOTAL}</label>
-      <div className="neo-well mx-auto mb-1 flex w-[7ch] items-baseline justify-center gap-1 rounded-xl px-3 py-2">
-        <input
-          id={inputId}
-          type="text"
-          inputMode="numeric"
-          value={editing ?? String(stop).padStart(2, "0")}
-          onFocus={(e) => { setEditing(String(stop)); e.target.select(); }}
-          onChange={(e) => setEditing(e.target.value.replace(/[^0-9]/g, "").slice(0, 2))}
-          onBlur={commitEdit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") (e.target as HTMLInputElement).blur();
-            if (e.key === "Escape") setEditing(null);
-          }}
-          aria-label={`Goal number, 1 to ${TOTAL} — tap to type one directly`}
-          className="w-[2ch] border-0 bg-transparent p-0 text-center text-[30px] font-black leading-none text-[color:var(--cahier-ink)] [font-variant-numeric:tabular-nums] focus:outline-none"
-        />
-        <span className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">/{TOTAL}</span>
-      </div>
-      <p className="mb-4 text-center text-[11px] font-bold uppercase tracking-[0.08em] text-[color:var(--cahier-ink-faint)]">
-        goal {stop === currentStop() ? "· your current stop" : " "}
-      </p>
-
-      {/* The slider itself — a plain range input skinned to the family's own
-          pen, so no two pickers on the app end up wearing a browser default. */}
+    <PickerModal title={<><span aria-hidden>{emoji}</span> {name} — which goal?</>} onClose={onClose}>
+      {/* THE FIELD. Not full width — the no-full-width-control rule — and it
+          narrows to the playable goals only, so a search cannot reach a goal
+          the pad refuses to offer. */}
+      <label htmlFor={fieldId} className="sr-only">Find a goal by name or number</label>
       <input
-        type="range"
-        min={1}
-        max={TOTAL}
-        step={1}
-        value={stop}
-        onChange={(e) => setStop(clampStop(Number(e.target.value)))}
-        aria-label={`Slide to a different goal, 1 to ${TOTAL}`}
-        className="fluo-goal-slider mb-1 w-full"
+        id={fieldId}
+        type="text"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="find a goal…"
+        className="neo-well mx-auto mb-3 block w-[80%] rounded-lg px-3 py-1.5 text-sm text-[color:var(--cahier-ink)] focus:outline-none"
       />
-      <div className="mb-5 flex justify-between text-[10px] font-bold text-[color:var(--cahier-ink-faint)] [font-variant-numeric:tabular-nums]">
-        <span>1</span><span>10</span><span>20</span><span>30</span><span>40</span><span>{TOTAL}</span>
+
+      {query ? (
+        <div className="mb-4 max-h-[190px] overflow-auto">
+          {hits.length ? hits.map((s) => (
+            <button
+              key={s.num}
+              type="button"
+              onClick={() => { setStop(s.num); setQ(""); }}
+              className={`flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm ${s.num === stop ? "neo-well" : ""}`}
+            >
+              <span className="fluo-mono w-6 shrink-0 text-xs font-bold text-[color:var(--sio-vocab)] [font-variant-numeric:tabular-nums]">{s.num}</span>
+              <span className="text-[color:var(--cahier-ink)]">{s.topic}</span>
+            </button>
+          )) : (
+            <p className="px-2 py-3 text-center text-xs text-[color:var(--cahier-ink-faint)]">
+              nothing here matches — {name} plays {stops.length} of the {TOTAL}
+            </p>
+          )}
+        </div>
+      ) : (
+        /* THE PAD. Five rows of ten, in the map's own order, so the shape of
+           the course is recognisable. A goal this activity cannot play is a
+           gap, not a disabled button: there is nothing to press and nothing
+           to explain. */
+        <div className="mb-3 space-y-1.5">
+          {[0, 1, 2, 3, 4].map((u) => (
+            <div key={u} className="flex items-center gap-2">
+              <span className="fluo-mono w-[52px] shrink-0 text-[10px] font-bold uppercase text-[color:var(--cahier-ink-faint)]">
+                Unité {u}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {SIOS.filter((s) => s.unit === u).map((s) =>
+                  live.has(s.num) ? (
+                    <button
+                      key={s.num}
+                      type="button"
+                      onClick={() => setStop(s.num)}
+                      aria-label={`Goal ${s.num} — ${s.topic}`}
+                      aria-pressed={s.num === stop}
+                      className={`${s.num === stop ? "neo-well" : "neo-key"} fluo-mono h-8 w-8 rounded-lg text-[13px] font-bold [font-variant-numeric:tabular-nums]`}
+                      style={s.num === stop ? { background: "var(--sio-vocab)", color: "white" } : undefined}
+                    >
+                      {s.num}
+                    </button>
+                  ) : (
+                    <span key={s.num} aria-hidden className="h-8 w-8 rounded-lg opacity-25" style={{ background: "var(--cahier-line)" }} />
+                  ),
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* The chosen goal says what it is — the pad stays numeric, nobody has
+          to guess what 23 was. */}
+      <div className="neo-well mb-4 rounded-lg px-3 py-2 text-sm text-[color:var(--cahier-ink)]">
+        <b className="fluo-mono [font-variant-numeric:tabular-nums]">{stop}</b>
+        {chosen ? <> · {chosen.topic}</> : null}
+        {stop === currentStop() ? <span className="ml-1 text-xs text-[color:var(--cahier-ink-faint)]">· your current stop</span> : null}
       </div>
 
       <div className="flex justify-center">
@@ -252,16 +338,28 @@ export function TwoChoicePicker({
  *  a dead end. One place per activity, so MenuGrid stays a list of doors. */
 export type SioHrefBuilder = (stop: number) => string;
 
-export const SIO_HREF: Record<string, SioHrefBuilder> = {
-  flip: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/practice/flip-it/${id}` : "/practice/flip-it"; },
-  grammarathon: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/practice/grammarathon/${id}` : "/practice/grammarathon"; },
-  vocabularain: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/games/vocabularain/${id}` : "/games/vocabularain"; },
-  lexicalator: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/games/lexicalater/${id}` : "/games/lexicalater"; },
-  wordrill: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/practice/say-it/${id}` : "/practice/wordrill"; },
-  compose: (s) => { const id = SIOS[s - 1]?.collectionId; return id ? `/games/compose/${id}` : "/games/compose"; },
-  // ÉcouTexte has no per-deck route yet (see file header) — always the picker.
-  ecoutexte: () => "/practice/ecoutexte",
-};
+/**
+ * ONE ROUTE TABLE, AND IT IS `lib/activityStops.ts` (2026-09-11).
+ *
+ * What stood here built a URL from `SIOS[stop-1].collectionId` for all six
+ * activities. Two of them do not use deck ids in their URLs at all —
+ * VocabulaRain has its own set registry, ComposeIt has café banks — so those
+ * two wrote addresses in a namespace their pages never exported, and every
+ * such Confirm landed on nothing. The other four's URLs were right, but the
+ * table could not say whether the deck behind one was PLAYABLE, so two of them
+ * cheerfully opened an empty game.
+ *
+ * `stopHref` answers both questions at once, from each activity's own source,
+ * and returns null where there is nothing. The chooser offers exactly the
+ * stops it returns a string for, so "offered" and "reachable" are the same
+ * list by construction rather than by agreement.
+ */
+
+/** ÉCOUTEXTE NO LONGER ASKS (Dan, 11 Sep: one question, asked once). Its
+ *  content is chosen by unit and topic, so there is no per-stop route for the
+ *  answer to steer — the old pop-up asked "which goal?", ignored the reply and
+ *  opened the topic picker regardless. It now goes straight there. */
+export const ECOUTEXTE_HREF = "/practice/ecoutexte";
 
 /** The shape `useActivityPicker` returns — MenuGrid takes it as a prop
  *  rather than calling the hook itself (see SiteTopBar for why: the ☰
@@ -277,17 +375,25 @@ export type ActivityPicker = ReturnType<typeof useActivityPicker>;
 export function useActivityPicker() {
   const router = useRouter();
   const [open, setOpen] = useState<
-    | { kind: "slider"; key: keyof typeof SIO_HREF; emoji: string; name: string }
+    | { kind: "pad"; key: StopActivityKey; emoji: string; name: string }
     | { kind: "two"; title: string; emoji1: string; name1: string; href1: string; emoji2: string; name2: string; href2: string }
     | null
   >(null);
 
-  const modal = !open ? null : open.kind === "slider" ? (
-    <GoalSliderPicker
+  const modal = !open ? null : open.kind === "pad" ? (
+    <GoalPadPicker
       emoji={open.emoji}
       name={open.name}
+      stops={playableStops(open.key)}
       onClose={() => setOpen(null)}
-      onConfirm={(stop) => { const href = SIO_HREF[open.key](stop); setOpen(null); router.push(href); }}
+      onConfirm={(stop) => {
+        // Never navigate to a null: the pad only offers stops stopHref
+        // answers, so this cannot be null — and if it ever is, staying put
+        // beats landing on "there is nothing here" (Dan, 11 Sep).
+        const href = stopHref(open.key, stop);
+        setOpen(null);
+        if (href) router.push(href);
+      }}
     />
   ) : (
     <TwoChoicePicker
@@ -303,7 +409,7 @@ export function useActivityPicker() {
 
   return {
     modal,
-    openSlider: (key: keyof typeof SIO_HREF, emoji: string, name: string) => setOpen({ kind: "slider", key, emoji, name }),
+    openSlider: (key: StopActivityKey, emoji: string, name: string) => setOpen({ kind: "pad", key, emoji, name }),
     openTwoChoice: (title: string, a: { emoji: string; name: string; href: string }, b: { emoji: string; name: string; href: string }) =>
       setOpen({ kind: "two", title, emoji1: a.emoji, name1: a.name, href1: a.href, emoji2: b.emoji, name2: b.name, href2: b.href }),
   };
