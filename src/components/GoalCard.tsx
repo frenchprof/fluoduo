@@ -28,8 +28,8 @@
  *
  * The box is `min-h` and not `h`: a can-do longer than any written so far
  * should overflow downward and push the icons rather than be clipped. Fifty
- * were measured at 390px; the longest needs three lines of can-do and three of
- * description, which is what the number below holds.
+ * were measured at 390px, and re-measured on 2026-09-11 after the description
+ * line went — see below for why the number dropped by more than half.
  */
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
@@ -39,23 +39,13 @@ import type { Sio } from "@/content/sios";
 export default function GoalCard({
   sio,
   compact,
-  textOnly,
-  iconsOnly,
 }: {
   sio: Sio;
   compact?: boolean;
-  /** The scrap and the words only — the goals page draws these inside its
-   *  ruled box and the icons outside it (Dan, 2026-09-07: "the icons can just
-   *  be by themselves below that"). */
-  textOnly?: boolean;
-  /** The icon grid only, for that same split. */
-  iconsOnly?: boolean;
 }) {
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
   return (
     <>
-      {!iconsOnly && (
-        <>
       {/* THE TAG IS A TORN SCRAP, pasted on. `.goal-scrap` in globals.css holds
           the tear and the shadow; the wrapper is what pins it to one edge so it
           does not centre itself differently on a long id than a short one. */}
@@ -68,23 +58,26 @@ export default function GoalCard({
       {/* THE WORDS, in a box that does not resize with them. `compact` is the
           lesson's Goal tab, where the card is one panel among four and there is
           nothing to keep still — it sizes to its content as before. */}
-      {/* 21rem = 336px, and that number is MEASURED, not chosen: the natural
-          height of all fifty word-boxes was taken at 390px and the tallest —
-          SIO-006 — needs 335. Anything less and the icons hop on the goals that
-          overflow it, which is the thing Dan asked to stop.
-          SIO-006 is 42px taller than the next tallest, so if that one goal's
-          wording is ever cut this number should come down with it. */}
-      <div className={compact ? "" : "min-h-[21rem]"}>
+      {/* THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
+          « moi, toi, etc. — after a preposition, after c'est, or standing
+          alone » on SIO-011). The litmus test's own case: the goal above it
+          already says what the learner will be able to do, and the gloss is
+          the lesson's job, not the goal's. `sio.description` stays in
+          content/sios.ts — this stops RENDERING it, it does not delete the
+          course's own notes.
+
+          9rem = 144px, and that number is MEASURED, not chosen: all fifty
+          can-dos were re-measured at 390px with the gloss gone and the tallest
+          — SIO-005 and SIO-008, three lines each — need exactly 144. It was
+          21rem/336px when the box held a description too, which is why the
+          card in Dan's screenshot was a tall empty rectangle. Anything less
+          than the measurement and the icons hop between goals, which is the
+          thing he asked to stop on 7 Sep. */}
+      <div className={compact ? "" : "min-h-[9rem]"}>
         <p className="text-base font-bold text-[color:var(--cahier-ink)]">{sio.canDo}</p>
-        {sio.description && (
-          <p className="mt-2 text-[14px] text-[color:var(--fluo-ink-soft)]">{sio.description}</p>
-        )}
       </div>
 
-        </>
-      )}
-
-      {!textOnly && items.length > 0 && (
+      {items.length > 0 && (
         /* ICONS ONLY, THREE UP (Dan, 2026-09-07: *"Below grid of 3x3 buttons
            not in this form but the grid of icons only like we saw in the
            earlier 'HELP'"*).
