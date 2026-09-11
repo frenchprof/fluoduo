@@ -23,6 +23,28 @@ export type UiPrefs = {
    *  Membership only — the order on the bar is always FAMILIES order.
    *  Empty means no bar at all. */
   bottomNav: FamilyKey[];
+  /**
+   * WHICH WAY IS "DOWN" ON THE 3D MAP (Dan, 2026-09-11: *"scrolling up and
+   * down the 3d map : by default it should be the other way around, At the
+   * same time we also want the user to decide IN THE SETTINGS which way is
+   * more naturel for him"*).
+   *
+   * THE WHEEL ONLY, and Dan drew that line himself: *"there are two things:
+   * swipe down with finger, and scroll down with mouse. don't confuse them"*.
+   * Measured on the built app from one starting point, goals 1–14 on screen:
+   *
+   *     wheel down    -> goals 2–17   the camera travels AWAY, up the road
+   *     finger down   -> goals 1–12   the road comes TOWARD you
+   *
+   * They are already mirror images, and each matched its own convention: a
+   * wheel scrolls a page, a finger drags the thing under it. Shown both, Dan
+   * picked: *"the wheel is the wrong one"*. So the wheel is flipped and the
+   * finger is untouched — flipping both would have broken the half that was
+   * right.
+   *
+   * `true` = wheel down brings the road toward you, which is the new default.
+   */
+  wheelDownComesBack: boolean;
 };
 
 export const DEFAULTS: UiPrefs = {
@@ -33,6 +55,9 @@ export const DEFAULTS: UiPrefs = {
   // due count rides the ☰ badge while the bar is away. FAMILIES import
   // stays for the type and Réglages' rebuild order.
   bottomNav: [],
+  // The flip Dan asked for is the DEFAULT, not an opt-in — he asked for the
+  // behaviour changed and a setting to change it back, in that order.
+  wheelDownComesBack: true,
 };
 
 export function readUiPrefs(): UiPrefs {
