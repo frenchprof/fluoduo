@@ -49,6 +49,7 @@ import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { speculearnHrefForDeck } from "@/lib/speculearn/route";
 // The deck -> stop lookup lives in ONE place (verify82). A second hand-written
 // `SIOS.find(s => s.collectionId === …)` is how two copies start disagreeing.
+import { lessonHasVerbs } from "@/content/lessonVerbs";
 import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
 
 export type RailStation = {
@@ -184,11 +185,23 @@ export const RAIL: RailStation[] = [
        read, so the swipe would land on somebody else's lesson or on a picker.
        `?deck=` survives all three.
 
-       The `v=` list is not written here: the deck → verbs table is Dan's own
-       split of the 67 verbs across the lessons, and until he has signed it off
-       this station carries the deck and lets the page choose the verbs. */
+       THE VERBS ARE NOT IN THE ADDRESS, and that is on purpose. `?deck=` is
+       already the whole answer — content/lessonVerbs.ts turns a lesson into its
+       verbs, and the page reads it there. Spelling them out as well would put
+       the same fact in two places, and the copy in a bookmarked URL would be
+       the stale one the day a verb moves. `?v=` still works, and still means
+       what it always did: drill exactly these, whatever lesson you came from.
+
+       AND A LESSON WITH NO VERBS IS STEPPED OVER. Ten of the fifty conjugate
+       nothing — alphabet, colours, numbers, nouns — so `has` sends a learner
+       swiping left off ÉcouTexte on SIO-003 to the end of the chain rather
+       than into an empty drill. Same rule as SpecuLearn's, one column along. */
     href: (deck) => (deck ? `/conjugaison?deck=${deck}` : "/conjugaison"),
     at: (p) => p === "/conjugaison",
+    has: (deck) => {
+      const stop = stopForDeck(deck);
+      return !deck || !stop || lessonHasVerbs(stop.id);
+    },
   },
   /* THE CHAIN ENDS AT CONJUGAZONE (Dan, 2026-09-08, closing his own list:
      "[end of left swipe]"). GAMES WAS THE LAST COLUMN AND IS NOT ANY MORE.

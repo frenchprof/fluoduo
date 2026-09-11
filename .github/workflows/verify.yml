@@ -452,6 +452,11 @@ jobs:
       - name: "Every lesson's ÉcouTexte is its own listening text (8 Sep)"
         run: python3 verify/verify172-lesson-listening.py
 
+      # Dan ruled on this split row by row over two days. A verb in two lessons
+      # is drilled twice and one in none is never taught — both silent.
+      - name: "Every lesson's ConjugaZone drills its own verbs (11 Sep)"
+        run: python3 verify/verify173-lesson-verbs.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
