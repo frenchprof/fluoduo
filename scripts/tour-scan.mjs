@@ -238,7 +238,6 @@ const GUIDED_ROUTES = {
   grammarathon: "/practice/grammarathon/aller-destinations",
   wordrill: "/practice/say-it/aller-destinations",
   lesson: "/lessons/deck/aliments",
-  conjugaison: "/conjugaison",
   ecoutexte: "/practice/ecoutexte",
 };
 
