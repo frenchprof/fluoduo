@@ -352,6 +352,13 @@ export default function HomeDashboard() {
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
               aria-label={`Continue — ${activeSio.topic}, your goal on the study path`}
               title={`Continue — « ${activeSio.topic} », your goal on the study path`}
+              /* data-tour: the home tour's first step. NOT a visual change —
+                 this is the anchor, and it replaces `a[title^="Continue"]`,
+                 which hung the tour off a sentence of prose: reword the
+                 tooltip and the step silently points at nothing. verify44
+                 requires every tour step to name a data-tour hook for exactly
+                 that reason. */
+              data-tour="continue"
               className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >

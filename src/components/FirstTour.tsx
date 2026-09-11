@@ -69,7 +69,11 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "home",
       steps: [
-        { selector: 'a[title^="Continue"]', action: "tap", text: "Continue — your next stop on the path." },
+        // `[data-tour="continue"]`, not `a[title^="Continue"]`. The old form
+        // hung this step off the first word of a TOOLTIP — « Continue — «
+        // Introductions », your goal on the study path » — so rewording that
+        // sentence would have unhooked the tour with nothing to show for it.
+        { selector: '[data-tour="continue"]', action: "tap", text: "Continue — your next stop on the path." },
         // ☰, NOT THE BOTTOM BAR (Dan, 2026-09-11: *"the beginning first
         // landing on the home page: the current tour is broken"*).
         //
