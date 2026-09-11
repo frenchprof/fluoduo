@@ -8269,3 +8269,47 @@ about. Cleared per `AGENTS.md`:
 found nothing. The same shape as both of theirs.
 
 tsc clean, build clean, 43 verify scripts green, touched files at 0 lint errors.
+
+## 11 Sep — no intermediate stop: verify49 tightened, two live docs corrected
+
+Dan: **"there should not be any intermediate stop."** The spine already obeys
+that — `sios.json` is fifty stops, ids `SIO-001`–`SIO-050`, `num` 1–50,
+integers, no gaps — since the 5 Sep change that made `SIO-045A`/45.5 into
+`SIO-045`/45. Nothing in the data needed changing. What needed changing was the
+check that was supposed to protect it, and two docs that still quoted the old
+number as current.
+
+**`verify49-renumber-3435.py` was permitting exactly what it should forbid.**
+Its lockstep test parsed ids as `SIO-(\d+)([A-Z]?)` and, when a letter suffix
+was present, *expected* `num` to be N + 0.5 — the half-step was written into
+the check as a documented allowance. It passed only because no id carries a
+suffix any more. Put `SIO-045A`/45.5 back and the check would have waved it
+through. Now:
+
+- ids must match `SIO-\d{3}` exactly — a letter suffix fails to parse;
+- `num` must be an `int` (a float 45.5, or a string "45", fails);
+- and a second assertion says the spine is **1..50 exactly** — no gaps, no
+  duplicates, nothing out of range — so a stop can be neither slipped between
+  two numbers nor dropped without going red.
+
+Break-tested on **7 mutations, all red, none vacuous**: letter-suffixed id ·
+half-step num · both together (the pre-5-Sep state) · num as a string ·
+duplicate num · out-of-range num · a dropped stop. The suffix-only mutation is
+caught by the lockstep test while the spine test still passes, which is
+correct — the two assertions cover different failures.
+
+**Docs corrected** — both are live working documents, not records:
+`ACTIVITY_CULL.md` said NumBus/NumBourse serve stops "(7, 18, 45A)";
+`SYLLABUS_TIERS.md` had a tier row numbered `45.5` and a "Note 45A:".
+Left alone deliberately: STATUS's own past entries, `SIO-045A-numbering-report.md`,
+`CSV_SPEC_REASSIGNMENT.md` and `SYLLABUS_AUDIT_2026-08-23.md` say 45A because
+they record what was true when written. `u4-sio045a-nombres.json` keeps its
+filename — renaming content files breaks stored learner records, and
+`pretests/index.ts` already maps `"SIO-045"` onto it.
+
+Green the way CI runs it: `tsc --noEmit`, wall `npm run build` + its 97 checks,
+then `NEXT_PUBLIC_OPEN_APP=1 npm run build` + the remaining 25. **122 verify
+scripts, all passing.** (Container note: `node_modules` here was a fortnight
+stale, which failed six playwright-core scripts and one Pillow one for reasons
+that had nothing to do with the change — `npm ci` and `pip install pillow`
+first if the same thing happens again.)
