@@ -43,8 +43,15 @@ world")`. It has no route and does nothing. It was almost certainly left by
 the 9 Sep session probing the connector; Dan can delete it from Workers &
 Pages whenever he likes.
 
-**STILL OPEN FOR DAN:** the four dashboard entries themselves (a minute each).
-When they are Active, `https://f1.fluolingo.com/` shows the welcome page.
+**11 Sep, SAME SESSION — f1 IS LIVE, and the root went dark for an hour.**
+Dan added f1 (Active, 200 on probe) and also tried the root and www, which
+stuck at *Verifying* because both names already carried the redirect to
+withdrchan. He chose to keep the redirect and removed the two rows — and the
+removal deleted their DNS records, so `fluolingo.com` answered nothing at all
+until two proxied `AAAA 100::` placeholders were added back. Full account and
+the zone's 3-record shape are in `docs/DEPLOY.md` under *"THE TRAP"*. Probed
+after the repair: root and www 302 to withdrchan, fluoli.ngo / withdrchan /
+f1 all 200. f2–f4 remain blank names for whenever Dan wants them.
 
 ## 9 Sep — housekeeping: RailGroups retired, #246 landed (integration lane)
 

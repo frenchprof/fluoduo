@@ -163,3 +163,27 @@ web address (browser storage is scoped to the hostname). A learner who has
 been working at `fluoli.ngo` arrives at `f1.fluolingo.com` with an empty
 profile. Nobody has enough progress for that to hurt yet, which is the
 argument for switching addresses now rather than later.
+
+**DONE, 10–11 Sep: f1 is live.** Dan added `f1.fluolingo.com`; it went
+Active at once and answers 200. f2–f4 are still blank names and will do the
+same whenever he adds them.
+
+**THE TRAP, so nobody springs it twice.** Dan also tried adding
+`fluolingo.com` and `www.fluolingo.com` as custom domains. Both sat at
+*Verifying — Complete DNS setup* because each name already had a DNS record
+(the redirect to `fluolingo.withdrchan.com`). He wanted the redirect kept, so
+he removed the two rows — and Cloudflare, which had already swapped in its own
+records while "verifying", took the records away with the rows. For an hour
+on 11 Sep `fluolingo.com` had NO DNS record: not a bounce, not a 404, nothing.
+
+The repair, and the shape the zone has today (3 records, probed 11 Sep):
+
+    fluolingo.com       AAAA   100::              proxied   -> redirect rule fires -> 302 withdrchan
+    www.fluolingo.com   AAAA   100::              proxied   -> same
+    f1.fluolingo.com    CNAME  fluoguo.pages.dev  proxied   -> the app
+
+`100::` is Cloudflare's reserved go-nowhere address. A redirect rule needs a
+PROXIED record on the name it redirects FROM, and this is the record to give
+it. So: **a name that only forwards must never be added as a Pages custom
+domain**, and if one is ever removed from that list, check DNS the same
+minute.
