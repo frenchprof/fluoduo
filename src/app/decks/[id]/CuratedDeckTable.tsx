@@ -182,6 +182,11 @@ function TopBar({ collectionId }: { collectionId: string }) {
          page's key and URL do not move). Typing "MémoiRecall" here is how the
          band drifts the next time the activity is renamed. */
       title={activity("flip")?.name ?? "MémoiRecall"}
+      /* …and its glyph from the same row (Dan, 11 Sep: "we have fixed emojis
+         for them"). This is the ONE band the shell does not draw — the page
+         suppresses it and heads its table with this — so it is also the one
+         that silently misses anything added to PageBand from the shells. */
+      emoji={activity("flip")?.emoji}
       goal={goalNumberForDeck(collectionId)}
       /* The ← became the band's ✕ (Dan, 1 Sep: "all strips … with a X"). One
          control on every strip, spelt once in PageBand, rather than a back

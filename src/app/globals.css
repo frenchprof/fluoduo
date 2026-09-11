@@ -962,7 +962,7 @@ html, body { overscroll-behavior-x: none; }
      band of its own keeps its family's ink, which is every page this rule
      coloured before today. */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='62' height='26' viewBox='0 0 62 26'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbfdff'/%3E%3Cstop offset='0.35' stop-color='%23d8dce2'/%3E%3Cstop offset='0.6' stop-color='%239aa0a8'/%3E%3Cstop offset='1' stop-color='%23565b63'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23141820' stop-opacity='0.3'/%3E%3Cstop offset='1' stop-color='%23141820' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='24' y='0' width='16' height='26' fill='url(%23g)'/%3E%3Cellipse cx='49' cy='13.5' rx='5.2' ry='4.2' fill='%231e1a14' opacity='0.88'/%3E%3Cg transform='rotate(-7 29 13)'%3E%3Cellipse cx='29' cy='13.4' rx='21' ry='5.8' fill='none' stroke='%232c2f35' stroke-width='4.4' opacity='0.3'/%3E%3Cellipse cx='29' cy='12.9' rx='21' ry='5.6' fill='none' stroke='url(%23c)' stroke-width='3.1'/%3E%3C/g%3E%3Cellipse cx='50.8' cy='13.4' rx='2.7' ry='2.4' fill='%231e1a14'/%3E%3C/svg%3E"),
-    linear-gradient(to right, transparent 0 24px, var(--band, var(--fam-ink, #82868f)) 24px 36px, transparent 36px);
+    linear-gradient(to right, transparent 0 24px, var(--strip, var(--fam-ink, #82868f)) 24px 36px, transparent 36px);
   background-repeat: repeat-y;
   pointer-events: none;
 }
@@ -1969,7 +1969,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
    guide, Réglages, the family hubs), which is where the spine came from
    before this. */
 .cahier-surface[class*="fam-"] {
-  border-left: 6px solid var(--band, var(--fam-ink, transparent));
+  border-left: 6px solid var(--strip, var(--fam-ink, transparent));
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
@@ -2376,16 +2376,30 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
    band never hard-codes a hue and a new family is three tokens plus a line. */
-.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); --fam-mouth: var(--fam-goals-mouth); }
-.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); --fam-mouth: var(--fam-practice-mouth); }
-.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); --fam-mouth: var(--fam-svplay-mouth); }
-.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); --fam-mouth: var(--fam-review-mouth); }
-.fam-oral     { --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); --fam-mouth: var(--fam-oral-mouth); }
-.fam-tools    { --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); --fam-mouth: var(--fam-tools-mouth); }
-.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
+/* THE STRIP IS THE FAMILY'S OWN COLOUR, the bright rung (Dan, 2026-09-11,
+   shown every band beside its family: *"use the left most column colors"*).
+   ONE token, `--strip`, because THREE things paint it — the heading band, the
+   6px spine and the binding's cover zone — and 8 Sep proved they come apart
+   when each names its own source: ConjugaZone showed a teal band over a blue
+   spine over a blue binding, three facts where there is one.
+
+   IT IS DECLARED HERE, BESIDE `--fam`, AND NOT ON `.cahier-surface`, because
+   not every band sits on one: `/decks/[id]` suppresses the shell's band and
+   heads its table with its own, inside the content well. Keyed on the surface
+   it came out `--fam-practice-ink` there — the old dark rung — while every
+   other strip went bright, which is exactly the kind of single hold-out this
+   token exists to make impossible. Anything carrying a `fam-` class hands it
+   down. */
+.fam-goals { --strip: var(--fam-goals); --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); --fam-mouth: var(--fam-goals-mouth); }
+.fam-practice { --strip: var(--fam-practice); --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); --fam-mouth: var(--fam-practice-mouth); }
+.fam-svplay { --strip: var(--fam-svplay); --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); --fam-mouth: var(--fam-svplay-mouth); }
+.fam-review { --strip: var(--fam-review); --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); --fam-mouth: var(--fam-review-mouth); }
+.fam-oral { --strip: var(--fam-oral); --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); --fam-mouth: var(--fam-oral-mouth); }
+.fam-tools { --strip: var(--fam-tools); --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); --fam-mouth: var(--fam-tools-mouth); }
+.fam-user { --strip: var(--fam-user); --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
-.fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
+.fam-none     { --strip: var(--cahier-line-strong); --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
 
 /* Ten stops, two to a row (Dan, 2026-08-30: "the columns are to be split
    halfway at the screen's width"). One grid rather than two columns, so the
@@ -3047,8 +3061,22 @@ html[data-embed] .cahier-deskrow,
 html[data-embed] .cahier-drilldesk { padding: 0 !important; background: transparent !important; }
 html[data-embed] .cahier-page,
 html[data-embed] .cahier-drill { min-height: 100dvh; border-radius: 0 !important; box-shadow: none !important; }
-/* The coils are gone, so the gutter they were holding open goes with them. */
-html[data-embed] .cahier-foolscap { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+/* THE COIL GUTTER IS THE FRAME'S NOW, not the host well's (11 Sep). It used to
+   say "the coils are gone, so the gutter they were holding open goes with
+   them" — true while the host kept 48px of its own to the LEFT of the frame,
+   and that inset is exactly what made a framed strip 64px shorter than a
+   page's. The frame is full-bleed now and the host's rings paint over its left
+   edge, so the gutter has to exist in here or the station runs under them. */
+html[data-embed] .cahier-foolscap { padding-left: 3rem !important; padding-right: 0.75rem !important; }
+/* …and a drill's own 38px clearance would then be a second gutter on top of
+   the first. One gutter, on the well, for both shells. */
+html[data-embed] .cahier-drill .cahier-foolscap > div { padding-left: 0 !important; }
+/* A BAND IS ONE HEIGHT, WHOEVER DRAWS IT. The compact rule at the top of this
+   file fires on a SHORT LANDSCAPE screen — and a frame is short by definition,
+   so on a 900x700 desktop the framed band alone took the phone's padding and
+   came out 72px against the page's 76px. The learner's screen is not short
+   because the box inside it is. */
+html[data-embed] .page-band { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
 /* AND THE FAMILY SPINE, which is the page's own left edge. The notebook around
    the frame already draws one; a second, 10px further in, reads as a stray
    green rule down the middle of the paper — seen on the framed goals before
@@ -3082,12 +3110,27 @@ html[data-embed] body { background: transparent; }
    along. */
 html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 
-/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well.
+/* AND ON THE HOST SIDE: a well that holds a frame gives it the WHOLE SHEET.
    The station inside paints its own paper, so the well's own 20px top and
    bottom and its right inset would be a frame around a frame — visible as a
-   band of the host's ruled paper down each side of the drill. The LEFT gutter
-   is kept on purpose: the coils live there, and they are the notebook. */
-.cahier-foolscap:has(.embed-frame) { padding-top: 0; padding-bottom: 0; padding-right: 0; }
+   band of the host's ruled paper down each side of the drill.
+
+   THE LEFT GUTTER USED TO BE KEPT, "because the coils live there, and they are
+   the notebook", and that is what made a framed station's heading strip a
+   different LENGTH from a page's (Dan, 2026-09-11: *"why are some items
+   shorter than others, they should all be the same length"*). Measured at
+   900px: a band the page draws runs x=33 w=840; a band the FRAME draws ran
+   x=97 w=776 — 64px shorter and 64px further in, on exactly the four stations
+   whose drill carries its own strip (the lesson, MémoiRecall, ConjugaZone,
+   ÉcouTexte). The strip is the same piece of furniture either way and cannot
+   be two sizes.
+
+   So the frame starts at the sheet's edge and THE COILS PAINT OVER IT —
+   `.cahier-binding` is `position: absolute; z-index: 3` and an iframe is an
+   unpositioned block, so the rings land on top without any change to how they
+   are drawn. The gutter they need is re-opened INSIDE the frame instead, on
+   the framed document's own well, where it belongs: see
+   `html[data-embed] .cahier-foolscap` above. */.cahier-foolscap:has(.embed-frame) { padding: 0; }
 
 /* ===========================================================================
  *  THE GOAL'S TAG, ON A TORN SCRAP
