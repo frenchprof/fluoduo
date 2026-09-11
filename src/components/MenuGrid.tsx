@@ -140,7 +140,17 @@ const TILE =
   "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
-const NAME = "fluo-btn-hand block w-full truncate text-[13px] leading-tight text-[color:var(--cahier-ink)]";
+/* BIGGER, AND TRUNCATION IS THE PRICE DAN CHOSE (2026-09-11: *"make the font
+   on the grid menu bigger and maybe thicker, it is hardly legible now. It is
+   OK to truncate some long names"*). 13px in the hand face on a 90px tile
+   was the size that let every name fit whole, and it was not readable. 16px
+   is a fifth larger; the face is already at its heaviest weight (800, the
+   ExtraBold file in layout.tsx — there is no 900 to reach for), so "thicker"
+   is met by the size, which is what makes a hand face's strokes wider. The
+   longest names (Leaderboard, GramMarathon, VocabulaRain, LexicaLocker) may
+   now end in an ellipsis on a narrow phone; the emoji above each one is the
+   other half of its identity, and Dan accepted the trade. */
+const NAME = "fluo-btn-hand block w-full truncate text-[16px] leading-tight text-[color:var(--cahier-ink)]";
 
 export default function MenuGrid({
   onNavigate,
@@ -171,7 +181,7 @@ export default function MenuGrid({
           className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
           style={{ background: row.band }}
         >
-          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[9px] font-bold uppercase tracking-[0.14em] leading-none text-white/80">
+          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black uppercase tracking-[0.12em] leading-none text-white/90">
             {row.label}
           </span>
           {row.cells.map((cell, c) => {
