@@ -51,6 +51,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
+import { useCourse } from "@/components/CourseGate";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
@@ -148,6 +149,12 @@ export default function WelcomeBody() {
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
   const [progress, setProgress] = useState<Progress>(defaultProgress);
+  // WHICH COURSE THIS DOOR OPENS ON (Dan, 2026-09-11: "do the wiring so f1 to
+  // f4 mean different courses"). Shown ONLY when the address names a course —
+  // f1.fluolingo.com reads « French 1 · A1 » under the greeting; fluoli.ngo
+  // and withdrchan, which name none, look exactly as they did. On an address
+  // that says f1 the tag is what tells a learner the app agrees with it.
+  const { course, named } = useCourse();
   useEffect(() => {
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setProgress(loadProgress());
@@ -303,6 +310,15 @@ export default function WelcomeBody() {
           </span>
           <span className="sr-only">Building your Fluency on Linguistic Goals</span>
         </p>
+        {named && course && (
+          <p
+            data-course-tag={course.key}
+            className="mt-1.5 inline-block px-3 py-0.5 text-[1rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.2rem] [@media(max-height:480px)]:hidden"
+            style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
+          >
+            {course.name} · {course.level}
+          </p>
+        )}
       </div>
 
       {/* THE ONE ACTION — A COIN ON THE ROAD (Dan, 8 Sep, with his own mock

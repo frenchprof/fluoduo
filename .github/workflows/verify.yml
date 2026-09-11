@@ -452,6 +452,12 @@ jobs:
       - name: "No glyph means two different things (9 Sep)"
         run: python3 verify/verify190-glyph-collisions.py
 
+      # One export serves f1..f4; which course a page runs as is decided in the
+      # browser from the hostname, so it is driven, not read. Runs after the
+      # open build: the f2 /home case must meet the gate, not the wall.
+      - name: "The address decides the course — f2 shows the closed door (11 Sep)"
+        run: python3 verify/verify195-courses.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

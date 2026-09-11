@@ -10,6 +10,7 @@ import KeyNav from "@/components/KeyNav";
 import RailArrows from "@/components/RailArrows";
 import RailSwipe from "@/components/RailSwipe";
 import TopLevelOnly from "@/components/TopLevelOnly";
+import CourseGate from "@/components/CourseGate";
 import AccentBar from "@/components/AccentBar";
 import RewardToast from "@/components/RewardToast";
 import XpFloat from "@/components/XpFloat";
@@ -182,7 +183,11 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
-        {children}
+        {/* WHICH COURSE IS THIS ADDRESS? f1.fluolingo.com is French 1 and runs
+            the app as built; f2–f4 are courses not written yet, and every
+            route on those hosts shows the closed door instead. Decided from
+            the hostname after mount — see components/CourseGate.tsx. */}
+        <CourseGate>{children}</CourseGate>
         {/* Who runs this + what's collected (audit 2026-07-19): the app
             records every answer for learning analytics on identifiable
             students — say so, on every page. mt-auto pins it to the bottom
