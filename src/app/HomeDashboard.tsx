@@ -332,6 +332,21 @@ export default function HomeDashboard() {
               <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
             </Link>
           )}
+          {/* THESE THREE KEYS STAY BARE. DO NOT LABEL THEM (Dan, 2026-09-11).
+              A session working on the first-run tours noticed that ▶ ⏭ ⏪ carry
+              their meaning only in a `title` — which a phone has no hover to
+              show — and put four options to Dan on the real page: as-is, a
+              caption under ▶, ▶ widened into a « Continue » pill, and the same
+              pill naming the goal. His answer: *"i would say to leave it
+              alone. i don't think it is very nice."*
+
+              So the row is a decision, not an oversight, and the reasoning for
+              labelling it is recorded here only so the next session does not
+              spend an afternoon rediscovering it and shipping the pill. The
+              transport bar is the app's character — the same judgement that
+              kept « Unité 3 » and « Débutant » in French: nobody is STUCK, the
+              glow marks the hero, and the home tour's first step says what ▶
+              is for on the one run where a learner needs telling. */}
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
