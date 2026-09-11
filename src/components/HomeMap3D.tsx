@@ -1114,7 +1114,7 @@ export default function HomeMap3D({
                         style={{ left: px - baseW / 2, top: py - totalH * reveal * (1 - reveal / 2), width: baseW, zIndex: active ? 950 : zOrder(scale), ...clipRise(reveal) }}
                       >
                         {/* 🧑‍🎓 bobs over the current stop; 🚩 marks the class stop */}
-                        {active && (
+                        {active && !still && (
                           <span aria-hidden className="home-map-bob absolute left-1/2 -translate-x-1/2" style={{ top: -Math.max(12, sz * 0.46), fontSize: Math.max(13, sz * 0.4), filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.2))", zIndex: 2 }}>
                             🧑‍🎓
                           </span>
@@ -1140,8 +1140,25 @@ export default function HomeMap3D({
                               instead of opening the stop (Dan, 31 Aug: "the
                               area for tapping does not seem very clear"). */}
                           <span aria-hidden className="absolute" style={{ inset: -Math.max(8, Math.round(sz * 0.18)) }} />
-                          {/* pulsing gold ring — current stop */}
-                          {active && (
+                          {/* PULSING GOLD RING — CURRENT STOP, AND NOT ON A STILL.
+                              Dan, 11 Sep, of the door: *"THE ENTER PAGE - IS
+                              MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN
+                              ON ENTER"*.
+
+                              He is right, and it is the worst kind of wrong: on
+                              the map this ring means "this is the one to press",
+                              which is true there. On the door the scene is
+                              `still` — nothing in it takes a tap at all — so the
+                              ring was pointing at the one thing that CANNOT be
+                              pressed, two inches above the one thing that can.
+                              A visitor's eye goes to the moving object; here the
+                              moving object was a dead end.
+
+                              So a still scene has no motion in it: no ring, no
+                              numeral pulse, no bobbing student. It is a picture,
+                              and the only thing that blinks on that page is the
+                              way in. */}
+                          {active && !still && (
                             <span
                               aria-hidden
                               className="home-map3d-ring absolute rounded-[50%]"
@@ -1266,7 +1283,7 @@ export default function HomeMap3D({
                             <span
                               // `home-map3d-face` is only the hover/press hook;
                               // every pixel of the look comes from .fluo-stop.
-                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce ? "home-map3d-pulse" : ""}`}
+                              className={`fluo-stop ${done ? "fluo-stop--down" : "fluo-stop--up fluo-stop-num"} flex h-11 w-11 items-center justify-center rounded-full text-sm font-black ${active && !reduce && !still ? "home-map3d-pulse" : ""}`}
                               style={{
                                 ["--fluo-stop-kind" as string]: colour,
                                 ["--n-lift" as string]: "2px",
