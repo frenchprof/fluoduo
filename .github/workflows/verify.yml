@@ -411,6 +411,13 @@ jobs:
       - name: "Every page wears exactly one coloured strip at the top (7 Sep)"
         run: python3 verify/verify126-band-strip.py
 
+      # The same lesson one corner further in: a framed station drew a SECOND
+      # sheet of paper on the page's own, and the coils started below the band
+      # so the left edge changed width halfway down. Both are geometry, so both
+      # are measured on the rendered page rather than grepped.
+      - name: "One sheet per page, and the coils run up to the band (11 Sep)"
+        run: python3 verify/verify230-one-sheet.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"

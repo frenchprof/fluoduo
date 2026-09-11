@@ -6,6 +6,72 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — one sheet of paper, and the coils reach the band (double-frame lane, branch, NOT merged)
+
+Branch `claude/double-frame-fix`. Handed to fluoduo-main; **not merged by this
+lane.**
+
+**WHAT DAN SAW.** *"Profiles, ChaTutor page looks doubleframed"*, with two phone
+screens. Reproduced on the built app before anything was touched, per the brief.
+
+**WHAT IT WAS.** `/profil/embed` and `/tutor/embed` each rendered a
+`CahierShell` — the notebook — while already loaded inside one.
+`html[data-embed]` hides the shell's furniture in a frame (bar, band, coils,
+shadow, radius, spine) and that was read as "nothing is left". What was left is
+the paper and two rulings, so a second sheet sat on the page's own, inset 48px
+— the well's gutter, where the coils are. Measured at 390px: the ruled lines in
+that strip sit at one height, the ones inside the frame at another, and some
+stop dead at the frame's edge. No border anywhere, which is why it needed a
+picture to name.
+
+Fixed at the cause, following `/map/embed`, which was already right: the two
+embed routes render their content and no notebook, and
+`html[data-embed] body { background: transparent }` lets the page's one sheet
+show through. That line is a **no-op for every other station** — measured
+across all seventeen framed routes, each still paints an opaque
+`.cahier-page` / `.cahier-surface` over it.
+
+**THE OTHER FIFTEEN STILL HAVE THE SHAPE, DELIBERATELY.** `/moi`, `/tts`,
+`/reviser`, `/sio/[id]`, `/practice/wordrill`, `/practice/ecoutexte`,
+`/conjugaison`, `/games/numbers` and the three `GameGallery` embeds all render a
+CahierShell inside a frame. Dan asked for two; widening is his call, not this
+lane's. They are one line each in `ONE_SHEET` (scripts/sheet-scan.mjs) when he
+says so.
+
+**AND THE CORNER.** Dan, same session, shown a game's top-left corner: *"coils
+up to the band and also the corresponding vertical strip"*. The binding opened
+BELOW the band, so a page's left edge was a 6px family spine beside the bar and
+the band and a 30px coil strip under it — it changed width halfway down. Home
+has no band and so started its coils at its hero; the two side by side is what
+he met. **This reverses the 6 Sep "coils below the bar and the band" note**, and
+the reason that note gave still holds at the top: the binding stops short of the
+SITE BAR, because the loops overhang onto the desk and nothing can cover a desk.
+
+Both shells open the binding region above the band; `.cahier-binding` takes
+`z-index: 3` so the rings paint over the strip (a real coil crosses the cover);
+`.cahier-binding ~ .page-band` takes a 3rem left clearance so they do not cross
+the ✕. The sibling combinator is load-bearing: a band drawn inside a content
+well (`decks/[id]/CuratedDeckTable.tsx`) has no binding sibling and must not
+move.
+
+**ONE REGRESSION, CAUGHT BY A CHECK AND NOT BY ME.** Nesting the band one level
+deeper broke `html[data-embed] .cahier-page > .page-band`, whose child
+combinator stopped matching — every framed station drew its strip twice.
+verify126 failed on `/sio/[id]`, `/skills` and `/tts`. The selector is
+`.cahier-page .cahier-binding ~ .page-band` now, which says what it always
+meant.
+
+**Files touched:** `src/app/profil/embed/page.tsx`, `src/app/tutor/embed/page.tsx`,
+`src/app/globals.css` (**shared**), `src/components/CahierShell.tsx` (**shared**,
+five branches in flight on it), `src/components/DrillShell.tsx` (**shared**),
+`scripts/sheet-scan.mjs` (new), `verify/verify230-one-sheet.py` (new),
+`.github/workflows/verify.yml`, `AGENTS.md`, `docs/STATUS.md`.
+
+**Gate:** `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1 next build` clean, ESLint
+clean on the four source files, every `verify/*.py` green. verify230 was
+break-tested four ways (the shell restored, the z-index dropped, the clearance
+removed, the binding pushed below the band) and each produced its own message.
+
 ## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,

@@ -303,7 +303,18 @@ for path, want, was in (
     # on 1 Sep — drawn inside the content well it sat 20px lower than every
     # other band on the site. The claim is unchanged: its first word is the
     # activity's, not the signed-in name.
-    ("src/app/profil/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    #
+    # IT MOVED AGAIN ON 11 SEP, ONE ROUTE OF THE TWO, and the move is what
+    # showed the pin had been guarding a string nobody saw. `/profil/embed`
+    # carried `band={{ title: "Moi" }}`, and a CahierShell band inside a frame
+    # is hidden (`html[data-embed]`, globals.css) — the strip a learner reads
+    # on /profil is the HOST's, and the host types no title at all, so it says
+    # « Profile » from the registry. When the embed stopped drawing a shell
+    # (the double-sheet fix) the literal went with it and this went red over a
+    # band that had never been on screen. So the pin names the host now, where
+    # the visible band actually is. /moi keeps its embed line because its embed
+    # still draws a shell; its host, which is the one on screen, is pinned too.
+    ("src/app/moi/page.tsx", 'band={{ title: "Profile" }}', "the signed-in user's name"),
     ("src/app/moi/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     # « Pretest » became « SpecuLearn » on 5 Sep (Dan: "it is the name for
     # everything pre-tests (old-speculearn and old-pretests)... because they
@@ -318,6 +329,24 @@ for path, want, was in (
        f"{os.path.basename(os.path.dirname(path))}'s band opens with the ACTIVITY's name",
        f"{path} opens its band with {was} again — Dan: 'the word that appears must be the "
        "activity name', and beside the goal tag that reads as the same thing said twice")
+
+# /profil is the one route in the pair that types NOTHING: its host passes only
+# `active="profil"`, so CahierShell names the band from the registry — the same
+# « Profile » /moi spells by hand because "moi" has no registry row of its own.
+# Pinned as an absence, because that is what it is: the moment someone types a
+# title here, the two profile routes can drift apart again, which is the fault
+# the 1 Sep ruling was about.
+_profil_host = code(read("src/app/profil/page.tsx"))
+ok('band={{ title:' not in _profil_host and 'active="profil"' in _profil_host,
+   "profil's band takes the activity's name from the registry, unspelled",
+   "src/app/profil/page.tsx now types its own band title — /moi spells « Profile » by "
+   "hand only because 'moi' has no registry row; /profil has one, and two routes that "
+   "are ONE page must not each carry their own copy of its name")
+# And its framed half draws no band, because it draws no shell (11 Sep).
+ok('CahierShell' not in code(read("src/app/profil/embed/page.tsx")),
+   "profil's framed half draws no second notebook",
+   "src/app/profil/embed/page.tsx renders a CahierShell inside the frame again — that is "
+   "the double sheet Dan reported on 11 Sep. verify230 measures it on the rendered page")
 
 # ONE ACTIVITY, ONE NAME — EVEN ACROSS TWO URLs. REVERSED 7 SEP, BY DAN.
 #

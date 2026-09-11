@@ -203,24 +203,33 @@ export default function CahierShell({
               that cannot name itself should say what FAMILY it is in, which is
               always true and always something; saying nothing is the one answer
               that is never right. */}
-          {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* No binding clearance any more — the band paints over the coils
-                   (globals.css, `.page-band`), so it takes PageBand's own
-                   padding like every other band and its ✕ lands in the same
-                   place on every page. */ />
-          )}
+          {/* THE COILS START AT THE BAND (Dan, 2026-09-11, shown this corner:
+              *"coils up to the band and also the corresponding vertical
+              strip"*). They used to start BELOW it, and the page's left edge
+              therefore changed width halfway down the screen — a 6px family
+              spine beside the bar and the band, then a 30px coil strip under
+              it. Home has no band, so its coils started at its blue hero and
+              the two pages did not match; Dan met the step and named it.
 
-          {/* The coils live HERE, below the bar and the band, like a real
-              notebook's coils sit below its cover chrome (Dan's 6 Sep photos).
-              They used to span the whole page from top:0 and rely on the bar
-              and band painting over them — which worked while they were
-              clipped inside the page, but the loops now OVERHANG the page
-              edge onto the desk, and nothing can cover the desk. Anchoring
-              them to the content region is what keeps orphan half-loops from
-              floating beside the top bar. flex-1 stretches the region to the
-              page's bottom so short pages keep coils all the way down. */}
-          <div className="relative flex-1">
+              The binding region opens ABOVE the band now, so the rings and the
+              --fam-ink strip they carry run from the band's top to the page's
+              bottom and the edge is one width the whole way. It still does not
+              reach the SITE BAR: the loops overhang the page onto the desk
+              (Dan, 6 Sep: "it must go pass the edge"), nothing can cover the
+              desk, and coils beside the ☰ row would be half-loops floating
+              next to the app's chrome rather than binding a sheet.
+
+              `flex flex-col` because this region now holds two children rather
+              than one; `flex-1` still stretches it to the page's bottom so a
+              short page keeps its coils all the way down. */}
+          <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
+          {famKey && active !== "home" && band !== false && (
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+                   (globals.css, `.cahier-binding` z-index) — a real coil
+                   crosses the cover strip, it does not stop at it. The ✕ stays
+                   clickable: the binding is `pointer-events: none`. */ />
+          )}
           {/* Ruled paper behind the content well — horizontals only, no vertical
               margin line (Dan, 2026-08-10). Opt-in class rather than a body
               background so a drill or a game can turn it off. */}
