@@ -156,6 +156,82 @@ activity keys still read the demand axis (`stripOf` → `band-*`). If the strips
 are the family's, those should follow or the ☰ will disagree with the page it
 opens — which is the exact drift 8 Sep fixed for ConjugaZone.
 
+## 11 Sep — the goal card, the tile names, and options that fit their space (pre-tests lane, ALL MERGED)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+Everything below is **on main** — #283 (QC of #278) and #289 (QC of #286).
+Recorded here because it settles two earlier rulings and records three
+mistakes worth not repeating.
+
+**DAN MARKED UP A SCREENSHOT OF `/sio/SIO-011` IN RED**, then asked for three
+more things in the same sitting.
+
+- **The SIO tag takes the COMPLEMENT of the strip above it** (*"To be in
+  complementary color to the above strip"*). No colour was invented: every mark
+  in `highlighterMarks.ts` already carries a `mouth` block = its hue + 180.
+  Two token sets, `--fam-*-mouth` and `--band-*-mouth`, because two different
+  things paint that strip — and THE ORDER MATTERS. Keyed on the family alone
+  the scrap came out ORANGE under the GREEN MneMemo band, because on the
+  lesson's Goal tab the family is in the top bar and the BAND is what sits over
+  the tag. Driving desktop is what caught it.
+- **The gloss under the can-do is gone** on all fifty. `sio.description` stays
+  in `content/sios.ts`; it is no longer rendered.
+- **The five activity tiles wear their names again**, behind Réglages' existing
+  "Icon labels" switch, which now defaults ON and governs both the tiles and the
+  bottom bar rather than gaining a near-identical neighbour. This reverses the
+  7 Sep litmus-test cut, and the distinction is worth keeping: the bar's five
+  icons are a FIXED set learned once, a goal's tiles are a DIFFERENT five each
+  time and the icon is the only thing on them. What 7 Sep cut was the
+  two-column list of labelled PILLS, and that is still gone.
+- **Answer options fit the space they are in** (*"we are NOT dead set on just
+  two columns"*, *"the font ... should be adaptive not fixed. esp on desktop"*).
+  `optionGridClass` now emits `repeat(auto-fit, minmax(…))` — 2 across on a
+  phone as before, 4 on a laptop — and SpecuLearn's option type clamps against
+  the frame (16px phone, 21.8px at 1680). **The English reference reads the
+  same clamp**, which is the 1 Sep rule's own trap: one of the pair sized
+  against a CONSTANT while the other moves.
+
+**THE GOAL CARD'S HEIGHT, WHICH TOOK THREE TRIES, AND WHY.** Dan's 7 Sep rule
+was that the tag and icons sit *"perpetually at the same height"*, so the words
+sat in a box sized to the longest of the fifty.
+
+1. `9rem`, measured at 390px **alone**. On a 360px phone the tallest goals need
+   168 and on a 320px one 192, so the box overflowed and the icons hopped on
+   exactly the two goals it was sized for. *Measuring one width and calling it
+   "measured" is the fault, not the number.*
+2. Stepping it by breakpoint fixes that and buys a worse problem: **these pages
+   run inside the cahier's iframe, so a media query sees the FRAME, not the
+   phone** — 390px of device is 313px of frame. Every breakpoint would be
+   written in frame-widths (284, 313, 350, 416…) and would shift silently the
+   day the notebook's padding changes. This applies to every framed station,
+   not just this card.
+3. A self-measuring invisible twin, correct at every width — and then Dan was
+   shown what it cost (~120px of empty paper under a one-line goal) and chose
+   the other trade: *"let the icons move, hug the text"*. **The box is gone
+   rather than shrunk.** Nothing replaces it, which is the point: the floor had
+   been wrong twice in two days and both versions were maintenance somebody had
+   to keep true.
+
+**ONE COLLISION WITH MAIN, recorded rather than resolved.** Main gave the TEAL
+PEN `#00c197` to the Revise family the same week this lane gave it to
+ConjugaZone's strip. They never share a screen, and ConjugaZone happens to sit
+in the Revise row so its tile and page agree by accident. Dan's ruling stands
+(*"ignore the repo's color pattern based on activity type and family"*); the
+note is in `globals.css` beside the token.
+
+**STILL OPEN, BOTH DAN'S:**
+- Whether `verify120`'s 6-degree hue window should tighten to the exact pen for
+  the six `--band-*` tokens. He has the pictures; break-tested both ways
+  (`#00a396` caught at 15 degrees off, `#3fbfa0` — a teal that is not a pen —
+  passes). Nothing depends on the answer.
+- **`lessonVerbs.ts` records an `essential` / `good` tier for all 67 verbs and
+  NOTHING READS IT.** `/conjugaison/embed` takes the ids and drops the tier, so
+  a lesson's essential verbs and its nice-to-have verbs drill identically. The
+  distinction is Dan's own (*"we need to identify which verbs in the stop are
+  essential, and which are just only good to know"*) and what it should DO is
+  undecided.
+
 ## 11 Sep — one sheet of paper, and the coils reach the band (double-frame lane, branch, NOT merged)
 
 Branch `claude/double-frame-fix`. Handed to fluoduo-main; **not merged by this
