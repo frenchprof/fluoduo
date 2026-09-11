@@ -117,19 +117,26 @@ function tourFor(rawPath: string): Tour | null {
       ],
     };
   }
-  if (/^\/unit\//.test(path)) {
-    return {
-      key: "unit",
-      steps: [
-        // "Pre-Test first, then the cards, then the Lesson" retired
-        // (2026-08-24): it contradicted the authored order the sheet's
-        // numbered path now shows — the path speaks for itself.
-        { selector: "main .grid.grid-cols-5 > button, main button.group", action: "tap", text: "Every circle is a goal. Follow the numbered path." },
-        { selector: "nav.cahier-tabs, .cahier-menu > button", action: "tap", text: "The flaps stay with you — switch Unit or go 🏠 Home." },
-        { text: "✓ green = done. The highlighted circle is where your class is." },
-      ],
-    };
-  }
+  // THE UNIT TOUR IS GONE, AND THAT IS HOW /unit/N GETS A WORKING ONE (11 Sep).
+  //
+  // Dan asked for the dead tours fixed rather than retired, and for this one
+  // "fixed" cannot mean "repaired in place", because there is no longer a page
+  // to tour. `/unit/N` has been a REDIRECT STUB since patch 25 — four lines
+  // that `window.location.replace` to `/map?unit=N` (app/unit/[unit]/UnitRedirect.tsx).
+  // Its tour described the old unit sheet: « Every circle is a goal », « The
+  // flaps stay with you ». Measured on the built app, its first target matches
+  // ZERO elements in every document on that route, because the screen it names
+  // was deleted three weeks ago.
+  //
+  // What a learner actually lands on is the MAP, scrolled to that unit — and
+  // `usePathname()` reads "/map" after the redirect, so the map tour above is
+  // what they were already being served. It was dead too, for the frame reason
+  // in measureScopes; it works now. So deleting this branch is not a tour
+  // taken away: it is the one that was reaching them starting to work.
+  //
+  // This is the third tour retired for naming a deleted screen. The pattern is
+  // always the same and never reports itself — verify220 walks each live tour
+  // to the end now and fails if any step never comes up.
   // The "index" tour is GONE (2026-08-29). It described /activities — the
   // search field, the column headers, the rows, "your decks" — and that page
   // was deleted when the Index was retired ("the map is the front door").
@@ -168,13 +175,60 @@ function tourFor(rawPath: string): Tour | null {
   // and a tour that shows a single sentence is not one. Every other page type
   // keeps both.
   //
-  // THE GENERAL RULE THIS LEAVES BEHIND, since this is the THIRD tour in this
-  // file to be retired for pointing at a screen that had moved: a page tour may
-  // only teach what is in ITS OWN document. The moment a surface moves into a
-  // frame, its tour does not follow it — it goes quiet, which is the one
-  // failure nobody reports. verify213 drives each remaining tour and fails if
-  // its spotlights all skip.
+  // THE GENERAL RULE THIS LEAVES BEHIND, and it is NOT the one first written
+  // here. That version said a page tour may only teach what is in its own
+  // document — true of the code as it stood, and the wrong lesson: it made a
+  // limitation sound like a principle, and would have had the next session
+  // retire a fourth working tour rather than fix the measuring. Dan settled it
+  // the same day: *"all to fix"*. `measureScopes` now reaches into same-origin
+  // frames, so a tour follows its screen into one.
+  //
+  // What DOES generalise is the failure mode, not the fix: a step whose target
+  // cannot be found is stepped over in SILENCE, and every one of the four dead
+  // tours in this file died that way — a deleted page, a screen moved into a
+  // frame, a control removed by a later ruling. Nothing errors and nobody
+  // reports it, because the tour still appears to work. That is why
+  // verify220 walks each live tour to its end and fails on any step number
+  // that never comes up.
   return null;
+}
+
+/**
+ * EVERY DOCUMENT THIS TOUR MAY MEASURE IN — this one, and any same-origin
+ * frame inside it.
+ *
+ * Dan, 2026-09-11, told to fix the dead tours rather than retire them.
+ *
+ * Since 7 Sep every station runs in an iframe (*"EVERYTHING (LIKE THE MAP)
+ * MUST NOW RUN WITHIN THE CAHIER PAGES IN IFRAMES"*), and a tour measures with
+ * `document.querySelectorAll` — which stops at the frame. That one line is why
+ * three tours went quiet: the map's 2D/3D switch and the map itself are in
+ * `/map/embed`, the lesson's entry chooser was in its own embed, and every
+ * selector stayed perfectly correct while matching nothing.
+ *
+ * A frame is our own page on our own host, so its document is simply readable.
+ * The only arithmetic is the offset: a rect measured INSIDE the frame is
+ * relative to the frame's own viewport, so the frame's position in this one is
+ * added to put the spotlight in the right place on screen.
+ *
+ * WHY THE TAP STILL WORKS WITHOUT MORE WORK. The `action: "tap"` catcher is an
+ * invisible div in THIS document laid over the hole — it always was, so that a
+ * tour step cannot navigate away mid-tour. It never touched the real control,
+ * so it does not care which document the control lives in.
+ *
+ * Cross-origin is not a case here and is guarded anyway: `contentDocument`
+ * throws or returns null, and that frame is skipped.
+ */
+function measureScopes(): { doc: Document; dx: number; dy: number }[] {
+  const out = [{ doc: document, dx: 0, dy: 0 }];
+  for (const f of Array.from(document.querySelectorAll("iframe"))) {
+    let d: Document | null = null;
+    try { d = f.contentDocument; } catch { d = null; }
+    if (!d) continue;
+    const r = f.getBoundingClientRect();
+    out.push({ doc: d, dx: r.left, dy: r.top });
+  }
+  return out;
 }
 
 function readSeen(): Record<string, 1> {
@@ -234,13 +288,24 @@ export default function FirstTour() {
     while (i < STEPS.length) {
       const sel = STEPS[i].selector;
       if (!sel) { setRect(null); if (i !== step) setStep(i); return; }
-      const el = Array.from(document.querySelectorAll(sel)).find((n) => {
-        const r = n.getBoundingClientRect();
-        return r.width > 0 && r.height > 0;
-      });
-      if (el) {
+      // THIS DOCUMENT FIRST, THEN ITS FRAMES — see measureScopes. A station
+      // moved into an iframe on 7 Sep takes its controls with it, and a tour
+      // that only looks here finds nothing and steps over itself in silence.
+      let found: { top: number; left: number; width: number; height: number } | null = null;
+      for (const sc of measureScopes()) {
+        const el = Array.from(sc.doc.querySelectorAll(sel)).find((n) => {
+          const r = n.getBoundingClientRect();
+          return r.width > 0 && r.height > 0;
+        });
+        if (!el) continue;
         const r = el.getBoundingClientRect();
-        setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
+        // The frame's own offset: a rect inside it is measured against the
+        // frame's viewport, not the window the spotlight is drawn in.
+        found = { top: r.top + sc.dy, left: r.left + sc.dx, width: r.width, height: r.height };
+        break;
+      }
+      if (found) {
+        setRect(found);
         if (i !== step) setStep(i);
         return;
       }

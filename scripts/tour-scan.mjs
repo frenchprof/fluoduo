@@ -6,13 +6,16 @@
  * 1. DOES THE TOUR STILL POINT AT ANYTHING? FirstTour measures with
  *    `document.querySelectorAll` and SKIPS a step whose target it cannot find.
  *    That skip is the right behaviour for a step that is merely conditional,
- *    and it is also why three tours in this file rotted for weeks without a
- *    single error: when a surface moves, the tour does not follow it, it goes
- *    quiet. The lesson tour was the third — on 7 Sep the lesson moved into a
- *    frame, and from then on « Quick tour! » opened on its LAST step with both
- *    spotlights skipped. A source check cannot see this: the selectors are
- *    still there, still spelled correctly, and still name real markup. They
- *    just name it in another document.
+ *    and it is also why FOUR tours in this file rotted without a single error:
+ *    a deleted page, two screens moved into frames on 7 Sep, and a control Dan
+ *    removed on 6 Sep. A source check cannot see any of them — the selectors
+ *    are still there, still spelled correctly, still naming real markup.
+ *
+ *    A TOUR CAN BE TWO-THIRDS DEAD, which is the case the first version of
+ *    this scan missed. It asked only whether a tour opened on its LAST step,
+ *    so the home tour — two live steps, one dead — sailed through while a
+ *    learner watched the counter jump « 1/3 » to « 3/3 ». Each live tour is
+ *    now WALKED to its end and every step number must come up.
  *
  * 2. IS MORE THAN ONE THING OFFERING HELP AT ONCE? Dan, 11 Sep, looking at
  *    MneMemo: two prompts arrived together — the activity's own instruction
@@ -67,32 +70,25 @@ const note = [];
  *  lesson route is here because it is the one that went wrong; the others are
  *  here so the next one to go wrong is not found by a person. */
 /**
- * `broken` PINS A TOUR THAT IS KNOWN TO BE DEAD AND NOT YET DAN'S TO BURY.
+ * NOTHING IS PINNED ANY MORE, and that is the point of this comment.
  *
- * Retiring a tour takes the ✨ chip off that page with it, and that is a call
- * for Dan rather than a tidy-up. Two tours were found dead on 11 Sep by this
- * scan's first run, both for the frame reason above, and both are listed here
- * with what was measured. The state is pinned in BOTH directions: a pinned
- * tour that starts working also fails, so the day one is fixed the exemption
- * is removed in the same patch instead of quietly outliving the problem.
+ * On 11 Sep this scan's first run found the map and unit tours dead, and they
+ * were listed here as known-broken because retiring a tour takes the ✨ chip
+ * off that page with it — Dan's call, not a tidy-up. He made it the same day:
+ * **fix them**. So the exemption block is gone rather than carried, which is
+ * what it was built to make easy — it failed in BOTH directions, so a pinned
+ * tour that started working failed too and could not quietly outlive its own
+ * problem.
+ *
+ * `/unit/1` stays in this list even though its own tour was deleted: it is a
+ * redirect stub onto the map, and a learner following an old link still has to
+ * arrive somewhere that teaches them something.
  */
 const ROUTES = [
   { path: "/home", tour: "home" },
   { path: "/lessons/deck/aliments", tour: null },
-  {
-    path: "/map",
-    tour: "map",
-    broken: "BOTH targets moved into /map/embed on 7 Sep — measured outer=0, inner=1 for "
-      + "[data-tour=\"map-view\"] and [data-tour=\"map\"]. Awaiting Dan: retiring it takes the "
-      + "✨ chip off the map with it.",
-  },
-  {
-    path: "/unit/1",
-    tour: "map",
-    broken: "/unit/N forwards to /map?unit=1, so usePathname() reads \"/map\" and the UNIT tour "
-      + "can never be reached at all — the map's is served instead, and that one is dead for "
-      + "the reason above. Measured: the unit tour's own first target is 0 in every document.",
-  },
+  { path: "/map", tour: "map" },
+  { path: "/unit/1", tour: "map" },
 ];
 
 async function fresh(path) {
@@ -153,11 +149,11 @@ for (const r of ROUTES) {
         return m ? { at: +m[1], of: +m[2] } : null;
       });
       const counter = await readCounter();
-      const litSomething = await page.evaluate(() =>
-        !!document.querySelector('[data-tour], nav.cahier-bottombar, a[title^="Continue"]'));
-      const dead = !counter
-        || (counter.of > 1 && counter.at === counter.of)
-        || !litSomething;
+      // NO "is there a data-tour anywhere" HEURISTIC. There was one here, and
+      // it looked only in THIS document — the very assumption that let the map
+      // tour read as healthy while both its targets sat in /map/embed. The
+      // step walk below is the real test and needs no proxy for it.
+      const dead = !counter || (counter.of > 1 && counter.at === counter.of);
       const where = counter ? `${counter.at}/${counter.of}` : "no step counter";
 
       if (dead && !r.broken) {
@@ -314,7 +310,7 @@ const pinned = ROUTES.filter((r) => r.broken).length;
 console.log(`  ok   ${guidedKeys.length} guided activities open their walk on a real control: ` +
             guidedKeys.join(", "));
 console.log(`  ok   ${ROUTES.length} routes: never two prompts at once on a cold arrival`);
-console.log(`  ok   every page tour not pinned as broken still lights one of its own targets`);
+console.log(`  ok   every page tour runs every one of its steps — none silently skipped`);
 if (pinned) {
   console.log(`  ok   ${pinned} tour(s) pinned dead above and still dead — listed as notes, ` +
               `awaiting Dan's call on retiring them`);
