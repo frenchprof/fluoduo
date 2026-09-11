@@ -31,9 +31,11 @@
  * were re-measured on 2026-09-11 after the description line went, at NINE
  * widths rather than one — see below for why one number was not enough.
  */
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
+import { readUiPrefs } from "@/lib/uiPrefs";
 import { SIOS, type Sio } from "@/content/sios";
 
 /** The longest can-do of the fifty, rendered invisibly behind every one of
@@ -50,6 +52,27 @@ export default function GoalCard({
   compact?: boolean;
 }) {
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
+
+  /* THE NAME UNDER THE TILE (Dan, 2026-09-11: *"it would help to add the name
+     of each activity below the tile by default) we can allow userss to remove
+     it in the settings"*). The setting is Réglages' existing "Icon labels"
+     row — one switch for the words under an icon, wherever they are — and it
+     now defaults ON; see lib/uiPrefs.ts for why the tiles get the opposite
+     answer to the bottom bar.
+
+     READ AFTER MOUNT, and `false` until then. The site is statically
+     exported, so a preference read during render would bake one learner's
+     choice into the HTML every other learner downloads. Starting false rather
+     than true means the labels appear rather than vanish on the first paint —
+     a label that flashes away reads as a bug, one that arrives reads as the
+     page finishing. */
+  const [labels, setLabels] = useState(false);
+  useEffect(() => {
+    const sync = () => setLabels(readUiPrefs().showNavLabels);
+    sync();
+    window.addEventListener("fluolingo:uiprefs", sync);
+    return () => window.removeEventListener("fluolingo:uiprefs", sync);
+  }, []);
   return (
     <>
       {/* THE TAG IS A TORN SCRAP, pasted on. `.goal-scrap` in globals.css holds
@@ -118,15 +141,18 @@ export default function GoalCard({
            not in this form but the grid of icons only like we saw in the
            earlier 'HELP'"*).
 
-           It was a two-column list of labelled pills, and on a goal with seven
-           activities that is seven rows of text under a card that has already
-           said what the goal is — the litmus test's own case: the words
-           « MémoiRecall », « VocabulaRain » repeat what the icon and its
-           colour already carry.
+           It was a two-column list of labelled PILLS — seven rows of text
+           under a card that had already said what the goal is — and what the
+           litmus test cut on 7 Sep was that list, not the names. The grid is
+           the shape Dan asked for and it kept the names only in `title` and
+           an `sr-only` span.
 
-           The name has not been thrown away, it has moved: `title` on hover,
-           and the `sr-only` span, which is what a screen reader announces — an
-           icon-only link that announces nothing is a link nobody can use.
+           THE NAMES ARE BACK UNDER THE TILES (Dan, 2026-09-11: *"it would
+           help to add the name of each activity below the tile by default"*),
+           behind Réglages' "Icon labels" switch, which now defaults on. A
+           goal's five tiles are a different five each time and the icon is
+           the only thing on them, so the name is not repeating anything —
+           which is the litmus test's actual question.
 
            `w-fit` and centred, not three columns stretched across the card:
            three tiles spread over 290px of paper read as three separate things
@@ -144,11 +170,28 @@ export default function GoalCard({
                 title={t.label}
                 /* 44px, not the icon's own 40 — PR 192's tap floor. The tile
                    inside stays 40 and the ring around it takes the rest, so
-                   the target grows without the artwork changing size. */
-                className="grid h-11 w-11 place-items-center rounded-xl no-underline transition hover:scale-110"
+                   the target grows without the artwork changing size.
+
+                   WITH A LABEL the cell is a fixed 5rem wide so the three
+                   columns stay square with each other: the names run from
+                   « Idée » to « MémoiRecall », and letting each cell size to
+                   its own word would make a ragged grid out of a tidy one.
+                   80px holds the longest at 10px without hyphenating. */
+                className={`grid place-items-center rounded-xl no-underline transition hover:scale-110 ${
+                  labels ? "h-auto w-20 gap-1 py-1" : "h-11 w-11"
+                }`}
               >
                 <ActivityIcon activityKey={t.key} emoji={t.emoji} />
-                <span className="sr-only">{t.label}</span>
+                {/* The name is either DRAWN or announced, never both — a
+                    screen reader that meets the visible label and the
+                    sr-only one says every activity twice. */}
+                {labels ? (
+                  <span className="text-center text-[10px] font-bold leading-tight text-[color:var(--cahier-ink)]">
+                    {t.label}
+                  </span>
+                ) : (
+                  <span className="sr-only">{t.label}</span>
+                )}
               </Link>
             </li>
           ))}
