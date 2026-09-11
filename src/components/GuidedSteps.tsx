@@ -186,7 +186,13 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
     : null;
 
   return createPortal(
-    <div aria-live="polite" className="pointer-events-none fixed inset-0 z-[70]">
+    // `data-guided-steps` IS FOR THE CHECK, and it is here because the obvious
+    // handle was not unique. verify220 first looked for `[aria-live="polite"]`
+    // and found ÉcouTexte's own player announcements — « ⏯ play · 🐇🐌 speed »
+    // — sitting earlier in the document, so it read a live region that is not
+    // this one and reported a working walk as broken. A check that names a
+    // shared attribute is testing whatever happens to be first.
+    <div data-guided-steps aria-live="polite" className="pointer-events-none fixed inset-0 z-[70]">
       {/* The dimmer, with a hole. One element: the ring's own huge spread IS
           the dim, so the bright patch and the dark rest can never disagree. */}
       {box && (

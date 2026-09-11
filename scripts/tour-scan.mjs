@@ -172,6 +172,92 @@ for (const r of ROUTES) {
   await page.close();
 }
 
+/**
+ * EVERY GUIDED ACTIVITY MUST ACTUALLY FIND ITS FIRST CONTROL.
+ *
+ * verify212 checks that a step's `data-tour` anchor exists somewhere under
+ * src/. That is worth having and it is NOT this: an anchor can exist, spelled
+ * correctly, in a real component, and still be unreachable — because it is in
+ * a different DOCUMENT from the card that opens the walk. Three activities hit
+ * exactly that in one day:
+ *
+ *     VoixLà      card on /tts                     controls in /tts/embed
+ *     the lesson  page tour outside the frame      targets inside it
+ *     SpecuLearn  card on /practice/speculearn/…   63 options in its /embed
+ *
+ * Every one of them passed a static check and lit nothing. The learner's
+ * symptom is a step that sits saying "Finding it…" on the single run that was
+ * meant to teach the activity — no error, no log, nothing to report.
+ *
+ * So: open each guided activity cold, press its « Show me », and require the
+ * spotlight to land on something. A row must be listed here to be guided at
+ * all — adding selectors without a route means this scan never sees it, so the
+ * absent entry fails rather than passing quietly.
+ */
+const GUIDED_ROUTES = {
+  flip: "/practice/flip-it/aller-destinations",
+  grammarathon: "/practice/grammarathon/aller-destinations",
+  wordrill: "/practice/say-it/aller-destinations",
+  lesson: "/lessons/deck/aliments",
+  conjugaison: "/conjugaison",
+  ecoutexte: "/practice/ecoutexte",
+};
+
+const hintsSrc = readFileSync(join(process.cwd(), "src/content/hints.ts"), "utf8");
+const guidedKeys = [];
+for (const [, key, body] of hintsSrc.matchAll(/^ {2}(\w+): \{([\s\S]*?)^ {2}\},/gm)) {
+  if (/selector:\s*'/.test(body)) guidedKeys.push(key);
+}
+
+for (const key of guidedKeys) {
+  const route = GUIDED_ROUTES[key];
+  if (!route) {
+    fail.push(`hints.ts row "${key}" carries guided steps but names no route in ` +
+              `scripts/tour-scan.mjs. Add one: a walk nothing drives is a walk nobody ` +
+              `knows is broken — three activities shipped pointing into another document ` +
+              `on 11 Sep, and every one passed the static check.`);
+    continue;
+  }
+  const page = await fresh(route);
+  // The card and the controls may be in different documents — that is the
+  // whole point — so look for the button in every frame, and then watch the
+  // frame it was found in.
+  let host = null;
+  for (const f of page.frames()) {
+    try {
+      if (await f.getByRole("button", { name: "Show me" }).count()) { host = f; break; }
+    } catch {}
+  }
+  if (!host) {
+    fail.push(`${route}: "${key}" is a guided row but no « Show me » button appeared on a ` +
+              `cold arrival — the first-run card is not being mounted for this key.`);
+    await page.close();
+    continue;
+  }
+  await host.getByRole("button", { name: "Show me" }).click();
+  await page.waitForTimeout(1200);
+  const state = await host.evaluate(() => {
+    const panel = document.querySelector("[data-guided-steps]");
+    if (!panel) return { walking: false };
+    const ring = panel.querySelector("[aria-hidden]");
+    const r = ring?.getBoundingClientRect();
+    return {
+      walking: true,
+      finding: (panel.textContent || "").includes("Finding it"),
+      w: r ? Math.round(r.width) : 0,
+      h: r ? Math.round(r.height) : 0,
+    };
+  });
+  if (!state.walking) {
+    fail.push(`${route}: pressing « Show me » on "${key}" started no walk at all`);
+  } else if (state.finding || state.w < 2 || state.h < 2) {
+    fail.push(`${route}: "${key}" step 1 found nothing to light — the walk opens on ` +
+              `"Finding it…". The anchor exists in src/ (verify212 is green) but not in the ` +
+              `document this walk runs in. Check whether the control moved into an /embed.`);
+  }
+  await page.close();
+}
+
 await browser.close();
 server.close();
 
@@ -182,6 +268,8 @@ if (fail.length) {
   process.exit(1);
 }
 const pinned = ROUTES.filter((r) => r.broken).length;
+console.log(`  ok   ${guidedKeys.length} guided activities open their walk on a real control: ` +
+            guidedKeys.join(", "));
 console.log(`  ok   ${ROUTES.length} routes: never two prompts at once on a cold arrival`);
 console.log(`  ok   every page tour not pinned as broken still lights one of its own targets`);
 if (pinned) {

@@ -103,7 +103,10 @@ export default function EcouTextePage() {
   const accent = UNIT_ACCENTS[gen.unit] ?? "#8a5fd4";
 
   const picker = (
-    <label className="flex flex-col gap-1">
+    // data-tour: the guided first run opens on the topic (content/hints.ts).
+    // The LABEL, not the select: the word « Topic » above it is half of what
+    // the step is naming, and a spotlight on the box alone cuts it off.
+    <label data-tour="ecoutexte-topic" className="flex flex-col gap-1">
       <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-[color:var(--cahier-ink-soft)]">
         Topic
       </span>

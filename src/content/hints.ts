@@ -77,6 +77,24 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
   // is a CahierShell page, so `page` is not a preference here: on `drill` this
   // instruction would never fire again, silently, which is exactly the failure
   // verify88 exists to catch.
+  // NOT GUIDED, FOR VOIXLÀ'S REASON — and this one was only found by driving
+  // it, because the row, the key and the anchor all looked right.
+  //
+  //     the "Show me" card, on /practice/speculearn/goal/<sio>   OUTER document
+  //     the 63 options, on /practice/speculearn/goal/<sio>/embed FRAME
+  //
+  // Two documents, so a selector cannot reach from one to the other. The cause
+  // is one word: the framed run mounts its own CahierShell with
+  // `active="pretest"`, and there is no `pretest` row here any more (it merged
+  // into this one on 7 Sep), so the card falls to the OUTER shell — the only
+  // one whose key is `speculearn` — which is the shell without the questions.
+  //
+  // Guiding it means the first run being mounted by the document that HAS the
+  // controls. That is one job covering VoixLà, this, and every page framed on
+  // 7 Sep; it is not three fixes, and it is entangled with the double pop-up on
+  // VoixLà that another lane holds. verify220 now drives every guided row and
+  // fails if step 1 cannot find its control, so the next attempt cannot ship
+  // half-working the way this one nearly did.
   speculearn: {
     on: "page",
     title: "Guess first",
@@ -161,6 +179,15 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       "No length to pick here — it is one whole deck, end to end.",
     ],
   },
+  // NOT GUIDED, AND IT IS THE ONE ACTIVITY THAT SHOULD NEVER BE. Driven on the
+  // built app, a first-time learner arriving here sees « Nothing due right now
+  // 🎉 » and one link back to the path — because nothing CAN be due before you
+  // have practised anything. There is no control to light, and the reason there
+  // is none is the lesson: an empty page is the good outcome.
+  //
+  // A walk here would either sit on "Finding it…" or have to invent something
+  // to point at. Both of Dan's rules say leave it: the litmus test deletes a
+  // line the screen already makes, and this screen makes it in one word.
   reviser: {
     on: "page",
     title: "What is due today",
@@ -175,7 +202,13 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Pick the ending",
     steps: [
-      "Choose the form that goes with the pronoun, then Check.",
+      // The same two-surface shape as GramMarathon — a text field above `sm`,
+      // word-bank tiles below it, one of them display:none — so the step names
+      // both and the runner lights whichever the learner can see.
+      { text: "Build the form that goes with the pronoun.", selector: '[data-tour="conj-input"], [data-tour="conj-bank"]' },
+      { text: "Then press Check.", selector: '[data-tour="drill-cta"]' },
+      // Plain: « See the table » is a visible button, but what it does — leave
+      // the drill and open the whole verb — is not on its face.
       "See the table opens the whole conjugation.",
     ],
   },
@@ -183,7 +216,11 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Listen, then write",
     steps: [
-      "Choose a topic and how many sentences, then Start.",
+      { text: "Choose a topic to listen to.", selector: '[data-tour="ecoutexte-topic"]' },
+      { text: "Then press Start.", selector: '[data-tour="drill-cta"]' },
+      // Plain, and the only one of the three that could not be a step: these
+      // controls are born of pressing Start, and they are for USING throughout
+      // rather than for getting past once.
       "Type what you hear. Replay freely — 🐌 slows it, ♀♂ changes the reader.",
     ],
   },

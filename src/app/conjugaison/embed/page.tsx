@@ -225,11 +225,18 @@ export default function ConjugaisonPage() {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 disabled={result !== null}
+                // data-tour: the guided first run starts here (content/hints.ts).
+                // Two surfaces, one answer — see the word bank just below.
+                data-tour="conj-input"
                 placeholder="the verb form…"
                 className={`cahier-answer hidden w-full sm:block ${result === null ? "" : result ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
               />
-              <div className="sm:hidden">
+              {/* data-tour: the phone's half of the same answer. The step names
+                  both and GuidedSteps lights whichever is visible — the same
+                  two-surface shape GramMarathon has, and the same trap: naming
+                  only the input lights nothing at all below `sm`. */}
+              <div data-tour="conj-bank" className="sm:hidden">
                 <WordBank answer={form} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
               </div>
             </div>
