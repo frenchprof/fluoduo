@@ -440,9 +440,14 @@ function ItemCard({
 
       {/* The English is a REFERENCE and never outsizes the French (AGENTS.md,
           1 Sep) — it is sized against the French on THIS card, which is why
-          the answered state drops to `text-sm` beside `text-2xl` options. */}
+          the answered state drops to `text-sm` beside the options.
+
+          IT READS THE OPTIONS' OWN CLAMP (`speculearn-type`, globals.css)
+          rather than a constant of its own. The trap AGENTS.md records under
+          that rule is a fixed English beside a French that moved; now the two
+          move together and are equal at every width by construction. */}
       {item.en && item.transFirst && !submitted ? (
-        <p className="mx-auto mt-1 w-fit rounded-lg border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-3 py-1.5 text-center text-base font-bold text-[color:var(--fluo-ink)]">
+        <p className="speculearn-type mx-auto mt-1 w-fit rounded-lg border-l-4 border-[color:var(--fluo-hl)] bg-[color:var(--fluo-hl)]/20 px-3 py-1.5 text-center font-bold text-[color:var(--fluo-ink)]">
           🎯 {item.en}
         </p>
       ) : item.en && submitted ? (
@@ -480,7 +485,9 @@ function ItemCard({
               // (Dan, 2026-07-04) — same pattern as the Unit-0 alphabet quiz.
               onClick={() => (submitted ? speak(c, "fr-FR") : onPick(c))}
               lang="fr"
-              className={`rounded-xl border-2 px-4 py-3 text-center text-base font-bold transition ${cls}`}
+              // No size class: the grid's clamp is the size (globals.css,
+              // .speculearn-options), and a `text-base` here would beat it.
+              className={`rounded-xl border-2 px-4 py-3 text-center font-bold transition ${cls}`}
             >
               {c}
               {submitted && isAnswer && <span className="ml-2" aria-hidden>✓</span>}

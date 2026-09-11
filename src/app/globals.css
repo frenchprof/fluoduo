@@ -1160,6 +1160,84 @@ html, body { overscroll-behavior-x: none; }
    Nothing here touches the strip above the card (Skip, TTS) or the ring
    binding down the gutter — both live outside .speculearn-card and are
    unaffected by design. Verified in landscape after building. */
+/* ── THE ANSWER-OPTION GRID ────────────────────────────────────────────────
+   As many columns as fit, not two (Dan, 2026-09-11: *"for desktop why not
+   have mulitple buttons per row? we are NOT dead set on just two columns"*).
+   `lib/optionGrid.ts` picks which floor an option list earns; this decides
+   what each floor is worth, and `auto-fit` does the counting.
+
+   WHY NOT A BREAKPOINT. These drills run inside the cahier's iframe, so a
+   media query here sees the FRAME and not the phone — 390px of device is
+   313px of frame. Breakpoints would be written in the wrong units and would
+   move the day the notebook's padding changes. `minmax()` measures the space
+   it is actually in, so it is right at every width including ones nobody
+   thought to test.
+
+   `min(100%, …)` is the guard that keeps the floor from becoming an overflow:
+   without it, one option longer than the whole frame would push the grid
+   sideways rather than simply filling the row.
+
+   TWO FLOORS, AND BOTH ARE MEASURED IN THE CARD THEY LIVE IN. The first try
+   put std at 8.5rem, which reads fine and is wrong: a 390px phone gives the
+   cahier a 313px frame and the card inside that a 243px grid, so 8.5rem
+   floored the count at ONE column where the old rule gave two. Driving it is
+   what caught that — the number looked right in the file.
+
+       std   7em   243px of phone grid -> 2 columns, exactly as before;
+                   722px of laptop grid -> as many as the answers need
+       wide  12em  an answer past the character budget: still one column on
+                   a phone, two on a laptop, never a squeezed pair
+
+   IN `em`, NOT `rem`, because SpecuLearn's type is no longer fixed (see the
+   clamp below). A floor is a promise about how much TEXT fits in a cell, so
+   it has to be measured in the text it must hold: at 16px the two are the
+   same number, and when the clamp takes the options to 22px the floor grows
+   with them instead of quietly packing in a column too many. Everywhere the
+   type is still fixed, `em` and `rem` are the same thing.
+
+   That switch is also why `wide` is 12em and not the 17 it started at. 17rem
+   was right as a constant; as an `em` it grew with the clamp until, on a
+   1680px screen, it was 371px of a 722px grid and long answers dropped back
+   to ONE column on the widest display in the house — caught by driving it,
+   not by reading it. 12em holds every measured case: one column up to 430px,
+   two from 834px on, and never three (three would squeeze them again).
+
+   THERE IS NO THIRD FLOOR FOR THE 24px CARDS, though `STACK_ABOVE_2XL` still
+   decides whether they are `wide`. A floor only counts columns; the cells are
+   `1fr` and stretch to fill whatever is left, so bigger type in the same
+   number of columns gets the same width it always had. A separate larger
+   floor would have quietly cost those cards their second column on a phone. */
+.fluo-optiongrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--opt-min, 7em)), 1fr));
+}
+.fluo-optiongrid--std  { --opt-min: 7em; }
+.fluo-optiongrid--wide { --opt-min: 12em; }
+
+/* ── SPECULEARN'S OPTIONS SET THEIR OWN SIZE ───────────────────────────────
+   Dan, 2026-09-11: *"the font on the SpecuLearn menu buttons should be
+   adaptive not fixed. esp on desktop"*. They were a flat `text-base` — 16px
+   on a 320px phone and 16px on a 1680px desktop, which is small type adrift
+   in a wide sheet.
+
+   `vw` inside the frame is a percentage of the FRAME, which is the space the
+   card actually has, so this grows with the notebook rather than with the
+   monitor. Measured: 1rem in a 313px frame (a 390px phone), 1.5rem once the
+   frame passes about 1030px.
+
+   THE ENGLISH REFERENCE TAKES THE SAME CLAMP, and must. AGENTS.md, 1 Sep:
+   the English "may match the French in size … but it may never be set
+   larger", and the trap recorded there is exactly this — sizing one of them
+   against a CONSTANT while the other moves. Both read this one rule, so they
+   are equal at every width by construction rather than by coincidence. */
+.speculearn-type,
+.speculearn-options {
+  font-size: clamp(1rem, 0.84rem + 0.55vw, 1.5rem);
+}
+/* The buttons inherit rather than carrying their own size — a `text-base` on
+   the button would win over the grid and put the clamp back to sleep. */
+.speculearn-options > button { font-size: inherit; }
+
 @media (min-aspect-ratio: 11 / 10) and (max-height: 38.75em) {
   .speculearn-card {
     display: grid;
