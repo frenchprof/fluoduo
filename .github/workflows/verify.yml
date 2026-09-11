@@ -532,6 +532,16 @@ jobs:
       - name: "The stop chooser offers nothing that goes nowhere (11 Sep)"
         run: python3 verify/verify200-chooser-no-dead-stops.py
 
+      # A page tour skips a step whose target it cannot find — correct for a
+      # conditional target, and the reason three tours in FirstTour.tsx rotted
+      # for weeks in silence. When a screen moves into a frame the tour does
+      # not follow it; the selectors stay correct, just in another document.
+      # Driven, because only the running page knows every step skipped, and
+      # only a browser can see two prompts drawn in two documents share a
+      # screen.
+      - name: "One hand-hold at a time, and every tour still lights something (11 Sep)"
+        run: python3 verify/verify220-one-handhold.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 

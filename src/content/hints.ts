@@ -77,6 +77,24 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
   // is a CahierShell page, so `page` is not a preference here: on `drill` this
   // instruction would never fire again, silently, which is exactly the failure
   // verify88 exists to catch.
+  // NOT GUIDED, FOR VOIXLÀ'S REASON — and this one was only found by driving
+  // it, because the row, the key and the anchor all looked right.
+  //
+  //     the "Show me" card, on /practice/speculearn/goal/<sio>   OUTER document
+  //     the 63 options, on /practice/speculearn/goal/<sio>/embed FRAME
+  //
+  // Two documents, so a selector cannot reach from one to the other. The cause
+  // is one word: the framed run mounts its own CahierShell with
+  // `active="pretest"`, and there is no `pretest` row here any more (it merged
+  // into this one on 7 Sep), so the card falls to the OUTER shell — the only
+  // one whose key is `speculearn` — which is the shell without the questions.
+  //
+  // Guiding it means the first run being mounted by the document that HAS the
+  // controls. That is one job covering VoixLà, this, and every page framed on
+  // 7 Sep; it is not three fixes, and it is entangled with the double pop-up on
+  // VoixLà that another lane holds. verify220 now drives every guided row and
+  // fails if step 1 cannot find its control, so the next attempt cannot ship
+  // half-working the way this one nearly did.
   speculearn: {
     on: "page",
     title: "Guess first",
@@ -85,12 +103,35 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       "Pick one anyway — wrong costs nothing.",
     ],
   },
+  // MNEMEMO NOW OWNS THE WHOLE FIRST RUN ON ITS PAGE (2026-09-11). Until today
+  // a learner arriving here got TWO offers of help at once: this card, and the
+  // « ✨ First time here? Quick tour! » sheet from the page tour. That tour was
+  // retired — it ran outside the lesson's frame and could not see a single one
+  // of its own targets, so it opened on its last step with both spotlights
+  // skipped (FirstTour.tsx has the measurements). What it taught that was worth
+  // keeping is step 1 below, and here it works: this row is mounted by
+  // DrillShell INSIDE the frame, the same document as the tab strip.
   lesson: {
     on: "drill",
     title: "Pick a level, then answer",
     steps: [
-      "★ Facile to 🎁 Bonus: same 12 cards, harder not longer.",
-      "💡 Idea and 📐 Forms are to read. 🏋️ Pract. is where you answer.",
+      // The strip first, because it is the one thing on this screen a learner
+      // cannot work out by looking: four tabs, and only one of them is where
+      // you answer. The level chooser below it is already labelled « Choose
+      // your level ».
+      //
+      // THE NAMES ARE THE ONES ON THE STRIP. This step first read « Path, Idea
+      // and Forms … Pract. » — the English labels Dan chose on 31 Aug and
+      // REVERSED on 5 Sep (*"i think we can use those french words, they are
+      // simple single words"*). Driving it is what showed the mismatch: the
+      // tabs render Goal · Idée · Formes · Exercice, so the guide was naming
+      // four tabs that are not on the screen it is pointing at. If these are
+      // renamed again, this line moves with them — LessonTabs' TABS is the
+      // source of truth.
+      { text: "Idée and Formes are to read. Exercice is where you answer.", selector: '[data-tour="lesson-tabs"]' },
+      // « Same 12 cards either way — harder, not shorter » is printed directly
+      // under these four buttons, so the step does not say it again.
+      { text: "You are in Exercice — choose a level to begin.", selector: '[data-tour="entry"]' },
     ],
   },
   // The one this all started from. Dan had the « Flip » CTA removed as
@@ -138,6 +179,15 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       "No length to pick here — it is one whole deck, end to end.",
     ],
   },
+  // NOT GUIDED, AND IT IS THE ONE ACTIVITY THAT SHOULD NEVER BE. Driven on the
+  // built app, a first-time learner arriving here sees « Nothing due right now
+  // 🎉 » and one link back to the path — because nothing CAN be due before you
+  // have practised anything. There is no control to light, and the reason there
+  // is none is the lesson: an empty page is the good outcome.
+  //
+  // A walk here would either sit on "Finding it…" or have to invent something
+  // to point at. Both of Dan's rules say leave it: the litmus test deletes a
+  // line the screen already makes, and this screen makes it in one word.
   reviser: {
     on: "page",
     title: "What is due today",
@@ -152,7 +202,13 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Pick the ending",
     steps: [
-      "Choose the form that goes with the pronoun, then Check.",
+      // The same two-surface shape as GramMarathon — a text field above `sm`,
+      // word-bank tiles below it, one of them display:none — so the step names
+      // both and the runner lights whichever the learner can see.
+      { text: "Build the form that goes with the pronoun.", selector: '[data-tour="conj-input"], [data-tour="conj-bank"]' },
+      { text: "Then press Check.", selector: '[data-tour="drill-cta"]' },
+      // Plain: « See the table » is a visible button, but what it does — leave
+      // the drill and open the whole verb — is not on its face.
       "See the table opens the whole conjugation.",
     ],
   },
@@ -160,7 +216,11 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Listen, then write",
     steps: [
-      "Choose a topic and how many sentences, then Start.",
+      { text: "Choose a topic to listen to.", selector: '[data-tour="ecoutexte-topic"]' },
+      { text: "Then press Start.", selector: '[data-tour="drill-cta"]' },
+      // Plain, and the only one of the three that could not be a step: these
+      // controls are born of pressing Start, and they are for USING throughout
+      // rather than for getting past once.
       "Type what you hear. Replay freely — 🐌 slows it, ♀♂ changes the reader.",
     ],
   },

@@ -332,11 +332,33 @@ export default function HomeDashboard() {
               <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
             </Link>
           )}
+          {/* THESE THREE KEYS STAY BARE. DO NOT LABEL THEM (Dan, 2026-09-11).
+              A session working on the first-run tours noticed that ▶ ⏭ ⏪ carry
+              their meaning only in a `title` — which a phone has no hover to
+              show — and put four options to Dan on the real page: as-is, a
+              caption under ▶, ▶ widened into a « Continue » pill, and the same
+              pill naming the goal. His answer: *"i would say to leave it
+              alone. i don't think it is very nice."*
+
+              So the row is a decision, not an oversight, and the reasoning for
+              labelling it is recorded here only so the next session does not
+              spend an afternoon rediscovering it and shipping the pill. The
+              transport bar is the app's character — the same judgement that
+              kept « Unité 3 » and « Débutant » in French: nobody is STUCK, the
+              glow marks the hero, and the home tour's first step says what ▶
+              is for on the one run where a learner needs telling. */}
           {activeSio && (
             <Link
               href={`/unit/${activeSio.unit}#${activeSio.id}`}
               aria-label={`Continue — ${activeSio.topic}, your goal on the study path`}
               title={`Continue — « ${activeSio.topic} », your goal on the study path`}
+              /* data-tour: the home tour's first step. NOT a visual change —
+                 this is the anchor, and it replaces `a[title^="Continue"]`,
+                 which hung the tour off a sentence of prose: reword the
+                 tooltip and the step silently points at nothing. verify44
+                 requires every tour step to name a data-tour hook for exactly
+                 that reason. */
+              data-tour="continue"
               className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >

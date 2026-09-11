@@ -76,9 +76,32 @@ SRC = "\n".join(SRC)
 # tour still pointed at it: the check stayed green. Match to the SAME quote.
 selectors = re.findall(r"""selector:\s*(['"`])((?:(?!\1).)*)\1""", tour)
 selectors = [body for _q, body in selectors]
-check(len(selectors) >= 6,
-      f"{len(selectors)} tour steps name a target",
-      f"only {len(selectors)} selectors found — has the tour shape changed?")
+
+# EVERY TOUR HAS A POINTING STEP — not "there are at least six selectors in the
+# file" (2026-09-11).
+#
+# The floor used to be `>= 6`, a number sized to the shape the file happened to
+# have on 28 Aug. It is the wrong question twice over. It passes a file where
+# one tour carries six steps and three carry none, and it FAILS an honest
+# change: retiring the lesson and unit tours — one for a page deleted three
+# weeks earlier, one for a screen that had moved into a frame — took the count
+# to four and turned this red for doing the right thing.
+#
+# What the floor was standing in for is "no tour is all prose", and that is
+# answerable per tour. A tour with no selector at all is a sentence in a box:
+# it is the end state of the silent-skip failure this whole file exists to
+# catch, and it should fail by name rather than by arithmetic.
+keys = re.findall(r'key: "(\w+)"', tour)
+check(keys, "FirstTour defines at least one tour", "FirstTour defines no tours at all")
+for k in keys:
+    body = tour[tour.find(f'key: "{k}"'):]
+    end = body.find("};")
+    body = body[:end] if end != -1 else body
+    n = len(re.findall(r"selector:", body))
+    check(n >= 1,
+          f'the "{k}" tour has {n} step(s) that point at something',
+          f'the "{k}" tour names no selector at all — every step is prose, which is '
+          f'what a tour looks like after its screen moves and its spotlights all skip')
 
 missing_hook, missing_id, missing_class = [], [], []
 for sel in selectors:
@@ -134,20 +157,36 @@ check(not shadowed,
       f"every tour branch is reachable ({len(guards)} path guards, none shadowed)",
       "a tour branch is dead code: " + "; ".join(shadowed))
 
-# ---- 4 · the lesson tour describes the CURRENT lesson ----------------------
-lesson_tour = tour[tour.find('key: "lesson"'):]
-lesson_tour = lesson_tour[: lesson_tour.find("};")] if "};" in lesson_tour else lesson_tour
-for dead, why in (
-    ("lf-pratique", "the LessonFlow anchor patch 22 deleted"),
-    ("Générateur", "the LessonFlow generator section, gone since patch 22"),
-    ("chips jump", "the LessonFlow part-chips, gone since patch 22"),
-):
-    check(dead not in lesson_tour,
-          f"the lesson tour no longer mentions {dead!r}",
-          f"the lesson tour still names {dead!r} — {why}")
-check("data-tour" in lesson_tour,
-      "the lesson tour anchors on data-tour hooks, not on utility classes",
-      "the lesson tour uses styling classes as targets — a restyle unhooks it silently")
+# ---- 4 · NO tour anchors on something that can be restyled or reworded -----
+#
+# THIS WAS THE LESSON TOUR'S RULE AND IS NOW EVERY TOUR'S (2026-09-11), for two
+# reasons — one of which is that the old form had quietly stopped testing
+# anything at all.
+#
+# It read `lesson_tour = tour[tour.find('key: "lesson"'):]`. When the lesson
+# tour was retired that find returned **-1**, so the slice was the file's LAST
+# CHARACTER — and three assertions went on scanning a one-character string and
+# passing. A check that reads its own subject's absence as a pass is the exact
+# vacuous green this file's header describes catching in its own first version.
+# The three dead-LessonFlow assertions are gone with the tour they policed:
+# there is no lesson tour to mention « Générateur ».
+#
+# The surviving half is worth generalising rather than deleting. A tour hung
+# off a styling class or a sentence of prose comes unhooked the next time
+# either is edited, and NOTHING reports it — the step just skips. Both forms
+# were live here until today:
+#
+#     main .grid.grid-cols-5 > button   a Tailwind grid; restyle it and it is gone
+#     a[title^="Continue"]              the first word of a TOOLTIP
+#
+# So: every selector must name a `data-tour` hook. That is a contract a
+# component cannot break by accident, and it is what the lesson tour was
+# already being held to.
+loose = [s for s in selectors if 'data-tour="' not in s]
+check(not loose,
+      f"all {len(selectors)} tour steps anchor on data-tour hooks",
+      "a tour step anchors on something a restyle or a reword can remove, and the "
+      "step will then skip in silence: " + "; ".join(loose))
 
 # ---- 5 · the map has a tour -----------------------------------------------
 # /map is what a stop-click opens (Home goes /?unit=1 -> /map?unit=1), and it
@@ -166,7 +205,13 @@ check('key: "map"' in tour,
 # we should remove the layer of transparent glass over it"), so the tour must
 # no longer promise a wake tap that nothing needs — and the view toggle,
 # now the map's front-and-centre control, is what the tour opens on.
-map_tour = tour[tour.find('key: "map"'):]
+# SLICE FROM A KEY THAT IS ACTUALLY THERE. `str.find` returns -1 when it is
+# not, and `tour[-1:]` is the file's last character — which is how the lesson
+# assertions above came to scan one byte and pass. The guard above already
+# fails if the map tour is missing; this makes the slice honest rather than
+# relying on that ordering.
+_map_at = tour.find('key: "map"')
+map_tour = tour[_map_at:] if _map_at != -1 else ""
 map_tour = map_tour[: map_tour.find("};")] if "};" in map_tour else map_tour
 check('data-tour="map-wake"' not in map_tour,
       "the map tour no longer points at the removed wake glass",

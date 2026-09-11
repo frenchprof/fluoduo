@@ -160,6 +160,12 @@ export default function SiteTopBar({
             type="button"
             aria-label={dueBadge > 0 ? `Navigation — ${dueBadge} to revise` : "Navigation"}
             aria-expanded={menuOpen}
+            /* data-tour: the home tour's second step. It teaches this because
+               the bottom bar it used to teach is gone — Dan removed it on
+               6 Sep and `bottomNav` defaults to empty, so that step matched
+               nothing and skipped in silence. ☰ is the navigation now, and
+               unlike the bar it is on every page for everyone. */
+            data-tour="site-menu"
             onClick={() => setMenuOpen((o) => !o)}
             className="cahier-btn cahier-btn-sm relative"
           >
