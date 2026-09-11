@@ -652,7 +652,21 @@ export default function HomeMap3D({
   // the eye line sits below the box (CAMERA_Y > 1), so a stop AT camZ is off
   // screen — backing off ~0.95 puts the current stop big and fully visible in
   // the lower third (Dan, 2026-08-20 camera).
-  const homeZ = Math.max(0, activeIdx) - 1.0;
+  //
+  // A STILL SCENE STANDS FURTHER BACK, because the door has furniture the map
+  // does not: the ENTER coin sits at the foot of the road, and 1.0 puts goal 1
+  // in exactly that band. Dan, 11 Sep: *"THE ENTER COIN IS STILL TOO CLOSE TO
+  // 1"* — and measured, they did not merely crowd, they OVERLAPPED at every
+  // size (desktop -40px, phone -9px, sideways -28px), after an earlier round
+  // had already trimmed the coin for this.
+  //
+  // TRIMMING THE COIN IS THE WRONG LEVER, which is why that attempt did not
+  // hold. The coin is bottom-anchored; goal 1's position is set by the CAMERA.
+  // Shaving the coin costs the prominence Dan asked for and still loses.
+  // At 1.6 the gap opens where the composition needs it: +54 / +90 / +18.
+  // 2.0 was rendered too — more air, but it empties the road and shrinks goal
+  // 1. Dan looked at both: "THIS IS FINE!"
+  const homeZ = Math.max(0, activeIdx) - (still ? 1.6 : 1.0);
 
   // The camera — starts ON the current stop (no landing flash).
   const [camZ, setCamZ] = useState(homeZ);
@@ -770,6 +784,32 @@ export default function HomeMap3D({
     const b = projected[i + 1];
     if (!a || !b) continue;
     segments.push({ x1: a.px, y1: a.py, x2: b.px, y2: b.py, sc: (a.scale + b.scale) / 2, i });
+  }
+  // THE DOOR IS THE ZEROTH STOP (Dan, 11 Sep: *"MAYB EJUST JOIN UP ENTER WITH
+  // 1?"*). On a still scene the road gains one more rung at the near end,
+  // running from a point one stop BEFORE goal 1 up to goal 1 — which is
+  // exactly where the ENTER coin stands. It is not a line drawn to a button:
+  // it is the road itself, projected one stop further back, so it carries the
+  // same curve, the same perspective width and the same treatment as every
+  // other rung. The coin sits on the end of it the way goal 1 sits on its own.
+  if (still && projected[0]) {
+    // pathXAt, NOT getWorldX(0): getWorldX is 1-based and indexes WX with
+    // (id - 1), so id 0 reads WX[-1] — undefined in JS, not an error. The
+    // whole projection then quietly produced NaN and returned null, and the
+    // rung simply did not draw: no warning, no exception, nothing on screen.
+    // pathXAt clamps z into the fifty stops, so at z = -1 it gives the road's
+    // x at its start: dead straight back from goal 1, which is what the road
+    // actually does behind the first stop.
+    const door = project(pathXAt(-1), -1 - camZ, camZ, vw, vh);
+    if (door) {
+      const g1 = projected[0];
+      segments.push({ x1: door.px, y1: door.py, x2: g1.px, y2: g1.py, sc: (door.scale + g1.scale) / 2, i: -1 });
+      // i = -1 puts the rung below every threshold, so it draws paved AND
+      // "travelled" — the centre channel takes the learner's accent. That was
+      // put to Dan as a fault to fix (nobody has walked the door rung) and he
+      // ruled the other way: "COLOR IS FINE!". So it stays accented, and this
+      // note exists so the next session does not helpfully correct it.
+    }
   }
   segments.sort((a, b) => a.sc - b.sc);
   const visibleStops = projected.filter((p): p is NonNullable<typeof p> => p !== null).sort((a, b) => b.t - a.t);
