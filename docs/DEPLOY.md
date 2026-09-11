@@ -197,6 +197,29 @@ no rocket-loader on any address. The one line that still differs on
 withdrchan is Cloudflare's invisible bot-check snippet (`__CF$cv$params`,
 from Bot Fight Mode on that zone), which does not touch the app's scripts.
 
+**LEAVE BOT FIGHT MODE ON. Dan, 11 Sep: *"Leave Bot Fight Mode as it
+is."*** This is written down because the difference LOOKS like a defect and
+the obvious fix is the wrong one. A session comparing two addresses finds
+them unequal, traces it to a zone setting, and switches the setting off to
+make the numbers match — trading a security control for a tidy diff nobody
+asked for.
+
+Measured on 11 Sep, so the next session does not have to re-derive it:
+
+    f1.fluolingo.com           24,101 bytes
+    fluoli.ngo                 24,101 bytes   byte-identical to f1
+    fluolingo.withdrchan.com   25,039 bytes   +938
+
+    the bot-check block                938 bytes
+    the gap                            938 bytes
+    remainder                            0 bytes
+
+So the bot check is not *a* difference, it is *the* difference — the gap
+closes to zero when you subtract it. Everything else matches: all three
+serve the same 17 script chunks (same build), and Cloudflare Pages
+Analytics is on ALL of them, not just one. **The app code is identical on
+every address; the page source is not, and that is correct.**
+
 `100::` is Cloudflare's reserved go-nowhere address. A redirect rule needs a
 PROXIED record on the name it redirects FROM, and this is the record to give
 it. So: **a name that only forwards must never be added as a Pages custom
