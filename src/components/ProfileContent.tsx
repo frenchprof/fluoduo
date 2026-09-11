@@ -317,11 +317,37 @@ export default function ProfileContent() {
                         </a>
                       ))}
                     </Tiles>
-                  ) : (
-                    <p className="text-sm" style={{ color: SOFT }}>Nothing waiting — practise anywhere and it lands here.</p>
-                  )}
-                  <div className="mt-3 border-t pt-3" style={{ borderColor: "color-mix(in oklab, var(--fluo-card-accent) 25%, transparent)" }}>
-                    <HeatStrip values={acc as HeatValues} done={doneSet} hrefFor={indexHref} label="Syllabus, by outcome — your accuracy" />
+                  ) : null}
+                  {/* ALL CLEAR, OVER THE GRID (Dan, 2026-09-11: *"there is no
+                      need to say 'Nothing waiting'.... Just say two words 'All
+                      clear' and over the middle of the grid rather than above
+                      the grid"*).
+
+                      The sentence it replaces was the litmus test's own case
+                      twice over: « Nothing waiting » says what the empty grid
+                      below it already says, and « practise anywhere and it
+                      lands here » explains a mechanism nobody has to know to
+                      find their next move. Two words are left, and they are the
+                      two that are not redundant — an empty grid alone reads as
+                      a grid that failed to load.
+
+                      OVER the grid, not above it: the empty grid IS the
+                      evidence, so the words belong on it. `pointer-events-none`
+                      keeps every cell underneath tappable, and the border-top
+                      goes with the tiles — a rule separating a list from a grid
+                      is furniture once there is no list. */}
+                  <div className={queue.length > 0 ? "mt-3 border-t pt-3" : ""} style={queue.length > 0 ? { borderColor: "color-mix(in oklab, var(--fluo-card-accent) 25%, transparent)" } : undefined}>
+                    <div className="relative">
+                      <HeatStrip values={acc as HeatValues} done={doneSet} hrefFor={indexHref} label="Syllabus, by outcome — your accuracy" />
+                      {queue.length === 0 && (
+                        <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                          <span className="rounded-lg px-3 py-1 text-base font-black"
+                                style={{ color: INK, background: "color-mix(in oklab, var(--cahier-paper) 86%, transparent)" }}>
+                            All clear
+                          </span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </>
               )}

@@ -438,6 +438,15 @@ export function familyName(key: FamilyKey): string {
   return f ? familyShort(f) : "";
 }
 
+/** The family's own glyph from a KEY — 🧑‍🏫 Lesson, 🎮 Games. What a band has
+ *  to hand when the page is not an activity and so has no emoji of its own
+ *  (the map, a goal, the guide, Réglages). Kept beside familyName because the
+ *  two are the same fallback, and a band showing one without the other is the
+ *  gap that made /moi open on bare paper on 7 Sep. */
+export function familyEmoji(key: FamilyKey): string {
+  return FAMILIES.find((x) => x.key === key)?.emoji ?? "";
+}
+
 /** Everything in one family, in its authored order. */
 export function activitiesIn(family: FamilyKey): Activity[] {
   return ACTIVITIES.filter((a) => a.family === family);
@@ -509,6 +518,15 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   // Skills retired 2026-09-09 — its pages fall into Oral or Tools now,
   // matching the activity rows above.
   tts: "oral", wordrill: "oral", ecoutexte: "oral",
+  // `say` IS WorDrill, under its old key. The deck's tab list keeps that key
+  // on purpose — "so SioModal embedding and withActive callers keep working"
+  // (deckActivityTabs) — so the registry has a `wordrill` row and no `say`
+  // one, and familyOf("say") answered null. That was invisible while colour
+  // came from the demand axis, which HAS a `say` entry (BAND), and showed the
+  // moment the goal card's doors moved to the family on 11 Sep: WorDrill's
+  // tile inherited the goals page's yellow instead of Oral's periwinkle.
+  // An alias, not a rename: the key stays where its callers expect it.
+  say: "oral",
   tutor: "tools", compose: "tools",
 };
 

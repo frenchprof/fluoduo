@@ -6,6 +6,156 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — the goal card's doors join the family too (band lane, added to #285)
+
+Dan, shown a goal's seven doors in both: *"the goal sheet keys too, make them
+family colors"*. Added to the open PR rather than a second branch: same one
+token, and the two cannot land apart without the app contradicting itself.
+
+**THE "GOAL SHEET" IS THE GOAL CARD.** `StopSheet.tsx` is what the name points
+at and nothing imports it — verify37's own note claims otherwise ("StopSheet
+stays for /map's deep-link popup path"), and that note is stale. The live
+surface is `GoalCard.tsx`, whose doors mount `ActivityIcon`.
+
+    door           family     was        now
+    SpecuLearn     Practice   periwinkle blue
+    MneMemo        Practice   olive      blue
+    MémoiRecall    Practice   sky        blue
+    VocabulaRain   Games      sky        violet
+    LexicaLocker   Games      sky        violet
+    GramMarathon   Revise     amber      teal
+    WorDrill       Oral       amber      periwinkle
+
+What it costs, and Dan was told before agreeing: the demand axis grouped by KIND
+OF WORK — the two games and MémoiRecall all wore sky because all three are
+"recognise". That reading is gone and three Practice doors are now one blue.
+
+**TWO FAULTS FOUND BY DRIVING, NEITHER VISIBLE IN THE DIFF.**
+
+1 · **WorDrill CAME OUT YELLOW.** Its deck tab keeps the old key `say`
+    (`deckActivityTabs`, so SioModal and withActive keep working), the registry
+    row is `wordrill`, and `familyOf("say")` answered null. Harmless while
+    colour came off the demand axis — `BAND` HAS a `say` entry — and instantly
+    visible once the family decided it. `SITE_FAMILY` gains `say: "oral"` as an
+    ALIAS; the key does not move.
+2 · **AND NULL DID NOT FALL BACK TO PAPER.** A custom property inherits, so
+    `var(--strip, …)` never reaches its fallback on a page that sets one: the
+    tile took the goals page's yellow. The fill is named outright now —
+    `fam ? "var(--strip)" : "var(--cahier-paper-2)"`.
+
+**ONE SURFACE STAYS ON THE OLD AXIS, DELIBERATELY.** GramMarathon's finale is
+built on `band-prod` throughout: frame, progress fill, two card borders and the
+hint/check buttons read `var(--band)`, and its pills read `var(--band-wash)`.
+There is no `--strip-wash`, so moving the four borders alone would put a teal
+edge on an amber fill. Named as an exemption in verify36 with that reason —
+it needs a wash token first, which is a decision rather than a rename.
+
+verify36 gains the tile clause (familyOf + `var(--strip)`) and a sweep for any
+second surface painting from `var(--band)`; verify37's sheet clause follows the
+same move. Break-tested: tile back to `stripOf`, tile back to `var(--band)`, a
+second painter appearing, and the sheet losing its colour — each fails with its
+own message.
+
+## 11 Sep — main took the double-frame fix, and moved the ☰ HALF-WAY to the strips' answer
+
+`#276` was closed unmerged because fluoduo-main landed it as **#284, "One sheet
+per page, coils up to the band"**. Nothing outstanding on that work.
+
+**AND #282 SETTLED THE OPEN QUESTION FROM THE OTHER SIDE, without either lane
+knowing.** Its own message: *"The band is now `--fam-*` itself, the same solid
+pen the heading strips wear, so the menu and the strips read as one system."*
+That sentence is a statement about a system that does not exist yet on `main`:
+the ☰ menu's rows went to the bright family colour, and `PageBand` on `main`
+still reads `var(--band, var(--fam-ink))` — the demand axis. So today, on main:
+
+    ☰ menu, Revise row      #00c197  teal      (from #282)
+    GramMarathon's strip    #e88c00  amber     (--band-prod)
+    ErroReview's strip      #005f49  dark teal (--fam-review-ink)
+
+Three colours for two activities in one family, and the menu row disagrees with
+the page it opens — the exact drift 8 Sep fixed for ConjugaZone alone.
+
+`claude/band-colours-and-allclear` is the missing half and is merged up to this
+main. It was pushed BEFORE #282 landed, so the two arriving together is luck,
+not coordination; the lesson is the one AGENTS.md already draws — look at what
+is in flight on the files you are about to touch.
+
+Merge kept both sides everywhere: `--strip` declared beside `--fam-mouth` on
+each family class (#283's complementary tag), this branch's `emoji` prop on
+CahierShell's band with main's `HOME_HREF`.
+
+## 11 Sep — the strip becomes the family's, and is one length everywhere (band lane, branch, NOT merged, AWAITING DAN)
+
+Branch `claude/band-colours-and-allclear`, cut from `claude/double-frame-fix`.
+**Not handed over yet** — Dan asked to see it before it becomes code, and the
+sample is what he is looking at.
+
+**THE STRIP SAYS WHICH FAMILY, NOT WHAT IT ASKS.** Shown every band beside its
+family, Dan: *"use the left most column colors"* — the bright rung of the seven
+(#fcdf00 #1ca6ff #00c197 #b17eff #9398ff #ff9037 #9ca3af). This REVERSES the
+26 Aug ruling that the strip carries the demand axis (guess / lesson / recognise
+/ produce / create). The demand axis was legible but it cut across the seven
+families a learner navigates by: GramMarathon and ErroReview are both Revise and
+wore orange and teal; VocabulaRain and LexicaLocker are both Games and wore
+MémoiRecall's sky blue. `BAND` in activities.ts is untouched and still checked —
+it is what evidence.ts stores and verify62 holds it — only what gets PAINTED
+moved, which is the separation `stripOf` was built for on 8 Sep.
+
+ConjugaZone's own teal (8 Sep, `OWN_STRIP`) now falls out of the family rule for
+free: Revise IS teal. The exception is redundant and can go when Dan confirms.
+
+**ONE TOKEN, `--strip`,** read by the band, the 6px spine and the binding's
+cover zone. Declared beside `--fam` on every `.fam-*` class and NOT on
+`.cahier-surface`: `/decks/[id]` draws its band inside the content well, off any
+surface, and keyed that way it was the single strip left on the old dark rung.
+
+**THE TITLE IS SPELT, WITH ITS EMOJI.** Dan: *"GramMarathon instead of
+GRAMMARATHON"*, then *"can precede each title with the emoji? we have fixed
+emojis for them"*. Reverses 5 Sep's full caps, and answers the reason that
+ruling gave ("a little too tiny") rather than dropping it: the type goes up two
+steps and the band 8px taller, because lower case leaves headroom where capitals
+fill the em. The letter-spacing goes with the caps that needed it. Emoji comes
+from the registry by key — never spelt at a call site — so the 9 Sep glyph
+deduplication stays true.
+
+**AND THEY ARE ALL ONE LENGTH.** Dan: *"why are some items shorter than others,
+they should all be the same length"*. Measured at 900px: a band the PAGE draws
+ran x=33 w=840 h=76; a band the FRAME draws ran x=97 w=776 h=72 — the four
+stations whose drill carries its own strip (the lesson, MémoiRecall,
+ConjugaZone, ÉcouTexte). Two causes, both fixed:
+- the host's well kept a 48px left gutter for the coils, so the frame started
+  inset. The frame is full-bleed now and the host's rings paint over its left
+  edge (`.cahier-binding` is z-index 3, an iframe is an unpositioned block); the
+  gutter is re-opened inside the framed document instead.
+- the compact band padding lives under `(max-aspect-ratio) and (max-height:
+  38.75em)` — a SHORT LANDSCAPE screen — and a frame is short by definition, so
+  on a 900x700 desktop the framed band alone took the phone's padding.
+
+One residue, measured and left: `--fs-step` is built from `vw`/`vh`, so inside a
+frame the whole type scale is sized against the BOX. At 390x844 and 1440x900 the
+clamp is saturated at both ends and the two match exactly; only mid-sized windows
+differ (49.1px vs 46.7px at 900x700). Naming it rather than patching it — the fix
+is global to the type scale and is not something to slip into a colour change.
+
+**ALSO: « All clear », over the grid.** Dan: *"there is no need to say 'Nothing
+waiting'.... Just say two words 'All clear' and over the middle of the grid
+rather than above the grid"*. The sentence was the litmus test twice over — the
+empty grid says "nothing waiting", and the mechanism nobody needs to know.
+
+**Files:** `src/app/globals.css` (**shared**), `src/components/PageBand.tsx`
+(**shared**), `src/components/CahierShell.tsx` (**shared**),
+`src/components/DrillShell.tsx` (**shared**), `src/content/activities.ts`
+(**shared**, adds `familyEmoji`), `src/components/ProfileContent.tsx`,
+`src/app/decks/[id]/CuratedDeckTable.tsx`, `verify/verify36-band.py`.
+
+**Gate:** tsc clean, open build clean, ESLint clean on the touched files, every
+verify/*.py green. verify36's new clauses break-tested four ways.
+
+**Open for Dan, and not guessed:** the ☰ menu icons and the goal sheet's
+activity keys still read the demand axis (`stripOf` → `band-*`). If the strips
+are the family's, those should follow or the ☰ will disagree with the page it
+opens — which is the exact drift 8 Sep fixed for ConjugaZone.
+
 ## 11 Sep — one sheet of paper, and the coils reach the band (double-frame lane, branch, NOT merged)
 
 Branch `claude/double-frame-fix`. Handed to fluoduo-main; **not merged by this

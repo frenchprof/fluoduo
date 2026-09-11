@@ -15,15 +15,25 @@
  * already pointed at the stop the learner is on, and a stop that cannot run
  * an activity simply does not show it.
  *
- * Each row wears its DEMAND band (verify36) — what the activity asks of you,
- * not which menu family it files under. The name is always printed, so the
- * colour reinforces and never carries alone.
+ * Each row wears its FAMILY's colour (11 Sep, with the strips and the ☰ and
+ * the goal card's doors) — not what the activity demands, which is what it used
+ * to say. The name is always printed, so the colour reinforces and never
+ * carries alone.
+ *
+ * NOTHING RENDERS THIS TODAY, and verify37 believes otherwise. Its note says
+ * "StopSheet.tsx itself stays for /map's deep-link popup path"; grepped on
+ * 11 Sep, no file imports this one — the goal CARD (components/GoalCard.tsx)
+ * is what a learner meets, and it draws the same doors. Recorded rather than
+ * acted on: whether the file goes is a decision for whoever owns the map's
+ * popup, not for a colour change. It is moved with the others rather than
+ * left behind, because a dead file on the old axis is how the old axis comes
+ * back the day someone revives it.
  */
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { deckActivityTabs } from "@/components/CahierShell";
 import ActivityIcon from "@/components/ActivityIcon";
-import { stripOf } from "@/content/activities";
+import { familyOf } from "@/content/activities";
 import { SIOS } from "@/content/sios";
 
 export default function StopSheet({
@@ -124,12 +134,12 @@ export default function StopSheet({
 
         <ul className="flex flex-col gap-2">
           {tabs.map((t) => {
-            const band = stripOf(t.key);
+            const fam = familyOf(t.key);
             return (
               <li key={t.key}>
                 <Link
                   href={t.href!}
-                  className={`neo-key flex items-center gap-3 rounded-2xl px-3 py-3${band ? ` band-${band}` : ""}`}
+                  className={`neo-key flex items-center gap-3 rounded-2xl px-3 py-3${fam ? ` fam-${fam}` : ""}`}
                 >
                   <ActivityIcon activityKey={t.key} emoji={t.emoji} />
                   <span className="min-w-0 flex-1 truncate text-[15px] font-black text-[color:var(--cahier-ink)]">
