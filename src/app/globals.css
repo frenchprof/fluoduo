@@ -1160,6 +1160,84 @@ html, body { overscroll-behavior-x: none; }
    Nothing here touches the strip above the card (Skip, TTS) or the ring
    binding down the gutter — both live outside .speculearn-card and are
    unaffected by design. Verified in landscape after building. */
+/* ── THE ANSWER-OPTION GRID ────────────────────────────────────────────────
+   As many columns as fit, not two (Dan, 2026-09-11: *"for desktop why not
+   have mulitple buttons per row? we are NOT dead set on just two columns"*).
+   `lib/optionGrid.ts` picks which floor an option list earns; this decides
+   what each floor is worth, and `auto-fit` does the counting.
+
+   WHY NOT A BREAKPOINT. These drills run inside the cahier's iframe, so a
+   media query here sees the FRAME and not the phone — 390px of device is
+   313px of frame. Breakpoints would be written in the wrong units and would
+   move the day the notebook's padding changes. `minmax()` measures the space
+   it is actually in, so it is right at every width including ones nobody
+   thought to test.
+
+   `min(100%, …)` is the guard that keeps the floor from becoming an overflow:
+   without it, one option longer than the whole frame would push the grid
+   sideways rather than simply filling the row.
+
+   TWO FLOORS, AND BOTH ARE MEASURED IN THE CARD THEY LIVE IN. The first try
+   put std at 8.5rem, which reads fine and is wrong: a 390px phone gives the
+   cahier a 313px frame and the card inside that a 243px grid, so 8.5rem
+   floored the count at ONE column where the old rule gave two. Driving it is
+   what caught that — the number looked right in the file.
+
+       std   7em   243px of phone grid -> 2 columns, exactly as before;
+                   722px of laptop grid -> as many as the answers need
+       wide  12em  an answer past the character budget: still one column on
+                   a phone, two on a laptop, never a squeezed pair
+
+   IN `em`, NOT `rem`, because SpecuLearn's type is no longer fixed (see the
+   clamp below). A floor is a promise about how much TEXT fits in a cell, so
+   it has to be measured in the text it must hold: at 16px the two are the
+   same number, and when the clamp takes the options to 22px the floor grows
+   with them instead of quietly packing in a column too many. Everywhere the
+   type is still fixed, `em` and `rem` are the same thing.
+
+   That switch is also why `wide` is 12em and not the 17 it started at. 17rem
+   was right as a constant; as an `em` it grew with the clamp until, on a
+   1680px screen, it was 371px of a 722px grid and long answers dropped back
+   to ONE column on the widest display in the house — caught by driving it,
+   not by reading it. 12em holds every measured case: one column up to 430px,
+   two from 834px on, and never three (three would squeeze them again).
+
+   THERE IS NO THIRD FLOOR FOR THE 24px CARDS, though `STACK_ABOVE_2XL` still
+   decides whether they are `wide`. A floor only counts columns; the cells are
+   `1fr` and stretch to fill whatever is left, so bigger type in the same
+   number of columns gets the same width it always had. A separate larger
+   floor would have quietly cost those cards their second column on a phone. */
+.fluo-optiongrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--opt-min, 7em)), 1fr));
+}
+.fluo-optiongrid--std  { --opt-min: 7em; }
+.fluo-optiongrid--wide { --opt-min: 12em; }
+
+/* ── SPECULEARN'S OPTIONS SET THEIR OWN SIZE ───────────────────────────────
+   Dan, 2026-09-11: *"the font on the SpecuLearn menu buttons should be
+   adaptive not fixed. esp on desktop"*. They were a flat `text-base` — 16px
+   on a 320px phone and 16px on a 1680px desktop, which is small type adrift
+   in a wide sheet.
+
+   `vw` inside the frame is a percentage of the FRAME, which is the space the
+   card actually has, so this grows with the notebook rather than with the
+   monitor. Measured: 1rem in a 313px frame (a 390px phone), 1.5rem once the
+   frame passes about 1030px.
+
+   THE ENGLISH REFERENCE TAKES THE SAME CLAMP, and must. AGENTS.md, 1 Sep:
+   the English "may match the French in size … but it may never be set
+   larger", and the trap recorded there is exactly this — sizing one of them
+   against a CONSTANT while the other moves. Both read this one rule, so they
+   are equal at every width by construction rather than by coincidence. */
+.speculearn-type,
+.speculearn-options {
+  font-size: clamp(1rem, 0.84rem + 0.55vw, 1.5rem);
+}
+/* The buttons inherit rather than carrying their own size — a `text-base` on
+   the button would win over the grid and put the clamp back to sleep. */
+.speculearn-options > button { font-size: inherit; }
+
 @media (min-aspect-ratio: 11 / 10) and (max-height: 38.75em) {
   .speculearn-card {
     display: grid;
@@ -2252,16 +2330,42 @@ h3.cahier-display { font-size: var(--fs-h3); }
   --fam-review-page: #eafbf8;    --fam-svplay-page: #f8f4ff;
   --fam-oral-page: #eef0ff;      --fam-tools-page: #fff4ed;
   --fam-user-page: #f3f4f6;
+
+  /* ── THE COMPLEMENT OF EACH FAMILY, which the palette already owns ──────
+     Dan, 2026-09-11, marking the goals page: the SIO tag is *"to be in
+     complementary color to the above strip"*. On /sio that strip is the
+     Lesson family, whose pen is Yellow — so the scrap wants Yellow's
+     opposite, and the opposite is not something to invent.
+
+     Every mark in highlighterMarks.ts already carries one. Its middle-right
+     block is called `mouth` and is defined as the block's hue + 180 — "the
+     only block that leaves the family". These seven ARE those values, copied,
+     so a complement here is the same colour the highlighter draws:
+
+         Lesson    Yellow     -> #8688ff   Practice  Blue    -> #d78100
+         Revise    Teal       -> #ff4eb2   Games     Violet  -> #8ca600
+         Oral      Periwinkle -> #fcdf00   Tools     Orange  -> #00a5e4
+
+     User is the exception and stays neutral: its grey is not one of the
+     twelve (see the pending note above), so it has no opposite to take. Its
+     scrap keeps the paper it always had rather than being force-fit.
+
+     BLACK TEXT ON EVERY ONE OF THESE, measured against --cahier-ink: 4.89,
+     4.92, 4.89, 5.30, 10.98, 5.25 — all clear of 4.5:1. They are highlighter
+     strength like the blocks, which is why the ink does not move. */
+  --fam-goals-mouth: #8688ff;    --fam-practice-mouth: #d78100;
+  --fam-review-mouth: #ff4eb2;   --fam-svplay-mouth: #8ca600;
+  --fam-oral-mouth: #fcdf00;     --fam-tools-mouth: #00a5e4;
 }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
    band never hard-codes a hue and a new family is three tokens plus a line. */
-.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); }
-.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); }
-.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); }
-.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); }
-.fam-oral     { --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); }
-.fam-tools    { --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); }
+.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); --fam-mouth: var(--fam-goals-mouth); }
+.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); --fam-mouth: var(--fam-practice-mouth); }
+.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); --fam-mouth: var(--fam-svplay-mouth); }
+.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); --fam-mouth: var(--fam-review-mouth); }
+.fam-oral     { --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); --fam-mouth: var(--fam-oral-mouth); }
+.fam-tools    { --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); --fam-mouth: var(--fam-tools-mouth); }
 .fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
@@ -2342,13 +2446,29 @@ h3.cahier-display { font-size: var(--fs-h3); }
      color pattern based on activity type and family"*, so ConjugaZone keeps
      it; whether the two should differ is his call. */
   --band-teal: #00c197;
+
+  /* AND THE COMPLEMENT OF EACH BAND, same source and same reason as the family
+     complements above: Dan's *"complementary color to the above strip"*, and on
+     a lesson the strip above the SIO tag is the BAND — « MNEMEMO » in olive —
+     not the family, whose blue is up in the top bar. So the scrap has to read
+     whichever of the two is actually painting the strip over it.
+
+         guess   Periwinkle -> #fcdf00     prod    Amber   -> #1ca6ff
+         lesson  Olive      -> #b17eff     create  Magenta -> #00dd3e
+         recog   Sky        -> #ff9037     teal    Teal    -> #ff4eb2
+
+     Each is that pen's own `mouth` from highlighterMarks.ts — its hue + 180 —
+     so these are the twelve marks' colours and not six new ones. */
+  --band-guess-mouth: #fcdf00;   --band-lesson-mouth: #b17eff;
+  --band-recog-mouth: #ff9037;   --band-prod-mouth: #1ca6ff;
+  --band-create-mouth: #00dd3e;  --band-teal-mouth: #ff4eb2;
 }
-.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); }
-.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); }
-.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); }
-.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
-.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); }
-.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); }
+.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); --band-mouth: var(--band-guess-mouth); }
+.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); --band-mouth: var(--band-lesson-mouth); }
+.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); --band-mouth: var(--band-recog-mouth); }
+.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); --band-mouth: var(--band-prod-mouth); }
+.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); --band-mouth: var(--band-create-mouth); }
+.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); --band-mouth: var(--band-teal-mouth); }
 
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next
@@ -2964,9 +3084,22 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 }
 .goal-scrap > * {
   display: inline-block;
-  /* The paper token, not a hex of its own: a scrap torn off this notebook is
-     the same paper as the notebook (verify19b holds the palette to tokens). */
-  background: var(--cahier-paper-raised, var(--cahier-paper));
+  /* THE OPPOSITE OF THE STRIP ABOVE IT (Dan, 2026-09-11, arrow drawn at this
+     tag: *"To be in complementary color to the above strip"*).
+
+     `--band-mouth` first, `--fam-mouth` second, and the order is the whole
+     point: the strip over the tag is the activity BAND where a page has one
+     (the lesson's Goal tab, under olive « MNEMEMO ») and the family's ink
+     where it does not (the goals page, under « GOALS » in Lesson yellow).
+     Keying only on the family painted an orange scrap under a green strip.
+     Both tokens are complements out of highlighterMarks.ts — see the two
+     token blocks — so the scrap turns with the page rather than naming a hue
+     here.
+
+     The paper fallback is what it WAS, and it is still what the User family
+     gets: grey is not one of the twelve, so it has no opposite and sets no
+     mouth. A torn scrap on a page with no complement stays paper. */
+  background: var(--band-mouth, var(--fam-mouth, var(--cahier-paper-raised, var(--cahier-paper))));
   clip-path: polygon(3.2% 3.2%, 11.0% 1.6%, 18.8% 6.0%, 26.6% 0.7%, 34.4% 5.3%, 42.2% 2.0%, 50.0% 6.2%, 57.8% 2.5%, 65.6% 6.4%, 73.4% 2.1%, 81.2% 1.2%, 89.0% 1.4%, 96.8% 3.2%, 95.7% 14.9%, 94.3% 26.6%, 94.2% 38.3%, 95.9% 50.0%, 95.4% 61.7%, 96.4% 73.4%, 98.2% 85.1%, 96.8% 96.8%, 89.0% 94.2%, 81.2% 95.3%, 73.4% 94.5%, 65.6% 95.1%, 57.8% 98.8%, 50.0% 99.3%, 42.2% 98.5%, 34.4% 93.7%, 26.6% 99.7%, 18.8% 94.5%, 11.0% 98.1%, 3.2% 96.8%, 1.4% 85.1%, 0.5% 73.4%, 1.1% 61.7%, 0.1% 50.0%, 4.0% 38.3%, 1.0% 26.6%, 1.0% 14.9%);
   /* The padding is generous on purpose: the tear eats into the box by up to
      6% a side, so text set tight to the edge would be bitten. */
