@@ -230,11 +230,16 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
         value={value}
         onChange={(e) => setValue(e.target.value)}
         disabled={result !== null}
+        // data-tour: the guided first run lights this field first
+        // (content/hints.ts).
+        data-tour="gap-input"
         placeholder="the missing word…"
         className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
         autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
       />
-      <div className="sm:hidden">
+      {/* data-tour: the phone's half of the same answer. The step names both
+          surfaces and GuidedSteps lights whichever is visible. */}
+      <div data-tour="gap-bank" className="sm:hidden">
         <WordBank answer={gap} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
       </div>
     </>

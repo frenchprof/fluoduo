@@ -444,7 +444,13 @@ function AllCards({
  */
 function StudyCard({ row, hasArt, flipped, onFlip }: { row: Row; hasArt: boolean; flipped: boolean; onFlip: () => void }) {
   return (
-    <button type="button" className="mx-auto block w-full max-w-sm cursor-pointer select-none" style={{ perspective: "1200px" }}
+    // data-tour ON THE CARD ITSELF, not on a wrapper round it. The first
+    // version wrapped this in a <div> and the spotlight took that div's width
+    // — 612px on a desktop against a 384px card — so the lit area included
+    // dead margin, and a tap inside the light could miss the control entirely.
+    // Caught by driving the desktop, where the wrapper is wide; on a phone the
+    // two are the same size and it looked perfect. (content/hints.ts, `flip`.)
+    <button type="button" data-tour="flip-card" className="mx-auto block w-full max-w-sm cursor-pointer select-none" style={{ perspective: "1200px" }}
       onClick={onFlip} aria-label={flipped ? "Turn the card back" : "Turn the card over"}>
       <div className="relative h-64" style={{ transformStyle: "preserve-3d", transition: "transform .5s", transform: flipped ? "rotateY(180deg)" : "none" }}>
         <Face>
