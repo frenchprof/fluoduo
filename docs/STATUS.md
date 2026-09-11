@@ -6,6 +6,56 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep — the goal card's doors join the family too (band lane, added to #285)
+
+Dan, shown a goal's seven doors in both: *"the goal sheet keys too, make them
+family colors"*. Added to the open PR rather than a second branch: same one
+token, and the two cannot land apart without the app contradicting itself.
+
+**THE "GOAL SHEET" IS THE GOAL CARD.** `StopSheet.tsx` is what the name points
+at and nothing imports it — verify37's own note claims otherwise ("StopSheet
+stays for /map's deep-link popup path"), and that note is stale. The live
+surface is `GoalCard.tsx`, whose doors mount `ActivityIcon`.
+
+    door           family     was        now
+    SpecuLearn     Practice   periwinkle blue
+    MneMemo        Practice   olive      blue
+    MémoiRecall    Practice   sky        blue
+    VocabulaRain   Games      sky        violet
+    LexicaLocker   Games      sky        violet
+    GramMarathon   Revise     amber      teal
+    WorDrill       Oral       amber      periwinkle
+
+What it costs, and Dan was told before agreeing: the demand axis grouped by KIND
+OF WORK — the two games and MémoiRecall all wore sky because all three are
+"recognise". That reading is gone and three Practice doors are now one blue.
+
+**TWO FAULTS FOUND BY DRIVING, NEITHER VISIBLE IN THE DIFF.**
+
+1 · **WorDrill CAME OUT YELLOW.** Its deck tab keeps the old key `say`
+    (`deckActivityTabs`, so SioModal and withActive keep working), the registry
+    row is `wordrill`, and `familyOf("say")` answered null. Harmless while
+    colour came off the demand axis — `BAND` HAS a `say` entry — and instantly
+    visible once the family decided it. `SITE_FAMILY` gains `say: "oral"` as an
+    ALIAS; the key does not move.
+2 · **AND NULL DID NOT FALL BACK TO PAPER.** A custom property inherits, so
+    `var(--strip, …)` never reaches its fallback on a page that sets one: the
+    tile took the goals page's yellow. The fill is named outright now —
+    `fam ? "var(--strip)" : "var(--cahier-paper-2)"`.
+
+**ONE SURFACE STAYS ON THE OLD AXIS, DELIBERATELY.** GramMarathon's finale is
+built on `band-prod` throughout: frame, progress fill, two card borders and the
+hint/check buttons read `var(--band)`, and its pills read `var(--band-wash)`.
+There is no `--strip-wash`, so moving the four borders alone would put a teal
+edge on an amber fill. Named as an exemption in verify36 with that reason —
+it needs a wash token first, which is a decision rather than a rename.
+
+verify36 gains the tile clause (familyOf + `var(--strip)`) and a sweep for any
+second surface painting from `var(--band)`; verify37's sheet clause follows the
+same move. Break-tested: tile back to `stripOf`, tile back to `var(--band)`, a
+second painter appearing, and the sheet losing its colour — each fails with its
+own message.
+
 ## 11 Sep — main took the double-frame fix, and moved the ☰ HALF-WAY to the strips' answer
 
 `#276` was closed unmerged because fluoduo-main landed it as **#284, "One sheet

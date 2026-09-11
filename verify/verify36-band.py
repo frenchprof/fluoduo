@@ -261,11 +261,49 @@ def _nocomment(src):
     src = _re.sub(r"/\*.*?\*/", "", src, flags=_re.S)
     return _re.sub(r"^\s*//.*$", "", src, flags=_re.M)
 
+# MOVED TO THE FAMILY ON 2026-09-11, with the page strips and the ☰ menu. Dan,
+# shown a goal's seven doors in both: *"the goal sheet keys too, make them
+# family colors"*. It was the last surface on the demand axis, and a tile that
+# disagreed with the strip on the page it opens is the fault activities.ts
+# exists to end. `stripOf`, `bandOf` and `BAND` are untouched — the teacher's
+# record still says what the exercise demands (verify62); only the paint moved.
 _icon = _nocomment(open("src/components/ActivityIcon.tsx", encoding="utf-8").read())
-_ok = "stripOf(activityKey)" in _icon and "var(--band" in _icon
+_ok = "familyOf(activityKey)" in _icon and "var(--strip" in _icon
 (PASS if _ok else FAIL).append(
-    "ActivityIcon.tsx is the one banded tile (stripOf + var(--band))"
-    if _ok else "ActivityIcon.tsx missing, or it no longer derives its fill from bandOf")
+    "ActivityIcon.tsx is the one tile, and it wears the FAMILY (familyOf + var(--strip))"
+    if _ok else "ActivityIcon.tsx missing, or its fill is off the family axis — a door "
+                "must match the strip on the page it opens")
+# AND NOTHING IS LEFT PAINTING FROM THE DEMAND AXIS. stripOf still EXISTS and
+# is still right for what it answers; what must not exist is a second surface
+# deciding colour with it, because that is the drift that took three rounds to
+# find (ConjugaZone 8 Sep, the strips 11 Sep, these tiles the same day).
+import re as _re2
+# GRAMMARATHON'S FINALE IS THE ONE SURFACE LEFT, and it is left ON PURPOSE
+# rather than half-converted. The whole page is built on `band-prod`: its
+# frame, its progress fill, its two card borders and its hint/check buttons
+# read `var(--band)`, and the pills and chip rows read `var(--band-wash)` —
+# there is no `--strip-wash`, so moving the four borders alone would put a
+# teal edge on an amber fill. Dan asked for the goal sheet's keys (11 Sep);
+# this page needs a wash token of its own first, and that is a decision, not
+# a rename. Named here so it stays a known exemption rather than becoming a
+# convention — the reason verify36 keeps its exemptions written down.
+_EXEMPT_PAINTERS = {"src/app/practice/grammarathon/finale/FinaleContent.tsx"}
+_painters = []
+for _f in _glob.glob("src/**/*.tsx", recursive=True):
+    _p = _f.replace("\\", "/")
+    if _p in _EXEMPT_PAINTERS:
+        continue
+    _src = _nocomment(open(_f, encoding="utf-8").read())
+    # `var(--band)` / `var(--band,` used as PAINT. Not --band-wash or
+    # --band-mouth: those are different tokens with jobs of their own (the
+    # goal tag's complement, #283), and the shells still set the `band-*`
+    # class to hand them down. What must not come back is a surface whose
+    # own colour is decided by what the activity demands.
+    if _re2.search(r"var\(--band[),]", _src):
+        _painters.append(_p)
+(PASS if not _painters else FAIL).append(
+    "no surface paints from the demand axis — one colour system, the family"
+    if not _painters else f"still colouring by what the activity demands: {_painters}")
 
 # A hand-rolled copy is a SMALL SQUARE tile filled with the band — a grid box
 # that centres one glyph. Matching `var(--band` alone was too loose and fired
