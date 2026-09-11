@@ -20,6 +20,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 import { buildEvidence } from "@/lib/evidence";
+import { HOME_HREF } from "@/lib/routes";
 
 const ROUNDS_PER_RUN = 10;
 const LIVES = 3;
@@ -818,7 +819,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   return (
     <GameFrame
       title={gameTitle}
-      exitHref="/"
+      exitHref={HOME_HREF}
       onExit={onQuit}
       progress={{ done: Math.min(served, ROUNDS_PER_RUN), total: ROUNDS_PER_RUN }}
       hearts={{ left: lives, total: LIVES }}
@@ -1013,7 +1014,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           misses={misses}
           fallbackSio="SIO-007"
           onReplay={restart}
-          exitHref="/"
+          exitHref={HOME_HREF}
           onExit={onQuit}
         />
       )}

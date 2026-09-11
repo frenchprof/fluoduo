@@ -43,6 +43,7 @@ import { useEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 import { RAIL_MESSAGE, RAIL_URL_MESSAGE, deckFromPath, railIndex, railNeighbours, rememberRailDeck, recalledRailDeck } from "@/lib/swipeRail";
+import { HOME_HREF } from "@/lib/routes";
 
 /** 60px across, and half again more across than down. */
 const MIN_PX = 60;
@@ -59,7 +60,7 @@ function claimedByAnythingElse(target: EventTarget | null): boolean {
 
 export default function useRailSwipe(): void {
   const router = useRouter();
-  const path = usePathname() ?? "/";
+  const path = usePathname() ?? HOME_HREF;
 
   // The deck is remembered as you pass through the goal-shaped columns, so a
   // trip out to ConjugaZone and back lands on the flashcards of the goal you

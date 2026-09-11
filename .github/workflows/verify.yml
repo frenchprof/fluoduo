@@ -458,6 +458,12 @@ jobs:
       - name: "The address decides the course — f2 shows the closed door (11 Sep)"
         run: python3 verify/verify195-courses.py
 
+      # A link left pointing at "/" still RESOLVES — nothing errors, the learner
+      # just lands on the front door. Which is how eighteen of them survived the
+      # move and reached Dan as "closing a page jumps to the Enter page".
+      - name: "A bare \"/\" never means Home (11 Sep)"
+        run: python3 verify/verify210-home-href.py
+
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py
 
