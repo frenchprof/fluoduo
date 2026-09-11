@@ -2,11 +2,11 @@
 """
 Patch 19c's check — the two rows patch 19 did not finish.
 
-  1  The HELP panel (GuideBody) derives from the activity registry: grouped
-     by family, four columns, and NO name can truncate. It was the last of
-     the four surfaces keeping a private activity list — 15 tiles, its own
-     spellings ("Lesson", "Flip It"), two of which both cut to "GramMara…"
-     and became the same button.
+  1  The HELP panel (GuideBody) keeps NO activity list. It once derived one
+     from the registry (grouped by family, four columns, no truncation) to
+     end a private list whose spellings drifted; on 11 Sep Dan removed the
+     grid outright — "the activities are already on the menu" — and this
+     now holds that it stays gone.
 
   2  The `crumb` prop is gone. Declared on CahierShell, passed by every
      page, never rendered — its one live job (a document.title fallback)
@@ -45,29 +45,23 @@ guide = read("src/components/GuideBody.tsx")
 guide_code = strip_comments(guide)
 reg = read("src/content/activities.ts")
 
-# ── 1 · HELP derives from the registry ─────────────────────────────────────
-check('from "@/content/activities"' in guide_code,
-      "GuideBody imports the registry",
-      "GuideBody does not import @/content/activities — it still keeps its own list")
-
-check("FAMILIES.map" in guide_code and "activitiesIn(" in guide_code,
-      "HELP grid is grouped by family, in family order",
-      "HELP grid does not iterate FAMILIES/activitiesIn — grouping is hand-rolled or absent")
-
-# The old private list declared rows like `{ emoji: "🔮", name: "SpecuLearn"…`.
-# Any literal activity row left in the file is a second source of truth.
+# ── 1 · HELP keeps NO activity list at all ─────────────────────────────────
+# Patch 19c made the HELP grid derive from the registry so its spellings could
+# not drift. On 11 Sep Dan removed the grid outright — "the activities are
+# already on the menu" — the ☰ menu lists every activity from that same
+# registry one tap away, so a second copy on the guide was redundant. The
+# assertions that policed the grid's shape (imports, FAMILIES.map, four
+# columns, no truncate) are retired with it; what stays is the one that
+# still matters — no private activity list can come back here — plus the
+# grid staying gone, so the next session does not helpfully restore it.
 private_rows = re.findall(r'\{\s*emoji:\s*"[^"]+",\s*name:', guide_code)
 check(not private_rows,
-      "no hardcoded activity rows remain in GuideBody",
-      f"{len(private_rows)} hardcoded activity row(s) still in GuideBody")
+      "no hardcoded activity rows in GuideBody",
+      f"{len(private_rows)} hardcoded activity row(s) in GuideBody — the ☰ menu is the one list")
 
-check("grid-cols-4" in guide_code,
-      "the activity grid is four columns",
-      "the activity grid is not grid-cols-4")
-
-check("truncate" not in guide_code,
-      "no HELP tile can truncate its name",
-      "GuideBody still uses `truncate` — names can be cut to 'GramMara…' again")
+check("activitiesIn(" not in guide_code and "FAMILIES.map" not in guide_code,
+      "GuideBody draws no activity grid (Dan, 11 Sep: the activities are already on the menu)",
+      "GuideBody draws an activity grid again — the ☰ menu already lists every activity from the registry")
 
 # Registry sanity: every family that groups ACTIVITIES has at least one, so no
 # grouped surface can render an empty shelf.

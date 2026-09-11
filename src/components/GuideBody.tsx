@@ -21,20 +21,18 @@
  * ☰, SpecuLearn, ErroReview), because a guide that describes the app in its
  * own words is a second thing to learn.
  *
- * THE ACTIVITY GRID IS FOLDED, with its count on the fold (the long-pages
- * rule: the argument stays open, the apparatus collapses, and a closed
- * section says what is behind it). It is reference, not the lesson — and it
- * was what made the page 1,400px tall on a phone. It still DERIVES from the
- * registry (patch 19c, verify19c): every activity, grouped by family in
- * family order, four columns, names never truncated. Families with no
- * activity of their own (Lesson's doors are Map, the goal and Help, drawn by
- * the ☰ menu itself) are skipped rather than shown as an empty heading.
+ * NO ACTIVITY GRID ANY MORE (Dan, same day, on seeing it folded under
+ * « All the activities · 17 »: *"the activities are already on the menu"*).
+ * The ☰ menu one tap away lists every activity by family, with the same
+ * names and glyphs, from the same registry — so a second copy here was the
+ * litmus test's definition of redundant. Step 4 points at the menu instead.
+ * verify19c, which once policed that grid's spelling against the registry,
+ * now holds that the grid stays gone.
  *
  * Shared between /guide and any first-visit use: `onContinue` dismisses;
  * without it Continue leads Home.
  */
 import Link from "next/link";
-import { ACTIVITIES, FAMILIES, activitiesIn, familyShort } from "@/content/activities";
 
 const STEPS: { hue: number; title: string; what: React.ReactNode }[] = [
   { hue: 1, title: "Find your stop.", what: <>Home shows the road; each numbered stop is a goal. Tap yours, or press <b>▶ Continue</b>.</> },
@@ -73,46 +71,6 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
           </li>
         ))}
       </ol>
-
-      {/* FOLDED, WITH ITS COUNT ON THE FOLD. Native <details>: keyboard and
-          screen reader support come free, and it needs no state. */}
-      <details className="mt-2 rounded-xl border-2 bg-[var(--fluo-card)]" style={{ borderColor: "var(--fluo-line)" }}>
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5">
-          <span className="font-black text-[color:var(--cahier-ink)]">All the activities</span>
-          <span className="fluo-mono text-xs font-bold text-[color:var(--cahier-ink)]/70">{ACTIVITIES.length}</span>
-        </summary>
-        <div className="flex flex-col gap-3 px-3 pb-3">
-          {FAMILIES.map((f) => activitiesIn(f.key).length === 0 ? null : (
-            <div key={f.key}>
-              {/* The family name is navigation text — the same label the ☰
-                  menu's row wears, pointing at the same doors. */}
-              <p className="text-[11px] font-black uppercase tracking-wide text-[color:var(--cahier-ink)]/60">
-                <span aria-hidden>{f.emoji}</span> {familyShort(f)}
-              </p>
-              <ul className="mt-1.5 grid grid-cols-4 gap-x-1 gap-y-3 sm:gap-x-2">
-                {activitiesIn(f.key).map((a) => (
-                  <li key={a.key} className="flex flex-col items-center gap-1" title={a.blurb}>
-                    <Link
-                      href={a.href ?? "/map"}
-                      className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
-                      style={{ borderColor: a.hue }}
-                    >
-                      {a.emoji}
-                    </Link>
-                    {/* Full name, always — never cut to "GramMara…". The hand
-                        face, as on the ☰ menu's tiles: it runs narrow, so
-                        « GramMarathon » fits a quarter of a phone whole where
-                        the body face broke it mid-word. */}
-                    <span className="fluo-btn-hand w-full break-words text-center text-[13px] leading-tight text-[color:var(--cahier-ink)]">
-                      {a.name}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </details>
 
       {onContinue ? (
         <button type="button" onClick={onContinue} className={CONTINUE_STYLE}>
