@@ -304,7 +304,6 @@ for path, want, was in (
     # other band on the site. The claim is unchanged: its first word is the
     # activity's, not the signed-in name.
     ("src/app/profil/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
-    ("src/app/moi/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
     # « Pretest » became « SpecuLearn » on 5 Sep (Dan: "it is the name for
     # everything pre-tests (old-speculearn and old-pretests)... because they
     # learn by speculating wisely based on prior knowledge", and when this

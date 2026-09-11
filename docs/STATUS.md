@@ -8313,3 +8313,88 @@ scripts, all passing.** (Container note: `node_modules` here was a fortnight
 stale, which failed six playwright-core scripts and one Pillow one for reasons
 that had nothing to do with the change — `npm ci` and `pip install pillow`
 first if the same thing happens again.)
+
+## 11 Sep — the 👤 User family becomes ONE page with four tabs
+
+Sole editor of STATUS.md in this commit: this session (branch
+`claude/user-pages-tabs`). **Not merged — handed to fluoduo-main.**
+
+Dan: *"the user pages are very un-userfriendly counter-intuitive. i wouldn't
+know what to do or how to navigate my way around."* Photographed before
+touching anything (`scripts/user-pages-scan.mjs`, a seeded learner 21 goals in,
+phone + desktop), the four pages disagreed with each other in every way
+siblings can:
+
+| | navigation | band said |
+|---|---|---|
+| `/profil` | MAP · EXPORT · HISTORY at the **bottom** | PROFILE |
+| `/reglages` | My Progress · Leaderboard · Profile at the **top**, not itself | SETTINGS |
+| `/leaderboard` | **none** — signed out it is one card on blank paper | LEADERBOARD |
+| `/moi/historique` | a `‹ PROFILE` back link, the only one | **USER** (the family) |
+
+Three navigations in three places, and no page saying which of the four you
+were on.
+
+**Dan chose, asked one question at a time:** one page with four tabs (over four
+pages sharing a strip, and over a smallest-fix patch) · the `-ILLS` rhyme
+**stays** · and a flagged problem should do **both** — push its goal into the
+revise queue AND reach the teacher's dashboard.
+
+### What this branch builds (the layout half)
+
+- `src/content/userTabs.ts` — the four tabs in one place: label, own URL, twin.
+- `UserTabs.tsx` — the strip; `UserPage.tsx` — the host that keeps the band and
+  strip still and swaps only the framed panel, so a tab costs no page load.
+- Three new framed twins (`/leaderboard/embed`, `/moi/historique/embed`,
+  `/reglages/embed`) and `SettingsContent.tsx`, so the framed and standalone
+  copies cannot drift — the `/profil/embed` pattern of 7 Sep.
+- The four old addresses **forward** rather than dying: printed QRs, the ☰
+  menu, the ⌛ icon and the account chip all keep working.
+- `/moi/embed` **deleted** — a duplicate of `/profil/embed`, unreachable once
+  `/moi` forwards.
+- The row words go 11px → 15px (Dan, same day: *"the words frills ills etc can
+  be bigger (without overflowing the line)"*), letter-spacing .08em → .03em to
+  buy the width back. `ILLS (problems noted)` was the longest row; it and every
+  other still sit on one line beside their count at 390px.
+- **The bracketed English is gone, a glyph leads instead** (Dan: *"am trying to
+  explore deleting the english in brackets and putting an emoji at the start of
+  the line instead"*): ⏱️ RE-DRILLS · 🧮 SKILLS · 🎞️ FRILLS · 🩹 ILLS · 💫 THRILLS.
+  All five are unused elsewhere in `src/`, per the one-glyph-one-meaning rule.
+
+### Four checks updated — every one of them stricter, none weakened
+
+- **verify117** (a twin must be reachable at its own URL) learned the second
+  legal shape: a route may forward into the User page if `userTabs.ts` lists
+  its twin and the host frames it. It also now requires the frame to be
+  **mounted** (`<EmbedFrame`) rather than merely imported — the old test passed
+  a file that imported it and never rendered it, for every station in the app.
+- **verify30** §1 now asserts the stronger one-page shape; §2 pins the glyphs
+  instead of the three deleted glosses, and fails if two rows share one or if a
+  row's glyph is also one of the reward marks on its own row.
+- **verify99** follows the Settings body to `SettingsContent.tsx`.
+- **verify82** drops its row for the deleted `/moi/embed`.
+
+### Two faults found by break-testing, not by reading
+
+1. THRILLS first led with 🏅 — which is not the badge mark (that is 🎖️) but is
+   indistinguishable from it at 15px. A look-alike, not a collision: the
+   comment in the file says so accurately now.
+2. **The clash check passed a straight reuse of 🎖️.** Emoji written with the
+   variation selector (`🎖️`) never matched the same symbol written without it,
+   so the rule compared sets that could not intersect. It strips `️` from
+   both sides now, and catches reuse of all three marks.
+
+Green the way CI runs it: `tsc`, wall build + 97 checks, open build + 25,
+eslint on every touched file.
+
+### Still open
+
+- **The other half of Dan's answer 3** — flagging pushing a goal into the
+  revise queue and onto `/teacher` — is NOT in this branch. `teacher/page.tsx`
+  has three branches in flight on it (`qc/color-217` +13, `qc/icon-glyph-swap`
+  +4, `claude/icon-glyph-swap-lexicalocker` +1); a second PR after those land.
+- **The Me panel's own insides** — the U0–U4 grid still has no key, THRILLS is
+  still last though it is the only row that is never empty, and FRILLS still
+  reads EMPTY. Shown to Dan as a mock-up; not built, pending his word.
+- **A naming wrinkle:** the tab and band say **Me**, the ☰ menu still says
+  **Profile**. Same page, two names — Dan to pick one.

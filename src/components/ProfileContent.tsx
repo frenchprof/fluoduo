@@ -15,10 +15,19 @@
  * summary value on the right so the whole state reads without opening
  * anything.
  *
- * THE FIVE ROWS are Dan's rhyming spine (2026-08-22), glosses in brackets so
- * the rhyme leads and the plain word follows:
+ * THE FIVE ROWS are Dan's rhyming spine (2026-08-22). The plain word used to
+ * follow the rhyme in brackets — FRILLS (showcase), ILLS (problems noted),
+ * THRILLS (rewards). Dan, 2026-09-11: *"am trying to explore deleting the
+ * english in brackets and putting an emoji at the start of the line instead"*.
+ * So the bracket goes and a glyph leads:
  *
- *   RE-DRILLS · SKILLS · FRILLS (showcase) · ILLS (problems noted) · THRILLS (rewards)
+ *   ⏱️ RE-DRILLS · 🧮 SKILLS · 🎞️ FRILLS · 🩹 ILLS · 💫 THRILLS
+ *
+ * Each glyph is unused anywhere else in the app — the one-glyph-one-meaning
+ * rule of 2026-09-09, which is why this is not ⏰ (already in use), 🔄 (Revise),
+ * 🎁 or ✨ (both taken) — and why THRILLS is not 🏅: the badge count on that
+ * very row is 🎖️, a different codepoint that is all but indistinguishable at
+ * 15px, so the row would have led with a look-alike of one of its own marks.
  *
  * WHAT WENT, AND WHY (all Dan, same day):
  *   · "Where you stand" / CEFR self-placement — in a 12-week A1 course nobody
@@ -58,11 +67,11 @@ type Resp = { item: string; status: string; activityId: string; ts: number; outc
 /** The five rows. `hue` is the globals.css card-accent class; THRILLS is the
  *  deliberately colourless one — rewards are the demoted section. */
 const ROWS = [
-  { key: "redrills", label: "RE-DRILLS", gloss: null, hue: "fluo-h-1" },
-  { key: "skills", label: "SKILLS", gloss: null, hue: "fluo-h-3" },
-  { key: "frills", label: "FRILLS", gloss: "showcase", hue: "fluo-h-4" },
-  { key: "ills", label: "ILLS", gloss: "problems noted", hue: "fluo-h-2" },
-  { key: "thrills", label: "THRILLS", gloss: "rewards", hue: "" },
+  { key: "redrills", emoji: "⏱️", label: "RE-DRILLS", hue: "fluo-h-1" },
+  { key: "skills", emoji: "🧮", label: "SKILLS", hue: "fluo-h-3" },
+  { key: "frills", emoji: "🎞️", label: "FRILLS", hue: "fluo-h-4" },
+  { key: "ills", emoji: "🩹", label: "ILLS", hue: "fluo-h-2" },
+  { key: "thrills", emoji: "💫", label: "THRILLS", hue: "" },
 ] as const;
 type RowKey = (typeof ROWS)[number]["key"];
 
@@ -293,7 +302,7 @@ export default function ProfileContent() {
               key={row.key}
               hue={row.hue}
               label={row.label}
-              gloss={row.gloss}
+              emoji={row.emoji}
               open={open === row.key}
               onToggle={() => toggle(row.key)}
               summary={row.key === "thrills" ? undefined : summaryOf(row.key)}
@@ -418,11 +427,11 @@ export default function ProfileContent() {
 /** One collapsible row: tinted header carrying its own summary, accent bar
  *  down the left edge, body in a lighter wash of the same accent. */
 function Section({
-  hue, label, gloss, summary, trailing, open, onToggle, children,
+  hue, emoji, label, summary, trailing, open, onToggle, children,
 }: {
   hue: string;
   label: string;
-  gloss: string | null;
+  emoji: string;
   summary?: string;
   trailing?: ReactNode;
   open: boolean;
@@ -446,8 +455,19 @@ function Section({
            colour alone. */
         style={{ background: head, borderBottom: `1px solid ${LINE}` }}
       >
-        <span className="fluo-mono text-[11px] font-black tracking-[0.08em]" style={{ color: hue ? INK : SOFT }}>
-          {label}{gloss && <span className="opacity-60"> ({gloss})</span>}
+        {/* Dan, 2026-09-11: "the words frills ills etc can be bigger (without
+            overflowing the line)". The NAME goes up to 15px and the
+            letter-spacing comes in from .08em to .03em, which is
+            what buys the width back — "ILLS (problems noted)" is the longest
+            row and it has to sit on one line beside its own count badge on a
+            390px phone. `whitespace-nowrap` so it can never wrap under the
+            badge; `min-w-0` so the name shrinks rather than pushing the count
+            off the row. The glyph is aria-hidden: it repeats the word beside
+            it, and a screen reader should not read "bandage ILLS". */}
+        <span aria-hidden className="shrink-0 text-[15px] leading-none">{emoji}</span>
+        <span className="fluo-mono min-w-0 whitespace-nowrap text-[15px] font-black tracking-[0.03em]"
+              style={{ color: hue ? INK : SOFT }}>
+          {label}
         </span>
         {summary !== undefined && (
           <span className="fluo-mono ml-auto shrink-0 rounded-[5px] px-1.5 py-1 text-[11px] font-black"

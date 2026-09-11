@@ -296,12 +296,51 @@ for embed in sorted(APP.rglob("embed/page.tsx")):
         fails.append(f"src/app/{rel}/embed/ has no host page beside it — the activity has no URL.")
         continue
     text = host.read_text(encoding="utf-8")
-    if "EmbedFrame" not in text:
+    # A host may delegate to a sibling client component — `page.tsx` carries the
+    # metadata a client file cannot export, and the frame lives next door. Follow
+    # one hop of local imports so the pair is read as the page a learner gets.
+    for m in re.finditer(r'import\s+\w+\s+from\s+"\./([\w/]+)"', text):
+        sib = route_dir / f"{m.group(1)}.tsx"
+        if sib.exists():
+            text += sib.read_text(encoding="utf-8")
+    # SECOND LEGAL SHAPE (2026-09-11): the four 👤 User twins are framed by the
+    # ONE User page, and their own routes forward into it with that tab open.
+    # The invariant is unchanged — every twin still has to be reachable at its
+    # own URL — so this does not excuse the route, it follows the hop: the
+    # forwarder must name a tab that userTabs.ts lists, and the User page must
+    # frame that tab's twin. A twin that is in neither shape still fails.
+    if "UserTabRedirect" in text:
+        tabs_src = (SRC / "content" / "userTabs.ts").read_text(encoding="utf-8")
+        host_src = (APP / "profil" / "UserPage.tsx").read_text(encoding="utf-8")
+        want = f"/{rel}/embed"
+        if want not in tabs_src:
+            fails.append(
+                f"src/app/{rel}/page.tsx forwards into the User page, but userTabs.ts\n"
+                f"    does not list {want} — the twin is unreachable through the tabs."
+            )
+        elif "<EmbedFrame" not in host_src or "current.embed" not in host_src:
+            fails.append(
+                "src/app/profil/UserPage.tsx stopped framing the tab's twin, so every\n"
+                "    forwarded User route now lands on a page that shows nothing."
+            )
+        continue
+    if "<EmbedFrame" not in text:
         fails.append(
             f"src/app/{rel}/page.tsx does not mount EmbedFrame, but an embed twin\n"
             f"    sits under it. Either the route stopped hosting its station — in which\n"
             f"    case the twin is unreachable — or the twin is left over."
         )
+    elif "current.embed" in text:
+        # The User page frames whichever tab is open rather than one fixed
+        # route, so its twin is named in userTabs.ts instead of inline. Its own
+        # twin still has to be in that list, or /profil frames everything except
+        # the panel it is supposed to open on.
+        tabs_src = (SRC / "content" / "userTabs.ts").read_text(encoding="utf-8")
+        if f"/{rel}/embed" not in tabs_src:
+            fails.append(
+                f"src/app/{rel}/page.tsx frames the User tabs but userTabs.ts does not\n"
+                f"    list /{rel}/embed — its own panel is the one tab nobody can open."
+            )
     elif "/embed" not in text:
         fails.append(f"src/app/{rel}/page.tsx mounts a frame that does not point at its own /embed twin.")
 

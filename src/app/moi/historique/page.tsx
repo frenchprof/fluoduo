@@ -1,22 +1,9 @@
-import CahierShell from "@/components/CahierShell";
-import { siteTabs, tabsWithActive } from "@/components/siteTabs";
-import HistoryContent from "./HistoryContent";
+import UserTabRedirect from "@/components/UserTabRedirect";
 
-/** ⌛ Full activity history — the door at the foot of the profile. */
+/** /moi/historique — the History tab of the one User page since 2026-09-11.
+ *  Forwards there; the list itself is /moi/historique/embed. */
 export const metadata = { title: "My History — FluOLinGo" };
 
 export default function Page() {
-  return (
-    <CahierShell tabs={tabsWithActive(siteTabs(), "home")} active="moi">
-      <div className="mx-auto max-w-3xl px-1">
-        <a href="/moi" className="fluo-mono text-[10px] font-bold no-underline">‹ PROFILE</a>
-        <h1 className="cahier-display cahier-hand mt-1 text-3xl font-normal" style={{ color: "var(--cahier-ink)" }}>
-          Everything you have done
-        </h1>
-        <div className="mt-4">
-          <HistoryContent />
-        </div>
-      </div>
-    </CahierShell>
-  );
+  return <UserTabRedirect tab="history" />;
 }
