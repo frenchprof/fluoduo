@@ -2704,7 +2704,19 @@ input.fluo-bookmark:focus,
  *  FIRST match in the stylesheet — so an override written above the canonical
  *  rule is the one the check measures, and it fails saying the two shells' left
  *  edges have come apart. They had not; the parser had found an override. Keep
- *  every `html[data-embed]` rule down here.
+ *  every `/* A FRAMED STATION KEEPS ITS OWN SCROLL (2026-09-08).
+   When a scroller inside an iframe reaches its end the browser CHAINS the rest
+   of the gesture to the page behind it — so the notebook around the frame got
+   the same wheel notches the station had just finished with. Both documents run
+   the rail's reader, so one pull past the end fired twice and a learner moved
+   two goals down the course instead of one: measured on the lesson, SIO-025 to
+   027 to 029, every other goal skipped.
+   `contain` stops the chaining without stopping the scroll — the station still
+   scrolls to its own end, the notebook behind it simply stops being dragged
+   along. */
+html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
+
+html[data-embed]` rule down here.
  * =========================================================================== */
 html[data-embed] .cahier-sitebar,
 html[data-embed] .cahier-bottombar,

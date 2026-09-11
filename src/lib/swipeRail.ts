@@ -341,6 +341,66 @@ export type RailMove = { href: string; name: string } | null;
 
 /** Where a sideways drag goes from here. `back` is rightwards, `forward` is
  *  leftwards. Either is null at the end of the rail, or off it. */
+/**
+ * THE OTHER AXIS: the same station, one GOAL along.
+ *
+ * Dan laid the whole thing out on 2026-09-08, and said the same sentence about
+ * every station in the list: *"swipe up and down to the next or previous SIO —
+ * swipe left for [the next activity] … swipes down to the next SIO (newURL), up
+ * to the previous SIO"*.
+ *
+ * So the app is a GRID, not a line. Across is the activity; down is the course:
+ *
+ *              SIO      SpecuLearn   MneMemo   MémoiRecall   WorDrill   …
+ *     goal 22   ·            ·          ·           ·           ·
+ *     goal 23   ·            ·          ·  YOU       ·           ·
+ *     goal 24   ·            ·          ·           ·           ·
+ *
+ * and moving down from MémoiRecall on goal 23 lands on MémoiRecall for goal 24
+ * — the same activity, the next goal, its own URL. That last part is the whole
+ * reason this cannot be a scroll inside one page: Dan asked for a new address
+ * each time, so a reload, a bookmark and a link all keep their place.
+ *
+ * THIS REPLACES WHAT THE END OF A SCROLL USED TO DO. On 7 Sep, reaching the
+ * bottom carried a learner to the next STATION — the last question of a
+ * pre-test landed on the lesson. Under the grid that is the LEFT swipe's job
+ * and downwards belongs to the course, so the two gestures stop meaning the
+ * same thing. One finger, one meaning, per direction.
+ *
+ * A STATION WITH NOTHING FOR THE NEXT GOAL IS STEPPED OVER, exactly as an empty
+ * column is stepped over going sideways: SpecuLearn skips a goal that has no
+ * questions rather than landing a learner on an empty run.
+ */
+export function sioNeighbours(path: string, deck: string | null): { up: RailMove; down: RailMove } {
+  const here = normalise(path);
+  const i = railIndex(here);
+  if (i < 0) return { up: null, down: null };
+  const station = RAIL[i];
+  /* WHICH GOAL AM I ON? The address answers it on the goals scroller
+     (`/sio/SIO-023`); everywhere else the deck does. A station standing on no
+     goal at all — ÉcouTexte's general page, WorDrill's unit picker — has no
+     place in the column to move from, so it offers no vertical move rather
+     than guessing at goal 1. */
+  const fromPath = here.startsWith("/sio/") ? here.slice(5) : null;
+  const stop = fromPath ? SIOS.find((s) => s.id === fromPath) : stopForDeck(deck);
+  if (!stop) return { up: null, down: null };
+  const at = SIOS.findIndex((s) => s.id === stop.id);
+  if (at < 0) return { up: null, down: null };
+
+  const move = (step: -1 | 1): RailMove => {
+    for (let j = at + step; j >= 0 && j < SIOS.length; j += step) {
+      const s = SIOS[j];
+      const d = s.collectionId ?? null;
+      if (station.has && !station.has(d)) continue;
+      const href = station.key === "goals" ? `/sio/${s.id}` : station.href(d);
+      if (normalise(href) === here) continue;
+      return { href, name: `${station.name} · goal ${s.num}` };
+    }
+    return null;
+  };
+  return { up: move(-1), down: move(1) };
+}
+
 export function railNeighbours(path: string, deck: string | null): { back: RailMove; forward: RailMove } {
   const here = normalise(path);
   const i = railIndex(here);

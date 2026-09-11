@@ -322,14 +322,27 @@ export default function DrillShell({
   // would give the same finger two meanings on one page: "next question" after
   // a verdict, "leave the drill" before one.
   //
-  // AND THE RAIL KEEPS WHAT IS ITS OWN, which is why `owns` is not simply
-  // `true` while this shell is mounted. A lesson deck runs in DrillShell with
-  // NO footer action at all — it is panels, not questions — and its end of
-  // scroll is a station step Dan asked for by name: *"the last panel -> the
-  // flashcards"*. Hatching the page unconditionally would have quietly taken
-  // that back. Some drills also hand `cta: null` until a first pick (the body
-  // owns the flow there), and the rail's answer stays the only one on offer.
-  const owns = !!cta || !!feedback || !!finish;
+  // AND THE SHELL ONLY TAKES THE GESTURE WHEN IT CAN ACT ON IT.
+  //
+  // These two were different for a day, and the wider one was wrong. `owns`
+  // used to be "this shell has a footer action at all", so a drill claimed the
+  // pull while « Check » was on screen and then did nothing with it. That was
+  // defensible for one day, when downwards meant LEAVE THE ACTIVITY and the
+  // point was not to throw a learner out mid-question.
+  //
+  // Dan's grid (2026-09-08) changed what downwards means: *"swipes down to the
+  // next SIO (newURL), up to the previous SIO"* — the next GOAL, same activity,
+  // not the next activity. There is nothing to protect a learner from any more,
+  // and swallowing the gesture broke the thing he asked for. MEASURED on the
+  // built export: from a fresh lesson the pull carried to the next goal, and
+  // from the lesson it landed on it never worked again — because the arriving
+  // lesson opens on its level picker, which gives the shell a `cta`, which
+  // planted `data-no-scroll-on`, which stood the rail down for a gesture this
+  // shell then ignored. Three pulls, three refusals, no way on.
+  //
+  // So the hatch is the gate: the drill takes the pull exactly when it has a
+  // button to press with it (a verdict up, or a finished run) and hands it to
+  // the rail the rest of the time, where it means the next goal.
   const pullable = !!feedback || !!finish;
   usePullPastEnd(() => {
     const c = liveRef.current;
@@ -391,14 +404,12 @@ export default function DrillShell({
        learner to the next station, and this shell's, which presses the visible
        CTA. Without the hatch a single pull past the end would fire both — the
        question would advance AND the page would navigate away from it. So the
-       drill takes the gesture for as long as it owns the footer and hands it
-       back where it has no button at all — a lesson deck's panels, or a drill
-       before its first pick. With « Check » on screen the pull does nothing at
-       all, which is the point: the same finger must not mean "next question"
-       after a verdict and "leave the activity" before one. Nothing is lost at
-       the end of a run either — the finish row's « Next › » IS the next
-       station. */
-    <div className="cahier-drilldesk" data-no-scroll-on={owns ? "" : undefined}>
+       drill takes the gesture exactly while it can act on it — a verdict up,
+       or a finished run — and hands it back otherwise, where the rail reads it
+       as the next GOAL (Dan's grid, 8 Sep). The finger keeps one meaning all
+       the way down: move on. Next question while there is one, next goal when
+       there is not. */
+    <div className="cahier-drilldesk" data-no-scroll-on={pullable ? "" : undefined}>
     {/* `cahier-surface` is main's one colour class (6 Sep, "i don't want
         outliers"); `touch-pan-y` is this branch's, and hands the sideways drag
         to the swipe rail. Unrelated jobs, both wanted. */}
