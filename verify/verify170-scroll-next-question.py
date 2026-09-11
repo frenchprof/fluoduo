@@ -76,23 +76,29 @@ else:
             "    and NOTHING else. Ungated, a scroll answers or skips a question the\n"
             "    learner has not read — the drill grades a card they never saw."
         )
-    # GUARD 2 — the hatch, and it is wider than the gate on purpose. `owns` is
-    # "this shell has a footer action at all", so the rail also stands down on
-    # an UNANSWERED question, where the pull does nothing. Narrow the hatch to
-    # `pullable` and the same finger means two things on one page: next
-    # question after an answer, leave the activity before one.
-    if "const owns = !!cta || !!feedback || !!finish" not in d:
+    # GUARD 2 — the hatch IS the gate, and the two were separated for exactly
+    # one day. `owns` used to be "the shell has a footer action at all", so a
+    # drill claimed the pull while « Check » was on screen and then did nothing
+    # with it. That was defensible while downwards meant LEAVE THE ACTIVITY.
+    #
+    # Dan's grid (2026-09-08) made downwards mean the next GOAL, same activity —
+    # so there is nothing to protect a learner from, and swallowing the gesture
+    # broke it. Measured: from a fresh lesson the pull carried on; from the
+    # lesson it landed on it never worked again, because the arriving lesson
+    # opens on its level picker, which gives the shell a `cta`, which planted
+    # the hatch for a gesture the shell then ignored.
+    if "const owns" in d:
         fails.append(
-            "DrillShell's `owns` is gone or narrowed.\n"
-            "    The hatch must cover every state in which this shell has a button,\n"
-            "    not only the states in which the pull presses one — otherwise a pull\n"
-            "    past an unanswered question throws the learner out of the drill."
+            "DrillShell has a hatch wider than its gate again.\n"
+            "    A shell that stands the rail down for a gesture it does not act on\n"
+            "    is a dead end: measured on the built export, three pulls in a row\n"
+            "    refused and there was no way on to the next goal."
         )
-    if 'data-no-scroll-on={owns ? "" : undefined}' not in d:
+    if 'data-no-scroll-on={pullable ? "" : undefined}' not in d:
         fails.append(
-            "DrillShell no longer marks itself `data-no-scroll-on` while it owns\n"
-            "    the footer. The rail reads the same pull on the same page: without\n"
-            "    the hatch one gesture advances the question AND navigates off it."
+            "DrillShell no longer marks itself `data-no-scroll-on` while it can act.\n"
+            "    The rail reads the same pull on the same page: without the hatch one\n"
+            "    gesture advances the question AND carries the learner to the next goal."
         )
 
 if fails:

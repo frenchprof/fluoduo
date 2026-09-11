@@ -38,13 +38,14 @@ import { gappedItems } from "@/lib/collections/gramMarathonReady";
 // `isReadingSurface` is gone with main's colour standardisation (PR 211,
 // 6 Sep); `pretestHrefForDeck` moved out of this file into lib on 7 Sep so the
 // swipe rail could ask it without a library importing a page shell.
-import { TAB_ICONS, activity, bandOf, familyName, familyOf, familyShort, hubFamily } from "@/content/activities";
+import { TAB_ICONS, activity, familyName, familyOf, familyShort, hubFamily, stripOf } from "@/content/activities";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
 import { stopForDeck } from "@/lib/stopTag";
 import { speculearnHref } from "@/lib/speculearn/route";
 import BottomBar from "@/components/BottomBar";
 import PageBand from "@/components/PageBand";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { HOME_HREF } from "@/lib/routes";
 
 
 /** Sorting is an MCQ over the deck's letris columns — no columns, no game. */
@@ -90,7 +91,7 @@ export default function CahierShell({
   const famKey = familyOf(active);
   // What the page ASKS, where it is an activity — the band over it takes
   // this over the family (Dan, 2026-08-26). Section pages keep the family.
-  const bandKey = bandOf(active);
+  const bandKey = stripOf(active);
 
   // Per-page browser-tab title (audit 2026-07-19: every page announced
   // itself as just "FluOLinGo" — tabs, history, bookmarks and screen-reader
@@ -225,7 +226,7 @@ export default function CahierShell({
           <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
           {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? "/"} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
                    (globals.css, `.cahier-binding` z-index) — a real coil
                    crosses the cover strip, it does not stop at it. The ✕ stays
                    clickable: the binding is `pointer-events: none`. */ />

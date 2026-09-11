@@ -72,6 +72,52 @@ clean on the four source files, every `verify/*.py` green. verify230 was
 break-tested four ways (the shell restored, the z-index dropped, the clearance
 removed, the binding pushed below the band) and each produced its own message.
 
+## 11 Sep — the pre-tests lane is current with main and HANDED OVER (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`, merge `e5c2ee0e`).
+
+**Dan: *"pls make merge to fluo duo main"*.** The branch was six ahead and
+seventeen behind; it is now merged up to main and pushed, for fluoduo-main to
+land. Nothing on it is merged by this lane.
+
+**WHAT IS ON IT**, all shipped and driven earlier this week:
+
+- the map stop as a coin, with a clean top edge (Dan's red arc removed);
+- scroll-on-to-the-next-QUESTION inside a drill, gated so it never answers an
+  unread one (`usePullPastEnd`, verify170);
+- Unit 0 and the picture pre-tests retired to forwards (verify171, which
+  DRIVES every old address because the forward is client-side);
+- the eight-station swipe chain — map · goals · SpecuLearn · MneMemo ·
+  MémoiRecall · WorDrill · ÉcouTexte · ConjugaZone — plus the up/down axis
+  that moves the SAME station one goal along (`sioNeighbours`, verify117);
+- per-lesson ÉcouTexte: fifty stops onto fifteen scenarios (verify172);
+- Dan's approved verb split, 67 verbs across 50 lessons with ten deliberately
+  empty, wired into ConjugaZone (`src/content/lessonVerbs.ts`, verify173);
+- ConjugaZone's teal strip, and one colour per page — top bar and left spine
+  take the same `--band` (`stripOf()` beside `bandOf()`, verify36).
+
+**THE ONE SEMANTIC COLLISION WITH MAIN, recorded rather than silently fixed.**
+Main gave the TEAL PEN (`#00c197`) to the Revise family the same week this lane
+gave it to ConjugaZone's strip, so one hex now means two things. They never
+share a screen — a family colour paints the ☰ row, a strip paints a page's
+edges — and ConjugaZone happens to SIT in the Revise row, so its tile and its
+page agree. Dan's ruling stands (*"ignore the repo's color pattern based on
+activity type and family"*); the note is in `globals.css` beside the token, and
+the comment that called teal "the one left spare" is corrected.
+
+**OPEN FOR DAN, shown to him in pictures on 11 Sep**: whether `verify120`'s
+6-degree hue window should tighten to the exact pen value for the six
+`--band-*` tokens. The window exists so tints and inks of the same pen stay
+legal (`--fam-review-ink`, `--cahier-hl-edge`), so tightening would apply to
+those six tokens only. Break-tested: `#00a396` is caught at 15 degrees off;
+`#3fbfa0`, a teal that is not a pen, passes. His call.
+
+**VERIFIED ON THE MERGED TREE**: `tsc --noEmit` clean, `NEXT_PUBLIC_OPEN_APP=1
+npm run build` green, all 124 verify checks pass, and the twenty source files
+this branch touches lint with one warning inherited from main (PR #176's unused
+`attemptAt` in `EcouTexte.tsx`).
+
 ## 11 Sep — the address decides the course: f1 to f4 mean different things (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`,
@@ -8335,3 +8381,47 @@ about. Cleared per `AGENTS.md`:
 found nothing. The same shape as both of theirs.
 
 tsc clean, build clean, 43 verify scripts green, touched files at 0 lint errors.
+
+## 11 Sep — no intermediate stop: verify49 tightened, two live docs corrected
+
+Dan: **"there should not be any intermediate stop."** The spine already obeys
+that — `sios.json` is fifty stops, ids `SIO-001`–`SIO-050`, `num` 1–50,
+integers, no gaps — since the 5 Sep change that made `SIO-045A`/45.5 into
+`SIO-045`/45. Nothing in the data needed changing. What needed changing was the
+check that was supposed to protect it, and two docs that still quoted the old
+number as current.
+
+**`verify49-renumber-3435.py` was permitting exactly what it should forbid.**
+Its lockstep test parsed ids as `SIO-(\d+)([A-Z]?)` and, when a letter suffix
+was present, *expected* `num` to be N + 0.5 — the half-step was written into
+the check as a documented allowance. It passed only because no id carries a
+suffix any more. Put `SIO-045A`/45.5 back and the check would have waved it
+through. Now:
+
+- ids must match `SIO-\d{3}` exactly — a letter suffix fails to parse;
+- `num` must be an `int` (a float 45.5, or a string "45", fails);
+- and a second assertion says the spine is **1..50 exactly** — no gaps, no
+  duplicates, nothing out of range — so a stop can be neither slipped between
+  two numbers nor dropped without going red.
+
+Break-tested on **7 mutations, all red, none vacuous**: letter-suffixed id ·
+half-step num · both together (the pre-5-Sep state) · num as a string ·
+duplicate num · out-of-range num · a dropped stop. The suffix-only mutation is
+caught by the lockstep test while the spine test still passes, which is
+correct — the two assertions cover different failures.
+
+**Docs corrected** — both are live working documents, not records:
+`ACTIVITY_CULL.md` said NumBus/NumBourse serve stops "(7, 18, 45A)";
+`SYLLABUS_TIERS.md` had a tier row numbered `45.5` and a "Note 45A:".
+Left alone deliberately: STATUS's own past entries, `SIO-045A-numbering-report.md`,
+`CSV_SPEC_REASSIGNMENT.md` and `SYLLABUS_AUDIT_2026-08-23.md` say 45A because
+they record what was true when written. `u4-sio045a-nombres.json` keeps its
+filename — renaming content files breaks stored learner records, and
+`pretests/index.ts` already maps `"SIO-045"` onto it.
+
+Green the way CI runs it: `tsc --noEmit`, wall `npm run build` + its 97 checks,
+then `NEXT_PUBLIC_OPEN_APP=1 npm run build` + the remaining 25. **122 verify
+scripts, all passing.** (Container note: `node_modules` here was a fortnight
+stale, which failed six playwright-core scripts and one Pillow one for reasons
+that had nothing to do with the change — `npm ci` and `pip install pillow`
+first if the same thing happens again.)

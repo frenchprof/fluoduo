@@ -43,7 +43,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import DrillShell from "@/components/DrillShell";
+import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
 import { fingerprint, generateUnheard } from "@/lib/textgen/engine";
@@ -85,6 +85,7 @@ export default function EcouTexte({
   scenarioId,
   header,
   shell = false,
+  deck,
 }: {
   gen: UnitTextGen;
   accent: string;
@@ -94,6 +95,11 @@ export default function EcouTexte({
   header?: ReactNode;
   /** Full-screen DrillShell chrome (patch 20–21). */
   shell?: boolean;
+  /** The lesson this listening belongs to, where it belongs to one. It reaches
+   *  DrillShell so the band can carry the goal number and the ✕ can lead back
+   *  to that goal's unit — the general topic picker passes nothing and keeps
+   *  the map as its way out. */
+  deck?: string;
 }) {
   useActivityPlay("ecoutexte", `unite-${gen.unit}`);
   const [count, setCount] = useState(3);
@@ -601,7 +607,8 @@ export default function EcouTexte({
   return (
     <DrillShell
       activity="ecoutexte"
-      exitHref="/map"
+      deck={deck}
+      exitHref={deck ? drillExitHref(deck) : "/map"}
       progress={text ? { done: worked, total: sentences.length } : null}
       right={text ? <>{worked}/{sentences.length}</> : undefined}
       secondary={

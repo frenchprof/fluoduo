@@ -26,6 +26,7 @@
 import Link from "next/link";
 import { familyName, activity } from "@/content/activities";
 import { SIO_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
 // palette lives in globals.css (Dan's fixed 12-swatch brand set, 2026-09-09:
@@ -84,7 +85,7 @@ const ROWS: { pen: string; band: string; label: string; cells: Cell[] }[] = [
   // someone else building — this tile will point there once it lands.
   { pen: PEN.goals, band: INK.goals, label: familyName("goals"), cells: [
     { kind: "one", emoji: "🧭", name: "Map", href: "/map" },
-    { kind: "one", emoji: "🎯", name: "Goals", href: "/" },
+    { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
     { kind: "help" },
   ]},
   { pen: PEN.practice, band: INK.practice, label: familyName("practice"), cells: [

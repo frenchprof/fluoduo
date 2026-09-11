@@ -40,6 +40,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { deckFromPath, railNeighbours, recalledRailDeck, type RailMove } from "@/lib/swipeRail";
+import { HOME_HREF } from "@/lib/routes";
 
 function Arrow({ side, move }: { side: "left" | "right"; move: NonNullable<RailMove> }) {
   const label = side === "left" ? `Back to ${move.name}` : `On to ${move.name}`;
@@ -94,7 +95,7 @@ function Arrow({ side, move }: { side: "left" | "right"; move: NonNullable<RailM
 }
 
 export default function RailArrows() {
-  const path = usePathname() ?? "/";
+  const path = usePathname() ?? HOME_HREF;
   // The remembered deck lives in localStorage, which does not exist on the
   // server — so the first render uses only what the PATH says, and the deck a
   // learner was last working on is folded in after mount. Reading it during
