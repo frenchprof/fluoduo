@@ -39,7 +39,7 @@ WHAT ROTS IF NOBODY WATCHES, one clause each:
      do is lose a starred page because a folder was tidied away. Executed, not
      read.
 
-Run from the repo root:  python3 verify/verify300-favourites.py
+Run from the repo root:  python3 verify/verify400-favourites.py
 """
 import json, os, re, shutil, subprocess, sys
 
@@ -349,6 +349,41 @@ check("sel.includes(it.href) ? sel : [it.href]" in bare_page,
       "dragging a ticked row carries the WHOLE selection (Finder's behaviour)",
       "a drag that starts on a ticked row moves only that row, so the "
       "selection is decoration as soon as you touch it")
+
+# ── 9 · THE SECOND DOOR — A TILE IN THE ☰ GRID ──────────────────────────────
+# Dan, 2026-09-12: *"put Favourites in the burger grid menu in the yellow
+# lesson strip replacing Map (Map already has multiple doors and does not need
+# this space)"*.
+#
+# WHY THIS IS CHECKED AND NOT JUST DONE. The ★ in the top bar only becomes a
+# LINK once something is starred — before that, a tap toggles. So a learner who
+# has starred nothing has no way to reach the page and find out what it is for,
+# and this tile is the only door that is always open. `MenuGrid`'s ROWS are
+# hand-written (the grid is NOT derived from the registry), so nothing else in
+# the app would notice the tile going missing.
+MENU = read("src/components/MenuGrid.tsx")
+bare_menu = re.sub(r"/\*[\s\S]*?\*/", "", re.sub(r"(?m)^\s*//.*$", "", MENU))
+
+# Anchored on the LESSON row specifically, not on the file: a Favourites tile
+# that drifted into another strip would still satisfy a bare substring search,
+# and Dan named the yellow one.
+lesson = bare_menu.split('PEN.goals')[-1].split(']},')[0] if 'PEN.goals' in bare_menu else ""
+check('name: "Favourites"' in lesson and '"/favourites"' in lesson,
+      "Favourites has a tile in the ☰ menu's yellow Lesson strip",
+      "the Favourites tile is not in the Lesson row — the page's only other "
+      "door is a ★ that does not navigate until something is starred, so a new "
+      "learner cannot reach it at all")
+check('"Map"' not in lesson,
+      "the map gave up that slot, as Dan asked (it still has the 🗺️ in the "
+      "icon strip, the MneMemo tile, and Home's hero)",
+      "the Map tile is back in the Lesson row — it and Favourites cannot both "
+      "hold the same slot")
+# ⭐ IS XP, NOT A BOOKMARK (StatsHelp: "earned every answer"). One glyph, one
+# meaning — the rule that moved the bug button to 🐞 on 9 Sep.
+check('emoji: "⭐", name: "Favourites"' not in bare_menu,
+      "the tile wears ★, not the ⭐ that already means XP",
+      "the Favourites tile took ⭐, which is the XP glyph on the User page and "
+      "in StatsHelp — one glyph cannot mean two things")
 
 check("w-full" not in page,
       "no control on the page wears the whole width",

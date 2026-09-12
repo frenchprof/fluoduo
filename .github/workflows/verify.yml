@@ -470,7 +470,7 @@ jobs:
         run: python3 verify/verify280-music-under-voice.py
 
       - name: "Favourites — the star, the page, the caps and the rules (12 Sep)"
-        run: python3 verify/verify300-favourites.py
+        run: python3 verify/verify400-favourites.py
 
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.

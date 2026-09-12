@@ -153,6 +153,39 @@ nothing left to test.
 Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
 every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
 
+### 12 Sep — Favourites takes the map's tile in the ☰ menu
+
+**Dan: *"put Favourites in the burger grid menu in the yellow lesson strip
+replacing Map (Map already has multiple doors and does not need this space)"*.**
+Done — the first cell of the LESSON row is « ★ Favourites » now.
+
+**He is right about the count, and about which door was missing.** `/map` is
+reached from the 🗺️ in the icon strip two rows above the grid, from the MneMemo
+tile in the Practice row of the same grid, and from Home's own hero. Favourites
+had exactly ONE door, the ★ beside the account chip — and that ★ only becomes a
+LINK once something is starred; before that a tap toggles. So a learner who had
+never starred anything could not reach the page to find out what it was for.
+
+**★, NOT ⭐.** The filled text star is what the top-bar button and the page
+already wear. ⭐ is XP — the row on the User page and the line in StatsHelp
+("earned every answer") — and one glyph means one thing (the rule that moved the
+bug button to 🐞 on 9 Sep). `verify400` fails on `emoji: "⭐", name: "Favourites"`.
+
+**The tile is yellow and the page it opens is grey, on purpose.** The strip is
+where the DOOR sits; `SITE_FAMILY` is which family the PAGE belongs to, and
+Favourites belongs with the learner's own things — Dan put the ★ itself *"at the
+top right next to their name"*. Say so if he wants them matched.
+
+`verify400` gained three clauses, anchored on the LESSON row rather than on the
+file, so a tile that drifted into another strip would not satisfy them.
+
+**AND THE CHECK MOVED FROM 300 TO 400.** CI caught the collision that the local
+scan could not: `claude/pre-tests-amendments-hndx8r` claimed `verify300` for
+`verify300-float-clear.py` in the hours between the scan and the push — the
+exact window `verify-wiring`'s in-flight rule exists to close. 400 leaves
+headroom over the 340 frontier, per the 7 Sep note about renumbering into a
+race.
+
 ### 12 Sep — Favourites, take two: a file manager, then drag and drop
 
 **Dan on the first build: *"this is not very user friendly, please rethink and
@@ -170,7 +203,7 @@ folder, drag it onto the « ★ Favourites » crumb to bring it out.
 **BUILT ON POINTER EVENTS, AND THAT IS THE WHOLE POINT.** The obvious way —
 HTML5 `draggable` + `onDragStart` — **does not fire for touch at all**, so it
 ships as a desktop-only feature wearing a cross-platform name, and nobody
-notices because the desktop is where it gets tested. `verify300` fails on the
+notices because the desktop is where it gets tested. `verify400` fails on the
 word `draggable` for that reason.
 
 The gesture differs by device because the devices do: a **mouse** drags on ~6px
