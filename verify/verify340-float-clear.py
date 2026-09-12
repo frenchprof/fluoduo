@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""verify300 — the floating 🐞 never rests on a control a learner must press.
+"""
+NUMBERED 340, NOT 300. `claude/favourites` claimed verify300 for
+verify300-favourites.py while this was being written — a different check
+entirely — and verify-wiring caught it at push time, which is what that clause
+exists for. 340 leaves headroom above the contested band rather than sitting
+one above the frontier, per AGENTS.md: a number adjacent to the highest claimed
+gets claimed again while your CI runs.
+verify340 — the floating 🐞 never rests on a control a learner must press.
 
 Dan, 2026-09-12, shown ConjugaZone on a phone: *"fix the ladybird one"*. On
 arrival, at two phone sizes, the bug-report button sat on top of things that
@@ -44,7 +51,7 @@ Numbered 300, well clear of the 210-270 band that is claimed across branches —
 a number next to the frontier gets claimed again while CI runs (AGENTS.md,
 2026-09-07).
 
-Run from the repo root:  python3 verify/verify300-float-clear.py
+Run from the repo root:  python3 verify/verify340-float-clear.py
 """
 import os, subprocess, sys
 

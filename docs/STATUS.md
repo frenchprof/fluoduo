@@ -60,7 +60,7 @@ rest on the anchor. The honest fix for those two is to take the 🐞 off the
 floating layer altogether — a ☰ entry rather than a button over the page — and
 that is Dan's call, not this branch's.
 
-`verify300-float-clear.py` holds both rules, in a browser, on HOST routes: the
+`verify340-float-clear.py` holds both rules, in a browser, on HOST routes: the
 named surfaces must be clear, and every surface must be clear OR home, never in
 between. Shown to fail: with the frame walk disabled it reports both
 ConjugaZone widths at 840px² and 779px².

@@ -456,7 +456,7 @@ jobs:
       # root layout and the controls it was covering are inside the cahier's
       # iframe, so a one-document scan sees no collision at all.
       - name: "The floating 🐞 never rests on a control (12 Sep)"
-        run: python3 verify/verify300-float-clear.py
+        run: python3 verify/verify340-float-clear.py
 
       - name: One tile grid — two to four columns, never a hard count
         run: python3 verify/verify260-tile-grid.py
