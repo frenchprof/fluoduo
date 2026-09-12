@@ -200,16 +200,41 @@ export function moveToFolder(f: Favourites, href: string, folder: string | null)
   return { ...f, items: f.items.map((i) => (i.href === href ? { ...i, folder } : i)) };
 }
 
-/** Newest first inside each group, and the loose rows come first — a learner
- *  who has never made a folder sees a plain list and nothing about folders. */
-export function grouped(f: Favourites): { folder: FavFolder | null; items: Fav[] }[] {
-  const byNewest = (a: Fav, b: Fav) => b.at - a.at;
-  const loose = f.items.filter((i) => !i.folder).sort(byNewest);
-  const out: { folder: FavFolder | null; items: Fav[] }[] = [{ folder: null, items: loose }];
-  for (const folder of [...f.folders].sort((a, b) => a.at - b.at)) {
-    out.push({ folder, items: f.items.filter((i) => i.folder === folder.id).sort(byNewest) });
-  }
-  return out;
+export type Sort = "recent" | "name";
+
+/**
+ * WHAT IS IN THIS FOLDER — the one question a file manager asks.
+ *
+ * REPLACED `grouped()` (2026-09-12, same day). That returned every folder and
+ * its contents at once, because the first build drew folders as accordions on
+ * one page. Dan sent it back — *"refer to current file management systems in
+ * the latest popular OS"* — and no OS does that: a folder is a PLACE you go
+ * into, and the list only ever shows one level. So this takes the folder you
+ * are IN (null = the top) and returns just that level.
+ *
+ * FOLDERS FIRST, then pages. Finder, Windows Explorer and iOS Files all do
+ * this, and it is not decoration: folders are where you go, pages are where
+ * you stop, and mixing them makes a learner read every row to find the way
+ * down. Folders always sort by name; pages take the chosen sort.
+ */
+export function listing(f: Favourites, folderId: string | null, sort: Sort): {
+  folders: FavFolder[];
+  items: Fav[];
+} {
+  const folders = folderId === null
+    ? [...f.folders].sort((a, b) => a.name.localeCompare(b.name))
+    : [];
+  const items = f.items.filter((i) => (i.folder ?? null) === folderId);
+  items.sort(sort === "name"
+    ? (a, b) => a.label.localeCompare(b.label)
+    : (a, b) => b.at - a.at);
+  return { folders, items };
+}
+
+/** How many pages a folder holds — the count on its row, the way a file
+ *  manager prints « 12 items » rather than making you open it to find out. */
+export function countIn(f: Favourites, folderId: string): number {
+  return f.items.filter((i) => i.folder === folderId).length;
 }
 
 /** « today » · « yesterday » · « 4 days ago » · « 12 Sep ». Short, because it

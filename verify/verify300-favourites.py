@@ -126,7 +126,7 @@ check(os.path.isfile(here_js) and os.path.isfile(fav_js),
 if os.path.isfile(here_js) and os.path.isfile(fav_js):
     SCRIPT = r"""
 const { describeHere } = require("%s");
-const { emptyFavourites, toggleFavourite, addFolder, moveToFolder, removeFolder } = require("%s");
+const { emptyFavourites, toggleFavourite, addFolder, moveToFolder, removeFolder, listing, countIn } = require("%s");
 const out = {};
 // The shell's key beats the path — the « FluOLinGo » bug.
 out.byKey = describeHere("/practice/say-it/aimer-activites", "", "FluOLinGo", "wordrill").auto;
@@ -147,6 +147,27 @@ f = moveToFolder(f, "/a", fid);
 f = removeFolder(f, fid);
 out.keptAfterFolderDelete = f.items.length;
 out.orphanCameHome = f.items[0] && f.items[0].folder === null;
+// ONE LEVEL AT A TIME: the top shows folders and the loose pages, and a page
+// filed inside a folder is NOT also listed at the top.
+let g = emptyFavourites();
+g = toggleFavourite(g, { href: "/x", auto: "X", emoji: "x", where: null }, 10).next;
+g = toggleFavourite(g, { href: "/y", auto: "Y", emoji: "y", where: null }, 20).next;
+g = addFolder(g, "Box", 30);
+const gid = g.folders[0].id;
+g = moveToFolder(g, "/x", gid);
+const top = listing(g, null, "recent");
+const inside = listing(g, gid, "recent");
+out.topItems = top.items.map((i) => i.href);
+out.topFolders = top.folders.length;
+out.insideItems = inside.items.map((i) => i.href);
+out.insideFolders = inside.folders.length;
+out.count = countIn(g, gid);
+// Sorting actually sorts.
+let h = emptyFavourites();
+h = toggleFavourite(h, { href: "/b", auto: "Beta", emoji: "b", where: null }, 100).next;
+h = toggleFavourite(h, { href: "/a", auto: "Alpha", emoji: "a", where: null }, 200).next;
+out.recent = listing(h, null, "recent").items.map((i) => i.label);
+out.byName = listing(h, null, "name").items.map((i) => i.label);
 console.log(JSON.stringify(out));
 """ % (here_js, fav_js)
     r = subprocess.run(["node", "-e", SCRIPT], capture_output=True, text=True)
@@ -179,6 +200,20 @@ console.log(JSON.stringify(out));
               "deleting a folder keeps the pages inside it",
               "deleting a folder destroyed what was in it — the one thing this "
               "feature must never do")
+        check(got["topItems"] == ["/y"] and got["topFolders"] == 1,
+              "the top level shows the folders and only the pages not filed in one",
+              f"the top level is wrong: {got['topItems']} with "
+              f"{got['topFolders']} folder(s) — a filed page must not ALSO be "
+              "loose at the top, or moving something appears to duplicate it")
+        check(got["insideItems"] == ["/x"] and got["insideFolders"] == 0,
+              "opening a folder shows its pages and no folders (one level, no nesting)",
+              f"inside the folder is wrong: {got['insideItems']} with "
+              f"{got['insideFolders']} folder(s)")
+        check(got["count"] == 1, "a folder counts what is in it",
+              f"countIn is wrong: {got['count']}")
+        check(got["recent"] == ["Alpha", "Beta"] and got["byName"] == ["Alpha", "Beta"],
+              "Recent puts the newest first and Name sorts alphabetically",
+              f"the sorts are wrong — recent {got['recent']}, name {got['byName']}")
 
 shutil.rmtree(TMP, ignore_errors=True)
 
@@ -212,16 +247,33 @@ check(wildcard is not None and "favourites" in wildcard.group(1),
       "{sub=**} wildcard still allows the write it refuses. Add 'favourites' to "
       "that exclusion list in the same patch as any shaped rule under users/")
 
-# ── 5 · the page keeps the shapes the house rules ask for ─────────────────
+# ── 5 · the page is still shaped like a FILE MANAGER ──────────────────────
+# Dan sent the first build back — "refer to current file management systems in
+# the latest popular OS" — so these hold the shape that answer produced, not
+# the one it replaced. The first build FAILED this section's earlier form,
+# which asserted <details> accordions; that is the point of rewriting a check
+# with the design rather than leaving it asserting the thing Dan rejected.
 page = read(PAGE)
-check("<details" in page and "<summary" in page,
-      "folders are native <details>/<summary> (the collapse rule)",
-      "the folders stopped being <details> — a hand-rolled disclosure loses "
-      "keyboard and screen-reader support the native one gives free")
-check(re.search(r"\{g\.items\.length\}", page) is not None,
-      "a closed folder says how many pages are behind it",
-      "a folder's summary no longer carries its count — a collapsed section "
-      "with no count is deletion with extra steps")
+check("<details" not in page,
+      "folders are places you go into, not accordions that unfold in place",
+      "the folders are <details> again — that is the shape Dan sent back on "
+      "12 Sep. A folder in Finder, Explorer or iOS Files is somewhere you GO, "
+      "with a way back; an accordion stacks two lists on one page")
+check("aria-label=\"Where you are\"" in page,
+      "a breadcrumb says where you are and gets you back out",
+      "the breadcrumb is gone — a folder you can enter and not leave is a "
+      "trap, and it is the one control every file manager puts at the top")
+check(page.count("aria-haspopup=\"menu\"") >= 2,
+      "each row's actions live behind one ⋯ menu (pages and folders both)",
+      "a row's actions are not behind a ⋯ menu any more — the first build put "
+      "three controls on every line and that is what Dan rejected")
+check("countIn(fav" in page,
+      "a folder row says how many pages are inside before you open it",
+      "a folder row lost its count — the whole reason to print it is so "
+      "nobody opens a folder to find out whether it was worth opening")
+check('"recent"' in page and '"name"' in page,
+      "the list can be ordered by most-recent or by name",
+      "the sort control is gone — every file list has one")
 check("w-full" not in page,
       "no control on the page wears the whole width",
       "a full-width control is back on the Favourites page (Dan, 5 Sep)")

@@ -1,42 +1,55 @@
 "use client";
 
 /**
- * THE FAVOURITES PAGE — Dan, 2026-09-12: *"there should be a proper
- * favourites page"*, after asking that a starred line be linked, carry where
- * it sits and when it was starred, be renameable, and that the page *"should
- * even allow them to organise into folders"*.
+ * THE FAVOURITES PAGE — rebuilt as a FILE MANAGER.
  *
- * ── WHAT A ROW SAYS, AND WHY ──────────────────────────────────────────────
- *     🎤  WorDrill              goal 22 · 3 days ago      ✎  ⋯  ✕
- * The name is the link — the whole point is getting back. The middle is the
- * two facts Dan asked for, set small and quiet because they are what you scan,
- * not what you read. The three controls only appear as icons with real
- * labels behind them, so the row stays a row.
+ * Dan, 2026-09-12, on the first build: *"this is not very user friendly,
+ * please rethink and redo. refer to current file management systems in the
+ * latest popular OS"*. He was right, and the first version's faults are worth
+ * naming because they are the ones a form-shaped mind makes:
  *
- * ── FOLDERS ARE `<details>` ───────────────────────────────────────────────
- * The collapse rule (31 Aug) says use native `<details>`/`<summary>`, and that
- * a closed section must say what is behind it — so every folder's summary
- * carries its count. Keyboard and screen-reader behaviour come free, and the
- * page survives with no JavaScript.
+ *   WAS                                 IS NOW (Finder · Windows 11 · iOS Files)
+ *   every row carried ✎, a folder       one ⋯ per row, opening a menu
+ *     dropdown and ✕ — three
+ *     controls on every line, all
+ *     shouting at once
+ *   folders were accordions that        a folder is a PLACE you go into, with a
+ *     unfolded in place, so two           breadcrumb back. One level on screen.
+ *     folders meant two lists
+ *     stacked on one page
+ *   moving a page meant hunting the     ⋯ → Move to… , the way iOS Files does it
+ *     right <select> on the right row
+ *   no way to sort                      Recent / Name, like every file list
+ *   folder actions were two buttons     they live in the folder's own ⋯
+ *     wedged under the folder
  *
- * THE LOOSE ROWS ARE NOT IN A FOLDER AND NOT COLLAPSED. A learner who has
- * never made a folder must see a plain list and no machinery at all: no
- * chevron, no "Unfiled" heading, nothing to learn. The folder controls appear
- * only once there is something to organise.
+ * WHAT IS DELIBERATELY *NOT* COPIED FROM A DESKTOP OS: drag-and-drop to move,
+ * and multi-select. Both are mouse-first — dragging is unreliable on a phone,
+ * which is what a learner uses, and iOS Files itself leads with « Move to… »
+ * for exactly that reason. Multi-select earns its place at hundreds of files;
+ * the cap here is 200 and the realistic number is a dozen.
  *
- * ── NO CONTROL SPANS THE WHOLE WIDTH ──────────────────────────────────────
- * Dan's standing rule (5 Sep). Rows are links with content-sized buttons
- * beside them; the "New folder" control is content-sized; the rename box is a
- * text input, which that rule explicitly exempts.
+ * ── WHAT SURVIVES FROM THE FIRST BUILD, because Dan asked for it by name ──
+ * A row still links, still says where it sits and when it was starred, still
+ * renames, and folders still exist. The MACHINERY changed, not the contents.
+ *
+ * ── THE RULES THIS PAGE IS HELD TO ────────────────────────────────────────
+ * · No control spans the whole width (5 Sep) — rows are links; the toolbar's
+ *   buttons are content-sized; the rename box is a text input, exempt.
+ * · Nothing is nailed to a pixel (12 Sep) — a row's floor is `min-h-11`, a rem
+ *   on Tailwind's scale, so it rises with the learner's text setting.
+ * · The coil gutter is on an OUTER wrapper and the reading column inside it;
+ *   put both on one element and the column shoves its own contents right.
  */
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 
 import {
   MAX_FOLDERS,
   addFolder,
-  grouped,
+  countIn,
+  listing,
   loadFavourites,
   moveToFolder,
   removeFavourite,
@@ -46,26 +59,38 @@ import {
   saveFavourites,
   starredWhen,
   type Fav,
+  type FavFolder,
   type Favourites,
+  type Sort,
 } from "@/lib/favourites";
 
 const INK = "var(--cahier-ink)";
 const SOFT = "var(--cahier-ink-soft)";
 const LINE = "var(--cahier-line-strong)";
 const PAPER = "var(--cahier-paper-raised)";
+const RULE = "var(--cahier-line)";
+
+/** A row's key in the "which menu is open" state — a page is keyed by href, a
+ *  folder by id, and the prefix keeps the two from ever colliding. */
+const pageKey = (href: string) => `p:${href}`;
+const folderKey = (id: string) => `f:${id}`;
 
 export default function FavouritesContent() {
   const [fav, setFav] = useState<Favourites | null>(null);
   const [now, setNow] = useState<number | null>(null);
-  const [editing, setEditing] = useState<string | null>(null);
+  const [at, setAt] = useState<string | null>(null); // the folder we are IN
+  const [sort, setSort] = useState<Sort>("recent");
+  const [menu, setMenu] = useState<string | null>(null);
+  const [moving, setMoving] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [newFolder, setNewFolder] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
   const reread = useCallback(() => setFav(loadFavourites()), []);
 
   useEffect(() => {
-    // localStorage cannot be read during render on a static export; `now` is
-    // read here too so the server and the first client render agree.
+    // localStorage cannot be read during render on a static export.
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     setFav(loadFavourites());
     setNow(Date.now());
@@ -73,214 +98,284 @@ export default function FavouritesContent() {
     return () => window.removeEventListener("storage", reread);
   }, [reread]);
 
+  // A menu closes on a click elsewhere or on Escape — what every OS menu does,
+  // and the first thing anyone tries to get out of one.
+  useEffect(() => {
+    if (!menu) return;
+    const away = (e: MouseEvent) => {
+      const t = e.target;
+      if (t instanceof Element && t.closest("[data-menu]")) return;
+      setMenu(null); setMoving(null);
+    };
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") { setMenu(null); setMoving(null); } };
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("mousedown", away); document.removeEventListener("keydown", esc); };
+  }, [menu]);
+
   if (!fav || now === null) {
     return <p className="py-6 pl-12 pr-3 text-sm" style={{ color: SOFT }}>Loading your favourites…</p>;
   }
 
-  const commit = (next: Favourites) => setFav(saveFavourites(next));
-  const groups = grouped(fav);
-  const total = fav.items.length;
+  const commit = (next: Favourites) => { setFav(saveFavourites(next)); setMenu(null); setMoving(null); };
+  // A folder deleted in another tab must not strand us inside it.
+  const here = at ? fav.folders.find((f) => f.id === at) ?? null : null;
+  const { folders, items } = listing(fav, here ? here.id : null, sort);
+  const empty = folders.length === 0 && items.length === 0;
 
-  if (total === 0) {
-    return (
-      <div className="py-6 pl-12 pr-3">
-        <div className="mx-auto max-w-3xl">
-        {/* An empty state that TEACHES THE GESTURE, because a star nobody
-            knows about is a feature nobody has. It names the button and where
-            it is, and nothing else. */}
-        <p className="text-base font-extrabold" style={{ color: INK }}>Nothing starred yet.</p>
-        <p className="mt-2 text-sm" style={{ color: SOFT }}>
-          Tap <b style={{ color: INK }}>☆</b> at the top right of any page — a lesson, a game, the
-          map — and it lands here.
-        </p>
-        </div>
-      </div>
-    );
-  }
+  const BTN = "min-h-11 shrink-0 rounded-lg border-2 px-2.5 text-xs font-extrabold";
+  const CHROME = { borderColor: LINE, background: PAPER, color: INK };
 
-  const row = (it: Fav) => (
-    // THE ROW WRAPS ON A PHONE, and does not shrink to fit. Measured at 390px
-    // before this: the name, the ✎, the folder picker and the ✕ on one line
-    // pushed the ✕ off the right edge — a control a learner could see half of
-    // and never press. The name takes the whole first line under `sm`, the
-    // controls sit under it, and at `sm` and up it is one line again. No
-    // breakpoint-specific SIZE anywhere: `basis-full` is a proportion.
-    <li key={it.href} className="flex flex-wrap items-center gap-2 border-b py-2" style={{ borderColor: "var(--cahier-line)" }}>
-      {editing === it.href ? (
-        <>
-          <input
-            autoFocus
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") { commit(renameFavourite(fav, it.href, draft)); setEditing(null); }
-              if (e.key === "Escape") setEditing(null);
-            }}
-            aria-label={`Rename ${it.label}`}
-            placeholder={it.auto}
-            className="min-h-10 min-w-0 flex-1 basis-full rounded-lg border-2 px-2.5 text-sm font-bold sm:basis-auto"
-            style={{ borderColor: LINE, background: PAPER, color: INK }}
-          />
-          <button
-            type="button"
-            onClick={() => { commit(renameFavourite(fav, it.href, draft)); setEditing(null); }}
-            className="min-h-10 shrink-0 rounded-lg border-2 px-2.5 text-xs font-extrabold"
-            style={{ borderColor: LINE, background: PAPER, color: INK }}
-          >
-            Save
-          </button>
-        </>
-      ) : (
-        <>
-          <Link href={it.href} className="flex min-w-0 flex-1 basis-full items-center gap-2 no-underline sm:basis-auto">
-            <span aria-hidden className="shrink-0 text-base">{it.emoji}</span>
-            <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>
-              {it.label}
-            </span>
-            <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>
-              {[it.where, starredWhen(it.at, now)].filter(Boolean).join(" · ")}
-            </span>
-          </Link>
-          {/* Rename — the ✎ Dan's own option sketch put at the end of a row. */}
-          <button
-            type="button"
-            aria-label={`Rename ${it.label}`}
-            title={`Rename « ${it.label} »`}
-            onClick={() => { setEditing(it.href); setDraft(it.label); }}
-            className="min-h-10 shrink-0 rounded-lg border-2 px-2 text-xs"
-            style={{ borderColor: LINE, background: PAPER, color: INK }}
-          >
-            ✎
-          </button>
-          {fav.folders.length > 0 && (
-            <select
-              aria-label={`Move ${it.label} to a folder`}
-              title="Move to a folder"
-              value={it.folder ?? ""}
-              onChange={(e) => commit(moveToFolder(fav, it.href, e.target.value || null))}
-              className="min-h-10 shrink-0 rounded-lg border-2 px-1 text-xs font-bold"
-              style={{ borderColor: LINE, background: PAPER, color: INK }}
-            >
-              <option value="">— no folder</option>
-              {fav.folders.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
-            </select>
-          )}
-          <button
-            type="button"
-            aria-label={`Remove ${it.label} from favourites`}
-            title={`Remove « ${it.label} »`}
-            onClick={() => commit(removeFavourite(fav, it.href))}
-            className="min-h-10 shrink-0 rounded-lg border-2 px-2 text-xs"
-            style={{ borderColor: LINE, background: PAPER, color: INK }}
-          >
-            ✕
-          </button>
-        </>
-      )}
-    </li>
+  /** The menu a ⋯ opens: absolutely positioned against its row, like a context
+   *  menu, so opening one never pushes the list around. */
+  const Menu = ({ children }: { children: ReactNode }) => (
+    <div
+      data-menu
+      role="menu"
+      className="absolute right-0 top-full z-20 mt-1 flex min-w-44 flex-col overflow-hidden rounded-lg border-2 shadow-lg"
+      style={{ borderColor: LINE, background: PAPER }}
+    >
+      {children}
+    </div>
+  );
+
+  const MenuItem = ({ onClick, children }: { onClick: () => void; children: ReactNode }) => (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={onClick}
+      className="min-h-11 px-3 text-left text-sm font-bold hover:opacity-70"
+      style={{ color: INK, borderBottom: `1px solid ${RULE}` }}
+    >
+      {children}
+    </button>
   );
 
   return (
-    /* THE COILS OVERLAP THE FRAME — every framed page, not just this one.
-   Measured on the built app at 390px: the iframe starts at x=18 and the coil
-   strip ends at x=56, so the first 38px of ANY framed document sits under the
-   rings. globals.css hands that gutter out through
-   `html[data-embed] .cahier-foolscap { padding-left: 3rem }`; this page does
-   not wear `.cahier-foolscap` (that class also draws ruled paper, which is the
-   second sheet the 11 Sep ruling forbids inside a frame), so it takes the same
-   3rem itself. `pl-12` IS 3rem on Tailwind's rem scale — the same number, not
-   a second one, and it grows with the learner's text like everything else. */
-    <div className="py-4 pl-12 pr-3">
+    <div className="py-4 pl-12 pr-3" ref={rootRef}>
       <div className="mx-auto max-w-3xl">
-      {groups.map((g) =>
-        g.folder === null ? (
-          g.items.length > 0 && <ul key="loose" className="list-none p-0">{g.items.map(row)}</ul>
-        ) : (
-          <details key={g.folder.id} className="mt-3">
-            {/* A closed section says what is behind it — the collapse rule. */}
-            <summary className="flex cursor-pointer items-center gap-2 rounded-lg border-2 px-2.5 py-2"
-                     style={{ borderColor: LINE, background: PAPER }}>
-              <span aria-hidden>📁</span>
-              <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>
-                {g.folder.name}
-              </span>
-              <span className="fluo-mono shrink-0 text-[10px] font-black" style={{ color: SOFT }}>
-                {g.items.length} {g.items.length === 1 ? "ITEM" : "ITEMS"}
-              </span>
-            </summary>
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5 pl-1">
-              <button
-                type="button"
-                onClick={() => {
-                  const name = window.prompt("Rename this folder", g.folder!.name);
-                  if (name !== null) commit(renameFolder(fav, g.folder!.id, name));
-                }}
-                className="min-h-10 rounded-lg border-2 px-2.5 text-xs font-bold"
-                style={{ borderColor: LINE, background: PAPER, color: INK }}
-              >
-                ✎ Rename folder
-              </button>
-              {/* Deleting a folder never deletes what is in it — the rows come
-                  back to the top of the page. The label says so, because a ✕
-                  next to a count of 6 reads like losing 6 things. */}
-              <button
-                type="button"
-                title="The pages inside come back to the top of this page — nothing is lost"
-                onClick={() => commit(removeFolder(fav, g.folder!.id))}
-                className="min-h-10 rounded-lg border-2 px-2.5 text-xs font-bold"
-                style={{ borderColor: LINE, background: PAPER, color: INK }}
-              >
-                ✕ Delete folder (keeps the pages)
-              </button>
-            </div>
-            {g.items.length > 0
-              ? <ul className="list-none p-0">{g.items.map(row)}</ul>
-              : <p className="px-1 py-2 text-xs" style={{ color: SOFT }}>Empty — move something in with the folder picker on a row.</p>}
-          </details>
-        ),
-      )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {newFolder ? (
-          <>
-            <input
-              autoFocus
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") { commit(addFolder(fav, draft, Date.now())); setNewFolder(false); setDraft(""); }
-                if (e.key === "Escape") setNewFolder(false);
-              }}
-              aria-label="Name the new folder"
-              placeholder="Folder name"
-              className="min-h-10 rounded-lg border-2 px-2.5 text-sm font-bold"
-              style={{ borderColor: LINE, background: PAPER, color: INK }}
-            />
+        {/* ── THE PATH BAR. Drawn only INSIDE a folder: at the top there is
+            nowhere to go back to, and a breadcrumb with one crumb is
+            furniture. ── */}
+        {here && (
+          <nav aria-label="Where you are" className="mb-2 flex flex-wrap items-center gap-1.5 text-sm">
             <button
               type="button"
-              onClick={() => { commit(addFolder(fav, draft, Date.now())); setNewFolder(false); setDraft(""); }}
-              className="min-h-10 rounded-lg border-2 px-2.5 text-xs font-extrabold"
-              style={{ borderColor: LINE, background: PAPER, color: INK }}
+              onClick={() => { setAt(null); setMenu(null); }}
+              className="min-h-11 rounded-lg px-2 font-extrabold underline"
+              style={{ color: INK }}
             >
-              Add
+              ★ Favourites
             </button>
-          </>
-        ) : (
-          fav.folders.length < MAX_FOLDERS && (
-            <button
-              type="button"
-              onClick={() => { setNewFolder(true); setDraft(""); }}
-              className="min-h-10 rounded-lg border-2 px-2.5 text-xs font-extrabold"
-              style={{ borderColor: LINE, background: PAPER, color: INK }}
-            >
-              📁 New folder
-            </button>
-          )
+            <span aria-hidden style={{ color: SOFT }}>›</span>
+            <span className="font-extrabold" style={{ color: INK }}>📁 {here.name}</span>
+          </nav>
         )}
-        <span className="fluo-mono text-[10px] font-bold" style={{ color: SOFT }}>
-          {total} STARRED
-        </span>
-      </div>
+
+        {/* ── THE TOOLBAR: a new folder, and how the list is ordered. Both
+            content-sized; neither wears the page's width. ── */}
+        <div className="mb-2 flex flex-wrap items-center gap-2 border-b pb-2" style={{ borderColor: RULE }}>
+          {!here && (newFolder ? (
+            <>
+              <input
+                autoFocus
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { commit(addFolder(fav, draft, Date.now())); setNewFolder(false); setDraft(""); }
+                  if (e.key === "Escape") setNewFolder(false);
+                }}
+                aria-label="Name the new folder"
+                placeholder="Folder name"
+                className="min-h-11 min-w-0 flex-1 basis-full rounded-lg border-2 px-2.5 text-sm font-bold sm:basis-auto"
+                style={CHROME}
+              />
+              <button type="button" className={BTN} style={CHROME}
+                      onClick={() => { commit(addFolder(fav, draft, Date.now())); setNewFolder(false); setDraft(""); }}>
+                Add
+              </button>
+            </>
+          ) : (
+            fav.folders.length < MAX_FOLDERS && (
+              <button type="button" className={BTN} style={CHROME}
+                      onClick={() => { setNewFolder(true); setDraft(""); }}>
+                📁 New folder
+              </button>
+            )
+          ))}
+
+          {/* Two states, so it is a toggle and not a menu: a menu of two is a
+              menu nobody opens twice. */}
+          {items.length > 1 && (
+            <button
+              type="button"
+              className={BTN}
+              style={CHROME}
+              aria-label={`Sorted by ${sort === "recent" ? "most recent" : "name"} — tap to change`}
+              onClick={() => setSort(sort === "recent" ? "name" : "recent")}
+            >
+              ⇅ {sort === "recent" ? "Recent" : "Name"}
+            </button>
+          )}
+
+          <span className="fluo-mono ml-auto text-[10px] font-bold" style={{ color: SOFT }}>
+            {here ? `${items.length} ${items.length === 1 ? "ITEM" : "ITEMS"}` : `${fav.items.length} STARRED`}
+          </span>
+        </div>
+
+        {empty && (
+          <div className="py-6">
+            {here ? (
+              <p className="text-sm" style={{ color: SOFT }}>
+                This folder is empty. Move something in with <b style={{ color: INK }}>⋯ → Move to…</b> on any row.
+              </p>
+            ) : (
+              <>
+                {/* The empty state TEACHES THE GESTURE — a star nobody knows
+                    about is a feature nobody has. */}
+                <p className="text-base font-extrabold" style={{ color: INK }}>Nothing starred yet.</p>
+                <p className="mt-2 text-sm" style={{ color: SOFT }}>
+                  Tap <b style={{ color: INK }}>☆</b> at the top right of any page — a lesson, a game,
+                  the map — and it lands here.
+                </p>
+              </>
+            )}
+          </div>
+        )}
+
+        <ul className="list-none p-0">
+          {/* ── FOLDERS FIRST, and a folder row is a way IN, not a disclosure.
+              The count is on the row so nobody opens it to find out whether it
+              is worth opening. ── */}
+          {folders.map((f: FavFolder) => (
+            <li key={f.id} className="relative flex items-center gap-2 border-b" style={{ borderColor: RULE }}>
+              <button
+                type="button"
+                onClick={() => { setAt(f.id); setMenu(null); }}
+                className="flex min-h-11 min-w-0 flex-1 items-center gap-2 py-2 text-left"
+              >
+                <span aria-hidden className="shrink-0 text-base">📁</span>
+                <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>{f.name}</span>
+                <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>
+                  {countIn(fav, f.id)} {countIn(fav, f.id) === 1 ? "item" : "items"}
+                </span>
+                <span aria-hidden className="shrink-0 text-sm" style={{ color: SOFT }}>›</span>
+              </button>
+              <button
+                type="button"
+                data-menu
+                aria-label={`Actions for the folder ${f.name}`}
+                aria-haspopup="menu"
+                onClick={() => setMenu(menu === folderKey(f.id) ? null : folderKey(f.id))}
+                className="min-h-11 shrink-0 rounded-lg px-2 text-sm font-black"
+                style={{ color: SOFT }}
+              >
+                ⋯
+              </button>
+              {menu === folderKey(f.id) && (
+                <Menu>
+                  <MenuItem onClick={() => {
+                    const name = window.prompt("Rename this folder", f.name);
+                    if (name !== null) commit(renameFolder(fav, f.id, name));
+                  }}>✎ Rename</MenuItem>
+                  {/* The label carries the promise, because a 🗑 beside « 6
+                      items » reads like losing six things. */}
+                  <MenuItem onClick={() => commit(removeFolder(fav, f.id))}>
+                    🗑 Delete folder — keeps the pages
+                  </MenuItem>
+                </Menu>
+              )}
+            </li>
+          ))}
+
+          {/* ── PAGES. The row IS the link; everything else is behind the ⋯. ── */}
+          {items.map((it: Fav) => (
+            <li key={it.href} className="relative flex items-center gap-2 border-b" style={{ borderColor: RULE }}>
+              {renaming === it.href ? (
+                <>
+                  <input
+                    autoFocus
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") { commit(renameFavourite(fav, it.href, draft)); setRenaming(null); }
+                      if (e.key === "Escape") setRenaming(null);
+                    }}
+                    aria-label={`Rename ${it.label}`}
+                    placeholder={it.auto}
+                    className="my-1 min-h-11 min-w-0 flex-1 rounded-lg border-2 px-2.5 text-sm font-bold"
+                    style={CHROME}
+                  />
+                  <button type="button" className={BTN} style={CHROME}
+                          onClick={() => { commit(renameFavourite(fav, it.href, draft)); setRenaming(null); }}>
+                    Save
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href={it.href} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 py-2 no-underline">
+                    <span aria-hidden className="shrink-0 text-base">{it.emoji}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>
+                      {it.label}
+                    </span>
+                    <span className="fluo-mono shrink-0 text-[10px] font-bold" style={{ color: SOFT }}>
+                      {[it.where, starredWhen(it.at, now)].filter(Boolean).join(" · ")}
+                    </span>
+                  </Link>
+                  <button
+                    type="button"
+                    data-menu
+                    aria-label={`Actions for ${it.label}`}
+                    aria-haspopup="menu"
+                    onClick={() => { setMenu(menu === pageKey(it.href) ? null : pageKey(it.href)); setMoving(null); }}
+                    className="min-h-11 shrink-0 rounded-lg px-2 text-sm font-black"
+                    style={{ color: SOFT }}
+                  >
+                    ⋯
+                  </button>
+                  {menu === pageKey(it.href) && (
+                    <Menu>
+                      {moving === it.href ? (
+                        <>
+                          {/* « Move to… » opens its destinations in place — the
+                              iOS Files shape. With a cap of 20 folders, a flat
+                              list IS the whole picker. */}
+                          <span className="fluo-mono px-3 pt-2 text-[10px] font-black" style={{ color: SOFT }}>
+                            MOVE TO
+                          </span>
+                          {it.folder !== null && (
+                            <MenuItem onClick={() => commit(moveToFolder(fav, it.href, null))}>
+                              ★ Favourites (top)
+                            </MenuItem>
+                          )}
+                          {fav.folders.filter((f) => f.id !== it.folder).map((f) => (
+                            <MenuItem key={f.id} onClick={() => commit(moveToFolder(fav, it.href, f.id))}>
+                              📁 {f.name}
+                            </MenuItem>
+                          ))}
+                          {fav.folders.filter((f) => f.id !== it.folder).length === 0 && it.folder === null && (
+                            <span className="px-3 py-2 text-xs" style={{ color: SOFT }}>
+                              No folders yet — make one first.
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          <MenuItem onClick={() => { setRenaming(it.href); setDraft(it.label); setMenu(null); }}>
+                            ✎ Rename
+                          </MenuItem>
+                          <MenuItem onClick={() => setMoving(it.href)}>📁 Move to…</MenuItem>
+                          <MenuItem onClick={() => commit(removeFavourite(fav, it.href))}>🗑 Remove</MenuItem>
+                        </>
+                      )}
+                    </Menu>
+                  )}
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
