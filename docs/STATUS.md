@@ -568,6 +568,24 @@ npm run build` green, all 124 verify checks pass, and the twenty source files
 this branch touches lint with one warning inherited from main (PR #176's unused
 `attemptAt` in `EcouTexte.tsx`).
 
+## 12 Sep — Home's welcome strip runs the full paper width, title centred (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+Landed as #310, deployed (run 58, then run 59 by the QC lane).
+
+Dan: *"i am quite sure i asked for the Start page to have the banner full
+width and the hero title to be centralised, or may be the message got lost"*.
+It had not reached this session. Measured before at 1440px: paper x=43
+w=1354, strip x=293 w=860 — the strip bled to the edges of Home's 768px
+`max-w-3xl` COLUMN, not of the page. The strip now renders outside that
+wrapper (the column starts below it, around the keys and the map), so
+verify82's pull-by-the-well's-padding arithmetic reaches the paper: x=49
+w=1348. Heading and byline centred. Centred, « par Dr Chan » landed under
+the brand pill's ink, which overshoots the letters by 0.18em and painted over
+its tail — it sits a step lower and above the pill now. The highlighter wipe
+was driven in a fresh session afterwards and is intact: nib at 2.2s, ragged
+edge mid-word at 3.2s, pinned by 4.5s.
+
 ## 11 Sep — the ☰ menu goes bright and bigger; the Guide is rewritten (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
