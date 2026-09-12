@@ -925,7 +925,7 @@ export default function HomeMap3D({
           data-no-scroll-on
           className={fill
             ? `home-map3d-box relative h-full overflow-x-hidden ${still ? "overflow-y-hidden" : "overflow-y-auto"}`
-            : "home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"}
+            : "home-map3d-box relative h-[32.5rem] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[40rem]"}
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
           style={{

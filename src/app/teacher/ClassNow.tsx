@@ -174,7 +174,7 @@ export default function ClassNow({
                 {lastSio && <span className="fluo-mono ml-auto truncate text-[10px] font-bold" style={{ color: SOFT }} title={lastSio}>{SHORT.get(lastSio)}</span>}
               </div>
               <div className="mt-1.5 flex items-center gap-1.5">
-                <span className="h-[3px] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-label="Last ten accuracy" aria-valuenow={t.acc10 ?? 0} aria-valuemin={0} aria-valuemax={100}>
+                <span className="h-[0.1875rem] flex-1 overflow-hidden rounded-full" style={{ background: "var(--cahier-line)" }} role="progressbar" aria-label="Last ten accuracy" aria-valuenow={t.acc10 ?? 0} aria-valuemin={0} aria-valuemax={100}>
                   <span className="block h-full rounded-full" style={{ width: `${Math.max(t.acc10 ?? 0, t.acc10 == null ? 0 : 1)}%`, background: tierToken(t.acc10) }} />
                 </span>
                 <span className={`fluo-mono w-8 shrink-0 text-right text-[10px] font-black ${tierClass(t.acc10)}`} style={t.acc10 == null ? { color: SOFT } : undefined}>{t.acc10 == null ? "—" : `${t.acc10}%`}</span>
