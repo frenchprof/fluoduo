@@ -186,61 +186,25 @@ ok("familyOf" in sheet,
    "each row wears its activity's FAMILY colour (verify36)",
    "the sheet does not colour its rows — a stop's activities become one grey list")
 
-# 5 · THE KEY ROW IS RETIRED (Dan, 2026-09-12: *"is it ok to do without the
-#     play, forward and rewind buttons"*, then *"Rewind = Revise = ErroRevue ==
-#     they are the same thing"*). `--dopa-focus` and the disabled-Rewind well
-#     went with ⏪; `--dopa-win` survives on the 🎓 end-of-course key, a fourth
-#     key Dan did not name, which moved into the map's control row.
+# 5 · THE KEY ROW IS RETIRED, ALL OF IT (Dan, 2026-09-12). First the three he
+#     named — *"is it ok to do without the play, forward and rewind buttons"* —
+#     and then the fourth, once he saw what it was for: the 🎓 Diplômé key
+#     stood in for Continue at 50/50, where `nextSioId` returns undefined and
+#     Continue vanished. *"we already removed the continue button so there is
+#     no need to replace it with anything"*. No hole, no stand-in.
 #
-#     KEPT AS AN ASSERTION RATHER THAN DELETED, because the rule it encodes —
-#     a key wears the dopamine role that means what it does — is still live for
-#     the one key that is left. verify32 pins the reward ink's absence.
+#     `.home-key` and `verify111-forever-french.py` went with it. What is left
+#     to assert is the ban rather than the shape: no key may return naming its
+#     own pixels, on either surface.
 mapbody = strip_comments(read("src/app/map/MapBody.tsx"))
-ok("--dopa-win" in mapbody,
-   "the surviving key carries --dopa-win",
-   "the 🎓 end-of-course key lost its win role — or it is gone, which verify111 reports")
-
-# 6 · it must FIT a phone. The draft sizes the phone down on purpose; a row
-#     that overflows is the exact failure Dan called out on 21 Aug ("must not
-#     go hiding into the overspill off the screen"). Measured live at
-#     320/360/390/430 px — nothing clipped, scrollWidth == viewport — and the
-#     responsive classes that make that true are pinned here.
-#     RESIZED 1 Sep, and the claim is unchanged: the keys have a PHONE size and
-#     a larger one from sm, and the phone size is whatever makes the row fit.
-#     It was 50px for three keys. Dan's Next-stop key made it four, and 4x50 +
-#     3 gaps is 224px against a row that is 232px wide at 320 and 271 at 360 —
-#     the `1/50` well went from 64px to 0.4px and was drawn UNDER the keys at
-#     both, escaping at 390 by 0.3px. So the literal 50 is gone and the RULE is
-#     asserted instead: two sizes, and the phone one between the 44px
-#     touch-target floor and 50px. verify25 pins the row's matching wrap.
-#     AND THE TWO LITERAL SIZES ARE GONE (Dan, 2026-09-12: "PLEASE NEVER EVER
-#     HARD CODE FONT SIZES AND BUTTON SIZES !!!"). The keys read `.home-key`
-#     now — one fluid side off `--fs-step` with the 44px touch floor pinned by
-#     `max()`, so a phone still gets exactly 44 and a desktop lands on ~58,
-#     which is what the old breakpoint jumped to.
-#     SO THE CLAIM MOVES FROM THE SPELLING TO THE RULE. Greping for `h-[44px]`
-#     could only ever see how the size was typed; what matters is that the
-#     floor is a floor and the growth is fluid. Both halves are asserted here,
-#     and `verify106-fluidtype` owns the wider ban.
-#     ONE KEY NOW, NOT FOUR — the row went on 12 Sep and the 🎓 key carries
-#     `.home-key` in the map's control row. The rule is unchanged and still
-#     load-bearing, so the count moves from ">= 3" to ">= 1" and the file it is
-#     read from moves with the key.
-keys = re.findall(r'className=\{?[`"][^`"]*\bhome-key\b[^`"]*[`"]', home + mapbody)
-ok(len(keys) >= 1,
-   f"the {len(keys)} key(s) take their size from .home-key, not from a pixel",
-   "nothing carries .home-key — a hard-coded size has come back, or the 🎓 key is gone")
+ok("home-key" not in home and "home-key" not in mapbody,
+   "the key row is retired and nothing wears .home-key",
+   "a .home-key is back — the transport row was removed on 12 Sep and nothing "
+   "replaced it")
 ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home + mapbody),
    "no key names its own pixel size",
    "a key is back to a literal h-[NNpx] w-[NNpx]")
-rule = re.search(r"\.home-key\s*\{[^}]*\}", css or "", re.S)
-body = rule.group(0) if rule else ""
-ok("max(44px" in body.replace(" ", "") or "max(44px" in body,
-   "the 44px touch floor is pinned with max(), and only the growth above it is fluid",
-   ".home-key does not pin the 44px touch-target floor with max() — a key could shrink under a finger")
-ok("--fs-step" in body,
-   "the key grows with the type ramp rather than at a breakpoint",
-   ".home-key does not read --fs-step, so the keys are fixed again")
+
 # THE WELL LEFT THE ROW (Dan, 7 Sep: the editable stop rides the top bar
 # now — "so we free up the space between the play rewind etc buttons").
 # The fit-at-320 worry the shrink rule answered is gone with it: the row

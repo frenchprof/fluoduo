@@ -24,7 +24,6 @@
  * and saves it.
  */
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import PillSwitch from "@/components/PillSwitch";
 import Map2DGrid from "@/components/Map2DGrid";
 import HomeMap3D from "@/components/HomeMap3D";
@@ -34,7 +33,7 @@ import StopPopup from "../StopPopup";
 import { usePinchZoom } from "@/lib/usePinchZoom";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
-import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
+import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
 import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
@@ -153,9 +152,6 @@ export default function MapBody() {
   // first client render agrees with the prerender.
   const activeId = nextSioId(progress, bookmark);
   const accent = equippedAccent(progress);
-  // The whole course done — the 🎓 key's only condition. One line off the
-  // progress this component already holds, rather than a second reader.
-  const doneTotal = SIOS.filter((x) => isSioDone(x.id, progress)).length;
   const openSioObj = openSioId ? SIOS.find((s) => s.id === openSioId) : undefined;
 
   return (
@@ -308,41 +304,23 @@ export default function MapBody() {
           </button>
           <span aria-hidden>%</span>
         </span>
-        {/* 🎓 DIPLÔMÉ — THE ONE KEY THAT SURVIVED HOME'S TRANSPORT ROW, and it
-            survived because Dan did not ask for it to go. He named three:
-            *"the play, forward and rewind buttons"*. This was a fourth, and it
-            is not transport at all — it appears ONLY at 50/50, in Continue's
-            place, and it is the course's ending:
+        {/* NO KEY AT 50/50, AND NOTHING TO REPLACE ONE WITH (Dan, 2026-09-12:
+            *"we already removed the continue button so there is no need to
+            replace it with anything"*).
 
-              « Diplômé ! All 50 goals done — the course ends; the French
-                doesn't. Revision keeps every word coming back. »
+            The 🎓 Diplômé key existed for exactly one reason, written down on
+            7 Sep: at 50/50 `nextSioId` returns undefined, so Home's ▶ Continue
+            — the app's loudest door — VANISHED on the day a learner finished
+            the course, and the 🎓 was what stood in its place so the row did
+            not develop a hole.
 
-            LAF1201 is a semester course, so there is no 51st goal to point at;
-            it opens revision, which spaced repetition makes the genuine
-            forever-game. Deleting it with the other three would have removed a
-            feature nobody asked about, on the one screen a learner reaches
-            once, which is also the screen where nobody would notice it missing
-            until it was far too late to tell.
-
-            IT LIVES HERE RATHER THAN ON HOME so that it costs no second copy
-            of the learner's progress. Home has no state left at all now —
-            `MapBody` loads progress because it must, being the component
-            `/map` framed — and restoring `progress`, `activeId` and
-            `doneTotal` up there purely to decide this key's visibility would
-            reintroduce exactly the two-copies-of-one-fact drift this branch
-            exists to end. `doneTotal` is one line off progress already in
-            hand. */}
-        {doneTotal >= SIOS.length && (
-          <Link
-            href="/reviser"
-            aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
-            title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
-            className="neo-key home-key grid shrink-0 place-items-center"
-            style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
-          >
-            <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
-          </Link>
-        )}
+            Continue is gone now, from every state. There is no hole for the
+            🎓 to fill, and a key that appears only at 50/50 to point at a page
+            already reachable from ☰ → 🔄 Revise is a second door wearing a
+            ceremony. `verify111-forever-french.py` retired with it — a check
+            whose entire subject has been ruled away is not weakened, it is
+            finished. The reasoning it recorded is preserved here and in
+            STATUS so the next session does not rebuild the key by accident. */}
         </span>
       </div>
 

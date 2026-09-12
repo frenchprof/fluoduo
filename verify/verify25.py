@@ -192,24 +192,22 @@ check("▶" not in home and "⏸" not in home and "⏹" not in home,
 # characters, no popup may creep back, and `.home-key` must stay fluid,
 # because the 🎓 key still wears it.
 
-# `.home-key` OUTLIVED THE ROW. The end-of-course 🎓 key — a FOURTH key Dan did
-# not name, which appears only at 50/50 — moved into the map's control row and
-# still carries the class, so the rule it depends on is still load-bearing.
-# THE SIZE IS NO LONGER TYPED (Dan, 2026-09-12: "PLEASE NEVER EVER HARD CODE
-# FONT SIZES AND BUTTON SIZES !!!"). It was `h-[44px] … sm:h-[58px]` — two fixed
-# ladders — and is now `.home-key`: one fluid side off `--fs-step` with the
-# touch floor pinned by `max(44px, …)`.
-_css = open("src/app/globals.css", encoding="utf-8").read()
-_rule = re.search(r"\.home-key\s*\{[^}]*\}", _css, re.S)
-_body = _rule.group(0) if _rule else ""
+# `.home-key` DID NOT OUTLIVE THE ROW AFTER ALL (Dan, 2026-09-12: *"we already
+# removed the continue button so there is no need to replace it with
+# anything"*). For an hour it did: the 🎓 end-of-course key kept the class
+# alive in the map's control row. Then Dan pointed out what the 🎓 was FOR —
+# it stood in for Continue at 50/50, because Continue vanished there — and with
+# Continue gone from every state there is no hole to fill. The key went, the
+# class went with it, and `verify111-forever-french.py` is retired.
+#
+# So there is no size rule left here to pin. What survives is the ban: no key
+# may come back naming its own pixels.
 _mapbody = open("src/app/map/MapBody.tsx", encoding="utf-8").read()
-check("home-key" in _mapbody and "max(44px" in _body.replace(" ", ""),
-      "the 🎓 key sizes from .home-key, with the 44px touch floor pinned by max()",
-      "the .home-key rule lost its 44px floor, or nothing wears it any more — if the "
-      "🎓 end-of-course key has gone too, verify111 is the check that says so")
-check("--fs-step" in _body,
-      "and it grows on the type ramp, not at a breakpoint",
-      ".home-key does not read --fs-step — the key is a fixed size again")
+check("home-key" not in home and "home-key" not in _mapbody,
+      "no key wears .home-key — the whole key row is retired",
+      "a .home-key is back on Home or the map: the transport row was removed on "
+      "12 Sep and nothing replaced it")
+
 check(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
       "no key on Home names its own pixel size",
       "a key is back to a literal h-[NNpx] w-[NNpx] — it will not shrink on a 360px phone")

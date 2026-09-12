@@ -3240,36 +3240,6 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
 .fluo-row      { min-height: calc(3.5rem + var(--fs-step) * 3); }
 .fluo-row-tall { min-height: calc(4rem + var(--fs-step) * 3.4); }
 
-/* HOME'S THREE KEYS — FLUID, WITH THE TOUCH FLOOR AS A FLOOR (Dan,
-   2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!",
-   then "do the home keys first, then all the rest pls").
-
-   WHAT WAS WRONG. Each key read
-       h-[44px] w-[44px] rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]
-   — six fixed numbers, then all six again at a breakpoint. Unlike `text-[NNpx]`,
-   which globals.css rewrites onto the ramp, NOTHING remaps a size: 58px was 58
-   real pixels on a 13-inch laptop and on a 32-inch monitor alike, and a learner
-   who turned their browser's text up got bigger words around keys that did not
-   move. Measured at 900px wide: text size normal -> keys 58, the goal well 51;
-   text size large -> keys STILL 58, the well 60. The keys ended up smaller than
-   the number beside them.
-
-   THE ONE NUMBER THAT STAYS A NUMBER IS THE FLOOR. 44px is the touch-target
-   minimum a finger needs, not a design size, and a minimum that shrank with the
-   type would stop being a minimum — so it is pinned with `max()` and only the
-   growth above it is fluid. At the default text size on a phone the two agree
-   exactly (2.75rem = 44px), so nothing moves there; a desktop opens the step
-   and lands on ~58px, which is what the old breakpoint jumped to.
-
-   The radius is DERIVED, not declared: 13/44 and 17/58 are both ≈ 0.295 of the
-   side, so one ratio reproduces both of the old corners and keeps reproducing
-   them at any size in between. */
-.home-key {
-  --key-side: max(44px, calc(2.75rem + var(--fs-step) * 2.4));
-  width: var(--key-side);
-  height: var(--key-side);
-  border-radius: calc(var(--key-side) * 0.295);
-}
 
 /* HOME'S GOAL WELL — ONE FLUID SIZE, NO PIXELS, NO BREAKPOINT (Dan,
    2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!").
@@ -3410,9 +3380,7 @@ input.fluo-bookmark:focus,
   .text-\[1\.05rem\] { font-size: calc(1.05rem + var(--fs-step) * 1.05); }
   .text-\[1\.3rem\] { font-size: calc(1.3rem + var(--fs-step) * 1.30); }
   .text-\[1\.4rem\] { font-size: calc(1.4rem + var(--fs-step) * 1.40); }
-  .text-\[1\.5rem\] { font-size: calc(1.5rem + var(--fs-step) * 1.50); }
   .text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
-  .text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[1\.9rem\] { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
   /* ── AND THE TEN SIZES A PAGE ASKS FOR AT A BREAKPOINT ──────────────────
      A LIVE FAULT, found by QC on 2026-09-11 and older than the rem block
@@ -3445,7 +3413,6 @@ input.fluo-bookmark:focus,
     .sm\:text-\[28px\]   { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
     .sm\:text-\[30px\]   { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
     .sm\:text-\[38px\]   { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
-    .sm\:text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
     .sm\:text-\[1\.9rem\]  { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
   }
   @media (max-height: 480px) {
