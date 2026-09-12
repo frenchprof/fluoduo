@@ -325,8 +325,30 @@ export default function WelcomeBody() {
             <BrandName word="FluOLinGo" />
           </span>
         </h1>
+        {/* THE LINE ARRIVES STRUCK (Dan, 2026-09-12, sending a frame of a gif:
+            *"see if you can transpose this gif animation (minus the background)
+            onto the sky of the ENTER landing page, while adjusting the colors to
+            match the map's colors"*).
+
+            `fluo-name-strike` is the whole transposition — see globals.css for
+            what was kept and what was deliberately not. Two notes belong here,
+            where the words are:
+
+            THE COLOURS WERE ALREADY THE MAP'S. Dan's second message — *"keep
+            the colors consistent, the gif has some issues with consistency of
+            colors"* — asks for the thing this line has done since 9 Sep: the
+            raised letters take `--sio-vocab` and `--sio-grammar`, the blue and
+            pink a learner can see on the stops two hundred pixels below. So
+            nothing here changed colour; what changed is that the colours now
+            hold still while the type moves, which is what the gif does not do.
+
+            THE WORDS ARE UNCHANGED. His frame reads « Fluency, built On
+            Linguistic Goals »; this line reads « Building your Fluency on
+            Linguistic Goals », which is the wording he settled on 8 Sep and
+            which spells the same F·O·L·G. He asked to transpose the ANIMATION,
+            so the animation is all that moved. */}
         <p
-          className="mt-1.5 inline-block px-4 py-0.5 text-[1.35rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.8rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
+          className="fluo-name-strike mt-1.5 inline-block px-4 py-0.5 text-[1.35rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.8rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
           style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
         >
           {/* One span per raised letter, and the sentence given once to a

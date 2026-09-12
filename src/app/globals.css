@@ -2048,6 +2048,54 @@ h3.cahier-display { font-size: var(--fs-h3); }
    STRENGTH. Falling back to the mid-point of a pulse would hand the one learner
    who asked for less motion the faintest version of the thing that was already
    too faint. */
+/* ===========================================================================
+ *  THE NAME ARRIVES — kinetic type in the welcome sky (2026-09-12)
+ *
+ *  Dan sent a frame of a gif: « Fluency, built On Linguistic Goals » in heavy
+ *  type, a coloured layer and a dark layer sliding out of register against a
+ *  yellow ground. *"see if you can transpose this gif animation (minus the
+ *  background) onto the sky of the ENTER landing page, while adjusting the
+ *  colors to match the map's colors"* — and then, before anything was built:
+ *  *"keep the colors consistent, the gif has some issues with consistency of
+ *  colors"*.
+ *
+ *  HE IS DESCRIBING THE ONE THING NOT TO COPY. In his frame the two layers
+ *  have drifted apart across the line, so « Flu » is blue, « ency, built » is
+ *  dark, « On Lin » is blue again — the colour changes in the MIDDLE of words
+ *  and even inside a glyph. That is the gif's accident, not its idea. The idea
+ *  is the double: one copy displaced from another, hard-edged, so the words
+ *  look struck rather than typed.
+ *
+ *  So the displacement is kept and the drift is not. Which letters are
+ *  coloured is decided by the name — F · O · L · G, the four the brand is
+ *  built from — and stays decided while the type moves.
+ *
+ *  IT PLAYS ONCE, and that is a ruling this file already carries. The ENTER
+ *  coin is *"THE ONE THING THAT MOVES ON THIS PAGE"* (Dan, 11 Sep, moving the
+ *  beat off goal 1 and onto the door). A headline looping beside it would be a
+ *  second thing asking for the eye, on the one screen whose whole job is to
+ *  point at a single control. This arrives, settles, and is still.
+ *
+ *  THE DARK TWIN IS A SHADOW, NOT A SECOND ELEMENT: `text-shadow` with no blur
+ *  gives the hard displaced copy the gif has, for one property that can be
+ *  animated, and leaves the sentence in the document once — a duplicated
+ *  headline is read twice by a screen reader.
+ */
+@keyframes fluo-name-strike {
+  0%   { transform: translateX(-0.5em); opacity: 0; text-shadow: 0.24em 0.12em 0 var(--cahier-ink); }
+  55%  { opacity: 1; }
+  100% { transform: translateX(0);      opacity: 1; text-shadow: 0.055em 0.045em 0 var(--cahier-ink); }
+}
+.fluo-name-strike {
+  animation: fluo-name-strike 900ms cubic-bezier(0.16, 0.84, 0.28, 1) both;
+  text-shadow: 0.055em 0.045em 0 var(--cahier-ink);
+}
+/* No motion: the settled frame, with none of the travel. The displaced twin is
+   the LOOK rather than the movement, so it stays — what goes is the slide. */
+@media (prefers-reduced-motion: reduce) {
+  .fluo-name-strike { animation: none; }
+}
+
 @keyframes fluo-edge-beat {
   0%, 100% { opacity: 0.62; }
   50%      { opacity: 1; }
