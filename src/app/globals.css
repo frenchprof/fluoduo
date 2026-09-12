@@ -2029,6 +2029,34 @@ h3.cahier-display { font-size: var(--fs-h3); }
   .home-map-bob, .home-map3d-pulse, .home-map3d-ring { animation: none; }
 }
 
+/* THE EDGE HINTS BEAT, SLOWLY (Dan, 2026-09-12: *"The left and right arrow on
+   the page edges for desktop is not loud enough to be heard. make it darker and
+   blinking slowly"*).
+
+   This REVERSES the brief they were built to on 7 Sep — *"little subtle
+   triangular indications"* — and the reversal is the point: subtle was the
+   right instinct and the wrong result. They were a 25%-ink chevron on 55% paper,
+   which is legible if you are looking for it and invisible if you are not, and
+   what they have to survive is a learner who does not know there is anything
+   there at all. A thing nobody notices is not subtle, it is absent.
+
+   4s, not the map's 2s: a pulse this slow reads as breathing rather than as an
+   alarm, and it sits at the edge of vision where a fast beat would nag. Opacity
+   only — no movement — so it cannot be mistaken for the page itself shifting.
+
+   Under prefers-reduced-motion the beat stops and the arrow STAYS AT FULL
+   STRENGTH. Falling back to the mid-point of a pulse would hand the one learner
+   who asked for less motion the faintest version of the thing that was already
+   too faint. */
+@keyframes fluo-edge-beat {
+  0%, 100% { opacity: 0.62; }
+  50%      { opacity: 1; }
+}
+.fluo-edge-beat { animation: fluo-edge-beat 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fluo-edge-beat { animation: none; opacity: 1; }
+}
+
 /* Print (patch 25): Home prints the course map on ONE A4 portrait page —
    HomePrintSheet portals into <body>; every other body child is hidden. */
 .home-print { display: none; }

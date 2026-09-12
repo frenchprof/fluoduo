@@ -49,6 +49,7 @@
  * do I start, and each of them now has exactly one answer on screen.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { useCourse } from "@/components/CourseGate";
@@ -57,6 +58,7 @@ import { nextSioId } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
 import { equippedAccent } from "@/lib/economy";
 import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
+import { HOME_HREF } from "@/lib/routes";
 
 /** The four letters the brand is built from: Fluency On Linguistic Goals.
  *  COLOURED, ON DAN'S MOCK (8 Sep: "text bigger and More like this with the
@@ -145,6 +147,7 @@ function BrandName({ word }: { word: string }) {
 }
 
 export default function WelcomeBody() {
+  const router = useRouter();
   // Progress lives in localStorage, which the static export must not read at
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
@@ -196,7 +199,34 @@ export default function WelcomeBody() {
     // 100dvh, not 100vh: on a phone the browser's own bars come and go, and
     // vh is measured against the TALLEST state, so a vh page hides its own
     // bottom — which here is the CTA — behind the address bar on arrival.
-    <main className="fluo-embed relative h-[100dvh] w-full overflow-hidden">
+    <main
+      className="fluo-embed relative h-[100dvh] w-full cursor-pointer overflow-hidden"
+      /* THE WHOLE DOOR OPENS, NOT JUST THE HANDLE (Dan, 2026-09-12: *"the Start
+         page : allow users to enter the site no matter where they click. since
+         there is no other branches from there"*).
+
+         He is describing a page with exactly ONE destination. Every pixel of it
+         — the sky, the road, the fifty stops, the greeting — is a picture of
+         where you are going, and none of it does anything else, so a tap that
+         lands an inch from the coin currently does nothing at all and reads as
+         the app ignoring you.
+
+         THE COIN STAYS, and that is not redundant under the litmus test: it is
+         what SAYS the page is a door. Remove it and a learner is looking at a
+         landscape with no reason to touch it. The coin teaches the gesture; this
+         makes the gesture forgiving.
+         `cursor-pointer` is the desktop half of the same message.
+
+         ANYTHING THAT IS ITSELF A CONTROL IS LEFT ALONE. There is only the coin
+         today, and its own <Link> already goes here — but the guard is written
+         against ANY anchor or button so that adding one later (a course tag, a
+         sign-in, a language pick) cannot be swallowed by the page beneath it.
+         That is the failure this page would report as "the button is dead". */
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest("a,button,[role='button'],input,select")) return;
+        router.push(HOME_HREF);
+      }}
+    >
       <div className="absolute inset-0">
         <HomeMap3D
           progress={progress}

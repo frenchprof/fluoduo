@@ -68,7 +68,15 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(ROOT, "src")):
         full = os.path.join(dirpath, name)
         if os.path.relpath(full, ROOT).replace(os.sep, "/") == HINTS:
             continue
-        present.update(re.findall(r'data-tour="([^"]+)"', open(full, encoding="utf-8").read()))
+        # BOTH FORMS OF THE ANCHOR. An attribute may be conditional — Home's map
+        # gives `data-tour="map-stop"` to the CURRENT stop only, written
+        # `data-tour={active ? "map-stop" : undefined}` — and a search for the
+        # literal reports a hook that renders perfectly as missing. verify44 hit
+        # this first; the same blindness was here.
+        text = open(full, encoding="utf-8").read()
+        present.update(re.findall(r'data-tour="([^"]+)"', text))
+        for expr in re.findall(r"data-tour=\{([^}]*)\}", text):
+            present.update(re.findall(r"""['"]([^'"]+)['"]""", expr))
 
 # A STEP MAY NAME MORE THAN ONE ANCHOR, and every one of them is checked.
 #
