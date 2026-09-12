@@ -134,6 +134,25 @@ out.byKey = describeHere("/practice/say-it/aimer-activites", "", "FluOLinGo", "w
 out.byPath = describeHere("/tutor", "", "FluOLinGo").auto;
 // The title is a trail; only the head of it is a name.
 out.byTitle = describeHere("/nowhere", "", "Map of FluOLinGo-land — FluOLinGo · FluOLinGo").auto;
+// NO ROW IS NAMED AFTER THE SITE. `/guide` and all ~50 `/lessons/*` routes
+// set no title of their own, so they inherit the layout's and every row read
+// « FluOLinGo » — five starred lessons would have been five identical rows.
+// Found by starring nine real pages and reading the list.
+// A LESSON IS CALLED WHAT IT CALLS ITSELF. All 59 rows of LESSONS carry a real
+// French title and nothing read them, so every starred lesson came out
+// « MneMemo » (the reader all 59 share, which cannot tell two apart) or, before
+// that, « FluOLinGo ». Dan, shown the rows: *"what should they be called
+// then?"* — the answer was already in the repo.
+out.lessonTitle = describeHere("/lessons/ca-secrit", "", "FluOLinGo").auto;
+out.lessonAccent = describeHere("/lessons/meteo", "", "FluOLinGo").auto;
+// ...and the lesson's own title beats the ACTIVITY key, which is the whole
+// point: `mnemo` is right for a deck route and useless for telling 59 lessons
+// apart.
+out.lessonBeatsKey = describeHere("/lessons/colors", "", "FluOLinGo", "mnemo").auto;
+out.bareGuide = describeHere("/guide", "", "FluOLinGo").auto;
+// The de-slug arm is for a page with no title ANYWHERE — not a lesson, which
+// now has one. An unregistered route is the honest case for it.
+out.bareUnknown = describeHere("/somewhere/atelier-avis-resto", "", "FluOLinGo").auto;
 // `where` is never invented.
 out.whereNull = describeHere("/tutor", "", "x", "tutor").where;
 // The User page's four tabs are four rows, not one.
@@ -199,6 +218,26 @@ console.log(JSON.stringify(out));
         check(got["byTitle"] == "Map of FluOLinGo-land",
               "a page title is trimmed to its head, not stored as a trail",
               f"the title fallback kept the trail: {got['byTitle']!r}")
+        check(got["lessonTitle"] == "Comment ça s\u2019écrit ?"
+              and got["lessonAccent"] == "La météo",
+              "a lesson is named by its own title, accents and all",
+              f"a lesson named itself {got['lessonTitle']!r} / "
+              f"{got['lessonAccent']!r} — all 59 carry a real French title in "
+              "LESSONS, and a de-slugged path loses the accents and leaves an "
+              "English name in a French course")
+        check(got["lessonBeatsKey"] == "Les couleurs",
+              "the lesson's title beats the activity key, so 59 lessons are 59 names",
+              f"a lesson named itself {got['lessonBeatsKey']!r} — the activity "
+              "key is « MneMemo », the reader all 59 lessons share, so it can "
+              "never tell two of them apart")
+        check(got["bareGuide"] == "Guide"
+              and got["bareUnknown"] == "Atelier avis resto",
+              "a page with no title anywhere is named after its address, "
+              "never after the site",
+              f"a titleless page named itself {got['bareGuide']!r} / "
+              f"{got['bareUnknown']!r} — a list of rows all reading « FluOLinGo » "
+              "is a list nobody uses, and it is invisible until the page has "
+              "something in it")
         check(got["whereNull"] is None,
               "a page that belongs to no stop says nothing rather than a wrong goal",
               "`where` invented a goal for a page that has none — a label that "

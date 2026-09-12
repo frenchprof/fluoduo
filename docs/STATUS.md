@@ -594,6 +594,69 @@ nothing left to test.
 Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
 every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
 
+### 12 Sep — A lesson is called what it calls itself
+
+Dan, shown what the rows would otherwise say: ***"WHAT SHOULD THEY BE CALLED
+THEN?"*** The answer was already in the repo and nothing was reading it.
+
+**All 59 rows of `LESSONS` carry a real French title** — « Comment ça s'écrit ? »,
+« Moi aussi, moi non plus », « Aimer + infinitif ». `favouriteHere` never
+consulted them, so a starred lesson fell through to the registry's prefix match
+and came out **« MneMemo »** — the same name for every lesson in the course —
+or, before the site-name fix above it, « FluOLinGo ».
+
+**The lesson's title is consulted BEFORE the activity key, and that is the
+point.** `activeKey` names the ACTIVITY, which is right for a deck route and
+useless here: fifty-nine lessons share one reader, so the activity can never
+tell two of them apart. Concretely, goal 23 carries three lessons — starring
+all three used to give three identical rows.
+
+    before   MneMemo · MneMemo · MneMemo
+    after    Aimer + le / la / les · Aimer + infinitif · Conjugaison : -er, faire, aller
+
+The de-slugged fallback from the entry above stays, but only for a page with no
+title ANYWHERE (`/guide`). It was never good enough for lessons: it drops
+accents (« Meteo ») and leaves an English slug in a French course
+(« Colors » for « Les couleurs »).
+
+**WHY THERE ARE 59 LESSONS AND 50 STOPS**, since Dan asked and it is worth
+having written down:
+
+    50  the lead lesson of each stop — every one of the 50 is covered
+     6  only ever a SECOND/third lesson (aimer-infinitif, conjugaison-er,
+        manger-boire, modaux, mots-interrogatifs, quel-prefere)
+     3  unit revisions, belonging to no single stop (revision-u1, -u3u4, -u4)
+
+Eleven stops carry more than one lesson and goal 23 carries three. Three
+lessons are re-used rather than duplicated: `modaux` on four stops,
+`conjugaison-u1` on three, `negation` on two — which is why the arithmetic is
+not simply 50 + 9.
+
+### 12 Sep — No favourites row is named after the site
+
+Dan asked to see the page with something in it. Starring ten real pages is what
+found this, and nothing else would have: **`/guide` and all ~50 `/lessons/*`
+routes set no title of their own**, so they inherit the root layout's and
+`describeHere`'s last-resort branch named them « FluOLinGo ». Star five lessons
+and you get five identical rows — exactly the list-nobody-uses that
+`favouriteHere.ts` was written to prevent, and invisible on an empty page.
+
+The address is the honest fallback: it is the page's own name, not an
+invention, and never the site's.
+
+    before   /guide                        « FluOLinGo »
+    after    /guide                        « Guide »
+    after    /lessons/atelier-avis-resto   « Atelier avis resto »
+
+A page that DOES title itself still wins — `/map` is « Map of FluOLinGo-land »,
+not « Map ». `verify400` executes all four.
+
+**STILL ROUGH, recorded rather than quietly fixed: two lessons both read
+« MneMemo ».** The registry's prefix match is doing what it is supposed to —
+`/lessons/colors` really is opened through MneMemo — but a favourites list
+wants to know WHICH lesson, and only one of the two had a stop for `where` to
+name (« goal 5 »). Naming it is Dan's call, not a silent change.
+
 ### 12 Sep — Favourites takes the map's tile in the ☰ menu
 
 **Dan: *"put Favourites in the burger grid menu in the yellow lesson strip
