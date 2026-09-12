@@ -65,6 +65,66 @@ second use on its first run.
 screens. Doing it means retuning numbers he approved by eye, so the QC left it
 rendering what production renders and put the choice to him with a before/after
 picture of the real app.
+## 11 Sep — the third build goes; the chooser asks the app directly (verify lane)
+
+Dan, shown the three `npm run build`s in one run: ***"do the third build one"***.
+
+**WHERE THE THIRD BUILD WAS.** Two are in the workflow — `Build` (closed, what
+ships) and `Rebuild the export open` (the sign-in wall down, so the browser
+scans can see a lesson). The third was inside a CHECK:
+`verify200-chooser-no-dead-stops.py` wrote a throwaway page into `src/app`, ran
+`npm run build` to render it, read the answer out of the HTML and deleted the
+page. Its own docstring was honest about it — *"roughly a minute in CI"*.
+
+**IT WAS RIGHT ABOUT WHY, AND WRONG ONLY ABOUT HOW.** The check must ask the
+app's OWN `playableStops` / `stopHref` and the six item functions; a Python
+re-implementation of six activities' readiness rules is exactly the "second
+opinion" `lib/collections/gapSentence.ts` was written to stop. That still
+holds. But none of those functions needs a build — they are plain TypeScript
+over plain data, no React, no request, no browser. `scripts/chooser-probe.mjs`
+loads them with `jiti`, by the page's own `@/…` specifiers, and prints the same
+JSON.
+
+    verify200, building the app itself    98.5s
+    verify200, asking the functions        0.2s
+
+**THE SWAP WAS PROVED, NOT ASSUMED.** Both answers were captured on the same
+commit and compared field by field — six activities, **203 offered stops,
+identical**. Then the gate this check exists to guard was REMOVED (GramMarathon's
+`isGramMarathonReadyId` swapped for a bare `hasDeck`) and both versions run
+against it:
+
+    old (builds)  51.2s  FAIL  23 stops offered with 0 items
+    new (jiti)     0.4s  FAIL  the IDENTICAL 23, same "+18 more"
+
+A second fault — an offered page deleted from `out/` — is caught too:
+*"grammarathon: /practice/grammarathon/possessives is offered but
+out/practice/grammarathon/possessives.html was never exported"*. Both failure
+paths live.
+
+**`jiti` IS NOW A DECLARED devDependency.** It was already in the tree as a
+transitive dependency of Next, and a check resting on somebody else's
+dependency tree is a check that breaks on an unrelated upgrade, with a
+confusing error. One line in `package.json`, one in the lockfile, no new
+download.
+
+**A HAZARD WENT WITH IT.** The old version had to clean up after itself in
+three places — the probe folder, `out/verify200-probe.html`, and
+`.next/types/validator.ts`, which names every page built and so made the NEXT
+local `tsc --noEmit` fail with *"Cannot find module
+'../../src/app/verify200-probe/page.js'"*. Its comment records that this "bit
+three separate local typechecks before being fixed". Nothing is written into
+`src/app` any more, so none of that cleanup exists to go wrong.
+
+`out/` is still read — every offered href is checked against the real export.
+What went away is the compiler in between, not the evidence.
+
+Gate: all **130** checks green (suite now 243s locally, was 427s this
+afternoon), `tsc --noEmit` clean, eslint clean, `npm ci` consistent.
+
+Still standing, and still Dan's call: the remaining TWO builds. Dropping the
+closed one would mean CI never compiles the configuration that actually ships —
+a coverage decision, not a speed one.
 
 ## 11 Sep — CI waits for the condition now, not the clock (verify lane)
 
