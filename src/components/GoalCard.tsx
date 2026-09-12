@@ -37,6 +37,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { deckActivityTabs } from "@/components/CahierShell";
 import { FAMILIES, familyOf, type FamilyKey } from "@/content/activities";
+import { sioKind, sioSecondary, KIND_LABEL, type SioKind } from "@/content/sioKinds";
+import { KIND_COLOR } from "@/components/HomeMap";
 import { TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import type { Sio } from "@/content/sios";
@@ -95,10 +97,65 @@ export default function GoalCard({
       {/* THE TAG IS A TORN SCRAP, pasted on. `.goal-scrap` in globals.css holds
           the tear and the shadow; the wrapper is what pins it to one edge so it
           does not centre itself differently on a long id than a short one. */}
-      <p className="goal-scrap -mt-1 mb-3 flex justify-start">
+      {/* THREE SEPARATE LABELS, NOT ONE STRIP (Dan, 2026-09-12: *"they can
+          actually be three spearate labels"*). The id, the unit and the kind
+          are three different facts and were being read as one run of text with
+          a dot in the middle of it; torn apart, each is its own scrap and the
+          coloured one stops looking like a suffix. */}
+      <p className="goal-scrap -mt-1 mb-3 flex flex-wrap items-center justify-start gap-[0.4em]">
         <span className="fluo-mono text-[11px] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
-          {sio.id} · {sio.unitLabel}
+          {sio.id}
         </span>
+        <span className="fluo-mono text-[11px] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+          {sio.unitLabel}
+          {/* WHAT KIND OF STOP THIS IS, AS A LABELLED TAG IN THE MAP'S OWN
+              PENS (Dan, 2026-09-12: *"can we tag each SIO with the four stop
+              colors seen in the legend of the map? like right next to 'SIO
+              -0XX UNITÉ X' in the respective colors?"*, then, on a first cut
+              that drew coloured dots: *"actually i mean a real tag with the tag
+              label"*).
+
+              A DOT IS A KEY, AND A KEY NEEDS A LEGEND. That is what was wrong
+              with the first version: on the map the four colours sit beside
+              their words, so the colour is readable; lifted onto a goal card on
+              its own it asks the learner to have memorised which of four hues
+              means grammar. The word carries the meaning and the colour carries
+              the link back to the map — both, or neither works.
+
+              The words are `KIND_LABEL` and the pens are `KIND_COLOR`, the two
+              the MAP itself reads. That is the whole point, and it is this
+              file's own recent lesson twice over: the welcome page's four brand
+              letters silently turned grey when the menu was recoloured because
+              they had BORROWED family tokens, and these very doors wore the
+              demand axis until the strip ruling pointed them at the family. A
+              second copy of "blue means vocabulary" is a copy that will one day
+              disagree with the map.
+
+              TWO TAGS WHERE A STOP HAS A SECOND FOCUS — `sioSecondary()` already
+              answers that and eleven of the fifty say yes, so one tag would have
+              quietly called them all single-focus.
+
+              EVERY SIZE HERE IS IN `em`, so the tag rides the type ramp with the
+              label beside it and needs no rule of its own — Dan, the same day:
+              *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES"*. A tag
+              is not a control, but a frozen 9px chip beside text that grows a
+              third on a desktop is the same fault in smaller clothes. */}
+          {/* `inline-flex`, not `flex`, and it matters: `.goal-scrap > *` forces
+              its direct child to `inline-block`, so a block-level flex box here
+              becomes its own line and the tags drop UNDER the label. That is
+              what the first build did. */}
+        </span>
+        {[sioKind(sio.id), sioSecondary(sio.id)]
+          .filter((k): k is SioKind => !!k)
+          .map((k) => (
+            <span
+              key={k}
+              className="fluo-mono rounded-[0.35em] px-[0.5em] py-[0.1em] text-[11px] font-black uppercase leading-none tracking-wider text-white"
+              style={{ background: KIND_COLOR[k] }}
+            >
+              {KIND_LABEL[k]}
+            </span>
+          ))}
       </p>
 
       {/* THE WORDS, and nothing around them.
