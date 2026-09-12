@@ -2904,6 +2904,45 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
    hues, no box around it (the draft removed the card). It is DECORATION —
    the heading on it is ink, never paper, so nothing depends on the gradient
    for contrast. */
+/* HOME'S GOAL WELL — ONE FLUID SIZE, NO PIXELS, NO BREAKPOINT (Dan,
+   2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!").
+
+   The first cut of this well did the wrong thing twice over: it named sizes as
+   `text-[28px]` / `text-[22px]` and then swapped them for smaller pixel names
+   at `sm:` to squeeze the row onto a 320px phone. Two hard-coded ladders where
+   one fluid one does the whole job.
+
+   `--fs-step` IS the squeeze. It is 0 on a phone and opens to 0.36rem on a
+   desktop, so one `calc()` per element gives the small phone size and the
+   large desktop size with nothing to switch between — and a learner who raises
+   their browser's text size takes the well with them, which a pixel can never
+   do. Everything else here is in `em`, so the padding and the gap follow the
+   digits instead of being set a second time.
+
+   The multipliers below sit on the same ramp as the app's other sizes; they
+   are chosen so the whole group measures under the 231px that the keys row
+   leaves at 320px — measured, not guessed. */
+.home-goal {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.22em;
+  font-size: calc(1.25rem + var(--fs-step) * 1.55);
+}
+.home-goal-target {
+  line-height: 1;
+  font-size: 1.12em;
+}
+.home-goal-well {
+  padding: 0.2em 0.42em;
+  line-height: 1;
+}
+.home-goal-digits {
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
 .home-strip {
   background: linear-gradient(90deg,
     var(--dopa-focus) 0%, var(--dopa-win) 34%, var(--dopa-joy) 66%, var(--dopa-reward) 100%);

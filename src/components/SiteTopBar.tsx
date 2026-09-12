@@ -54,6 +54,10 @@ export default function SiteTopBar({
    *  the bar takes the tighter right inset. */
   nested?: boolean;
 }) {
+  // Home draws the editable goal itself, just above the map (Dan,
+  // 2026-09-12). `active` already says which page this is — CahierShell
+  // keys Home's hero off the same value — so no router hook is needed.
+  const onHome = active === "home";
   const [menuOpen, setMenuOpen] = useState(false);
   // Owned HERE, not inside MenuGrid (Dan, 2026-09-09's slider/two-choice
   // pop-ups) — a picker cell calls `onNavigate` in the same click that opens
@@ -275,7 +279,11 @@ export default function SiteTopBar({
               NOT a button: every other item in this strip is a destination
               (verify31's rule) and a streak is a reading. It renders as plain
               text so the icon strip keeps meaning "these go somewhere". */}
-          <StopMark />
+          {/* NOT ON HOME (Dan, 2026-09-12): Home brings the editable field down
+              to sit just above the map, next to the road it names. Everywhere
+              else there is no map to sit above, so the mark stays here. One
+              reading, one place on any given screen. */}
+          {!onHome && <StopMark />}
           <AccountButton />
         </div>
       </div>
