@@ -1409,6 +1409,28 @@ input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
 
+/* ONE FIELD KEEPS ITS ARROWS — the ☰ menu's GO TO stop picker (Dan,
+   2026-09-12: *"the number text box ... with the up-down by the side of the
+   field"*). The rule above strips spinners app-wide, and rightly: every other
+   numeric field in FluOLinGo is a READING you may correct (the stop bookmark,
+   a gem count), where arrows invite fiddling with a number that means
+   something. This one is a CHOOSER — the learner is picking a stop out of
+   fifty, and stepping one at a time is the point — so it opts back in rather
+   than the global rule being loosened for all of them. */
+/*  WRITTEN AS `input[type="number"].fluo-stepper`, NOT `.fluo-stepper`. The
+    rule above is a type plus an attribute selector and outranks a bare class,
+    so the first version of this opt-in lost silently and the field kept
+    `appearance: textfield`. Caught by reading the computed style, not by
+    looking: headless Chromium does not paint a spin button into a screenshot,
+    so the picture looked the same either way. */
+input[type="number"].fluo-stepper { -moz-appearance: auto; appearance: auto; }
+input[type="number"].fluo-stepper::-webkit-outer-spin-button,
+input[type="number"].fluo-stepper::-webkit-inner-spin-button {
+  -webkit-appearance: inner-spin-button;
+  opacity: 1;
+  margin: 0;
+}
+
 /* form fields inside the page */
 .cahier-page input:not([type="checkbox"]):not([type="radio"]),
 .cahier-page select,

@@ -254,7 +254,16 @@ export default function MenuGrid({
           It opens on the learner's own stop, so the common case needs no
           typing at all. */}
       <form
-        className={SHARED_BAND}
+        /* NO SIDEWAYS LABEL, AND THREE EQUAL THIRDS (Dan, 2026-09-12: *"there
+           is no need for the category label on the left. Just have the text in
+           the first third on the left 'GO TO 🎯'"*, then *"the field occupying
+           the second third"*).
+
+           So this row does NOT use the shared band grid. Every row below has a
+           label column plus three tiles; this one has no family to name — «Go
+           to» is an instruction, not a category — so it drops the column and
+           takes the full width in thirds: the words, the field, the button. */
+        className="grid grid-cols-3 items-center gap-1.5 p-1.5"
         style={{ background: "var(--sio-grammar)" }}
         onSubmit={(e) => {
           e.preventDefault();
@@ -262,22 +271,36 @@ export default function MenuGrid({
           if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
         }}
       >
-        <span className={SHARED_BAND_NAME}>Go to</span>
-        <label className="col-span-2 flex items-center gap-[0.4em] text-[color:var(--cahier-ink)]">
-          <span aria-hidden className="text-lg leading-none">🎯</span>
+        <span className="flex items-center gap-[0.35em] pl-[0.2em] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+          <span className={NAME}>Go to</span>
+          <span aria-hidden className="text-[1.6em] leading-none">🎯</span>
+        </span>
+        <label className={TILE} style={{ borderColor: "var(--cahier-ink)" }}>
           <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
+          {/* A real number input with its native arrows — Dan asked for "the
+              up-down by the side of the field". globals.css strips spinners
+              app-wide; `.fluo-stepper` is the one opt-in, and it has to be
+              written `input[type="number"].fluo-stepper` to outrank that rule. */}
           <input
             type="number"
             min={1}
             max={SIOS.length}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            className="neo-well w-[3.5em] rounded-lg px-[0.4em] py-[0.15em] text-center font-black text-[color:var(--cahier-ink)]"
+            className="fluo-stepper w-full bg-transparent text-center text-[1.35em] font-black leading-none text-[color:var(--cahier-ink)] outline-none"
           />
         </label>
-        <button type="submit" className={TILE} style={{ borderColor: "var(--cahier-ink)" }}>
-          <span className={NAME}>OK</span>
-        </button>
+        <span className="flex items-center justify-center">
+          {/* SMALLER than a door, deliberately: it confirms a number, it does
+              not open an activity. Still on the touch floor. */}
+          <button
+            type="submit"
+            className="fluo-tap rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
+            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+          >
+            <span className={NAME}>OK</span>
+          </button>
+        </span>
       </form>
       {ROWS.map((row, r) => (
         <div
