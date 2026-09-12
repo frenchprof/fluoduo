@@ -171,10 +171,23 @@ already wear. ⭐ is XP — the row on the User page and the line in StatsHelp
 ("earned every answer") — and one glyph means one thing (the rule that moved the
 bug button to 🐞 on 9 Sep). `verify400` fails on `emoji: "⭐", name: "Favourites"`.
 
-**The tile is yellow and the page it opens is grey, on purpose.** The strip is
-where the DOOR sits; `SITE_FAMILY` is which family the PAGE belongs to, and
-Favourites belongs with the learner's own things — Dan put the ★ itself *"at the
-top right next to their name"*. Say so if he wants them matched.
+**THE PAGE WENT YELLOW TOO** — Dan, an hour later: *"make the favourites page
+yellow to match its door"*. It shipped grey for that hour, on the reasoning that
+a learner's own shelf belongs with their own things. The rule that settles it is
+simpler than the reasoning was: **the strip a door sits in is the colour the
+page wears.** Nobody should have to know that a family is also a data structure.
+`SITE_FAMILY.favourites` reads `"goals"` now; it does NOT make Favourites an
+eighth family or a Lesson activity — it is not in `ACTIVITIES` at all, and it
+borrows Lesson's pen the way `map` and `guide` already do.
+
+**AND THAT BROKE THE GLYPH, WHICH IS THE HALF NOBODY LOOKS AT.** The band's
+emoji was `activity(active)?.emoji ?? familyEmoji(famKey)`, and this page is in
+neither list — so it had been wearing 👤 by pure coincidence, and going yellow
+put Lesson's 🧑‍🏫 on it: a teacher, on a page that is not a lesson, contradicting
+the ★ on the tile that opens it. `CahierShell`'s `band` prop takes an `emoji`
+now (`band?.emoji ?? …`, a no-op for every other page), and /favourites passes
+★. Caught by driving the built page, not by reading the diff — the colour was
+the change anyone would check.
 
 `verify400` gained three clauses, anchored on the LESSON row rather than on the
 file, so a tile that drifted into another strip would not satisfy them.

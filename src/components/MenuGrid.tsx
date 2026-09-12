@@ -151,10 +151,12 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // Favourites page already wear; the emoji ⭐ is XP (StatsHelp: "earned every
   // answer", and the XP row on the User page), and one glyph means one thing.
   //
-  // THE TILE IS YELLOW, THE PAGE IT OPENS IS GREY, and that is deliberate:
-  // the strip is where the door SITS, `SITE_FAMILY` is which family the page
-  // BELONGS to, and Favourites belongs with the learner's own things — Dan
-  // put the ★ itself "at the top right next to their name".
+  // THE TILE AND THE PAGE ARE BOTH YELLOW. For a few hours they were not —
+  // the tile sat here and `SITE_FAMILY` still had `favourites: "user"`, so a
+  // yellow tile opened a grey page. Dan: *"make the favourites page yellow to
+  // match its door"*. The rule that settles it is the plain one: the strip a
+  // door sits in is the colour the page wears. See `SITE_FAMILY` in
+  // activities.ts, where the entry now reads "goals".
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
     { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },

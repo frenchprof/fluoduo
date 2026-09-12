@@ -385,6 +385,35 @@ check('emoji: "⭐", name: "Favourites"' not in bare_menu,
       "the Favourites tile took ⭐, which is the XP glyph on the User page and "
       "in StatsHelp — one glyph cannot mean two things")
 
+# THE DOOR AND THE PAGE WEAR THE SAME COLOUR (Dan, 2026-09-12: *"make the
+# favourites page yellow to match its door"*). The tile is in the yellow LESSON
+# strip; `SITE_FAMILY` is what paints the page's spine, band and ink. These are
+# two files that know nothing about each other, and for a few hours they
+# disagreed — a yellow tile opening a grey page. Tied together here so the next
+# session that moves the tile is told to move the colour with it.
+ACT = read("src/content/activities.ts")
+m = re.search(r'favourites:\s*"(\w+)"', ACT)
+check(m is not None and m.group(1) == "goals",
+      "the Favourites page wears the family of the strip its tile sits in",
+      "the Favourites page's family is "
+      f"{m.group(1) if m else 'missing'}, not the Lesson family its ☰ tile sits "
+      "in — a yellow door opening a page of another colour is the exact "
+      "mismatch Dan sent back")
+
+# AND THE BAND WEARS ★, NOT THE FAMILY'S GLYPH. The chain is
+# `band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)`, and this page
+# is in neither ACTIVITIES nor FAMILIES — so it takes whatever its family wears
+# unless it says otherwise. Going yellow put Lesson's 🧑‍🏫 on it (a teacher, on
+# a page that is not a lesson) until it named its own. Checked because the two
+# halves — the colour and the glyph — come from the same edit and the glyph is
+# the half nobody looks at.
+ROUTE = read("src/app/favourites/page.tsx")
+check('emoji: "★"' in ROUTE,
+      "the Favourites band names its own ★ rather than borrowing Lesson's 🧑‍🏫",
+      "the Favourites band has no emoji of its own, so it falls back to its "
+      "family's — which is the Lesson teacher, on a page that is not a lesson "
+      "and whose ☰ tile wears ★")
+
 check("w-full" not in page,
       "no control on the page wears the whole width",
       "a full-width control is back on the Favourites page (Dan, 5 Sep)")
