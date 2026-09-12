@@ -452,6 +452,12 @@ jobs:
       - name: "One sheet per page, and the coils run up to the band (11 Sep)"
         run: python3 verify/verify230-one-sheet.py
 
+      # Drives the HOST routes, not the embeds: the float is rendered by the
+      # root layout and the controls it was covering are inside the cahier's
+      # iframe, so a one-document scan sees no collision at all.
+      - name: "The floating 🐞 never rests on a control (12 Sep)"
+        run: python3 verify/verify340-float-clear.py
+
       - name: One tile grid — two to four columns, never a hard count
         run: python3 verify/verify260-tile-grid.py
 

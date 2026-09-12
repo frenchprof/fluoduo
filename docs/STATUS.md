@@ -6,6 +6,65 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — the floating 🐞 steps off the control it was covering (pre-tests lane, branch, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`).
+
+**Dan, shown ConjugaZone on a phone: *"fix the ladybird one"*.** On arrival, at
+two phone sizes, the bug-report float sat on top of things with no second copy:
+
+    iPhone SE   over the 🔊 on être's « ils » row
+    iPhone 14   over the right third of « Check avoir »
+
+Dragging (Dan, 2026-07-26: *"make the floating buttons movable, they are
+blocking the way"*) answers this once the learner has noticed. It cannot answer
+the FIRST screenful, which is the one that decides whether they find the button
+at all. So `useDragFloat` measures what is underneath and steps just clear of
+it — the minimum move, never saved, and drag still wins: what the learner chose
+is the anchor and this only rides above it.
+
+**THE FIRST FIX PASSED WHILE FIXING NOTHING, and that is the entry.** It called
+`document.querySelectorAll` and it was RIGHT about the embed route driven on its
+own — which is how it was tested. But every station runs in the cahier in an
+iframe (Dan, 7 Sep) and the float is rendered by the ROOT layout, so on the real
+`/conjugaison` it found a near-empty host page, declared itself clear, and went
+on covering « Check avoir » by 779px². Measured, once the probe was moved to the
+host route:
+
+    before   320px  rests 20px up   covers 840px² of the frame
+             390px  rests 20px up   covers 779px²
+    after    320px  rests 62px up   covers nothing
+             390px  rests 62px up   covers nothing
+
+`querySelectorAll` does not cross a frame boundary. The collector walks
+same-origin frames two deep and translates their rects by the frame's own
+position, and the settle listener is attached to each frame's window too — a
+frame scrolls its own window and the event never reaches the parent.
+
+**THREE CUTS, AND THE SECOND AND THIRD ARE WORTH THE LINES.** Sample points
+(centre plus four inset corners) do not cover a 44px circle: on VocabulaRain it
+stepped to a spot still clipping « ✨ Extra · 2 sets » by 244px², the overlap at
+a corner the samples had gone past. Rectangles replaced them. And the search
+only looked UP, which on the galleries means clearing every flap above the one
+in the way — they stack edge to edge — so it climbed 208px and was STILL
+covering three tiles. **A float stranded mid-page and still in the way is worse
+than one resting in its corner**, where a learner can scroll past it or drag it.
+Both edges of every obstacle are candidates now, and where none lands clear it
+gives up and stays home.
+
+**WHERE IT STILL COVERS SOMETHING, AND WHY THAT IS THE RIGHT ANSWER.**
+VocabulaRain and LexicaLocker have no clear band: unit flaps edge to edge over a
+tile grid whose biggest gap is 10px, against a 44px button. They give up and
+rest on the anchor. The honest fix for those two is to take the 🐞 off the
+floating layer altogether — a ☰ entry rather than a button over the page — and
+that is Dan's call, not this branch's.
+
+`verify340-float-clear.py` holds both rules, in a browser, on HOST routes: the
+named surfaces must be clear, and every surface must be clear OR home, never in
+between. Shown to fail: with the frame walk disabled it reports both
+ConjugaZone widths at 840px² and 779px².
+
 ## 12 Sep — the pop-ups go, and the last three become pages (pre-tests lane, branch, HANDED OVER, NOT merged)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane
