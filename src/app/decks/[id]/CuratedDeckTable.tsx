@@ -66,7 +66,7 @@ function Step({ n, label, children }: { n: number; label: string; children: Reac
       <div className="min-w-0 flex-1">
         <div className="mb-2 flex items-center gap-2.5">
           <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
-          <div className="h-[2px] flex-1 bg-[color:var(--cahier-ink)]/25" />
+          <div className="h-[0.125rem] flex-1 bg-[color:var(--cahier-ink)]/25" />
         </div>
         {children}
       </div>

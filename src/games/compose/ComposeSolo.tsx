@@ -199,7 +199,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
         />
       )}
 
-      <div className="min-h-[120px] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
+      <div className="min-h-[7.5rem] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
         {/* The passer-by's question opens the scene — tap to rehear. */}
         {scenario?.openingFr && (
           <button
