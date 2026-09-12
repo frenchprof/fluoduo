@@ -9102,6 +9102,33 @@ that it exists, and says why.
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
 
+### 12 Sep — pinning a goal stays OUT, deliberately
+
+When the black strip above REDRILLS went (Dan, 11 Sep: *"There is no need for
+the black strip and the words above the black strip"*), it took with it the only
+control in the app that could PIN A GOAL with a date. `setGoal` in
+`progress.ts` has had **zero callers** ever since. Flagged; put to Dan; his
+answer: ***"we leave it out for now."***
+
+**So this is a decision, not an oversight — do not restore it.** The next
+session to run `grep setGoal` will find an exported function nothing calls and
+read it as dead code with a missing button. It is neither.
+
+**Nothing breaks, and this is why it was safe to leave.** Every reader of
+`progress.goal` already handles it being unset, checked one by one:
+
+    goalLine()      returns null when nothing is pinned; the caller renders nothing
+    nextAction()    the goal only RE-ORDERS the re-drill queue — it prefers an
+                    outcome the goal needs — so with none pinned it simply takes
+                    the head of the queue
+    PageBand        takes its own `goal` prop from the shell, not from progress
+
+**The one real loss, stated plainly:** the re-drill queue no longer jumps
+outcomes that sit before a learner's target stop. It drills in plain due order
+instead. `setGoal` and the `goal` field stay in place, and any learner who
+pinned one before 11 Sep keeps it — so bringing the feature back later is a
+button, not a migration.
+
 ### 12 Sep — the same instruction answered three times, and what that cost
 
 > **RULED, same day: the colour-review session (`claude/home-goal-and-byline`)
