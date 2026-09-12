@@ -83,7 +83,8 @@ export default function FavouritesContent() {
 
   if (total === 0) {
     return (
-      <div className="mx-auto max-w-2xl py-6 pl-12 pr-3">
+      <div className="py-6 pl-12 pr-3">
+        <div className="mx-auto max-w-3xl">
         {/* An empty state that TEACHES THE GESTURE, because a star nobody
             knows about is a feature nobody has. It names the button and where
             it is, and nothing else. */}
@@ -92,6 +93,7 @@ export default function FavouritesContent() {
           Tap <b style={{ color: INK }}>☆</b> at the top right of any page — a lesson, a game, the
           map — and it lands here.
         </p>
+        </div>
       </div>
     );
   }
@@ -188,7 +190,8 @@ export default function FavouritesContent() {
    second sheet the 11 Sep ruling forbids inside a frame), so it takes the same
    3rem itself. `pl-12` IS 3rem on Tailwind's rem scale — the same number, not
    a second one, and it grows with the learner's text like everything else. */
-    <div className="mx-auto max-w-2xl py-4 pl-12 pr-3">
+    <div className="py-4 pl-12 pr-3">
+      <div className="mx-auto max-w-3xl">
       {groups.map((g) =>
         g.folder === null ? (
           g.items.length > 0 && <ul key="loose" className="list-none p-0">{g.items.map(row)}</ul>
@@ -277,6 +280,7 @@ export default function FavouritesContent() {
         <span className="fluo-mono text-[10px] font-bold" style={{ color: SOFT }}>
           {total} STARRED
         </span>
+      </div>
       </div>
     </div>
   );

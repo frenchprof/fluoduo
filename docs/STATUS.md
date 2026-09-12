@@ -70,7 +70,17 @@ be pasted into the Firebase console by hand. Flagged, not fixed.
    the 11 Sep ruling forbids). The page takes the same 3rem itself, and the row
    wraps under `sm` so the ✕ is never half off-screen.
 
-**`verify82` caught a fourth.** The new file had hand-written
+**A FOURTH, seen only by asking for the desktop.** The list was
+`mx-auto max-w-2xl … pl-12` — the coil gutter and the centred reading column on
+ONE element, so they fought: the column centred itself, then shoved its own
+contents 3rem further right inside itself. On a phone that reads as a sensible
+indent; at 1280px it read as a narrow strip floating in the middle of the page
+with empty ruled paper down both sides. Split into an outer full-width wrapper
+that carries the gutter and an inner `mx-auto max-w-3xl` that carries the
+column — and `max-w-3xl`, not `2xl`, because that is what the other User pages
+use and this is one of them.
+
+**`verify82` caught a fifth.** The new file had hand-written
 `SIOS.find(s => s.collectionId === …)`, the deck→stop lookup that is supposed
 to live only in `lib/stopTag.ts`. That check exists because the same lookup was
 already written out twice; it now uses `stopForDeck`.
