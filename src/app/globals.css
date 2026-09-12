@@ -2858,7 +2858,63 @@ h3.cahier-display { font-size: var(--fs-h3); }
     inset -5px -5px 9px color-mix(in oklab, white 92%, transparent),
     0 1px 0 color-mix(in oklab, white 70%, transparent);
   border: 0;
+  transition: box-shadow .1s ease;
 }
+
+/* A WELL ANSWERS THE POINTER TOO (Dan, 2026-09-12: *"even for depressed
+   spaces (e.g. buttons in the depressed states) there needs to be some
+   mouseover effect and activating effect"*).
+
+   `.neo-key` has had a hover lift and a press since 1 Sep. `.neo-well` — its
+   declared pair, the value pressed INTO the paper — had no `:hover`,
+   `:active` or `:focus-visible` rule at all. So the 2D/3D switch, the zoom
+   field and the goal field sat inert under the pointer while the − and +
+   keys either side of them answered it, which reads as those controls being
+   dead rather than as a different kind of control.
+
+   A WELL CANNOT LIFT; IT DEEPENS. The key's whole language is height, so its
+   hover raises it 3px. A well is a hole in the same sheet: raising it would
+   turn it into a key and throw away the one thing it says. So hover darkens
+   the ring and deepens the inner shadow, and `:active` deepens further —
+   the mirror of the key's travel, in the axis a well actually has.
+
+   ONLY WHERE THE WELL IS A CONTROL, which is why these selectors name
+   elements rather than the class. `.neo-well` also dresses things that merely
+   READ a value — the leaderboard's rows, the top bar's stop readout — and a
+   hover effect there promises a click that never happens. The wrapper form
+   (`:has(input)`) is for the wells that are a span around a field, which is
+   how Home's goal well and the top bar's are built.
+
+   THE POINTER GUARD IS THE SAME ONE `.neo-key` CARRIES, for the same reason
+   written there: a touchscreen applies `:hover` on tap and has no "moved
+   away" to clear it, so an unguarded rule leaves the last-tapped well looking
+   held down. */
+@media (hover: hover) and (pointer: fine) {
+  :is(button, a, input, select, textarea).neo-well:hover,
+  .neo-well:has(input):hover {
+    box-shadow:
+      inset 0 0 0 1.5px color-mix(in oklab, var(--cahier-ink) 84%, transparent),
+      inset 6px 6px 11px color-mix(in oklab, var(--cahier-ink) 30%, transparent),
+      inset -5px -5px 9px color-mix(in oklab, white 92%, transparent),
+      0 1px 0 color-mix(in oklab, white 70%, transparent);
+  }
+}
+:is(button, a, input, select, textarea).neo-well:active,
+.neo-well:has(input):active {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in oklab, var(--cahier-ink) 92%, transparent),
+    inset 8px 8px 15px color-mix(in oklab, var(--cahier-ink) 38%, transparent),
+    inset -3px -3px 7px color-mix(in oklab, white 78%, transparent);
+}
+/* Keyboard parity with `.neo-key`, which this pair never had. The wrapper
+   form uses :focus-within because the thing being focused is the field
+   inside it, not the well. */
+:is(button, a, input, select, textarea).neo-well:focus-visible,
+.neo-well:has(input):focus-within {
+  outline: 3px solid var(--dopa-focus);
+  outline-offset: 4px;
+}
+
 .neo-key {
   background: var(--cahier-paper-raised);
   /* DEEPER, NOT BIGGER (Dan, 1 Sep: "no difference to the x and y axis, but

@@ -39,9 +39,55 @@ well = re.search(r"\.neo-well\s*\{([^}]*)\}", css)
 ok(well and "inset" in well.group(1),
    "a well is INSET — pressed into the paper",
    "the well is not inset, so it does not read as recessed")
-ok(re.search(r"\.neo-well[^{]*:hover", css) is None,
-   "a well has no hover — it is read-only by construction",
-   "a well responds to hover, which offers a press that does nothing")
+# A WELL ANSWERS THE POINTER — BUT ONLY WHERE IT IS A CONTROL (Dan,
+# 2026-09-12: *"even for depressed spaces (e.g. buttons in the depressed
+# states) there needs to be some mouseover effect and activating effect"*).
+#
+# THIS REVERSES HALF OF ITS OWN EARLIER RULE, which read "a well has no hover
+# — it is read-only by construction" and failed on any `.neo-well:hover` at
+# all. That premise was already false when it was written: the zoom field, the
+# goal well and the 2D/3D switch are `.neo-well` AND interactive, so the check
+# was protecting the readouts by forbidding feedback on the controls.
+#
+# The line it was really drawing is kept, and sharpened: a well that only
+# READS a value (the leaderboard's rows) must still have no hover, because
+# there it does offer a press that does nothing. A well that IS a control must
+# have one. So a BARE `.neo-well:hover` still fails; a qualified one is
+# required.
+# THE MEDIA OPENER HAS TO COME OFF FIRST. The hover rule lives inside
+# `@media (hover: hover) and (pointer: fine)` — the pointer guard `.neo-key`
+# also carries — and a naive rule-matcher reads `@media ... {` as the selector
+# and swallows the real one into the body. Measured: this check reported "no
+# hover rule at all" against a file that had one.
+_flat = re.sub(r"@media[^{]*\{", "", css)
+hover_sels = []
+for _m in re.finditer(r"([^{}]+)\{[^}]*\}", _flat):
+    for _part in _m.group(1).split(","):
+        _part = _part.strip()
+        if ".neo-well" in _part and ":hover" in _part:
+            hover_sels.append(_part)
+
+def _qualified(sel):
+    """Named an element or a well containing a field — not the bare class."""
+    return ":has(input)" in sel or re.search(r"[\w)]\.neo-well", sel) is not None
+
+_bare = [s_ for s_ in hover_sels if not _qualified(s_)]
+ok(not _bare,
+   "a read-only well still has no hover — it would offer a press that does nothing",
+   f"a BARE `.neo-well:hover` is back: {_bare[:2]}. That reaches the wells that only "
+   "display a value (the leaderboard's rows), where a hover promises a click that "
+   "never happens. Qualify it — `:is(button,a,input,select,textarea).neo-well` or "
+   "`.neo-well:has(input)` — so only the wells that ARE controls respond.")
+ok(hover_sels,
+   "and a well that IS a control does answer the pointer",
+   "no `.neo-well` hover rule at all: the zoom field, the goal well and the 2D/3D "
+   "switch sit inert while the keys beside them lift. Dan, 12 Sep: \"even for "
+   "depressed spaces ... there needs to be some mouseover effect and activating "
+   "effect\".")
+ok(re.search(r"[\w)]\.neo-well[^{,]*:active|\.neo-well:has\(input\)[^{,]*:active", css),
+   "and it presses — the well deepens where a key would travel",
+   "a well has hover but no `:active`: it answers the pointer and then does nothing "
+   "when actually pressed, which is the half Dan named second")
 act = re.search(r"\.neo-key:active\s*\{([^}]*)\}", css)
 ok(act and "inset" in act.group(1),
    "pressing a key INVERTS it into its own well",

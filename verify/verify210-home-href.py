@@ -104,14 +104,20 @@ SHAPES = [
 # path at a quote, a query or a hash.
 MAP_TAIL = r'(?:["\'`?#])'
 MAP_SHAPES = [
-    (re.compile(r'\b\w*[Hh]ref\s*=\s*["\'`]/map' + MAP_TAIL), 'a prop default of "/map"'),
+    (re.compile(r'\b\w*[Hh]ref\s*=\s*\{?\s*["\'`]/map' + MAP_TAIL), 'a prop default of "/map"'),
     (re.compile(r'\?\?\s*["\'`]/map' + MAP_TAIL), 'a `?? "/map"` fallback'),
     (re.compile(r'\b[Hh]ref:\s*["\'`]/map' + MAP_TAIL), 'an `href: "/map"` in a tab or registry row'),
     (re.compile(r'\bhref=\{?["\'`]/map' + MAP_TAIL), 'an `href="/map"` on a link'),
     (re.compile(r'router\.(?:push|replace)\(\s*[`"\']/map' + MAP_TAIL), 'a router push to "/map"'),
     (re.compile(r'window\.open\(\s*[`"\']/map' + MAP_TAIL), 'a window.open on "/map"'),
     # /unit/N has been a redirect stub since August — same fault, older.
-    (re.compile(r'\b\w*[Hh]ref\s*=\s*[`"\']/unit/'), 'a prop default of "/unit/N", which only forwards'),
+    # `href={`/unit/${...}`}` — A TEMPLATE LITERAL IN BRACES, and the form
+    # that slipped through on the first pass. The patterns above all expect a
+    # quote straight after `=`, so a JSX expression container hid two live
+    # links in HomeDashboard's hero from a check written to find exactly them.
+    # An optional `{` is the whole fix, and it is the reason this rule is
+    # written as one alternation rather than repeated per shape.
+    (re.compile(r'\b\w*[Hh]ref\s*=\s*\{?\s*[`"\']/unit/'), 'a link or default of "/unit/N", which only forwards'),
     (re.compile(r'\?\?\s*[`"\']/unit/'), 'a `?? "/unit/N"` fallback, which only forwards'),
 ]
 

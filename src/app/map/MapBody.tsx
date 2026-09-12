@@ -365,8 +365,24 @@ export default function MapBody() {
             >
               <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
             </div>
+            {/* THE SCENE SITS IN THE MIDDLE OF THE FRAME (Dan, 2026-09-12,
+                shown the three options side by side and picking the second:
+                *"2 is fine with me"*).
+
+                The frame is the 2D grid's box in both views, so the 3D scene —
+                the shorter of the two — leaves paper over: 206px at 1440,
+                46px at 390. Left at the top, that read as the map having
+                fallen short. Split evenly it reads as a margin, which is what
+                it is.
+
+                A COLUMN FLEX, NOT `items-center`. On the row axis, centring
+                shrink-wraps the child to its content and the scene collapsed
+                to 2px wide — measured, first attempt. A column flex stretches
+                the cross axis by default, so the scene keeps the frame's full
+                width and only moves vertically, which is the one axis that
+                has slack. */}
             {mapView === "3d" && (
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 flex flex-col justify-center">
                 <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
               </div>
             )}

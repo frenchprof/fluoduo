@@ -37,6 +37,7 @@ import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/p
 import { nextSioId, loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
 import StopBookmark from "@/components/StopBookmark";
 import { dueForReview } from "@/lib/reviser";
+import { HOME_HREF } from "@/lib/routes";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -431,7 +432,7 @@ export default function HomeDashboard() {
               is for on the one run where a learner needs telling. */}
           {activeSio && (
             <Link
-              href={`/unit/${activeSio.unit}#${activeSio.id}`}
+              href={`${HOME_HREF}?unit=${activeSio.unit}#${activeSio.id}`}
               aria-label={`Continue — ${activeSio.topic}, your goal on the study path`}
               title={`Continue — « ${activeSio.topic} », your goal on the study path`}
               /* data-tour: the home tour's first step. NOT a visual change —
@@ -461,7 +462,7 @@ export default function HomeDashboard() {
               stay the brighter of the two or the row grows a second hero. */}
           {afterSio && (
             <Link
-              href={`/unit/${afterSio.unit}#${afterSio.id}`}
+              href={`${HOME_HREF}?unit=${afterSio.unit}#${afterSio.id}`}
               aria-label={`Next goal — ${afterSio.topic}`}
               title={`Next goal — « ${afterSio.topic} »`}
               className="neo-key home-key grid place-items-center"

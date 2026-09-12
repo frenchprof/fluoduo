@@ -19,6 +19,7 @@ import { describeActivity, describePath, hrefForActivity, normalizePath, titleFo
 import { describeGame } from "@/lib/labels";
 import HeatStrip from "@/components/HeatStrip";
 import { isMiss, outcomeAccuracy, outcomeOf, outcomeRows, UNMAPPED, tierClass } from "@/lib/outcomeRows";
+import { HOME_HREF } from "@/lib/routes";
 
 // The analytics-summary CSV moved to the Reports tab (2026-08-11) — card 4,
 // same CLASS_UIDS, same rows. See Reports.tsx.
@@ -436,7 +437,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
                     {hardestRows.map((r) => (
                       <tr key={r.sio} className="border-t border-slate-100">
                         <td className="px-3 py-2 font-bold text-slate-900" title={r.sio === UNMAPPED ? "Answers whose item is in no outcome" : `${r.sio} · ${r.topic}`}>
-                          {r.sio === UNMAPPED ? <span className="text-slate-500">Not yet mapped</span> : <a href={`/unit/${r.unit}#${r.sio}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900"><span className="fluo-mono text-xs text-slate-500">U{r.unit}·{r.num}</span> {r.short}</a>}
+                          {r.sio === UNMAPPED ? <span className="text-slate-500">Not yet mapped</span> : <a href={`${HOME_HREF}?unit=${r.unit}#${r.sio}`} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900"><span className="fluo-mono text-xs text-slate-500">U{r.unit}·{r.num}</span> {r.short}</a>}
                         </td>
                         <td className={`px-3 py-2 text-right font-black ${tierClass(r.pct)}`}>{r.pct}%</td>
                         <td className="px-3 py-2 text-right text-slate-700">{r.weakItems} / {r.itemsSeen}</td>
