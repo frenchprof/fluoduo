@@ -29,6 +29,10 @@
  * one mastery signal. See DATA_INTEGRITY / evidence-schema work.
  */
 import type { ComposeBank, ComposeCategory, DialogueTheme } from "./banks";
+// The app's one source of French morphology — see its header: every article in
+// a generated text comes from here, so a lexicon entry never hand-types "du".
+import { def, deLe } from "@/lib/textgen/french";
+import type { Gram } from "@/lib/textgen/types";
 
 const THEME_ROSE: DialogueTheme = { edge: "#eec4cc", strong: "#c9677f", deep: "#a04a60", personaBg: "#fdf1f3", meBg: "#f8d9df", ink: "#4a1c28" };
 const THEME_SAND: DialogueTheme = { edge: "#e3d4b0", strong: "#b99a52", deep: "#8f7538", personaBg: "#fdfaf1", meBg: "#f0e4c6", ink: "#403418" };
@@ -83,14 +87,44 @@ export const FIRST_MEETING_BANK: ComposeBank = {
 // ---------------------------------------------------------------------------
 // SIO-020 · Unité 1 · Mini-text: present a country  (solo, written)
 // ---------------------------------------------------------------------------
+/* THE ARTICLE IS COMPUTED, NEVER TYPED (2026-09-12).
+ *
+ * These entries used to carry the article in the string — `fr: "le Canada"` —
+ * and the opening line was built by joining: `"Parle-moi de " + c.fr`. French
+ * does not allow that: `de + le` contracts to `du`. FOUR OF THE SIX COUNTRIES
+ * therefore opened the scene in broken French, from the app's own mouth:
+ *
+ *     « Parle-moi de le Canada ! »     « Parle-moi de le Sénégal ! »
+ *     « Parle-moi de le Maroc ! »      « Parle-moi de le Viêt Nam ! »
+ *
+ * That is the fault the 1 Sep ruling draws a line at. A LEARNER's wrong
+ * contraction is a legitimate distractor — "could a learner have made this?" —
+ * but « Bon chance » was cut from the atelier cards because the FRAME printed
+ * it. Same here: nobody chose « de le ».
+ *
+ * So the entry carries its FEATURES and `lib/textgen/french.ts` builds every
+ * article, which is that module's own stated doctrine: "a lexicon entry only
+ * ever carries its features — never a hand-typed du". Reusing it also means
+ * this bank cannot drift from the rest of the app's morphology.
+ *
+ * `people` is here for the same reason the article is: the [Habitants] chip
+ * list used to be hand-typed and had FIVE adjectives for SIX countries, so a
+ * learner who drew Viêt Nam could not finish "Les habitants sont …". The
+ * chips are generated from this array below, so the two can never disagree
+ * again. */
 const COUNTRIES = [
-  { fr: "le Canada", emoji: "🇨🇦", lang: "le français et l'anglais" },
-  { fr: "la Suisse", emoji: "🇨🇭", lang: "le français, l'allemand et l'italien" },
-  { fr: "le Sénégal", emoji: "🇸🇳", lang: "le français" },
-  { fr: "la Belgique", emoji: "🇧🇪", lang: "le français et le néerlandais" },
-  { fr: "le Maroc", emoji: "🇲🇦", lang: "l'arabe et le français" },
-  { fr: "le Viêt Nam", emoji: "🇻🇳", lang: "le vietnamien" },
-] as const;
+  { name: "Canada",   g: "m", people: "canadiens",   emoji: "🇨🇦", lang: "le français et l'anglais" },
+  { name: "Suisse",   g: "f", people: "suisses",     emoji: "🇨🇭", lang: "le français, l'allemand et l'italien" },
+  { name: "Sénégal",  g: "m", people: "sénégalais",  emoji: "🇸🇳", lang: "le français" },
+  { name: "Belgique", g: "f", people: "belges",      emoji: "🇧🇪", lang: "le français et le néerlandais" },
+  { name: "Maroc",    g: "m", people: "marocains",   emoji: "🇲🇦", lang: "l'arabe et le français" },
+  { name: "Viêt Nam", g: "m", people: "vietnamiens", emoji: "🇻🇳", lang: "le vietnamien" },
+] as const satisfies readonly (Gram & { name: string; people: string; emoji: string; lang: string })[];
+
+/** « le Canada » / « la Suisse » — the name as it is spoken about. */
+const countryName = (c: (typeof COUNTRIES)[number]) => `${def(c)}${c.name}`;
+/** « du Canada » / « de la Suisse » — after `parler de`, `près de`, … */
+const ofCountry = (c: (typeof COUNTRIES)[number]) => `${deLe(c)}${c.name}`;
 
 export const PRESENT_COUNTRY_BANK: ComposeBank = {
   id: "presenter-pays",
@@ -104,15 +138,17 @@ export const PRESENT_COUNTRY_BANK: ComposeBank = {
     { label: "Situer", phrases: ["C'est", "Il est", "Elle est", "en Europe", "en Afrique", "en Asie", "en Amérique"] },
     { label: "Langues", phrases: ["On parle", "la langue officielle est", "et", "aussi"] },
     { label: "Décrire", phrases: ["C'est un pays", "grand", "petit", "magnifique", "intéressant"] },
-    { label: "Habitants", phrases: ["Les habitants sont", "canadiens", "suisses", "sénégalais", "belges", "marocains"] },
+    // Generated from COUNTRIES, so a country added without its adjective is
+    // impossible rather than merely unlikely.
+    { label: "Habitants", phrases: ["Les habitants sont", ...COUNTRIES.map((c) => c.people)] },
     { label: "Opinion", phrases: ["J'aime", "J'adore", "parce que", "Je voudrais visiter"] },
   ]),
   newScenario() {
     const c = pick(COUNTRIES, Math.floor(Date.now() / 60000));
     return {
-      headline: `${c.emoji} ${c.fr}`,
-      instructionEn: `Write three or four sentences presenting ${c.fr}: where it is, what language is spoken, and why it interests you.`,
-      openingFr: `Parle-moi de ${c.fr} ! Où est-ce ? On y parle quelle langue ?`,
+      headline: `${c.emoji} ${countryName(c)}`,
+      instructionEn: `Write three or four sentences presenting ${countryName(c)}: where it is, what language is spoken, and why it interests you.`,
+      openingFr: `Parle-moi ${ofCountry(c)} ! Où est-ce ? On y parle quelle langue ?`,
     };
   },
 };

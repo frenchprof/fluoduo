@@ -48,6 +48,65 @@ personas do not read as one person.
 runs into you" and "Greet your CLASSMATE" — two relationships in one lesson,
 which nobody had noticed because each reads fine alone.
 
+**THE THREE CONTENT BUGS, AND A COURSE CORRECTION MID-FIX (same day).** Dan:
+*"fix the three content bugs first, then we'll rethink the scenes"*, then, while
+the fix was being written: ***"what matters is the SIO attached. we need to
+think of scenarios in which those SIOs are applied strictly, no distraction and
+irrelevant deviation with payment and what not"*.**
+
+**1 · THE APP WAS SPEAKING BROKEN FRENCH, in four of six scenarios.**
+`Présenter un pays` built its opening by joining `"Parle-moi de " + c.fr`, where
+`c.fr` carried the article: *« Parle-moi de le Canada »*. `de + le` contracts to
+`du`. It had been there since the bank was written, and nobody saw it because
+the country rotates on a CLOCK — `pick(COUNTRIES, floor(Date.now()/60000))` — so
+whether you meet it depends on the minute you open the page.
+
+This is the 1 Sep line, on the machine's side of it: a LEARNER's wrong
+contraction is a legitimate distractor and must not be filtered, but « Bon
+chance » was cut because the FRAME printed it. Nobody chose « de le ».
+
+The entries carry their FEATURES now and `lib/textgen/french.ts` builds every
+article — that module's own stated doctrine, *"a lexicon entry only ever carries
+its features — never a hand-typed du"*. Reusing it rather than writing a second
+contraction beside it is the `gapSentence.ts` rule: one opinion per question.
+
+    before   « Parle-moi de le Canada »   « Parle-moi de le Viêt Nam »
+    after    « Parle-moi du Canada »      « Parle-moi du Viêt Nam »
+
+**2 · SIX COUNTRIES, FIVE NATIONALITY CHIPS.** Draw « le Viêt Nam » and
+« Les habitants sont … » could not be finished. The chip list is GENERATED from
+the country array now, so the two cannot disagree again — a country added
+without its `people` is impossible rather than merely unlikely.
+
+**3 · THE PAPETERIE, AND THE FIX I GOT WRONG FIRST.** Its task said *"ask for
+what you need and the price, then pay"* and the bank had no payment chip, so the
+instruction could not be followed. The obvious repair — add [Payer] — was
+written, and it was the WRONG ONE. This bank hangs off **SIO-021**, whose
+competence scores « c'est + un/une », « ce sont + des » and « C'est quoi ? ».
+Money appears nowhere in it. Adding chips made the deviation POSSIBLE; Dan's
+instruction was to remove it. The step is gone and the scene points at the
+objective.
+
+**RECORDED BECAUSE IT IS THE TEMPTING MOVE:** the bug reads as *"a missing
+chip"* when it is really *"a step that should not be here"*. Which of the two it
+is can only be settled by the SIO, never by the task text alone.
+
+**4 · THE CAFÉ'S CONTEXT DESCRIBED A DIFFERENT CAFÉ.** It said *"then ask for
+the bill"*; `ComposeDialogue` presents the bill the moment the learner CLOSES
+the order (« C'est tout » / « Non, merci ») and its `pay` stage then accepts any
+polite close. Nothing was missing — the sentence was wrong. **Reading the rule
+engine is what showed that**; from the chips alone it looked like a third
+missing-chip bug.
+
+**`verify440-compose-french.py`** holds all of it, in the app's own modules
+through jiti — no browser, no build, milliseconds. Three clauses, each
+break-tested: put the article back and it names the four broken lines; add a
+seventh country without its adjective and it counts 7 against 6; and the third
+clause is DERIVED rather than a list of banks — *if a task names a step, the
+learner must be able to take it*, satisfied either by dropping the step or by
+carrying the chips. Its first draft said "the shop banks must be able to pay",
+which encoded exactly the instinct Dan corrected.
+
 **THREE MORE FINDINGS FROM THE SAME REVIEW, NOT IN THIS BRANCH** — they are
 Dan's to rule on, and two are pedagogical rather than plain faults:
 

@@ -213,7 +213,14 @@ const CAFE_BANK: ComposeBank = {
   unit: 4,
   deckId: "aliments",
   mode: "dialogue",
-  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE, contextEn: "You're the customer at a café — order food and drink from the waiter, then ask for the bill." },
+  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE, /* "then ask for the bill" was wrong, and reading the rule engine is what
+     showed it (2026-09-12). ComposeDialogue's café flow presents the bill the
+     moment the learner CLOSES the order — « C'est tout » or « Non, merci » —
+     and its `pay` stage then accepts any polite close, « merci » or
+     « Au revoir ». The learner never asks, and there is no chip to ask with.
+     Nothing is missing from the bank; the sentence was describing a different
+     café. It is now what actually happens. */
+  contextEn: "You're the customer at a café — order food and drink from the waiter, say when you've finished, and close politely when he brings the bill." },
   categories: withPalette([
     { label: "Commander", phrases: ["Je voudrais", "Je prends", "Pour moi,"] },
     {
@@ -237,7 +244,7 @@ const CAFE_BANK: ComposeBank = {
   newScenario() {
     return {
       headline: "☕ Au café",
-      instructionEn: "Order dinner at the café — answer the waiter by tapping phrases.",
+      instructionEn: "Order at the café — answer the waiter by tapping phrases, then close politely.",
     };
   },
 };
@@ -321,7 +328,23 @@ const SHOP_BANK: ComposeBank = {
   unit: 2,
   deckId: "objets-articles",
   mode: "dialogue",
-  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE, contextEn: "You're at the stationery shop — ask for what you need and the price, then pay." },
+  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE, /* NO PAYMENT STEP, and that is the point (Dan, 2026-09-12: *"what matters
+     is the SIO attached. we need to think of scenarios in which those SIOs are
+     applied strictly, no distraction and irrelevant deviation with payment and
+     what not"*).
+     
+     This bank hangs off SIO-021, whose can-do is "I can point out and name
+     objects and people and ask what something is" and whose competence scores
+     « c'est + un/une », « ce sont + des » and « C'est quoi ? ». Paying is not
+     in it anywhere. The task used to end "…and the price, then pay", which was
+     a double fault: it sent the learner away from the objective AND the bank
+     had no payment chip, so the instruction could not even be followed.
+     
+     THE FIRST FIX WAS THE WRONG ONE. Adding [Payer] chips made the deviation
+     possible instead of removing it — recorded because it is the tempting
+     move: the bug reads as "a missing chip" when it is really "a step that
+     should not be here". */
+  contextEn: "You're at the stationery shop — name what you need, and ask the shopkeeper what something is when you don't know the word." },
   categories: withPalette([
     { label: "Demander", phrases: ["Je voudrais", "Je cherche", "Avez-vous"] },
     { label: "Objets", phrases: ["un cahier", "un stylo", "un crayon", "une trousse", "une gomme", "un sac", "des ciseaux"] },
@@ -329,7 +352,7 @@ const SHOP_BANK: ComposeBank = {
     { label: "Terminer", phrases: ["s'il vous plaît", "C'est tout", "merci", "Au revoir"] },
   ]),
   newScenario() {
-    return { headline: "🛍️ À la papeterie", instructionEn: "Buy what you need at the stationery shop — answer the shopkeeper." };
+    return { headline: "🛍️ À la papeterie", instructionEn: "Ask the shopkeeper for what you need — name each thing, and ask what something is when you don't know the word." };
   },
 };
 
