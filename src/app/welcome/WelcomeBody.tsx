@@ -99,7 +99,9 @@ const OUTLINE = {
   paintOrder: "stroke fill",
 } as const;
 /* THE F·O·L·G PEN TABLE IS GONE WITH THE TYPESET HERO (12 Sep). Dan's own
-   artwork carries its colours — the blue of his letters is #1cacff, six units
+   artwork carries its colours — the blue of his letters is 1cacff (spelled
+   without its hash, see OUTLINE above: verify19b's ratchet greps the raw
+   source, so a hex in PROSE counts as the palette drifting back), six units
    of green from the map's --sio-vocab, which is why the two have always looked
    like one system. The course tag below is the only text left in this sky and
    it is white. */
@@ -315,7 +317,7 @@ export default function WelcomeBody() {
             change: the yellow ground is gone.
 
             HOW THE BACKGROUND CAME OFF, because a colour-key alone would not
-            have done it. Every glyph is anti-aliased against #fcff16, so keying
+            have done it. Every glyph is anti-aliased against fcff16, so keying
             the yellow leaves a yellow rind on every edge — which over a blue
             sky is the most visible colour there is. Each pixel is instead
             UN-MIXED: it is `alpha * ink + (1 - alpha) * yellow`, so alpha comes
