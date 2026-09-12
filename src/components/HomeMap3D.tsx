@@ -1217,6 +1217,17 @@ export default function HomeMap3D({
                           title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                           aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                           aria-current={active ? "step" : undefined}
+                          /* data-tour, on the CURRENT stop only: the home tour's
+                             first step lights this and the ▶ Continue key at the
+                             same time (Dan, 2026-09-12 — *"the walk through on
+                             the home page should at the same time point out both
+                             the Continue button and the map's stop button"*).
+                             They are one idea in two places, and a tour that
+                             showed them one after the other would teach them as
+                             two. `active` is the same flag the gold pulse uses,
+                             so the anchor cannot drift onto a different stop
+                             from the one the map is highlighting. */
+                          data-tour={active ? "map-stop" : undefined}
                           className="home-map3d-node fluo-spring relative block"
                           style={{ width: baseW, height: totalH, background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
                         >

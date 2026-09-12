@@ -2058,6 +2058,110 @@ h3.cahier-display { font-size: var(--fs-h3); }
   .home-map-bob, .home-map3d-pulse, .home-map3d-ring { animation: none; }
 }
 
+/* THE EDGE HINTS BEAT, SLOWLY (Dan, 2026-09-12: *"The left and right arrow on
+   the page edges for desktop is not loud enough to be heard. make it darker and
+   blinking slowly"*).
+
+   This REVERSES the brief they were built to on 7 Sep — *"little subtle
+   triangular indications"* — and the reversal is the point: subtle was the
+   right instinct and the wrong result. They were a 25%-ink chevron on 55% paper,
+   which is legible if you are looking for it and invisible if you are not, and
+   what they have to survive is a learner who does not know there is anything
+   there at all. A thing nobody notices is not subtle, it is absent.
+
+   4s, not the map's 2s: a pulse this slow reads as breathing rather than as an
+   alarm, and it sits at the edge of vision where a fast beat would nag. Opacity
+   only — no movement — so it cannot be mistaken for the page itself shifting.
+
+   Under prefers-reduced-motion the beat stops and the arrow STAYS AT FULL
+   STRENGTH. Falling back to the mid-point of a pulse would hand the one learner
+   who asked for less motion the faintest version of the thing that was already
+   too faint. */
+/* ===========================================================================
+ *  THE WELCOME HERO IS DAN'S OWN GIF, MINUS ITS BACKGROUND (2026-09-12)
+ *
+ *  *"when i said to transpose, i literally mean to copy in the gifs except with
+ *  a transparent background"* — said after two attempts at rebuilding it proved
+ *  his other sentence: *"cos when you rebuild, you are bound to make it look
+ *  different — which I don't want"*.
+ *
+ *  He was right. The CSS rebuild that stood here — per-letter spans, a shed
+ *  animation, gradient rings, a dart pinned to the bullseye — worked exactly as
+ *  specified and looked nothing like his file. His letters are EXTRUDED, a
+ *  bright face over a darker slab with a cast shadow; his boards are red and
+ *  white and three-dimensional; there are TWO darts. None of that survives
+ *  being retyped in CSS by someone reading a contact sheet. So all of it is
+ *  gone and the artwork is the asset.
+ *
+ *  WHAT IS LEFT HERE IS SIZE, and it is fluid for the reason Dan gave the same
+ *  day: *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"*. The
+ *  art is 1391x760 with the words across its middle, so it is sized by WIDTH
+ *  against the viewport and capped, and its height follows its own ratio. No
+ *  breakpoints.
+ *
+ *  `image-rendering: auto` is deliberate rather than default-by-omission: the
+ *  source is 3D-shaded with soft cast shadows, so it must be resampled
+ *  smoothly, not snapped to pixels the way the app's pixel-art icons are.
+ */
+.fluo-hero-art {
+  display: block;
+  /* BIGGER (Dan, 2026-09-12: *"Can the word in the sky be bigger than this"*).
+     96vw on a phone — the art's own transparent margins keep it off both edges
+     — and a ceiling in rem so it stops growing before it outruns the sky on a
+     wide monitor. The crop below is in percentages of this width, so raising it
+     scales the whole framing rather than needing new numbers. */
+  width: min(96vw, 74rem);
+  height: auto;
+  image-rendering: auto;
+  /* THE ART IS MOSTLY EMPTY, AND THE EMPTY PART IS THE POINT: the words sit
+     across its middle and everything below them is the space the letters fall
+     through. That space used to be trimmed with negative margins, which stopped
+     it reserving layout but did nothing about what it PAINTED — the letters
+     went on tumbling down over the treeline. The sky box below clips instead,
+     which is the thing the margins were standing in for, so they are gone.
+
+     NUDGED DOWN BY ITS OWN NAME. The finished asset puts « FluOLinGo » at
+     34.86% of its height, not at the middle: the frame reserves the room the
+     letters fall through, and that room is all below the words. Centring the
+     picture would therefore hang the name 15% of the frame too high. A
+     `translateY` percentage resolves against the element's own HEIGHT, so this
+     one figure re-centres the NAME at every width without a breakpoint.
+
+     POSITIONED, NOT LAID OUT, and that was measured rather than assumed. The
+     first try centred it with `place-items: center` on the box; grid sizes its
+     implicit row to the ITEM, so a 647px picture in a 292px box makes a 647px
+     row that starts at 0 and centres the item inside ITSELF — the art landed at
+     y=98 instead of y=-80, a whole name too low. An out-of-flow item has no row
+     to be centred in. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateY(15.14%);
+}
+
+/* THE SKY IS A LID (Dan, 2026-09-12: *"the letters should fall behind the
+   horizon, not onto the trees"*; asked how far down still counts, *"basically
+   anything that is sky is horizon"*).
+
+   Its height comes from the scene's own exported constants, computed in
+   WelcomeBody — see SKY_H there — so the clip tracks the horizon rather than a
+   number somebody read off a screenshot once. Everything here is what a lid
+   has to be and nothing more: it clips, and it centres what it holds. */
+.fluo-hero-sky {
+  overflow: hidden;
+  /* The containing block for the art's own centring — see .fluo-hero-art. */
+  position: absolute;
+}
+
+@keyframes fluo-edge-beat {
+  0%, 100% { opacity: 0.62; }
+  50%      { opacity: 1; }
+}
+.fluo-edge-beat { animation: fluo-edge-beat 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .fluo-edge-beat { animation: none; opacity: 1; }
+}
+
 /* Print (patch 25): Home prints the course map on ONE A4 portrait page —
    HomePrintSheet portals into <body>; every other body child is hidden. */
 .home-print { display: none; }
