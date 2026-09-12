@@ -726,7 +726,7 @@ export default function Lexicalator({
               // the drag, the letter key or the slot bars changes.
               className="relative w-36 cursor-grab touch-none rounded-lg text-center transition active:cursor-grabbing"
               style={{ opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[112px]" />
+              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[7rem]" />
               {laneIdx < 26 && <span aria-hidden className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded bg-white/85 text-[10px] font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{String.fromCharCode(65 + laneIdx)}</span>}
               <span className="block px-2 pt-1 text-sm font-black leading-tight" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
@@ -759,7 +759,7 @@ export default function Lexicalator({
             {/* THE CHEST IN THE BAY, with its lid hinged open — same drawing as
                 the lane's, one prop apart, so the chest you dragged down is
                 visibly the chest you are now filling. */}
-            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[162px]" />
+            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[10.125rem]" />
             <div className="-mt-2 px-4 py-3">
             <div className="mb-3 text-lg font-black" style={{ color: liveryOf(active.entry.fr, active.tint, level).edge }}>{active.entry.en}</div>
             {hard ? (

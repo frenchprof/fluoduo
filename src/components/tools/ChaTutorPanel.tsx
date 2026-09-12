@@ -433,7 +433,7 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
                 rows={2}
                 /* NB: not .cahier-answer — that pins height:30px!important, which
                    would kill grow/resize. AccentBar still shows via lang="fr". */
-                className={`max-h-[320px] w-full resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)] ${
+                className={`max-h-[20rem] w-full resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)] ${
                   context ? "min-h-[3rem]" : "min-h-[4.5rem]"
                 }`}
                 autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}

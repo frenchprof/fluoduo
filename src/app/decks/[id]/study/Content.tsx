@@ -143,7 +143,7 @@ function Runner({ collection }: { collection: Collection }) {
       <button
         type="button"
         onClick={() => setFlipped((x) => !x)}
-        className="fluo-card fluo-h-1 mt-6 flex min-h-[260px] w-full cursor-pointer flex-col items-center justify-center gap-3 p-8 text-center transition hover:scale-[1.005]"
+        className="fluo-card fluo-h-1 mt-6 flex min-h-[16.25rem] w-full cursor-pointer flex-col items-center justify-center gap-3 p-8 text-center transition hover:scale-[1.005]"
         data-hue={1}
       >
         {item.emoji && !flipped && (
