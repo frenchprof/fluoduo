@@ -17,7 +17,12 @@
  *
  * NOT read during render. The site is statically exported, so localStorage is
  * only available after mount — every caller seeds state from a mount effect.
+ *
+ * THE MAP'S ADDRESS IS HOME'S ADDRESS (12 Sep). `/map` forwards here, so a
+ * `?view=` hung on it still arrived — after a second page load and a flash.
+ * `mapHref` names the page the map is actually on.
  */
+import { HOME_HREF } from "@/lib/routes";
 export type MapView = "2d" | "3d";
 
 export const MAP_VIEW_KEY = "fluo.homeMapView";
@@ -55,5 +60,5 @@ export function saveMapView(v: MapView): void {
 /** The link that opens the map already in a given view. One helper so a
  *  caller cannot spell the query differently from the one that reads it. */
 export function mapHref(v: MapView): string {
-  return `/map?view=${v}`;
+  return `${HOME_HREF}?view=${v}`;
 }

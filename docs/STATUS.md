@@ -245,6 +245,446 @@ written.
 Gate: `tsc --noEmit` clean, eslint clean on the one touched file,
 `NEXT_PUBLIC_OPEN_APP=1` build green, and the scene driven on the built app at
 430px before and after.
+## 12 Sep — one map page, not two (peers lane, PR #342, HANDED OVER, NOT merged)
+
+Sole editor of STATUS.md in this commit: the peers lane (`claude/peers-guided`).
+
+**Dan, sending Home and /map side by side: *"We have a two pages doing the same
+thing... Can we just keep the Bienvenue one and move the 3D-2D switch and the
+zoom control and navigators '> Goal', legend there."*** Home already drew the
+map — a second, smaller copy under « Course map » — and `/map` drew the same map
+with all the controls. Two pages, one subject, and the controls on the one a
+learner does not arrive at.
+
+**HOME NOW RENDERS THE MAP ITSELF.** The map, its switch, its zoom and its
+legend live in `src/app/map/MapBody.tsx`; `HomeDashboard` imports it and puts it
+in the « Course map » section. `/map` is a `MapRedirect` that forwards to
+`/home` keeping `?search` and `#hash` — a URL is never deleted outright, and
+`/carte` and `/unit/[unit]`, which used to land on `/map`, now forward straight
+to `/home` so nobody makes two hops.
+
+**THE TWO VIEWS SHARE ONE FRAME** (Dan: *"the frame itself (not the content) for
+both maps must be identical in shape and size... zoom in and out should also
+make the shared shape and size for those maps tied together"*). One `zoom`
+wrapper holds both; 2D stays mounted and goes `visibility: hidden` under 3D so
+the frame keeps the taller view's box, and the CSS `zoom` scales both together.
+Measured on the built export, `[data-map-well]` at three zooms:
+
+        zoom     2D frame            3D frame
+         75%     760 × 1113          760 × 1113
+        100%     760 × 1484          760 × 1484
+        150%     760 × 2226          760 × 2226
+
+**AN OPEN QUESTION FOR DAN, ASKED AND NOT YET ANSWERED.** Because the frame is
+the taller view's size, 3D leaves ~200px of blank paper below the scene. Three
+answers were offered — leave it, centre the 3D scene in the frame, or make the
+frame the 3D size and let 2D scroll inside. Nothing changes until he picks.
+
+**`fill` ON HomeMap3D WAS WRONG TWICE, and the number says why.** Inside a grid
+cell, `h-full` of an auto row is indeterminate, so the scene fell back to its own
+scroll height — **142,800px**, which is the road itself. Once bounded it fitted
+exactly and `verify211` then showed wheel and finger moving the road **0px**.
+The scene keeps its own height inside the shared frame.
+
+**THE LINKS DAN NAMED.** `stopHref` in `src/lib/activityStops.ts` gained two
+cases: `sio` → `/sio/<id>` (*"Goals will lead to SIOs"* — the ☰'s 🎯 opened
+Home, which would now be circular) and `mnemo` → `/lessons/deck/<deck>`
+(*"MneMemo will lead to MneMemo (the current link is wrong)"* — it pointed at
+`/map`, a stand-in left over from the Practice hub's retirement). Both go
+through the same gate as every other entry, so a stop with no deck is not
+offered. **Map is out of the ☰** (*"it is already in the Kallang Wave"*) and the
+🏠 is off the top bar (*"We allso don't need the home button at the top right"*).
+The ⭐ Favourites tile Dan asked for in that slot is deferred by his own later
+choice — whoever lands `claude/favourites` owns it.
+
+**TWO BUGS THAT ONLY A DRIVEN BROWSER FOUND, both the same shape.**
+`.cahier-page input` and `.cahier-page p` are specificity (0,1,1) and beat every
+Tailwind utility (0,1,0): the zoom field clipped « 100 », and the legend ran
+**79px off a 320px phone**. The zoom field took `!` modifiers; the legend went to
+a container query (`clamp(0.625rem, 4.9cqw, var(--legend-max))` inside
+`.fluo-map-legendbox`, scoped two classes deep so it outranks `.cahier-page p`).
+`clamp(a, b, calc(… var() …))` is rejected outright by the parser, which is why
+the max is a variable and not an inline `calc`.
+
+**HOME'S TRANSPORT ROW IS RETIRED, AND THE MAP GETS ONE CONTROL ROW.** Dan:
+*"is it ok to do without the play, forward and rewind buttons (those functions
+can be accessed easily and directly elsewhere on this page, i.e. via the map and
+the editable goalselector field, right?"*, then *"Rewind = Revise = ErroRevue ==
+they are the same thing"*, then *"a single row above the map without any other
+texts (e.g. delete the « In FluOLinGo land, blah blah »), and there is no need to
+have the current stop mentioned twice"*.
+
+**THE QUESTION WAS ANSWERED BY MEASURING, NOT BY AGREEING.** Two of the three
+were WORSE than the map they duplicated: ▶ and ⏭ pointed at `/unit/N#SIO-nnn`,
+which forwarded to `/home?unit=N#SIO-nnn` and opened a **StopPopup on the page
+the learner was already standing on** — the popup Dan retired on 7 Sep — while
+the map's own stops open `/sio/[id]`. And one premise was wrong and had to be
+said so: **the goal-selector field does not navigate.** `StopBookmark` calls
+`saveBookmark(n)`; typing 23 moves the marker, it does not take you to goal 23.
+Only the map can stand in for ▶.
+
+    before   after
+      1        0     the sentence
+      3        0     hero transport keys
+      3        1     stop-number elements on screen
+    274px    195px   where the map starts, 390
+    342px    236px   where the map starts, 1440
+
+**A FOURTH KEY WAS IN THAT ROW AND DAN DID NOT NAME IT.** 🎓 Diplômé appears
+only at 50/50, in Continue's place, and opens revision — LAF1201 is a semester
+course, so there is no 51st goal and spaced repetition is the real forever game.
+Deleting it with the other three would have removed a feature nobody asked
+about, **on the one screen a learner reaches once**, where nobody would notice
+until far too late. It moved into the map's control row, where the progress it
+needs is already loaded. Driven: absent at 0/50, present at 50/50.
+
+**AND THE 🎓 WENT TOO, an hour later, on Dan's better argument.** It was
+preserved as a fourth key he had not named; he then said what settles it:
+*"we already removed the continue button so there is no need to replace it
+with anything"*. The 🎓 existed for one stated reason from 7 Sep — at 50/50
+`nextSioId` returns undefined, so Continue VANISHED on the day a learner
+finished the course and the 🎓 stood in the hole. **No Continue, no hole.**
+`verify111-forever-french.py` is retired and unwired, `.home-key` and three
+ramp rules went with it — the 🎓 glyph was their last user, and `verify106`
+fails a ramp rule that matches nothing.
+
+**THE DUE COUNT WAS NOT LOST AFTER ALL, AND SAYING IT WAS WAS A MISTAKE MADE
+TWICE.** `SiteTopBar` has carried it on the ☰ since the bottom bar was removed
+on 6 Sep — a pill reading « 7 », announced as "Navigation — 7 to revise". It
+was reported here and to Dan as gone with ⏪, from reading the diff rather than
+opening the app. **Driven, with seven real deck items seeded overdue, the badge
+was there the whole time.**
+
+What was really wrong is what Dan then named: ***"THE THING WHEN I OPEN THE
+MENU I WILL BE WONDERING WHERE THAT NUMBER FALLS UNDER AND IT WAS NOT
+SHOWN"***. The ☰ said something was waiting and not WHAT, and opening the menu
+answered nothing — twenty tiles, none carrying the number. **A badge that
+raises a question its own menu cannot answer is worse than no badge.** The
+count is on the ❌ ErroReview tile now, in the same `--dopa-streak` pill, same
+radius, same corner: the first cut used `--dopa-focus` blue against the bar's
+pink, and two colours make one number read as two counts — caught by putting
+the two on screen together, not by reading the diff.
+
+**IT COUNTS WORDS, NOT GOALS**, which is worth writing down because it was
+asked: every practised item carries a spaced-repetition timer and
+`dueForReview` returns those whose timer has elapsed (`p.itemSrs[id].due <=
+now`). And it goes on the DOOR, never on `/reviser` itself — the 1 Sep counting
+rule again: on the page the words are in front of you and the list counts
+itself.
+
+**A NOTE FOR THE NEXT SESSION THAT PROBES THIS:** `dueForReview` filters
+against `allReviewItems()`, so an invented item id counts as zero. The first
+probe seeded `seed-1…7`, measured a badge of 0, and that looked exactly like
+the badge being absent.
+
+**WHAT ⏪ ACTUALLY TOOK WITH IT: its own pill, and nothing else.** `verify25`
+called that badge *"the one deadline on Home"*, which is what made losing it
+sound serious — and the phrase was already out of date when it was read. The
+door is covered (☰ → 🔄 Revise is the same page, Dan's ruling) and so is the
+number, on the ☰ and now on the tile. The lesson is the one above: **a claim
+about what a screen shows has to be measured on the screen**, and this file
+carried the wrong claim for an hour because it was reasoned from a diff.
+
+**AND THE ROW WAS THE LAST THING ON HOME THAT READ PROGRESS.** `HomeDashboard`
+holds no state at all now: `MapBody` loads progress, the bookmark and the view
+because it must, being the component `/map` framed. A second copy is the
+two-copies-of-one-fact drift this whole branch exists to end — so `verify87` now
+pins that Home keeps **no** second reading, the inverse of what it asserted.
+
+**THE TOUR'S FIRST STEP POINTED AT THE ▶ KEY**, with `[data-tour="map-stop"]` as
+a fallback **that was never rendered by anything**. Removing ▶ left the step
+matching nothing, and the tour would have opened by silently skipping itself —
+the same failure this repo has now recorded six times. The anchor is real now,
+on the map's glowing stop in `Map2DGrid`.
+
+**A WELL ANSWERS THE POINTER** (Dan: *"even for depressed spaces (e.g. buttons
+in the depressed states) there needs to be some mouseover effect and activating
+effect"*). `.neo-key` has had a hover lift and a press since 1 Sep; `.neo-well`
+— its declared pair — had **no `:hover`, `:active` or `:focus-visible` rule at
+all**. A well cannot lift without becoming a key, so it deepens instead. Only
+where it IS a control: `.neo-well` also dresses things that merely read a value,
+and a hover there promises a click that never happens. Measured in a browser —
+switch, zoom field and goal well respond; a read-only well does not.
+
+**`verify37` FORBADE EXACTLY THIS**, on a premise that was already false when it
+was written — *"a well has no hover, it is read-only by construction"*, while the
+zoom field and the switch were wells AND controls. Retargeted, not deleted: a
+bare `.neo-well:hover` still fails, a qualified one is now required. Its
+rule-matcher also could not see inside `@media`, so it reported "no hover rule
+at all" against a file that had one.
+
+**EIGHTEEN LINKS STILL NAMED THE PAGE THAT ONLY FORWARDS** (*"etc. Please help
+check the links"*). The ☰'s own links were the half already swept. These are the
+other half, and **not one of them was broken**, which is exactly why nothing
+reported them: `/map` resolves, after a second page load and a flash, to a page
+one click away. The 🗺️ in the icon strip, the swipe rail's first station, every
+drill's ✕, the profile's MAP door, the 404's button, the lesson pager's and
+ÉcouTexte's fallbacks, GameOver's per-miss deep link, KeyNav's two-digit jump.
+`/unit/N` is in the same list and has been a redirect stub since August, so
+`drillExitHref` was a forward to a forward.
+
+**THE CHECK HAD A HOLE, AND ASKING WHERE ▶ ACTUALLY WENT IS WHAT FOUND IT.**
+Every shape in `verify210` expected a quote straight after `href=`, so
+``href={`/unit/${...}`}`` — a template literal in a JSX expression container —
+slipped straight through. **Four** live links, not the two found by reading:
+Home's ▶ and ⏭, the deck table's ✕, and the teacher's per-outcome link. An
+optional brace is the whole fix, and it is why the rule is one alternation
+rather than a shape repeated per spelling.
+
+**This is the fault `src/lib/routes.ts` was written about, three days later and
+with a different address** — which is why `verify210-home-href.py` takes the
+second one rather than a new check taking a new number. Same shapes, same
+allowances, plus one allow-list for the places that legitimately NAME `/map`:
+the stub itself, the rail's *"are you standing here?"* test, and the teacher's
+labels for page-view rows recorded before the merge.
+
+**AND THE SWEEP FOUND WHAT A SWEEP DOES NOT LOOK FOR: the map's TOUR was
+orphaned.** `tourFor` answers `path === "/home"` and returns, so the `/^\/map/`
+branch fifteen lines below it could never match again. A first-time learner
+would have arrived at a page with a 2D/3D switch on it and been told nothing
+about it. The branch is removed rather than left looking live; its view-toggle
+step moved into the home tour, which is **four steps now**, driven and
+screenshotted at both widths. The other two steps were dropped as duplicates —
+« Every stop is one goal. Tap one to open it. » is step 1 wearing other words,
+and « ✓ green = done » describes a colour on the screen.
+
+`verify44` fails if the dead branch comes back — **and its first run flagged the
+comment explaining the removal**, the fifth time a check in this repo has read
+its own documentation as the defect (verify152, verify153, verify106,
+verify270). Comments are stripped before that test now.
+
+**FIVE MORE CHECKS RETARGETED, NONE WEAKENED** — `verify23`, `verify27` and
+`verify30` now assert the DOOR rather than its spelling; `verify44` the tour
+that carries the duty; and `verify80`'s reachability block asserts what it
+meant — the map is reachable without typing an address, AND `/map` still
+forwards so bookmarks and printed QR codes still land. Counting `/map` links
+there would have gone red on the fix and green on a regression.
+
+Driven rather than read: `/map`, `/map?unit=2`, `/map#SIO-023`, `/carte`,
+`/unit/3` and `/unit/3#SIO-031` all land on Home with the map on it.
+
+**SIX CHECKS RETARGETED, NONE WEAKENED** — `verify80` (follows the delegation;
+its `fill` assertion is inverted and the view switch is now REQUIRED), `verify25b`
+(Home renders MapBody and does not navigate to `/map`), `verify108`, `verify150`,
+`verify152`, `verify211`, plus `scripts/map-fit-scan.mjs` measuring
+`[data-map-well]` rather than the viewport and `scripts/wheel-scan.mjs` aiming
+its gestures at the scene's own rect — on Home the viewport centre lands on the
+hero, so every gesture was moving nothing and passing.
+## 12 Sep — the queue emptied: five merged, five closed, three deploys, and the email box shut (integration lane, MERGED)
+
+Sole editor of STATUS.md in this commit: fluoduo-main (integration).
+
+**Dan: *"pls merge all and deploy all and sync stage and prod"*.** At the end of
+it there are **no open pull requests**. Production is live at `2221f9d`.
+
+    MERGED   #338 GO TO row   #340 pulse comment   #339 Favourites
+             #344 Firestore rules   #345 profile boxes
+    CLOSED   #326  #330  #331  #335  #336      (work already on main, or QC'd elsewhere)
+    DEPLOYS  run 67 -> 434cc21    run 68 -> 92b53fe    run 69 -> 2221f9d
+
+### THREE PULL REQUESTS WERE FINISHED AND WOULD HAVE REVERTED MAIN
+
+#326 and #330 each looked like ordinary open work. Both were behind main, and
+the tell is worth memorising: **`git diff origin/main <branch>` comes back as net
+DELETIONS.**
+
+    #330  hero-fluolingo.webp  795418 bytes on BOTH sides — byte-identical
+          merging it would have deleted verify280 (93 lines), cut 39 from
+          verify270, and reverted NumBus's pixel sweep
+    #326  the coin anchor is the SAME STRING on both sides, bottom-[max(1rem,0.5%)]
+          merging it would have stripped 18 lines from WelcomeBody to add 5
+
+This is the case AGENTS.md already records under *"BEFORE YOU RENUMBER A SECOND
+TIME, DIFF THE BRANCH AGAINST main"*. The addition here is the diagnostic: a
+finished branch does not look empty, it looks like a deletion patch.
+
+**ONE THING WAS RESCUED RATHER THAN CLOSED WITH THE BRANCH.** #326's five-line
+comment says why the coin's anchor is `1rem` and not `0.75rem`, and main's own
+long comment at that line never did — it is entirely about ENTER colliding with
+stop 1. The reason is the BEAT: the coin pulses to 1.08, an animated element's
+bounding box includes its transform, so its bottom edge sits ~3px lower at the
+top of the beat than at rest.
+
+    shape             at rest   at full beat
+    tablet 1024x768     12.0        8.7      <- under the 10px verify151 needs
+    desktop 1440x900    12.0        8.7
+    phone 390x844       12.0        9.8
+
+So the check went red or green on which tenth of a second it sampled, and main
+DID go red on it. **The failure looks like a layout bug and is not one** — it was
+misread twice in one day, once as the fly-past art, which never touched the coin.
+Landed as #340, credited to `claude/subdomains-c43n66`.
+
+### THE COLLISION ONLY AN INTEGRATION LANE COULD SEE — AND THE CHECK FOR IT
+
+#335 (Favourites) and #331 (rules hardening) **both edit `firestore.rules`, and
+git merges them with no conflict.** That proves the text does not overlap and
+nothing else. **Firestore ORs its matches**, so a shaped `favourites` rule beside
+a permissive `users/{uid}/{sub=**}` is decorative — the wildcard allows what the
+shaped rule refuses. The interaction exists only once both edits are in one
+file, so neither lane could have tested it and neither was wrong not to.
+
+The merged file IS correct (`favourites` sits in the exclusion list beside
+`attempts`, `responses`, `sessions`). Nothing asserted it, so the next edit could
+have dropped the word silently. `scripts/rules-test/favourites.mjs` now does —
+seven cases, wired into `run.mjs`, run by the `firestore-rules` workflow.
+
+**BREAK-TESTED, which is the only reason to believe it.** Deleting the single
+word `favourites` from the exclusion list turns **five of seven** into
+`Expected request to fail, but it succeeded`.
+
+    lost    the 200-item cap, the 20-folder cap, unknown-key rejection,
+            the type check, and the nested-doc dodge
+    kept    ownership — isOwner(uid) guards the wildcard too
+
+**Which two survive is the useful part.** Data stays private; only the LIMITS on
+what can be stored vanish. That is a failure that looks fine in review forever,
+and it is the fifth entry in #331's own "false greens" list.
+
+### CI HAS A FAILURE MODE THAT IS NOT A FAILURE
+
+Four jobs across three unrelated branches went red inside ninety seconds:
+
+    duration 2s · steps: [] · runner_name: "" · runner_id: 0
+
+No runner was ever assigned, so **no check ever ran**. `claude/favourites` had
+been green on the same tree ten minutes earlier and githubstatus.com reported
+all systems operational. A re-run cleared it. `claude/peers-guided` had flagged
+this same symptom at the foot of #330 and guessed the private-repo Actions
+allowance; the instinct was right, the cause was allocation.
+
+**Read `steps: []` before reading `conclusion: failure`.** A branch that never
+got a runner looks identical to a branch that is broken, and it blocks
+`deploy-live` as well as merging.
+
+### A DEPLOY MARKER NEEDS A VERIFIED-ZERO BASELINE, TAKEN BEFORE FIRING
+
+`deploy-live` only MIRRORS main to Cloudflare; Cloudflare then builds. Green
+workflow != live. Every deploy this session was confirmed by measuring the real
+site, and each marker was validated against the local build first:
+
+    run 67   11.625rem        0 -> 1 at 220s   (248px as the negative control)
+    run 68   /favourites 404 -> 200, fluolingo:favourites 0 -> 2 at 160s
+    run 69   min-h-14         0 -> 1 at 140s
+
+**The trap, hit once and avoided twice after.** `186px` is still in the new build
+twice for unrelated reasons, so it would have read as "never deployed" forever;
+`58px` appears six times, same problem. **A marker must be absent from production
+AND present in the new build, both measured, before the deploy is fired.**
+
+### FAVOURITES TOOK MAP'S SLOT, AND THE PLACEMENT QUESTION WAS ALREADY ANSWERED
+
+Dan, on the built row: ***"maps has been taken out because there are already
+doors to the maps elsewhere"***. Verified: `/map` keeps the 🗺️ in the icon strip,
+the Practice row's MneMemo tile (which has no page of its own and deliberately
+opens the map), and Home's hero.
+
+**This lane flagged the Lesson placement as possible miscategorisation and was
+wrong.** Dan: ***"why would facourites mnot fall under lesosns"***. The answer is
+in the menu's own data — that row is not a row of lessons:
+
+    goals      ★ Favourites  ·  🎯 Goals  ·  🆘 Help      <- ORIENTATION
+    practice   💡 SpecuLearn ·  📚 MneMemo ·  🃏 MémoiRecall
+    user       👤 User       ·  🏆 Leaderboard · ⚙️ Settings
+
+Every other row is its family's activities. Lesson's three are *where am I, what
+am I aiming at, how does this work* — and "take me back to the pages I saved" is
+orientation. `activities.ts` had already recorded that the entry was `user` for a
+few hours and that Dan moved the tile and then ruled the page yellow to match its
+door. **The decision was his and already made; reopening it cost an exchange.**
+
+### THE RATCHET LANDED ON EXACTLY 81, WHICH WAS NOT GUARANTEED
+
+#336 lowered `verify270`'s budget 84 -> 81 for three `ProfileContent` fixes. Main
+had since taken Favourites and the GO TO row, either of which could have pushed
+the real count above 81 — the branch would have been lowering the bar under its
+own feet through no fault of its own. Measured on the merged tree:
+
+    ok    81 frozen box sizes in src/, within the budget of 81
+
+**Both of the day's new features added none.** Dan's 12 Sep ruling is holding in
+NEW work, not only being retrofitted onto old.
+
+### THE ORAL TEST IS RETIRED, THE MAIL BOX IS SHUT, AND THE SEVERITY WAS OVERSTATED
+
+`mail/{id}` accepted a create from **any** signed-in account with a well-shaped
+letter — it checked subject and body length and never who the letter was going
+to or who sent it. #331 hardened it to require an invite the sender created.
+
+**The order-dependency warning was resolved by reading the live site, not by
+guessing.** oraltest.withdrchan.com ships its logic inline, so it is readable by
+anyone with a browser. It already enforces, in the client, everything the new
+rule enforces in the database:
+
+    if (!user || !bookings[user.uid]) return;                    // must hold a booking
+    if (ems.includes(canon(user.email))) return toast("That's yourself!");
+    await setDoc(doc(db, INVC, em), { by: user.uid, ... });      // invite FIRST, awaited
+    addDoc(collection(db, "mail"), { to:[em], ... });            // mail SECOND
+
+Exactly one writer to `mail` exists on the whole project; fluoduo and laf2201
+have none.
+
+**THEN DAN ENDED THE QUESTION: *"YOU KNOW WHAT, YOU SHOULD HAVE JUST ASKED ME, I
+AM NEVER GOING TO BE USING THIS TO DO ORAL EXAM EVER AGAIN"*.** With the feature
+retired the right rule is not "require an invite" but **deny everything**, which
+is what shipped. `mail/{id}` is now `allow read, create, update, delete: if false`
+with the reason in the block.
+
+**AND THE SEVERITY WAS WRONG, which is the entry.** Dan: *"guess what i have a
+clean slate there — no such extension found"*. **The Trigger Email extension is
+not installed**, so nothing on the other end ever posted those letters. Writing
+to `mail` sent nothing; it was a storage nuisance, not an email hole, and would
+only have become one if someone later installed the extension and found a queue
+waiting. This lane read the RULE and the WRITING CODE and never checked whether
+anything was listening. **A pipe is only a leak if something is pumping.**
+
+### TWO LESSONS, AND THEY ARE THE SAME LESSON
+
+**ASK BEFORE INVESTIGATING.** An hour went into proving the mail fix safe against
+a site whose feature Dan had already abandoned. One question first — *"are you
+still using this?"* — would have skipped all of it, and Dan said so in exactly
+those words.
+
+**CHECK THE FAR END BEFORE NAMING A SEVERITY.** The same omission twice: is the
+feature still used, and is anything actually listening.
+
+### HOUSEKEEPING
+
+`.gitignore` gained `.tmp-verify-find/` (verify109 leaves 26 untracked `.js`
+files after every sweep) and `firestore-debug.log` / `firebase-debug.log` /
+`ui-debug.log` (the rules suite writes them into the repo root). **Third and
+fourth instances of the same hazard** — the file already carried this fix for
+verify112's scratch, added after a `git add -A` mid-sweep committed it by
+accident on 9 Sep.
+
+`firebase-tools` and `@firebase/rules-unit-testing` are needed to run the rules
+suite locally; `npm install` supplies the second, the first is global.
+
+### STILL OPEN, AND NOT FIXED BY ANY MERGE
+
+- **Nothing in this repo deploys `firestore.rules`.** `deploy-live` mirrors the
+  static site to Cloudflare and does not touch Firebase. #344's `firestore-rules`
+  workflow CAN deploy them, but its deploy job is `workflow_dispatch` +
+  `deploy: true` only and needs a service account with **Firebase Rules Admin**
+  saved as the repo secret `FIREBASE_SERVICE_ACCOUNT`. **That secret does not
+  exist and the workflow has never run.** Dan publishes rules by hand, which
+  takes two minutes and is the working arrangement, not a gap.
+- **If a service account is ever made, it must be a NEW one with only Rules
+  Admin.** A key was briefly created on `firebase-adminsdk-fbsvc` and deleted
+  the same hour: that account also holds Firebase Admin SDK (reads and writes all
+  Firestore data, bypassing the rules) and Firebase Authentication Admin (can
+  change any learner's login). A GitHub secret that can read every learner's
+  record, for a job that only publishes a rules file, is the wrong trade.
+- Leaderboard XP is self-reported; only a Cloud Function totalling
+  `users/{uid}/responses` can bound it.
+- `feedback` and `vlrain_hiscores` take anonymous writes that rules cannot
+  rate-limit. App Check is the answer and the SDK side already ships; the key and
+  console enforcement are outstanding, and enforcement must wait until the legacy
+  laf1201 sites are attested.
+- **`LIVE_DEPLOY_TOKEN` expires 2 Oct 2026.**
+- The 🐞 still covers a tile on VocabulaRain and LexicaLocker; the pre-tests
+  lane's suggested real fix is to take it off the floating layer as a ☰ entry.
+  Dan's call.
 
 ## 12 Sep — the floating 🐞 steps off the control it was covering (pre-tests lane, branch, NOT merged)
 
@@ -691,7 +1131,187 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
-## 12 Sep — the last of the geometry joins the ramp (this session, branch, NOT merged)
+## 12 Sep — the Firestore rules get tested, and three holes close (this session, branch, NOT merged)
+
+Dan asked whether `firestore.rules` was sufficient. **It was not, and nothing
+had ever tested it.** Three attacks a signed-in student could run today were
+ACCEPTED by the rules as they stood; all three are now refused, and the refusal
+is proved by driving the REAL Firestore emulator rather than by reading.
+
+**1 · `mail/{id}` WAS AN OPEN EMAIL RELAY.** `isSignedIn()` plus a shape check
+let any student post a document the Trigger Email extension then SENDS — any
+address, any subject, any body, from this project's sender:
+
+    to:      ["victim@anywhere.com"]
+    message: { subject: "Your NUS result", text: "<anything>" }
+
+The shape check never touched the two things that matter: WHO receives it and
+WHO sent it. **"No writer in this repo" is not a defence** — it is the reason
+this one is dangerous. The oraltest site shares this Firebase project, so every
+fluoduo learner is a signed-in principal against `mail/`, whether or not any
+code here writes to it. Now the recipient must have an invite doc THIS sender
+created.
+
+**2 · INVITE SQUATTING FROZE THE BOOKING FLOW.** `create` only fires on a
+MISSING doc and `update` is `false`, so the first write wins forever. One
+account could write one doc per classmate — `byName` is free text, so it could
+read "Dr Chan" — and no real leader could ever invite those people again. Now
+the creator must hold an actual booking and may not invite themselves.
+
+**3 · LEADERBOARD XP COULD SILENTLY FALL.** `sessions` has carried a monotonic
+guard since it was written ("a client can't quietly rewrite history"); the
+board — the most public surface in the app — had none.
+
+**WHAT THE TESTS ARE, AND WHY THERE ARE TWO HALVES.** `scripts/rules-test/`
+drives the emulator's own rules engine. `attacks.mjs` sends each attack as an
+attacker would; `legit-paths.mjs` exists because **a rule that denies
+everything passes every attack test**, and this repo has twice shipped a rule
+that quietly denied real learners — the `xp <= 100` ceiling that rejected every
+correct answer from anyone on a 7-day streak, and the leaderboard allowlist
+that needed `weekXp`/`weekKey` before a new learner could join the board. Both
+were swallowed by a client-side `catch`. So every change is checked against the
+three awkward shapes that really exist: a brand-new learner, a legacy laf1201
+row with no `xp` and no `term`, and a cohort reset where XP legitimately falls.
+
+    attacks       origin/main  3 FAIL of 6      this branch  6 PASS
+    legit-paths   origin/main  3 PASS of 3      this branch  3 PASS
+
+**THE FIRST VALIDATOR WAS WORTHLESS AND THAT IS THE LESSON.**
+`firebase emulators:exec --only firestore "true"` printed a cheerful start and
+exited 0 — so the rules were broken ON PURPOSE (`allow read: if isSignedIn(`,
+unclosed) and it exited 0 again. **It never compiles the rules.** The emulator's
+`:securityRules` REST endpoint does, and rejects that file naming the line
+(`L408:7 Unexpected 'allow'.`). A validator nobody has seen fail is not a
+validator — the same rule that caught `verify25` passing a re-typed literal.
+
+**AND THE SUITE ITSELF PRODUCED A FALSE PASS ON ITS FIRST OUTING — the same
+fault it exists to catch, one level up.** `legit-paths.mjs` never called
+`clearFirestore()`, and the emulator keeps data for its whole lifetime. So the
+SECOND run of "a brand-new learner creates their first board row" found the row
+the FIRST run had left behind, and Firestore evaluated `allow update` instead of
+`allow create` — the one rule the test exists to exercise. It reported PASS
+against a rules file that DENIES that create. Fixed by clearing the database and
+minting a random uid per run, then break-tested the only way that counts:
+
+    stale rules (no weekXp in the create allowlist)   FAIL  <- was a false PASS
+    this branch's rules                               PASS
+
+Which also settles a claim made to Dan earlier in the day and then doubted: the
+leaderboard create allowlist really does need `weekXp`/`weekKey`. A rules file
+without them denies a new learner's FIRST board row, and the client's `catch`
+deletes it — so the learner never appears. That is the 2026-08-21 fix; anyone
+holding an older copy of this file should not deploy it.
+
+**ONE PREDICTION OF MINE WAS WRONG, recorded so it is not cited later.** I
+expected a deck with no `visibility` to make `collections`' read rule ERROR and
+lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
+The `.get('visibility', 'private')` form is kept because it states the intent,
+but it changes no behaviour and fixes nothing.
+
+**AND THE RULES NOW HAVE A DEPLOY PATH, which is the fault underneath all of
+this.** `firestore.rules` was a file NOTHING deployed — no `firebase.json`, no
+`.firebaserc`, no workflow mentioning Firestore, and `deploy-live` mirrors main
+to Cloudflare Pages, which is the static site and not Firebase at all. The file
+in git was a copy of what someone had pasted into the console, with no way to
+tell whether the two still agreed. **They did not:** the copy in circulation on
+12 Sep was missing the 21 Aug `weekXp`/`weekKey` fix, and a rules file without
+it denies a new learner's FIRST board write, which the client's `catch` then
+deletes — so the learner never appears on the board. Proved, after the
+false-pass fix above, by running the new-learner path against both:
+
+    the copy in circulation   first board row for a NEW learner: DENIED
+    the repo's rules          first board row for a NEW learner: ACCEPTED
+
+`.github/workflows/firestore-rules.yml` closes the gap: tests on `paths:
+['firestore.rules', 'scripts/rules-test/**']`, and a deploy job that is
+`workflow_dispatch` + `deploy: true` only, `needs: test`. **Landing and
+publishing stay two decisions** — the `deploy-live` posture (Dan, 2026-08-31:
+*"we go through fluoduo main"*), and doubly so here, because these rules are
+the only thing between a signed-in student and everyone else's data. Needs a
+one-time `FIREBASE_SERVICE_ACCOUNT` secret; the job fails with instructions
+until it exists. `firebase.json` declares firestore ONLY — no `hosting` block,
+so a bare `firebase deploy` cannot publish a stale copy of the app over
+Cloudflare Pages.
+
+**THE WORKFLOW WOULD HAVE BEEN PERMANENTLY RED ON A GREEN RULES FILE**, and
+only running it exactly as CI runs it caught that. `clearFirestore()` throws
+`CANCELLED` when one suite starts as the previous one's gRPC streams are still
+closing — a HANDOVER race, not a broken emulator. attacks passed 6/6, then
+legit-paths crashed before printing a line and the runner exited 1.
+`clear.mjs` retries, narrowly: a cancelled or unavailable call only, so a
+broken emulator can never become a silent pass — the `settle.mjs` rule, retry a
+handover and never a verdict. Break-tested after: main's rules through the
+runner exit **1** naming the three failures, this branch's exit **0**.
+
+**AND THE WORKFLOW'S FIRST CI RUN WENT RED — THREE MORE FAULTS, none visible
+from a green local run.** Worth the paragraph because all three are the same
+species: a test that measures something other than what it claims to.
+
+1. **"emulator never came up."** The wait was 60 s, a number taken from this
+   container where firebase-tools and the 131 MB emulator JAR were already
+   cached. A COLD runner fetches both before the port ever opens. 240 s now —
+   it costs nothing on a warm run, since it returns the moment the port
+   answers.
+2. **The log said nothing else**, because the spawn used `stdio: "ignore"`. The
+   one question worth asking — downloading, or broken? — had no answer
+   anywhere. The output is buffered now and printed only on a timeout.
+3. **A STALE EMULATOR FAKED A COLD-START PASS.** With the JAR deleted on
+   purpose, the "cold" run reported 9 PASS in **1.4 seconds** — it had
+   connected to an emulator left running by an earlier invocation, enforcing
+   whatever rules that process was last given. `run.mjs` now refuses to start
+   when the port already answers (exit 2, break-tested). A genuine cold start
+   then took 8 s here and passed 9/9.
+
+CI also gets `actions/cache` on `~/.cache/firebase/emulators` and a GLOBAL
+`npm install -g firebase-tools` — global on purpose, because putting it in
+`package.json` would slow `npm ci` in `verify`, which runs on every pull
+request and whose runtime is the thing this repo has spent the month cutting.
+
+**THEN IT WENT RED A SECOND TIME, AND THE FIX FROM ROUND ONE PAID FOR ITSELF
+IMMEDIATELY** — the buffered emulator output named the cause in one line:
+
+    Error: firebase-tools no longer supports Java version before 21.
+
+The workflow pinned **Java 17**. This container has **21**, which is why the
+same script passed locally every time: works-on-my-machine, from the direction
+where the machine is the one that is right and the version was never checked
+before being written down. Pinned to 21, with a comment saying not to lower it.
+
+**AND THAT FAILURE COST FOUR MINUTES TO LEARN, TWICE.** The 240 s wait is for a
+cold runner still downloading; a process that has already EXITED will never
+open the port, so `run.mjs` watches for the child's exit and bails at once.
+Break-tested with a stub that dies the way the real one did: **1.1 s, exit 1,
+and it prints the emulator's own error** — against 240 s of silence before.
+
+**ONE MORE, FOUND WHILE BREAK-TESTING THAT.** `run.mjs` was not killing its own
+emulator: `firebase emulators:start` is a LAUNCHER, and the thing holding the
+port is a Java process it spawns, which survived SIGTERM to the launcher. So a
+second local run found port 8181 still answering and stopped at the port guard
+with exit 2 — a clean tree looking like a broken setup. `detached: true` plus a
+negative-pid signal kills the group. Verified: port free after a run, and two
+back-to-back runs both green.
+
+**ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
+SDK init still had to be shipped. **It already ships** — `client.ts` initialises
+App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.
+What is outstanding is the key and the console, not the client, and that file
+records why enforcement stays off: the legacy laf1201 sites share this project
+and must be attested before enforcing, or the rule denies their writes.
+
+**THE TESTS ARE NOT IN `verify.yml`, deliberately.** The emulator is a ~60 MB cold
+download and ~25 s of boot, and CI was cut from 10.5 minutes to ~7 this month
+because the Actions allowance ran out mid-morning and nothing could merge. They live in their own workflow instead, on the `paths:`
+filters above, so the 99% of pull requests that never touch the rules pay
+nothing.
+
+**STILL OPEN, and NOT fixable in rules — the file says so in its own header:**
+leaderboard XP is self-reported (a learner can publish 10,000,000; only a Cloud
+Function totalling `responses` fixes that), and `feedback` takes a 300 KB
+screenshot with NO sign-in at all while `vlrain_hiscores` is open too. Rules
+cannot rate-limit; App Check is the answer and the header carries a
+ready-to-enable block, switched OFF because enabling it before the apps are
+registered breaks every write instantly.
+## 12 Sep — the last of the geometry joins the ramp (MERGED as #333, QC of #324)
 
 Dan, on a goal-card row that nailed a tile to a pixel: ***"PLEASE NEVER EVER
 HARD CODE FONT SIZES AND BUTTON SIZES !!!"*** — then, once the Home keys were
@@ -9935,6 +10555,107 @@ that it exists, and says why.
 
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
+
+### 12 Sep — pinning a goal stays OUT, deliberately
+
+When the black strip above REDRILLS went (Dan, 11 Sep: *"There is no need for
+the black strip and the words above the black strip"*), it took with it the only
+control in the app that could PIN A GOAL with a date. `setGoal` in
+`progress.ts` has had **zero callers** ever since. Flagged; put to Dan; his
+answer: ***"we leave it out for now."***
+
+**So this is a decision, not an oversight — do not restore it.** The next
+session to run `grep setGoal` will find an exported function nothing calls and
+read it as dead code with a missing button. It is neither.
+
+**Nothing breaks, and this is why it was safe to leave.** Every reader of
+`progress.goal` already handles it being unset, checked one by one:
+
+    goalLine()      returns null when nothing is pinned; the caller renders nothing
+    nextAction()    the goal only RE-ORDERS the re-drill queue — it prefers an
+                    outcome the goal needs — so with none pinned it simply takes
+                    the head of the queue
+    PageBand        takes its own `goal` prop from the shell, not from progress
+
+**The one real loss, stated plainly:** the re-drill queue no longer jumps
+outcomes that sit before a learner's target stop. It drills in plain due order
+instead. `setGoal` and the `goal` field stay in place, and any learner who
+pinned one before 11 Sep keeps it — so bringing the feature back later is a
+button, not a migration.
+
+### 12 Sep — the same instruction answered three times, and what that cost
+
+> **RULED, same day: the colour-review session (`claude/home-goal-and-byline`)
+> OWNS ALL REMAINING SIZE WORK.** Dan, asked how far to take it: *"color review
+> will take it all."* No other lane touches box sizes — not the Home keys, not
+> the 28 lines, not `MapBody`'s zoom readout. If you are not that lane and you
+> find a frozen box, write it down here; do not fix it.
+>
+> **WHAT IS ALREADY DONE, so that lane does not redo it:**
+> - `verify270-fluid-controls.py` is THE check (`verify245` was withdrawn as a
+>   duplicate). Its budget is **116**, lowered from 120 by the four boxes below.
+> - `ProfileContent.tsx` and `AccentColours.tsx` are CLEAN: the FRILLS slots'
+>   `h-[58px]` became `min-h-14`, three px floors became `min-h-10/11/14`, four
+>   raw radii became `rounded`/`rounded-sm`/`rounded-lg`.
+> - `verify270` now PRINTS its breakdown, so the next lane starts from the
+>   split rather than from a lump of 116.
+> - **Still broken and still yours:** `MapBody`'s `w-[68px]` zoom readout reads
+>   « 10( » with the browser's text set large. Its own comment records the same
+>   bug at 52px, hand-widened to 62 then 68. Best single argument for the rule.
+
+
+Dan asked *"is this exactly the same thing as what colour review wants to do"*.
+Near enough, and the honest answer is worse: **THREE lanes answered "PLEASE
+NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES" within hours of each other**,
+none knowing about the others.
+
+    qc/menu-ramp + claude/subdomains   verify270-fluid-controls.py   MERGED to main
+    claude/home-goal-and-byline        the Home keys                  in flight
+    this branch                        verify245-frozen-boxes.py      DUPLICATE
+
+`verify245` and `verify270` were the same check: both stripped comments first,
+both used `verify19b`'s ratchet, both exempted the 44px touch floor, both kept a
+named list of protected files. They even recorded the same trap in the same
+words — a check reading its own documentation as the defect.
+
+**`verify245` IS WITHDRAWN. `verify270` is the check.** This branch was
+restarted from `main` (which had already taken the User-pages work as #314 and
+the sizing ruling as #319) and re-applies only what main does not have:
+
+1. **The four frozen boxes on the profile** — `h-[58px]` on the FRILLS slots
+   (which clipped: 56px box, 60px of words at large browser text), three px
+   floors and four raw radii. `verify270`'s budget drops 120 -> 116.
+2. **`verify270` now prints what its number is made of**, because the count was
+   a lump and Dan's next question was "I NEED TO SEE":
+
+       a fixed box >24px round text or an emoji ...  60   <- the real cleanup (28 lines)
+       a hairline, dot, wheel or tick box <=24px .   23   leave it: it holds no text
+       a min-* floor .............................   21   right shape already, px spelling
+       a max-* reading cap .......................   12   leave it: Dan's own exception
+
+   The target is NOT zero and the check now says so.
+3. **`verify30`'s width rule, rewritten.** It read `"w-full" not in rows or
+   "min-h-[44px] rounded" in PROFILE` — an escape hatch that passed the whole
+   claim as long as that one pixel string survived somewhere in the file, so
+   removing a frozen pixel failed a rule about WIDTH. It now names the two
+   elements that may legitimately span the page (a text input, and the row's
+   disclosure header) and flags anything else, with no size spelling in it.
+   Break-tested with a `w-full` Save button.
+
+**THE ZOOM READOUT IS STILL BROKEN ON MAIN, AND IS THE BEST ARGUMENT FOR THE
+RULE.** `MapBody`'s `w-[68px]` carries a comment recording that at 52px a
+desktop read « 00 » for 100% and « ?00 » for 200%; it was hand-widened to 62
+and then 68. Driven today with the browser's text set large it reads
+**« 10( »** — the same bug, one setting further out. Hand-tuning the pixel
+twice moved it; it never fixed it. Left alone deliberately, so two lanes do not
+edit `MapBody` at once.
+
+**THE LESSON IS ABOUT LANES, NOT ABOUT SIZES.** AGENTS.md already says to look
+at what is in flight before opening a branch. What it does not say is that a
+RULING Dan states in one sentence is heard by every session listening, and each
+will build the check for it. A one-line instruction is the highest-collision
+event there is. Say in STATUS which lane owns a ruling, in the same hour it is
+made.
 
 ### 12 Sep — the rows that had nothing in them are gone
 

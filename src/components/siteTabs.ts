@@ -24,6 +24,7 @@
 import type { ShellTab } from "@/components/CahierShell";
 import { UNIT_META } from "@/content/sios";
 import { FAMILIES, TAB_ICONS, navigableActivities } from "@/content/activities";
+import { HOME_HREF } from "@/lib/routes";
 
 /** Unit accent hues — match the fluo-h-* section palette.
  *
@@ -84,7 +85,11 @@ export function toolTabs(): ShellTab[] {
     // The map belongs to 🎯 Goals (SITE_FAMILY says so), so it wears that pen
     // rather than the #5b8def it had been carrying since before the families
     // were the highlighters — the same fault as the sixteen activity hexes.
-    { key: "map", ...TAB_ICONS.map, href: "/map",
+    // ...and the map is Home since 12 Sep, so the 🗺️ opens the page that draws
+    // it. `/map` still forwards, but a tab in the strip is pressed constantly:
+    // pointing it at a redirect spent a whole extra page load, and a flash,
+    // on the single most-used door in the app.
+    { key: "map", ...TAB_ICONS.map, href: HOME_HREF,
       hue: "var(--fam-goals)", fill: "var(--fam-goals-wash)" },
     ...navigableActivities().map((a) => ({
       key: a.key,

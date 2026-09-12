@@ -81,10 +81,27 @@ function tourFor(rawPath: string): Tour | null {
         // Introductions », your goal on the study path » — so rewording that
         // sentence would have unhooked the tour with nothing to show for it.
         {
-          selector: '[data-tour="continue"], [data-tour="map-stop"]',
+          // ONE TARGET NOW, NOT TWO (12 Sep). Dan removed Home's ▶ Continue
+          // key — *"is it ok to do without the play, forward and rewind
+          // buttons"* — so the half of this selector that carried the step is
+          // gone, and `[data-tour="map-stop"]` was a fallback nothing rendered.
+          // The anchor is on the map's glowing stop now (Map2DGrid), which is
+          // what the sentence was pointing at all along.
+          selector: '[data-tour="map-stop"]',
           action: "tap",
-          text: "Your next stop — the button and the glowing stop are the same goal.",
+          text: "Your next stop — the glowing one. Tap it to open the goal.",
         },
+        // THE MAP TOUR'S ONE SURVIVING STEP (12 Sep). The map moved onto this
+        // page, so `/home` matches the branch above and the `/^\/map/` branch
+        // below it can never be reached — the fifth silent tour failure this
+        // file would have recorded, and the first one caught before shipping.
+        //
+        // Only this step is carried over; the other two were already taught
+        // here. Its « Every stop is one goal. Tap one to open it. » is the step
+        // above wearing different words, and « ✓ green = done » describes a
+        // colour the learner is looking at. The 2D/3D switch is the one control
+        // that arrived on this page with nothing anywhere explaining it.
+        { selector: '[data-tour="map-view"]', action: "tap", text: "2D is a plan, 3D is a scene. Your choice sticks." },
         // ☰, NOT THE BOTTOM BAR (Dan, 2026-09-11: *"the beginning first
         // landing on the home page: the current tour is broken"*).
         //
@@ -120,18 +137,15 @@ function tourFor(rawPath: string): Tour | null {
   // The tour used to open on the wake glass ("tap to use the map"); the
   // glass was removed on 2026-08-31 with the map on its own page, so the
   // tour now opens on the 2D/3D toggle — the map's front-and-centre control.
-  if (/^\/map/.test(path)) {
-    return {
-      key: "map",
-      steps: [
-        // The wake-glass step went with the glass itself (Dan, 2026-08-31) —
-        // the map answers the first tap now, nothing to explain.
-        { selector: '[data-tour="map-view"]', action: "tap", text: "2D is a plan, 3D is a scene. Your choice sticks." },
-        { selector: '[data-tour="map"]', action: "tap", text: "Every stop is one goal. Tap one to open it." },
-        { text: "✓ green = done. The highlighted stop is where your class is." },
-      ],
-    };
-  }
+  //
+  // AND ON 12 SEP THE MAP CAME BACK OFF ITS OWN PAGE. `/map` forwards to
+  // `/home`, which draws the map — so the branch that stood here could never
+  // match again: `path === "/home"` is answered fifteen lines above and
+  // returns. A tour branch for an address nothing resolves to is precisely
+  // what the three retirement notes below describe, so it is not left sitting
+  // here looking live. Its 2D/3D step moved into the home tour, where the
+  // control it names now lives; the other two were duplicates and the reason
+  // is written beside it.
   // THE UNIT TOUR IS GONE, AND THAT IS HOW /unit/N GETS A WORKING ONE (11 Sep).
   //
   // Dan asked for the dead tours fixed rather than retired, and for this one

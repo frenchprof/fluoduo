@@ -21,6 +21,7 @@ import CahierShell from "@/components/CahierShell";
 import EmbedFrame from "@/components/EmbedFrame";
 import { notFound } from "next/navigation";
 import { getSio, SIOS } from "@/content/sios";
+import { HOME_HREF } from "@/lib/routes";
 
 export function generateStaticParams() {
   return SIOS.map((s) => ({ id: s.id }));
@@ -40,7 +41,7 @@ export default async function SioPage({ params }: { params: Promise<{ id: string
     /* `active="sio"` and not "home": SITE_FAMILY maps `sio` to the goals
        family, and CahierShell draws its heading band only when a family
        resolves AND the key is not "home". */
-    <CahierShell active="sio" band={{ title: "Goals", exitHref: "/map" }}>
+    <CahierShell active="sio" band={{ title: "Goals", exitHref: HOME_HREF }}>
       <EmbedFrame src={`/sio/${sio.id}/embed`} title={`${sio.id} — ${sio.topic}`} />
     </CahierShell>
   );

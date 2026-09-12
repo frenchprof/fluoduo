@@ -45,6 +45,7 @@ import { composeBanksForDeck } from "@/games/compose/banks";
 /** The activities whose pop-up asks "which goal?". ÉcouTexte is deliberately
  *  absent — see the header. */
 export type StopActivityKey =
+  | "sio" | "mnemo"
   | "flip" | "grammarathon" | "wordrill" | "lexicalator" | "vocabularain" | "compose";
 
 const deckOf = (stop: number): string | null => SIOS[stop - 1]?.collectionId ?? null;
@@ -60,6 +61,32 @@ export function stopHref(key: StopActivityKey, stop: number): string | null {
   if (!deck) return null;
 
   switch (key) {
+    // THE GOAL ITSELF (Dan, 2026-09-12: *"Goals will lead to SIOs"*). The ☰'s
+    // 🎯 tile opened Home, which was honest while the per-goal page was still
+    // being built by another lane — the comment in MenuGrid said so — and
+    // stopped being honest when `/sio/[id]` landed. Now that Home IS the map,
+    // it would also have been circular.
+    //
+    // The only entry that cannot fail: `generateStaticParams` there is
+    // `SIOS.map(s => s.id)`, so every stop on the slider has a page, and the
+    // address is built from the same array the slider counts.
+    case "sio":
+      return `/sio/${SIOS[stop - 1].id}`;
+
+    // MNEMEMO, THE LESSON (Dan: *"MneMemo will lead to MneMemo (the current
+    // link is wrong)"*). It pointed at /map. That was a stand-in with a reason
+    // — MneMemo has no page of its own, its door was the Practice hub, and the
+    // hub retired on 9 Sep — but the stand-in outlived the problem: the map is
+    // not MneMemo, and a learner picking « MneMemo » from the menu landed on a
+    // map and had to know to tap a stop.
+    //
+    // `/lessons/deck/<deck>` IS its page; that route's frame is titled
+    // "MneMemo" in as many words. Gated on `hasDeck` for the same reason
+    // MémoiRecall is: `generateStaticParams` there is `CURATED.map(c => c.id)`,
+    // so a stop whose deck is not curated has no page exported.
+    case "mnemo":
+      return hasDeck(deck) ? `/lessons/deck/${deck}` : null;
+
     // MémoiRecall and WorDrill play any curated deck's items — the deck
     // existing IS their gate, and both pages `notFound()` without one.
     case "flip":

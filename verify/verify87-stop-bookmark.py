@@ -11,8 +11,11 @@ What this check holds, and why each clause is the one that matters:
   1. The bookmark lives in ONE place (lib/continuer.ts) and nextSioId takes
      it as an ARGUMENT — the render paths (Home, the map) must pass it from
      state, because reading localStorage during render breaks the prerender.
-  2. Both editable indicators exist: Home's hero well and the map's control
-     row, the map's LEFT of the zoom cluster.
+  2. The editable indicators exist: the TOP BAR's (all 28 surfaces) and the
+     map's control row, the map's LEFT of the zoom cluster. Home's own hero
+     well is deliberately NOT one of them any more — Dan, 12 Sep: *"there is
+     no need to have the current stop mentioned twice"* — and clause 1 pins
+     its absence rather than leaving the page free to grow a second reading.
   3. The handler-path callers (nextStep, the tour's Play card, the activity
      landing) go through continueSioId, so « Continue » follows the bookmark
      everywhere it is spoken, not only where it is drawn.
@@ -50,7 +53,23 @@ ok(re.search(r"nextSioId\(progress:\s*Progress,\s*bookmarkNo\?", cont) is not No
    "nextSioId takes the bookmark as an argument",
    "nextSioId reads storage itself — called during render on Home and the map, "
    "that makes the first client render disagree with the prerender")
-for surface, name in ((home, "HomeDashboard"), (mapb, "MapBody")):
+# HOME NO LONGER READS THE BOOKMARK, AND THAT IS THE FIX RATHER THAN THE FAULT
+# (12 Sep). Dan removed the hero's transport row — *"is it ok to do without the
+# play, forward and rewind buttons"* — and with it the last thing on that page
+# that needed the learner's progress. `HomeDashboard` now holds no state at
+# all: it renders `MapBody`, which loads progress and the bookmark because it
+# must, being the component `/map` framed.
+#
+# Asserting Home still reads the bookmark would now be asserting the SECOND
+# COPY this branch exists to remove — two surfaces computing one stop is
+# exactly how Home and the map drifted apart in the first place. So the loop
+# names the surface that owns it, and the clause below pins that Home does not
+# grow its own reading back.
+ok("nextSioId" not in home and "BOOKMARK_EVENT" not in home,
+   "Home keeps no second copy of the current stop",
+   "HomeDashboard is computing the current stop again — one value, one owner; "
+   "the map's control row is where it lives")
+for surface, name in ((mapb, "MapBody"),):
     ok("nextSioId(progress, bookmark)" in surface,
        f"{name} passes the bookmark from STATE",
        f"{name} computes the current stop without the bookmark — the learner's "

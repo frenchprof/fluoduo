@@ -15,6 +15,7 @@ import CahierShell from "@/components/CahierShell";
 import { notFound } from "next/navigation";
 import { getSio, SIOS } from "@/content/sios";
 import SioScroller from "../SioScroller";
+import { HOME_HREF } from "@/lib/routes";
 
 export function generateStaticParams() {
   return SIOS.map((s) => ({ id: s.id }));
@@ -25,7 +26,7 @@ export default async function SioEmbedPage({ params }: { params: Promise<{ id: s
   const sio = getSio(id);
   if (!sio) notFound();
   return (
-    <CahierShell active="sio" band={{ title: "Goals", exitHref: "/map" }}>
+    <CahierShell active="sio" band={{ title: "Goals", exitHref: HOME_HREF }}>
       <div className="mx-auto max-w-3xl">
         <SioScroller id={sio.id} />
       </div>

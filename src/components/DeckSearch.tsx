@@ -12,6 +12,7 @@ import { useRef, useState } from "react";
 import { searchDecks, searchConj, type DeckHit } from "@/lib/search";
 import { lessonsForDeck } from "@/content/lessons";
 import { UNIT_ACCENTS } from "@/components/siteTabs";
+import { HOME_HREF } from "@/lib/routes";
 
 const MAX_DECKS = 8;
 
@@ -103,7 +104,7 @@ export default function DeckSearch({
           {hits.length > MAX_DECKS && (
             <p className="px-3 py-1.5 text-xs font-bold text-[color:var(--fluo-ink)]/60">
               + {hits.length - MAX_DECKS} more decks — see the
-              <Link href="/map" className="underline">map</Link>
+              <Link href={HOME_HREF} className="underline">map</Link>
             </p>
           )}
         </div>

@@ -156,13 +156,49 @@ ok(all("--fs-step" in s for s in sized),
 # text size but not the screen. So a sweep converting px to rem moves this
 # number by ZERO, and the branch that did 47 of them read the drop from 120 as
 # its own work. Measured: origin/main 86, that branch 86.
-BUDGET = 84
+# 84 -> 81 (integration of claude/user-pages-tabs, 12 Sep). That branch fixes
+# the three frozen boxes on the PROFILE — the FRILLS slots' h-[58px], which
+# clipped at large browser text, and two px floors — which main's own sweep
+# deliberately left alone ("already fixed on claude/user-pages-tabs ... editing
+# the same lines would collide for nothing"). The check's own advice line asked
+# for this number; leaving 84 would hold three slots of slack open behind it.
+BUDGET = 81
+
+# WHAT THE NUMBER IS MADE OF (added 12 Sep, after Dan asked "what exactly are
+# we cleaning up in the 116 — I NEED TO SEE"). A single lump is not a to-do
+# list: a 3px hairline and a 58px button round an emoji are not the same debt,
+# and only one of them is ever going to be cleaned. Printing the split says
+# where the next patch should start, and stops the total reading as 116
+# identical wounds. It also says plainly that the target is NOT zero.
+#
+# AND A TOKEN IS NOT A SITE. `h-[44px] w-[44px] sm:h-[58px] sm:w-[58px]` is ONE
+# button and four counts, so the distinct-line figure travels beside it.
+KIND = re.compile(r"\b(min-h|max-h|h|min-w|max-w|w)-\[([0-9.]+)(px|rem)\]")
+kinds = {"frozen": 0, "hairline": 0, "floor": 0, "cap": 0}
+sites = set()
 
 total = 0
 for dirpath, _dirs, files in os.walk(SRC):
     for f in files:
-        if f.endswith((".tsx", ".ts")):
-            total += len(FROZEN.findall(bare(read(os.path.join(dirpath, f)))))
+        if not f.endswith((".tsx", ".ts")):
+            continue
+        path = os.path.join(dirpath, f)
+        src = bare(read(path))
+        total += len(FROZEN.findall(src))
+        for ln, line in enumerate(src.splitlines(), 1):
+            for axis, val, unit in KIND.findall(line):
+                if TOUCH_FLOOR.fullmatch(f"{axis}-[{val}{unit}]"):
+                    continue
+                px = float(val) * (16 if unit == "rem" else 1)
+                if axis.startswith("min"):
+                    kinds["floor"] += 1
+                elif axis.startswith("max"):
+                    kinds["cap"] += 1
+                elif px <= 24:
+                    kinds["hairline"] += 1
+                else:
+                    kinds["frozen"] += 1
+                    sites.add((path, ln))
 
 ok(total <= BUDGET,
    f"{total} frozen box sizes in src/, within the budget of {BUDGET}",
@@ -172,9 +208,22 @@ ok(total <= BUDGET,
 if total < BUDGET:
     PASS.append(f"…and {BUDGET - total} fewer than the budget — lower BUDGET to {total}")
 
+BREAKDOWN = (
+    "\n  what the count is made of — the target is NOT zero:\n"
+    f"      a fixed box >24px round text or an emoji ... {kinds['frozen']:3}"
+    f"   <- the real cleanup ({len(sites)} distinct lines)\n"
+    f"      a hairline, dot, wheel or tick box <=24px . {kinds['hairline']:3}"
+    "   leave it: it holds no text\n"
+    f"      a min-* floor ............................. {kinds['floor']:3}"
+    "   right shape already, px spelling\n"
+    f"      a max-* reading cap ....................... {kinds['cap']:3}"
+    "   leave it: Dan's own \"show less per width\""
+)
+
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
     print("\n".join("  FAIL  " + m for m in FAIL))
 print("-" * 70)
 print(f"  {len(PASS)} passed · {len(FAIL)} failed")
+print(BREAKDOWN)
 sys.exit(1 if FAIL else 0)

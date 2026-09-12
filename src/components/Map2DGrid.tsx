@@ -344,6 +344,13 @@ export default function Map2DGrid({
                 <button
                   key={s.id}
                   data-stop={s.id}
+                  /* THE HOME TOUR'S FIRST STEP ANCHORS HERE (12 Sep). It used
+                     to name `[data-tour="continue"], [data-tour="map-stop"]` —
+                     the ▶ key, with this as a fallback that WAS NEVER
+                     RENDERED. Dan removed the ▶, so the step's whole selector
+                     matched nothing and the tour would have opened by silently
+                     skipping its own first step. The fallback is real now. */
+                  {...(active ? { "data-tour": "map-stop" } : {})}
                   type="button"
                   onClick={() => onOpenSio?.(s.unit, s.id)}
                   title={`${s.id} · ${s.topic} (${KIND_LABEL[kind]})`}

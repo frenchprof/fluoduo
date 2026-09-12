@@ -2,7 +2,7 @@
 """
 Home carries the REAL map, never the postcard.
 
-THIS CHECK HAS BEEN RETARGETED THREE TIMES, and the trail matters more than
+THIS CHECK HAS BEEN RETARGETED FOUR TIMES, and the trail matters more than
 the assertions, because each turn superseded the last:
 
   verify80-home-view-switch   Home had a 2D/3D switch (Dan, 1 Sep).
@@ -17,6 +17,16 @@ the assertions, because each turn superseded the last:
                               himself: *"Home, and put the 3D map on it"* —
                               then, before a line was written, *"not the
                               postcard pls"*.
+  (12 Sep)                    THE SWITCH CAME BACK — and /map went instead.
+                              Dan, with both pages open: *"We have two pages
+                              doing the same thing: The Home page + The Map.
+                              Can we just keep the Bienvenue one … and move
+                              the 3D-2D switch and the zoom control and
+                              navigators '> Goal', legend there."* Home
+                              renders `MapBody` now; /map forwards here. The
+                              "no view switch" line from 1 Sep is therefore
+                              INVERTED below rather than deleted: its absence
+                              is the regression now.
 
 SO THE SUBJECT WAS NEVER "a map on Home". Read the three rulings together and
 the constant is the POSTCARD: a cropped 2D grid, dressed with a glassmorphic
@@ -28,11 +38,16 @@ moment Dan asked for the map back.
 
 WHAT THIS PINS NOW:
   · the real 3D scene is on Home, wired to open a stop (`onOpenSio`);
-  · none of the postcard's parts are — no 2D grid, no view switch, no
-    « Enter the map » band, no `still` frozen picture, no `fill`;
+  · none of the postcard's parts are — no `postcard` mode, no « Enter the
+    map » band, no `still` frozen picture, no `fill`;
+  · the 2D/3D switch IS there (12 Sep);
   · the map still has a door somewhere outside itself.
 
-It says nothing about /map or /welcome — those are verify25b/c, 151 and 152.
+The 2D GRID is no longer forbidden: it is the 2D view the switch switches to,
+which is the thing Dan moved onto Home. What made the postcard a postcard was
+the CROP and the dead band, and those are what stay named.
+
+It says nothing about /welcome — that is verify25c, 151 and 152.
 
 Run from the repo root:  python3 verify/verify80-home-postcard.py
 """
@@ -53,18 +68,38 @@ code = re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", home)
 code = re.sub(r"(?m)^\s*//.*$", "", code)
 
 # ---- the map IS there, and it is the live one -------------------------------
+#
+# THROUGH `MapBody` SINCE 2026-09-12, not by naming the scene directly. Dan,
+# with /home and /map open side by side: *"We have two pages doing the same
+# thing … Can we just keep the Bienvenue one and move the 3D-2D switch and the
+# zoom control and navigators '> Goal', legend there."* /map now forwards to
+# Home, and Home renders the component /map used to frame.
+#
+# THE CHECK FOLLOWS THE DELEGATION RATHER THAN RELAXING. "Home carries the real
+# map, never a picture of one" is still exactly what is asserted; it is now
+# asserted across two files, because that is where the answer lives. Dropping
+# to "Home mentions a map somewhere" would have been the easy edit and would
+# have stopped testing the thing this file exists for.
+mapbody = open("src/app/map/MapBody.tsx", encoding="utf-8").read()
+mb_code = re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", mapbody)
+mb_code = re.sub(r"(?m)^\s*//.*$", "", mb_code)
 
-ok("<HomeMap3D" in code,
-   "Home renders the 3D scene",
-   "the 3D map is gone from Home — Dan, 9 Sep: 'Home, and put the 3D map on it'")
+ok("<MapBody" in code,
+   "Home renders the map",
+   "the map is gone from Home — Dan, 9 Sep: 'Home, and put the 3D map on it', "
+   "and 12 Sep: Home is the one map page")
+
+ok("<HomeMap3D" in mb_code,
+   "and the map it renders is the 3D scene",
+   "MapBody no longer renders the 3D scene, so Home has no map either")
 
 # A map you cannot tap is a picture of a map. This is the single line that
 # separates what Dan asked for from what he threw out.
-scene = re.search(r"<HomeMap3D[^>]*>", code)
+scene = re.search(r"<HomeMap3D[^>]*>", mb_code)
 attrs = scene.group(0) if scene else ""
 ok("onOpenSio=" in attrs,
    "its stops open the goal's page — the scene is a control, not a picture",
-   "the scene on Home has no onOpenSio: its stops go nowhere, which is the "
+   "the scene Home shows has no onOpenSio: its stops go nowhere, which is the "
    "'unresponsive' Dan retired on 8 Sep wearing a new coat")
 
 ok("still" not in attrs,
@@ -72,25 +107,53 @@ ok("still" not in attrs,
    "the scene on Home is `still`: frozen is what /welcome's PICTURE of the "
    "map is for, not the map itself")
 
-ok("fill" not in attrs,
-   "the scene keeps its own height — no `fill`",
-   "the scene on Home is `fill`ed to the window; that is /welcome's shape")
+# `fill` CHANGED MEANING ON 12 SEP, so this assertion changed with it rather
+# than being dropped. It used to be forbidden because it meant "/welcome's
+# shape": the scene filling the WINDOW, as a hero. It is now how the scene
+# takes the height of the shared frame — Dan: *"the frame itself (not the
+# content) for both maps must be identical in shape and size"* — and the frame
+# is bounded by the 2D grid sitting under it in the page's own flow.
+#
+# What still has to be true is what the old line was really protecting: the
+# scene is bounded by the PAGE, not by the viewport. So the check now asserts
+# the construction that bounds it. Without the absolutely-positioned box over a
+# sizer, `fill` means `h-full` of an auto-height parent — which is what made the
+# scene measure 142,800px tall when this was first built the other way.
+ok(re.search(r"absolute inset-0", mb_code) is not None and "<Map2DGrid" in mb_code,
+   "the scene fills a frame the page sizes, not the window",
+   "the 3D scene is no longer bounded by the 2D grid's box: `fill` then means "
+   "`h-full` of an auto-height parent, and the scene's own scroll height is the "
+   "road's length — it grows without limit")
 
 # ---- and none of the postcard came back with it ------------------------------
 
-ok("Map2DGrid" not in code,
-   "no 2D grid on Home — the postcard's body stays retired",
-   "the 2D map postcard is back on Home — Dan, 8 Sep: 'we don't need this "
-   "anymore'")
+# MAP2DGRID IS NOW LEGITIMATE INSIDE MapBody — it is the 2D VIEW, the one the
+# switch switches to, and Dan asked for that switch to come to Home. What stays
+# retired is the POSTCARD: a 0.44-zoom CROP of that grid under a dead band. So
+# the assertion moves to the two things that made it a postcard and are still
+# nobody's feature, and is checked across both files.
+both = code + mb_code
+ok("postcard" not in both.lower(),
+   "no postcard mode anywhere behind Home",
+   "a `postcard` prop or mode is back behind Home — Dan, 9 Sep: 'please throw "
+   "that postcard away forever'")
 
-ok("Enter the map" not in code,
+ok("Enter the map" not in both,
    "no « Enter the map » band",
    "the retired CTA band is back on Home — it is pointer-events-none, which "
    "is exactly the dead button Dan called unresponsive")
 
-ok("PillSwitch" not in code,
-   "no view switch on Home — the choice lives on /map",
-   "the home view switch is back; its subject was retired on 7 Sep")
+# THE VIEW SWITCH IS BACK ON HOME ON PURPOSE (Dan, 2026-09-12: *"move the
+# 3D-2D switch and the zoom control and navigators '> Goal', legend there"*).
+# This file's header records three earlier turns on this same question; this is
+# the fourth, and it is the only one that also deleted the other page.
+#
+# So the assertion inverts rather than disappearing: the switch must BE there,
+# because a switch that quietly went missing again is the regression now.
+ok("mapView" in mb_code and "setMapView" in mb_code,
+   "the 2D/3D switch is on Home, where Dan moved it",
+   "the view switch is gone from the map Home renders — Dan, 12 Sep, moved it "
+   "here from /map and then retired /map")
 
 # AND THE MODE ITSELF IS GONE, not merely unused (Dan, 9 Sep: *"please throw
 # that postcard away forever"*). HomeMap carried a `postcard` prop that
@@ -105,25 +168,44 @@ ok("postcard" not in hm_code,
    "the `postcard` prop is back in HomeMap.tsx — Dan, 9 Sep: 'please throw "
    "that postcard away forever'")
 
-# ---- the map is still reachable the ordinary way -----------------------------
-# Home showing the scene does not excuse stranding /map: the zoom, the legend
-# and the 2D view all live there and nowhere else.
+# ---- the map is still reachable, and the old address still lands -----------
+# TWO THINGS, AND THEY MOVED IN OPPOSITE DIRECTIONS ON 12 SEP.
+#
+# The map merged onto Home, so the in-app doors stopped naming `/map` — they
+# name HOME_HREF, because a link to the redirect stub costs a second page load
+# and a flash (verify210 now forbids the old spelling outright). Counting
+# `/map` links here would therefore have gone red on the fix and green on a
+# regression, which is the fault this file has already recorded three times
+# about its own `fill` assertion.
+#
+# What is worth guarding is what the old assertion MEANT: the zoom, the legend
+# and the 2D view must be reachable without typing an address.
 doors = []
 for root, _dirs, fs in os.walk("src"):
     for f in fs:
         if not f.endswith((".tsx", ".ts")):
             continue
-        p = os.path.join(root, f)
-        if p.replace(os.sep, "/").startswith("src/app/map/"):
+        p_ = os.path.join(root, f).replace(os.sep, "/")
+        if p_.startswith("src/app/map/") or p_ == "src/lib/routes.ts":
             continue  # the map linking to itself is not a way in
-        t = open(p, encoding="utf-8").read()
-        if re.search(r'href=(?:"|\{")/map"|href:\s*"/map"|push\("/map"\)', t):
-            doors.append(p.replace(os.sep, "/"))
+        t = re.sub(r"(?m)^\s*//.*$", "", open(p_, encoding="utf-8").read())
+        if re.search(r'href=(?:\{)?HOME_HREF|href:\s*HOME_HREF|push\(HOME_HREF', t):
+            doors.append(p_)
 ok(len(doors) >= 1,
-   f"the map still has {len(doors)} door(s) outside itself: "
+   f"the map has {len(doors)} door(s) outside itself: "
    + ", ".join(sorted(os.path.basename(d) for d in doors)[:4]),
-   "NOTHING links to /map any more — the zoom, the legend and the 2D view "
-   "are reachable only by typing the address")
+   "NOTHING links to the page that draws the map — the zoom, the legend and "
+   "the 2D view are reachable only by typing the address")
+
+# AND THE STUB STAYS. Fifty stops' worth of `/map#SIO-0nn` deep links, printed
+# QR codes and outside bookmarks rely on the forward being wired to something.
+# A door that 404s is the failure; one that forwards is the design.
+stub = open("src/app/map/MapRedirect.tsx", encoding="utf-8").read() \
+    if os.path.isfile("src/app/map/MapRedirect.tsx") else ""
+ok("location.replace" in stub and "/home" in stub,
+   "/map still forwards to Home, so old links and printed QR codes still land",
+   "/map no longer forwards — every bookmark, QR code and `/map#SIO-0nn` deep "
+   "link in the wild now 404s. The route may never be deleted outright.")
 
 print("\n".join("  ok    " + s for s in OK))
 if FAIL: print("\n".join("  FAIL  " + s for s in FAIL))

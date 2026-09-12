@@ -44,6 +44,7 @@ import { cellHref } from "@/lib/indexMatrix";
 import { latestPretestSio, PRETEST_RECORD_EVENT } from "@/lib/pretestRecord";
 import { continueSioId } from "@/lib/continuer";
 import { loadProgress } from "@/lib/progress";
+import { HOME_HREF } from "@/lib/routes";
 
 const UNITS = [0, 1, 2, 3, 4];
 
@@ -149,7 +150,7 @@ export default function ActivityLanding({ activityKey }: { activityKey: string }
 
           <p className="mt-4 text-center text-xs font-bold text-[color:var(--fluo-ink-soft)]">
             Looking for something else at a stop?{" "}
-            <Link href="/map" className="underline">Open the map</Link>.
+            <Link href={HOME_HREF} className="underline">Open the map</Link>.
           </p>
         </div>
       )}

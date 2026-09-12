@@ -51,6 +51,7 @@ import { clearHeard, loadHeard, saveHeard } from "@/lib/textgen/heard";
 import { MAX_SENTENCES, type MiniText, type UnitTextGen } from "@/lib/textgen/types";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { queueForReview, recordItemResult } from "@/lib/progress";
+import { HOME_HREF } from "@/lib/routes";
 
 const SLOW_RATE = 0.6;
 /** A beat between sentences long enough to hear the sentence boundary. */
@@ -608,7 +609,7 @@ export default function EcouTexte({
     <DrillShell
       activity="ecoutexte"
       deck={deck}
-      exitHref={deck ? drillExitHref(deck) : "/map"}
+      exitHref={deck ? drillExitHref(deck) : HOME_HREF}
       progress={text ? { done: worked, total: sentences.length } : null}
       right={text ? <>{worked}/{sentences.length}</> : undefined}
       secondary={

@@ -27,6 +27,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { stopHref, type StopActivityKey } from "@/lib/activityStops";
 import { loadProgress } from "@/lib/progress";
+import { dueForReview } from "@/lib/reviser";
 import { nextGoalNumber, loadBookmark } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
 import {
@@ -82,7 +83,11 @@ const GREY = "var(--fam-user)";
 const GREY_INK = "var(--fam-user-ink)";
 
 type Cell =
-  | { kind: "one"; emoji: string; name: string; href: string }
+  /* `badge: "due"` puts the review queue's size on the tile. It is a KEY
+     rather than a number because ROWS is a module constant, evaluated once at
+     import: a number here would be frozen at whatever the count was when the
+     bundle loaded. The component resolves it per render. */
+  | { kind: "one"; emoji: string; name: string; href: string; badge?: "due" }
   /* A PER-STOP DOOR. It is not a pop-up any more and it is not a plain link
      either: the GO TO row at the top of this menu names the stop, and these
      six answer for it — a real link when the activity can play that stop, a
@@ -125,58 +130,82 @@ type Cell =
  *  Falling back to the map rather than to "#" keeps a tile working if a key is
  *  ever renamed — the same `??` guard the Numbers tile already used for its
  *  name and emoji. */
-const hrefOf = (key: string) => activity(key)?.href ?? "/map";
+const hrefOf = (key: string) => activity(key)?.href ?? HOME_HREF;
 
 // Each row wears a NAME at its start — "(very subtly!) label each row at the
 // start to identify what each row is about" (Dan, 7 Sep, picking over the
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
 const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
-  // LESSON — the goal itself, Help, and (2026-09-12) Favourites in the slot
-  // the map used to hold. "Goals" still opens Home for now: the per-SIO page
-  // ("Goal = Specific Instructional Objective") is a separate, larger piece
-  // Dan has someone else building — this tile will point there once it lands.
+  // LESSON — ★ Favourites, the goal itself, and Help. TWO BRANCHES LANDED ON
+  // THIS ROW WITHIN AN HOUR OF EACH OTHER and both were right; this is the
+  // merge, spelled out because a careless resolution silently loses one.
   //
-  // WHY THE MAP GAVE UP ITS TILE, AND WHY NOTHING WAS LOST. Dan, 2026-09-12:
-  // *"put Favourites in the burger grid menu in the yellow lesson strip
+  // MAP GAVE UP THIS TILE, from both sides at once. Dan to the Favourites
+  // lane: *"put Favourites in the burger grid menu in the yellow lesson strip
   // replacing Map (Map already has multiple doors and does not need this
-  // space)"*. He is right about the count — `/map` is reached from the 🗺️ in
-  // the icon strip two rows above this grid, from the MneMemo tile in the
-  // Practice row below it, and from the hero on Home. Favourites had ONE door
-  // (the ★ beside the account chip) and it only becomes a link once something
-  // is starred, so a learner who has never starred anything could not reach
-  // the page to find out what it was for. This tile is that door.
+  // space)"*. Dan to this lane, the same day: *"We don't need Map in the menu
+  // it is already in the Kallang Wave"*. The second reason is now the stronger
+  // one — `/map` forwards to Home, which DRAWS the map, so a menu door to it
+  // was a door to the page you were already looking at.
   //
-  // ★ AND NOT ⭐. The filled text star is what the top-bar button and the
-  // Favourites page already wear; the emoji ⭐ is XP (StatsHelp: "earned every
-  // answer", and the XP row on the User page), and one glyph means one thing.
+  // ★ FAVOURITES is the Favourites lane's tile, unchanged. It needed a door:
+  // the ★ beside the account chip only becomes a LINK once something is
+  // starred, so a learner who had never starred anything could not reach the
+  // page to find out what it was for. ★ and not ⭐ — the filled text star is
+  // what the button and the page wear, while ⭐ is XP, and one glyph means one
+  // thing.
   //
-  // THE TILE AND THE PAGE ARE BOTH YELLOW. For a few hours they were not —
-  // the tile sat here and `SITE_FAMILY` still had `favourites: "user"`, so a
-  // yellow tile opened a grey page. Dan: *"make the favourites page yellow to
-  // match its door"*. The rule that settles it is the plain one: the strip a
-  // door sits in is the colour the page wears. See `SITE_FAMILY` in
-  // activities.ts, where the entry now reads "goals".
+  // 🎯 GOALS IS A PICKER, WHICH IS THIS LANE'S HALF AND THE PART A NAIVE MERGE
+  // WOULD HAVE DROPPED. main's tile still read `href: HOME_HREF` with a
+  // comment saying the per-SIO page was "a separate, larger piece Dan has
+  // someone else building — this tile will point there once it lands". IT HAS
+  // LANDED. Dan, 2026-09-12: *"Goals will lead to SIOs"*. And with Home now
+  // being the map, `HOME_HREF` here would be a door to the page you pressed it
+  // on. A picker rather than a plain link because "which goal?" is the
+  // question — the same slider every other per-stop tile opens. See
+  // `stopHref`'s `sio` case, the one entry that cannot fail: its addresses are
+  // built from the same array the slider counts.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
-    { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
+    { kind: "picker", emoji: "🎯", name: "Goals", sioKey: "sio" },
     { kind: "help" },
   ]},
   { band: PEN.practice, ink: INK.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
-    // MneMemo has no page of its own — it is reached from a stop (see its
-    // registry entry, href: null). /practice USED to be that door (the
-    // Practice hub, listing it alongside SpecuLearn); the hub retired 9 Sep
-    // (Dan: "made redundant"), so this now points at the map, where a
-    // learner actually picks the stop that opens a lesson.
-    { kind: "one", emoji: "📚", name: "MneMemo", href: "/map" },
+    // MNEMEMO OPENS MNEMEMO (Dan, 2026-09-12: *"MneMemo will lead to MneMemo
+    // (the current link is wrong)"*). It pointed at /map, which was a
+    // stand-in with a reason — MneMemo has no page of its own, its door was
+    // the Practice hub, the hub retired 9 Sep — but the stand-in outlived the
+    // problem. A learner pressing « MneMemo » got a map and had to know that
+    // tapping a stop was the next move; nothing on screen said so.
+    //
+    // It is a picker like the two beside it: pick the goal, land on that
+    // goal's lesson at `/lessons/deck/<deck>` — the route whose own frame is
+    // titled "MneMemo". See `stopHref`'s `mnemo` case for the gate.
+    { kind: "picker", emoji: "📚", name: "MneMemo", sioKey: "mnemo" },
     { kind: "picker", emoji: "🃏", name: "MémoiRecall", sioKey: "flip" },
   ]},
   // "Review", not "Revise" — DéjàRevu is renamed ErroReview the same day
   // (Dan, 2026-09-09); see the registry entry in activities.ts.
   { band: PEN.review, ink: INK.review, label: familyName("review"), cells: [
     { kind: "one", emoji: "🔤", name: "ConjugaZone", href: "/conjugaison" },
-    { kind: "one", emoji: "❌", name: "ErroReview", href: "/reviser" },
+    // THE ☰'s BADGE HAS TO LAND SOMEWHERE (Dan, 2026-09-12: *"THE THING WHEN
+    // I OPEN THE MENU I WILL BE WONDERING WHERE THAT NUMBER FALLS UNDER AND IT
+    // WAS NOT SHOWN"*).
+    //
+    // `SiteTopBar` has put a count on the ☰ button since the bottom bar was
+    // removed — « 7 » in a pill, announced as "Navigation — 7 to revise". It
+    // says something is waiting and not WHAT, so opening the menu to find out
+    // answered nothing: twenty tiles, none of them carrying the number. A
+    // badge that raises a question its own menu cannot answer is worse than no
+    // badge.
+    //
+    // It counts WORDS, not goals: every item the learner has practised has a
+    // spaced-repetition timer, and `dueForReview` returns the ones whose timer
+    // has elapsed. ErroReview is the page that plays exactly that queue, so
+    // this is the tile the ☰'s number was always about.
+    { kind: "one", emoji: "❌", name: "ErroReview", href: "/reviser", badge: "due" },
     { kind: "picker", emoji: "🏃", name: "GramMarathon", sioKey: "grammarathon" },
   ]},
   { band: PEN.svplay, ink: INK.svplay, label: familyName("svplay"), cells: [
@@ -263,6 +292,15 @@ export default function MenuGrid({
     if (currentStop) return currentStop;
     try { return nextGoalNumber(loadProgress(), loadBookmark()) ?? 1; } catch { return 1; }
   };
+  /* THE REVIEW QUEUE'S SIZE, read the same lazy way and for the same reason:
+     this component is rendered only inside `{menuOpen && …}`, so it does not
+     exist during the static export's prerender and an initialiser may touch
+     localStorage. Read at OPEN rather than kept in sync — the menu is a
+     moment, and a number that changed under an open dropdown would be worse
+     than one that is a few seconds old. */
+  const [dueNow] = useState(() => {
+    try { return dueForReview(loadProgress(), Date.now()).length; } catch { return 0; }
+  });
   const [stop, setStop] = useState(initial);
   const [draft, setDraft] = useState(() => String(initial()));
 
@@ -482,11 +520,34 @@ export default function MenuGrid({
                 </Link>
               );
             }
+            /* THE COUNT SITS ON THE TILE, not beside its name — the same
+               shape and the same corner as the ☰'s own badge, so the two read
+               as one number in two places rather than two numbers. Hidden at
+               zero: "0 to revise" is not news, and an empty pill on a tile is
+               the furniture Dan's 1 Sep counting rule bans. `relative` only
+               where a badge is actually drawn, so no other tile changes. */
+            const badge = cell.badge === "due" && dueNow > 0 ? dueNow : 0;
             return (
               <Link key={key} href={cell.href} onClick={onNavigate}
-                    className={TILE} style={{ borderColor: row.ink }} lang="fr">
+                    className={`${TILE}${badge ? " relative" : ""}`}
+                    style={{ borderColor: row.ink }} lang="fr"
+                    aria-label={badge ? `${cell.name} — ${badge} to revise` : undefined}>
                 <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                 <span className={NAME}>{cell.name}</span>
+                {badge > 0 && (
+                  <span
+                    aria-hidden
+                    /* THE SAME PILL THE ☰ WEARS, deliberately — `--dopa-streak`
+                       on `--dopa-streak-on`, the same radius and the same
+                       corner. Driven side by side, the first cut had this in
+                       `--dopa-focus` blue against the bar's pink, and two
+                       colours make one number read as two different counts,
+                       which is the confusion this tile exists to end. */
+                    className="absolute -right-2 -top-2 rounded-full bg-[var(--dopa-streak)] px-1.5 text-[10px] font-bold leading-[1.4] text-[color:var(--dopa-streak-on)]"
+                  >
+                    {badge}
+                  </span>
+                )}
               </Link>
             );
           })}

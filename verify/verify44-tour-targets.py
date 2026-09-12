@@ -204,37 +204,53 @@ check(not loose,
       "step will then skip in silence: " + "; ".join(loose))
 
 # ---- 5 · the map has a tour -----------------------------------------------
-# /map is what a stop-click opens (Home goes /?unit=1 -> /map?unit=1), and it
-# had no tour: tourFor branched on "/", /unit/, /activities and /lessons/ only.
-# Written 2026-08-28, so this is now an assertion rather than the "keep the gap
-# visible" placeholder it started as.
-check('key: "map"' in tour,
-      "/map has its own tour — the screen the whole course lives on",
-      "/map has no tour: a first-time visitor to the screen the whole course "
-      "lives on is greeted with nothing")
+# THE MAP'S TOUR IS THE HOME TOUR NOW (12 Sep). The map moved onto `/home`,
+# so `tourFor` answers `path === "/home"` and returns before it can reach the
+# old `/^\/map/` branch — that branch could never match again and was removed
+# rather than left looking live.
+#
+# WHAT THIS CHECK IS FOR IS UNCHANGED, which is why it is retargeted and not
+# deleted: a first-time visitor to the screen the whole course lives on must
+# not be greeted with nothing, and the 2D/3D toggle — the one control that
+# arrived on that screen with no explanation anywhere else — must be pointed
+# at. Only the tour carrying that duty changed.
+check('key: "home"' in tour,
+      "the screen the whole course lives on has a tour",
+      "no tour for Home, which is the map since 12 Sep: a first-time visitor "
+      "to the screen the whole course lives on is greeted with nothing")
 
-# The step that earns the tour: the map is inert behind a transparent glass
-# until tapped. That is deliberate — it stops a scroll dragging the map — and
-# entirely invisible, so a learner who misses the small badge concludes the map
-# is broken. REVERSED 2026-08-31: the wake glass itself is gone (Dan: "maybe
-# we should remove the layer of transparent glass over it"), so the tour must
-# no longer promise a wake tap that nothing needs — and the view toggle,
-# now the map's front-and-centre control, is what the tour opens on.
 # SLICE FROM A KEY THAT IS ACTUALLY THERE. `str.find` returns -1 when it is
 # not, and `tour[-1:]` is the file's last character — which is how the lesson
 # assertions above came to scan one byte and pass. The guard above already
-# fails if the map tour is missing; this makes the slice honest rather than
+# fails if the tour is missing; this makes the slice honest rather than
 # relying on that ordering.
-_map_at = tour.find('key: "map"')
+_map_at = tour.find('key: "home"')
 map_tour = tour[_map_at:] if _map_at != -1 else ""
 map_tour = map_tour[: map_tour.find("};")] if "};" in map_tour else map_tour
 check('data-tour="map-wake"' not in map_tour,
-      "the map tour no longer points at the removed wake glass",
-      "the map tour still tells learners to wake the map — the glass was "
+      "the tour no longer points at the removed wake glass",
+      "the tour still tells learners to wake the map — the glass was "
       "removed on 31 Aug, so that step points at nothing")
 check('data-tour="map-view"' in map_tour,
-      "the map tour opens on the 2D/3D toggle",
-      "the map tour lost its view-toggle step")
+      "the tour opens the 2D/3D toggle",
+      "the tour lost its view-toggle step. It lived on the /map tour until "
+      "12 Sep; the map moved onto Home, so the step has to be in the HOME "
+      "tour or no learner is ever shown that control")
+# AND THE DEAD BRANCH MUST STAY DEAD. `/home` is answered first, so a `/map`
+# branch put back here would be unreachable code that reads as live — the
+# fifth silent tour failure this file's own comments describe.
+# COMMENTS STRIPPED FIRST, because the note in FirstTour.tsx explaining why
+# the branch was removed SPELLS the pattern — and a check that reads its own
+# documentation as the defect is the fault this repo has now recorded five
+# times (verify152, verify153, verify106, verify270, and this line).
+_tour_code = "\n".join(
+    l for l in tour.split("\n") if not l.lstrip().startswith(("//", "*", "/*"))
+)
+check('/^\\/map/' not in _tour_code,
+      "no unreachable /map tour branch has come back",
+      "tourFor has a /^\\/map/ branch again. `path === \"/home\"` returns "
+      "before it, so it can never match: it is dead code that the next "
+      "session will read as live")
 
 print("\n".join(f"  ok   {m}" for m in OK))
 if FAIL:

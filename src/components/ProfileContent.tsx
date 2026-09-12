@@ -60,6 +60,7 @@ import {
 import { addBlocker, leftThisWeek, loadBlockers, weekKey, type Blocker } from "@/lib/blockers";
 import HeatStrip, { type HeatValues } from "@/components/HeatStrip";
 import Rewards from "@/components/Rewards";
+import { HOME_HREF } from "@/lib/routes";
 
 type Resp = { item: string; status: string; activityId: string; ts: number; outcomeId?: string | null };
 
@@ -140,7 +141,8 @@ const HL = "var(--fluo-hl)";
 /** The Index row for an outcome — one place, every activity for it. */
 const indexHref = (sio: string) => {
   const s = SIOS.find((x) => x.id === sio);
-  return s ? `/unit/${s.unit}#${s.id}` : "/map";
+  // Both of these forwarded to Home (12 Sep) — see drillExitHref's note.
+  return s ? `${HOME_HREF}?unit=${s.unit}#${s.id}` : HOME_HREF;
 };
 
 export default function ProfileContent() {
@@ -287,7 +289,7 @@ export default function ProfileContent() {
               <div className="mt-3 flex items-center gap-2">
                 <a
                   href={indexHref(next.sio)}
-                  className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 text-[0.94rem] font-extrabold no-underline"
+                  className="inline-flex min-h-11 items-center rounded-lg px-5 text-[0.94rem] font-extrabold no-underline"
                   style={{ background: INK, color: PAPER }}
                 >
                   Start
@@ -296,7 +298,7 @@ export default function ProfileContent() {
                   type="button"
                   onClick={() => setWhy((v) => !v)}
                   aria-expanded={why}
-                  className="min-h-[44px] rounded-[10px] border-[1.5px] px-3 text-[0.85rem] font-bold"
+                  className="min-h-11 rounded-lg border-[1.5px] px-3 text-[0.85rem] font-bold"
                   style={{ borderColor: "color-mix(in oklab, var(--cahier-ink) 40%, transparent)", color: INK }}
                 >
                   {why ? "Hide" : "Why this?"}
@@ -305,7 +307,7 @@ export default function ProfileContent() {
                   type="button"
                   onClick={() => setDismissed(true)}
                   aria-label="Dismiss this suggestion"
-                  className="ml-auto min-h-[44px] w-10 text-[1.05rem] font-bold opacity-45"
+                  className="ml-auto min-h-11 w-10 text-[1.05rem] font-bold opacity-45"
                   style={{ color: INK }}
                 >
                   ✕
@@ -343,7 +345,7 @@ export default function ProfileContent() {
                   {queue.length > 0 ? (
                     <Tiles>
                       {queue.slice(0, 4).map((d) => (
-                        <a key={d.sio} href={indexHref(d.sio)} className="block rounded-[9px] px-2.5 py-2.5 no-underline"
+                        <a key={d.sio} href={indexHref(d.sio)} className="block rounded-lg px-2.5 py-2.5 no-underline"
                            style={{ background: "color-mix(in oklab, var(--fluo-card-accent) 12%, transparent)" }}>
                           <div className="flex items-center gap-1.5">
                             <span className="fluo-mono min-w-0 flex-1 truncate text-[10px] font-bold" style={{ color: SOFT }}>{d.sio}</span>
@@ -410,7 +412,7 @@ export default function ProfileContent() {
                         <li key={l.word} className="flex items-center gap-1">
                           <span
                             aria-hidden
-                            className="inline-block h-2.5 w-2.5 rounded-[2px]"
+                            className="inline-block h-2.5 w-2.5 rounded-sm"
                             style={l.ring
                               ? { background: "transparent", boxShadow: `inset 0 0 0 1.5px ${INK}` }
                               : { background: l.token }}
@@ -427,7 +429,7 @@ export default function ProfileContent() {
                 <>
                   <Tiles>
                     {skills.map((s) => (
-                      <div key={s.skill} className="rounded-[9px] px-2.5 py-2.5"
+                      <div key={s.skill} className="rounded-lg px-2.5 py-2.5"
                            style={{ background: "color-mix(in oklab, var(--fluo-card-accent) 10%, transparent)" }}>
                         <div className="flex items-center gap-1.5">
                           <span className="min-w-0 flex-1 truncate text-[0.85rem] font-extrabold" style={{ color: INK }}>{s.name}</span>
@@ -453,7 +455,7 @@ export default function ProfileContent() {
                       rather than inventing a count. */}
                   <div className="flex gap-2">
                     {[["🎙", "CLIPS"], ["✎", "DRAFTS"], ["↩", "REVISED"]].map(([icon, what]) => (
-                      <span key={what} className="flex h-[58px] flex-1 flex-col items-center justify-center gap-1 rounded-lg border-[1.5px] border-dashed"
+                      <span key={what} className="flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-lg border-[1.5px] border-dashed px-2 py-2"
                             style={{ borderColor: "var(--fluo-card-accent)", color: "var(--fluo-card-accent)" }}>
                         <span aria-hidden className="text-[1.05rem]">{icon}</span>
                         <span className="fluo-mono text-[9px] font-black">0 {what}</span>
@@ -503,7 +505,7 @@ export default function ProfileContent() {
                     disabled={left === 0}
                     placeholder={thisWeek ? thisWeek.text : "In your own words…"}
                     rows={2}
-                    className="mt-2 block min-h-[44px] w-full rounded-[9px] border-[1.5px] px-3 py-2.5 text-[0.85rem] font-semibold leading-snug"
+                    className="mt-2 block min-h-11 w-full rounded-lg border-[1.5px] px-3 py-2.5 text-[0.85rem] font-semibold leading-snug"
                     style={{ borderColor: "var(--fluo-card-accent)", background: PAPER, color: INK }}
                   />
                   <div className="mt-2.5 flex items-center gap-2.5">
@@ -511,7 +513,7 @@ export default function ProfileContent() {
                       type="button"
                       disabled={!draft.trim() || left === 0}
                       onClick={() => { setBlockers(addBlocker(draft, now)); setDraft(""); }}
-                      className="min-h-[40px] rounded-[9px] px-4 text-[0.87rem] font-extrabold disabled:opacity-40"
+                      className="min-h-10 rounded-lg px-4 text-[0.87rem] font-extrabold disabled:opacity-40"
                       style={{ background: "var(--fluo-card-accent)", color: INK }}
                     >
                       Save
@@ -532,7 +534,7 @@ export default function ProfileContent() {
               was cut by Dan (2 Sep) under the litmus test — removing it
               stops no learner from finding anything. ── */}
           <div className="flex flex-wrap items-center gap-2.5 px-4 py-3" style={{ background: PAPER }}>
-            <a href="/map" className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
+            <a href={HOME_HREF} className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
             <button type="button" onClick={() => exportCsv(acc)} className="fluo-mono text-[10px] font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>
               EXPORT
             </button>
@@ -569,7 +571,7 @@ function Section({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex min-h-[56px] w-full items-center gap-2.5 px-3.5 py-3 text-left"
+        className="flex min-h-14 w-full items-center gap-2.5 px-3.5 py-3 text-left"
         /* No left stub (Dan, 6 Sep, pointing at the lettered options: "C —
            the band stubs"): stacked, they read as a broken second vertical
            line beside the binder rings. The wash carries the section's
@@ -591,7 +593,7 @@ function Section({
           {label}
         </span>
         {summary !== undefined && (
-          <span className="fluo-mono ml-auto shrink-0 rounded-[5px] px-1.5 py-1 text-[11px] font-black"
+          <span className="fluo-mono ml-auto shrink-0 rounded px-1.5 py-1 text-[11px] font-black"
                 style={{ background: accent, color: hue ? PAPER : INK }}>
             {summary}
           </span>

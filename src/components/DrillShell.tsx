@@ -94,7 +94,13 @@ export function drillExitHref(collectionId: string): string {
   // Through lib/stopTag.ts, which is now the one place a deck id is turned
   // into its stop — this was the second hand-written copy of that `find`.
   const sio = stopForDeck(collectionId);
-  return sio ? `/unit/${sio.unit}` : "/map";
+  // BOTH ADDRESSES FORWARDED TO THE SAME PAGE (12 Sep). `/unit/N` has been a
+  // `location.replace` to the map since August, and `/map` became one when the
+  // map moved onto Home — so the ✕ on every drill cost two page loads and a
+  // flash to reach a page that was one click away. Same destinations, named
+  // directly: `MapBody` reads `?unit=` itself, which is what `/unit/N` was
+  // rewriting the address to anyway.
+  return sio ? `${HOME_HREF}?unit=${sio.unit}` : HOME_HREF;
 }
 
 /** A finished run's footer (the approved flow, 2026-08-24): ONE primary
