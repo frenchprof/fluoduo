@@ -8,6 +8,7 @@ let pending = 0;
 // chiptune synth (music + jingles) consumes it separately. The old TTS-named
 // exports stay as aliases for existing imports.
 import { isChannelMuted, setChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
+import { trackVoice } from "@/games/audio/voiceState";
 
 // Muting stops anything already speaking, immediately — the synth AND any
 // playing bank clip.
@@ -49,6 +50,7 @@ function tryBank(text: string, lang: string, opts: SpeakOpts): boolean {
     window.speechSynthesis?.cancel();
     bankAudio?.pause();
     const a = new Audio("/tts-bank/" + file);
+    trackVoice(a); // so the game music ducks under it — voiceState.ts
     a.playbackRate = opts.rate ?? 1;
     bankAudio = a;
     void a.play().catch(() => {});
