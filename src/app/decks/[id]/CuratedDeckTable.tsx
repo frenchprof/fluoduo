@@ -52,6 +52,7 @@ import {
   type Row,
 } from "@/app/practice/flip-it/shared";
 import { shuffle as shuffleArr } from "@/lib/shuffle";
+import { HOME_HREF } from "@/lib/routes";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -191,7 +192,7 @@ function TopBar({ collectionId }: { collectionId: string }) {
       /* The ← became the band's ✕ (Dan, 1 Sep: "all strips … with a X"). One
          control on every strip, spelt once in PageBand, rather than a back
          arrow here and a close there. */
-      exitHref={`/unit/${stopForDeck(collectionId)?.unit ?? 0}`}
+      exitHref={`${HOME_HREF}?unit=${stopForDeck(collectionId)?.unit ?? 0}`}
       /* 🔊 left this row on 2026-08-31 because SiteTopBar sits directly above
          it and carries the same control. THE (?) LEFT ON 2026-09-02 for the
          identical reason, which the note here had got wrong: it claimed to be

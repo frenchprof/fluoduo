@@ -51,6 +51,7 @@ import { speculearnHrefForDeck } from "@/lib/speculearn/route";
 // `SIOS.find(s => s.collectionId === …)` is how two copies start disagreeing.
 import { lessonHasVerbs } from "@/content/lessonVerbs";
 import { stopForDeck, stopForPretestId } from "@/lib/stopTag";
+import { HOME_HREF } from "@/lib/routes";
 
 export type RailStation = {
   /** Registry key where there is one, so a page can name its station without
@@ -87,11 +88,15 @@ export const RAIL: RailStation[] = [
   {
     key: "map",
     name: "Map",
-    href: () => "/map",
+    // HOME IS THE MAP (12 Sep) — `/map` forwards here, and a rail that sent a
+    // swipe to a redirect made the first station cost two page loads.
+    href: () => HOME_HREF,
     // /carte and /unit/N are the same level of the course — the map by
     // another door — so a swipe out of a unit page goes forward, not into a
-    // sibling of the map nobody thinks of as a separate place.
-    at: (p) => p === "/map" || p === "/carte" || p.startsWith("/unit/"),
+    // sibling of the map nobody thinks of as a separate place. The three old
+    // addresses stay in the test: they all forward here, and for the moment
+    // before the forward fires the learner IS standing at this station.
+    at: (p) => p === HOME_HREF || p === "/map" || p === "/carte" || p.startsWith("/unit/"),
   },
   {
     key: "goals",

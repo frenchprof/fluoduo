@@ -170,9 +170,20 @@ export default function MapBody() {
           sideways and the sentence ran off the paper (QC, 8 Sep). 4.3vw → 4.05
           and the floor 13px → 10px, which is what it takes to keep Dan's one
           line at that width. A 390px phone loses about half a pixel of face. */}
-      <p className="fluo-band-hand whitespace-nowrap text-[clamp(10px,4.05vw,19px)] leading-tight text-[color:var(--cahier-ink)]">
-        In FluOLinGo-land, there are 50 color-coded goals to conquer:
-      </p>
+      {/* THE SENTENCE IS GONE (Dan, 2026-09-12: *"a single row above the map
+          without any other texts (e.g. delete the « In FluOLinGo land, blah
+          blah »)"*). « In FluOLinGo-land, there are 50 color-coded goals to
+          conquer: » introduced a map that is now the page's whole subject, and
+          it sat between the learner and the only row of controls.
+
+          It is also the litmus test applied to the one line it was written
+          for: remove it and nobody is stopped from finding an answer. The
+          colour key it introduced still sits under the map, where Dan put it
+          on 7 Sep, and says what it means without a preamble.
+
+          The container went with it — `.fluo-map-legendbox` existed only to
+          give that sentence a container query, and its CSS is removed in the
+          same pass rather than left as a rule matching nothing. */}
 
       {/* ONE control row, fixed for both views: switch left, zoom right.
           IT WRAPS ON A NARROW DESK (QC, 8 Sep). Inside the notebook a 320px
@@ -261,7 +272,18 @@ export default function MapBody() {
                is why it survived — the mono face is set from a smaller step
                there. Three digits is the widest this field can ever hold
                (max=200), and 68 leaves room for the datalist arrow beside them. */
-            className="neo-well w-[4.25rem] rounded-lg px-1 py-1 text-center leading-none"
+            /* `!` ON ALL FOUR, AND THE NOTEBOOK IS WHY (12 Sep). The map moved
+               onto Home, which is a `.cahier-page`, and that shell dresses every
+               input it contains: `.cahier-page input` sets width 100%, padding
+               .55rem/.75rem and font-size .95rem. Its specificity is (0,1,1)
+               against a Tailwind utility's (0,1,0), so it wins — the field blew
+               past 4.25rem and clipped its own leading digit, a desktop reading
+               « 00 » at 100%. That is the same fault verify152 caught in 2026-08
+               and the reason the old /map/embed refused `.cahier-page`; framed,
+               it could simply opt out, and on Home there is nothing to opt out
+               of. The numbers stay here rather than moving to a CSS override so
+               the measurements above still explain the field they describe. */
+            className="neo-well !w-[4.25rem] rounded-lg !px-1 !py-1 !text-[length:var(--fs-small)] text-center leading-none"
             style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">
@@ -282,16 +304,115 @@ export default function MapBody() {
           </button>
           <span aria-hidden>%</span>
         </span>
+        {/* NO KEY AT 50/50, AND NOTHING TO REPLACE ONE WITH (Dan, 2026-09-12:
+            *"we already removed the continue button so there is no need to
+            replace it with anything"*).
+
+            The 🎓 Diplômé key existed for exactly one reason, written down on
+            7 Sep: at 50/50 `nextSioId` returns undefined, so Home's ▶ Continue
+            — the app's loudest door — VANISHED on the day a learner finished
+            the course, and the 🎓 was what stood in its place so the row did
+            not develop a hole.
+
+            Continue is gone now, from every state. There is no hole for the
+            🎓 to fill, and a key that appears only at 50/50 to point at a page
+            already reachable from ☰ → 🔄 Revise is a second door wearing a
+            ceremony. `verify111-forever-french.py` retired with it — a check
+            whose entire subject has been ruled away is not weakened, it is
+            finished. The reasoning it recorded is preserved here and in
+            STATUS so the next session does not rebuild the key by accident. */}
         </span>
       </div>
 
-      <div ref={mapRef} className="relative scroll-mt-3" style={{ touchAction: "pan-y" }}>
+      {/* `data-map-well` IS FOR verify152, and it is here because the frame it
+          used to measure against is gone. That check asks one question — do the
+          stops span at least half the space the map is GIVEN, or has the map
+          shrink-wrapped into a block adrift on the page — and until 12 Sep the
+          space given was the iframe, so the viewport width answered it. On Home
+          the map sits in the notebook's content well and the viewport is the
+          whole window, which would have made the same map look like it filled
+          a third of it. This names the box, so the check keeps measuring the
+          thing it was written to measure. */}
+      <div ref={mapRef} data-map-well className="relative scroll-mt-3" style={{ touchAction: "pan-y" }}>
+        {/* ONE FRAME FOR BOTH VIEWS (Dan, 2026-09-12: *"When switching between
+            the 2D and the 3D views, the frame itself (not the content) for both
+            maps must be identical in shape and size. zoom in and out should
+            also make the shared shape and size for those maps tied together"*).
+
+            WHAT IT WAS, MEASURED. The two views were swapped in and out of this
+            box, each at its own natural height, so the page changed length under
+            the learner every time they pressed the switch — and `zoom` scales
+            layout, so the gap grew with it:
+
+                            2D           3D          apart
+              1440 @ 100%   768x818      768x612      206px
+              1440 @ 150%   768x1227     768x918      309px
+               390 @ 100%   297x566      297x520       46px
+               390 @ 150%   297x849      297x780       69px
+
+            THE 2D GRID SETS THE HEIGHT, IN BOTH VIEWS. It is the taller of the
+            two at every width measured, so sizing the box to it is the only
+            choice that cuts nothing off either view. The two stack in one CSS
+            grid cell; the grid's height is therefore the 2D grid's height
+            whichever view is on top, and because this sits INSIDE the zoom
+            wrapper the two stay tied at any zoom without a second calculation.
+
+            WHY THE HIDDEN COPY IS THE CHEAP ONE. Only the SIZER has to be in the
+            DOM, and that is the 2D grid — fifty discs — not the 3D scene, which
+            is the expensive one and is mounted only when it is being looked at.
+            `visibility: hidden` keeps the box and its height while taking the
+            copy out of the tab order and off the screen; `aria-hidden` keeps a
+            screen reader from meeting all fifty stops twice.
+
+            THE SCENE KEEPS ITS OWN HEIGHT INSIDE THAT FRAME, and two failed
+            attempts say why it must. `fill` was the obvious lever — it drops the
+            component's 520/640px card height for `h-full` — and it is wrong
+            here twice over:
+
+              · in a grid cell, `h-full` of an auto row is indeterminate, and
+                this scene's own SCROLL height is the road's length (HomeMap3D:
+                scrollTop drives the camera). The two fed each other and it
+                measured 142,800px tall at 1440, 456,960px at 390;
+              · bounded by `absolute inset-0` the number resolves — and the
+                scene then fits its box exactly, so there is nothing left to
+                scroll. verify211 caught that immediately: the wheel and the
+                finger both moved the road by 0px. The road not travelling is a
+                worse bug than the one being fixed.
+
+            Dan asked for the FRAME to be identical, not the content — so the
+            frame is the 2D grid's box in both views and the scene draws at its
+            own height inside it. The switch no longer changes the page's
+            length, which is the whole of what he was looking at. */}
         <div data-tour="map" style={{ zoom: zoomPct / 100 }}>
-          {mapView === "3d" ? (
-            <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
-          ) : (
-            <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
-          )}
+          <div className="relative">
+            <div
+              style={mapView === "3d" ? { visibility: "hidden" } : undefined}
+              aria-hidden={mapView === "3d"}
+            >
+              <Map2DGrid progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
+            </div>
+            {/* THE SCENE SITS IN THE MIDDLE OF THE FRAME (Dan, 2026-09-12,
+                shown the three options side by side and picking the second:
+                *"2 is fine with me"*).
+
+                The frame is the 2D grid's box in both views, so the 3D scene —
+                the shorter of the two — leaves paper over: 206px at 1440,
+                46px at 390. Left at the top, that read as the map having
+                fallen short. Split evenly it reads as a margin, which is what
+                it is.
+
+                A COLUMN FLEX, NOT `items-center`. On the row axis, centring
+                shrink-wraps the child to its content and the scene collapsed
+                to 2px wide — measured, first attempt. A column flex stretches
+                the cross axis by default, so the scene keeps the frame's full
+                width and only moves vertically, which is the one axis that
+                has slack. */}
+            {mapView === "3d" && (
+              <div className="absolute inset-0 flex flex-col justify-center">
+                <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -313,7 +434,13 @@ export default function MapBody() {
           onClose={() => {
             setOpenSioId(null);
             try {
-              window.history.replaceState(null, "", "/map");
+              // `/home`, NOT `/map` (12 Sep). Closing a `#SIO-nnn` deep link
+              // clears the hash by rewriting the address, and this still named
+              // the page the map used to be. `/map` forwards to `/home` now, so
+              // the learner was left holding an address that bounces: reload and
+              // you go to /map, which redirects you back here. The address bar
+              // should say where you actually are.
+              window.history.replaceState(null, "", "/home");
             } catch {
               // fine
             }

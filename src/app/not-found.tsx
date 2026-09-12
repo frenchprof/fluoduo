@@ -19,6 +19,7 @@
  * 404 must render even when the thing that broke is one of those.
  */
 import Link from "next/link";
+import { HOME_HREF } from "@/lib/routes";
 
 export default function NotFound() {
   return (
@@ -46,7 +47,7 @@ export default function NotFound() {
         <Link href="/home" className="fluo-btn">
           ▶ Home
         </Link>
-        <Link href="/map" className="cahier-btn">
+        <Link href={HOME_HREF} className="cahier-btn">
           📖 <span lang="fr">Index</span>
         </Link>
       </div>

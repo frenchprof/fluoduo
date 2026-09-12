@@ -60,6 +60,7 @@ import {
 import { addBlocker, leftThisWeek, loadBlockers, weekKey, type Blocker } from "@/lib/blockers";
 import HeatStrip, { type HeatValues } from "@/components/HeatStrip";
 import Rewards from "@/components/Rewards";
+import { HOME_HREF } from "@/lib/routes";
 
 type Resp = { item: string; status: string; activityId: string; ts: number; outcomeId?: string | null };
 
@@ -140,7 +141,8 @@ const HL = "var(--fluo-hl)";
 /** The Index row for an outcome — one place, every activity for it. */
 const indexHref = (sio: string) => {
   const s = SIOS.find((x) => x.id === sio);
-  return s ? `/unit/${s.unit}#${s.id}` : "/map";
+  // Both of these forwarded to Home (12 Sep) — see drillExitHref's note.
+  return s ? `${HOME_HREF}?unit=${s.unit}#${s.id}` : HOME_HREF;
 };
 
 export default function ProfileContent() {
@@ -532,7 +534,7 @@ export default function ProfileContent() {
               was cut by Dan (2 Sep) under the litmus test — removing it
               stops no learner from finding anything. ── */}
           <div className="flex flex-wrap items-center gap-2.5 px-4 py-3" style={{ background: PAPER }}>
-            <a href="/map" className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
+            <a href={HOME_HREF} className="fluo-mono text-[10px] font-bold no-underline">MAP</a>
             <button type="button" onClick={() => exportCsv(acc)} className="fluo-mono text-[10px] font-bold underline underline-offset-2" style={{ color: "var(--cahier-accent)" }}>
               EXPORT
             </button>

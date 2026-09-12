@@ -45,6 +45,7 @@ import { saveRun, loadRun, clearRun } from "@/lib/lessonRun";
 import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
+import { HOME_HREF } from "@/lib/routes";
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
 
@@ -328,7 +329,7 @@ export default function LessonPager({
   });
 
   // ── shell wiring ─────────────────────────────────────────────────────────
-  const exitHref = deck ? drillExitHref(deck.id) : "/map";
+  const exitHref = deck ? drillExitHref(deck.id) : HOME_HREF;
   const isLast = ready && i + 1 >= (queue?.length ?? 0);
 
   const cta = end

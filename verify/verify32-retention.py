@@ -151,13 +151,17 @@ ok("--fluo-danger" not in home,
 ok("dopa-streak-ink" in read("src/components/AccountButton.tsx"),
    "the streak still takes its own role ink",
    "the streak lost its role colour")
-# The reward-ink ▦ key retired on 7 Sep (Dan: "we can now remove the red
-# button above the map" — the ☰ grid menu carries the activities now), so
-# the hero's keys are win (Continue, Next) and focus (Rewind). The claim
-# is the same: every key wears the role that means what it does.
-ok(all(t in home for t in ("--dopa-win", "--dopa-focus")) and "--dopa-reward" not in home,
-   "the keys wear the roles that mean what they do — and the retired reward key stays retired",
-   "a key on Home is no longer coloured by its role, or the red reward key is back")
+# THE WHOLE KEY FAMILY IS RETIRED (7 Sep took the reward ▦; 12 Sep took ▶ ⏭ ⏪,
+# and then the 🎓 that had briefly outlived them — Dan: *"we already removed the
+# continue button so there is no need to replace it with anything"*).
+#
+# The claim that remains is the one that can still be broken: the red reward
+# ink stays retired, on both surfaces. A key wearing its dopamine role cannot be
+# asserted when there is no key.
+_mapbody = read("src/app/map/MapBody.tsx")
+ok("--dopa-reward" not in _mapbody and "--dopa-reward" not in home,
+   "the retired reward key stays retired, on Home and on the map",
+   "the red reward key is back on Home or the map")
 
 # ── ethics ────────────────────────────────────────────────────────────────
 ip = read("src/components/InstallPrompt.tsx")

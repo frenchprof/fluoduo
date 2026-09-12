@@ -38,7 +38,7 @@ So `scripts/night-plate-scan.mjs` pins the clock at each hour in turn
 Two measurement traps are handled in the scanner, both of which produced
 confident wrong numbers while this was being built: the computed values are
 `lab()` / `oklch()` and must be resolved through a canvas rather than
-regex-scraped as rgb; and the scene is reached at `/map/embed?view=3d`, because
+regex-scraped as rgb; and the scene is reached at `/home?view=3d`, because
 `/map` frames it and the frame reads `?hour=` off its own search.
 
 Break-tested: with the night plate lightened to rgba(230,226,240,0.80) and the
@@ -89,9 +89,9 @@ if fail:
 print("  ok   the plate and its ink turn over together, on one threshold, from nightness(hour)")
 
 # ── the painted side: all 24 hours, in a browser ─────────────────────────────
-probe = os.path.join(ROOT, "out/map/embed.html")
+probe = os.path.join(ROOT, "out/home.html")
 if not os.path.isfile(probe):
-    probe = os.path.join(ROOT, "out/map/embed/index.html")
+    probe = os.path.join(ROOT, "out/home/index.html")
 if not os.path.isfile(probe):
     print("FAIL  out/ has no map embed — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
     sys.exit(1)

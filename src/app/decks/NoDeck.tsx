@@ -13,13 +13,13 @@ import { HOME_HREF } from "@/lib/routes";
 
 export default function NoDeck() {
   return (
-    <CahierShell tabs={[{ key: "home", ...TAB_ICONS.home, href: HOME_HREF }, { key: "map", ...TAB_ICONS.map, href: "/map" }]} active="index">
+    <CahierShell tabs={[{ key: "home", ...TAB_ICONS.home, href: HOME_HREF }, { key: "map", ...TAB_ICONS.map, href: HOME_HREF }]} active="index">
       <div className="mx-auto max-w-md px-4 py-10 text-center">
         <div className="rounded-2xl border-2 p-8" style={{ borderColor: "var(--cahier-line)", background: "var(--cahier-paper-raised)" }}>
           <div className="text-5xl" aria-hidden>🗂️</div>
           <h1 className="fluo-serif mt-3 text-xl font-black text-[color:var(--cahier-ink)]">No deck selected</h1>
           <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">This link is missing its deck. Pick one from the Index.</p>
-          <Link href="/map" className="fluo-btn mt-5 inline-flex">🗺️ Open the map</Link>
+          <Link href={HOME_HREF} className="fluo-btn mt-5 inline-flex">🗺️ Open the map</Link>
         </div>
       </div>
     </CahierShell>

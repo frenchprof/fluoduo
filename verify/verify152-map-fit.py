@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """verify152 — the map fits its notebook, and fills it.
 
-Dan asked for a QC pass on the 2D map on 8 Sep. Driving `/map` at four widths
+Dan asked for a QC pass on the 2D map on 8 Sep. Driving the map at four widths
 and both views turned up four faults, none of which is visible in the source
 and three of which are invisible on a phone. He then said: *"the background
 should not be white but the actual page lined background"*, *"fix 1"*, and
@@ -73,41 +73,31 @@ if not os.path.isfile(os.path.join(ROOT, "package.json")):
     print("run from the repo root"); sys.exit(2)
 
 fail = []
-embed_raw = open(os.path.join(ROOT, "src/app/map/embed/page.tsx"), encoding="utf-8").read()
-# COMMENTS OUT FIRST. The docstring of that file explains at length why
-# `.cahier-page` is the wrong class here, and the first version of this check
-# matched its own explanation and failed a correct file.
-embed = re.sub(r"/\*.*?\*/", "", embed_raw, flags=re.S)
-embed = re.sub(r"^\s*//.*$", "", embed, flags=re.M)
 
-# THE PAPER. Dan named this one, and it is a class list rather than a geometry,
-# so it is the one thing here a grep guards better than a browser: a white
-# frame over ruled paper photographs as "slightly different white".
-if "cahier-foolscap" not in embed:
-    fail.append("the framed map no longer paints the notebook's ruled paper — it renders "
-                "over the browser's own white body, and the pale ruled page the notebook "
-                "is drawing outside the frame stops at the frame's edge")
-if "cahier-surface" not in embed or "fam-goals" not in embed:
-    fail.append("the framed map has lost the family-tinted ground (`cahier-surface fam-goals`), "
-                "so the paper inside the frame no longer matches the page around it")
-if re.search(r"\bcahier-page\b", embed):
-    fail.append("the framed map is using `.cahier-page` again. It paints the right paper and "
-                "brings the notebook's FORM THEME with it — `.cahier-page input` sets "
-                "padding .55rem/.75rem, font-size .95rem and width 100% — which is what blew "
-                "the zoom well out to 63px and clipped its leading digit harder than before")
+# ── THE PAPER ASSERTIONS ARE RETIRED WITH THEIR SUBJECT (2026-09-12) ──────────
+# They read `src/app/map/embed/page.tsx` and required `cahier-surface fam-goals
+# cahier-foolscap` on it, forbidding `.cahier-page`. That file no longer exists:
+# Dan merged Home and the map (*"We have two pages doing the same thing"*), /map
+# became a redirect, and its embed twin — which nothing framed any more — went
+# with it (verify117: "or the twin is left over").
+#
+# THE FAULT THEY GUARDED CANNOT RECUR IN THE SAME FORM. It was a FRAME painting
+# the browser's white body over the notebook's ruled paper, so that the page's
+# own ruling stopped dead at the frame's edge. With no frame there is no second
+# surface to paint, and the map now inherits the notebook's paper because it IS
+# on the notebook. Re-pointing them at Home would have asserted that
+# CahierShell paints its own paper — true, tested elsewhere, and nothing to do
+# with the map.
+#
+# What is NOT dropped is everything measured: fill, the zoom well, one legend,
+# no sideways scroll. Those were always the driven half, and they are the half
+# that can still go wrong — see the note on `data-map-well` in MapBody.
 
-for m in fail:
-    print(f"  FAIL {m}")
-if fail:
-    print(f"\n{len(fail)} failed")
-    sys.exit(1)
-print("  ok   the framed map paints the notebook's own ruled, tinted paper")
-
-probe = os.path.join(ROOT, "out/map/embed.html")
+probe = os.path.join(ROOT, "out/home.html")
 if not os.path.isfile(probe):
-    probe = os.path.join(ROOT, "out/map/embed/index.html")
+    probe = os.path.join(ROOT, "out/home/index.html")
 if not os.path.isfile(probe):
-    print("FAIL  out/ has no map embed — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
+    print("FAIL  out/ has no Home — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
     sys.exit(1)
 if "Checking your sign-in" in open(probe, encoding="utf-8").read():
     print("FAIL  out/ is a WALL build — rebuild with NEXT_PUBLIC_OPEN_APP=1 npm run build")

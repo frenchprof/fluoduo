@@ -94,11 +94,11 @@ if fail:
     sys.exit(1)
 print("  ok   the wheel is cancelled by a non-passive listener, and Settings offers the choice")
 
-probe = os.path.join(ROOT, "out/map/embed.html")
+probe = os.path.join(ROOT, "out/home.html")
 if not os.path.isfile(probe):
-    probe = os.path.join(ROOT, "out/map/embed/index.html")
+    probe = os.path.join(ROOT, "out/home/index.html")
 if not os.path.isfile(probe):
-    print("FAIL  out/ has no /map/embed — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
+    print("FAIL  out/ has no Home — build first: NEXT_PUBLIC_OPEN_APP=1 npm run build")
     sys.exit(1)
 
 sys.exit(subprocess.run(["node", "scripts/wheel-scan.mjs"], cwd=ROOT).returncode)

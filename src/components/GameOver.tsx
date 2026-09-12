@@ -172,7 +172,7 @@ export default function GameOver({
                       </span>
                       {sio && (
                         <Link
-                          href={`/map?unit=${sio.unit}#${sio.id}`}
+                          href={`${HOME_HREF}?unit=${sio.unit}#${sio.id}`}
                           className="shrink-0 font-black text-[color:var(--cahier-accent)] no-underline hover:underline"
                         >
                           → {sio.short} · U{sio.unit}

@@ -51,6 +51,7 @@ import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
 import { shuffle } from "@/lib/shuffle";
+import { HOME_HREF } from "@/lib/routes";
 
 // ── Phrases complètes (Dan, 2026-07-21): "what is genuinely missing from
 // ConjugaZone is the possibility to hear the conjugations in simple complete
@@ -231,7 +232,7 @@ export default function ConjugaisonPage() {
 
   return (
     <DrillShell
-      exitHref="/map"
+      exitHref={HOME_HREF}
       progress={drilling && queue ? { done: k, total: queue.length } : null}
       right={<>✓ {score.ok}</>}
       activity="conjugaison"

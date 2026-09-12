@@ -6,6 +6,231 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — one map page, not two (peers lane, PR #342, HANDED OVER, NOT merged)
+
+Sole editor of STATUS.md in this commit: the peers lane (`claude/peers-guided`).
+
+**Dan, sending Home and /map side by side: *"We have a two pages doing the same
+thing... Can we just keep the Bienvenue one and move the 3D-2D switch and the
+zoom control and navigators '> Goal', legend there."*** Home already drew the
+map — a second, smaller copy under « Course map » — and `/map` drew the same map
+with all the controls. Two pages, one subject, and the controls on the one a
+learner does not arrive at.
+
+**HOME NOW RENDERS THE MAP ITSELF.** The map, its switch, its zoom and its
+legend live in `src/app/map/MapBody.tsx`; `HomeDashboard` imports it and puts it
+in the « Course map » section. `/map` is a `MapRedirect` that forwards to
+`/home` keeping `?search` and `#hash` — a URL is never deleted outright, and
+`/carte` and `/unit/[unit]`, which used to land on `/map`, now forward straight
+to `/home` so nobody makes two hops.
+
+**THE TWO VIEWS SHARE ONE FRAME** (Dan: *"the frame itself (not the content) for
+both maps must be identical in shape and size... zoom in and out should also
+make the shared shape and size for those maps tied together"*). One `zoom`
+wrapper holds both; 2D stays mounted and goes `visibility: hidden` under 3D so
+the frame keeps the taller view's box, and the CSS `zoom` scales both together.
+Measured on the built export, `[data-map-well]` at three zooms:
+
+        zoom     2D frame            3D frame
+         75%     760 × 1113          760 × 1113
+        100%     760 × 1484          760 × 1484
+        150%     760 × 2226          760 × 2226
+
+**AN OPEN QUESTION FOR DAN, ASKED AND NOT YET ANSWERED.** Because the frame is
+the taller view's size, 3D leaves ~200px of blank paper below the scene. Three
+answers were offered — leave it, centre the 3D scene in the frame, or make the
+frame the 3D size and let 2D scroll inside. Nothing changes until he picks.
+
+**`fill` ON HomeMap3D WAS WRONG TWICE, and the number says why.** Inside a grid
+cell, `h-full` of an auto row is indeterminate, so the scene fell back to its own
+scroll height — **142,800px**, which is the road itself. Once bounded it fitted
+exactly and `verify211` then showed wheel and finger moving the road **0px**.
+The scene keeps its own height inside the shared frame.
+
+**THE LINKS DAN NAMED.** `stopHref` in `src/lib/activityStops.ts` gained two
+cases: `sio` → `/sio/<id>` (*"Goals will lead to SIOs"* — the ☰'s 🎯 opened
+Home, which would now be circular) and `mnemo` → `/lessons/deck/<deck>`
+(*"MneMemo will lead to MneMemo (the current link is wrong)"* — it pointed at
+`/map`, a stand-in left over from the Practice hub's retirement). Both go
+through the same gate as every other entry, so a stop with no deck is not
+offered. **Map is out of the ☰** (*"it is already in the Kallang Wave"*) and the
+🏠 is off the top bar (*"We allso don't need the home button at the top right"*).
+The ⭐ Favourites tile Dan asked for in that slot is deferred by his own later
+choice — whoever lands `claude/favourites` owns it.
+
+**TWO BUGS THAT ONLY A DRIVEN BROWSER FOUND, both the same shape.**
+`.cahier-page input` and `.cahier-page p` are specificity (0,1,1) and beat every
+Tailwind utility (0,1,0): the zoom field clipped « 100 », and the legend ran
+**79px off a 320px phone**. The zoom field took `!` modifiers; the legend went to
+a container query (`clamp(0.625rem, 4.9cqw, var(--legend-max))` inside
+`.fluo-map-legendbox`, scoped two classes deep so it outranks `.cahier-page p`).
+`clamp(a, b, calc(… var() …))` is rejected outright by the parser, which is why
+the max is a variable and not an inline `calc`.
+
+**HOME'S TRANSPORT ROW IS RETIRED, AND THE MAP GETS ONE CONTROL ROW.** Dan:
+*"is it ok to do without the play, forward and rewind buttons (those functions
+can be accessed easily and directly elsewhere on this page, i.e. via the map and
+the editable goalselector field, right?"*, then *"Rewind = Revise = ErroRevue ==
+they are the same thing"*, then *"a single row above the map without any other
+texts (e.g. delete the « In FluOLinGo land, blah blah »), and there is no need to
+have the current stop mentioned twice"*.
+
+**THE QUESTION WAS ANSWERED BY MEASURING, NOT BY AGREEING.** Two of the three
+were WORSE than the map they duplicated: ▶ and ⏭ pointed at `/unit/N#SIO-nnn`,
+which forwarded to `/home?unit=N#SIO-nnn` and opened a **StopPopup on the page
+the learner was already standing on** — the popup Dan retired on 7 Sep — while
+the map's own stops open `/sio/[id]`. And one premise was wrong and had to be
+said so: **the goal-selector field does not navigate.** `StopBookmark` calls
+`saveBookmark(n)`; typing 23 moves the marker, it does not take you to goal 23.
+Only the map can stand in for ▶.
+
+    before   after
+      1        0     the sentence
+      3        0     hero transport keys
+      3        1     stop-number elements on screen
+    274px    195px   where the map starts, 390
+    342px    236px   where the map starts, 1440
+
+**A FOURTH KEY WAS IN THAT ROW AND DAN DID NOT NAME IT.** 🎓 Diplômé appears
+only at 50/50, in Continue's place, and opens revision — LAF1201 is a semester
+course, so there is no 51st goal and spaced repetition is the real forever game.
+Deleting it with the other three would have removed a feature nobody asked
+about, **on the one screen a learner reaches once**, where nobody would notice
+until far too late. It moved into the map's control row, where the progress it
+needs is already loaded. Driven: absent at 0/50, present at 50/50.
+
+**AND THE 🎓 WENT TOO, an hour later, on Dan's better argument.** It was
+preserved as a fourth key he had not named; he then said what settles it:
+*"we already removed the continue button so there is no need to replace it
+with anything"*. The 🎓 existed for one stated reason from 7 Sep — at 50/50
+`nextSioId` returns undefined, so Continue VANISHED on the day a learner
+finished the course and the 🎓 stood in the hole. **No Continue, no hole.**
+`verify111-forever-french.py` is retired and unwired, `.home-key` and three
+ramp rules went with it — the 🎓 glyph was their last user, and `verify106`
+fails a ramp rule that matches nothing.
+
+**THE DUE COUNT WAS NOT LOST AFTER ALL, AND SAYING IT WAS WAS A MISTAKE MADE
+TWICE.** `SiteTopBar` has carried it on the ☰ since the bottom bar was removed
+on 6 Sep — a pill reading « 7 », announced as "Navigation — 7 to revise". It
+was reported here and to Dan as gone with ⏪, from reading the diff rather than
+opening the app. **Driven, with seven real deck items seeded overdue, the badge
+was there the whole time.**
+
+What was really wrong is what Dan then named: ***"THE THING WHEN I OPEN THE
+MENU I WILL BE WONDERING WHERE THAT NUMBER FALLS UNDER AND IT WAS NOT
+SHOWN"***. The ☰ said something was waiting and not WHAT, and opening the menu
+answered nothing — twenty tiles, none carrying the number. **A badge that
+raises a question its own menu cannot answer is worse than no badge.** The
+count is on the ❌ ErroReview tile now, in the same `--dopa-streak` pill, same
+radius, same corner: the first cut used `--dopa-focus` blue against the bar's
+pink, and two colours make one number read as two counts — caught by putting
+the two on screen together, not by reading the diff.
+
+**IT COUNTS WORDS, NOT GOALS**, which is worth writing down because it was
+asked: every practised item carries a spaced-repetition timer and
+`dueForReview` returns those whose timer has elapsed (`p.itemSrs[id].due <=
+now`). And it goes on the DOOR, never on `/reviser` itself — the 1 Sep counting
+rule again: on the page the words are in front of you and the list counts
+itself.
+
+**A NOTE FOR THE NEXT SESSION THAT PROBES THIS:** `dueForReview` filters
+against `allReviewItems()`, so an invented item id counts as zero. The first
+probe seeded `seed-1…7`, measured a badge of 0, and that looked exactly like
+the badge being absent.
+
+**WHAT ⏪ ACTUALLY TOOK WITH IT: its own pill, and nothing else.** `verify25`
+called that badge *"the one deadline on Home"*, which is what made losing it
+sound serious — and the phrase was already out of date when it was read. The
+door is covered (☰ → 🔄 Revise is the same page, Dan's ruling) and so is the
+number, on the ☰ and now on the tile. The lesson is the one above: **a claim
+about what a screen shows has to be measured on the screen**, and this file
+carried the wrong claim for an hour because it was reasoned from a diff.
+
+**AND THE ROW WAS THE LAST THING ON HOME THAT READ PROGRESS.** `HomeDashboard`
+holds no state at all now: `MapBody` loads progress, the bookmark and the view
+because it must, being the component `/map` framed. A second copy is the
+two-copies-of-one-fact drift this whole branch exists to end — so `verify87` now
+pins that Home keeps **no** second reading, the inverse of what it asserted.
+
+**THE TOUR'S FIRST STEP POINTED AT THE ▶ KEY**, with `[data-tour="map-stop"]` as
+a fallback **that was never rendered by anything**. Removing ▶ left the step
+matching nothing, and the tour would have opened by silently skipping itself —
+the same failure this repo has now recorded six times. The anchor is real now,
+on the map's glowing stop in `Map2DGrid`.
+
+**A WELL ANSWERS THE POINTER** (Dan: *"even for depressed spaces (e.g. buttons
+in the depressed states) there needs to be some mouseover effect and activating
+effect"*). `.neo-key` has had a hover lift and a press since 1 Sep; `.neo-well`
+— its declared pair — had **no `:hover`, `:active` or `:focus-visible` rule at
+all**. A well cannot lift without becoming a key, so it deepens instead. Only
+where it IS a control: `.neo-well` also dresses things that merely read a value,
+and a hover there promises a click that never happens. Measured in a browser —
+switch, zoom field and goal well respond; a read-only well does not.
+
+**`verify37` FORBADE EXACTLY THIS**, on a premise that was already false when it
+was written — *"a well has no hover, it is read-only by construction"*, while the
+zoom field and the switch were wells AND controls. Retargeted, not deleted: a
+bare `.neo-well:hover` still fails, a qualified one is now required. Its
+rule-matcher also could not see inside `@media`, so it reported "no hover rule
+at all" against a file that had one.
+
+**EIGHTEEN LINKS STILL NAMED THE PAGE THAT ONLY FORWARDS** (*"etc. Please help
+check the links"*). The ☰'s own links were the half already swept. These are the
+other half, and **not one of them was broken**, which is exactly why nothing
+reported them: `/map` resolves, after a second page load and a flash, to a page
+one click away. The 🗺️ in the icon strip, the swipe rail's first station, every
+drill's ✕, the profile's MAP door, the 404's button, the lesson pager's and
+ÉcouTexte's fallbacks, GameOver's per-miss deep link, KeyNav's two-digit jump.
+`/unit/N` is in the same list and has been a redirect stub since August, so
+`drillExitHref` was a forward to a forward.
+
+**THE CHECK HAD A HOLE, AND ASKING WHERE ▶ ACTUALLY WENT IS WHAT FOUND IT.**
+Every shape in `verify210` expected a quote straight after `href=`, so
+``href={`/unit/${...}`}`` — a template literal in a JSX expression container —
+slipped straight through. **Four** live links, not the two found by reading:
+Home's ▶ and ⏭, the deck table's ✕, and the teacher's per-outcome link. An
+optional brace is the whole fix, and it is why the rule is one alternation
+rather than a shape repeated per spelling.
+
+**This is the fault `src/lib/routes.ts` was written about, three days later and
+with a different address** — which is why `verify210-home-href.py` takes the
+second one rather than a new check taking a new number. Same shapes, same
+allowances, plus one allow-list for the places that legitimately NAME `/map`:
+the stub itself, the rail's *"are you standing here?"* test, and the teacher's
+labels for page-view rows recorded before the merge.
+
+**AND THE SWEEP FOUND WHAT A SWEEP DOES NOT LOOK FOR: the map's TOUR was
+orphaned.** `tourFor` answers `path === "/home"` and returns, so the `/^\/map/`
+branch fifteen lines below it could never match again. A first-time learner
+would have arrived at a page with a 2D/3D switch on it and been told nothing
+about it. The branch is removed rather than left looking live; its view-toggle
+step moved into the home tour, which is **four steps now**, driven and
+screenshotted at both widths. The other two steps were dropped as duplicates —
+« Every stop is one goal. Tap one to open it. » is step 1 wearing other words,
+and « ✓ green = done » describes a colour on the screen.
+
+`verify44` fails if the dead branch comes back — **and its first run flagged the
+comment explaining the removal**, the fifth time a check in this repo has read
+its own documentation as the defect (verify152, verify153, verify106,
+verify270). Comments are stripped before that test now.
+
+**FIVE MORE CHECKS RETARGETED, NONE WEAKENED** — `verify23`, `verify27` and
+`verify30` now assert the DOOR rather than its spelling; `verify44` the tour
+that carries the duty; and `verify80`'s reachability block asserts what it
+meant — the map is reachable without typing an address, AND `/map` still
+forwards so bookmarks and printed QR codes still land. Counting `/map` links
+there would have gone red on the fix and green on a regression.
+
+Driven rather than read: `/map`, `/map?unit=2`, `/map#SIO-023`, `/carte`,
+`/unit/3` and `/unit/3#SIO-031` all land on Home with the map on it.
+
+**SIX CHECKS RETARGETED, NONE WEAKENED** — `verify80` (follows the delegation;
+its `fill` assertion is inverted and the view switch is now REQUIRED), `verify25b`
+(Home renders MapBody and does not navigate to `/map`), `verify108`, `verify150`,
+`verify152`, `verify211`, plus `scripts/map-fit-scan.mjs` measuring
+`[data-map-well]` rather than the viewport and `scripts/wheel-scan.mjs` aiming
+its gestures at the scene's own rect — on Home the viewport centre lands on the
+hero, so every gesture was moving nothing and passing.
 ## 12 Sep — the queue emptied: five merged, five closed, three deploys, and the email box shut (integration lane, MERGED)
 
 Sole editor of STATUS.md in this commit: fluoduo-main (integration).

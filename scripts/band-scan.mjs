@@ -54,6 +54,16 @@ const EXEMPT = new Map([
   // but a redirect, and a redirect has no band either.
   ["/", "The door: the 3D scene fills the screen and there is no cahier to label."],
   ["/welcome", "The door's old address — a forward to /, so it draws no band."],
+  // THE MAP MERGED INTO HOME on 2026-09-12 (Dan: *"We have two pages doing the
+  // same thing: The Home page + The Map. Can we just keep the Bienvenue one"*).
+  // All three of these render a redirect and nothing else, and a redirect has
+  // no band for the same reason /welcome has none — there is no page under it
+  // to label. They are exempt as FORWARDS, not as map pages: if any of them
+  // ever renders a real page again it will need its strip back, and it will
+  // come back through this list rather than silently.
+  ["/map", "Retired 12 Sep — forwards to /home, which draws the map itself."],
+  ["/carte", "The map's one-day French address (21 Aug) — a forward, now straight to /home."],
+  ["/unit/[unit]", "A deep link into the map since patch 25 — a forward to /home?unit=N."],
   // Both /hidden pages are `robots: noindex`, reachable only by typing the URL,
   // and exist so Dan can look at ONE thing at a size: the origin animation, and
   // the language sorter. Chrome around them is the thing being excluded. They

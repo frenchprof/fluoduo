@@ -242,14 +242,13 @@ export default function SiteTopBar({
               word search lives in the Index's own box, the ranking on
               /leaderboard. */}
           <SoundControl />
-          {/* 🏠 yields below sm — the ← FluOLinGo link is the home
-              door there, and it was pushing the ☰ off a phone screen
-              (Dan, 2026-07-15). */}
-          {/* !important — .cahier-btn's own display rule beats a bare
-              `hidden` utility. */}
-          <Link href="/home" aria-label="Home" title="Home" className="cahier-btn cahier-btn-sm !hidden sm:!inline-flex">
-            🏠
-          </Link>
+          {/* 🏠 IS GONE (Dan, 2026-09-12: *"We also don't need the home button
+              at the top right"*).
+              It was already the second home door on the bar — the ← FluOLinGo
+              wordmark to its left has been the first since 2026-07-15, which is
+              why 🏠 hid itself below `sm` rather than push the ☰ off a phone.
+              One door that works at every width beats two that share a
+              destination and only one of which survives a narrow screen. */}
           {/* ⌛ My learning history — always visible (Dan, 2026-07-25).
               The crumb text retired to make its room: the page name
               between 🏠 and the avatar was the least-load-bearing

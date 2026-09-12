@@ -39,9 +39,55 @@ well = re.search(r"\.neo-well\s*\{([^}]*)\}", css)
 ok(well and "inset" in well.group(1),
    "a well is INSET — pressed into the paper",
    "the well is not inset, so it does not read as recessed")
-ok(re.search(r"\.neo-well[^{]*:hover", css) is None,
-   "a well has no hover — it is read-only by construction",
-   "a well responds to hover, which offers a press that does nothing")
+# A WELL ANSWERS THE POINTER — BUT ONLY WHERE IT IS A CONTROL (Dan,
+# 2026-09-12: *"even for depressed spaces (e.g. buttons in the depressed
+# states) there needs to be some mouseover effect and activating effect"*).
+#
+# THIS REVERSES HALF OF ITS OWN EARLIER RULE, which read "a well has no hover
+# — it is read-only by construction" and failed on any `.neo-well:hover` at
+# all. That premise was already false when it was written: the zoom field, the
+# goal well and the 2D/3D switch are `.neo-well` AND interactive, so the check
+# was protecting the readouts by forbidding feedback on the controls.
+#
+# The line it was really drawing is kept, and sharpened: a well that only
+# READS a value (the leaderboard's rows) must still have no hover, because
+# there it does offer a press that does nothing. A well that IS a control must
+# have one. So a BARE `.neo-well:hover` still fails; a qualified one is
+# required.
+# THE MEDIA OPENER HAS TO COME OFF FIRST. The hover rule lives inside
+# `@media (hover: hover) and (pointer: fine)` — the pointer guard `.neo-key`
+# also carries — and a naive rule-matcher reads `@media ... {` as the selector
+# and swallows the real one into the body. Measured: this check reported "no
+# hover rule at all" against a file that had one.
+_flat = re.sub(r"@media[^{]*\{", "", css)
+hover_sels = []
+for _m in re.finditer(r"([^{}]+)\{[^}]*\}", _flat):
+    for _part in _m.group(1).split(","):
+        _part = _part.strip()
+        if ".neo-well" in _part and ":hover" in _part:
+            hover_sels.append(_part)
+
+def _qualified(sel):
+    """Named an element or a well containing a field — not the bare class."""
+    return ":has(input)" in sel or re.search(r"[\w)]\.neo-well", sel) is not None
+
+_bare = [s_ for s_ in hover_sels if not _qualified(s_)]
+ok(not _bare,
+   "a read-only well still has no hover — it would offer a press that does nothing",
+   f"a BARE `.neo-well:hover` is back: {_bare[:2]}. That reaches the wells that only "
+   "display a value (the leaderboard's rows), where a hover promises a click that "
+   "never happens. Qualify it — `:is(button,a,input,select,textarea).neo-well` or "
+   "`.neo-well:has(input)` — so only the wells that ARE controls respond.")
+ok(hover_sels,
+   "and a well that IS a control does answer the pointer",
+   "no `.neo-well` hover rule at all: the zoom field, the goal well and the 2D/3D "
+   "switch sit inert while the keys beside them lift. Dan, 12 Sep: \"even for "
+   "depressed spaces ... there needs to be some mouseover effect and activating "
+   "effect\".")
+ok(re.search(r"[\w)]\.neo-well[^{,]*:active|\.neo-well:has\(input\)[^{,]*:active", css),
+   "and it presses — the well deepens where a key would travel",
+   "a well has hover but no `:active`: it answers the pointer and then does nothing "
+   "when actually pressed, which is the half Dan named second")
 act = re.search(r"\.neo-key:active\s*\{([^}]*)\}", css)
 ok(act and "inset" in act.group(1),
    "pressing a key INVERTS it into its own well",
@@ -140,51 +186,25 @@ ok("familyOf" in sheet,
    "each row wears its activity's FAMILY colour (verify36)",
    "the sheet does not colour its rows — a stop's activities become one grey list")
 
-# 5 · the keys are the dopamine roles, and Rewind sinks when nothing is due.
-# (--dopa-reward left with the ▦ key, 7 Sep — verify32 pins its absence.)
-for role in ("--dopa-win", "--dopa-focus"):
-    ok(role in home, f"a key carries {role}", f"no key carries {role}")
-ok('aria-disabled="true"' in home,
-   "Rewind is flat and inert when nothing is waiting",
-   "Rewind offers a press with nothing behind it")
-
-# 6 · it must FIT a phone. The draft sizes the phone down on purpose; a row
-#     that overflows is the exact failure Dan called out on 21 Aug ("must not
-#     go hiding into the overspill off the screen"). Measured live at
-#     320/360/390/430 px — nothing clipped, scrollWidth == viewport — and the
-#     responsive classes that make that true are pinned here.
-#     RESIZED 1 Sep, and the claim is unchanged: the keys have a PHONE size and
-#     a larger one from sm, and the phone size is whatever makes the row fit.
-#     It was 50px for three keys. Dan's Next-stop key made it four, and 4x50 +
-#     3 gaps is 224px against a row that is 232px wide at 320 and 271 at 360 —
-#     the `1/50` well went from 64px to 0.4px and was drawn UNDER the keys at
-#     both, escaping at 390 by 0.3px. So the literal 50 is gone and the RULE is
-#     asserted instead: two sizes, and the phone one between the 44px
-#     touch-target floor and 50px. verify25 pins the row's matching wrap.
-#     AND THE TWO LITERAL SIZES ARE GONE (Dan, 2026-09-12: "PLEASE NEVER EVER
-#     HARD CODE FONT SIZES AND BUTTON SIZES !!!"). The keys read `.home-key`
-#     now — one fluid side off `--fs-step` with the 44px touch floor pinned by
-#     `max()`, so a phone still gets exactly 44 and a desktop lands on ~58,
-#     which is what the old breakpoint jumped to.
-#     SO THE CLAIM MOVES FROM THE SPELLING TO THE RULE. Greping for `h-[44px]`
-#     could only ever see how the size was typed; what matters is that the
-#     floor is a floor and the growth is fluid. Both halves are asserted here,
-#     and `verify106-fluidtype` owns the wider ban.
-keys = re.findall(r'className=\{?[`"][^`"]*\bhome-key\b[^`"]*[`"]', home)
-ok(len(keys) >= 3,
-   f"the {len(keys)} keys take their size from .home-key, not from a pixel",
-   "the keys no longer carry .home-key — a hard-coded size has come back")
-ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
+# 5 · THE KEY ROW IS RETIRED, ALL OF IT (Dan, 2026-09-12). First the three he
+#     named — *"is it ok to do without the play, forward and rewind buttons"* —
+#     and then the fourth, once he saw what it was for: the 🎓 Diplômé key
+#     stood in for Continue at 50/50, where `nextSioId` returns undefined and
+#     Continue vanished. *"we already removed the continue button so there is
+#     no need to replace it with anything"*. No hole, no stand-in.
+#
+#     `.home-key` and `verify111-forever-french.py` went with it. What is left
+#     to assert is the ban rather than the shape: no key may return naming its
+#     own pixels, on either surface.
+mapbody = strip_comments(read("src/app/map/MapBody.tsx"))
+ok("home-key" not in home and "home-key" not in mapbody,
+   "the key row is retired and nothing wears .home-key",
+   "a .home-key is back — the transport row was removed on 12 Sep and nothing "
+   "replaced it")
+ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home + mapbody),
    "no key names its own pixel size",
    "a key is back to a literal h-[NNpx] w-[NNpx]")
-rule = re.search(r"\.home-key\s*\{[^}]*\}", css or "", re.S)
-body = rule.group(0) if rule else ""
-ok("max(44px" in body.replace(" ", "") or "max(44px" in body,
-   "the 44px touch floor is pinned with max(), and only the growth above it is fluid",
-   ".home-key does not pin the 44px touch-target floor with max() — a key could shrink under a finger")
-ok("--fs-step" in body,
-   "the key grows with the type ramp rather than at a breakpoint",
-   ".home-key does not read --fs-step, so the keys are fixed again")
+
 # THE WELL LEFT THE ROW (Dan, 7 Sep: the editable stop rides the top bar
 # now — "so we free up the space between the play rewind etc buttons").
 # The fit-at-320 worry the shrink rule answered is gone with it: the row

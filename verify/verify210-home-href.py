@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""verify210 — a bare "/" never means Home.
+"""verify210 — a bare "/" never means Home, and "/map" never means the map.
 
 On 2026-09-09 the welcome page took the root and Home moved to `/home` (#255).
 The commit that did it swept the app for links to `/` and rewrote fifteen of
@@ -37,8 +37,23 @@ WHAT IT ALLOWS, deliberately:
     because they are the thing, not a reference to it;
   · `src/lib/routes.ts`, which defines the address.
 
-Break-tested: putting `exitHref = "/"` back in PageBand.tsx goes red naming
-the file, the line and the text.
+THE SAME FAILURE, A SECOND TIME, THREE DAYS LATER. On 2026-09-12 the map
+merged into Home: `/map` became a `location.replace` stub and Home began
+drawing the map itself. Eighteen live links still named `/map` — the 🗺️ in the
+tab strip, the swipe rail's first station, every drill's ✕, the profile's MAP,
+the 404's button, ÉcouTexte's and the lesson pager's exits. Every one of them
+still worked, which is the point: they cost a second page load and a flash to
+reach a page one click away, and nothing anywhere went red.
+
+`/unit/N` is in the same list and has been since August — it is a redirect stub
+too, so `drillExitHref` returning `/unit/N` was a forward to a forward.
+
+So this check now holds BOTH addresses. The shapes are identical because the
+failure is identical: a destination written once, correct, that outlived the
+page it named.
+
+Break-tested: putting `exitHref = "/"` back in PageBand.tsx, or `href: "/map"`
+back in siteTabs.ts, goes red naming the file, the line and the text.
 
 Run from the repo root:  python3 verify/verify210-home-href.py
 """
@@ -57,6 +72,23 @@ ALLOW = {
     "src/lib/routes.ts",
 }
 
+# The same courtesy for the map's old address. Each of these NAMES `/map`
+# rather than linking to it, and each would be wrong to rewrite:
+#   · the redirect stub and its page are the thing itself;
+#   · swipeRail asks "is the learner standing here?", which must still say yes
+#     for the moment before the forward fires — the same comparison exemption
+#     `if (path === "/")` gets above;
+#   · labels.ts labels page-view rows already recorded under the old address;
+#   · the teacher fixture is demo data, not navigation.
+ALLOW_MAP = {
+    "src/app/map/page.tsx",
+    "src/app/map/MapRedirect.tsx",
+    "src/app/map/standalone/page.tsx",
+    "src/lib/swipeRail.ts",
+    "src/lib/labels.ts",
+    "src/app/teacher/fixture.ts",
+}
+
 # A destination, not a comparison. Each of these was a real site on 11 Sep.
 SHAPES = [
     (re.compile(r'\b\w*[Hh]ref\s*=\s*"/"'), 'a prop default of "/" — e.g. `exitHref = "/"`'),
@@ -65,6 +97,28 @@ SHAPES = [
     (re.compile(r'\bhref:\s*"/"'), 'an `href: "/"` in a tab or registry row'),
     (re.compile(r'\bhref="/"'), 'an `href="/"` on a link'),
     (re.compile(r'router\.(?:push|replace)\("/"\)'), 'a router push to "/"'),
+]
+
+# The map's old address, in the same shapes. `/map/standalone` and `/map/embed`
+# are NOT this — the bare route is what forwards, so the patterns all end the
+# path at a quote, a query or a hash.
+MAP_TAIL = r'(?:["\'`?#])'
+MAP_SHAPES = [
+    (re.compile(r'\b\w*[Hh]ref\s*=\s*\{?\s*["\'`]/map' + MAP_TAIL), 'a prop default of "/map"'),
+    (re.compile(r'\?\?\s*["\'`]/map' + MAP_TAIL), 'a `?? "/map"` fallback'),
+    (re.compile(r'\b[Hh]ref:\s*["\'`]/map' + MAP_TAIL), 'an `href: "/map"` in a tab or registry row'),
+    (re.compile(r'\bhref=\{?["\'`]/map' + MAP_TAIL), 'an `href="/map"` on a link'),
+    (re.compile(r'router\.(?:push|replace)\(\s*[`"\']/map' + MAP_TAIL), 'a router push to "/map"'),
+    (re.compile(r'window\.open\(\s*[`"\']/map' + MAP_TAIL), 'a window.open on "/map"'),
+    # /unit/N has been a redirect stub since August — same fault, older.
+    # `href={`/unit/${...}`}` — A TEMPLATE LITERAL IN BRACES, and the form
+    # that slipped through on the first pass. The patterns above all expect a
+    # quote straight after `=`, so a JSX expression container hid two live
+    # links in HomeDashboard's hero from a check written to find exactly them.
+    # An optional `{` is the whole fix, and it is the reason this rule is
+    # written as one alternation rather than repeated per shape.
+    (re.compile(r'\b\w*[Hh]ref\s*=\s*\{?\s*[`"\']/unit/'), 'a link or default of "/unit/N", which only forwards'),
+    (re.compile(r'\?\?\s*[`"\']/unit/'), 'a `?? "/unit/N"` fallback, which only forwards'),
 ]
 
 bad = []
@@ -85,18 +139,29 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(ROOT, "src")):
             for pat, what in SHAPES:
                 if pat.search(line):
                     bad.append(f"{rel}:{n} — {what}: {line.strip()[:90]}")
+            if rel not in ALLOW_MAP:
+                for pat, what in MAP_SHAPES:
+                    if pat.search(line):
+                        bad.append(f"{rel}:{n} — {what}: {line.strip()[:90]}")
 
 if bad:
-    print(f"  FAIL {len(bad)} bare \"/\" used as a destination:\n")
+    print(f"  FAIL {len(bad)} link(s) naming an address that no longer means what they meant:\n")
     for b in bad:
         print(f"       {b}")
-    print('\n  "/" is the welcome page now, not Home. A link left pointing at it still')
-    print("  resolves — the learner simply lands on the front door instead of their")
-    print("  own page, which is what Dan reported on 11 Sep: \"Closing each of the")
-    print("  pages is not supposed to jump to the Enter page.\"")
-    print("\n  Use HOME_HREF from src/lib/routes.ts.")
+    # Only explain the half that actually fired — a report that recites both
+    # rules every time makes the reader hunt for which one they broke.
+    if any('"/"' in b for b in bad):
+        print('\n  "/" is the welcome page now, not Home. A link left pointing at it still')
+        print("  resolves — the learner simply lands on the front door instead of their")
+        print("  own page, which is what Dan reported on 11 Sep: \"Closing each of the")
+        print("  pages is not supposed to jump to the Enter page.\"")
+    if any("/map" in b or "/unit/" in b for b in bad):
+        print("\n  \"/map\" and \"/unit/N\" are redirect stubs — Home draws the map itself.")
+        print("  A link to either still resolves, after a second page load and a flash.")
+    print("\n  Use HOME_HREF from src/lib/routes.ts (with ?unit=N for a unit).")
     sys.exit(1)
 
 print("  ok   no bare \"/\" is used as a Home link or default")
 print("  ok   the door's own two files still say \"/\", because they are the door")
-print("\nverify210: Home has one address, and it is not the root.")
+print("  ok   no live link names \"/map\" or \"/unit/N\", which only forward")
+print("\nverify210: Home has one address — the root is not it, and neither is /map.")

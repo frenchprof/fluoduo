@@ -77,15 +77,31 @@ async function seat(ctx) {
   // WAIT FOR THE SCENE, NOT FOR THE CLOCK — this replaced a flat 2800ms sleep.
   // The waits further down stay: they follow a wheel gesture and are waiting for
   // momentum to come to rest, which the DOM cannot be asked about.
-  await visit(p, `http://localhost:${PORT}/map/embed?view=3d&hour=12`, SCENE_READY);
+  await visit(p, `http://localhost:${PORT}/home?view=3d&hour=12`, SCENE_READY);
   const ok = await p.evaluate((y) => {
     const box = document.querySelector(".home-map3d-box");
     if (!box) return false;
+    // BRING THE MAP UNDER THE POINTER (12 Sep). This scan drove /map/embed until
+    // the map merged into Home, and there the scene WAS the page — the viewport
+    // centre was always over it. On Home the map sits below the hero, the
+    // welcome strip and the keys, so a gesture aimed at the viewport centre
+    // landed on the hero and moved nothing. Every case below aims at the
+    // scene's own rect instead; this puts it on screen first.
+    box.scrollIntoView({ block: "center" });
     box.scrollTop = y;
     return true;
   }, START);
   await p.waitForTimeout(1000);
   return ok ? p : null;
+}
+
+/** The middle of the 3D scene, in page coordinates — where a gesture meant for
+ *  the map has to be aimed now that the map is not the whole page. */
+async function aim(p) {
+  return p.evaluate(() => {
+    const r = document.querySelector(".home-map3d-box").getBoundingClientRect();
+    return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + r.height / 2), top: Math.round(r.y), bottom: Math.round(r.bottom) };
+  });
 }
 
 const bad = [];
@@ -102,7 +118,8 @@ async function wheelCase(pref, label, wantBack) {
   const p = await seat(ctx);
   if (!p) { bad.push(`${label}: no 3D scene on the page`); await ctx.close(); return; }
   const before = await read(p);
-  await p.mouse.move(450, 310);
+  const at = await aim(p);
+  await p.mouse.move(at.x, at.y);
   await p.mouse.wheel(0, STEP);
   await p.waitForTimeout(1200);
   const after = await read(p);
@@ -134,9 +151,14 @@ await wheelCase(false, "wheel down, setting off", false);
   } else {
     const before = await read(p);
     const cdp = await ctx.newCDPSession(p);
-    const pt = (y) => [{ x: 195, y, radiusX: 6, radiusY: 6, force: 1 }];
-    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: pt(250) });
-    for (let y = 270; y <= 600; y += 30) {
+    const at = await aim(p);
+    // The drag runs down the middle of the SCENE, from just inside its top edge
+    // to just inside its bottom — not down the middle of the window, which on
+    // Home starts above the map.
+    const y0 = at.top + 24, y1 = at.bottom - 24;
+    const pt = (y) => [{ x: at.x, y, radiusX: 6, radiusY: 6, force: 1 }];
+    await cdp.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: pt(y0) });
+    for (let y = y0 + 20; y <= y1; y += 30) {
       await cdp.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: pt(y) });
       await p.waitForTimeout(16);
     }

@@ -15,6 +15,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { choiceKeysBusy } from "@/lib/useChoiceKeys";
+import { HOME_HREF } from "@/lib/routes";
 
 const DIGIT_WINDOW_MS = 900;
 
@@ -93,15 +94,21 @@ export default function KeyNav() {
           clear();
           const sio = SIOS.find((s) => s.num === num);
           // The outcome lives on The Map now (/sio/[id] is only a
-          // redirect): `/map?unit=N#SIO-0NN` opens its popup. Already on
+          // redirect): `?unit=N#SIO-0NN` opens its popup. Already on
           // the map → set the hash so its hashchange listener opens it
           // without a reload.
+          //
+          // THE MAP IS HOME SINCE 12 SEP. Typing a number while standing on
+          // the map has to take the branch that only moves the hash — and the
+          // test still named `/map`, which nobody is on any more, so every
+          // in-place jump went through `router.push` to a redirect instead:
+          // the map you were already looking at, reloaded twice.
           if (sio) {
-            if (window.location.pathname === "/map") {
-              window.history.replaceState(null, "", `/map?unit=${sio.unit}`);
+            if (window.location.pathname === HOME_HREF) {
+              window.history.replaceState(null, "", `${HOME_HREF}?unit=${sio.unit}`);
               window.location.hash = sio.id;
             } else {
-              router.push(`/map?unit=${sio.unit}#${sio.id}`);
+              router.push(`${HOME_HREF}?unit=${sio.unit}#${sio.id}`);
             }
           }
         } else {

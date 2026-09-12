@@ -30,7 +30,7 @@ hypothetical:
   4  REDUCED MOTION GETS NO TRAVEL. A spring IS motion; someone who asked for
      less of it should not get a shorter bounce.
 
-  5  THE EMBED CARRIES NOTHING OF OURS. /map/embed is meant to be iframed into
+  5  THE EMBED CARRIES NOTHING OF OURS. /map/standalone is meant to be iframed into
      a course page. On its first render it dragged FluOLinGo's footer, feedback
      button and beta notice into the frame — another site's furniture inside
      someone else's page. The body hides everything but the <main>.
@@ -124,12 +124,16 @@ check(bool(mine) and any("transform: none" in b for b in mine),
       "motion, and a shorter bounce is not the accommodation")
 
 # --- 5 + 6 · the embed ------------------------------------------------------
-embed_dir = os.path.join(ROOT, "src", "app", "map", "embed")
+# /map/embed was deleted on 12 Sep with the page that framed it; the
+# EMBEDDABLE map — the one this section is about, the bare one for somebody
+# else's iframe — has always been /map/standalone and is where EmbedBody now
+# lives beside its only importer.
+embed_dir = os.path.join(ROOT, "src", "app", "map", "standalone")
 check(os.path.isdir(embed_dir),
-      "/map/embed exists — the map is reachable as a standalone URL",
-      "src/app/map/embed is gone; the map can no longer be embedded")
+      "/map/standalone exists — the map is reachable as a standalone URL",
+      "src/app/map/standalone is gone; the map can no longer be embedded")
 if os.path.isdir(embed_dir):
-    body = read("src/app/map/embed/EmbedBody.tsx")
+    body = read("src/app/map/standalone/EmbedBody.tsx")
     check("fluo-embed" in body,
           "the embed marks itself so the body can hide our own furniture",
           "EmbedBody has lost the .fluo-embed hook, so FluOLinGo's footer, "
