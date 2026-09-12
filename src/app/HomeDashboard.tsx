@@ -416,7 +416,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
               title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
               <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
@@ -449,7 +449,7 @@ export default function HomeDashboard() {
                  requires every tour step to name a data-tour hook for exactly
                  that reason. */
               data-tour="continue"
-              className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
+              className={`neo-key home-key grid place-items-center${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -472,7 +472,7 @@ export default function HomeDashboard() {
               href={`/unit/${afterSio.unit}#${afterSio.id}`}
               aria-label={`Next goal — ${afterSio.topic}`}
               title={`Next goal — « ${afterSio.topic} »`}
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -486,7 +486,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label={`Rewind — ${dueCount} to repeat`}
               title="Rewind — repeat the words you missed"
-              className="neo-key relative grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key relative grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -502,7 +502,7 @@ export default function HomeDashboard() {
             <span
               aria-disabled="true"
               title="Rewind — nothing waiting to be repeated"
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden style={{ opacity: 0.4 }}>
                 <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
