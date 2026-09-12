@@ -67,6 +67,72 @@ a container query (`clamp(0.625rem, 4.9cqw, var(--legend-max))` inside
 `clamp(a, b, calc(… var() …))` is rejected outright by the parser, which is why
 the max is a variable and not an inline `calc`.
 
+**HOME'S TRANSPORT ROW IS RETIRED, AND THE MAP GETS ONE CONTROL ROW.** Dan:
+*"is it ok to do without the play, forward and rewind buttons (those functions
+can be accessed easily and directly elsewhere on this page, i.e. via the map and
+the editable goalselector field, right?"*, then *"Rewind = Revise = ErroRevue ==
+they are the same thing"*, then *"a single row above the map without any other
+texts (e.g. delete the « In FluOLinGo land, blah blah »), and there is no need to
+have the current stop mentioned twice"*.
+
+**THE QUESTION WAS ANSWERED BY MEASURING, NOT BY AGREEING.** Two of the three
+were WORSE than the map they duplicated: ▶ and ⏭ pointed at `/unit/N#SIO-nnn`,
+which forwarded to `/home?unit=N#SIO-nnn` and opened a **StopPopup on the page
+the learner was already standing on** — the popup Dan retired on 7 Sep — while
+the map's own stops open `/sio/[id]`. And one premise was wrong and had to be
+said so: **the goal-selector field does not navigate.** `StopBookmark` calls
+`saveBookmark(n)`; typing 23 moves the marker, it does not take you to goal 23.
+Only the map can stand in for ▶.
+
+    before   after
+      1        0     the sentence
+      3        0     hero transport keys
+      3        1     stop-number elements on screen
+    274px    195px   where the map starts, 390
+    342px    236px   where the map starts, 1440
+
+**A FOURTH KEY WAS IN THAT ROW AND DAN DID NOT NAME IT.** 🎓 Diplômé appears
+only at 50/50, in Continue's place, and opens revision — LAF1201 is a semester
+course, so there is no 51st goal and spaced repetition is the real forever game.
+Deleting it with the other three would have removed a feature nobody asked
+about, **on the one screen a learner reaches once**, where nobody would notice
+until far too late. It moved into the map's control row, where the progress it
+needs is already loaded. Driven: absent at 0/50, present at 50/50.
+
+**THE DUE COUNT IS A REAL LOSS, recorded rather than buried.** ⏪ carried a badge
+of how many items were waiting; `verify25` called it *"the one deadline on
+Home"*. The DOOR is covered — ☰ → 🔄 Revise is the same page, which is Dan's
+ruling — but the NUMBER now appears nowhere on Home. He was told. If it returns,
+the ☰ is where it belongs.
+
+**AND THE ROW WAS THE LAST THING ON HOME THAT READ PROGRESS.** `HomeDashboard`
+holds no state at all now: `MapBody` loads progress, the bookmark and the view
+because it must, being the component `/map` framed. A second copy is the
+two-copies-of-one-fact drift this whole branch exists to end — so `verify87` now
+pins that Home keeps **no** second reading, the inverse of what it asserted.
+
+**THE TOUR'S FIRST STEP POINTED AT THE ▶ KEY**, with `[data-tour="map-stop"]` as
+a fallback **that was never rendered by anything**. Removing ▶ left the step
+matching nothing, and the tour would have opened by silently skipping itself —
+the same failure this repo has now recorded six times. The anchor is real now,
+on the map's glowing stop in `Map2DGrid`.
+
+**A WELL ANSWERS THE POINTER** (Dan: *"even for depressed spaces (e.g. buttons
+in the depressed states) there needs to be some mouseover effect and activating
+effect"*). `.neo-key` has had a hover lift and a press since 1 Sep; `.neo-well`
+— its declared pair — had **no `:hover`, `:active` or `:focus-visible` rule at
+all**. A well cannot lift without becoming a key, so it deepens instead. Only
+where it IS a control: `.neo-well` also dresses things that merely read a value,
+and a hover there promises a click that never happens. Measured in a browser —
+switch, zoom field and goal well respond; a read-only well does not.
+
+**`verify37` FORBADE EXACTLY THIS**, on a premise that was already false when it
+was written — *"a well has no hover, it is read-only by construction"*, while the
+zoom field and the switch were wells AND controls. Retargeted, not deleted: a
+bare `.neo-well:hover` still fails, a qualified one is now required. Its
+rule-matcher also could not see inside `@media`, so it reported "no hover rule
+at all" against a file that had one.
+
 **EIGHTEEN LINKS STILL NAMED THE PAGE THAT ONLY FORWARDS** (*"etc. Please help
 check the links"*). The ☰'s own links were the half already swept. These are the
 other half, and **not one of them was broken**, which is exactly why nothing
@@ -76,6 +142,14 @@ drill's ✕, the profile's MAP door, the 404's button, the lesson pager's and
 ÉcouTexte's fallbacks, GameOver's per-miss deep link, KeyNav's two-digit jump.
 `/unit/N` is in the same list and has been a redirect stub since August, so
 `drillExitHref` was a forward to a forward.
+
+**THE CHECK HAD A HOLE, AND ASKING WHERE ▶ ACTUALLY WENT IS WHAT FOUND IT.**
+Every shape in `verify210` expected a quote straight after `href=`, so
+``href={`/unit/${...}`}`` — a template literal in a JSX expression container —
+slipped straight through. **Four** live links, not the two found by reading:
+Home's ▶ and ⏭, the deck table's ✕, and the teacher's per-outcome link. An
+optional brace is the whole fix, and it is why the rule is one alternation
+rather than a shape repeated per spelling.
 
 **This is the fault `src/lib/routes.ts` was written about, three days later and
 with a different address** — which is why `verify210-home-href.py` takes the
