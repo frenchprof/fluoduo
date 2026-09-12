@@ -4,10 +4,17 @@
  * The embeddable map's body. Deliberately thin: it reads progress, picks the
  * current stop, and hands both to Map2DGrid — the same component /map uses.
  *
- * A STOP OPENS THE REAL APP. Inside the app a stop opens StopPopup; here there
- * is no app around it, so a tap leaves for /map with the stop's hash, and
+ * A STOP OPENS THE REAL APP. Inside the app a stop opens the goal's page; here
+ * there is no app around it, so a tap leaves with the stop's hash, and
  * `target="_top"` breaks out of the iframe rather than loading FluOLinGo
  * inside a 620px box on someone else's page.
+ *
+ * IT LIVES BESIDE /map/standalone SINCE 2026-09-12, having sat in /map/embed
+ * since it was written. That folder went when Home and the map merged and /map
+ * stopped framing anything — and this file, the one thing in it with a
+ * consumer left, went with it and broke the build. Moved rather than restored:
+ * /map/standalone is its only importer and always was, so the two now sit
+ * together instead of pointing at each other across a retired route.
  */
 import { useEffect, useState } from "react";
 import Map2DGrid from "@/components/Map2DGrid";

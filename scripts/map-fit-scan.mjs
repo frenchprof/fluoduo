@@ -68,7 +68,13 @@ await new Promise((r) => server.listen(PORT, r));
 
 const MEASURE = () => {
   const de = document.documentElement;
-  const vw = de.clientWidth;
+  // THE WELL, NOT THE WINDOW (12 Sep). The map used to run in an iframe, so
+  // the viewport WAS the space it was given; on Home it sits in the notebook's
+  // content well inside a much wider window. Measuring the window would have
+  // called a correctly-filled map "adrift". Falls back to the viewport so the
+  // scan still reports rather than crashing if the handle is ever renamed.
+  const wellEl = document.querySelector("[data-map-well]");
+  const vw = wellEl ? Math.round(wellEl.getBoundingClientRect().width) : de.clientWidth;
   const stops = [...document.querySelectorAll("[data-stop]")].map((e) => e.getBoundingClientRect());
   const well = document.querySelector('input[aria-label^="Zoom percent"]');
   // The legend is four kind names in a row; find the innermost element that
@@ -139,18 +145,20 @@ const MAP_READY = `
 const bad = [];
 async function run(label, width, height, view, checks) {
   const page = await browser.newPage({ viewport: { width, height } });
-  // THE VIEW IS SEEDED, NOT CLICKED. `?view=3d` on /map never reaches the map:
-  // the outer page frames /map/embed with no query, and the frame reads its
-  // OWN search. Clicking the switch inside the frame was tried and did not
-  // flip it, which the scene guard below caught — so this writes the same
-  // localStorage key `loadMapView()` reads, before any script runs.
+  // THE VIEW IS SEEDED, NOT CLICKED. This began as a frame problem — the outer
+  // page framed /map/embed with no query, so `?view=3d` never reached the map —
+  // and seeding outlived it: writing the key `loadMapView()` reads is still the
+  // only way to fix the view before the first paint, which is what the scene
+  // guard below needs in order to measure the right one.
   await page.addInitScript((v) => {
     try { window.localStorage.setItem("fluo.homeMapView", v); } catch {}
   }, view);
-  // Through /map, not straight to the embed: the notebook around the frame is
-  // what narrows it, and every one of these faults is about that width.
+  // /home, NOT /map (12 Sep): Dan merged the two pages and /map is a redirect
+  // now. The notebook is still what narrows the map — it is the content well
+  // rather than an iframe — and every one of these faults is still about that
+  // width, which is why `vw` above measures the well.
   // WAIT FOR THE MAP, NOT FOR THE CLOCK — this replaced a flat 2600ms sleep per view.
-  await visit(page, `http://localhost:${PORT}/map`, MAP_READY);
+  await visit(page, `http://localhost:${PORT}/home`, MAP_READY);
   for (const l of ["Got it", "No thanks"]) {
     for (const f of page.frames()) {
       const e = f.getByRole("button", { name: l });
@@ -158,9 +166,9 @@ async function run(label, width, height, view, checks) {
     }
   }
   await settle(page, MAP_READY);
-  const frame = page.frames().find((f) => f.url().includes("/map/embed"));
-  if (!frame) { bad.push(`${label}: /map has no map frame`); await page.close(); return; }
-  const m = await frame.evaluate(MEASURE);
+  // Measured on the PAGE now — there is no frame to reach into since the map
+  // moved onto Home.
+  const m = await page.evaluate(MEASURE);
   await page.close();
 
   const notes = [];

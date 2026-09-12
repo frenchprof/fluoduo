@@ -260,8 +260,12 @@ unit_page = strip_comments(read("src/app/unit/[unit]/page.tsx"))
 redirect = read("src/app/unit/[unit]/UnitRedirect.tsx")
 check("UnitSection" not in unit_page and "UnitRedirect" in unit_page,
       "/unit/N no longer renders UnitSection — it is a deep link", "/unit/N still renders the unit page")
-check("/map?unit=" in redirect and "location.replace" in redirect,
-      "UnitRedirect sends /unit/N(#SIO) to /map?unit=N(#SIO)", "UnitRedirect does not redirect to /map?unit=N")
+# RE-POINTED 12 SEP: Home and the map merged, /map became a redirect, and a
+# redirect aimed at a redirect is two replaces for one destination.
+check("/home?unit=" in redirect and "location.replace" in redirect,
+      "UnitRedirect sends /unit/N(#SIO) straight to /home?unit=N(#SIO)",
+      "UnitRedirect does not redirect to /home?unit=N — note /map is itself a "
+      "redirect since 12 Sep, so pointing there is a double bounce")
 # RE-POINTED 2 Sep: the unit panel is RETIRED (Dan, over the Unité 0 tile
 # grid: "we don't need this anymore … delete it"). A ?unit= deep link now
 # scrolls the always-visible band into view, and #SIO opens StopPopup — the
@@ -269,8 +273,27 @@ check("/map?unit=" in redirect and "location.replace" in redirect,
 check('get("unit")' in carte and "hashchange" in carte and "<StopPopup" in carte,
       "The Map reads ?unit= and #SIO, and a stop opens StopPopup",
       "MapBody does not read the deep link / open StopPopup")
-check('get("unit")' in home and "/map" in home,
-      "Home forwards old /?unit= deep links to /map (printed QR codes survive)", "Home no longer forwards /?unit= to /map")
+# HOME READS THE DEEP LINK ITSELF NOW (12 Sep) — it used to forward /?unit= on
+# to /map, and that had to go in the same change that made /map forward to
+# Home, or the two would have bounced a printed QR code between them for ever:
+# /home?unit=2 -> /map?unit=2 -> /home?unit=2.
+#
+# So the assertion inverts. Home must render MapBody — which the check above
+# has already confirmed parses ?unit= and #SIO — and must NOT contain a
+# forward to /map, because that is the loop.
+check("<MapBody" in home,
+      "Home renders MapBody, which reads ?unit= and #SIO itself",
+      "Home does not render MapBody, so nothing on it reads the old deep links")
+# THE FORWARD, NOT THE STRING. The first form of this assertion was
+# `"/map" not in home`, and it failed on `import MapBody from "@/app/map/MapBody"`
+# — the path of the component Home renders. A check that cannot tell an import
+# from a navigation would have sent the next session hunting a loop that is not
+# there.
+_home_code = re.sub(r"(?m)^\s*//.*$", "", re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", home))
+check(re.search(r'(location\.replace|router\.(push|replace))\(\s*[`"\']/map', _home_code) is None,
+      "Home does not forward to /map — no redirect loop",
+      "Home navigates to /map, which now forwards back to Home: a printed "
+      "QR code would bounce between the two for ever")
 check("onOpenSio" in m2 and "onOpenSio" in m3, "stops open their SIO in place (onOpenSio) in both views", "stops still navigate away")
 
 # 7 · print

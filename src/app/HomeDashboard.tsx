@@ -30,14 +30,12 @@
  * /map still owns the zoom, the legend and the 2D view.
  */
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import HomeMap3D from "@/components/HomeMap3D";
+import MapBody from "@/app/map/MapBody";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
 import StopBookmark from "@/components/StopBookmark";
-import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
@@ -74,7 +72,6 @@ const BYLINE_STROKES = [
 
 
 export default function HomeDashboard() {
-  const router = useRouter();
   const [progress, setProgress] = useState<Progress>(defaultProgress());
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
@@ -106,15 +103,16 @@ export default function HomeDashboard() {
     const readBookmark = () => setBookmark(loadBookmark());
     readBookmark();
     window.addEventListener(BOOKMARK_EVENT, readBookmark);
-    // The map lives at /map now — forward its old deep links (`/?unit=N`
-    // and/or `#SIO-0XX`) so printed QR codes and bookmarks keep working.
-    const q = new URLSearchParams(window.location.search).get("unit");
-    const hash = window.location.hash.replace("#", "");
-    const isSio = SIOS.some((s) => s.id === hash);
-    if (isSio || (q !== null && /^[0-4]$/.test(q))) {
-      window.location.replace(`/map${window.location.search}${window.location.hash}`);
-      return;
-    }
+    // THIS FORWARD IS GONE, AND IT HAD TO GO IN THE SAME CHANGE (12 Sep).
+    // It sent `?unit=N` and `#SIO-0XX` on to /map, which was right while /map
+    // was the map. /map now forwards HERE, so leaving it would have been a
+    // redirect loop: /home?unit=2 -> /map?unit=2 -> /home?unit=2, for ever, on
+    // exactly the printed QR codes it was written to protect.
+    //
+    // Nothing is lost. `MapBody` — which this page now renders — reads both
+    // forms itself in its own mount effect: the hash opens that stop, and
+    // ?unit=N scrolls its band into view. The deep links are handled one layer
+    // down instead of being bounced to another page.
 
     // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
     // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
@@ -161,17 +159,11 @@ export default function HomeDashboard() {
   const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;
   const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
 
-  // The accent colour the learner has equipped (drives the hero CTA). The fire
-  // multiplier left with the streak tile — it is read where the streak now is,
-  // in the top bar.
-  const accent = equippedAccent(progress);
-
-  // A stop on Home's map opens the goal's own page, exactly as it does on
-  // /map — same handler, same destination. Two maps that answer a tap
-  // differently would be two maps.
-  const openSio = (_unit: number, id: string) => {
-    router.push(`/sio/${id}`);
-  };
+  // THE ACCENT AND THE STOP HANDLER LEFT WITH THE BARE SCENE (12 Sep). Both
+  // existed only to be passed to `HomeMap3D`; `MapBody` reads the equipped
+  // accent itself and carries the identical `router.push('/sio/' + id)`. Kept
+  // as props they would have been two copies of one fact, which is how the two
+  // map pages drifted apart in the first place.
 
   return (
     <>
@@ -548,10 +540,33 @@ export default function HomeDashboard() {
           verify80 is retargeted with it: it stops asserting "no map on Home"
           and starts asserting "no POSTCARD on Home" — no 2D crop, no view
           switch, no dead CTA band — which is what all three rulings from 1
-          to 9 Sep were actually about. */}
+          to 9 Sep were actually about.
+
+          ── 12 SEP: ONE MAP PAGE, NOT TWO ────────────────────────────────────
+          Dan, with /home and /map side by side: *"We have two pages doing the
+          same thing: The Home page + The Map. Can we just keep the Bienvenue
+          one and move the 3D-2D switch and the zoom control and navigators
+          '> Goal', legend there."*
+
+          So this section renders `MapBody` — the whole of what /map was — in
+          place of the bare 3D scene. It brings the four things he named with
+          it, because it already owned all four; nothing here re-implements a
+          switch or a zoom field.
+
+          IT NEEDS NO PROPS, and that is why the merge is this small. MapBody
+          loads its own progress, bookmark, accent and saved view, and its stop
+          handler is `router.push('/sio/' + id)` — character for character the
+          `openSio` this page declares above. Two maps that answered a tap
+          differently would have made this a rewrite; they never did.
+
+          THE VIEW SWITCH IS BACK ON HOME, WHICH REVERSES THE NOTE ABOVE. That
+          is Dan's call and it is the fourth turn this question has taken — see
+          verify80's own header, which records the other three. The POSTCARD
+          ruling is untouched: what comes back is the real switch over the real
+          scene, not a cropped 2D picture under a dead band. */}
       <section aria-label="Course map" className="mt-5">
         <div className="relative" style={{ touchAction: "pan-y" }}>
-          <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
+          <MapBody />
         </div>
       </section>
       </div>

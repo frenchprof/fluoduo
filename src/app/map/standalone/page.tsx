@@ -1,4 +1,4 @@
-import EmbedBody from "../embed/EmbedBody";
+import EmbedBody from "./EmbedBody";
 
 /**
  * /map/standalone — THE MAP AS A STANDALONE THING, for somebody else's page.

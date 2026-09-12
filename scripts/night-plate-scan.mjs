@@ -171,7 +171,8 @@ const bad = [];
 let seenDark = false, seenLight = false, minSeen = Infinity;
 
 for (let hour = 0; hour < 24; hour++) {
-  // /map/embed, NOT /map. The scene lives in the embed frame and reads `?hour=`
+  // /home SINCE 12 SEP — Dan merged the map into Home and /map now forwards
+  // there, taking its embed twin with it. The scene reads `?hour=`
   // off its OWN search, which the outer page's query string never reaches; and
   // the 2D plan is the saved default, so `view=3d` is what puts the scene — and
   // its labels — on the screen at all.
@@ -180,7 +181,7 @@ for (let hour = 0; hour < 24; hour++) {
   // one READ applies below: a label plate that is laid out and big enough to be
   // real. The scene builds itself in the frame, so a plate on screen IS the scene
   // having rendered; nothing else here needs waiting for.
-  await visit(page, `http://localhost:${PORT}/map/embed?view=3d&hour=${hour}`, PLATE_READY);
+  await visit(page, `http://localhost:${PORT}/home?view=3d&hour=${hour}`, PLATE_READY);
   if (hour === 0) { await dismissHints(); await settle(page, PLATE_READY); }
   const plates = await readAll();
   if (!plates.length) {

@@ -36,7 +36,6 @@ import {
   TILE_NAME as SHARED_TILE_NAME,
 } from "@/components/familyTile";
 import { familyName, activity } from "@/content/activities";
-import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
 // palette lives in globals.css (Dan's fixed 12-swatch brand set, 2026-09-09:
@@ -132,23 +131,42 @@ const hrefOf = (key: string) => activity(key)?.href ?? "/map";
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
 const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
-  // LESSON (Dan, 2026-09-09) — Map, the goal itself, and Help now live
-  // together. "Goals" still opens Home for now: the per-SIO page ("Goal =
-  // Specific Instructional Objective") is a separate, larger piece Dan has
-  // someone else building — this tile will point there once it lands.
+  // LESSON — two tiles now, not three (Dan, 2026-09-12).
+  //
+  // MAP IS GONE because the page it opened is gone: /map forwards to Home,
+  // which draws the map itself. Dan, shown the two: *"We don't need Map in the
+  // menu it is already in the Kallang Wave"* — the map is the thing on the
+  // page you are already looking at, so a menu door to it was a door to here.
+  //
+  // GOALS LEADS TO THE GOAL (*"Goals will lead to SIOs"*), which is what the
+  // comment this replaces promised: it opened Home only while `/sio/[id]` was
+  // still being built by another lane. It has landed, and with Home now being
+  // the map, pointing 🎯 back at Home would have been a door to the page you
+  // pressed it on. A picker rather than a link, because "which goal?" is the
+  // question — the same slider every other per-stop tile opens.
+  //
+  // ⭐ FAVOURITES IS NOT HERE YET, deliberately. Dan asked for it in Map's
+  // place; `claude/favourites` has already built the feature (a /favourites
+  // page, the star, sync, verify300) and it is not on main, so a tile added
+  // now would be a door to nothing. His call, put to him: remove Map, add the
+  // star when that branch lands. Whoever lands it owns this slot.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
-    { kind: "one", emoji: "🧭", name: "Map", href: "/map" },
-    { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
+    { kind: "picker", emoji: "🎯", name: "Goals", sioKey: "sio" },
     { kind: "help" },
   ]},
   { band: PEN.practice, ink: INK.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
-    // MneMemo has no page of its own — it is reached from a stop (see its
-    // registry entry, href: null). /practice USED to be that door (the
-    // Practice hub, listing it alongside SpecuLearn); the hub retired 9 Sep
-    // (Dan: "made redundant"), so this now points at the map, where a
-    // learner actually picks the stop that opens a lesson.
-    { kind: "one", emoji: "📚", name: "MneMemo", href: "/map" },
+    // MNEMEMO OPENS MNEMEMO (Dan, 2026-09-12: *"MneMemo will lead to MneMemo
+    // (the current link is wrong)"*). It pointed at /map, which was a
+    // stand-in with a reason — MneMemo has no page of its own, its door was
+    // the Practice hub, the hub retired 9 Sep — but the stand-in outlived the
+    // problem. A learner pressing « MneMemo » got a map and had to know that
+    // tapping a stop was the next move; nothing on screen said so.
+    //
+    // It is a picker like the two beside it: pick the goal, land on that
+    // goal's lesson at `/lessons/deck/<deck>` — the route whose own frame is
+    // titled "MneMemo". See `stopHref`'s `mnemo` case for the gate.
+    { kind: "picker", emoji: "📚", name: "MneMemo", sioKey: "mnemo" },
     { kind: "picker", emoji: "🃏", name: "MémoiRecall", sioKey: "flip" },
   ]},
   // "Review", not "Revise" — DéjàRevu is renamed ErroReview the same day
