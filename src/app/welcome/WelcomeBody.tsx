@@ -239,21 +239,7 @@ export default function WelcomeBody() {
           a swipe that starts on the headline still travels the road — the
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
-      {/* `welcome-sky-type` OPTS THIS BLOCK OUT OF THE TYPE RAMP, and the
-          reason is the one this page was built on. The ramp grows every size
-          with the viewport; the three lines below are a COMPOSITION, sized by
-          breakpoint against a drawn horizon, and growing them a second time
-          walks them back down over the road — the exact fault Dan named:
-          "You are COMPLETELY blocking the view of my winding road horizon,
-          which is the WHOLE POINT of this page." Measured at 1440x900 with the
-          ramp on, the subtitle crossed 10px into the horizon band.
-
-          This is the same exemption the ramp already makes for `em`, for the
-          same stated reason — a size that is already adaptive by another
-          mechanism must not have the step applied twice. The rule lives in
-          globals.css beside the ramp; verify106 holds the list, verify151
-          holds the horizon. */}
-      <div className="welcome-sky-type pointer-events-none absolute inset-x-0 top-[4%] flex flex-col items-center px-6 text-center sm:top-[4%]">
+      <div className="pointer-events-none absolute inset-x-0 top-[3%] flex flex-col items-center px-6 text-center sm:top-[3%]">
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
@@ -300,7 +286,7 @@ export default function WelcomeBody() {
             glow. It is translucent, so the sky still shows through it and the
             page is still one picture. */}
         <h1
-          className="text-[3.2rem] font-black leading-[1.02] text-white sm:text-[4.4rem] [@media(max-height:480px)]:text-[1.6rem]"
+          className="fluo-welcome-title font-black leading-[1.02] text-white"
           style={{ fontFamily: "var(--font-fluohand-stack)", ...OUTLINE }}
         >
           <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>Welcome to</span>
@@ -310,7 +296,7 @@ export default function WelcomeBody() {
           </span>
         </h1>
         <p
-          className="mt-1.5 inline-block px-4 py-0.5 text-[1.35rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.8rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
+          className="fluo-welcome-sub mt-1.5 inline-block px-4 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:mt-1"
           style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
         >
           {/* One span per raised letter, and the sentence given once to a
@@ -327,7 +313,7 @@ export default function WelcomeBody() {
         {named && course && (
           <p
             data-course-tag={course.key}
-            className="mt-1.5 inline-block px-3 py-0.5 text-[1rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.2rem] [@media(max-height:480px)]:hidden"
+            className="fluo-welcome-course mt-1.5 inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}
@@ -388,7 +374,7 @@ export default function WelcomeBody() {
           than width: an ellipse seen in perspective is flat, so a shorter
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
-      <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
+      <div className="absolute inset-x-0 bottom-[max(0.75rem,0.5%)] flex flex-col items-center px-6">
         {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
             PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
             ENTER"*). The gold ring used to pulse on goal 1, which on a still
@@ -402,7 +388,7 @@ export default function WelcomeBody() {
             is why there is no second guard here. */}
         <Link
           href="/home"
-          className="home-map3d-pulse rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
+          className="home-map3d-pulse max-w-[53vw] rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
             background: "var(--sio-phrases)",
             color: "var(--cahier-ink)",
