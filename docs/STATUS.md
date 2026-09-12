@@ -67,6 +67,48 @@ a container query (`clamp(0.625rem, 4.9cqw, var(--legend-max))` inside
 `clamp(a, b, calc(… var() …))` is rejected outright by the parser, which is why
 the max is a variable and not an inline `calc`.
 
+**EIGHTEEN LINKS STILL NAMED THE PAGE THAT ONLY FORWARDS** (*"etc. Please help
+check the links"*). The ☰'s own links were the half already swept. These are the
+other half, and **not one of them was broken**, which is exactly why nothing
+reported them: `/map` resolves, after a second page load and a flash, to a page
+one click away. The 🗺️ in the icon strip, the swipe rail's first station, every
+drill's ✕, the profile's MAP door, the 404's button, the lesson pager's and
+ÉcouTexte's fallbacks, GameOver's per-miss deep link, KeyNav's two-digit jump.
+`/unit/N` is in the same list and has been a redirect stub since August, so
+`drillExitHref` was a forward to a forward.
+
+**This is the fault `src/lib/routes.ts` was written about, three days later and
+with a different address** — which is why `verify210-home-href.py` takes the
+second one rather than a new check taking a new number. Same shapes, same
+allowances, plus one allow-list for the places that legitimately NAME `/map`:
+the stub itself, the rail's *"are you standing here?"* test, and the teacher's
+labels for page-view rows recorded before the merge.
+
+**AND THE SWEEP FOUND WHAT A SWEEP DOES NOT LOOK FOR: the map's TOUR was
+orphaned.** `tourFor` answers `path === "/home"` and returns, so the `/^\/map/`
+branch fifteen lines below it could never match again. A first-time learner
+would have arrived at a page with a 2D/3D switch on it and been told nothing
+about it. The branch is removed rather than left looking live; its view-toggle
+step moved into the home tour, which is **four steps now**, driven and
+screenshotted at both widths. The other two steps were dropped as duplicates —
+« Every stop is one goal. Tap one to open it. » is step 1 wearing other words,
+and « ✓ green = done » describes a colour on the screen.
+
+`verify44` fails if the dead branch comes back — **and its first run flagged the
+comment explaining the removal**, the fifth time a check in this repo has read
+its own documentation as the defect (verify152, verify153, verify106,
+verify270). Comments are stripped before that test now.
+
+**FIVE MORE CHECKS RETARGETED, NONE WEAKENED** — `verify23`, `verify27` and
+`verify30` now assert the DOOR rather than its spelling; `verify44` the tour
+that carries the duty; and `verify80`'s reachability block asserts what it
+meant — the map is reachable without typing an address, AND `/map` still
+forwards so bookmarks and printed QR codes still land. Counting `/map` links
+there would have gone red on the fix and green on a regression.
+
+Driven rather than read: `/map`, `/map?unit=2`, `/map#SIO-023`, `/carte`,
+`/unit/3` and `/unit/3#SIO-031` all land on Home with the map on it.
+
 **SIX CHECKS RETARGETED, NONE WEAKENED** — `verify80` (follows the delegation;
 its `fill` assertion is inverted and the view switch is now REQUIRED), `verify25b`
 (Home renders MapBody and does not navigate to `/map`), `verify108`, `verify150`,
