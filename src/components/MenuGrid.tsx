@@ -27,6 +27,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { stopHref, type StopActivityKey } from "@/lib/activityStops";
 import { loadProgress } from "@/lib/progress";
+import { dueForReview } from "@/lib/reviser";
 import { nextGoalNumber, loadBookmark } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
 import {
@@ -82,7 +83,11 @@ const GREY = "var(--fam-user)";
 const GREY_INK = "var(--fam-user-ink)";
 
 type Cell =
-  | { kind: "one"; emoji: string; name: string; href: string }
+  /* `badge: "due"` puts the review queue's size on the tile. It is a KEY
+     rather than a number because ROWS is a module constant, evaluated once at
+     import: a number here would be frozen at whatever the count was when the
+     bundle loaded. The component resolves it per render. */
+  | { kind: "one"; emoji: string; name: string; href: string; badge?: "due" }
   /* A PER-STOP DOOR. It is not a pop-up any more and it is not a plain link
      either: the GO TO row at the top of this menu names the stop, and these
      six answer for it — a real link when the activity can play that stop, a
@@ -185,7 +190,22 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // (Dan, 2026-09-09); see the registry entry in activities.ts.
   { band: PEN.review, ink: INK.review, label: familyName("review"), cells: [
     { kind: "one", emoji: "🔤", name: "ConjugaZone", href: "/conjugaison" },
-    { kind: "one", emoji: "❌", name: "ErroReview", href: "/reviser" },
+    // THE ☰'s BADGE HAS TO LAND SOMEWHERE (Dan, 2026-09-12: *"THE THING WHEN
+    // I OPEN THE MENU I WILL BE WONDERING WHERE THAT NUMBER FALLS UNDER AND IT
+    // WAS NOT SHOWN"*).
+    //
+    // `SiteTopBar` has put a count on the ☰ button since the bottom bar was
+    // removed — « 7 » in a pill, announced as "Navigation — 7 to revise". It
+    // says something is waiting and not WHAT, so opening the menu to find out
+    // answered nothing: twenty tiles, none of them carrying the number. A
+    // badge that raises a question its own menu cannot answer is worse than no
+    // badge.
+    //
+    // It counts WORDS, not goals: every item the learner has practised has a
+    // spaced-repetition timer, and `dueForReview` returns the ones whose timer
+    // has elapsed. ErroReview is the page that plays exactly that queue, so
+    // this is the tile the ☰'s number was always about.
+    { kind: "one", emoji: "❌", name: "ErroReview", href: "/reviser", badge: "due" },
     { kind: "picker", emoji: "🏃", name: "GramMarathon", sioKey: "grammarathon" },
   ]},
   { band: PEN.svplay, ink: INK.svplay, label: familyName("svplay"), cells: [
@@ -272,6 +292,15 @@ export default function MenuGrid({
     if (currentStop) return currentStop;
     try { return nextGoalNumber(loadProgress(), loadBookmark()) ?? 1; } catch { return 1; }
   };
+  /* THE REVIEW QUEUE'S SIZE, read the same lazy way and for the same reason:
+     this component is rendered only inside `{menuOpen && …}`, so it does not
+     exist during the static export's prerender and an initialiser may touch
+     localStorage. Read at OPEN rather than kept in sync — the menu is a
+     moment, and a number that changed under an open dropdown would be worse
+     than one that is a few seconds old. */
+  const [dueNow] = useState(() => {
+    try { return dueForReview(loadProgress(), Date.now()).length; } catch { return 0; }
+  });
   const [stop, setStop] = useState(initial);
   const [draft, setDraft] = useState(() => String(initial()));
 
@@ -491,11 +520,34 @@ export default function MenuGrid({
                 </Link>
               );
             }
+            /* THE COUNT SITS ON THE TILE, not beside its name — the same
+               shape and the same corner as the ☰'s own badge, so the two read
+               as one number in two places rather than two numbers. Hidden at
+               zero: "0 to revise" is not news, and an empty pill on a tile is
+               the furniture Dan's 1 Sep counting rule bans. `relative` only
+               where a badge is actually drawn, so no other tile changes. */
+            const badge = cell.badge === "due" && dueNow > 0 ? dueNow : 0;
             return (
               <Link key={key} href={cell.href} onClick={onNavigate}
-                    className={TILE} style={{ borderColor: row.ink }} lang="fr">
+                    className={`${TILE}${badge ? " relative" : ""}`}
+                    style={{ borderColor: row.ink }} lang="fr"
+                    aria-label={badge ? `${cell.name} — ${badge} to revise` : undefined}>
                 <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                 <span className={NAME}>{cell.name}</span>
+                {badge > 0 && (
+                  <span
+                    aria-hidden
+                    /* THE SAME PILL THE ☰ WEARS, deliberately — `--dopa-streak`
+                       on `--dopa-streak-on`, the same radius and the same
+                       corner. Driven side by side, the first cut had this in
+                       `--dopa-focus` blue against the bar's pink, and two
+                       colours make one number read as two different counts,
+                       which is the confusion this tile exists to end. */
+                    className="absolute -right-2 -top-2 rounded-full bg-[var(--dopa-streak)] px-1.5 text-[10px] font-bold leading-[1.4] text-[color:var(--dopa-streak-on)]"
+                  >
+                    {badge}
+                  </span>
+                )}
               </Link>
             );
           })}
