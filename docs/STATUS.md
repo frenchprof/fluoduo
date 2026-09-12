@@ -230,6 +230,82 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
+## 12 Sep — the Firestore rules get tested, and three holes close (this session, branch, NOT merged)
+
+Dan asked whether `firestore.rules` was sufficient. **It was not, and nothing
+had ever tested it.** Three attacks a signed-in student could run today were
+ACCEPTED by the rules as they stood; all three are now refused, and the refusal
+is proved by driving the REAL Firestore emulator rather than by reading.
+
+**1 · `mail/{id}` WAS AN OPEN EMAIL RELAY.** `isSignedIn()` plus a shape check
+let any student post a document the Trigger Email extension then SENDS — any
+address, any subject, any body, from this project's sender:
+
+    to:      ["victim@anywhere.com"]
+    message: { subject: "Your NUS result", text: "<anything>" }
+
+The shape check never touched the two things that matter: WHO receives it and
+WHO sent it. **"No writer in this repo" is not a defence** — it is the reason
+this one is dangerous. The oraltest site shares this Firebase project, so every
+fluoduo learner is a signed-in principal against `mail/`, whether or not any
+code here writes to it. Now the recipient must have an invite doc THIS sender
+created.
+
+**2 · INVITE SQUATTING FROZE THE BOOKING FLOW.** `create` only fires on a
+MISSING doc and `update` is `false`, so the first write wins forever. One
+account could write one doc per classmate — `byName` is free text, so it could
+read "Dr Chan" — and no real leader could ever invite those people again. Now
+the creator must hold an actual booking and may not invite themselves.
+
+**3 · LEADERBOARD XP COULD SILENTLY FALL.** `sessions` has carried a monotonic
+guard since it was written ("a client can't quietly rewrite history"); the
+board — the most public surface in the app — had none.
+
+**WHAT THE TESTS ARE, AND WHY THERE ARE TWO HALVES.** `scripts/rules-test/`
+drives the emulator's own rules engine. `attacks.mjs` sends each attack as an
+attacker would; `legit-paths.mjs` exists because **a rule that denies
+everything passes every attack test**, and this repo has twice shipped a rule
+that quietly denied real learners — the `xp <= 100` ceiling that rejected every
+correct answer from anyone on a 7-day streak, and the leaderboard allowlist
+that needed `weekXp`/`weekKey` before a new learner could join the board. Both
+were swallowed by a client-side `catch`. So every change is checked against the
+three awkward shapes that really exist: a brand-new learner, a legacy laf1201
+row with no `xp` and no `term`, and a cohort reset where XP legitimately falls.
+
+    attacks       origin/main  3 FAIL of 6      this branch  6 PASS
+    legit-paths   origin/main  3 PASS of 3      this branch  3 PASS
+
+**THE FIRST VALIDATOR WAS WORTHLESS AND THAT IS THE LESSON.**
+`firebase emulators:exec --only firestore "true"` printed a cheerful start and
+exited 0 — so the rules were broken ON PURPOSE (`allow read: if isSignedIn(`,
+unclosed) and it exited 0 again. **It never compiles the rules.** The emulator's
+`:securityRules` REST endpoint does, and rejects that file naming the line
+(`L408:7 Unexpected 'allow'.`). A validator nobody has seen fail is not a
+validator — the same rule that caught `verify25` passing a re-typed literal.
+
+**ONE PREDICTION OF MINE WAS WRONG, recorded so it is not cited later.** I
+expected a deck with no `visibility` to make `collections`' read rule ERROR and
+lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
+The `.get('visibility', 'private')` form is kept because it states the intent,
+but it changes no behaviour and fixes nothing.
+
+**NOT WIRED INTO `verify.yml`, deliberately.** The emulator is a ~60 MB cold
+download and ~25 s of boot, and CI was cut from 10.5 minutes to ~7 this month
+because the Actions allowance ran out mid-morning and nothing could merge. The
+right shape is a workflow of its own on `paths: ['firestore.rules',
+'scripts/rules-test/**']` — an integration-lane decision, so it is written down
+in `scripts/rules-test/README.md` rather than slipped into the shared workflow
+from a branch. Until it exists these tests protect the rules only when a human
+runs them, which is the `verify31-wordrill` trap.
+
+**STILL OPEN, and NOT fixable in rules — the file says so in its own header:**
+leaderboard XP is self-reported (a learner can publish 10,000,000; only a Cloud
+Function totalling `responses` fixes that), and `feedback` takes a 300 KB
+screenshot with NO sign-in at all while `vlrain_hiscores` is open too. Rules
+cannot rate-limit; App Check is the answer and the header carries a
+ready-to-enable block, switched OFF because enabling it before the apps are
+registered breaks every write instantly.
+
 ## 12 Sep — the goal comes down onto Home, and the byline hangs off the heading
 
 Dan, over a marked-up screen of Home with three things ringed. **He kept 1 and
