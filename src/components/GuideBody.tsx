@@ -60,7 +60,10 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
             <span
-              className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
+              /* On the ramp like the text beside it — a fixed 28px circle next to
+                 type that grows to 20px on a desktop reads as a badge that
+                 stayed small (Dan, 12 Sep: no hard-coded button sizes). */
+              className="mt-0.5 flex h-[calc(1.75rem+var(--fs-step)*1.75)] w-[calc(1.75rem+var(--fs-step)*1.75)] shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
               style={{ background: "var(--fluo-card-accent)" }}
             >
               {i + 1}

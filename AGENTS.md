@@ -701,6 +701,31 @@ was breaking `position: fixed`'s containing block. Fixed the same way
 both only showed up driving the real, built app, which is why this is
 written down as a warning and not just a diff.
 
+# …and neither is a control's size — permanent (2026-09-12)
+
+**Dan, 12 Sep: *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"***
+
+The font half is the rule below. This is the other half he named: **a
+button, a tile, a badge or a menu that holds text on the ramp must be sized
+on the same ramp**, or the text grows on a desktop and its box does not.
+Concrete case, the day he said it: the ☰ menu's names went on the ramp
+(16px on a phone, ~21.8px at 1440px) while the grid stayed a fixed
+`w-[20.6rem]` — so on a desktop seven of the twenty names clipped to an
+ellipsis that nobody saw at 390px. Same for a fixed `h-7 w-7` number badge
+beside 20px text.
+
+So a control's box takes the step the text inside it takes:
+
+    fixed        w-[20.6rem]                       phone 330  ·  desktop 330
+    on the ramp  w-[calc(20.6rem+var(--fs-step)*21)]   phone 330  ·  desktop 451
+
+`min-h-[44px]` as a TOUCH FLOOR is not this fault — 44px is the smallest a
+finger can hit and a floor is not a size. What is this fault is a box that is
+ONLY a pixel number, with ramped text inside it. Twenty-eight files carry
+such boxes today (`h-[44px] w-[44px]`, `h-[58px]`, `min-h-[56px]`, …); they
+predate this ruling and are the sweep to do next, not a reason to add one
+more.
+
 # No font size is nailed to a pixel — permanent (2026-09-05, restated 2026-09-11)
 
 **Dan, 5 Sep: *"the relative font size thingy should apply FluOLinGo wide, not
