@@ -77,9 +77,20 @@ export const BAND_NAME =
   "self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black " +
   "uppercase tracking-[0.12em] leading-none text-[color:var(--cahier-ink)]";
 
-/** A door. The caller sets `borderColor` to the family's darkest rung. */
+/** A door. The caller sets `borderColor` to the family's darkest rung.
+ *
+ *  ITS HEIGHT IS ON THE RAMP, NOT NAILED TO 64px. Dan, 2026-09-12, after a
+ *  goal-card row that hard-coded its tile width: ***"PLEASE NEVER EVER HARD
+ *  CODE FONT SIZES AND BUTTON SIZES !!!"***
+ *
+ *  `min-h-[64px]` was the last number in this file that ignored the screen. It
+ *  is the same fault as a hard font size and it fails the same way round: the
+ *  name inside rides the ramp and grows about a third on a desktop, so a box
+ *  frozen at 64px squeezes text that did not agree to stay still. 4rem is the
+ *  same 64px on a phone, where the step is zero, and grows with everything
+ *  else above it. */
 export const TILE =
-  "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
+  "flex min-h-[calc(4rem+var(--fs-step)*4)] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
 
