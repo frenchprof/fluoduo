@@ -7,11 +7,33 @@ row. Maybe up to 4 per row"*, then, shown where else the same shape lived:
 *"take all four, and delete FamilyHub"*.
 
 WHAT THIS GUARDS, AND WHY IT IS A CHECK RATHER THAN A COMMENT. Five surfaces
-now share one floor in globals.css. Three of them — the goal pop-up's activity
-list, the games gallery sheet and Profil's tile sections — sit behind sign-in
-or behind an interaction, and could NOT be driven in the static export: the
-pages render empty or the sheet never opens without a signed-in user. So the
-one thing standing between them and a quiet regression is this file.
+now share one floor in globals.css. Two of them — SpecuLearn's stop tiles and
+the Réglages picker — were driven at 320/390/768/1400 and give 2/2/3/4 columns
+with no sideways scroll. The other three were NOT measured, and the reason is
+worth writing down because the first explanation offered for it was wrong.
+
+It is NOT sign-in. Dan, 2026-09-11: *"there is no sign-in wall at
+staging.fluoli.ngo as well as fluoduo.pages.dev !"* — and the local build runs
+with NEXT_PUBLIC_OPEN_APP=1 anyway, so the wall was never up. What actually
+happened:
+
+  · /profil renders a CahierShell hosting <iframe src="/profil/embed">. The
+    probe read the outer document, found the chrome and nothing else, and that
+    empty body was misread as a locked page. The tiles are in the frame, and
+    /profil/embed renders them fine.
+  · Profil's tile sections sit inside collapsed accordions, so they are absent
+    from the DOM until opened;
+  · the games gallery is a BottomSheet that needs the right control clicked.
+
+None of that is a wall — it is a page this session did not learn to open. The
+honest position is that these three are unverified on screen, not unreachable,
+and this file is what stands between them and a quiet regression until someone
+drives them properly.
+
+(This correction was written once before, on the branch #307 came from, and
+did not survive the merge into #313 — the squash took an earlier state. It is
+restated here rather than left to rot, because a wrong reason in a check's
+rationale is worse than no reason at all.)
 
 THE FLOOR DOES BOTH CAPS BY ITSELF, which is the whole point:
 
