@@ -653,7 +653,7 @@ export default function SayItContent({
                   <span className="text-2xl text-[color:var(--cahier-ink-soft)]">/{score.total}</span>
                 </p>
                 {log.length > 0 && (
-                  <SessionMap marks={marks} total={log.length} size={11} className="mx-auto mt-5 max-w-[290px]" />
+                  <SessionMap marks={marks} total={log.length} size={11} className="mx-auto mt-5 max-w-[18.125rem]" />
                 )}
                 {log.some((l) => l.mark !== "ok") && (
                   <div className="mt-5 overflow-hidden rounded-xl border-[1.5px] border-[color:var(--cahier-ink)]/16 bg-white text-left">
@@ -665,7 +665,7 @@ export default function SayItContent({
                           className="flex items-center gap-2.5 border-b border-[color:var(--cahier-line)] px-3 py-2 last:border-b-0"
                         >
                           <span
-                            className="block h-[7px] w-[7px] shrink-0 rounded-full"
+                            className="block h-[0.4375rem] w-[0.4375rem] shrink-0 rounded-full"
                             style={{ background: l.mark === "bad" ? "var(--tier-weak)" : "var(--tier-medium)" }}
                           />
                           <span lang="fr" className="min-w-0 flex-1 truncate text-sm font-black">{frOf(l.it)}</span>
@@ -720,7 +720,7 @@ export default function SayItContent({
                     disabled={phase === "listening"}
                     aria-label="Listen"
                     title="Listen (R)"
-                    className="cahier-btn flex h-11 w-11 items-center justify-center !rounded-full !p-0 text-lg disabled:opacity-40 sm:h-[38px] sm:w-[38px] sm:text-base"
+                    className="cahier-btn flex h-11 w-11 items-center justify-center !rounded-full !p-0 text-lg disabled:opacity-40 sm:h-[2.375rem] sm:w-[2.375rem] sm:text-base"
                   >
                     🔊
                   </button>
@@ -732,7 +732,7 @@ export default function SayItContent({
                       data-tour="wordrill-mic"
                       onClick={phase === "listening" ? stopRec : startListening}
                       aria-label={phase === "listening" ? "Stop" : "Start speaking"}
-                      className={`flex h-[76px] w-[76px] items-center justify-center rounded-full text-2xl shadow-lg transition active:scale-95 ${
+                      className={`flex h-[4.75rem] w-[4.75rem] items-center justify-center rounded-full text-2xl shadow-lg transition active:scale-95 ${
                         phase === "listening"
                           ? "bg-[color:var(--drill-bad-mid)] text-white ring-4 ring-[color:var(--drill-bad-soft)]"
                           : "bg-[color:var(--cahier-hl)] text-[color:var(--cahier-ink)] hover:brightness-95"
@@ -754,7 +754,7 @@ export default function SayItContent({
                     disabled={!ladder.help?.label || ladder.help?.disabled}
                     aria-label={ladder.help?.label ?? "Show the word"}
                     title={`${ladder.help?.label ?? "Show"} (V)`}
-                    className={`cahier-btn flex h-11 w-11 flex-col items-center justify-center gap-[2px] !rounded-full !p-0 disabled:opacity-40 sm:h-[38px] sm:w-[38px] ${
+                    className={`cahier-btn flex h-11 w-11 flex-col items-center justify-center gap-[2px] !rounded-full !p-0 disabled:opacity-40 sm:h-[2.375rem] sm:w-[2.375rem] ${
                       peek ? "!bg-[color:var(--cahier-hl)]" : ""
                     }`}
                   >
@@ -767,7 +767,7 @@ export default function SayItContent({
                           return (
                             <span
                               key={k}
-                              className="block h-[3px] w-[3px] rounded-full"
+                              className="block h-[0.1875rem] w-[0.1875rem] rounded-full"
                               style={{
                                 background: on
                                   ? isReveal ? "var(--tier-weak)" : "var(--cahier-ink)"
@@ -794,7 +794,7 @@ export default function SayItContent({
                 </p>
 
                 {log.length > 0 && (
-                  <SessionMap marks={marks} total={runTotal} className="mt-4 max-w-[280px]" />
+                  <SessionMap marks={marks} total={runTotal} className="mt-4 max-w-[17.5rem]" />
                 )}
 
                 {/* Back stays (Dan, 2026-07-16) — the design dropped it, but a

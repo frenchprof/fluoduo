@@ -410,6 +410,118 @@ screenshot with NO sign-in at all while `vlrain_hiscores` is open too. Rules
 cannot rate-limit; App Check is the answer and the header carries a
 ready-to-enable block, switched OFF because enabling it before the apps are
 registered breaks every write instantly.
+## 12 Sep — the last of the geometry joins the ramp (MERGED as #333, QC of #324)
+
+Dan, on a goal-card row that nailed a tile to a pixel: ***"PLEASE NEVER EVER
+HARD CODE FONT SIZES AND BUTTON SIZES !!!"*** — then, once the Home keys were
+done, *"do the home keys first, then all the rest pls"*, *"just take it all"*,
+and *"continue with the rest"*. This is **the rest**.
+
+**THE HOLE THE 5 SEP RAMP LEFT.** `globals.css` rewrites every `text-[NNpx]`
+onto `--fs-step`, so type follows the screen and the learner's own browser
+size. **Nothing does that for `h-[NNpx]`, `w-[NNpx]`, `max-w-[NNpx]` and their
+kin** — a box that holds growing text but cannot grow itself. Concretely, on a
+desktop where the step opens to 0.36rem:
+
+    SayIt's mic button      h-[76px]  frozen   ·  the 🎤 inside it grows ~a third
+    the map's zoom well     w-[68px]  frozen   ·  "100" inside it grows likewise
+    SayIt's session map     max-w-[290px] frozen, the marks inside it not
+
+**THE FIX IS THE SAME ARITHMETIC EVERY TIME AND CHANGES NOTHING ON A PHONE.**
+`--fs-step` is zero at phone width, and `1rem` is 16px, so `76px` written as
+`4.75rem` renders the identical 76px there and grows with the root size
+anywhere the learner has raised it. **45 spellings across 18 files**, the
+largest being NumBus (41 of them, its whole scene) — proved not to have torn by
+screenshotting the built game before and after and diffing the pixels, against
+a CONTROL: the same build twice differs from itself by 0.248%, more than this
+change differs at 0.241%.
+
+**WHAT DELIBERATELY STAYS A PIXEL, so the next sweep does not "finish" it.**
+
+    gap-[2px] / gap-[3px]        hairlines between dots; a ramped hairline is a gap
+    ToolSummon bottom/right      insets from the SCREEN edge, not from type
+    HomePrintSheet w-[82px]      paper — the AGENTS.md print exemption
+    ProfileContent (12 sizes)    the user-pages lane is rewriting this file
+    familyTile / MenuGrid        the two hits are inside COMMENTS, quoting the old class
+
+**AND #325 TOOK TWO MORE OF THEM WITH THE FILE THEY LIVED IN.** *"Pop-ups
+become pages"* deleted `components/ActivityGoalPicker.tsx` outright — 416 lines
+— and this branch had converted two sizes inside it (`max-h-[190px]` and a
+`w-[52px]` unit label). **Nothing was ported**, and that is the correct
+resolution rather than laziness: the markup was DELETED, not moved. Checked
+before accepting the deletion — `GoalPadPicker` appears nowhere on main, and
+the four files that still say "ActivityGoalPicker" say it in COMMENTS, not
+imports. A conversion has nothing to follow when the element it sized is gone.
+47 across 19 became 45 across 18.
+
+**MAIN HAD ALREADY TAKEN THE FIRST HALF**, which is why this entry is shorter
+than the work. Dan asked the two lanes to share (*"i prefer sharing so we can
+move faster as a team"*); the subdomains lane landed `.home-key`, `.fluo-tap`,
+`.fluo-row`, `.fluo-row-tall`, `.fluo-switch`, `.fluo-fab`, `.fluo-measure`,
+the Home goal well and the three retargeted checks under #319 and #322.
+Diffing this branch against main after merging found **12 of its 31 files now
+identical** — the AGENTS.md warning working as written ("is any of it still
+mine?"). What is left is the 19 above and nothing else.
+
+**THE MERGE ITSELF HAD TWO CONFLICTS AND BOTH RESOLVED TO MAIN**, which is
+worth recording because the usual answer is "keep both sides". Main had already
+folded this branch's `.fluo-row-tall` into `components/familyTile.ts` (the
+shared TILE the goal card and the ☰ now both read) and this branch's
+`.fluo-tap` into `components/AccentColours.tsx` (where `SwatchButton` moved
+when the four user routes became one tabbed page). Taking this side would have
+re-declared a local `TILE` the shared file exists to prevent, and restored a
+`SwatchButton` nothing renders.
+
+**THE RATCHET COMES DOWN — 120 to 86 — AND NOT BECAUSE OF THIS SWEEP.**
+`verify270` counts frozen box sizes across `src/` and its own pass line asked
+for the drop: *"…and 34 fewer than the budget — lower BUDGET to 86"*. Left at
+120 it keeps 34 empty slots the next session can fill without failing anything.
+
+**BUT THE REASON FIRST WRITTEN INTO THAT COMMIT WAS WRONG, and the mistake is
+the same shape as the fault the check exists to catch.** `FROZEN_ANY` matches
+`px` **and** `rem` — deliberately, because a bare `4.25rem` is as frozen as
+`68px`: it follows the learner's text size but not the screen. So converting 47
+pixels to rem moves that count by **zero**. Measured both ways: `origin/main`
+**86**, this branch **86**. The 120 was slack from the hour the check was
+written; this sweep did not create the drop, it just noticed it. Corrected in
+the file rather than left standing.
+Break-tested by adding one `w-[99px]` to HeatStrip: **FAIL, 87 up from 86**.
+
+**AND THE CONTROLS IN THIS DIFF WERE MEASURED, not assumed.** `rem` is not
+`--fs-step`, so a box written in rem still cannot grow with the screen. The one
+site here with a documented clipping history is the map's zoom well, widened
+52→68px on 8 Sep after a desktop read « 00 ». Driven at both widths on the
+built app:
+
+    phone    font 12px      box 68px   scrollWidth 68 = clientWidth 68   no clip
+    desktop  font 16.32px   box 68px   scrollWidth 68 = clientWidth 68   no clip
+
+The type ramps 36% and « 200 », the widest value the field can hold, still
+fits. So no control in this diff needs the RAMPED form today, and none was
+changed to it — widening the sweep on a guess is what the rule's own text warns
+against.
+
+**BUT RAISE THE BROWSER'S TEXT SIZE AND THE OLD BOX LOSES A DIGIT — so this
+sweep fixes a live fault, not just a latent one.** Found while building Dan the
+before/after he asked for, by rendering both builds with the root at 24px, which
+is exactly what a browser's 150% text setting does to every `rem` on the page:
+
+    root 16px   type 16.32px   box 68 -> 68     reads « 100 » / « 100 »
+    root 24px   type 24.03px   box 68 -> 102    reads «  10 » / « 100 »
+
+**IT IS THE 8 SEP FAULT A SECOND TIME, one axis over.** That day the field went
+52 -> 68px because a desktop read « 00 ». 68px answered the SCREEN and left the
+TEXT SETTING alone, so the type still grows half again and the box does not, and
+the leading digit scrolls out of sight exactly as before. A pixel cannot follow a
+learner who has turned their text up; `4.25rem` does, and the field accepts up to
+200, so three digits is the widest it can ever need.
+
+At the default size the two screenshots are **byte-identical** — same md5,
+`ddf5b09a…` — which is the other half of the claim: where nothing was wrong,
+nothing moved.
+
+Gate: **134 checks green**, `tsc --noEmit` clean, eslint clean on all 19
+touched files, both builds (closed and `NEXT_PUBLIC_OPEN_APP=1`) clean.
 
 ## 12 Sep — the goal comes down onto Home, and the byline hangs off the heading
 
@@ -973,6 +1085,41 @@ those six tokens only. Break-tested: `#00a396` is caught at 15 degrees off;
 npm run build` green, all 124 verify checks pass, and the twenty source files
 this branch touches lint with one warning inherited from main (PR #176's unused
 `attemptAt` in `EcouTexte.tsx`).
+
+## 12 Sep — the music is a bed under the voice, never over it (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+
+Dan: *"the music tends to be very loud once it starts, how can we make it
+softer and not overpowering the texttospeech?"*
+
+**WHY IT WAS LOUD.** The chiptune loop (NumBus, NumBourse, Letris,
+LexicaLocker) ran through its bus at gain 1 — the same level as the win
+jingle — and nothing lowered it while a sentence was being read. The only
+duck that existed was a half-second dip under a sting. The voice, coming from
+a separate player (the browser synth, a banked clip or a cloud clip), was the
+quieter of the two.
+
+**TWO NUMBERS, ONE READER**, in `games/audio/chiptune.ts`:
+
+    MUSIC_LEVEL = 0.45   the loop's share of the master           ~ -7 dB
+    VOICE_DUCK  = 0.3    the loop's share while a voice speaks    ~ -10 dB more
+
+Both read through `musicGain()`, which every place the bus is set already
+goes through — play(), stop()'s fresh bus, the mute toggle, the sting duck.
+`followVoice()` runs on the loop's own 25 ms tick and ramps the bus down
+(80 ms) when a voice starts and back (250 ms) when it stops.
+
+**WHAT COUNTS AS A VOICE:** the browser synth (polled —
+`speechSynthesis.speaking`, since its onend is unreliable across engines),
+and the two `<audio>` paths, which now hand their element to
+`trackVoice()` in the new `games/audio/voiceState.ts` (banked clips in
+`letris/speech.ts`, cloud clips in `lib/cloudVoice.ts`). Jingles, stings and
+the volume knob are untouched.
+
+**`verify280-music-under-voice.py`** pins the two levels, the tick, the poll,
+both trackVoice calls and the mute toggle; break-tested four ways. No
+visual surface, so the evidence is the check and the numbers above.
 
 ## 12 Sep — Home's welcome strip runs the full paper width, title centred (this session)
 
