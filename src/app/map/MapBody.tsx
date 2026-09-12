@@ -251,7 +251,11 @@ export default function MapBody() {
             // A WELL: the app's word for a value you read and type into,
             // rather than a key you press (Dan, 7 Sep: "the zoom counter is
             // not showing any 3D depression like the 2D control is showing").
-            /* w-[3.875rem], not 52 (QC, 8 Sep). At 52px "100" measured 58px of content
+            /* 68px, not 52 (QC, 8 Sep) — written as 4.25rem since the 12 Sep
+               size sweep, which is the same width and follows the learner's own
+               text size instead of ignoring it. The pixel figures below are the
+               MEASUREMENTS that settled it, so they stay as pixels.
+               At 52px "100" measured 58px of content
                and the browser scrolled the leading digit out of sight: a desktop
                read « 00 » at 100% and « ?00 » at 200%. A phone was fine, which
                is why it survived — the mono face is set from a smaller step
