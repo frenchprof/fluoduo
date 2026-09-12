@@ -17,6 +17,73 @@ rules_version = '2';
 //   oralST2_2026_invites/{email}     teammate invites by email        (leader create, leader/invitee/admin delete)
 //   mail/{id}                        Trigger Email extension outbox   (signed-in create, shape-checked)
 //   siteVisits/{site}_{uid}          cross-site Google-login attendance (owner create/update, admin read/delete)
+//
+// ═══ HARDENING PASS, 2026-09-12 ═══════════════════════════════════════════
+// Additions only — nothing that was here was removed or loosened.
+//
+//   1 · mail/{id}          WAS AN OPEN EMAIL RELAY. Any signed-in student
+//                          could send any subject/body to any address from
+//                          this project's sender. Recipient is now tied to an
+//                          invite THIS sender created.        ⚠️ order-dependent
+//   2 · oralST2_2026_invites   INVITE SQUATTING: one account could write one
+//                          doc per classmate and freeze the booking flow for
+//                          everyone (create-only + update:false = first write
+//                          wins forever). Creator must now hold a booking, and
+//                          may not invite themselves.          ⚠️ order-dependent
+//   3 · leaderboard        XP could silently FALL. `sessions` has had a
+//                          monotonic guard since it was written; the board,
+//                          the most public surface here, did not.
+//   4 · collections        DEFENSIVE ONLY — not a bug fix. I predicted a deck
+//                          with no `visibility` would make the read rule ERROR
+//                          and lock out its own owner. TESTED AGAINST THE
+//                          ORIGINAL RULES: it does not — the owner reads it
+//                          fine, so Firestore treats the missing field as a
+//                          plain false here rather than throwing. The `.get()`
+//                          default is kept because it states the intent, but
+//                          it changes no behaviour. Recorded so nobody cites
+//                          it later as a fault that was found.
+//
+// ⚠️ THE TWO ORDER-DEPENDENT ONES touch oraltest.withdrchan.com, whose client
+//    is not in this repo. Deploy those only after checking that client writes
+//    the invite (and the leader's own booking) BEFORE it queues the mail. Each
+//    carries a one-line fallback in its own comment if it does not.
+//
+// STILL OPEN, and NOT fixable in rules — do not read this file as "done":
+//
+//   · LEADERBOARD XP IS SELF-REPORTED. A learner can publish xp: 10000000 and
+//     top the board; validLeaderboardRow()'s cap is the only ceiling a rule
+//     can impose, because the client is the source of truth. The real fix is a
+//     Cloud Function totalling users/{uid}/responses server-side.
+//   · ANONYMOUS WRITES HAVE NO VOLUME LIMIT. feedback/{id} takes a 300 KB
+//     screenshot with no sign-in at all, and vlrain_hiscores/{id} is open too.
+//     Both are deliberate and both are a billing/storage tap anyone can open.
+//     Rules cannot rate-limit. The answer is App Check — see the block below.
+//   · authEvents/{id} IS UNSHAPED by design (its writer is in the legacy suite
+//     and cannot be seen from here), so any signed-in account can store
+//     arbitrary documents there. Left alone on purpose; tightening it blind is
+//     how a silent telemetry break starts.
+// ══════════════════════════════════════════════════════════════════════════
+//
+// APP CHECK — the only real defence for the two anonymous-write collections.
+// LESS REMAINS TO BE DONE THAN THIS NOTE FIRST CLAIMED: the SDK side ALREADY
+// SHIPS. src/lib/firebase/client.ts initialises App Check whenever
+// NEXT_PUBLIC_FIREBASE_APPCHECK_KEY is set at build time (reCAPTCHA v3, or
+// Enterprise when NEXT_PUBLIC_FIREBASE_APPCHECK_PROVIDER=enterprise). So the
+// outstanding work is the KEY and the CONSOLE, not the client.
+//
+// That file also records why enforcement is deliberately off: "keep Firestore
+// enforcement OFF in the Firebase console until App Check metrics show ~100%
+// verified traffic (the legacy laf1201 sites share this project and must be
+// attested too before enforcing)". The same reason applies to the rule below —
+// turning it on first would deny every write from an unattested legacy site.
+//
+// So: set the key at build time, watch the console's unverified-requests
+// metric fall to zero across ALL the laf1201 sites, THEN uncomment the
+// function and add `&& appChecked()` to the create rules on feedback/{id} and
+// vlrain_hiscores/{id}.
+//
+//   function appChecked() { return request.app != null; }
+//
 service cloud.firestore {
   match /databases/{database}/documents {
     function isSignedIn() { return request.auth != null; }
@@ -270,8 +337,24 @@ service cloud.firestore {
         && request.resource.data.keys().hasOnly(
             ['name', 'xp', 'level', 'gems', 'streak', 'weekXp', 'weekKey', 'term', 'updatedAt'])
         && validLeaderboardRow();
+      // ADDED 2026-09-12: XP MAY NOT FALL, except across a cohort reset.
+      // `sessions` has had this guard since it was written ("a client can't
+      // quietly rewrite history"); the board — the most public surface in the
+      // app — did not, so a stale or tampered client could publish a LOWER
+      // lifetime figure over a higher one. `.get(...)` with defaults because a
+      // legacy laf1201 row has neither `xp` nor `term`, and a bare read of a
+      // missing field is an error that denies.
+      //
+      // WHAT THIS DOES NOT DO, said plainly so nobody reads it as more than it
+      // is: it does not stop a learner setting xp to 10,000,000 in one write.
+      // The client is the source of truth for XP, so the cap in
+      // validLeaderboardRow() is the only ceiling rules can impose. Making the
+      // board tamper-proof needs the total computed server-side (a Cloud
+      // Function over users/{uid}/responses), not a stricter rule.
       allow update: if isOwner(uid) && !isAdmin() && !isExcludedFromLeaderboard()
-        && validLeaderboardRow();
+        && validLeaderboardRow()
+        && (request.resource.data.xp >= resource.data.get('xp', 0)
+            || request.resource.data.get('term', '') != resource.data.get('term', ''));
       // Owner may ALWAYS delete their own row — so an excluded user's client
       // can clean up a stale entry it wrote before being excluded.
       allow delete: if isOwner(uid);
@@ -344,7 +427,15 @@ service cloud.firestore {
     // send the full document, so the post-merge doc always has title/items)
     // and visibility is whitelisted to the schema's three values.
     match /collections/{id} {
-      allow read: if resource.data.visibility in ['public', 'unlisted']
+      // ADDED 2026-09-12, DEFENSIVE ONLY — this fixes nothing that was broken.
+      // The prediction was that a deck written WITHOUT `visibility` (validDeck
+      // makes it optional) would make the bare read an undefined-field ERROR
+      // and deny the whole `||`, locking the OWNER out of their own deck.
+      // MEASURED against the original rules with a seeded deck that has no
+      // `visibility`: the owner reads it fine. The `.get('visibility',
+      // 'private')` form is kept only because it says out loud what the rule
+      // means; behaviour is unchanged. Do not cite this as a bug that was.
+      allow read: if resource.data.get('visibility', 'private') in ['public', 'unlisted']
         || (isSignedIn() && resource.data.owner == request.auth.uid)
         || isAdmin();
       allow create: if isSignedIn()
@@ -392,7 +483,23 @@ service cloud.firestore {
       allow read: if isSignedIn();
       // Admin may stamp `by` with a pre_ leader key when pre-booking groups
       // on students' behalf from the Teacher tab.
+      // ADDED 2026-09-12 — INVITE SQUATTING. Any signed-in student could
+      // create the doc at any classmate's address, and because `update` is
+      // false and `create` only fires on a MISSING doc, the real leader was
+      // then permanently unable to invite that person: one malicious account
+      // could write one doc per classmate and freeze the whole booking flow.
+      // (`byName` is free text too, so the squatted row could read "Dr Chan".)
+      //
+      // Two additions, both cheap: the creator must actually HOLD a booking —
+      // so an invite is attributable to a real sign-up rather than to any
+      // account that can reach Firestore — and nobody may invite themselves.
+      //
+      // ⚠️ ORDER-DEPENDENT — same caveat as /mail below: this assumes the
+      // oraltest client writes the leader's own oralST2_2026/<uid> booking
+      // BEFORE it sends invites. Not verifiable from this repo.
       allow create: if isSignedIn()
+        && (isAdmin() || exists(/databases/$(database)/documents/oralST2_2026/$(request.auth.uid)))
+        && (isAdmin() || request.auth.token.email.lower() != email)
         && request.resource.data.keys().hasOnly(['by', 'byName', 'size', 'ts'])
         && (request.resource.data.by == request.auth.uid || isAdmin())
         && request.resource.data.byName is string
@@ -409,8 +516,35 @@ service cloud.firestore {
     // Create-only and shape-checked; the extension itself reads/updates via
     // the Admin SDK, which bypasses rules. If the extension isn't installed,
     // docs simply accumulate harmlessly (client treats sending as best-effort).
+    //
+    // ADDED 2026-09-12 — THIS WAS AN OPEN EMAIL RELAY. `isSignedIn()` plus a
+    // shape check let ANY signed-in student post a document the Trigger Email
+    // extension then SENDS, to any address on earth, with a subject and body
+    // they choose, from this project's configured sender. Concretely, this
+    // document was accepted from any student account:
+    //
+    //     to:      ["victim@anywhere.com"]
+    //     message: { subject: "Your NUS result", text: "<anything>" }
+    //
+    // Shape-checking never touched the two things that matter — WHO receives
+    // it and WHO sent it — so the school's sender reputation was available to
+    // the whole class. The fix ties the recipient to the sender's OWN invite:
+    // an address may only be mailed if an invite doc exists at that address
+    // AND this sender created it. That is exactly the "invite nudge" the
+    // outbox was built for, and nothing else.
+    //
+    // ⚠️ ORDER-DEPENDENT — VERIFY BEFORE DEPLOYING. This assumes the oraltest
+    // client writes oralST2_2026_invites/<email> BEFORE the mail doc. That
+    // client is not in this repo, so it could not be checked from here. If it
+    // mails first, the nudge will start failing: either flip the two writes in
+    // the client, or drop the `.data.by ==` line and keep only `exists(...)`,
+    // which still blocks arbitrary recipients.
     match /mail/{id} {
       allow create: if isSignedIn()
+        && request.resource.data.to.size() == 1
+        && (isAdmin() || (
+             exists(/databases/$(database)/documents/oralST2_2026_invites/$(request.resource.data.to[0]))
+             && get(/databases/$(database)/documents/oralST2_2026_invites/$(request.resource.data.to[0])).data.by == request.auth.uid))
         && request.resource.data.keys().hasOnly(['to', 'message'])
         && request.resource.data.to is list
         && request.resource.data.to.size() == 1

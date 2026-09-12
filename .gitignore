@@ -74,3 +74,11 @@ work/**/*.png
 # same way: a full verify sweep leaves 26 untracked .js files behind, and
 # the next `git add -A` sweeps them in. Ignored before that happens.
 .tmp-verify-find/
+
+# Firebase emulator logs, written into the repo root by `firebase emulators:*`
+# whenever the rules suite runs (scripts/rules-test/run.mjs). Same hazard as
+# the two verify scratch directories above: a `git add -A` after a rules run
+# would sweep them in.
+firestore-debug.log
+firebase-debug.log
+ui-debug.log
