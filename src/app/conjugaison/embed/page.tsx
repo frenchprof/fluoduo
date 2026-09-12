@@ -138,7 +138,16 @@ export default function ConjugaisonPage() {
   // which is amended rather than quietly corrected.
   const [screen, setScreen] = useState<"drill" | "table">("table");
   const [mode, setMode] = useState<ConjugaMode>("reveal");
-  const [hidden, setHidden] = useState(false);
+  /* BLANKED ON ARRIVAL (Dan, 2026-09-12: *"make the conjugazone first land on
+     the blanked state"*). The table opened with every form showing and asked
+     the learner to tap HIDE CONJUGATIONS before anything was being tested —
+     a step between them and the work, on the screen they came to do it on.
+     Starting covered means the first tap is already the exercise.
+
+     The forms are one tap away either way: HIDE CONJUGATIONS reads SHOW
+     CONJUGATIONS from the start and puts the whole table back, which is what
+     a learner meeting a verb for the first time wants. */
+  const [hidden, setHidden] = useState(true);
   // Phrases complètes, drawn per verb: verbId → one complement per person.
   // Read under each Subject+Verb inside the table (see StudyTable).
   const [sentences, setSentences] = useState<Record<string, string[] | null>>({});
@@ -379,7 +388,14 @@ function StudyTable({
              className="inline-flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)]">
           {(["reveal", "type"] as const).map((m) => (
             <button key={m} type="button" aria-pressed={mode === m}
-              onClick={() => { setMode(m); if (m === "type") setHidden(false); }}
+              /* The mode switch does NOT touch `hidden`. ConjugaTable reads
+                 it only in REVEAL mode — a TYPE IT cell is a field either way
+                 — so clearing it here was a no-op for the mode being entered
+                 and a side effect on the one being left: with the table now
+                 blanked on arrival, a trip through TYPE IT and back would
+                 have returned a learner to a fully revealed table they never
+                 asked to reveal. */
+              onClick={() => setMode(m)}
               className={`px-3 py-1 text-[color:var(--cahier-ink)] ${
                 mode === m ? "bg-[color:var(--cahier-ink)] font-bold text-white" : "bg-white font-semibold"
               }`}>

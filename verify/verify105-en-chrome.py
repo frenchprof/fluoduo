@@ -68,7 +68,9 @@ def strip_comments(src):
 
 
 # --- 1. the games hub's buttons ----------------------------------------------
-# The <Link> and the <button> under a game card: "Play" and "Choose another".
+# The <Link> under a game card ("▶ Play") and every set tile under it. The
+# « Choose another » button this line used to name went with its BottomSheet on
+# 12 Sep — the sets are on the page now.
 gallery = strip_comments(read("src/components/GameGallery.tsx"))
 for m in re.finditer(r">\s*([^<>{}\n]{2,40}?)\s*</(?:Link|button)>", gallery):
     label = m.group(1).strip()

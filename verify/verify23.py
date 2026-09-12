@@ -27,8 +27,9 @@ What this asserts (static, over source):
      focus list off the URL.
   6  CreditsSplash gates on localStorage (once per browser).
   7  Keyboard legends still hide where there is no keyboard (verify20 rule).
-  8  The four game galleries render GameGallery: ▶ Jouer + Choisir un autre
-     + BottomSheet.
+  8  The four game galleries render GameGallery: a ▶ Play card over the
+     full list of sets, folded by unit. No BottomSheet — the sheet was the
+     last activity pop-up (Dan, 2026-09-12).
   9  The new shell files carry no hex literal (tokens only).
  10  CI runs this file after verify25b.
 
@@ -178,13 +179,28 @@ check(i >= 0 and "sm:block" in lt[max(0, i - 500):i] and "hidden" in lt[max(0, i
       "VocabulaRain's shortcut legend hides where there is no keyboard", "VocabulaRain legend not gated")
 
 # ── 8 · galleries ──────────────────────────────────────────────────────────
-# The two labels went English on 6 Sep (item 7): the games hub is chrome, and
-# « Jouer » sat on the only button on the card — a beginner could not reach the
-# game without decoding it. What this line has always been testing is the
-# STRUCTURE (a play card, and a chooser that opens the BottomSheet), so it
-# follows the wording rather than pinning the old language.
-check(bool(gallery) and "▶ Play" in gallery and "Choose another" in gallery and "<BottomSheet" in gallery,
-      "GameGallery: ▶ Play card + Choose another → BottomSheet", "GameGallery missing pieces")
+# « Jouer » went English on 6 Sep (item 7): the games hub is chrome, and it sat
+# on the only button on the card — a beginner could not reach the game without
+# decoding it. What this line tests is the STRUCTURE, and the structure changed
+# on 12 Sep: « Choose another » and its BottomSheet are GONE. Dan retired every
+# activity pop-up — "no more pop ups for going into those activities" — and
+# this sheet was one, hiding a click deeper than the rest. The suggestion card
+# stays; the sets it used to hide are on the page, folded by unit.
+check(bool(gallery) and "▶ Play" in gallery and "<details" in gallery and "fluo-tilegrid" in gallery,
+      "GameGallery: ▶ Play card over the sets, folded by unit",
+      "GameGallery has lost its play card or its on-page list of sets")
+# STRIPPED, not raw. Both words survive in this file's own notes explaining
+# why they are gone — verify260 hit exactly this and called it "the check
+# reading its own epitaph as the corpse".
+gl = strip_comments(gallery)
+check(bool(gallery) and "BottomSheet" not in gl and "Choose another" not in gl,
+      "GameGallery opens no sheet — the last activity pop-up is gone",
+      "GameGallery is back to hiding its sets behind « Choose another » and a BottomSheet")
+# A closed flap must say what is behind it (AGENTS.md, 2026-08-31: a chevron
+# with no count is deletion with extra steps).
+check(bool(gallery) and re.search(r"<summary[\s\S]{0,600}?items\.length", gallery) is not None,
+      "every closed unit flap carries its count of sets",
+      "a unit flap in GameGallery no longer prints how many sets it hides")
 for p in ("src/app/games/vocabularain/embed/page.tsx", "src/app/games/lexicalater/embed/page.tsx",
           "src/app/games/compose/embed/page.tsx", "src/app/games/matching/page.tsx"):
     check("<GameGallery" in read(p), f"{p} renders GameGallery", f"{p} is still a wall of tiles")
