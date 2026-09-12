@@ -57,7 +57,7 @@ import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
 import { equippedAccent } from "@/lib/economy";
-import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
+import { SKYLINE_Y, WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
 import { HOME_HREF } from "@/lib/routes";
 
 /** The dark ground each line of the greeting sits on, from Dan's three mocks
@@ -109,6 +109,14 @@ const OUTLINE = {
    gif — which letter survives, which O takes a dart — and the gif itself is the
    hero now. Nothing derives from the words any more, so nothing here describes
    them. */
+
+/** WHERE THE SKY ENDS, read off the scene rather than off a screenshot.
+ *  `SKYLINE_Y` is a fraction of the rendered BOX and this page renders that box
+ *  `WELCOME_SKY_LIFT` times the window's height, so the two together are the
+ *  fraction of the WINDOW the sky occupies. `dvh` and not `vh` because a phone's
+ *  toolbar slides away and the horizon moves with it. */
+const SKY_H = `${(SKYLINE_Y * WELCOME_SKY_LIFT * 100).toFixed(2)}dvh`;
+
 export default function WelcomeBody() {
   const router = useRouter();
   // Progress lives in localStorage, which the static export must not read at
@@ -250,7 +258,38 @@ export default function WelcomeBody() {
 
           The course tag below is text and has to stay readable, so it is lifted
           back out on its own. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[4%] z-[1] flex flex-col items-center px-6 text-center sm:top-[4%]">
+      {/* …AND THE SKY IS WHERE THEY STOP (Dan, 2026-09-12: *"the letters should
+          fall behind the horizon, not onto the trees"*, then, asked how far
+          down counts: *"basically anything that is sky is horizon"*).
+
+          The z-index above put the letters behind the trees but not out of
+          sight — measured at 1440x900, the deepest of them tumbled to y≈330
+          with the skyline at 293, so « c y » and « a s » came to rest sitting
+          IN the treeline rather than passing behind it. Depth alone cannot fix
+          that: a thing drawn low in the stack is still drawn.
+
+          So the artwork is CLIPPED to the sky. The height is not a number
+          picked off a screenshot — the scene exports both halves of it:
+
+            SKYLINE_Y (0.29)          the true sky line, a fraction of the box
+            WELCOME_SKY_LIFT (1.12)   this page renders the scene into a box
+                                      that much taller than the window
+
+          so the skyline lands at 0.29 x 1.12 = 32.48% of the window, which is
+          exactly where the pixels put it (32.5% at 1440x900 and at 390x844).
+          Read them, and the clip follows the horizon if either ever moves.
+
+          THE BOX CENTRES WHAT IS IN IT and the art is nudged down by 15.14% of
+          its own height, because the name does not sit in the middle of the
+          frame — measured on the finished asset it lands at 34.86% of it, the
+          rest being the space the letters fall through. Centring the ART would
+          hang the name a fifth of the sky too high; this centres the NAME.
+          A percentage on `translateY` resolves against the element's own
+          height, so one figure holds at every width. */}
+      <div
+        className="fluo-hero-sky pointer-events-none absolute inset-x-0 top-0 z-[1]"
+        style={{ height: SKY_H }}
+      >
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
@@ -349,16 +388,27 @@ export default function WelcomeBody() {
             decoding="async"
           />
         </picture>
-        {named && course && (
+      </div>
+
+      {/* THE COURSE TAG IS NOT CLIPPED, so it rides the same sky box as a
+          sibling and sits on its bottom edge. It is text a learner has to
+          read; the clip above exists to swallow tumbling letters, and a line
+          naming your course is the one thing in this sky that must not be
+          swallowed. */}
+      {named && course && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[2] flex items-end justify-center px-6 text-center"
+          style={{ height: SKY_H }}
+        >
           <p
             data-course-tag={course.key}
-            className="fluo-welcome-course relative z-[2] mt-1.5 inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2"
+            className="fluo-welcome-course inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* THE ONE ACTION — A COIN ON THE ROAD (Dan, 8 Sep, with his own mock
           of this page: *"this is closer to what i would like"*, showing a

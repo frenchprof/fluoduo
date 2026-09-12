@@ -2093,15 +2093,42 @@ h3.cahier-display { font-size: var(--fs-h3); }
   image-rendering: auto;
   /* THE ART IS MOSTLY EMPTY, AND THE EMPTY PART IS THE POINT: the words sit
      across its middle and everything below them is the space the letters fall
-     through. Laid out honestly, that space is reserved as height and pushes the
-     words down onto the horizon — measured at 1280, they landed at y≈210 with
-     the skyline at 279, close enough to read as sitting on the treeline.
-     So both margins are pulled in: the top one lifts the words into the sky,
-     the bottom one stops the fall zone reserving ground it never draws on.
-     Percentages, because a margin-block percentage resolves against the
-     element's WIDTH — which is the one thing here that scales with the
-     viewport, so the crop holds at every size without a breakpoint. */
-  margin-block: -7% -24%;
+     through. That space used to be trimmed with negative margins, which stopped
+     it reserving layout but did nothing about what it PAINTED — the letters
+     went on tumbling down over the treeline. The sky box below clips instead,
+     which is the thing the margins were standing in for, so they are gone.
+
+     NUDGED DOWN BY ITS OWN NAME. The finished asset puts « FluOLinGo » at
+     34.86% of its height, not at the middle: the frame reserves the room the
+     letters fall through, and that room is all below the words. Centring the
+     picture would therefore hang the name 15% of the frame too high. A
+     `translateY` percentage resolves against the element's own HEIGHT, so this
+     one figure re-centres the NAME at every width without a breakpoint.
+
+     POSITIONED, NOT LAID OUT, and that was measured rather than assumed. The
+     first try centred it with `place-items: center` on the box; grid sizes its
+     implicit row to the ITEM, so a 647px picture in a 292px box makes a 647px
+     row that starts at 0 and centres the item inside ITSELF — the art landed at
+     y=98 instead of y=-80, a whole name too low. An out-of-flow item has no row
+     to be centred in. */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) translateY(15.14%);
+}
+
+/* THE SKY IS A LID (Dan, 2026-09-12: *"the letters should fall behind the
+   horizon, not onto the trees"*; asked how far down still counts, *"basically
+   anything that is sky is horizon"*).
+
+   Its height comes from the scene's own exported constants, computed in
+   WelcomeBody — see SKY_H there — so the clip tracks the horizon rather than a
+   number somebody read off a screenshot once. Everything here is what a lid
+   has to be and nothing more: it clips, and it centres what it holds. */
+.fluo-hero-sky {
+  overflow: hidden;
+  /* The containing block for the art's own centring — see .fluo-hero-art. */
+  position: absolute;
 }
 
 @keyframes fluo-edge-beat {
