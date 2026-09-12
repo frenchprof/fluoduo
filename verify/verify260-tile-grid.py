@@ -30,6 +30,13 @@ honest position is that these three are unverified on screen, not unreachable,
 and this file is what stands between them and a quiet regression until someone
 drives them properly.
 
+(This correction was written twice: once on the branch #307 came from, where
+the squash into #313 took an earlier state of the file, and then carried onto
+main by #314, which cherry-picked it. It is restated here rather than left to
+rot, because a wrong reason in a check's rationale is worse than no reason at
+all — which is also why this parenthesis says what actually happened rather
+than repeating that it was lost.)
+
 THE FLOOR DOES BOTH CAPS BY ITSELF, which is the whole point:
 
     min(50% - gap/2, …)          no column wider than half     -> at least 2
