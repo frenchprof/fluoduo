@@ -39,6 +39,8 @@ import { useAuthUser } from "@/lib/firebase/auth";
 import { REQUIRE_SIGN_IN } from "@/lib/authConfig";
 import DrillShell, { type DrillFinish } from "@/components/DrillShell";
 import WordBank from "@/components/WordBank";
+import GapField from "@/components/GapField";
+import ConjugaTable, { type ConjugaMode } from "@/components/ConjugaTable";
 import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
 import { lessonVerbs } from "@/content/lessonVerbs";
 import { addressSearch } from "@/lib/addressWindow";
@@ -129,8 +131,16 @@ export default function ConjugaisonPage() {
   const [value, setValue] = useState("");
   const [result, setResult] = useState<boolean | null>(null);
   const [score, setScore] = useState({ ok: 0, total: 0 });
-  const [screen, setScreen] = useState<"drill" | "table">("drill");
-  // Phrases complètes on the reward table: verbId → drawn complements.
+  // THE TABLE IS THE DOOR NOW (Dan, 2026-09-11: *"The main focus of
+  // ConjugaZone should be the verb table. The questions are secondary and
+  // only come after that table."*). This reverses patch 20–21, which made the
+  // table the reward for finishing the drill — see this file's docstring,
+  // which is amended rather than quietly corrected.
+  const [screen, setScreen] = useState<"drill" | "table">("table");
+  const [mode, setMode] = useState<ConjugaMode>("reveal");
+  const [hidden, setHidden] = useState(false);
+  // Phrases complètes, drawn per verb: verbId → one complement per person.
+  // Read under each Subject+Verb inside the table (see StudyTable).
   const [sentences, setSentences] = useState<Record<string, string[] | null>>({});
 
   // (Re)build the run whenever the verb set changes. Client-only: shuffling
@@ -139,7 +149,12 @@ export default function ConjugaisonPage() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
     setQueue(shuffle(shown.flatMap((v) => v.forms.flatMap((f, i) => (f === "—" ? [] : [{ v, i }])))));
     setK(0); setValue(""); setResult(null); setScore({ ok: 0, total: 0 });
-    setScreen("drill");
+    // NO setScreen HERE. This effect runs on mount as well as on a verb
+    // change, so forcing "drill" made the table's default unreachable — the
+    // page still opened on the questions however the initial state was
+    // declared. Changing the verb set now rebuilds the run and leaves the
+    // learner where they are: studying if they were studying, drilling if
+    // they were drilling.
     setSentences({});
   }, [shown]);
 
@@ -190,7 +205,7 @@ export default function ConjugaisonPage() {
   // ONE primary « Next › » onward, ↻ Again the quiet "Repeat". ConjugaZone
   // is deckless (a verb picker, not one SIO) — nextStep anchors it on the
   // learner's current stop on the path, same as any other deckless surface.
-  const finish: DrillFinish | null = screen === "table" ? { repeat: restart } : null;
+  const finish: DrillFinish | null = screen === "table" && score.total > 0 ? { repeat: restart } : null;
 
   // Signed out, the gate keeps the page's NORMAL chrome (band + bottom bar)
   // instead of DrillShell's bare ✕-and-lock (2026-08-24; the 22 Aug flow
@@ -227,7 +242,7 @@ export default function ConjugaisonPage() {
                   <button type="button" onClick={() => speak(spoken, "fr-FR")} className="ml-2 text-base opacity-70 hover:opacity-100" title="Listen">🔊</button>
                 </>
               ),
-              cta: { label: queue && k + 1 >= queue.length ? "📖 The table" : "Continue", onClick: next },
+              cta: { label: queue && k + 1 >= queue.length ? "📖 Back to the table" : "Continue", onClick: next },
             }
           : null
       }
@@ -238,25 +253,24 @@ export default function ConjugaisonPage() {
             <p className="text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]">
               🔤 <span lang="fr">{cell.v.inf}</span> · {cell.v.en}
             </p>
+            {/* THE GAP SITS BESIDE ITS PRONOUN, where the form goes — not on
+                a line of its own (Dan, 2026-09-11). This drill had the same
+                pair GramMarathon had: a dead 4ch rule after « je », and a
+                live 600px input below it. */}
             <p lang="fr" className="mt-3 text-center text-2xl font-black text-[color:var(--cahier-ink)]">
               {PERSONS[cell.i]}{" "}
-              <span className="inline-block min-w-[4ch] border-b-2 border-[color:var(--cahier-ink)] px-1 text-center text-[color:var(--cahier-ink-soft)]">
-                {result === null ? " " : form}
-              </span>
-            </p>
-            <div className="mt-6">
-              <input
-                lang="fr"
+              <GapField
+                answer={form}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={setValue}
                 disabled={result !== null}
-                placeholder="the verb form…"
-                className={`cahier-answer hidden w-full sm:block ${result === null ? "" : result ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+                state={result === null ? "idle" : result ? "right" : "wrong"}
+                reveal={result === null ? null : form}
               />
-              <div className="sm:hidden">
-                <WordBank answer={form} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
-              </div>
+            </p>
+            <div className="mt-6 sm:hidden">
+              <WordBank answer={form} pool={bankPool} value={value} onChange={setValue}
+                        disabled={result !== null} builtInGap />
             </div>
             <div className="mt-5 text-center">
               <button
@@ -270,13 +284,19 @@ export default function ConjugaisonPage() {
             </div>
           </div>
         ) : screen === "table" ? (
-          <RewardTable
+          <StudyTable
             shown={shown}
             score={score}
             sentences={sentences}
             setSentences={setSentences}
             toggleVerb={toggleVerb}
             picked={picked}
+            mode={mode}
+            setMode={setMode}
+            hidden={hidden}
+            setHidden={setHidden}
+            startDrill={() => { sfx.stage(); setScreen("drill"); }}
+            canDrill={!!queue && queue.length > 0}
           />
         ) : (
           <p className="py-10 text-center text-sm text-[color:var(--cahier-ink-soft)]">
@@ -289,18 +309,30 @@ export default function ConjugaisonPage() {
 }
 
 /**
- * The conjugation table, EARNED: every form visible, every cell speaks on
- * tap, the phrases-complètes banks attached, and the verb picker to line
- * up the next round. The old hide/peek/typing column modes are gone — the
- * drill IS the testing surface now.
+ * The conjugation table — the page's main event (Dan, 2026-09-11).
+ *
+ * It used to be `RewardTable`, shown only after the drill was finished. The
+ * rename is not cosmetic: it is the whole instruction. A learner arrives here,
+ * studies, and goes to the questions when they choose.
+ *
+ * WHAT IS OPEN AND WHAT IS FOLDED follows the collapse rule (2026-08-31): the
+ * argument stays open, the apparatus collapses. The table is the argument. The
+ * sentence banks, the verb picker and the questions are apparatus, and each
+ * closed fold says what is behind it.
  */
-function RewardTable({
+function StudyTable({
   shown,
   score,
   sentences,
   setSentences,
   toggleVerb,
   picked,
+  mode,
+  setMode,
+  hidden,
+  setHidden,
+  startDrill,
+  canDrill,
 }: {
   shown: ConjVerb[];
   score: { ok: number; total: number };
@@ -308,7 +340,29 @@ function RewardTable({
   setSentences: React.Dispatch<React.SetStateAction<Record<string, string[] | null>>>;
   toggleVerb: (id: string) => void;
   picked: string[];
+  mode: ConjugaMode;
+  setMode: (m: ConjugaMode) => void;
+  hidden: boolean;
+  setHidden: (h: boolean) => void;
+  startDrill: () => void;
+  canDrill: boolean;
 }) {
+  // The interleaved examples the table draws under each Subject+Verb. The
+  // banks hold COMPLEMENTS ("de la musique"); the sentence is the spoken
+  // Subject+Verb with one attached, which is the same string conjSpoken
+  // already builds for the 🔊 — so what a learner reads and what they hear
+  // cannot drift apart.
+  const examples: Record<string, string[] | null> = {};
+  for (const v of shown) {
+    const bank = sentences[v.id];
+    if (!bank) continue;
+    examples[v.id] = v.forms.map((f, i) =>
+      f === "—" ? "" : `${conjSpoken(i, f).replace(/^./, (c) => c.toUpperCase())} ${bank[i]}.`,
+    );
+  }
+  const withBanks = shown.filter((v) => SENTENCE_BANKS[v.id]);
+  const anyOpen = shown.some((v) => sentences[v.id]);
+
   return (
     <div>
       {score.total > 0 && (
@@ -316,83 +370,93 @@ function RewardTable({
           🎉 ✓ {score.ok}/{score.total}
         </p>
       )}
-      <div className="mt-3 overflow-x-auto rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/80 p-2">
-        <table className="w-full border-collapse text-[15px]">
-          <thead>
-            <tr>
-              <th className="p-2" />
-              {shown.map((v) => (
-                <th key={v.id} className="min-w-[8rem] p-2 align-top">
-                  <div lang="fr" className="cahier-display text-lg font-black text-[color:var(--cahier-ink)]">{v.inf}</div>
-                  <div className="text-[11px] font-semibold text-[color:var(--cahier-ink-soft)]">{v.en}</div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {PERSONS.map((p, i) => (
-              <tr key={p} className="border-t border-[color:var(--cahier-rule)]">
-                <th lang="fr" className="whitespace-nowrap p-2 text-left text-sm font-bold text-[color:var(--cahier-ink-soft)]">{p}</th>
-                {shown.map((v) => {
-                  const form = v.forms[i];
-                  if (form === "—") {
-                    return <td key={v.id} className="p-1.5 text-center font-bold text-[color:var(--cahier-ink-soft)]/40">—</td>;
-                  }
-                  return (
-                    <td key={v.id} className="p-1.5 text-center">
-                      <button
-                        type="button"
-                        lang="fr"
-                        onClick={() => speak(conjSpoken(i, form), "fr-FR", { analytic: "word" })}
-                        className="w-full rounded-lg border-2 border-transparent px-2 py-1 font-bold text-[color:var(--cahier-ink)] transition hover:border-[color:var(--cahier-gold)]"
-                      >
-                        {form}
-                      </button>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {/* 🎲 Phrases complètes — hear each S+V inside a simple sentence */}
-        <div className="mt-3 flex flex-wrap gap-2">
-          {shown.filter((v) => SENTENCE_BANKS[v.id]).map((v) => (
-            <button key={v.id} type="button" lang="fr"
-              onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))}
-              className="cahier-btn cahier-btn-sm">
-              🎲 {v.inf} in sentences
+
+      {/* TWO MODES ON A SWITCH (Dan, 2026-09-11: *"one for reveal the verb
+          form, the other for typing it in. there should be a switch to toggle
+          between those 2"*). */}
+      <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
+        <div role="group" aria-label="How to practise"
+             className="inline-flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)]">
+          {(["reveal", "type"] as const).map((m) => (
+            <button key={m} type="button" aria-pressed={mode === m}
+              onClick={() => { setMode(m); if (m === "type") setHidden(false); }}
+              className={`px-3 py-1 text-[color:var(--cahier-ink)] ${
+                mode === m ? "bg-[color:var(--cahier-ink)] font-bold text-white" : "bg-white font-semibold"
+              }`}>
+              {m === "reveal" ? "REVEAL" : "TYPE IT"}
             </button>
           ))}
         </div>
-        {shown.filter((v) => sentences[v.id]).map((v) => (
-          <div key={v.id} className="mt-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white p-3">
-            <div className="flex items-center justify-between">
-              <span lang="fr" className="text-sm font-bold text-[color:var(--cahier-ink)]">{v.inf} — full sentences</span>
-              <span className="flex gap-1.5">
-                <button type="button" title="Other sentences" onClick={() => setSentences((m) => ({ ...m, [v.id]: drawComplements(v) }))} className="cahier-btn cahier-btn-sm">🎲</button>
-                <button type="button" title="Close" onClick={() => setSentences((m) => ({ ...m, [v.id]: null }))} className="cahier-btn cahier-btn-sm">✕</button>
-              </span>
-            </div>
-            <ul className="mt-1.5 space-y-1">
-              {v.forms.map((f, i) => {
-                if (f === "—") return null;
-                const phrase = `${conjSpoken(i, f)} ${sentences[v.id]![i]}`;
-                return (
-                  <li key={i} className="flex items-center gap-2">
-                    <button type="button" title="Listen" onClick={() => speak(phrase, "fr-FR", { analytic: "sentence" })} className="cahier-btn cahier-btn-sm">🔊</button>
-                    <span lang="fr" className="text-[15px] text-[color:var(--cahier-ink)]">{phrase.charAt(0).toUpperCase() + phrase.slice(1)}.</span>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+        {mode === "reveal" && (
+          <button type="button" onClick={() => setHidden(!hidden)}
+            className={`cahier-btn cahier-btn-sm ${hidden ? "cahier-btn-primary" : ""}`}>
+            {hidden ? "SHOW CONJUGATIONS" : "HIDE CONJUGATIONS"}
+          </button>
+        )}
+      </div>
+      <p className="mt-1 text-[color:var(--cahier-ink-soft)]" style={{ fontSize: "var(--fs-micro)" }}>
+        {mode === "type"
+          ? "Type each form where it belongs, then Check."
+          : hidden
+          ? "Tap a hidden cell to reveal it."
+          : "Tap HIDE CONJUGATIONS, then reveal them one at a time."}
+      </p>
+
+      <div className="mt-2">
+        <ConjugaTable verbs={shown} examples={examples} mode={mode} hidden={hidden} />
       </div>
 
-      {/* Line up the next round — dropdowns per group, chips to drop. The
-          verb set changing rebuilds the run and returns to the drill. */}
-      <div className="mt-4">
+      {/* THE QUESTIONS COME AFTER THE TABLE, and they are Dan's word for the
+          drill this page used to open on. */}
+      {canDrill && (
+        <div className="mt-4 flex justify-center">
+          <button type="button" onClick={startDrill} className="cahier-btn cahier-btn-primary">
+            Questions →
+          </button>
+        </div>
+      )}
+      {/* THE SENTENCE BANKS, FOLDED. Dan, 2026-07-21: *"what is genuinely
+          missing from ConjugaZone is the possibility to hear the conjugations
+          in simple complete sentences."* They still exist and still speak;
+          what changed is where they are read — a drawn bank now prints its
+          sentence UNDER its own Subject+Verb inside the table (the `examples`
+          prop above), which is Dan's *"intercalé line right after each
+          SubjectVerb combo"*, instead of as a separate list below it.
+
+          Folded, with a count, per the collapse rule — the closed summary has
+          to say what is behind it or nobody opens it. */}
+      {withBanks.length > 0 && (
+        <details className="mt-4" open={anyOpen}>
+          <summary className="cursor-pointer font-semibold text-[color:var(--cahier-ink)]"
+                   style={{ fontSize: "var(--fs-small)" }}>
+            Example sentences — {withBanks.length} of these verbs {withBanks.length === 1 ? "has" : "have"} them
+          </summary>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {withBanks.map((v) => (
+              <button key={v.id} type="button" lang="fr"
+                onClick={() => setSentences((m) => ({
+                  ...m, [v.id]: m[v.id] ? null : drawComplements(v),
+                }))}
+                className={`cahier-btn cahier-btn-sm ${sentences[v.id] ? "cahier-btn-primary" : ""}`}>
+                🎲 {v.inf}
+              </button>
+            ))}
+          </div>
+          <p className="mt-1 text-[color:var(--cahier-ink-soft)]" style={{ fontSize: "var(--fs-micro)" }}>
+            Each sentence appears under its own form in the table. Tap again for another set;
+            the 🔊 beside a form reads the whole phrase either way.
+          </p>
+        </details>
+      )}
+
+      {/* The verb picker — dropdowns per group, chips to drop. Apparatus, so
+          it is folded and its summary carries the count (collapse rule). */}
+      <details className="mt-4">
+        <summary className="cursor-pointer font-semibold text-[color:var(--cahier-ink)]"
+                 style={{ fontSize: "var(--fs-small)" }}>
+          Choose verbs — {shown.length} on the table, {VERBS.length} to pick from
+        </summary>
+      <div className="mt-2">
         <div className="flex flex-wrap gap-1.5">
           {CONJ_GROUPS.map((g) => (
             <select
@@ -420,6 +484,7 @@ function RewardTable({
           ))}
         </div>
       </div>
+      </details>
     </div>
   );
 }

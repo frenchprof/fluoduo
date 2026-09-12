@@ -499,10 +499,18 @@ function Section({
   );
 }
 
-/** The 2×2 grid both tile sections share — the page has two shapes total:
- *  pinned cards on top, tiled accordions below. */
+/** The grid both tile sections share — the page has two shapes total: pinned
+ *  cards on top, tiled accordions below.
+ *
+ *  Was a hard 2×2 at every width. On the shared tile floor since 11 Sep, so
+ *  it widens on a desktop and still never drops below the two columns a phone
+ *  needs. */
 function Tiles({ children }: { children: ReactNode }) {
-  return <div className="grid grid-cols-2 gap-2">{children}</div>;
+  return (
+    <div className="fluo-tilegrid" style={{ ["--tile-min" as string]: "11rem", ["--tile-gap" as string]: "8px" }}>
+      {children}
+    </div>
+  );
 }
 
 /** The economy, as four marks on the shut row: number above emoji (Dan). */

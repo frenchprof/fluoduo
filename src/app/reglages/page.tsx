@@ -130,10 +130,13 @@ export default function ReglagesPage() {
           style={{ background: "var(--cahier-paper-raised)", borderColor: "var(--cahier-line-strong)" }}
         >
           <p className="font-bold text-[color:var(--cahier-ink)]">Bottom bar — choose your tabs</p>
-          {/* Two columns (Dan, 5 Sep): a tickable row stretched across the
-              whole page is a full-width button, which is now against the
-              rule — see AGENTS.md, "No control spans the whole width". */}
-          <div className="mt-3 grid grid-cols-2 gap-2">
+          {/* Two columns AT LEAST (Dan, 5 Sep): a tickable row stretched
+              across the whole page is a full-width button, which is against
+              the rule — see AGENTS.md, "No control spans the whole width".
+              On the shared tile floor since 11 Sep, so seven short rows use a
+              wide screen instead of running down it in two columns; the floor
+              still guarantees the two a phone needs. */}
+          <div className="fluo-tilegrid mt-3" style={{ ["--tile-min" as string]: "9rem", ["--tile-gap" as string]: "8px" }}>
             {FAMILIES.map((f) => (
               <label
                 key={f.key}
