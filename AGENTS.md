@@ -701,31 +701,6 @@ was breaking `position: fixed`'s containing block. Fixed the same way
 both only showed up driving the real, built app, which is why this is
 written down as a warning and not just a diff.
 
-# …and neither is a control's size — permanent (2026-09-12)
-
-**Dan, 12 Sep: *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"***
-
-The font half is the rule below. This is the other half he named: **a
-button, a tile, a badge or a menu that holds text on the ramp must be sized
-on the same ramp**, or the text grows on a desktop and its box does not.
-Concrete case, the day he said it: the ☰ menu's names went on the ramp
-(16px on a phone, ~21.8px at 1440px) while the grid stayed a fixed
-`w-[20.6rem]` — so on a desktop seven of the twenty names clipped to an
-ellipsis that nobody saw at 390px. Same for a fixed `h-7 w-7` number badge
-beside 20px text.
-
-So a control's box takes the step the text inside it takes:
-
-    fixed        w-[20.6rem]                       phone 330  ·  desktop 330
-    on the ramp  w-[calc(20.6rem+var(--fs-step)*21)]   phone 330  ·  desktop 451
-
-`min-h-[44px]` as a TOUCH FLOOR is not this fault — 44px is the smallest a
-finger can hit and a floor is not a size. What is this fault is a box that is
-ONLY a pixel number, with ramped text inside it. Twenty-eight files carry
-such boxes today (`h-[44px] w-[44px]`, `h-[58px]`, `min-h-[56px]`, …); they
-predate this ruling and are the sweep to do next, not a reason to add one
-more.
-
 # No font size is nailed to a pixel — permanent (2026-09-05, restated 2026-09-11)
 
 **Dan, 5 Sep: *"the relative font size thingy should apply FluOLinGo wide, not
@@ -798,6 +773,23 @@ already in the app:
 The counted form is right whenever several of a thing share a row. The ramped
 form is right for a lone control that must simply keep pace with its label.
 **A bare `w-[95px]` on a control is neither and is the thing being banned.**
+
+**A SECOND WORKED CASE, from the lane that answered the same instruction the
+same hour** (`claude/subdomains`, #317 — folded in here rather than left as a
+second section saying the same thing): the ☰ menu's names went on the ramp,
+16px on a phone and ~21.8px at 1440px, while the grid itself stayed a fixed
+`w-[20.6rem]`. On a desktop **seven of the twenty names clipped to an
+ellipsis**, and nobody saw it at 390px where the step is zero. Same fault as the
+goal card's tiles, on the other side of the same screen, found independently.
+
+    fixed        w-[20.6rem]                          phone 330 · desktop 330
+    on the ramp  w-[calc(20.6rem+var(--fs-step)*21)]  phone 330 · desktop 451
+
+**`min-h-[44px]` AS A TOUCH FLOOR IS NOT THIS FAULT** — 44px is the smallest a
+finger reliably hits, and a floor is not a size. `verify270` exempts exactly
+that pair (`min-h`/`min-w` at 44px) and nothing else, because the exemption is
+about the FINGER, which does not grow on a desktop. What is the fault is a box
+that is only a pixel number with ramped text inside it.
 
 **WHAT THIS DOES NOT COVER, said plainly so the rule is not read as a sweep.**
 There are ~127 `w-[…]` / `h-[…]` arbitrary sizes across 34 files today, and most

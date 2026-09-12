@@ -64,7 +64,24 @@ def read(p):
 # A frozen box: an arbitrary width/height utility whose value is a bare number.
 # `calc(...)` is deliberately allowed through — that is the ramped form, and it
 # always contains var(--fs-step) to be worth anything, which clause 1 checks.
-FROZEN = re.compile(r"\b(?:min-h|max-h|h|min-w|max-w|w)-\[[0-9.]+(?:px|rem)\]")
+FROZEN_ANY = re.compile(r"\b(?:min-h|max-h|h|min-w|max-w|w)-\[[0-9.]+(?:px|rem)\]")
+
+# THE TOUCH FLOOR IS NOT A SIZE. Raised by the lane that answered the same
+# instruction the same hour (#317): `min-h-[44px]` is the smallest target a
+# finger reliably hits, and a FLOOR is not a size — it does not want to grow on
+# a desktop, because the finger does not. Exactly this pair is exempt and
+# nothing else: `min-h`/`min-w` at 44. A `h-[44px]` is still a frozen box, since
+# that pins the height rather than guaranteeing it.
+TOUCH_FLOOR = re.compile(r"\b(?:min-h|min-w)-\[44px\]")
+
+def frozen_in(text):
+    return [m for m in FROZEN_ANY.findall(text) if not TOUCH_FLOOR.fullmatch(m)]
+
+class _F:
+    @staticmethod
+    def findall(text):
+        return frozen_in(text)
+FROZEN = _F
 
 # ── 1 · the definitions that size every door in the app ─────────────────────
 # A LIST, so the next session adds a file with its reason rather than rewriting
@@ -73,6 +90,12 @@ FROZEN = re.compile(r"\b(?:min-h|max-h|h|min-w|max-w|w)-\[[0-9.]+(?:px|rem)\]")
 SHARED_CONTROLS = {
     "src/components/familyTile.ts":  "the door tile shared by the menu and every goal card",
     "src/components/GoalCard.tsx":   "a goal's row of doors",
+    # Added when #317 landed: the ☰'s own box was a fixed w-[20.6rem] while the
+    # names inside it rode the ramp, so seven of the twenty clipped on a
+    # desktop. Same fault as the goal card's tiles, other side of the screen,
+    # found by a different lane the same hour — which is the argument for
+    # naming this file rather than trusting the ratchet to notice.
+    "src/components/MenuGrid.tsx":   "the ☰ menu's grid, which sizes every family row",
 }
 
 for path, what in sorted(SHARED_CONTROLS.items()):
@@ -100,7 +123,7 @@ ok(all("--fs-step" in s for s in sized),
 # Counted over the whole of src/, comments stripped. Lower it when you fix one;
 # never raise it. It is a COUNT and not a list of places on purpose: a list
 # invites the next session to append rather than to fix.
-BUDGET = 125
+BUDGET = 120
 
 total = 0
 for dirpath, _dirs, files in os.walk(SRC):
