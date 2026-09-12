@@ -123,7 +123,12 @@ ok(all("--fs-step" in s for s in sized),
 # Counted over the whole of src/, comments stripped. Lower it when you fix one;
 # never raise it. It is a COUNT and not a list of places on purpose: a list
 # invites the next session to append rather than to fix.
-BUDGET = 120
+# 120 -> 86 on 2026-09-12: the size sweep converted 47 geometric pixel
+# spellings across 19 files to rem, so the bar comes down behind it. What is
+# left is deliberate — hairline gaps (2-3px), ToolSummon's insets from the
+# SCREEN edge, HomePrintSheet's paper sizes, and ProfileContent, which the
+# user-pages lane is rewriting.
+BUDGET = 86
 
 total = 0
 for dirpath, _dirs, files in os.walk(SRC):

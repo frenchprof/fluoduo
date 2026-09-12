@@ -135,6 +135,12 @@ when the four user routes became one tabbed page). Taking this side would have
 re-declared a local `TILE` the shared file exists to prevent, and restored a
 `SwatchButton` nothing renders.
 
+**AND THE RATCHET COMES DOWN BEHIND IT — 120 to 86.** `verify270` counts frozen
+box sizes across `src/` and says, in its own pass line, *"…and 34 fewer than the
+budget — lower BUDGET to 86"*. Left at 120 it would have kept 34 slots of slack
+open for the next regression, which is the opposite of what a ratchet is for.
+Break-tested by adding one `w-[99px]` to HeatStrip: **FAIL, 87 up from 86**.
+
 Gate: **134 checks green**, `tsc --noEmit` clean, eslint clean on all 19
 touched files, both builds (closed and `NEXT_PUBLIC_OPEN_APP=1`) clean.
 
