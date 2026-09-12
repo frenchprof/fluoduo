@@ -29,15 +29,8 @@
  *
  * /map still owns the zoom, the legend and the 2D view.
  */
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import MapBody from "@/app/map/MapBody";
-import { SIOS } from "@/content/sios";
-import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
-import { nextSioId, loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
-import StopBookmark from "@/components/StopBookmark";
-import { dueForReview } from "@/lib/reviser";
-import { HOME_HREF } from "@/lib/routes";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
  *  way a hand actually writes print letters). Baseline y=25, x-height 13,
@@ -73,7 +66,6 @@ const BYLINE_STROKES = [
 
 
 export default function HomeDashboard() {
-  const [progress, setProgress] = useState<Progress>(defaultProgress());
   // Armed on mount: nothing pops up by default (Dan, 2026-07-14), so the
   // FluOLinGo brand animation plays on a clear stage right away.
   const [heroPlay, setHeroPlay] = useState(false);
@@ -81,40 +73,15 @@ export default function HomeDashboard() {
   // drop a finished animation's fill state (Dan, 2026-07-14: "the color
   // disappears right after").
   const [inkDone, setInkDone] = useState(false);
-  // The Review button's count — the one destination on Home with a deadline.
-  const [dueCount, setDueCount] = useState(0);
-  // The learner's own word on where they are (Dan, 2 Sep: wandering "should
-  // not force them to resume at that spot"). Null = no word given, compute.
-  const [bookmark, setBookmark] = useState<number | null>(null);
 
   useEffect(() => {
-    // Progress, the due-count and the once-per-session hero flag live in
-    // local/sessionStorage, which cannot be read during render (the site is
-    // statically exported) — this mount effect has to seed that state.
-    // Block-disabled: the rule reports only the first setState it meets, and
-    // which one that is differs between local and CI eslint.
+    // The once-per-session hero flag lives in sessionStorage, which cannot be
+    // read during render (the site is statically exported), so this mount
+    // effect has to seed it. Block-disabled: the rule reports only the first
+    // setState it meets, and which one that is differs between local and CI
+    // eslint.
     /* eslint-disable react-hooks/set-state-in-effect */
-    const refresh = () => {
-      const p = loadProgress();
-      setProgress(p);
-      setDueCount(dueForReview(p, Date.now()).length);
-    };
-    refresh();
-    window.addEventListener("fluolingo:progress-updated", refresh);
-    const readBookmark = () => setBookmark(loadBookmark());
-    readBookmark();
-    window.addEventListener(BOOKMARK_EVENT, readBookmark);
-    // THIS FORWARD IS GONE, AND IT HAD TO GO IN THE SAME CHANGE (12 Sep).
-    // It sent `?unit=N` and `#SIO-0XX` on to /map, which was right while /map
-    // was the map. /map now forwards HERE, so leaving it would have been a
-    // redirect loop: /home?unit=2 -> /map?unit=2 -> /home?unit=2, for ever, on
-    // exactly the printed QR codes it was written to protect.
     //
-    // Nothing is lost. `MapBody` — which this page now renders — reads both
-    // forms itself in its own mount effect: the hash opens that stop, and
-    // ?unit=N scrolls its band into view. The deep links are handled one layer
-    // down instead of being bounced to another page.
-
     // The letter-wave + hand-written byline now runs ~3.5 s (compacted from
     // the original 5.5 s when Dan brought it back, 2026-08-11). Play the
     // full show once per browser session; afterwards render the finished
@@ -131,34 +98,38 @@ export default function HomeDashboard() {
       setHeroPlay(true); // storage blocked → just play
     }
     /* eslint-enable react-hooks/set-state-in-effect */
-    return () => {
-      window.removeEventListener("fluolingo:progress-updated", refresh);
-      window.removeEventListener(BOOKMARK_EVENT, readBookmark);
-    };
   }, []);
 
-  // "Continuer" = the first not-done goal AFTER the furthest « done » (Dan,
-  // 2026-07-08: a learner who marked a later step done continues from there)
-  // — unless the learner has bookmarked a stop, whose word outranks the
-  // computation (Dan, 2 Sep). From state, not loadBookmark(): the first
-  // client render must agree with the prerender.
-  const activeId = nextSioId(progress, bookmark);
-  // The same number the top bar's mark computes, from the same two inputs —
-  // so the well below the hero and the bar can never disagree.
-  const goalNo = nextGoalNumber(progress, bookmark) ?? null;
-  const activeSio = SIOS.find((s) => s.id === activeId);
-  // THE STOP AFTER THIS ONE (Dan, 1 Sep: "add a forward button (= Next
-  // stop)"). Taken from the map's own order — the SIOS array IS the study path
-  // — rather than by adding one to the id. Since 5 Sep the spine happens to be
-  // 1-50 with no gaps and no halves (SIO-045A became SIO-045), so `id + 1`
-  // would in fact resolve today. It still is not used: the SIOS array is the
-  // study path by definition, arithmetic only agrees with it by coincidence,
-  // and the last time the two disagreed — a retired 045 and a half-step at
-  // 45.5 — this line is what kept the forward key correct.
-  // Undefined at the last stop, where the key simply does not render: a
-  // forward key that goes nowhere is worse than no forward key.
-  const afterSio = activeSio ? SIOS[SIOS.indexOf(activeSio) + 1] : undefined;
-  const doneTotal = SIOS.filter((s) => isSioDone(s.id, progress)).length;
+  // THE PROGRESS STATE IS GONE, AND SO IS THE /map FORWARD THAT LIVED BESIDE
+  // IT (12 Sep). The forward sent `?unit=N` and `#SIO-0XX` on to /map, which
+  // was right while /map was the map; /map forwards HERE now, so keeping it
+  // would have been a loop — /home?unit=2 -> /map?unit=2 -> /home?unit=2 — on
+  // exactly the printed QR codes it was written to protect. `MapBody` reads
+  // both forms itself, one layer down.
+
+  // NO STATE LEFT ON THIS PAGE (12 Sep). The hero's control row was the last
+  // thing here that read the learner's progress: `progress`, `bookmark`, the
+  // `activeId` they computed, and the mount effect and two event listeners
+  // that kept them fresh. `MapBody` loads all of it itself — it has to, since
+  // it is also the component `/map` framed — so keeping a second copy here
+  // would be the same two-copies-of-one-fact that let Home and the map drift
+  // apart in the first place. That drift is the whole reason for this branch.
+
+  // WHAT THE HERO STOPPED NEEDING WHEN ITS CONTROL ROW WENT (12 Sep).
+  //
+  //   goalNo     the 🎯 well's number — the map's own 🧑‍🎓 well carries it now,
+  //              and Dan asked for one reading, not two
+  //   afterSio   the ⏭ key's destination
+  //   doneTotal  the ▶ key's first-run halo
+  //
+  // `afterSio`'s note is worth keeping even though the line is gone, because
+  // it records a real bug it once prevented: the stop after this one came
+  // from the SIOS array's own ORDER, never from `id + 1`. The spine happens to
+  // be 1-50 with no gaps today, so the arithmetic would agree — it did not
+  // when there was a retired 045 and a half-step at 45.5, and agreement by
+  // coincidence is what breaks silently when the coincidence ends.
+  //
+  // `activeId` stays: it is what the map's scene highlights.
 
   // THE ACCENT AND THE STOP HANDLER LEFT WITH THE BARE SCENE (12 Sep). Both
   // existed only to be passed to `HomeMap3D`; `MapBody` reads the equipped
@@ -313,202 +284,37 @@ export default function HomeDashboard() {
           (Supersedes the 1 Sep two-row swap; ROW B is the only row left.) */}
 
       {/* ── ROW B · the controls ─────────────────────────────────────────── */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-2 gap-y-2 sm:gap-x-3">
-        {/* THE SWITCH IS GONE (Dan, 7 Sep: "on the home page we are seeing
-            the wrong map. it should be the tightened 2D" + the Enter-the-map
-            CTA). Supersedes 2 Sep's flip-in-place: the postcard is pinned to
-            the tight 2D grid, and 2D/3D is chosen where it matters — on /map,
-            whose PillSwitch (verify25b/c) is untouched. */}
+      {/* ROW B IS GONE — THE WHOLE TRANSPORT ROW (Dan, 2026-09-12).
 
-        {/* THE GOAL COMES DOWN OFF THE BAR, AND SITS IN THE ROW'S LEFT SLOT
-            (Dan, 2026-09-12: "yes i do mean to bring down the editable field
-            to just above the map", then "yes but on the same row as the
-            buttons to the right please").
+          He asked first whether the three keys could go at all: *"is it ok to
+          do without the play, forward and rewind buttons (those functions can
+          be accessed easily and directly elsewhere on this page, i.e. via the
+          map and the editable goalselector field, right?"*, and then, on the
+          one that was not obviously covered: *"Rewind = Revise = ErroRevue ==
+          they are the same thing"*.
 
-            THIS SOFTENS HIS OWN 7 SEP RULING, and only on this page. That day
-            the stop replaced the streak in the TOP BAR — "the stop info (and
-            make that editable) at the top right ... so we free up the space
-            between the play rewind etc buttons at the hero" — and it still
-            rides the other 27 surfaces there, where there is no map to sit
-            above. What changed is that Home now DRAWS the road: the number and
-            the thing it points at belong next to each other, and the top-right
-            corner was the furthest point on the screen from the stop it names.
-            The space between the keys stays free — this sits beside them, not
-            among them.
+          MEASURED BEFORE REMOVING, because two of the three turned out to be
+          WORSE than the map they duplicated. ▶ and ⏭ pointed at
+          `/unit/N#SIO-nnn`, which forwarded to `/home?unit=N#SIO-nnn` — and
+          opened a StopPopup on the page the learner was already standing on.
+          Tapping the glowing stop on the map opens `/sio/[id]`, the full goal
+          page Dan asked for on 7 Sep. So the keys were a redirect to a popup
+          he had already retired, sitting above the control that does it right.
 
-            THE SLOT WAS ALREADY SHAPED FOR IT. This replaces the empty `<div/>`
-            that held the left end of the `justify-between` row, and the wrap
-            note below was written for a well exactly here: at 320px the row
-            wraps and "the well takes the first line and the keys the second".
+          ⏪ went to `/reviser`, which is the ☰'s own 🔄 Revise door: the same
+          page by a second name, which is Dan's ruling above.
 
-            `SiteTopBar` hides its own mark on Home rather than this page
-            drawing a second one — one reading must never appear twice on a
-            screen. It is the SAME `StopBookmark` the bar carries, so typing a
-            number here bookmarks the stop and every other surface hears it
-            through BOOKMARK_EVENT: a second door onto one value, not a copy. */}
-        {goalNo === null ? (
-          <div />
-        ) : (
-          <div className="home-goal">
-            <span aria-hidden className="home-goal-target">🎯</span>
-            <span
-              className="neo-well home-goal-well rounded-xl"
-              title={`Your goal, ${goalNo}/50 — edit the number to bookmark a stop`}
-            >
-              <span className="fluo-mono home-goal-digits">
-                <StopBookmark stopNo={goalNo} totalClassName="hidden" />
-              </span>
-            </span>
-          </div>
-        )}
+          WHAT WENT WITH THEM, SAID PLAINLY rather than discovered later: the
+          due-count badge on ⏪ was the only thing on Home that said how many
+          items were waiting. `verify25` called it "the one deadline on Home"
+          and now records where it went instead of asserting a key that is
+          gone.
 
-        {/* FOUR pillows since Dan's Next-stop key (1 Sep). The FILL is the
-            dopamine role; the depth is the affordance. Rewind sinks to a flat
-            well when nothing is due.
-
-            THE FOURTH KEY COST THE ROW ITS FIT, and this is the repair.
-            Measured: the group is 4 keys + 3 gaps, and the row has 232px at
-            320px wide, 271 at 360 and 300 at 390. At 50px each the group was
-            224px, which left the `1/50` well 8px of a 64px box — it was drawn
-            UNDER the keys at both 320 and 360, and only 390 escaped by 0.3px.
-            Nobody would have caught that from a 390px screenshot.
-            44px below sm (still the 44px touch-target floor) with a 6px gap
-            makes the group 194px, which fits 360.
-
-            AND IT NO LONGER WRAPS AT 320 (Dan, 2026-09-12, sent the wrapped
-            phone back: "i don'T want them on separate lines. you have to
-            squeeze them into the same row"). The earlier note here concluded
-            320 could not hold both and let the row break — the goal well on
-            one line, the keys on the next. Measured, it was short by FIVE
-            pixels: 231px of row against 88 (well) + 8 (gap) + 140 (keys).
-
-            The well gives, not the keys: they are at the touch-target floor
-            and shrinking them trades a wrap for a missed tap. How it gives is
-            `.home-goal` in globals.css — ONE fluid size off `--fs-step`, which
-            is zero on a phone and opens on a desktop, with the padding and gap
-            in `em` so they follow it. No pixel is named here and there is no
-            `sm:` swap to keep in step with anything (Dan, same day: "PLEASE
-            NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"). */}
-        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-          {/* The squeezed counter well (pre-tests' build of Dan's earlier
-              "squeeze the 1/50 in between" instruction) came out at the QC
-              merge: the editable stop rides the TOP BAR now (StopMark), and
-              two writable copies of one bookmark is the drift the single
-              component exists to prevent. */}
-          {/* THE COURSE ENDS; THE FRENCH DOESN'T (Dan, 7 Sep — from the
-              retention read). At 50/50 nextSioId returns undefined and this
-              key used to simply vanish: the app's loudest door closed on the
-              day a learner finished. Diplome is a real ending — LAF1201 is a
-              semester course — so Continue does not pretend there is a 51st
-              goal; it points at revision, which spaced repetition makes the
-              genuine forever-game: words keep coming due for as long as you
-              want to keep them. Same key, same win hue — it is still the
-              journey — with the graduation cap saying why it moved. */}
-          {!activeSio && doneTotal >= SIOS.length && (
-            <Link
-              href="/reviser"
-              aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
-              title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
-              className="neo-key home-key grid place-items-center"
-              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
-            >
-              <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
-            </Link>
-          )}
-          {/* THESE THREE KEYS STAY BARE. DO NOT LABEL THEM (Dan, 2026-09-11).
-              A session working on the first-run tours noticed that ▶ ⏭ ⏪ carry
-              their meaning only in a `title` — which a phone has no hover to
-              show — and put four options to Dan on the real page: as-is, a
-              caption under ▶, ▶ widened into a « Continue » pill, and the same
-              pill naming the goal. His answer: *"i would say to leave it
-              alone. i don't think it is very nice."*
-
-              So the row is a decision, not an oversight, and the reasoning for
-              labelling it is recorded here only so the next session does not
-              spend an afternoon rediscovering it and shipping the pill. The
-              transport bar is the app's character — the same judgement that
-              kept « Unité 3 » and « Débutant » in French: nobody is STUCK, the
-              glow marks the hero, and the home tour's first step says what ▶
-              is for on the one run where a learner needs telling. */}
-          {activeSio && (
-            <Link
-              href={`${HOME_HREF}?unit=${activeSio.unit}#${activeSio.id}`}
-              aria-label={`Continue — ${activeSio.topic}, your goal on the study path`}
-              title={`Continue — « ${activeSio.topic} », your goal on the study path`}
-              /* data-tour: the home tour's first step. NOT a visual change —
-                 this is the anchor, and it replaces `a[title^="Continue"]`,
-                 which hung the tour off a sentence of prose: reword the
-                 tooltip and the step silently points at nothing. verify44
-                 requires every tour step to name a data-tour hook for exactly
-                 that reason. */
-              data-tour="continue"
-              className={`neo-key home-key grid place-items-center${doneTotal === 0 ? " fluo-play-halo" : ""}`}
-              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-                <path d="M6 3.5 L22 13 L6 22.5 Z" fill="var(--key-ink-win)" stroke="var(--key-ink-win)" strokeWidth="2.5" strokeLinejoin="round" />
-              </svg>
-            </Link>
-          )}
-          {/* NEXT STOP — beside Continue, as Dan drew it. DRAWN, not typed:
-              verify25's rule is that a typed ⏭/▶ sits inline with text and
-              reads as "this will speak", while a drawn key in a coloured
-              pillow is navigation. So it is a triangle and a bar — skip-next,
-              not fast-forward, which is what two triangles would say and which
-              Rewind's two triangles already say in mirror.
-
-              It wears the same win hue as Continue but at the flatter end of
-              the gradient: they are the same journey, and the near one has to
-              stay the brighter of the two or the row grows a second hero. */}
-          {afterSio && (
-            <Link
-              href={`${HOME_HREF}?unit=${afterSio.unit}#${afterSio.id}`}
-              aria-label={`Next goal — ${afterSio.topic}`}
-              title={`Next goal — « ${afterSio.topic} »`}
-              className="neo-key home-key grid place-items-center"
-              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-                <path d="M5 4.5 L17.5 13 L5 21.5 Z" fill="var(--key-ink-win)" stroke="var(--key-ink-win)" strokeWidth="2.4" strokeLinejoin="round" />
-                <rect x="19" y="4.5" width="3.2" height="17" rx="1.3" fill="var(--key-ink-win)" />
-              </svg>
-            </Link>
-          )}
-          {dueCount > 0 ? (
-            <Link
-              href="/reviser"
-              aria-label={`Rewind — ${dueCount} to repeat`}
-              title="Rewind — repeat the words you missed"
-              className="neo-key home-key relative grid place-items-center"
-              style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)" }}
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
-                <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
-                <path d="M22.5 6.5 L22.5 19.5 L13.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
-              </svg>
-              <span className="fluo-mono absolute -right-2 -top-2 rounded-full px-1.5 py-0.5 text-[11px] font-bold text-white [font-variant-numeric:tabular-nums]"
-                    style={{ background: "var(--cahier-ink)" }}>
-                {dueCount}
-              </span>
-            </Link>
-          ) : (
-            <span
-              aria-disabled="true"
-              title="Rewind — nothing waiting to be repeated"
-              className="neo-key home-key grid place-items-center"
-            >
-              <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden style={{ opacity: 0.4 }}>
-                <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
-                <path d="M22.5 6.5 L22.5 19.5 L13.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />
-              </svg>
-            </span>
-          )}
-          {/* THE RED ▦ KEY IS GONE (Dan, 7 Sep: "we can now remove the red
-              button above the map") — the ☰ grid menu lists every activity
-              now, so the goal-activities sheet lost its door and retires
-              with it. */}
-        </div>
-      </div>
+          AND THE 🎯 GOAL WELL WENT TOO, because it was the second copy of one
+          number: *"there is no need to have the current stop mentioned twice"*.
+          The surviving copy is the editable 🧑‍🎓 well in the map's own control
+          row — the same `StopBookmark` component, the same value, one reading.
+          `SiteTopBar` still hides its mark on Home for the identical reason. */}
 
       {/* THE « n IN A ROW » COUNTER IS GONE (Dan, 1 Sep: "we don't need that
           actually, please remove it"). It counted stops completed in order from

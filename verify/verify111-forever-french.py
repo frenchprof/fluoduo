@@ -35,14 +35,24 @@ def check(cond, ok_msg, fail_msg):
 if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
-src = open("src/app/HomeDashboard.tsx", encoding="utf-8").read()
+# THE KEY MOVED WITH THE TRANSPORT ROW (12 Sep). Dan removed Home's ▶ ⏭ ⏪;
+# the 🎓 key was a FOURTH key in that row and he did not name it, so it was
+# preserved rather than deleted — in the map's control row, where the progress
+# it depends on is already loaded. The check follows it rather than relaxing:
+# every assertion below is unchanged, only the file it reads.
+src = open("src/app/map/MapBody.tsx", encoding="utf-8").read()
 
-check("!activeSio && doneTotal >= SIOS.length" in src,
+# `!activeSio &&` is gone from the guard because the key no longer shares a
+# slot with Continue — Continue is retired, so there is nothing to yield to,
+# and `doneTotal >= SIOS.length` IS the condition on its own. What the
+# assertion protects is unchanged: the key may not appear before all fifty are
+# genuinely done.
+check("doneTotal >= SIOS.length" in src,
       "the forever key fires only when all fifty are genuinely done",
       "the end-of-course guard is gone or loosened — either the key vanished "
       "again at 50/50, or a data fault could congratulate a fresh learner")
 
-m = re.search(r"!activeSio && doneTotal >= SIOS\.length[\s\S]{0,900}?</Link>", src)
+m = re.search(r"doneTotal >= SIOS\.length[\s\S]{0,900}?</Link>", src)
 block = m.group(0) if m else ""
 check('href="/reviser"' in block,
       "the key points at revision — the forever game has a door",

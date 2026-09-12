@@ -186,13 +186,19 @@ ok("familyOf" in sheet,
    "each row wears its activity's FAMILY colour (verify36)",
    "the sheet does not colour its rows — a stop's activities become one grey list")
 
-# 5 · the keys are the dopamine roles, and Rewind sinks when nothing is due.
-# (--dopa-reward left with the ▦ key, 7 Sep — verify32 pins its absence.)
-for role in ("--dopa-win", "--dopa-focus"):
-    ok(role in home, f"a key carries {role}", f"no key carries {role}")
-ok('aria-disabled="true"' in home,
-   "Rewind is flat and inert when nothing is waiting",
-   "Rewind offers a press with nothing behind it")
+# 5 · THE KEY ROW IS RETIRED (Dan, 2026-09-12: *"is it ok to do without the
+#     play, forward and rewind buttons"*, then *"Rewind = Revise = ErroRevue ==
+#     they are the same thing"*). `--dopa-focus` and the disabled-Rewind well
+#     went with ⏪; `--dopa-win` survives on the 🎓 end-of-course key, a fourth
+#     key Dan did not name, which moved into the map's control row.
+#
+#     KEPT AS AN ASSERTION RATHER THAN DELETED, because the rule it encodes —
+#     a key wears the dopamine role that means what it does — is still live for
+#     the one key that is left. verify32 pins the reward ink's absence.
+mapbody = strip_comments(read("src/app/map/MapBody.tsx"))
+ok("--dopa-win" in mapbody,
+   "the surviving key carries --dopa-win",
+   "the 🎓 end-of-course key lost its win role — or it is gone, which verify111 reports")
 
 # 6 · it must FIT a phone. The draft sizes the phone down on purpose; a row
 #     that overflows is the exact failure Dan called out on 21 Aug ("must not
@@ -216,11 +222,15 @@ ok('aria-disabled="true"' in home,
 #     could only ever see how the size was typed; what matters is that the
 #     floor is a floor and the growth is fluid. Both halves are asserted here,
 #     and `verify106-fluidtype` owns the wider ban.
-keys = re.findall(r'className=\{?[`"][^`"]*\bhome-key\b[^`"]*[`"]', home)
-ok(len(keys) >= 3,
-   f"the {len(keys)} keys take their size from .home-key, not from a pixel",
-   "the keys no longer carry .home-key — a hard-coded size has come back")
-ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
+#     ONE KEY NOW, NOT FOUR — the row went on 12 Sep and the 🎓 key carries
+#     `.home-key` in the map's control row. The rule is unchanged and still
+#     load-bearing, so the count moves from ">= 3" to ">= 1" and the file it is
+#     read from moves with the key.
+keys = re.findall(r'className=\{?[`"][^`"]*\bhome-key\b[^`"]*[`"]', home + mapbody)
+ok(len(keys) >= 1,
+   f"the {len(keys)} key(s) take their size from .home-key, not from a pixel",
+   "nothing carries .home-key — a hard-coded size has come back, or the 🎓 key is gone")
+ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home + mapbody),
    "no key names its own pixel size",
    "a key is back to a literal h-[NNpx] w-[NNpx]")
 rule = re.search(r"\.home-key\s*\{[^}]*\}", css or "", re.S)

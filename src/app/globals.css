@@ -769,56 +769,6 @@ html, body { overscroll-behavior-x: none; }
    counters at 28px. 600 holds the letterforms and gains the presence. */
 .fluo-band-hand { font-family: var(--font-fluohand-stack); font-weight: 600; letter-spacing: 0; }
 
-/* THE MAP'S LEGEND LINE — one line, sized off ITS COLUMN rather than the window
-   (2026-09-12).
-
-   Dan's rule for this sentence is old and unchanged: *"so that it occupies one
-   line maximum"*. What changed is what it is measuring against. It was
-   `text-[clamp(10px,4.05vw,19px)]`, tuned in 2026-08 while the map ran in an
-   iframe — there `vw` was the FRAME's width, which was close enough to the
-   column the text had to fit. Home merged the two pages on 12 Sep and the map
-   came out of the frame, so `vw` became the whole window while the column
-   stayed the notebook's content well: at 320px the well is 231px and the
-   sentence measured 310px, scrolling the page sideways by 16px.
-
-   (The Tailwind arbitrary class was not even applying — the line was rendering
-   at the inherited 16px — which is why the old number could not simply be
-   re-tuned. A named rule here also cannot be shadowed by the fluid-type ramp
-   below, which redefines `text-[NNpx]` classes.)
-
-   `cqw` IS THE POINT: 1cqw is one percent of the CONTAINER, so the sentence
-   fits whatever column it is given — the notebook's well today, something else
-   tomorrow — without anyone re-deriving a viewport fraction. The ceiling is the
-   ramp's own 19px step, so it still grows with the learner's text setting on a
-   desktop; the floor keeps it legible on the narrowest phone. */
-.fluo-map-legendbox {
-  container-type: inline-size;
-  /* THE CEILING GOES THROUGH A VARIABLE, and that is a parser fact rather than
-     a style: written inline as
-       clamp(0.625rem, 4.9cqw, calc(1.1875rem + var(--fs-step) * 1.19))
-     the whole declaration is REJECTED and the line falls back to the inherited
-     16px — which is exactly the bug that sent it off the page. Each piece is
-     valid on its own (measured: the clamp alone resolves, the calc alone
-     resolves); only a calc carrying a var inside clamp's third slot is dropped.
-     Named here, it resolves before clamp ever sees it. */
-  --legend-max: calc(1.1875rem + var(--fs-step) * 1.19);
-}
-/* SCOPED TO ITS BOX SO IT OUTRANKS THE NOTEBOOK'S PROSE THEME. `.cahier-page p`
-   sets `font-size: var(--fs-body)` at specificity (0,1,1); a bare
-   `.fluo-map-legend` is (0,1,0) and LOSES, which is why the line kept rendering
-   at the inherited body size however the clamp was written. Two classes make it
-   (0,2,0), which wins on the class count.
-
-   This is the same fault as the zoom field two screens down in MapBody, and it
-   has the same single cause: the map used to run in an iframe, where
-   `.cahier-page` was outside and could not reach it. On Home it is inside, so
-   every input and every paragraph in the map now inherits the notebook's own
-   form and prose theme unless it says otherwise. Anything else moved into a
-   cahier page should expect the same. */
-.fluo-map-legendbox .fluo-map-legend {
-  white-space: nowrap;
-  font-size: clamp(0.625rem, 4.9cqw, var(--legend-max));
-}
 /* Button labels wear the brand hand in heavy bold (Dan, 5 Sep: "use
    FluoLingo font in heavy bold to disallow the text from overflowing off
    the buttons") — the hand face runs narrower than the body face, so a

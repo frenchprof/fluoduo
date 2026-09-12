@@ -24,6 +24,7 @@
  * and saves it.
  */
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import PillSwitch from "@/components/PillSwitch";
 import Map2DGrid from "@/components/Map2DGrid";
 import HomeMap3D from "@/components/HomeMap3D";
@@ -33,7 +34,7 @@ import StopPopup from "../StopPopup";
 import { usePinchZoom } from "@/lib/usePinchZoom";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
-import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
+import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
 import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
 import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
@@ -152,6 +153,9 @@ export default function MapBody() {
   // first client render agrees with the prerender.
   const activeId = nextSioId(progress, bookmark);
   const accent = equippedAccent(progress);
+  // The whole course done — the 🎓 key's only condition. One line off the
+  // progress this component already holds, rather than a second reader.
+  const doneTotal = SIOS.filter((x) => isSioDone(x.id, progress)).length;
   const openSioObj = openSioId ? SIOS.find((s) => s.id === openSioId) : undefined;
 
   return (
@@ -170,11 +174,20 @@ export default function MapBody() {
           sideways and the sentence ran off the paper (QC, 8 Sep). 4.3vw → 4.05
           and the floor 13px → 10px, which is what it takes to keep Dan's one
           line at that width. A 390px phone loses about half a pixel of face. */}
-      <div className="fluo-map-legendbox">
-        <p className="fluo-band-hand fluo-map-legend leading-tight text-[color:var(--cahier-ink)]">
-          In FluOLinGo-land, there are 50 color-coded goals to conquer:
-        </p>
-      </div>
+      {/* THE SENTENCE IS GONE (Dan, 2026-09-12: *"a single row above the map
+          without any other texts (e.g. delete the « In FluOLinGo land, blah
+          blah »)"*). « In FluOLinGo-land, there are 50 color-coded goals to
+          conquer: » introduced a map that is now the page's whole subject, and
+          it sat between the learner and the only row of controls.
+
+          It is also the litmus test applied to the one line it was written
+          for: remove it and nobody is stopped from finding an answer. The
+          colour key it introduced still sits under the map, where Dan put it
+          on 7 Sep, and says what it means without a preamble.
+
+          The container went with it — `.fluo-map-legendbox` existed only to
+          give that sentence a container query, and its CSS is removed in the
+          same pass rather than left as a rule matching nothing. */}
 
       {/* ONE control row, fixed for both views: switch left, zoom right.
           IT WRAPS ON A NARROW DESK (QC, 8 Sep). Inside the notebook a 320px
@@ -295,6 +308,41 @@ export default function MapBody() {
           </button>
           <span aria-hidden>%</span>
         </span>
+        {/* 🎓 DIPLÔMÉ — THE ONE KEY THAT SURVIVED HOME'S TRANSPORT ROW, and it
+            survived because Dan did not ask for it to go. He named three:
+            *"the play, forward and rewind buttons"*. This was a fourth, and it
+            is not transport at all — it appears ONLY at 50/50, in Continue's
+            place, and it is the course's ending:
+
+              « Diplômé ! All 50 goals done — the course ends; the French
+                doesn't. Revision keeps every word coming back. »
+
+            LAF1201 is a semester course, so there is no 51st goal to point at;
+            it opens revision, which spaced repetition makes the genuine
+            forever-game. Deleting it with the other three would have removed a
+            feature nobody asked about, on the one screen a learner reaches
+            once, which is also the screen where nobody would notice it missing
+            until it was far too late to tell.
+
+            IT LIVES HERE RATHER THAN ON HOME so that it costs no second copy
+            of the learner's progress. Home has no state left at all now —
+            `MapBody` loads progress because it must, being the component
+            `/map` framed — and restoring `progress`, `activeId` and
+            `doneTotal` up there purely to decide this key's visibility would
+            reintroduce exactly the two-copies-of-one-fact drift this branch
+            exists to end. `doneTotal` is one line off progress already in
+            hand. */}
+        {doneTotal >= SIOS.length && (
+          <Link
+            href="/reviser"
+            aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
+            title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
+            className="neo-key home-key grid shrink-0 place-items-center"
+            style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
+          >
+            <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
+          </Link>
+        )}
         </span>
       </div>
 

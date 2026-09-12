@@ -81,9 +81,15 @@ function tourFor(rawPath: string): Tour | null {
         // Introductions », your goal on the study path » — so rewording that
         // sentence would have unhooked the tour with nothing to show for it.
         {
-          selector: '[data-tour="continue"], [data-tour="map-stop"]',
+          // ONE TARGET NOW, NOT TWO (12 Sep). Dan removed Home's ▶ Continue
+          // key — *"is it ok to do without the play, forward and rewind
+          // buttons"* — so the half of this selector that carried the step is
+          // gone, and `[data-tour="map-stop"]` was a fallback nothing rendered.
+          // The anchor is on the map's glowing stop now (Map2DGrid), which is
+          // what the sentence was pointing at all along.
+          selector: '[data-tour="map-stop"]',
           action: "tap",
-          text: "Your next stop — the button and the glowing stop are the same goal.",
+          text: "Your next stop — the glowing one. Tap it to open the goal.",
         },
         // THE MAP TOUR'S ONE SURVIVING STEP (12 Sep). The map moved onto this
         // page, so `/home` matches the branch above and the `/^\/map/` branch

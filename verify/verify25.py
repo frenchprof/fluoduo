@@ -160,72 +160,63 @@ hero = home[sec_start:sec_end]
 check("▶" not in home and "⏸" not in home and "⏹" not in home,
       "no typed transport character on Home — inline, those read as audio",
       "a typed ▶/⏸/⏹ is back on Home, where it reads as 'this will speak'")
-check('d="M6 3.5 L22 13 L6 22.5 Z"' in home,
-      "Continue (né Play, renamed 2026-08-31) is the DRAWN key from Dan's draft",
-      "Home's drawn Continue key is gone; a later session reverted Dan's own design")
-check("🔁" not in home,
-      "no 🔁 on Home — the Review tab carries that destination",
-      "the 🔁 is back, duplicating the Review tab and ÉcouTexte's 'again'")
-
-# The three destinations survive the restyle, whatever shape they wear.
-check('href="/reviser"' in home,
-      "Rewind points at /reviser — repeat your errors",
-      "Rewind lost its /reviser destination")
-check("activeSio.unit}#${activeSio.id}" in home,
-      "Continue opens the current stop (renamed from Play 2026-08-31 — Dan freed the\n      word when the games family became Games, so no two doors share a name)",
-      "Continue no longer opens the current stop")
-check("dueCount > 0" in home,
-      "Rewind carries the due count — the one deadline on Home",
-      "the due badge left Rewind; the deadline is invisible again")
-# The third action changed MEANING on 26 Aug, and that is the point of the
-# rebuild: it opened the stop-less Menu, it now opens the current stop's own
-# activities. "One must first choose the stop before they can access the
-# activity." verify37 holds the rest of that rule.
-# THE SHEET RETIRED WITH ITS KEY (Dan, 7 Sep: "we can now remove the red
-# button above the map" — the ☰ grid menu lists every activity, so the
-# goal-activities sheet lost its door). The claim inverts: neither the
-# sheet nor the stop-less Menu may creep back onto Home.
-check("StopSheet" not in home and "MenuSplash" not in home,
-      "Home opens no activity popup — the ☰ grid is the menu",
-      "an activity popup is back on Home — the red key Dan removed has a ghost")
-
-# 3b · THE KEY ROW STILL FITS A PHONE (1 Sep). Dan's Next-stop key made it four
-# keys, and four 50px keys are 224px against a row that is 232px wide at 320
-# and 271 at 360 — which crushed the `1/50` well from 64px to 0.4px and drew it
-# UNDER the keys. Nothing looked wrong at 390, where it survived by 0.3px, so a
-# screenshot at the usual width would have shipped it.
+# ── THE TRANSPORT ROW IS RETIRED (Dan, 2026-09-12) ────────────────────────
 #
-# Two things repair it and both are pinned, because either alone leaves a width
-# broken: the keys shrink below sm (44px, the touch-target floor), and the row
-# may WRAP so that 320 gives the well its own line instead of losing it.
-keyrow = re.search(r'className="mb-3 flex[^"]*"', home)
-kr = keyrow.group(0) if keyrow else ""
-check("flex-wrap" in kr,
-      "the key row may wrap — at 320px the well takes a line of its own",
-      "the key row cannot wrap; at 320px four keys crush the 1/50 well to nothing and draw over it")
+# *"is it ok to do without the play, forward and rewind buttons (those
+# functions can be accessed easily and directly elsewhere on this page, i.e.
+# via the map and the editable goalselector field, right?"* — and, on the one
+# that was not obviously covered: *"Rewind = Revise = ErroRevue == they are
+# the same thing"*.
+#
+# Five assertions here lost their subject with it, and they are recorded
+# rather than quietly deleted, because each was protecting a real decision and
+# the next session should know it was overruled and not lost:
+#
+#   the DRAWN Continue key (Dan's own draft, 2026-08-31)   gone with the row
+#   Continue opening `#${activeSio.id}`                     gone with the row
+#   Rewind pointing at /reviser                             gone with the row
+#   the due-count badge, "the one deadline on Home"         gone with the row
+#   the four-key row wrapping at 320px                      no row to wrap
+#
+# MEASURED BEFORE REMOVAL, and two of them were worse than what replaced them:
+# Continue and Next pointed at `/unit/N#SIO-nnn`, which forwarded to
+# `/home?unit=N#SIO-nnn` and opened a StopPopup on the page the learner was
+# already standing on. The map's own stops open `/sio/[id]`, the full goal page
+# Dan asked for on 7 Sep.
+#
+# THE DUE COUNT IS A GENUINE LOSS and is flagged as one: nothing on Home says
+# how many items are waiting any more. Dan was told, and ruled the door
+# sufficient. If a badge ever comes back it belongs on the ☰, not here.
+#
+# What still holds is everything below — the keys may not RETURN as typed
+# characters, no popup may creep back, and `.home-key` must stay fluid,
+# because the 🎓 key still wears it.
+
+# `.home-key` OUTLIVED THE ROW. The end-of-course 🎓 key — a FOURTH key Dan did
+# not name, which appears only at 50/50 — moved into the map's control row and
+# still carries the class, so the rule it depends on is still load-bearing.
 # THE SIZE IS NO LONGER TYPED (Dan, 2026-09-12: "PLEASE NEVER EVER HARD CODE
 # FONT SIZES AND BUTTON SIZES !!!"). It was `h-[44px] … sm:h-[58px]` — two fixed
 # ladders — and is now `.home-key`: one fluid side off `--fs-step` with the
-# touch floor pinned by `max(44px, …)`. A phone still measures exactly 44, a
-# desktop lands on ~58, and a learner who turns their browser's text up takes
-# the keys with them, which the old pixels never did. What this check cares
-# about is unchanged — the keys must not outgrow a 360px row — so it asserts
-# the FLOOR and the fluidity rather than how they were spelled.
+# touch floor pinned by `max(44px, …)`.
 _css = open("src/app/globals.css", encoding="utf-8").read()
 _rule = re.search(r"\.home-key\s*\{[^}]*\}", _css, re.S)
 _body = _rule.group(0) if _rule else ""
-check("home-key" in home and "max(44px" in _body.replace(" ", ""),
-      "the keys size from .home-key, with the 44px touch floor pinned by max()",
-      "the keys no longer hold the 44px floor; four of them plus the well do not fit a 360px phone")
+_mapbody = open("src/app/map/MapBody.tsx", encoding="utf-8").read()
+check("home-key" in _mapbody and "max(44px" in _body.replace(" ", ""),
+      "the 🎓 key sizes from .home-key, with the 44px touch floor pinned by max()",
+      "the .home-key rule lost its 44px floor, or nothing wears it any more — if the "
+      "🎓 end-of-course key has gone too, verify111 is the check that says so")
 check("--fs-step" in _body,
-      "and they grow on the type ramp, not at a breakpoint",
-      ".home-key does not read --fs-step — the keys are a fixed size again")
-# Found by break-testing the two clauses above: re-typing ONE key as a literal
-# left them both passing, because four keys still carried `.home-key`. The row
-# only fits if EVERY key is on the fluid side, so say that.
+      "and it grows on the type ramp, not at a breakpoint",
+      ".home-key does not read --fs-step — the key is a fixed size again")
 check(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
       "no key on Home names its own pixel size",
       "a key is back to a literal h-[NNpx] w-[NNpx] — it will not shrink on a 360px phone")
+
+check("StopSheet" not in home and "MenuSplash" not in home,
+      "Home opens no activity popup — the ☰ grid is the menu",
+      "an activity popup is back on Home — the red key Dan removed has a ghost")
 
 # Dan, 2026-08-21 and again 22 Aug: no huge CONTINUER, no full-width CTA.
 # Still true, and still a CI failure rather than a matter of taste.
@@ -247,9 +238,19 @@ check("fluo-btn-lg" not in home and 'className="fluo-btn' not in home,
 # the course fraction here, the streak and its multiplier at their new address —
 # and the streak is additionally asserted GONE from Home, so it cannot quietly
 # come back and be shown twice.
-check("SIOS.length" in home,
+# THE MARK MOVED DOWN ONE ROW (12 Sep). It was the 🎯 well in Home's transport
+# row; that row went, and Dan's instruction was explicit about why there is now
+# only one: *"there is no need to have the current stop mentioned twice"*. The
+# surviving copy is the editable 🧑‍🎓 well in the map's control row — the same
+# `StopBookmark`, the same value — so the assertion follows it. Read in
+# MapBody, and still asserted ABSENT from Home, so the second copy cannot
+# quietly return.
+check("SIOS.length" in _mapbody,
       "the course mark (a figure over fifty) survives the restyle",
-      "the course mark was lost — it is the hero's floor")
+      "the course mark was lost — a learner can no longer see where they are in the fifty")
+check("StopBookmark" not in home,
+      "and Home does not draw a second copy of it",
+      "Home has its own stop reading again — Dan, 12 Sep: the stop is not mentioned twice")
 bar = read("src/components/SiteTopBar.tsx")
 check("progress" in bar and "streak" in bar,
       "the streak is in the top bar, where Dan moved it",
