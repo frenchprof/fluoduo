@@ -135,11 +135,34 @@ when the four user routes became one tabbed page). Taking this side would have
 re-declared a local `TILE` the shared file exists to prevent, and restored a
 `SwatchButton` nothing renders.
 
-**AND THE RATCHET COMES DOWN BEHIND IT — 120 to 86.** `verify270` counts frozen
-box sizes across `src/` and says, in its own pass line, *"…and 34 fewer than the
-budget — lower BUDGET to 86"*. Left at 120 it would have kept 34 slots of slack
-open for the next regression, which is the opposite of what a ratchet is for.
+**THE RATCHET COMES DOWN — 120 to 86 — AND NOT BECAUSE OF THIS SWEEP.**
+`verify270` counts frozen box sizes across `src/` and its own pass line asked
+for the drop: *"…and 34 fewer than the budget — lower BUDGET to 86"*. Left at
+120 it keeps 34 empty slots the next session can fill without failing anything.
+
+**BUT THE REASON FIRST WRITTEN INTO THAT COMMIT WAS WRONG, and the mistake is
+the same shape as the fault the check exists to catch.** `FROZEN_ANY` matches
+`px` **and** `rem` — deliberately, because a bare `4.25rem` is as frozen as
+`68px`: it follows the learner's text size but not the screen. So converting 47
+pixels to rem moves that count by **zero**. Measured both ways: `origin/main`
+**86**, this branch **86**. The 120 was slack from the hour the check was
+written; this sweep did not create the drop, it just noticed it. Corrected in
+the file rather than left standing.
 Break-tested by adding one `w-[99px]` to HeatStrip: **FAIL, 87 up from 86**.
+
+**AND THE CONTROLS IN THIS DIFF WERE MEASURED, not assumed.** `rem` is not
+`--fs-step`, so a box written in rem still cannot grow with the screen. The one
+site here with a documented clipping history is the map's zoom well, widened
+52→68px on 8 Sep after a desktop read « 00 ». Driven at both widths on the
+built app:
+
+    phone    font 12px      box 68px   scrollWidth 68 = clientWidth 68   no clip
+    desktop  font 16.32px   box 68px   scrollWidth 68 = clientWidth 68   no clip
+
+The type ramps 36% and « 200 », the widest value the field can hold, still
+fits. So no control in this diff needs the ramped form today, and none was
+changed to it — widening the sweep on a guess is what the rule's own text warns
+against.
 
 Gate: **134 checks green**, `tsc --noEmit` clean, eslint clean on all 19
 touched files, both builds (closed and `NEXT_PUBLIC_OPEN_APP=1`) clean.

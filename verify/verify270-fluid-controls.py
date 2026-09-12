@@ -123,11 +123,17 @@ ok(all("--fs-step" in s for s in sized),
 # Counted over the whole of src/, comments stripped. Lower it when you fix one;
 # never raise it. It is a COUNT and not a list of places on purpose: a list
 # invites the next session to append rather than to fix.
-# 120 -> 86 on 2026-09-12: the size sweep converted 47 geometric pixel
-# spellings across 19 files to rem, so the bar comes down behind it. What is
-# left is deliberate — hairline gaps (2-3px), ToolSummon's insets from the
-# SCREEN edge, HomePrintSheet's paper sizes, and ProfileContent, which the
-# user-pages lane is rewriting.
+# 120 -> 86 on 2026-09-12, and NOT because anything was fixed that day. The
+# real count has been 86 on both main and the branch that lowered this: 120 was
+# slack from the hour this check was written, and 34 empty slots is 34 frozen
+# boxes the next session can add without failing anything.
+#
+# THE TRAP THAT ALMOST WENT IN AS THE REASON, recorded because it is the same
+# shape as the fault the check is about. FROZEN_ANY matches `px` AND `rem`, on
+# purpose — a bare `4.25rem` is as frozen as `68px`; it follows the learner's
+# text size but not the screen. So a sweep converting px to rem moves this
+# number by ZERO, and the branch that did 47 of them read the drop from 120 as
+# its own work. Measured: origin/main 86, that branch 86.
 BUDGET = 86
 
 total = 0
