@@ -83,6 +83,61 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
+## 12 Sep — the last of the geometry joins the ramp (this session, branch, NOT merged)
+
+Dan, on a goal-card row that nailed a tile to a pixel: ***"PLEASE NEVER EVER
+HARD CODE FONT SIZES AND BUTTON SIZES !!!"*** — then, once the Home keys were
+done, *"do the home keys first, then all the rest pls"*, *"just take it all"*,
+and *"continue with the rest"*. This is **the rest**.
+
+**THE HOLE THE 5 SEP RAMP LEFT.** `globals.css` rewrites every `text-[NNpx]`
+onto `--fs-step`, so type follows the screen and the learner's own browser
+size. **Nothing does that for `h-[NNpx]`, `w-[NNpx]`, `max-w-[NNpx]` and their
+kin** — a box that holds growing text but cannot grow itself. Concretely, on a
+desktop where the step opens to 0.36rem:
+
+    SayIt's mic button      h-[76px]  frozen   ·  the 🎤 inside it grows ~a third
+    the map's zoom well     w-[68px]  frozen   ·  "100" inside it grows likewise
+    SayIt's session map     max-w-[290px] frozen, the marks inside it not
+
+**THE FIX IS THE SAME ARITHMETIC EVERY TIME AND CHANGES NOTHING ON A PHONE.**
+`--fs-step` is zero at phone width, and `1rem` is 16px, so `76px` written as
+`4.75rem` renders the identical 76px there and grows with the root size
+anywhere the learner has raised it. **47 spellings across 19 files**, the
+largest being NumBus (41 of them, its whole scene) — proved not to have torn by
+screenshotting the built game before and after and diffing the pixels, against
+a CONTROL: the same build twice differs from itself by 0.248%, more than this
+change differs at 0.241%.
+
+**WHAT DELIBERATELY STAYS A PIXEL, so the next sweep does not "finish" it.**
+
+    gap-[2px] / gap-[3px]        hairlines between dots; a ramped hairline is a gap
+    ToolSummon bottom/right      insets from the SCREEN edge, not from type
+    HomePrintSheet w-[82px]      paper — the AGENTS.md print exemption
+    ProfileContent (12 sizes)    the user-pages lane is rewriting this file
+    familyTile / MenuGrid        the two hits are inside COMMENTS, quoting the old class
+
+**MAIN HAD ALREADY TAKEN THE FIRST HALF**, which is why this entry is shorter
+than the work. Dan asked the two lanes to share (*"i prefer sharing so we can
+move faster as a team"*); the subdomains lane landed `.home-key`, `.fluo-tap`,
+`.fluo-row`, `.fluo-row-tall`, `.fluo-switch`, `.fluo-fab`, `.fluo-measure`,
+the Home goal well and the three retargeted checks under #319 and #322.
+Diffing this branch against main after merging found **12 of its 31 files now
+identical** — the AGENTS.md warning working as written ("is any of it still
+mine?"). What is left is the 19 above and nothing else.
+
+**THE MERGE ITSELF HAD TWO CONFLICTS AND BOTH RESOLVED TO MAIN**, which is
+worth recording because the usual answer is "keep both sides". Main had already
+folded this branch's `.fluo-row-tall` into `components/familyTile.ts` (the
+shared TILE the goal card and the ☰ now both read) and this branch's
+`.fluo-tap` into `components/AccentColours.tsx` (where `SwatchButton` moved
+when the four user routes became one tabbed page). Taking this side would have
+re-declared a local `TILE` the shared file exists to prevent, and restored a
+`SwatchButton` nothing renders.
+
+Gate: **134 checks green**, `tsc --noEmit` clean, eslint clean on all 19
+touched files, both builds (closed and `NEXT_PUBLIC_OPEN_APP=1`) clean.
+
 ## 12 Sep — the goal comes down onto Home, and the byline hangs off the heading
 
 Dan, over a marked-up screen of Home with three things ringed. **He kept 1 and
