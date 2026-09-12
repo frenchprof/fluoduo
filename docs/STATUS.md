@@ -99,11 +99,52 @@ about, **on the one screen a learner reaches once**, where nobody would notice
 until far too late. It moved into the map's control row, where the progress it
 needs is already loaded. Driven: absent at 0/50, present at 50/50.
 
-**THE DUE COUNT IS A REAL LOSS, recorded rather than buried.** ⏪ carried a badge
-of how many items were waiting; `verify25` called it *"the one deadline on
-Home"*. The DOOR is covered — ☰ → 🔄 Revise is the same page, which is Dan's
-ruling — but the NUMBER now appears nowhere on Home. He was told. If it returns,
-the ☰ is where it belongs.
+**AND THE 🎓 WENT TOO, an hour later, on Dan's better argument.** It was
+preserved as a fourth key he had not named; he then said what settles it:
+*"we already removed the continue button so there is no need to replace it
+with anything"*. The 🎓 existed for one stated reason from 7 Sep — at 50/50
+`nextSioId` returns undefined, so Continue VANISHED on the day a learner
+finished the course and the 🎓 stood in the hole. **No Continue, no hole.**
+`verify111-forever-french.py` is retired and unwired, `.home-key` and three
+ramp rules went with it — the 🎓 glyph was their last user, and `verify106`
+fails a ramp rule that matches nothing.
+
+**THE DUE COUNT WAS NOT LOST AFTER ALL, AND SAYING IT WAS WAS A MISTAKE MADE
+TWICE.** `SiteTopBar` has carried it on the ☰ since the bottom bar was removed
+on 6 Sep — a pill reading « 7 », announced as "Navigation — 7 to revise". It
+was reported here and to Dan as gone with ⏪, from reading the diff rather than
+opening the app. **Driven, with seven real deck items seeded overdue, the badge
+was there the whole time.**
+
+What was really wrong is what Dan then named: ***"THE THING WHEN I OPEN THE
+MENU I WILL BE WONDERING WHERE THAT NUMBER FALLS UNDER AND IT WAS NOT
+SHOWN"***. The ☰ said something was waiting and not WHAT, and opening the menu
+answered nothing — twenty tiles, none carrying the number. **A badge that
+raises a question its own menu cannot answer is worse than no badge.** The
+count is on the ❌ ErroReview tile now, in the same `--dopa-streak` pill, same
+radius, same corner: the first cut used `--dopa-focus` blue against the bar's
+pink, and two colours make one number read as two counts — caught by putting
+the two on screen together, not by reading the diff.
+
+**IT COUNTS WORDS, NOT GOALS**, which is worth writing down because it was
+asked: every practised item carries a spaced-repetition timer and
+`dueForReview` returns those whose timer has elapsed (`p.itemSrs[id].due <=
+now`). And it goes on the DOOR, never on `/reviser` itself — the 1 Sep counting
+rule again: on the page the words are in front of you and the list counts
+itself.
+
+**A NOTE FOR THE NEXT SESSION THAT PROBES THIS:** `dueForReview` filters
+against `allReviewItems()`, so an invented item id counts as zero. The first
+probe seeded `seed-1…7`, measured a badge of 0, and that looked exactly like
+the badge being absent.
+
+**WHAT ⏪ ACTUALLY TOOK WITH IT: its own pill, and nothing else.** `verify25`
+called that badge *"the one deadline on Home"*, which is what made losing it
+sound serious — and the phrase was already out of date when it was read. The
+door is covered (☰ → 🔄 Revise is the same page, Dan's ruling) and so is the
+number, on the ☰ and now on the tile. The lesson is the one above: **a claim
+about what a screen shows has to be measured on the screen**, and this file
+carried the wrong claim for an hour because it was reasoned from a diff.
 
 **AND THE ROW WAS THE LAST THING ON HOME THAT READ PROGRESS.** `HomeDashboard`
 holds no state at all now: `MapBody` loads progress, the bookmark and the view
