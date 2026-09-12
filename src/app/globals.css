@@ -862,7 +862,14 @@ html, body { overscroll-behavior-x: none; }
  * compact but lets the box breathe when the metrics need 31px. */
 .cahier-answer {
   font-family: var(--font-body-stack) !important;
-  font-size: 0.92rem !important;
+  /* ON THE RAMP like everything else (Dan, 2026-09-11: *"for font sizes,
+     don't use absolute hard coded font sizes, we want adaptive ones to the
+     screen size"*). This was a flat 0.92rem: it honoured a learner's browser
+     text setting but ignored the screen, so on a desktop the box a learner
+     types their French into stayed at phone size while the question above it
+     had grown. Same multiplier convention as the ramp block: the size in rem
+     is the multiplier. */
+  font-size: calc(0.92rem + var(--fs-step) * 0.92) !important;
   line-height: 1.2 !important;
   padding: 0.3rem 0.5rem !important;
   min-height: 30px !important;

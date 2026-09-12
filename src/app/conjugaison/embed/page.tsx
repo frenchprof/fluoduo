@@ -39,6 +39,7 @@ import { useAuthUser } from "@/lib/firebase/auth";
 import { REQUIRE_SIGN_IN } from "@/lib/authConfig";
 import DrillShell, { type DrillFinish } from "@/components/DrillShell";
 import WordBank from "@/components/WordBank";
+import GapField from "@/components/GapField";
 import { CONJ_GROUPS, PERSONS, VERBS, conjSpoken, type ConjVerb } from "@/content/conjugaison";
 import { lessonVerbs } from "@/content/lessonVerbs";
 import { addressSearch } from "@/lib/addressWindow";
@@ -238,25 +239,24 @@ export default function ConjugaisonPage() {
             <p className="text-center text-xs font-bold text-[color:var(--cahier-ink-soft)]">
               🔤 <span lang="fr">{cell.v.inf}</span> · {cell.v.en}
             </p>
+            {/* THE GAP SITS BESIDE ITS PRONOUN, where the form goes — not on
+                a line of its own (Dan, 2026-09-11). This drill had the same
+                pair GramMarathon had: a dead 4ch rule after « je », and a
+                live 600px input below it. */}
             <p lang="fr" className="mt-3 text-center text-2xl font-black text-[color:var(--cahier-ink)]">
               {PERSONS[cell.i]}{" "}
-              <span className="inline-block min-w-[4ch] border-b-2 border-[color:var(--cahier-ink)] px-1 text-center text-[color:var(--cahier-ink-soft)]">
-                {result === null ? " " : form}
-              </span>
-            </p>
-            <div className="mt-6">
-              <input
-                lang="fr"
+              <GapField
+                answer={form}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={setValue}
                 disabled={result !== null}
-                placeholder="the verb form…"
-                className={`cahier-answer hidden w-full sm:block ${result === null ? "" : result ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+                state={result === null ? "idle" : result ? "right" : "wrong"}
+                reveal={result === null ? null : form}
               />
-              <div className="sm:hidden">
-                <WordBank answer={form} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
-              </div>
+            </p>
+            <div className="mt-6 sm:hidden">
+              <WordBank answer={form} pool={bankPool} value={value} onChange={setValue}
+                        disabled={result !== null} builtInGap />
             </div>
             <div className="mt-5 text-center">
               <button
