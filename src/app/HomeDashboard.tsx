@@ -255,7 +255,11 @@ export default function HomeDashboard() {
           role="img"
           aria-label="par Dr Chan"
           viewBox="0 0 134 36"
-          className={`fluo-byline mx-auto mt-1 h-4 w-auto${heroPlay ? " is-play" : ""}`}
+          /* Centred, the byline lands under the brand pill, whose ink overshoots
+             the letters by 0.18em and paints over anything beneath. So it sits
+             a step lower and above the pill in stacking order — measured at
+             1440px: byline y=138, pill bottom y=143 before this. */
+          className={`fluo-byline relative z-[1] mx-auto mt-2 h-4 w-auto${heroPlay ? " is-play" : ""}`}
         >
           <g
             transform="translate(4 0) skewX(-8)"
