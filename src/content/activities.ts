@@ -498,6 +498,25 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   // whose `active` is its view key and already resolves) and `dice` is Diced
   // Practice. Both were passing keys with no entry, so both drew no spine.
   deck: "goals", dice: "practice",
+  // FAVOURITES (2026-09-12) — the pages a learner starred. Without an entry
+  // HERE it would draw no spine, no family ink and — because CahierShell
+  // renders the band only `{famKey && …}` — no heading band either, which is
+  // exactly the three-faults-in-one the comment above this block describes.
+  // Found by driving the built page.
+  //
+  // YELLOW, TO MATCH ITS DOOR. It was `user` for a few hours, on the reasoning
+  // that a learner's own shelf belongs with their own things. Dan put the tile
+  // in the yellow LESSON strip (*"replacing Map"*) and then ruled on the
+  // mismatch it created — *"make the favourites page yellow to match its
+  // door"*. So the rule is the plain one: THE STRIP A DOOR SITS IN IS THE
+  // COLOUR THE PAGE WEARS. A learner taps a yellow tile and a yellow page
+  // opens; nobody has to know that a family is also a data structure.
+  //
+  // This does NOT make Favourites an eighth family or a Lesson activity — the
+  // ☰ menu is seven families with fixed membership (9 Sep) and this is not in
+  // `ACTIVITIES` at all. It borrows Lesson's pen, the way `map` and `guide`
+  // two lines up do.
+  favourites: "goals",
   games: "svplay", svplay: "svplay",
   // THE THREE ROUTES WHOSE TILE WAS FOLDED AWAY (Dan, 2026-09-07: pages never
   // lose their coloured strip at the top). NumBus and NumBourse were parked
