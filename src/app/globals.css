@@ -2083,12 +2083,29 @@ h3.cahier-display { font-size: var(--fs-h3); }
  */
 .fluo-hero-art {
   display: block;
-  /* BIGGER (Dan, 2026-09-12: *"Can the word in the sky be bigger than this"*).
-     96vw on a phone — the art's own transparent margins keep it off both edges
-     — and a ceiling in rem so it stops growing before it outruns the sky on a
-     wide monitor. The crop below is in percentages of this width, so raising it
-     scales the whole framing rather than needing new numbers. */
-  width: min(96vw, 74rem);
+  /* EDGE TO EDGE (Dan, 2026-09-12, on a wide window: *"i need the flypast to
+     cover the full width of the screen. not stop at the quarter mark of the
+     screen width. is that possible?"*).
+
+     It was `min(96vw, 74rem)`, and the rem ceiling is what he was looking at:
+     1184px NO MATTER HOW WIDE THE SCREEN IS. Nothing in the animation can paint
+     outside its own <img>, so on a 2000px window the artwork was a strip down
+     the middle covering 59% of it — the word ran out of CANVAS a quarter of the
+     way in from each edge, long before it ran out of screen. No amount of zoom
+     fixes that; the element itself has to be as wide as the view.
+
+     The push-in dropped 1.8 -> 1.5 in the same change so the SETTLED name is the
+     size he already approved (50.2% of a 1440 screen against 49.6% before) — and
+     it is now that same fraction at every width, where before it was half the
+     screen at 1440 and barely a third on his own wider window.
+
+     THE CEILING IS IN vh NOW, BECAUSE THAT IS WHAT IT WAS ALWAYS FOR: stopping
+     the art outgrowing the SKY, which is a height. The name stands
+     0.105 x 1.5 x (width / 1.83) tall and the sky is 32.48dvh, so keeping the
+     name inside 85% of the sky gives width <= 3.2dvh x 100. It binds only on a
+     window wider than about 3.2 times its height — an ultrawide — and there it
+     stops the letters being clipped top and bottom instead of filling the sky. */
+  width: min(100%, 320dvh);
   height: auto;
   image-rendering: auto;
   /* THE ART IS MOSTLY EMPTY, AND THE EMPTY PART IS THE POINT: the words sit
