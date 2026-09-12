@@ -7,7 +7,7 @@
  * every line and on the whole dialogue.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { logEvent } from "@/lib/firebase/usage";
 // Cloud (Google Neural2) speech with automatic browser fallback — the
 // exercises sound identical on every device (Dan, 2026-07-18).
@@ -37,7 +37,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
   }, [bank.id]);
   const lang = "fr-FR";
   // Deterministic on the server; randomised in the mount effect (SSR-safe).
-  const [scenario, setScenario] = useState<{ instructionEn: string; headline: string; openingFr?: string } | null>(null);
+  const [scenario, setScenario] = useState<ReturnType<ComposeBank["newScenario"]> | null>(null);
   const [line, setLine] = useState<string[]>([]); // sentence in progress
   const [lines, setLines] = useState<string[]>([]); // committed sentences
   // AI "check my work" pass (aiCheck banks only). The passer-by reads the whole
@@ -55,6 +55,39 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
     // passer-by asks the way out loud before the learner builds a reply.
     if (s.openingFr) speak(s.openingFr, "fr-FR", { gender: "m" });
   }, [bank]);
+
+
+  /* THE LIVE QUESTION IS `prompts[lines.length]` — the index IS the number of
+   * sentences already committed, so the sequence advances on ✔ with no state
+   * of its own and no way for question and answer to fall out of step. A bank
+   * with no `prompts` falls back to its single `openingFr` and behaves exactly
+   * as it always has. */
+  const prompts = scenario?.prompts;
+  const askedAll = !!prompts && lines.length >= prompts.length;
+  const currentPrompt = prompts ? prompts[lines.length]?.ask : scenario?.openingFr;
+  /* THE GROUP THAT ANSWERS THIS QUESTION COMES FIRST. Keeping the original
+   * index alongside each category preserves its colour — `categoryHeaderClass`
+   * is keyed on position in the bank, so reordering without it would repaint
+   * the groups every question and make the page flicker between colours. */
+  const groups = (() => {
+    const all = bank.categories.map((cat, i) => ({ cat, i }));
+    const want = prompts?.[lines.length]?.use;
+    if (!want) return all;
+    const lead = all.filter((g) => g.cat.label === want);
+    return lead.length ? [...lead, ...all.filter((g) => g.cat.label !== want)] : all;
+  })();
+
+  /* Read each question aloud as it arrives. Keyed on the question TEXT rather
+   * than on `lines.length`, so a bank without prompts never re-speaks its one
+   * opening line, and the first question is not spoken twice on mount. */
+  const spokenPrompt = useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (!prompts || !currentPrompt) return;
+    if (spokenPrompt.current === undefined) { spokenPrompt.current = currentPrompt; return; }
+    if (spokenPrompt.current === currentPrompt) return;
+    spokenPrompt.current = currentPrompt;
+    speak(currentPrompt, "fr-FR", { gender: "m" });
+  }, [prompts, currentPrompt]);
 
   const lineText = joinChips(line);
   const dialogueText = [...lines, lineText].filter(Boolean).join(" ");
@@ -199,18 +232,34 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
         />
       )}
 
-      <div className="min-h-[7.5rem] rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
-        {/* The passer-by's question opens the scene — tap to rehear. */}
-        {scenario?.openingFr && (
+      {/* `shrink-0` IS LOad-BEARING. This box is a flex item in a `flex-col`
+          scroller, so without it the browser shrinks it to exactly its
+          `min-h` — 120px — and everything past that paints ON TOP of the chip
+          groups below. Measured on the built app at 430px: the box was 120px
+          tall holding 300px of content, and « ✔ Add the sentence », « 🔊 Speak
+          it all » and « 🚶 The passer-by checks » sat across the first group's
+          chips. It predates the guided questions and got worse with them —
+          committed sentences and the model both live in this box. */}
+      <div className="min-h-[7.5rem] shrink-0 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-2)] p-5">
+        {/* The live question — tap to rehear. On a prompts bank this is the one
+            being answered right now; elsewhere it is the scene's single opener. */}
+        {currentPrompt && !askedAll && (
           <button
             type="button"
             lang="fr"
-            onClick={() => speak(scenario.openingFr!, lang, { gender: "m" })}
+            onClick={() => speak(currentPrompt, lang, { gender: "m" })}
             className="mb-3 flex max-w-full items-start gap-2 rounded-2xl rounded-bl-sm border-2 border-[color:var(--cahier-rule)] bg-white px-4 py-2 text-left text-base leading-snug shadow-sm transition hover:brightness-95"
             title="🔊"
           >
             <span aria-hidden>🧍</span>
-            <span>{scenario.openingFr}</span>
+            <span>
+              {prompts && (
+                <span className="fluo-mono mr-1.5 text-[0.75em] opacity-60">
+                  {lines.length + 1}/{prompts.length}
+                </span>
+              )}
+              {currentPrompt}
+            </span>
           </button>
         )}
         {lines.length > 0 && (
@@ -231,6 +280,29 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
               </li>
             ))}
           </ol>
+        )}
+        {/* THE MODEL, once every question has been answered. A different country
+            from the learner's, so it is a shape to compare against and never an
+            answer to copy — and it arrives AFTER the four sentences, so it
+            cannot be read off instead of composed. SIO-020's can-do ends "…if I
+            can prepare"; this and the questions are that preparation. */}
+        {askedAll && scenario?.model && (
+          <div className="mb-3 rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] p-4">
+            <p className="fluo-mono mb-1.5 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-[color:var(--cahier-ink-soft)]">
+              Compare — {scenario.model.label}
+            </p>
+            <div className="flex items-start gap-2">
+              <button
+                type="button"
+                onClick={() => speak(scenario.model!.text, lang, { gender: "f" })}
+                className="cahier-btn cahier-btn-sm shrink-0"
+                aria-label="Speak the model"
+              >
+                🔊
+              </button>
+              <p lang="fr" className="text-lg leading-relaxed">{scenario.model.text}</p>
+            </div>
+          </div>
         )}
         {line.length === 0 ? (
           lines.length === 0 && (
@@ -300,7 +372,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {bank.categories.map((cat, i) => (
+        {groups.map(({ cat, i }) => (
           <section
             key={cat.label}
             className="overflow-hidden rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white"

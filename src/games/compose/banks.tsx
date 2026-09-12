@@ -62,7 +62,38 @@ export type ComposeBank = {
   /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects.
    *  openingFr, when present, is a persona line that opens the scene (spoken +
    *  shown) so the Composer never starts on a blank sheet (Dan, 2026-07-19). */
-  newScenario(): { instructionEn: string; headline: string; openingFr?: string };
+  newScenario(): {
+    instructionEn: string;
+    headline: string;
+    openingFr?: string;
+    /** ONE QUESTION AT A TIME (Dan, 2026-09-12: *"ComposeIt for Vietnam would
+     *  only make sense for the learner if there were a model reference text on
+     *  another country. Or if the questions were asked one by one!"*).
+     *
+     *  SIO-020's can-do ends *"…if I can prepare"*, and the composer offered
+     *  no preparation at all: a blank sheet, a country, and a pile of chips.
+     *  Asking in turn is the preparation, and it also ENFORCES the four
+     *  elements the competence scores — name, location, language, one cultural
+     *  fact — where a single open instruction merely hoped for them.
+     *
+     *  The live question is `prompts[lines.length]`: the index IS the number of
+     *  sentences already committed, so the sequence advances on ✔ with no state
+     *  machine of its own and no way for the two to fall out of step. A bank
+     *  that omits this behaves exactly as before, from `openingFr`.
+     *
+     *  `use` NAMES THE CHIP GROUP THAT ANSWERS THE QUESTION, and the composer
+     *  floats it to the top. Dan, 2026-09-12: *"IS THE ANSWER GUIDED FOR
+     *  CLUELESS LEARNER? E.G. ARE THERE PHRASES THEY CAN START WITH OR PICK
+     *  FROM"* — the phrases were always there, six groups of them, but nothing
+     *  tied them to the question on screen, so the learner had to work out
+     *  which group was the right one before they could begin. Surfacing it
+     *  needs no extra words: the group simply arrives first. */
+    prompts?: { ask: string; use?: string }[];
+    /** Shown once every prompt is answered — a finished paragraph about a
+     *  DIFFERENT subject from the one the learner was given, so it is a shape
+     *  to compare against and never an answer to copy. */
+    model?: { label: string; text: string };
+  };
 };
 
 /** Fixed chip/header palette by category index (same hues as the original game). */

@@ -49,14 +49,17 @@ const { listComposeBanks } = await jiti.import("@/games/compose/banks");
 const real = Date.now;
 const out = [];
 for (const b of listComposeBanks()) {
-  const lines = new Set();
+  const lines = new Set(); const heads = new Set(); const uses = new Set();
   for (let m = 0; m < 120; m++) {           // covers every pool size in use
     Date.now = () => m * 60000;
     let s; try { s = b.newScenario(); } catch { continue; }
-    for (const t of [s.openingFr, s.headline, s.instructionEn]) if (t) lines.add(t);
+    for (const t of [s.openingFr, s.headline, s.instructionEn, s.model?.text, ...(s.prompts ?? []).map((q) => q.ask)])
+      if (t) lines.add(t);
+    if (s.headline) heads.add(s.headline);
+    for (const q of s.prompts ?? []) if (q.use) uses.add(q.use);
   }
   Date.now = real;
-  out.push({ id: b.id, lines: [...lines],
+  out.push({ id: b.id, lines: [...lines], heads: [...heads], uses: [...uses],
              cats: b.categories.map((c) => ({ label: c.label, phrases: c.phrases })) });
 }
 process.stdout.write(JSON.stringify(out));
@@ -96,23 +99,106 @@ ok(not hits,
    "the app prints French a learner never chose — a generated line, not a chip:\n        "
    + "\n        ".join(hits))
 
+# ── 1b · a generated line starts with a capital ─────────────────────────────
+# Found by driving the finished flow: the model paragraph opened « le Canada ? »
+# because `countryName()` returns the mid-sentence form. Same species as the
+# contraction — the app printing French nobody chose — and invisible in the
+# template, which reads perfectly well.
+lower = [f"{b['id']}: « {l} »" for b in BANKS for l in b["lines"]
+         if l and l[0].islower() and l[0].isalpha()]
+ok(not lower,
+   "every generated line opens with a capital",
+   "a generated line starts lower-case — correct mid-sentence, wrong as the "
+   "first word:\n        " + "\n        ".join(lower))
+
 # ── 2 · a chip list must cover the pool it serves ───────────────────────────
-# Named one by one: a generic "every list covers every pool" cannot be written,
-# because most chip groups are not tied to a rotating pool at all. Add a pair
-# here when a new bank gains one.
+# THE POOLS THAT ARE ONE-PER-COUNTRY. Named one by one: a generic "every list
+# covers every pool" cannot be written, because most chip groups are not tied to
+# a rotating pool at all. Add a pair here when a new bank gains one.
 pays = next((b for b in BANKS if b["id"] == "presenter-pays"), None)
 if pays is None:
     ok(False, "", "the presenter-pays bank is gone — repoint or remove this clause")
 else:
-    habitants = next((c for c in pays["cats"] if c["label"] == "Habitants"), None)
-    # One headline per country: "🇨🇦 le Canada". Count the distinct ones.
-    countries = {l for l in pays["lines"] if re.match(r"^\S+\s", l) and " " in l and "Write" not in l and "Parle" not in l}
-    adjectives = [p for p in (habitants["phrases"] if habitants else []) if not p.startswith("Les habitants")]
-    ok(habitants is not None and len(adjectives) >= len(countries),
-       f"Présenter un pays: {len(adjectives)} nationality chips for {len(countries)} countries",
-       f"Présenter un pays offers {len(countries)} countries but only {len(adjectives)} nationality "
-       f"chips — a learner who draws the odd one out cannot finish « Les habitants sont … ». "
-       f"The list is generated from COUNTRIES; a country was added without its `people`.")
+    # ONE HEADLINE PER COUNTRY — taken from the `headline` field itself, not
+    # guessed at from the shape of every generated line. The first draft did
+    # guess, and the moment the bank started emitting four prompts and a model
+    # it counted 12 countries where there are 6. A heuristic over text that the
+    # content is free to change is not a measurement.
+    countries = set(pays["heads"])
+    by_label = {c["label"]: c["phrases"] for c in pays["cats"]}
+    # group          the frames, which are not pool members    what it lets a learner do
+    ONE_EACH = {
+        "Le pays":   (("C'est",),               "name the country"),
+        "Habitants": (("Les habitants sont",),   "finish « Les habitants sont … »"),
+        "Un fait":   ((),                        "state one fact about it"),
+    }
+    for label, (frames, need) in ONE_EACH.items():
+        pool = [p for p in by_label.get(label, []) if p not in frames]
+        ok(len(pool) >= len(countries),
+           f"Présenter un pays · [{label}]: {len(pool)} chips for {len(countries)} countries — a learner can {need}",
+           f"Présenter un pays · [{label}] carries {len(pool)} chips for {len(countries)} countries: whoever "
+           f"draws the odd one out cannot {need}. These lists are generated from COUNTRIES — a country was "
+           f"added without its field, or the group holds only the frame and none of the words that go in it.")
+
+# ── 2a · the model must be buildable from the chips ─────────────────────────
+# THIS IS THE CLAUSE THAT COUNTS [Situer] AND [Langues], and it does it without
+# a number. Six countries sit on four continents and share languages, so those
+# two pools are smaller than the country list by design and a >= count would be
+# wrong. What is actually required is stronger and simpler to state: the model
+# paragraph the learner is shown must be assemblable, word for word, out of the
+# chips they are given. A model written in French the palette cannot produce is
+# a wall, not a model.
+#
+# It is also the clause that would have caught the two holes driving the app
+# found by hand. Before this patch, « C'est quel pays ? » had no country name
+# to tap and « On y parle quelle langue ? » had « On parle » and then nothing —
+# a learner with no French was stuck on two of the four questions, and the
+# nationality count sailed through green.
+def buildable(text, chips):
+    """Greedy longest-chip match. Returns the first remainder it cannot cover."""
+    norm = lambda t: " ".join(t.replace(".", " ").replace(",", " ").lower().split())
+    rest, pool = norm(text), sorted({norm(c) for c in chips if norm(c)}, key=len, reverse=True)
+    while rest:
+        hit = next((c for c in pool if rest.startswith(c)), None)
+        if not hit:
+            return rest
+        rest = rest[len(hit):].lstrip()
+    return None
+
+models = []
+for b in [x for x in [pays] if x]:
+    chips = [p for c in b["cats"] for p in c["phrases"]]
+    # The models are the generated lines the bank hands back as `model.text`;
+    # they are the only lines with four sentences, so take them from the probe
+    # rather than re-deriving them here.
+    for line in b["lines"]:
+        if line.count(".") < 3:
+            continue
+        models.append((b["id"], line, buildable(line, chips)))
+stuck = [f"{i}: « {l} »\n            first word the chips cannot make: « {r} »"
+         for i, l, r in models if r]
+ok(models and not stuck,
+   f"every model paragraph is buildable from the bank's own chips ({len(models)} models)",
+   ("no model paragraph was found to test — the clause is measuring nothing"
+    if not models else
+    "a model shows the learner French their chips cannot produce:\n        " + "\n        ".join(stuck)))
+
+# ── 2b · a question must point at a group that exists ──────────────────────
+# A prompt's `use` floats one chip group to the top — the whole of the guidance
+# a learner with no French gets. ComposeSolo falls back to the bank's own order
+# when the label matches nothing, so a typo or a renamed group does not throw,
+# does not warn, and does not look different on any single screenshot: the
+# guidance is simply gone. The check that a string equals a label is the only
+# thing standing between a rename and a silently unguided exercise.
+bad_use = [f"{b['id']}: prompt names group « {u} », which does not exist "
+           f"(groups: {', '.join(c['label'] for c in b['cats'])})"
+           for b in BANKS for u in b["uses"]
+           if u not in {c["label"] for c in b["cats"]}]
+guided = sum(len(b["uses"]) for b in BANKS)
+ok(not bad_use,
+   f"every question points at a chip group that exists ({guided} bindings)",
+   "a question steers the learner at a group that is not there — the guidance "
+   "silently falls back to the bank's own order:\n        " + "\n        ".join(bad_use))
 
 # ── 3 · a task may not ask for a step the chips cannot perform ─────────────
 # DERIVED, NOT A LIST OF BANKS. Dan, 2026-09-12: *"what matters is the SIO
@@ -136,7 +222,12 @@ for b in BANKS:
     chips = [p.lower() for c in b["cats"] for p in c["phrases"]]
     tasks = " ".join(b["lines"]).lower()
     for step, (asked_words, chip_words) in STEPS.items():
-        asked = any(w in tasks for w in asked_words)
+        # WORD BOUNDARIES, because "pay" is inside "pays" — French for
+        # *country*. Without them this reported "presenter-pays: the task names
+        # pay and the learner can do it", a cheerful PASS about a step that
+        # bank has never had. A substring match over natural language is a
+        # false green waiting to happen.
+        asked = any(re.search(rf"\b{re.escape(w)}\b", tasks) for w in asked_words)
         if not asked:
             continue
         can = any(w in p for p in chips for w in chip_words)

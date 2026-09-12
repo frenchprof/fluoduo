@@ -6,6 +6,57 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — Présenter un pays asks four questions, and answers become possible (this session, branch, NOT merged)
+
+**Dan: *"ComposeIt for Vietnam would only make sense for the learner if there
+were a model reference text on another country. Or if the questions were asked
+one by one!"*** — then, offered both: ***"the questions followed by a model
+paragraph"***. And, once it was built: ***"IS THE ANSWER GUIDED FOR CLUELESS
+LEARNER? E.G. ARE THERE PHRASES THEY CAN START WITH OR PICK FROM"***
+
+**THE HONEST ANSWER TO THE SECOND QUESTION WAS "NO", AND IT WAS WORSE THAN
+UNGUIDED.** The bank asked « Où est-ce ? On y parle quelle langue ? » and
+offered five chip groups. Driving the built page, forcing the clock to the
+minute that draws le Viêt Nam, two of the three questions turned out to be
+**unanswerable, not merely unhelped**:
+
+    « C'est quel pays ? »            no chip anywhere said « le Viêt Nam »
+    « On y parle quelle langue ? »   [Langues] held « On parle » and then nothing
+
+The nationality-chip count added the same morning passed green throughout,
+because it counted one list and trusted the rest.
+
+**WHAT SHIPS.** Four questions, one per sentence, in the order SIO-020's
+competence lists its elements — name, location, language, one cultural fact.
+`prompts[lines.length]` is the live question, so the index IS the number of
+committed sentences and the two cannot fall out of step; a bank with no
+`prompts` keeps its single opener and behaves exactly as before. Each question
+carries a `use` label that floats the group answering it to the top, keeping
+its original index so the colours do not repaint. Then, and only after all four
+are written, a model paragraph on **a different country** — index + 1, so it
+can never be the learner's own.
+
+**EVERY WORD OF THAT MODEL IS ON A CHIP THE LEARNER WAS GIVEN.** That is the
+new check's strongest clause and it needs no number: `verify440` greedily
+tokenises each of the six models against the bank's own chips and fails on the
+first fragment they cannot build. It is what would have caught both holes above,
+and it counts [Situer] and [Langues] correctly — six countries sit on four
+continents and share languages, so a `>= 6` count on those two would be wrong.
+
+Three new/changed chip groups, all generated from `COUNTRIES` so a country
+cannot arrive without its words: **[Le pays]** (`C'est` + the six names with
+their articles), **[Langues]** (+ the six languages, deduplicated), **[Un fait]**
+(the six facts — the element the competence scores and the bank could not
+state). `verify440` is 10 clauses now; each new one was proved to fail first.
+
+**AND ONE PRE-EXISTING BUG, FOUND ONLY BY DRIVING IT.** The answer box is a flex
+item in a `flex-col` scroller with `min-h-[7.5rem]` and no `shrink-0`, so the
+browser squeezed it to exactly 120px while it held 300px of content: « ✔ Add the
+sentence », « 🔊 Speak it all » and « 🚶 The passer-by checks » painted **on top
+of the first chip group**, on all thirteen ComposeIt banks. One class fixes it;
+the box measures 318px now. It predates this work and got worse with it, since
+the committed sentences and the model both live in that box.
+
 ## 12 Sep — Se saluer becomes a first meeting, because its own deck said so (this session, branch, NOT merged)
 
 **Dan, having watched a ComposeIt lesson: *"I saw one lesson where the absurd
