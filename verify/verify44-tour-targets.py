@@ -103,10 +103,25 @@ for k in keys:
           f'the "{k}" tour names no selector at all — every step is prose, which is '
           f'what a tour looks like after its screen moves and its spotlights all skip')
 
+# AN ANCHOR MAY BE CONDITIONAL, and a grep for the literal cannot see one.
+#
+# Home's map draws fifty stops and only the CURRENT one carries the tour's
+# anchor, because lighting all fifty is not a spotlight:
+#
+#     data-tour={active ? "map-stop" : undefined}
+#
+# There is no `data-tour="map-stop"` anywhere in that file, so the literal
+# search below reported the hook as missing while it renders correctly on
+# screen. Both forms count: the attribute written out, and any string literal
+# inside a `data-tour={…}` expression.
+RENDERED = set(re.findall(r'data-tour="([^"]+)"', SRC))
+for expr in re.findall(r"data-tour=\{([^}]*)\}", SRC):
+    RENDERED.update(re.findall(r"""['"]([^'"]+)['"]""", expr))
+
 missing_hook, missing_id, missing_class = [], [], []
 for sel in selectors:
     for hook in re.findall(r'\[data-tour="([^"]+)"\]', sel):
-        if f'data-tour="{hook}"' not in SRC:
+        if hook not in RENDERED:
             missing_hook.append(f'{sel}  (no data-tour="{hook}" is rendered)')
     for ident in re.findall(r'#([A-Za-z][\w-]*)', sel):
         if f'id="{ident}"' not in SRC and f"id={{'{ident}'}}" not in SRC and f'id={{"{ident}"}}' not in SRC:

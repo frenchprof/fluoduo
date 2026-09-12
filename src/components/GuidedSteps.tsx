@@ -221,10 +221,10 @@ export default function GuidedSteps({ steps, onDone }: { steps: GuidedStep[]; on
           color: "var(--cahier-ink)",
         }}
       >
-        <p className="text-[13px] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink-soft)]">
+        <p className="text-[length:var(--fs-micro)] font-black uppercase tracking-[0.09em] text-[color:var(--cahier-ink-soft)]">
           Step {i + 1} of {steps.length}
         </p>
-        <p className="mt-1 text-[15px] font-bold leading-snug">{step.text}</p>
+        <p className="mt-1 text-[length:var(--fs-small)] font-bold leading-snug">{step.text}</p>
         {!box && (
           <p className="mt-1 text-xs text-[color:var(--cahier-ink-soft)]">Finding it…</p>
         )}
