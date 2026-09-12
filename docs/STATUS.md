@@ -514,7 +514,187 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
-## 12 Sep — the last of the geometry joins the ramp (this session, branch, NOT merged)
+## 12 Sep — the Firestore rules get tested, and three holes close (this session, branch, NOT merged)
+
+Dan asked whether `firestore.rules` was sufficient. **It was not, and nothing
+had ever tested it.** Three attacks a signed-in student could run today were
+ACCEPTED by the rules as they stood; all three are now refused, and the refusal
+is proved by driving the REAL Firestore emulator rather than by reading.
+
+**1 · `mail/{id}` WAS AN OPEN EMAIL RELAY.** `isSignedIn()` plus a shape check
+let any student post a document the Trigger Email extension then SENDS — any
+address, any subject, any body, from this project's sender:
+
+    to:      ["victim@anywhere.com"]
+    message: { subject: "Your NUS result", text: "<anything>" }
+
+The shape check never touched the two things that matter: WHO receives it and
+WHO sent it. **"No writer in this repo" is not a defence** — it is the reason
+this one is dangerous. The oraltest site shares this Firebase project, so every
+fluoduo learner is a signed-in principal against `mail/`, whether or not any
+code here writes to it. Now the recipient must have an invite doc THIS sender
+created.
+
+**2 · INVITE SQUATTING FROZE THE BOOKING FLOW.** `create` only fires on a
+MISSING doc and `update` is `false`, so the first write wins forever. One
+account could write one doc per classmate — `byName` is free text, so it could
+read "Dr Chan" — and no real leader could ever invite those people again. Now
+the creator must hold an actual booking and may not invite themselves.
+
+**3 · LEADERBOARD XP COULD SILENTLY FALL.** `sessions` has carried a monotonic
+guard since it was written ("a client can't quietly rewrite history"); the
+board — the most public surface in the app — had none.
+
+**WHAT THE TESTS ARE, AND WHY THERE ARE TWO HALVES.** `scripts/rules-test/`
+drives the emulator's own rules engine. `attacks.mjs` sends each attack as an
+attacker would; `legit-paths.mjs` exists because **a rule that denies
+everything passes every attack test**, and this repo has twice shipped a rule
+that quietly denied real learners — the `xp <= 100` ceiling that rejected every
+correct answer from anyone on a 7-day streak, and the leaderboard allowlist
+that needed `weekXp`/`weekKey` before a new learner could join the board. Both
+were swallowed by a client-side `catch`. So every change is checked against the
+three awkward shapes that really exist: a brand-new learner, a legacy laf1201
+row with no `xp` and no `term`, and a cohort reset where XP legitimately falls.
+
+    attacks       origin/main  3 FAIL of 6      this branch  6 PASS
+    legit-paths   origin/main  3 PASS of 3      this branch  3 PASS
+
+**THE FIRST VALIDATOR WAS WORTHLESS AND THAT IS THE LESSON.**
+`firebase emulators:exec --only firestore "true"` printed a cheerful start and
+exited 0 — so the rules were broken ON PURPOSE (`allow read: if isSignedIn(`,
+unclosed) and it exited 0 again. **It never compiles the rules.** The emulator's
+`:securityRules` REST endpoint does, and rejects that file naming the line
+(`L408:7 Unexpected 'allow'.`). A validator nobody has seen fail is not a
+validator — the same rule that caught `verify25` passing a re-typed literal.
+
+**AND THE SUITE ITSELF PRODUCED A FALSE PASS ON ITS FIRST OUTING — the same
+fault it exists to catch, one level up.** `legit-paths.mjs` never called
+`clearFirestore()`, and the emulator keeps data for its whole lifetime. So the
+SECOND run of "a brand-new learner creates their first board row" found the row
+the FIRST run had left behind, and Firestore evaluated `allow update` instead of
+`allow create` — the one rule the test exists to exercise. It reported PASS
+against a rules file that DENIES that create. Fixed by clearing the database and
+minting a random uid per run, then break-tested the only way that counts:
+
+    stale rules (no weekXp in the create allowlist)   FAIL  <- was a false PASS
+    this branch's rules                               PASS
+
+Which also settles a claim made to Dan earlier in the day and then doubted: the
+leaderboard create allowlist really does need `weekXp`/`weekKey`. A rules file
+without them denies a new learner's FIRST board row, and the client's `catch`
+deletes it — so the learner never appears. That is the 2026-08-21 fix; anyone
+holding an older copy of this file should not deploy it.
+
+**ONE PREDICTION OF MINE WAS WRONG, recorded so it is not cited later.** I
+expected a deck with no `visibility` to make `collections`' read rule ERROR and
+lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
+The `.get('visibility', 'private')` form is kept because it states the intent,
+but it changes no behaviour and fixes nothing.
+
+**AND THE RULES NOW HAVE A DEPLOY PATH, which is the fault underneath all of
+this.** `firestore.rules` was a file NOTHING deployed — no `firebase.json`, no
+`.firebaserc`, no workflow mentioning Firestore, and `deploy-live` mirrors main
+to Cloudflare Pages, which is the static site and not Firebase at all. The file
+in git was a copy of what someone had pasted into the console, with no way to
+tell whether the two still agreed. **They did not:** the copy in circulation on
+12 Sep was missing the 21 Aug `weekXp`/`weekKey` fix, and a rules file without
+it denies a new learner's FIRST board write, which the client's `catch` then
+deletes — so the learner never appears on the board. Proved, after the
+false-pass fix above, by running the new-learner path against both:
+
+    the copy in circulation   first board row for a NEW learner: DENIED
+    the repo's rules          first board row for a NEW learner: ACCEPTED
+
+`.github/workflows/firestore-rules.yml` closes the gap: tests on `paths:
+['firestore.rules', 'scripts/rules-test/**']`, and a deploy job that is
+`workflow_dispatch` + `deploy: true` only, `needs: test`. **Landing and
+publishing stay two decisions** — the `deploy-live` posture (Dan, 2026-08-31:
+*"we go through fluoduo main"*), and doubly so here, because these rules are
+the only thing between a signed-in student and everyone else's data. Needs a
+one-time `FIREBASE_SERVICE_ACCOUNT` secret; the job fails with instructions
+until it exists. `firebase.json` declares firestore ONLY — no `hosting` block,
+so a bare `firebase deploy` cannot publish a stale copy of the app over
+Cloudflare Pages.
+
+**THE WORKFLOW WOULD HAVE BEEN PERMANENTLY RED ON A GREEN RULES FILE**, and
+only running it exactly as CI runs it caught that. `clearFirestore()` throws
+`CANCELLED` when one suite starts as the previous one's gRPC streams are still
+closing — a HANDOVER race, not a broken emulator. attacks passed 6/6, then
+legit-paths crashed before printing a line and the runner exited 1.
+`clear.mjs` retries, narrowly: a cancelled or unavailable call only, so a
+broken emulator can never become a silent pass — the `settle.mjs` rule, retry a
+handover and never a verdict. Break-tested after: main's rules through the
+runner exit **1** naming the three failures, this branch's exit **0**.
+
+**AND THE WORKFLOW'S FIRST CI RUN WENT RED — THREE MORE FAULTS, none visible
+from a green local run.** Worth the paragraph because all three are the same
+species: a test that measures something other than what it claims to.
+
+1. **"emulator never came up."** The wait was 60 s, a number taken from this
+   container where firebase-tools and the 131 MB emulator JAR were already
+   cached. A COLD runner fetches both before the port ever opens. 240 s now —
+   it costs nothing on a warm run, since it returns the moment the port
+   answers.
+2. **The log said nothing else**, because the spawn used `stdio: "ignore"`. The
+   one question worth asking — downloading, or broken? — had no answer
+   anywhere. The output is buffered now and printed only on a timeout.
+3. **A STALE EMULATOR FAKED A COLD-START PASS.** With the JAR deleted on
+   purpose, the "cold" run reported 9 PASS in **1.4 seconds** — it had
+   connected to an emulator left running by an earlier invocation, enforcing
+   whatever rules that process was last given. `run.mjs` now refuses to start
+   when the port already answers (exit 2, break-tested). A genuine cold start
+   then took 8 s here and passed 9/9.
+
+CI also gets `actions/cache` on `~/.cache/firebase/emulators` and a GLOBAL
+`npm install -g firebase-tools` — global on purpose, because putting it in
+`package.json` would slow `npm ci` in `verify`, which runs on every pull
+request and whose runtime is the thing this repo has spent the month cutting.
+
+**THEN IT WENT RED A SECOND TIME, AND THE FIX FROM ROUND ONE PAID FOR ITSELF
+IMMEDIATELY** — the buffered emulator output named the cause in one line:
+
+    Error: firebase-tools no longer supports Java version before 21.
+
+The workflow pinned **Java 17**. This container has **21**, which is why the
+same script passed locally every time: works-on-my-machine, from the direction
+where the machine is the one that is right and the version was never checked
+before being written down. Pinned to 21, with a comment saying not to lower it.
+
+**AND THAT FAILURE COST FOUR MINUTES TO LEARN, TWICE.** The 240 s wait is for a
+cold runner still downloading; a process that has already EXITED will never
+open the port, so `run.mjs` watches for the child's exit and bails at once.
+Break-tested with a stub that dies the way the real one did: **1.1 s, exit 1,
+and it prints the emulator's own error** — against 240 s of silence before.
+
+**ONE MORE, FOUND WHILE BREAK-TESTING THAT.** `run.mjs` was not killing its own
+emulator: `firebase emulators:start` is a LAUNCHER, and the thing holding the
+port is a Java process it spawns, which survived SIGTERM to the launcher. So a
+second local run found port 8181 still answering and stopped at the port guard
+with exit 2 — a clean tree looking like a broken setup. `detached: true` plus a
+negative-pid signal kills the group. Verified: port free after a run, and two
+back-to-back runs both green.
+
+**ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
+SDK init still had to be shipped. **It already ships** — `client.ts` initialises
+App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.
+What is outstanding is the key and the console, not the client, and that file
+records why enforcement stays off: the legacy laf1201 sites share this project
+and must be attested before enforcing, or the rule denies their writes.
+
+**THE TESTS ARE NOT IN `verify.yml`, deliberately.** The emulator is a ~60 MB cold
+download and ~25 s of boot, and CI was cut from 10.5 minutes to ~7 this month
+because the Actions allowance ran out mid-morning and nothing could merge. They live in their own workflow instead, on the `paths:`
+filters above, so the 99% of pull requests that never touch the rules pay
+nothing.
+
+**STILL OPEN, and NOT fixable in rules — the file says so in its own header:**
+leaderboard XP is self-reported (a learner can publish 10,000,000; only a Cloud
+Function totalling `responses` fixes that), and `feedback` takes a 300 KB
+screenshot with NO sign-in at all while `vlrain_hiscores` is open too. Rules
+cannot rate-limit; App Check is the answer and the header carries a
+ready-to-enable block, switched OFF because enabling it before the apps are
+registered breaks every write instantly.
+## 12 Sep — the last of the geometry joins the ramp (MERGED as #333, QC of #324)
 
 Dan, on a goal-card row that nailed a tile to a pixel: ***"PLEASE NEVER EVER
 HARD CODE FONT SIZES AND BUTTON SIZES !!!"*** — then, once the Home keys were
@@ -9758,6 +9938,107 @@ that it exists, and says why.
 
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
+
+### 12 Sep — pinning a goal stays OUT, deliberately
+
+When the black strip above REDRILLS went (Dan, 11 Sep: *"There is no need for
+the black strip and the words above the black strip"*), it took with it the only
+control in the app that could PIN A GOAL with a date. `setGoal` in
+`progress.ts` has had **zero callers** ever since. Flagged; put to Dan; his
+answer: ***"we leave it out for now."***
+
+**So this is a decision, not an oversight — do not restore it.** The next
+session to run `grep setGoal` will find an exported function nothing calls and
+read it as dead code with a missing button. It is neither.
+
+**Nothing breaks, and this is why it was safe to leave.** Every reader of
+`progress.goal` already handles it being unset, checked one by one:
+
+    goalLine()      returns null when nothing is pinned; the caller renders nothing
+    nextAction()    the goal only RE-ORDERS the re-drill queue — it prefers an
+                    outcome the goal needs — so with none pinned it simply takes
+                    the head of the queue
+    PageBand        takes its own `goal` prop from the shell, not from progress
+
+**The one real loss, stated plainly:** the re-drill queue no longer jumps
+outcomes that sit before a learner's target stop. It drills in plain due order
+instead. `setGoal` and the `goal` field stay in place, and any learner who
+pinned one before 11 Sep keeps it — so bringing the feature back later is a
+button, not a migration.
+
+### 12 Sep — the same instruction answered three times, and what that cost
+
+> **RULED, same day: the colour-review session (`claude/home-goal-and-byline`)
+> OWNS ALL REMAINING SIZE WORK.** Dan, asked how far to take it: *"color review
+> will take it all."* No other lane touches box sizes — not the Home keys, not
+> the 28 lines, not `MapBody`'s zoom readout. If you are not that lane and you
+> find a frozen box, write it down here; do not fix it.
+>
+> **WHAT IS ALREADY DONE, so that lane does not redo it:**
+> - `verify270-fluid-controls.py` is THE check (`verify245` was withdrawn as a
+>   duplicate). Its budget is **116**, lowered from 120 by the four boxes below.
+> - `ProfileContent.tsx` and `AccentColours.tsx` are CLEAN: the FRILLS slots'
+>   `h-[58px]` became `min-h-14`, three px floors became `min-h-10/11/14`, four
+>   raw radii became `rounded`/`rounded-sm`/`rounded-lg`.
+> - `verify270` now PRINTS its breakdown, so the next lane starts from the
+>   split rather than from a lump of 116.
+> - **Still broken and still yours:** `MapBody`'s `w-[68px]` zoom readout reads
+>   « 10( » with the browser's text set large. Its own comment records the same
+>   bug at 52px, hand-widened to 62 then 68. Best single argument for the rule.
+
+
+Dan asked *"is this exactly the same thing as what colour review wants to do"*.
+Near enough, and the honest answer is worse: **THREE lanes answered "PLEASE
+NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES" within hours of each other**,
+none knowing about the others.
+
+    qc/menu-ramp + claude/subdomains   verify270-fluid-controls.py   MERGED to main
+    claude/home-goal-and-byline        the Home keys                  in flight
+    this branch                        verify245-frozen-boxes.py      DUPLICATE
+
+`verify245` and `verify270` were the same check: both stripped comments first,
+both used `verify19b`'s ratchet, both exempted the 44px touch floor, both kept a
+named list of protected files. They even recorded the same trap in the same
+words — a check reading its own documentation as the defect.
+
+**`verify245` IS WITHDRAWN. `verify270` is the check.** This branch was
+restarted from `main` (which had already taken the User-pages work as #314 and
+the sizing ruling as #319) and re-applies only what main does not have:
+
+1. **The four frozen boxes on the profile** — `h-[58px]` on the FRILLS slots
+   (which clipped: 56px box, 60px of words at large browser text), three px
+   floors and four raw radii. `verify270`'s budget drops 120 -> 116.
+2. **`verify270` now prints what its number is made of**, because the count was
+   a lump and Dan's next question was "I NEED TO SEE":
+
+       a fixed box >24px round text or an emoji ...  60   <- the real cleanup (28 lines)
+       a hairline, dot, wheel or tick box <=24px .   23   leave it: it holds no text
+       a min-* floor .............................   21   right shape already, px spelling
+       a max-* reading cap .......................   12   leave it: Dan's own exception
+
+   The target is NOT zero and the check now says so.
+3. **`verify30`'s width rule, rewritten.** It read `"w-full" not in rows or
+   "min-h-[44px] rounded" in PROFILE` — an escape hatch that passed the whole
+   claim as long as that one pixel string survived somewhere in the file, so
+   removing a frozen pixel failed a rule about WIDTH. It now names the two
+   elements that may legitimately span the page (a text input, and the row's
+   disclosure header) and flags anything else, with no size spelling in it.
+   Break-tested with a `w-full` Save button.
+
+**THE ZOOM READOUT IS STILL BROKEN ON MAIN, AND IS THE BEST ARGUMENT FOR THE
+RULE.** `MapBody`'s `w-[68px]` carries a comment recording that at 52px a
+desktop read « 00 » for 100% and « ?00 » for 200%; it was hand-widened to 62
+and then 68. Driven today with the browser's text set large it reads
+**« 10( »** — the same bug, one setting further out. Hand-tuning the pixel
+twice moved it; it never fixed it. Left alone deliberately, so two lanes do not
+edit `MapBody` at once.
+
+**THE LESSON IS ABOUT LANES, NOT ABOUT SIZES.** AGENTS.md already says to look
+at what is in flight before opening a branch. What it does not say is that a
+RULING Dan states in one sentence is heard by every session listening, and each
+will build the check for it. A one-line instruction is the highest-collision
+event there is. Say in STATUS which lane owns a ruling, in the same hour it is
+made.
 
 ### 12 Sep — the rows that had nothing in them are gone
 

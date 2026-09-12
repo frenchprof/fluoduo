@@ -138,9 +138,31 @@ for banned, why in (
 ):
     check(banned not in PROFILE, f"no {banned!r} on the profile ({why})",
           f"{banned!r} is back on the profile — {why}")
-check("w-full" not in PROFILE.split("const ROWS")[-1] or "min-h-[44px] rounded" in PROFILE,
-      "actions are sized to their text, not full-width",
-      "a full-width action button is back")
+# NO SINGLE CONTROL WEARS THE PAGE'S WIDTH (Dan, 5 Sep). Two things below
+# `const ROWS` legitimately do, and the standing rule names both as NOT single
+# controls: a TEXT INPUT (the ILLS note) and the row's own disclosure header,
+# which is a band rather than a button. Anything else that goes `w-full` is the
+# fault.
+#
+# REWRITTEN 12 Sep, and the old spelling is the reason. It read
+# `"w-full" not in ... or "min-h-[44px] rounded" in PROFILE` — an escape hatch
+# that passed the WHOLE rule as long as that one pixel string survived
+# somewhere in the file. When Dan banned frozen box sizes ("PLEASE NEVER EVER
+# HARD CODE FONT SIZES AND BUTTON SIZES") and that floor became `min-h-11`, a
+# rule about WIDTH failed on a change that had nothing to do with width. A
+# check keyed to a pixel value tests the spelling, not the claim.
+rows_src = PROFILE.split("const ROWS")[-1]
+stray = []
+for i, line in enumerate(rows_src.splitlines()):
+    if "w-full" not in line:
+        continue
+    near = "\n".join(rows_src.splitlines()[max(0, i - 8):i + 3])
+    if "<textarea" in near or "aria-expanded" in near or "onClick={() => toggle(" in near:
+        continue
+    stray.append(line.strip()[:70])
+check(not stray, "actions are sized to their text, not full-width",
+      "a full-width action button is back on the profile: "
+      + " / ".join(stray[:2]))
 
 print("\n4 · the model is derived, not invented")
 check('s.skill === skill' in MODEL,
