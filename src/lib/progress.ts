@@ -367,7 +367,7 @@ function finalize(p: Progress): Progress {
       }
       for (const id of fresh) fire({ type: "badge", size: "big", id });
 
-      // The Bouclier held: shields went DOWN while the chain went on — say
+      // The Streak-Freezer held: shields went DOWN while the chain went on — say
       // so, the morning after, as a win ("day N — the chain held"). This is
       // the only moment the shield is ever mentioned around a missed day.
       if ((before.shields ?? 0) > (saved.shields ?? 0) && saved.streak > before.streak) {
@@ -415,7 +415,7 @@ function bumpStreakToday(p: Progress): Progress {
 }
 
 /** The streak decision, PURE so verify116 can execute it (the verify109
- *  pattern). Consecutive day → +1. Exactly ONE missed day with a Bouclier in
+ *  pattern). Consecutive day → +1. Exactly ONE missed day with a Streak-Freezer in
  *  hand → the shield spends itself and the chain holds (+1); the learner is
  *  told the morning after, gain-framed, via the shield toast — never warned
  *  before. Two or more missed days → the chain restarts at 1 and the shield
@@ -485,7 +485,7 @@ export function awardConversationXp(): Progress {
 
 /** Buy a cosmetic with gems and equip it (idempotent; no-op if owned already or
  *  the balance is short). The only thing gems ever buy — never learning. */
-/** Buy a Bouclier IN ADVANCE (never offered after a miss). Caps at
+/** Buy a Streak-Freezer IN ADVANCE (never offered after a miss). Caps at
  *  SHIELD_MAX; a no-op returns state unchanged rather than erroring. */
 export function buyShield(): Progress {
   const p = loadProgress();

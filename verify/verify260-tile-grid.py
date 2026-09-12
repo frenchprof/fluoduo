@@ -101,7 +101,11 @@ ok("--tile-min" in body,
 # grep is a weaker instrument than a browser and is used here only where a
 # browser is not available at all.
 SITES = {
-    "src/app/reglages/page.tsx": "the bottom-bar family picker",
+    # MOVED 12 Sep: /reglages became a redirect to the User page's Settings
+    # tab, so the pick-list itself now lives here. The check follows the
+    # CONTROL, not the URL — pointed at the old file it would have passed
+    # by reading a page that no longer draws anything.
+    "src/app/reglages/SettingsContent.tsx": "the bottom-bar family picker",
     "src/components/GameGallery.tsx": "the games gallery sheet",
     "src/components/ProfileContent.tsx": "Profil's tile sections",
 }
