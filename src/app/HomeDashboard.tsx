@@ -216,7 +216,16 @@ export default function HomeDashboard() {
           padding exactly, and the same padding is added back inside, so the
           heading has not moved a pixel; only the colour behind it reaches
           further. */}
-      <section aria-label="Welcome" className="home-strip -ml-12 -mr-4 -mt-7 mb-2.5 pb-2.5 pl-12 pr-4 pt-3 sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7">
+      {/* FULL WIDTH, TITLE CENTRED (Dan, 12 Sep: *"the Start page to have the
+          banner full width and the hero title to be centralised"*). Measured
+          before at 1440px: the paper ran x=43 w=1354 and the strip x=293
+          w=860 — it bled to the edges of a 768px COLUMN, not of the page,
+          because Home's `max-w-3xl` wrapper sat between the well and the
+          strip. The strip now renders outside that wrapper (the wrapper
+          starts below it, around the keys and the map) so the pull-by-the-
+          well's-padding arithmetic verify82 holds reaches the paper itself;
+          the heading and the byline sit centred on it. */}
+      <section aria-label="Welcome" className="home-strip -ml-12 -mr-4 -mt-7 mb-2.5 pb-2.5 pl-12 pr-4 pt-3 text-center sm:-ml-16 sm:-mr-7 sm:pl-16 sm:pr-7">
         {/* THE HERO IN FLUOLINGO HAND, SIZED TO THE WINDOW (Dan, 1 Sep: "the
             hero to be in FluOLinGo font and resized relative to the width of
             the window"). A clamp, not a breakpoint step: `Bienvenue sur` is
@@ -246,7 +255,11 @@ export default function HomeDashboard() {
           role="img"
           aria-label="par Dr Chan"
           viewBox="0 0 134 36"
-          className={`fluo-byline mt-1 h-4 w-auto${heroPlay ? " is-play" : ""}`}
+          /* Centred, the byline lands under the brand pill, whose ink overshoots
+             the letters by 0.18em and paints over anything beneath. So it sits
+             a step lower and above the pill in stacking order — measured at
+             1440px: byline y=138, pill bottom y=143 before this. */
+          className={`fluo-byline relative z-[1] mx-auto mt-2 h-4 w-auto${heroPlay ? " is-play" : ""}`}
         >
           <g
             transform="translate(4 0) skewX(-8)"
@@ -263,6 +276,9 @@ export default function HomeDashboard() {
         </svg>
       </section>
 
+      {/* THE 3XL COLUMN starts here, not around the strip — see the note on
+          the strip above. Everything below keeps the width it had. */}
+      <div className="mx-auto max-w-3xl">
       {/* ── two wells, three keys ──────────────────────────────────────
           No card. The readings are pressed IN (read-only by construction —
           no hover, nothing to press), the actions stand OUT. That contrast
@@ -464,6 +480,7 @@ export default function HomeDashboard() {
           <HomeMap3D progress={progress} activeId={activeId} accent={accent} onOpenSio={openSio} />
         </div>
       </section>
+      </div>
     </>
   );
 }
