@@ -65,6 +65,24 @@ second use on its first run.
 screens. Doing it means retuning numbers he approved by eye, so the QC left it
 rendering what production renders and put the choice to him with a before/after
 picture of the real app.
+
+**THEN #310 LANDED — MERGED BY DAN HIMSELF**, so main moved past the commit
+that had just been deployed. Recorded because it is the ordinary case, not an
+irregularity: main can move between a deploy firing and anyone reading this,
+which is exactly why the deploy resolves main's tip AT FIRE TIME and why
+"deployed" is confirmed by fetching a marker off the live site rather than by
+reading a workflow's conclusion. `deploy-live` run #57 put `f8bda98` live and
+was verified that way; #310 and #309 go out on the next one.
+
+**#309 QC'd HERE** (the third build). Its two break-tests were re-run in this
+lane rather than taken on trust, because the check it rewrites is the one that
+found 97 dead choices and its whole worth is catching a gate that has been
+loosened: with `isGramMarathonReadyId` swapped for a bare `hasDeck` it fails
+naming 23 stops; with one offered page deleted from `out/` it fails naming that
+page. 0.6s where the build-based version took 98s, and the stale
+`.next/types/validator.ts` hazard the old one carried is gone with the probe
+route that caused it. `jiti` as a direct devDependency is a no-op for
+production installs — Tailwind and ESLint, both dev, already pulled it.
 ## 11 Sep — the third build goes; the chooser asks the app directly (verify lane)
 
 Dan, shown the three `npm run build`s in one run: ***"do the third build one"***.
