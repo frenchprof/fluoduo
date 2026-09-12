@@ -463,7 +463,12 @@ export default function WelcomeBody() {
           than width: an ellipse seen in perspective is flat, so a shorter
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
-      <div className="absolute inset-x-0 bottom-[max(0.75rem,0.5%)] flex flex-col items-center px-6">
+      {/* 1rem, NOT 0.75rem (12 Sep): the coin BEATS to 1.08, and at the top of
+          the beat its bottom edge is ~3px lower than at rest. Anchored at
+          12px it dipped to 8.7px on a tablet, under the 10px a thumb rail
+          needs — and verify151 failed or passed on which tenth of a second
+          it looked. 16px at rest is ~12.7px at full beat, at every shape. */}
+      <div className="absolute inset-x-0 bottom-[max(1rem,0.5%)] flex flex-col items-center px-6">
         {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
             PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
             ENTER"*). The gold ring used to pulse on goal 1, which on a still

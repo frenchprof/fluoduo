@@ -153,6 +153,36 @@ nothing left to test.
 Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
 every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
 
+## 12 Sep, afternoon — the Enter coin clears the edge at full beat (subdomains lane, fix for main's red verify)
+
+**MAIN WENT RED ON #334 (the flypast fix), AND #334 WAS NOT THE CAUSE.**
+`verify151` reported *"tablet 1024x768: Enter sits 9px from the bottom edge —
+needs at least 10px"*, which blocked `deploy-live` for #332 (the music bed) and
+#333 (the size sweep) behind it. Run three times on that same commit locally:
+green, green, green. #334 never touched the coin.
+
+**THE COIN BEATS.** `home-map3d-pulse` scales it to 1.08 every two seconds,
+and at the top of the beat its bottom edge sits ~3px lower than at rest.
+Anchored at `max(0.75rem, 0.5%)` = 12px, measured across a full cycle on the
+built app:
+
+    tablet 1024x768   at rest 12.0   at full beat  8.7
+    desktop 1440x900  at rest 12.0   at full beat  8.7
+    phone 390x844     at rest 12.0   at full beat  9.8
+    phone 320x568     at rest 12.0   at full beat  9.8
+
+Every shape dips under the check's 10px twice a second; which tenth of a
+second the scan happened to look decided red or green. The rule is right — a
+thumb rail meets the coin at its lowest, not its average — so the ANCHOR moved,
+not the check: `max(1rem, 0.5%)`, 16px at rest, 12.7px at full beat on the
+widest shapes. Check green twice in a row after; tsc, eslint, and the seven
+other checks that read /welcome all green.
+
+**FOR THE RECORD, the bug-in-waiting this shape leaves behind:** any check that
+reads the box of an animated element is sampling a phase. `landing-scan`
+could pin `animation-play-state` before it measures; it does not yet, so a
+future beat larger than 1.08 would reopen this with the same message.
+
 ## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
 
 **MERGED: #306** (the guided first run, five activities — ConjugaZone held on
