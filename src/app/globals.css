@@ -3041,23 +3041,15 @@ input.fluo-bookmark:focus,
   .text-\[0\.7rem\] { font-size: calc(0.7rem + var(--fs-step) * 0.70); }
   .text-\[0\.85rem\] { font-size: calc(0.85rem + var(--fs-step) * 0.85); }
   .text-\[0\.87rem\] { font-size: calc(0.87rem + var(--fs-step) * 0.87); }
-  .text-\[0\.9rem\] { font-size: calc(0.9rem + var(--fs-step) * 0.90); }
   .text-\[0\.94rem\] { font-size: calc(0.94rem + var(--fs-step) * 0.94); }
   .text-\[0\.95rem\] { font-size: calc(0.95rem + var(--fs-step) * 0.95); }
-  .text-\[1rem\] { font-size: calc(1rem + var(--fs-step) * 1.00); }
   .text-\[1\.05rem\] { font-size: calc(1.05rem + var(--fs-step) * 1.05); }
-  .text-\[1\.2rem\] { font-size: calc(1.2rem + var(--fs-step) * 1.20); }
   .text-\[1\.3rem\] { font-size: calc(1.3rem + var(--fs-step) * 1.30); }
-  .text-\[1\.35rem\] { font-size: calc(1.35rem + var(--fs-step) * 1.35); }
   .text-\[1\.4rem\] { font-size: calc(1.4rem + var(--fs-step) * 1.40); }
   .text-\[1\.5rem\] { font-size: calc(1.5rem + var(--fs-step) * 1.50); }
   .text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
   .text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
-  .text-\[1\.8rem\] { font-size: calc(1.8rem + var(--fs-step) * 1.80); }
   .text-\[1\.9rem\] { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
-  .text-\[3\.2rem\] { font-size: calc(3.2rem + var(--fs-step) * 3.20); }
-  .text-\[4\.4rem\] { font-size: calc(4.4rem + var(--fs-step) * 4.40); }
-
   /* ── AND THE TEN SIZES A PAGE ASKS FOR AT A BREAKPOINT ──────────────────
      A LIVE FAULT, found by QC on 2026-09-11 and older than the rem block
      that exposed it. Every rule above is `:root .text-[X]` — a pseudo-class
@@ -3089,42 +3081,55 @@ input.fluo-bookmark:focus,
     .sm\:text-\[28px\]   { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
     .sm\:text-\[30px\]   { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
     .sm\:text-\[38px\]   { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
-    .sm\:text-\[1\.2rem\]  { font-size: calc(1.2rem + var(--fs-step) * 1.20); }
     .sm\:text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
-    .sm\:text-\[1\.8rem\]  { font-size: calc(1.8rem + var(--fs-step) * 1.80); }
     .sm\:text-\[1\.9rem\]  { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
-    .sm\:text-\[4\.4rem\]  { font-size: calc(4.4rem + var(--fs-step) * 4.40); }
   }
   @media (max-height: 480px) {
-    .\[\@media\(max-height\:480px\)\]\:text-\[0\.9rem\] { font-size: calc(0.9rem + var(--fs-step) * 0.90); }
-    .\[\@media\(max-height\:480px\)\]\:text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
   }
 
-  /* ── THE ONE SCENE THE RAMP MUST NOT TOUCH ─────────────────────────────
-     The welcome page's three lines of sky type are a COMPOSITION: they are
-     sized by breakpoint against a horizon that is drawn on the page, and the
-     whole point of the page is that nothing crosses it. So they are already
-     adaptive to the screen — by a different mechanism — and the step applied
-     on top of that walks them back down over the road. Measured at 1440x900
-     with the ramp on: the subtitle crossed 10px into the horizon band, which
-     is the fault Dan named the day the page was built.
+  /* ── THE WELCOME HERO IS SIZED BY THE SKY IT STANDS IN ──────────────────
+     Dan, 12 Sep, shown the page at 1440 and 1920 both ways: ***"Yes expand is
+     better"*** — and, in the same breath, that the way in must hold at any
+     screen. Those are one problem, because the hero and the button share one
+     vertical budget.
 
-     This is the `em` exemption's twin, and for the same stated reason: never
-     scale twice. It restates the page's own numbers rather than inventing
-     new ones, so /welcome renders exactly what shipped. The block is LAST in
-     the ramp and each selector carries one class more than the rules above,
-     so it wins on weight rather than on position. */
-  .welcome-sky-type .text-\[1rem\]     { font-size: 1rem; }
-  .welcome-sky-type .text-\[1\.35rem\] { font-size: 1.35rem; }
-  .welcome-sky-type .text-\[3\.2rem\]  { font-size: 3.2rem; }
-  @media (min-width: 40rem) {
-    .welcome-sky-type .sm\:text-\[1\.2rem\] { font-size: 1.2rem; }
-    .welcome-sky-type .sm\:text-\[1\.8rem\] { font-size: 1.8rem; }
-    .welcome-sky-type .sm\:text-\[4\.4rem\] { font-size: 4.4rem; }
-  }
+     WHY THE HERO CAME OFF THE RAMP AND OFF ITS BREAKPOINTS ENTIRELY. The
+     sky on this page is not a style, it is a MEASUREMENT: the road's crest is
+     drawn at SKYLINE_Y x WELCOME_SKY_LIFT of the frame (projection.ts —
+     0.29 x 1.12 = 0.3248), and the one thing this page exists to do is keep
+     the text above it. Sizing that text from the WIDTH, by breakpoint, asks
+     the wrong question — `sm:` is true on a phone held sideways, where there
+     is no height at all. Three shapes proved it:
+
+         1440 x 900   ramped, off the ramp  302 vs 292   10px onto the land
+          320 x 568   as shipped            203 vs 184   19px, live today
+          844 x 390   ramped, no override    59.9px headline, on the road
+
+     The middle one had been live for weeks and no check had ever looked: the
+     scan drove three viewports and a small phone was not one of them.
+
+     SO THE SIZE IS A min() OF THREE THINGS — the height it must fit, the
+     width it must not overflow, and the ramp's own value as a CEILING so a
+     big monitor stops where Dan approved rather than growing forever. The
+     vh term is what makes it hold on a shape nobody thought to test; the
+     ramp term is what makes 1440 land on the size he picked.
+
+     Verified by measuring, not by arithmetic: twelve shapes, phone to
+     ultrawide, in `landing-scan.mjs`. */
+  .fluo-welcome-title  { font-size: min(9.9vh, 13vw,  calc(4.4rem + var(--fs-step) * 4.40)); }
+  .fluo-welcome-sub    { font-size: min(4.2vh,  5.3vw, calc(1.8rem + var(--fs-step) * 1.80)); }
+  .fluo-welcome-course { font-size: min(2.8vh,  3.6vw, calc(1.2rem + var(--fs-step) * 1.20)); }
+
+  /* HELD SIDEWAYS, THE SKY IS ABOUT 110px DEEP. The three sizes above would
+     still fit it, but only just, and the course line has nowhere to go — so
+     the page keeps the shrink it already had, in its own rule rather than as
+     a Tailwind variant. A variant would lose to the classes above, which sit
+     later in this file: that is the same specificity trap that made every
+     `sm:` size dead for a week (#308). */
   @media (max-height: 480px) {
-    .welcome-sky-type .\[\@media\(max-height\:480px\)\]\:text-\[0\.9rem\] { font-size: 0.9rem; }
-    .welcome-sky-type .\[\@media\(max-height\:480px\)\]\:text-\[1\.6rem\] { font-size: 1.6rem; }
+    .fluo-welcome-title  { font-size: 1.6rem; }
+    .fluo-welcome-sub    { font-size: 0.9rem; }
+    .fluo-welcome-course { display: none; }
   }
 }
 

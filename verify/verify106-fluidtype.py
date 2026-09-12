@@ -137,6 +137,30 @@ def tw_class(spelling):
        every character CSS would otherwise read as syntax."""
     return "." + "".join(("\\" + c) if c in ".:()[]@" else c for c in spelling)
 
+# AND THE SAME BOTH WAYS: a ramp rule for a BREAKPOINT spelling the app has
+# stopped writing. The orphan clause above cannot see these — its regex needs a
+# literal "." before "text-", and a variant class reads ".sm\:text-[…]". Five
+# such rules went dead in one commit on 12 Sep when the welcome hero came off
+# its breakpoints, and nothing would have said so.
+#
+# Read by SCANNING, not by a regex over escaped CSS. The first version of this
+# clause was a regex and it silently matched nothing — its character class read
+# `[^\]]` where the selector it had to cross is `4\.4rem`, full of backslashes.
+# It passed the break-test, which is the only reason anyone found out. A
+# selector this punctuated is cheaper to walk than to describe.
+declared_var = set()
+for line in css.splitlines():
+    line = line.strip()
+    if not line.startswith(".") or "\\:text-\\[" not in line:
+        continue
+    sel = line.split("{", 1)[0].strip()          # ".sm\:text-\[4\.4rem\]"
+    declared_var.add(sel[1:].replace("\\", ""))  # "sm:text-[4.4rem]"
+var_orphans = sorted(c for c in declared_var if c not in variants)
+ok(not var_orphans,
+   "no ramp rule points at a breakpoint size the app has stopped using",
+   "these breakpoint ramp rules match nothing any more — delete them: "
+   + ", ".join(var_orphans))
+
 unramped = sorted(v for v in variants if tw_class(v) not in css)
 ok(not unramped,
    f"all {len(variants)} breakpoint text sizes ride the ramp too",
@@ -144,30 +168,39 @@ ok(not unramped,
    "them, so the breakpoint does nothing — give each one a rule in its own "
    "media query in the ramp block: " + ", ".join(unramped))
 
-# ── the one scene that opts OUT, and stays one ─────────────────────────────
-# /welcome's three lines of sky type are sized by breakpoint against a horizon
-# drawn on the page; ramping them walks them down over the road, which is the
-# one thing that page exists not to do. So they opt out — the `em` exemption's
-# twin, never scale twice — and the opt-out is worth one clause here because
-# it is a hole in Dan's rule and a hole widens quietly. verify151 holds the
-# horizon itself; this holds the hole's size.
+# ── the welcome hero is sized by its SKY, and stays that way ──────────────
+# It had an opt-out from the ramp for a day (`welcome-sky-type`), and the
+# opt-out was the wrong shape: it froze three sizes so the hero could not grow
+# at all. Dan then asked for it bigger — *"Yes expand is better"* — and the
+# honest fix was neither the ramp nor a frozen size but a third thing, because
+# what this hero must fit is not the WIDTH of the window, it is the depth of
+# the SKY above a horizon drawn at a fixed fraction of the frame.
 #
-# AND IT STRIPS COMMENTS FIRST, because the note explaining the opt-out names
-# it — this check counted the explanation as a second use on its first run.
-# Third time in this repo a check has read its own documentation as the defect
-# (verify152 and verify153 carry the same line); it is cheaper to strip than
-# to remember not to write the word.
+# So its three sizes are a min() of a vh term, a vw term and the ramp's own
+# value as a ceiling, in globals.css, and they are not Tailwind utilities at
+# all — which is why the clauses above no longer see them and why this one
+# exists. What it holds is the vh term: drop that and the hero is back to being
+# sized by width, which is exactly how a phone held sideways ended up with a
+# 59.9px headline lying on the road.
+#
+# It strips comments first. The note explaining all this names every class it
+# guards, and on its first run the previous version of this clause counted its
+# own explanation as a second use — the third time in this repo a check has
+# read its own documentation as the defect.
 def bare(src):
     return re.sub(r"(?m)^\s*//.*$", "", re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", src))
 
-scene = sum(
-    bare(open(os.path.join(d, f), encoding="utf-8").read()).count("welcome-sky-type")
-    for d, _x, fs in os.walk(SRC) for f in fs if f.endswith((".tsx", ".ts")))
-ok(scene == 1,
-   "the ramp's one opt-out is still the welcome scene alone",
-   f"welcome-sky-type is on {scene} elements — it is an exemption for ONE "
-   "composed scene, not a way off the ramp. A page that needs it needs its "
-   "own reason written down first")
+hero = re.findall(r"\.fluo-welcome-(?:title|sub|course)\s*\{[^}]*\}", bare(css))
+ok(len(hero) >= 3 and all("vh" in r for r in hero[:3]),
+   "the welcome hero is sized from the sky it stands in, not from the window's width",
+   "the welcome hero's sizes have lost their vh term — sized by width alone it "
+   "outgrows the sky on any short screen, which is how a phone held sideways "
+   "got a 59.9px headline lying across the road. See globals.css, "
+   ".fluo-welcome-title")
+ok("welcome-sky-type" not in css,
+   "the frozen opt-out that replaced the ramp is gone",
+   "welcome-sky-type is back — it pins the hero to three fixed sizes, which is "
+   "what Dan reversed when he asked for it expanded")
 
 # ── PAPER: the one place a pixel is the right answer ───────────────
 # The ramp adapts type to the VIEWPORT. A printed page has no viewport: the
