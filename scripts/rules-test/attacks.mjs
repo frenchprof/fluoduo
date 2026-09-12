@@ -17,6 +17,23 @@ const env = await initializeTestEnvironment({
   firestore: { host: "127.0.0.1", port: 8181, rules: fs.readFileSync(RULES, "utf8") },
 });
 
+/* CLEAR THE DATABASE FIRST — and this line is here because its absence
+ * produced a FALSE PASS, in this very file, on 2026-09-12.
+ *
+ * The emulator keeps data for its whole lifetime, across runs. So the second
+ * run of "a BRAND-NEW learner creates their first board row" found the row the
+ * FIRST run had left behind, and Firestore evaluated `allow update` instead of
+ * `allow create` — the one rule the test exists to exercise. It reported PASS
+ * against a rules file that in fact DENIES that create (the leaderboard key
+ * allowlist without weekXp/weekKey). Verified after adding this line: the same
+ * file now correctly reports DENIED.
+ *
+ * A create test that silently becomes an update test is exactly the false
+ * green this suite was written to prevent, so: clear, and use a uid nothing
+ * else has used. */
+await env.clearFirestore();
+const FRESH = (p) => `${p}_${Math.random().toString(36).slice(2, 8)}`;
+
 const student  = env.authenticatedContext("student1", { email: "s1@x.com", email_verified: true }).firestore();
 const attacker = env.authenticatedContext("attacker", { email: "bad@x.com", email_verified: true }).firestore();
 

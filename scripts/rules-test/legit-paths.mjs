@@ -25,6 +25,23 @@ const RULES = process.argv[2], LABEL = process.argv[3];
 const env = await initializeTestEnvironment({ projectId: "demo-fluo-rules",
   firestore: { host: "127.0.0.1", port: 8181, rules: fs.readFileSync(RULES, "utf8") } });
 
+/* CLEAR THE DATABASE FIRST — and this line is here because its absence
+ * produced a FALSE PASS, in this very file, on 2026-09-12.
+ *
+ * The emulator keeps data for its whole lifetime, across runs. So the second
+ * run of "a BRAND-NEW learner creates their first board row" found the row the
+ * FIRST run had left behind, and Firestore evaluated `allow update` instead of
+ * `allow create` — the one rule the test exists to exercise. It reported PASS
+ * against a rules file that in fact DENIES that create (the leaderboard key
+ * allowlist without weekXp/weekKey). Verified after adding this line: the same
+ * file now correctly reports DENIED.
+ *
+ * A create test that silently becomes an update test is exactly the false
+ * green this suite was written to prevent, so: clear, and use a uid nothing
+ * else has used. */
+await env.clearFirestore();
+const FRESH = (p) => `${p}_${Math.random().toString(36).slice(2, 8)}`;
+
 const results = [];
 const check = async (name, expect, fn) => {
   let ok;
@@ -37,9 +54,10 @@ const check = async (name, expect, fn) => {
 const payload = (xp) => ({ name: "New Learner", xp, level: 3, gems: 10, streak: 2,
   weekXp: 50, weekKey: "2026-W37", term: "T2", updatedAt: Date.now() });
 
-const fresh = env.authenticatedContext("newbie", { email: "new@x.com", email_verified: true }).firestore();
+const NEWBIE = FRESH("newbie");
+const fresh = env.authenticatedContext(NEWBIE, { email: `${NEWBIE}@x.com`, email_verified: true }).firestore();
 await check("BRAND-NEW learner creates their first board row", "allow", () =>
-  setDoc(doc(fresh, "leaderboard/newbie"), payload(120), { merge: true }));
+  setDoc(doc(fresh, `leaderboard/${NEWBIE}`), payload(120), { merge: true }));
 
 // A legacy laf1201 row: no `xp`, no `term` — only totalXP.
 await env.withSecurityRulesDisabled(async (c) =>

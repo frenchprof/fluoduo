@@ -283,6 +283,24 @@ unclosed) and it exited 0 again. **It never compiles the rules.** The emulator's
 (`L408:7 Unexpected 'allow'.`). A validator nobody has seen fail is not a
 validator — the same rule that caught `verify25` passing a re-typed literal.
 
+**AND THE SUITE ITSELF PRODUCED A FALSE PASS ON ITS FIRST OUTING — the same
+fault it exists to catch, one level up.** `legit-paths.mjs` never called
+`clearFirestore()`, and the emulator keeps data for its whole lifetime. So the
+SECOND run of "a brand-new learner creates their first board row" found the row
+the FIRST run had left behind, and Firestore evaluated `allow update` instead of
+`allow create` — the one rule the test exists to exercise. It reported PASS
+against a rules file that DENIES that create. Fixed by clearing the database and
+minting a random uid per run, then break-tested the only way that counts:
+
+    stale rules (no weekXp in the create allowlist)   FAIL  <- was a false PASS
+    this branch's rules                               PASS
+
+Which also settles a claim made to Dan earlier in the day and then doubted: the
+leaderboard create allowlist really does need `weekXp`/`weekKey`. A rules file
+without them denies a new learner's FIRST board row, and the client's `catch`
+deletes it — so the learner never appears. That is the 2026-08-21 fix; anyone
+holding an older copy of this file should not deploy it.
+
 **ONE PREDICTION OF MINE WAS WRONG, recorded so it is not cited later.** I
 expected a deck with no `visibility` to make `collections`' read rule ERROR and
 lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
