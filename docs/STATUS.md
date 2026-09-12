@@ -160,9 +160,28 @@ built app:
     desktop  font 16.32px   box 68px   scrollWidth 68 = clientWidth 68   no clip
 
 The type ramps 36% and « 200 », the widest value the field can hold, still
-fits. So no control in this diff needs the ramped form today, and none was
+fits. So no control in this diff needs the RAMPED form today, and none was
 changed to it — widening the sweep on a guess is what the rule's own text warns
 against.
+
+**BUT RAISE THE BROWSER'S TEXT SIZE AND THE OLD BOX LOSES A DIGIT — so this
+sweep fixes a live fault, not just a latent one.** Found while building Dan the
+before/after he asked for, by rendering both builds with the root at 24px, which
+is exactly what a browser's 150% text setting does to every `rem` on the page:
+
+    root 16px   type 16.32px   box 68 -> 68     reads « 100 » / « 100 »
+    root 24px   type 24.03px   box 68 -> 102    reads «  10 » / « 100 »
+
+**IT IS THE 8 SEP FAULT A SECOND TIME, one axis over.** That day the field went
+52 -> 68px because a desktop read « 00 ». 68px answered the SCREEN and left the
+TEXT SETTING alone, so the type still grows half again and the box does not, and
+the leading digit scrolls out of sight exactly as before. A pixel cannot follow a
+learner who has turned their text up; `4.25rem` does, and the field accepts up to
+200, so three digits is the widest it can ever need.
+
+At the default size the two screenshots are **byte-identical** — same md5,
+`ddf5b09a…` — which is the other half of the claim: where nothing was wrong,
+nothing moved.
 
 Gate: **134 checks green**, `tsc --noEmit` clean, eslint clean on all 19
 touched files, both builds (closed and `NEXT_PUBLIC_OPEN_APP=1`) clean.
