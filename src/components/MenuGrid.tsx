@@ -132,12 +132,33 @@ const hrefOf = (key: string) => activity(key)?.href ?? "/map";
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
 const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
-  // LESSON (Dan, 2026-09-09) — Map, the goal itself, and Help now live
-  // together. "Goals" still opens Home for now: the per-SIO page ("Goal =
-  // Specific Instructional Objective") is a separate, larger piece Dan has
-  // someone else building — this tile will point there once it lands.
+  // LESSON — the goal itself, Help, and (2026-09-12) Favourites in the slot
+  // the map used to hold. "Goals" still opens Home for now: the per-SIO page
+  // ("Goal = Specific Instructional Objective") is a separate, larger piece
+  // Dan has someone else building — this tile will point there once it lands.
+  //
+  // WHY THE MAP GAVE UP ITS TILE, AND WHY NOTHING WAS LOST. Dan, 2026-09-12:
+  // *"put Favourites in the burger grid menu in the yellow lesson strip
+  // replacing Map (Map already has multiple doors and does not need this
+  // space)"*. He is right about the count — `/map` is reached from the 🗺️ in
+  // the icon strip two rows above this grid, from the MneMemo tile in the
+  // Practice row below it, and from the hero on Home. Favourites had ONE door
+  // (the ★ beside the account chip) and it only becomes a link once something
+  // is starred, so a learner who has never starred anything could not reach
+  // the page to find out what it was for. This tile is that door.
+  //
+  // ★ AND NOT ⭐. The filled text star is what the top-bar button and the
+  // Favourites page already wear; the emoji ⭐ is XP (StatsHelp: "earned every
+  // answer", and the XP row on the User page), and one glyph means one thing.
+  //
+  // THE TILE AND THE PAGE ARE BOTH YELLOW. For a few hours they were not —
+  // the tile sat here and `SITE_FAMILY` still had `favourites: "user"`, so a
+  // yellow tile opened a grey page. Dan: *"make the favourites page yellow to
+  // match its door"*. The rule that settles it is the plain one: the strip a
+  // door sits in is the colour the page wears. See `SITE_FAMILY` in
+  // activities.ts, where the entry now reads "goals".
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
-    { kind: "one", emoji: "🧭", name: "Map", href: "/map" },
+    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
     { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
     { kind: "help" },
   ]},
