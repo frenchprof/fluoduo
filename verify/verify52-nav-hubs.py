@@ -125,6 +125,82 @@ ok(not os.path.exists("src/components/FamilyHub.tsx"),
    "DELIBERATE_DOOR (9 Sep) and FAMILY_HUBS is empty, so this component has "
    "no page to render — delete it, or restore a hub on purpose and say so.")
 
+# ── EVERY DOOR IN THE ☰ IS A LINK TO A PAGE ────────────────────────────────
+#
+# Dan, 2026-09-12: *"replace all the pop ups for activities by actual pages (no
+# more pop ups for going into those activities)"*.
+#
+# On 9 Sep seven tiles traded a hub page for a pop-up: six opened a 1-to-50
+# slider, one a two-choice card. The reasoning recorded at the time was that
+# the hubs had been "made redundant". What it missed is that a family HUB and
+# an activity's own CHOOSER were never the same page, and only the hubs went —
+# every one of those activities still had a real page listing what it can play,
+# and had throughout:
+#
+#   MémoiRecall   /practice/flip-it        ActivityLanding, fifty stops
+#   GramMarathon  /practice/grammarathon   ActivityLanding, fifty stops
+#   WorDrill      /practice/wordrill       its own page
+#   VocabulaRain  /games/vocabularain      every set, folded by unit
+#   LexicaLocker  /games/lexicalater       every deck, folded by unit
+#   ComposeIt     /games/compose           every bank, folded by unit
+#   Numbers       /games/numbers           NumBus and NumBourse — Dan's own
+#                                          hub-tab from 31 Aug
+#
+# So carrying this out wrote no page at all: the tiles stopped intercepting
+# the click. Three of those pages were only HALF true when this was written —
+# VocabulaRain, LexicaLocker and ComposeIt each showed one card and a "Choose
+# another" button that opened a bottom sheet, so the pop-up had not gone, it
+# had moved a click later. Dan spotted it in a screenshot the same day ("do
+# those three") and verify23 item 8 now holds their shape. These rows are what
+# stops a pop-up growing back in front of a page that already works.
+ok(not os.path.exists("src/components/ActivityGoalPicker.tsx"),
+   "the activity pop-ups are gone — every ☰ door is a link",
+   "src/components/ActivityGoalPicker.tsx is back. Dan retired the slider and "
+   "two-choice pop-ups on 2026-09-12: an activity is entered through its own "
+   "page, not a card in front of one.")
+
+# WHAT "NO POP-UP" ACTUALLY FORBIDS, narrowed the same day it was written.
+# The first version of this list also banned `kind: "picker"`, on the reasoning
+# that a picker cell WAS the pop-up. That was true for about an hour. Dan then
+# asked for the stop to be chosen once, on a GO TO row at the top of this menu,
+# with every per-stop door greying to match:
+#
+#   *"if the activity does not exist for a particular stop, then grey out the
+#    item on the menu!"* · *"when they click OK, the tiles below in the grid
+#    menu has to react to grey"*
+#
+# So the cell kind came back and the POP-UP did not: a picker cell is now a
+# real <Link> to that stop, or a greyed tile when the activity has nothing
+# there. What this clause has to hold is the MODAL — `openSlider` and
+# `openTwoChoice`, the two calls that put a card in front of the page — not the
+# name of a cell kind. Banning the kind would have made Dan's row impossible to
+# implement without renaming a type to get past a check, which is the worst
+# outcome a check can produce.
+MENU_SRC = read("src/components/MenuGrid.tsx")
+for gone, what in (("openSlider", "the 1-to-50 goal slider"),
+                   ("openTwoChoice", "the two-choice card"),
+                   ('kind: "numbers"', "the numbers cell kind")):
+    ok(gone not in nocomment(MENU_SRC),
+       f"MenuGrid has no {what}",
+       f"MenuGrid is calling {what} again — a door that opens a pop-up instead "
+       f"of navigating (Dan, 2026-09-12)")
+
+# AND THE STOP GATE STAYS, for the same reason the cell kind does. It was
+# deleted alongside the slider — correctly, on the morning the slider was the
+# only thing reading it — and Dan's GO TO row put the question straight back:
+# *"keep activityStops"*. It is what answers "can VocabulaRain play stop 15?",
+# which is what the greying draws. Deleting it does not remove a duplicate any
+# more; it removes the only implementation the menu has.
+ok(os.path.exists("src/lib/activityStops.ts"),
+   "the menu's stop gate is present — the GO TO row's greying reads it",
+   "src/lib/activityStops.ts is gone. The GO TO row greys every per-stop door "
+   "by asking it whether the activity can play the chosen stop; without it the "
+   "row sets a number nothing reads. Dan, 2026-09-12: \"keep activityStops\". "
+   "The OLD reason for deleting it was that it existed only to gate the "
+   "goal slider; the landing pages gate themselves through indexMatrix's "
+   "cellHref, and two implementations of the same question is what this repo "
+   "keeps learning not to keep.")
+
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}

@@ -6,6 +6,94 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — the pop-ups go, and the last three become pages (pre-tests lane, branch, HANDED OVER, NOT merged)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane
+(`claude/pre-tests-amendments-hndx8r`, restarted from `33efeb96`).
+
+**THREE COMMITS**: `40d04a8e` (ConjugaZone lands on the blanked table),
+`ddd5a907` (the last three pop-ups become pages), `94a7bce2` (no pop-up in
+front of a page).
+
+**THE BRANCH WAS REBUILT ON MAIN RATHER THAN MERGED INTO IT, and that is the
+entry worth reading.** It carried five commits and the first two had already
+landed as #319. Merging the rest would have dragged along a half of
+`34901b46` that main has since OVERRULED: that commit reworked `familyTile`,
+`GoalCard` and the ☰'s width so a goal's doors wore the menu's whole
+arrangement — a band per family, the family's name sideways down the left.
+Dan reversed exactly that, later the same day, on another lane's branch:
+
+> *"there is no need to present these like in the grid menu layout. i just
+> need the tiles to be laid out side by side, relevant bacground colors, does
+> not matter if revise shares the same row as practice, so long as their
+> background identifies them."*
+
+`git merge origin/main` conflicted on those three files and resolving them
+"correctly" — keeping both sides — would have put the bands back. **A clean
+merge is not the same as a correct one, and neither is a conflict resolved in
+good faith.** The branch was restarted from main and only the work main does
+not already have was replayed: ConjugaZone, the pop-up removal, the three
+galleries. The tile-geometry half is dropped for good; #319 is the truth on
+the goal card and the menu's width.
+
+**THE POP-UPS.** Six ☰ tiles opened a 1-to-50 goal slider and a seventh a
+two-choice card, added 9 Sep when the family HUB pages were retired as "made
+redundant". A family hub and an activity's own CHOOSER were never the same
+page, and only the hubs went — every one of those activities had a real page
+throughout. So carrying out Dan's *"no more pop ups for going into those
+activities"* wrote no page: the tiles stopped intercepting the click, each
+cell naming its registry key with the href from `activity()`. Driven in a
+browser afterwards: **twenty doors in the ☰, zero buttons left in the grid.**
+`ActivityGoalPicker` and `lib/activityStops` are deleted — the latter existed
+only to gate and route the slider, and the landing pages gate themselves
+through `indexMatrix.cellHref`, so the app keeps ONE answer to "can this
+activity play this stop".
+
+**AND THE SWEEP HAD A HOLE THAT ONLY A PICTURE SHOWED.** Seven doors were
+converted and reported done. Dan then asked *"can i see the pages that replaced
+the popups"* — the show-don't-describe rule doing its job — and the seven were
+not equally finished:
+
+    MémoiRecall, GramMarathon   the full 50-stop ActivityLanding      ✓
+    WorDrill                    the unit filter, counts on each       ✓
+    Numbers                     the two-game chooser                  ✓
+    VocabulaRain, LexicaLocker,
+    ComposeIt                   ONE card + « Choose another »  ->  a
+                                BottomSheet with the real list in it  ✗
+
+The three share `GameGallery`. Its page opened, and then a modal opened on top
+of it. **The pop-up had not been removed; it had moved one click later**, and
+no static reading of the diff would show that — the route existed, the
+component rendered, the check passed. Dan: *"do those three"*.
+
+**WHAT THEY ARE NOW.** The ▶ Play card stays: patch 23's audit was right that a
+wall of 24 tiles asks a first-year for a curriculum decision they cannot make,
+and the card still names the set the learner's own `itemSrs` says is next. The
+modal is dropped and every set sits on the page under it, folded by unit with
+native `<details name>` (exclusive, one at a time), the suggestion's own unit
+open on arrival, and a count on every closed flap — "6 sets", "8 sets" —
+because a chevron with no number is deletion with extra steps. Same accordion
+`ActivityLanding` uses for its fifty stops, so MémoiRecall and VocabulaRain now
+read alike. The suggested set is MARKED with a dashed outline and keeps its
+place in course order rather than jumping to the front.
+
+**ONE `max-w-md` AROUND THE WHOLE PAGE WOULD HAVE KEPT THE FAULT IT REMOVED** —
+it pinned the list to two columns at every width, which is exactly what the
+bottom sheet did. The card stays card-width; the list takes the page's room and
+`.fluo-tilegrid` counts its own columns: **4 at 900px, 2 at 313px** (a phone's
+worth of cahier frame), no sideways scroll at either.
+
+`verify23` item 8 followed the change, and its negative half reads **stripped**
+source — both « Choose another » and « BottomSheet » survive in
+`GameGallery.tsx`'s own notes saying why they are gone, and `verify260` was
+caught doing precisely this a day earlier: *reading its own epitaph as the
+corpse*. `verify52` gained the rows that stop a pop-up growing back in front of
+a page that already works; `verify200` tested the slider's answers and had
+nothing left to test.
+
+Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
+every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
+
 ## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
 
 **MERGED: #306** (the guided first run, five activities — ConjugaZone held on
@@ -103,7 +191,7 @@ desktop where the step opens to 0.36rem:
 **THE FIX IS THE SAME ARITHMETIC EVERY TIME AND CHANGES NOTHING ON A PHONE.**
 `--fs-step` is zero at phone width, and `1rem` is 16px, so `76px` written as
 `4.75rem` renders the identical 76px there and grows with the root size
-anywhere the learner has raised it. **47 spellings across 19 files**, the
+anywhere the learner has raised it. **45 spellings across 18 files**, the
 largest being NumBus (41 of them, its whole scene) — proved not to have torn by
 screenshotting the built game before and after and diffing the pixels, against
 a CONTROL: the same build twice differs from itself by 0.248%, more than this
@@ -116,6 +204,16 @@ change differs at 0.241%.
     HomePrintSheet w-[82px]      paper — the AGENTS.md print exemption
     ProfileContent (12 sizes)    the user-pages lane is rewriting this file
     familyTile / MenuGrid        the two hits are inside COMMENTS, quoting the old class
+
+**AND #325 TOOK TWO MORE OF THEM WITH THE FILE THEY LIVED IN.** *"Pop-ups
+become pages"* deleted `components/ActivityGoalPicker.tsx` outright — 416 lines
+— and this branch had converted two sizes inside it (`max-h-[190px]` and a
+`w-[52px]` unit label). **Nothing was ported**, and that is the correct
+resolution rather than laziness: the markup was DELETED, not moved. Checked
+before accepting the deletion — `GoalPadPicker` appears nowhere on main, and
+the four files that still say "ActivityGoalPicker" say it in COMMENTS, not
+imports. A conversion has nothing to follow when the element it sized is gone.
+47 across 19 became 45 across 18.
 
 **MAIN HAD ALREADY TAKEN THE FIRST HALF**, which is why this entry is shorter
 than the work. Dan asked the two lanes to share (*"i prefer sharing so we can
