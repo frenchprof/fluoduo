@@ -1423,7 +1423,49 @@ input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
     `appearance: textfield`. Caught by reading the computed style, not by
     looking: headless Chromium does not paint a spin button into a screenshot,
     so the picture looked the same either way. */
-input[type="number"].fluo-stepper { -moz-appearance: auto; appearance: auto; }
+/*  THREE SELECTORS, NOT ONE, AND THE REASON IS SPECIFICITY ARITHMETIC. The
+    cahier's two form skins are written
+    `.cahier-page input:not([type="checkbox"]):not([type="radio"])` — a class,
+    TWO pseudo-classes and a type, which outranks `input[type="number"].x`. The
+    stepper lives inside `.cahier-page`, so the plain selector lost and the
+    number rendered at 0.95rem however the markup asked. Measured twice before
+    this was understood: the computed size read 15px while the class said 22.
+    Same rule, same trap as the spinner arrows two hours earlier — that is what
+    a skin written at high specificity does to every opt-out after it.
+
+    AND THE `:not()` PAIR IS NOT DECORATION. `.cahier-page input[type=number].x`
+    and the skin's `.cahier-page input:not(...):not(...)` are the SAME weight —
+    one class, one type, two pseudo-classes each — and the skin is written later
+    in this file, so it won on ORDER and the number stayed 15.2px through three
+    attempts at this rule. Repeating the pair here (they are always true of a
+    number input) puts this one clause above it without depending on where
+    either sits. Position is not a plan: the next edit to move a block would
+    have silently undone it. */
+.cahier-page input[type="number"].fluo-stepper:not([type="checkbox"]):not([type="radio"]),
+.cahier-sheet input[type="number"].fluo-stepper:not([type="checkbox"]):not([type="radio"]),
+input[type="number"].fluo-stepper {
+  -moz-appearance: auto;
+  appearance: auto;
+  /* AND ITS SIZE LIVES HERE, not on a utility class. The cahier's form skin
+     (`.cahier-sheet input:not([type=checkbox]):not([type=radio])`, above) sets
+     `font-size: 0.95rem` at class + pseudo-class + type — which outranks a bare
+     `text-[22px]`, so the number rendered at 15px however the markup asked. Two
+     hours after the same trap cost this file its spinner arrows, in the same
+     rule. Measured, not guessed: the computed size read 15 while the class said
+     22. On the ramp, so it grows with everything else. */
+  font-size: calc(1.375rem + var(--fs-step) * 1.38);
+  /* AND THE SKIN'S PADDING GOES WITH ITS SIZE. `.cahier-page input:not(...)`
+     also sets `padding: 0.55rem 0.75rem`, which on a 30px number adds ~18px of
+     height to a strip Dan asked to make SHORTER — "there is no need for a
+     single number to occupy such a big space". The cell around it already
+     carries the 44px touch floor, so the field needs no padding of its own to
+     stay hittable. */
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+}
+.cahier-page input[type="number"].fluo-stepper::-webkit-outer-spin-button,
+.cahier-page input[type="number"].fluo-stepper::-webkit-inner-spin-button,
 input[type="number"].fluo-stepper::-webkit-outer-spin-button,
 input[type="number"].fluo-stepper::-webkit-inner-spin-button {
   -webkit-appearance: inner-spin-button;
