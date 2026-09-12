@@ -3061,6 +3061,202 @@ input.fluo-bookmark:focus,
 }
 
 /* ===========================================================================
+ *  CONJUGAZONE'S TABLE — the page's main event again
+ *
+ *  Dan, 2026-09-11: *"The main focus of ConjugaZone should be the verb table.
+ *  The questions are secondary and only come after that table. The table being
+ *  displayed should show at most two verbs side by side. The conjugation
+ *  should have the subject pronoun right next to the conjugated verb rather
+ *  than being separated in a different column."*
+ *
+ *  THIS REVERSES THE PATCH 20–21 RULING, deliberately and on instruction. The
+ *  page's own docstring said "THE TABLE BECAME THE REWARD SCREEN … Study
+ *  follows proof, instead of gating it." Dan has put the table back in front;
+ *  the drill is still there, below, and still records exactly what it did.
+ *
+ *  ── ONE GRID PER VERB, AND BOTH VERBS SHARE ITS TRACKS ───────────────────
+ *  Dan, same day: *"there has be a clear visual vertical paradigm for all the
+ *  reflex-pronouns and another for the verb form. Exactly like a table with
+ *  invisible grid."* So it is ONE grid for a whole verb, not one per row —
+ *  six rows sharing four tracks — and the two verbs are given identical track
+ *  widths so their columns line up with each other as well. Measured on the
+ *  built page: the verb-form column starts at the same offset in both cards.
+ *
+ *  Tracks are in `ch` so they grow with the type, which is the whole reason
+ *  the columns stay aligned when the ramp opens on a desktop.
+ * =========================================================================== */
+.conjuga-verbs {
+  display: grid;
+  gap: 0.55em;
+  /* AT MOST TWO SIDE BY SIDE (Dan: *"The table being displayed should show at
+     most two verbs side by side"*), and one where two will not fit. The floor
+     enforces both ends by itself, the same trick .stop-grid uses:
+
+       max(10.2em, 50% - half the gap)   no column narrower than half -> <= 2
+       min(100%, …)                      never wider than the row     -> >= 1
+
+     auto-fit, never a breakpoint: this station runs inside the cahier's
+     iframe, where a media query sees the FRAME and not the phone. 8.6em was
+     not guessed — it is the value that survives driving /conjugaison at 320,
+     360, 390 (both 844 and 1000 tall), 412, 430, 768, 1100 and 1500 with no
+     table overflowing its card anywhere: two verbs from 390px up, one at 320
+     and 360 where two genuinely will not fit. The drill shell's well is
+     narrower than the viewport, which is why a number picked from the phone's
+     width alone was wrong by 80px. */
+  grid-template-columns: repeat(auto-fit,
+    minmax(min(100%, max(var(--conjuga-min, 8.6em), calc(50% - 0.275em))), 1fr));
+}
+
+.conjuga-card {
+  border: 0.09em solid var(--cahier-rule, var(--cahier-line));
+  border-radius: 0.45em;
+  background: var(--cahier-paper-raised, #fff);
+  padding: 0.5em 0.32em 0.4em;
+  /* Container queries cannot restyle the container itself, so the narrow
+     card's own padding is set from the grid instead — see .conjuga-verbs. */
+  /* THE CARD DECIDES ITS OWN TYPE, NOT THE WINDOW. A container query measures
+     this card, so it is immune to the iframe problem a media query has here.
+     Without it the max-content verb column outgrew a two-up card on a tall
+     phone, where --fs-step reads vh and the type is a shade larger: measured
+     390x1000 overflowing by 19px while 390x700 fitted. */
+  container-type: inline-size;
+}
+.conjuga-inf { font-size: var(--fs-h3); font-weight: 700; line-height: 1.1; margin: 0; }
+.conjuga-gloss {
+  font-size: var(--fs-micro); font-style: italic;
+  color: var(--cahier-ink-soft); margin: 0.1em 0 0.5em;
+}
+
+.conjuga-tbl {
+  display: grid;
+  align-items: baseline;
+  row-gap: 0.14em;
+  column-gap: 0;
+  grid-template-columns:
+    var(--conjuga-pron, 10ch) var(--conjuga-refl, 4.6ch) max-content auto minmax(0, 1fr);
+}
+.conjuga-cell { padding: 0.16em 0.1em; border-radius: 0.2em; }
+.conjuga-pron {
+  text-align: right; font-size: var(--fs-small);
+  color: var(--cahier-ink-soft); white-space: nowrap; padding-right: 0.55ch;
+}
+/* ONLY THE VERB IS BOLD (Dan, 2026-09-11: *"only the actual verb portion
+   needs to be in bold, not the reflexive pronouns: this is to make the verb
+   occupy less horizontal space and allow two verbs to fit on a single width
+   of the mobile"*). It bought exactly that — measured, it is what takes a
+   390px phone from one verb per row to two. */
+.conjuga-rp { text-align: right; font-weight: 400; white-space: nowrap; padding-right: 0; }
+/* An elision has no space in it: m'appelle is one word, so the track boundary
+   must be invisible there. A whole word (nous, vous) needs the space a word
+   needs. */
+.conjuga-rp-word { padding-right: 0.5ch; }
+.conjuga-form { font-weight: 700; white-space: nowrap; padding-left: 0; }
+.conjuga-tts {
+  background: none; border: 0; cursor: pointer; font-size: var(--fs-micro);
+  padding: 0 0.15em; line-height: 1; opacity: 0.6; justify-self: start;
+}
+.conjuga-tts:hover { opacity: 1; }
+
+/* THE COLOUR RULE. Standard ending: red on yellow. Irregular form: red
+   entire, no yellow — see lib/practice/conjugaShape.ts for which is which and
+   why the group decides it rather than the spelling. */
+.conjuga-end {
+  color: var(--fluo-wrong, #dc2626);
+  background: var(--hl-yellow-tint, #ffea6a);
+  border-radius: 0.15em; padding: 0 0.06em;
+}
+.conjuga-irr { color: var(--fluo-wrong, #dc2626); }
+.conjuga-missing { color: var(--cahier-ink-soft); opacity: 0.45; }
+
+/* REVEAL MODE. The cover must COVER: an ending carries its own red-on-yellow
+   and an irregular form its own red, so `color: transparent` on the wrapper
+   alone left the answer legible through the mask — the one thing the learner
+   is being asked to recall was the one thing still showing. */
+.conjuga-hidden {
+  background: var(--cahier-paper-2, #eceadc);
+  color: transparent;
+  border-radius: 0.2em;
+  box-shadow: inset 0 0 0 0.07em var(--cahier-line);
+  cursor: pointer;
+  min-width: 4ch;
+}
+.conjuga-hidden.conjuga-rp { min-width: 2.2ch; }
+.conjuga-hidden * {
+  color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* The example sentence, interleaved right after its own Subject+Verb, in a
+   smaller and quieter face (Dan: *"in the intercalé line right after each
+   SubjectVerb combo in a smaller less prominent font"*). It spans from the
+   verb column rightwards so it hangs under the form, not under the pronoun. */
+.conjuga-ex {
+  grid-column: 3 / -1;
+  font-size: var(--fs-micro); font-style: italic;
+  color: var(--cahier-ink-soft);
+  padding: 0 0 0.35em; line-height: 1.25; margin-top: -0.1em;
+}
+
+/* THE SUBJECT PRONOUN IN TWO LENGTHS, PICKED BY THE CARD'S OWN WIDTH.
+   « il/elle/on » is ten characters and will not fit twice on any phone —
+   measured at 320, 360, 390, 412 and 430px, every one of them clipped. Rather
+   than make Dan choose between the full pronoun and two verbs, both are in
+   the markup and the container query shows whichever the card can hold.
+   `display:none` (not visibility) so a screen reader reads one, never both. */
+.conjuga-pron-short { display: none; }
+
+/* TWO STEPS, BOTH MEASURED ON THE BUILT PAGE, not guessed.
+   One step was not enough. At 15em a card holds the long pronouns and the
+   body type; below it the pronouns shorten and the type drops a rung; below
+   11em — which is what a two-up 390px phone gives, 141px — even that
+   overflowed by 19px, so the type drops again. Every threshold below was set
+   by driving /conjugaison at 320, 360, 390, 412, 430, 768, 1100 and 1500 and
+   reading scrollWidth against clientWidth. */
+@container (max-width: 15em) {
+  .conjuga-tbl { font-size: var(--fs-small); }
+}
+@container (max-width: 11em) {
+  .conjuga-tbl { font-size: var(--fs-micro); }
+  /* The last 8px, taken from padding rather than from the words. A two-up
+     390px phone gives a 141px card and the table wanted 149; the shave is
+     scoped to this step so a roomy card keeps its breathing space. */
+  .conjuga-pron { padding-right: 0.35ch; }
+  .conjuga-tts { padding: 0 0.06em; }
+}
+@container (max-width: 15em) {
+  .conjuga-pron-long { display: none; }
+  .conjuga-pron-short { display: inline; }
+  .conjuga-tbl { --conjuga-pron: 4.4ch; --conjuga-refl: 4.3ch; }
+}
+
+/* LAST IN THIS SECTION, AND THAT IS LOAD-BEARING. A container query adds no
+   specificity — `@container … { .conjuga-pron { … } }` is still 0,1,0 — so
+   every one of these rules was silently losing to the plain `.conjuga-pron`
+   declared below it, and the narrow steps did nothing at all. Measured: the
+   padding read 0.55ch on a 141px card that was asking for 0.35ch. Keep these
+   blocks at the foot of the section, the same discipline the html[data-embed]
+   rules keep at the foot of the file. */
+@container (max-width: 11em) {
+  .conjuga-tbl {
+    font-size: var(--fs-micro);
+    --conjuga-pron: 4.4ch;
+    --conjuga-refl: 4.1ch;
+  }
+  /* The last few pixels, taken from padding and from the COVER, never from
+     the words. A two-up 390px phone gives a 141px card and the table was
+     asking for 137 against 129 of room. The first fix took it out of the
+     pronoun's right padding and « nous » ended up touching the covered cell
+     beside it — legible, but it read as clipped. A narrower cover pays for
+     the gap instead: the cover is furniture, the pronoun is the one thing
+     that must stay readable at all times. */
+  .conjuga-pron { padding-right: 0.5ch; }
+  .conjuga-hidden { min-width: 2.6ch; }
+  .conjuga-hidden.conjuga-rp { min-width: 1.4ch; }
+  .conjuga-tts { padding: 0 0.04em; font-size: 0.62em; }
+}
+
+/* ===========================================================================
  *  A STATION RUNNING INSIDE THE CAHIER
  *
  *  Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER

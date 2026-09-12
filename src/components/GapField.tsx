@@ -95,7 +95,14 @@ const GapField = forwardRef<HTMLInputElement, {
       className={`mx-0.5 inline-block border-0 border-b-2 bg-transparent px-1 text-center align-baseline
                   outline-none focus:bg-[color:var(--cahier-hl)]/25 disabled:opacity-100 ${ink}`}
       style={{
-        width: `${Math.max(answer.length, 3)}ch`,
+        // Sized to the ANSWER, but never smaller than what has been typed.
+        // Driving ConjugaZone's TYPE IT mode found the reason: the field for
+        // « suis » is 4ch, and a learner who types « appelle » into it sees
+        // « app| » — their own wrong answer clipped, which reads as the app
+        // eating their input rather than as a mistake they can see and fix.
+        // Growing only past the answer's length gives nothing away; the extra
+        // width is their own text.
+        width: `${Math.max(answer.length, value.length, 3)}ch`,
         font: "inherit",
         borderRadius: 0,
         minHeight: 0,
