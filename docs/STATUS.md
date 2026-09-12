@@ -307,14 +307,53 @@ lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
 The `.get('visibility', 'private')` form is kept because it states the intent,
 but it changes no behaviour and fixes nothing.
 
-**NOT WIRED INTO `verify.yml`, deliberately.** The emulator is a ~60 MB cold
+**AND THE RULES NOW HAVE A DEPLOY PATH, which is the fault underneath all of
+this.** `firestore.rules` was a file NOTHING deployed — no `firebase.json`, no
+`.firebaserc`, no workflow mentioning Firestore, and `deploy-live` mirrors main
+to Cloudflare Pages, which is the static site and not Firebase at all. The file
+in git was a copy of what someone had pasted into the console, with no way to
+tell whether the two still agreed. **They did not:** the copy in circulation on
+12 Sep was missing the 21 Aug `weekXp`/`weekKey` fix, and a rules file without
+it denies a new learner's FIRST board write, which the client's `catch` then
+deletes — so the learner never appears on the board. Proved, after the
+false-pass fix above, by running the new-learner path against both:
+
+    the copy in circulation   first board row for a NEW learner: DENIED
+    the repo's rules          first board row for a NEW learner: ACCEPTED
+
+`.github/workflows/firestore-rules.yml` closes the gap: tests on `paths:
+['firestore.rules', 'scripts/rules-test/**']`, and a deploy job that is
+`workflow_dispatch` + `deploy: true` only, `needs: test`. **Landing and
+publishing stay two decisions** — the `deploy-live` posture (Dan, 2026-08-31:
+*"we go through fluoduo main"*), and doubly so here, because these rules are
+the only thing between a signed-in student and everyone else's data. Needs a
+one-time `FIREBASE_SERVICE_ACCOUNT` secret; the job fails with instructions
+until it exists. `firebase.json` declares firestore ONLY — no `hosting` block,
+so a bare `firebase deploy` cannot publish a stale copy of the app over
+Cloudflare Pages.
+
+**THE WORKFLOW WOULD HAVE BEEN PERMANENTLY RED ON A GREEN RULES FILE**, and
+only running it exactly as CI runs it caught that. `clearFirestore()` throws
+`CANCELLED` when one suite starts as the previous one's gRPC streams are still
+closing — a HANDOVER race, not a broken emulator. attacks passed 6/6, then
+legit-paths crashed before printing a line and the runner exited 1.
+`clear.mjs` retries, narrowly: a cancelled or unavailable call only, so a
+broken emulator can never become a silent pass — the `settle.mjs` rule, retry a
+handover and never a verdict. Break-tested after: main's rules through the
+runner exit **1** naming the three failures, this branch's exit **0**.
+
+**ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
+SDK init still had to be shipped. **It already ships** — `client.ts` initialises
+App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.
+What is outstanding is the key and the console, not the client, and that file
+records why enforcement stays off: the legacy laf1201 sites share this project
+and must be attested before enforcing, or the rule denies their writes.
+
+**THE TESTS ARE NOT IN `verify.yml`, deliberately.** The emulator is a ~60 MB cold
 download and ~25 s of boot, and CI was cut from 10.5 minutes to ~7 this month
-because the Actions allowance ran out mid-morning and nothing could merge. The
-right shape is a workflow of its own on `paths: ['firestore.rules',
-'scripts/rules-test/**']` — an integration-lane decision, so it is written down
-in `scripts/rules-test/README.md` rather than slipped into the shared workflow
-from a branch. Until it exists these tests protect the rules only when a human
-runs them, which is the `verify31-wordrill` trap.
+because the Actions allowance ran out mid-morning and nothing could merge. They live in their own workflow instead, on the `paths:`
+filters above, so the 99% of pull requests that never touch the rules pay
+nothing.
 
 **STILL OPEN, and NOT fixable in rules — the file says so in its own header:**
 leaderboard XP is self-reported (a learner can publish 10,000,000; only a Cloud

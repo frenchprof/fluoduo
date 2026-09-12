@@ -21,6 +21,7 @@ import { initializeTestEnvironment, assertFails, assertSucceeds }
   from "@firebase/rules-unit-testing";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import fs from "node:fs";
+import { clearWithRetry } from "./clear.mjs";
 const RULES = process.argv[2], LABEL = process.argv[3];
 const env = await initializeTestEnvironment({ projectId: "demo-fluo-rules",
   firestore: { host: "127.0.0.1", port: 8181, rules: fs.readFileSync(RULES, "utf8") } });
@@ -39,7 +40,7 @@ const env = await initializeTestEnvironment({ projectId: "demo-fluo-rules",
  * A create test that silently becomes an update test is exactly the false
  * green this suite was written to prevent, so: clear, and use a uid nothing
  * else has used. */
-await env.clearFirestore();
+await clearWithRetry(env);
 const FRESH = (p) => `${p}_${Math.random().toString(36).slice(2, 8)}`;
 
 const results = [];

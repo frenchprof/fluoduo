@@ -1,0 +1,91 @@
+# The Firestore rules: tested on every change, deployed only when a human says so.
+#
+# WHY THIS IS ITS OWN WORKFLOW AND NOT A STEP IN `verify`. The rules tests need
+# the Firestore emulator — a ~60 MB cold download and ~25 s of boot. `verify`
+# runs on every pull request and was cut from 10.5 minutes to about 7 in
+# September, because the Actions allowance ran out mid-morning and NOTHING
+# could merge, main included. Paying that on the 99% of pull requests that
+# never touch `firestore.rules` buys nothing. The `paths:` filters below mean
+# this runs when the rules change and never otherwise.
+#
+# WHY DEPLOY IS `workflow_dispatch` ONLY, and not a push to main. Same posture
+# as `deploy-live` (Dan, 2026-08-31: "we go through fluoduo main"): landing a
+# change and publishing it are two decisions, and these rules are the only
+# thing standing between a signed-in student and everyone else's data. A merge
+# should never be able to change production access on its own.
+#
+# AND THE DEPLOY IS GATED ON THE TESTS IN THE SAME RUN. `needs: test` means a
+# rules file that fails an attack test cannot reach production — automating an
+# unchecked deploy would be worse than the manual console paste it replaces.
+name: firestore-rules
+
+on:
+  pull_request:
+    paths: ['firestore.rules', 'scripts/rules-test/**', '.github/workflows/firestore-rules.yml']
+  push:
+    branches: [main]
+    paths: ['firestore.rules', 'scripts/rules-test/**', '.github/workflows/firestore-rules.yml']
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Publish the rules to Firebase after the tests pass'
+        type: boolean
+        default: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      # The emulator is a JAR. ubuntu-latest ships a JDK, but naming it here
+      # means a runner image change fails loudly instead of mysteriously.
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - run: npm ci
+      # Compiles the rules (the emulator's :securityRules endpoint, not
+      # `emulators:exec`, which exits 0 on a file with a syntax error), then
+      # runs both suites: the attacks, and the legitimate learner paths.
+      - name: Rules compile, attacks refused, real learners still served
+        run: node scripts/rules-test/run.mjs
+
+  deploy:
+    needs: test
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy
+    runs-on: ubuntu-latest
+    # A named environment so the deploy can be put behind a required reviewer
+    # in Settings -> Environments without touching this file.
+    environment: firestore-rules
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      # ONE-TIME SETUP, and this workflow fails with this message until it is
+      # done: create a service account in the laf1201 project with the
+      # "Firebase Rules Admin" role, download its JSON key, and paste the whole
+      # file into a repository secret named FIREBASE_SERVICE_ACCOUNT.
+      - name: Check the credential exists
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$SA" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT is not set. Create a service account in"
+            echo "::error::the laf1201 project with the 'Firebase Rules Admin' role, download"
+            echo "::error::its JSON key, and save the file's contents as that repository secret."
+            exit 1
+          fi
+      - name: Publish firestore.rules to laf1201
+        env:
+          SA: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          # The key never reaches the log or the working tree: written outside
+          # the checkout, and removed whatever happens.
+          KEY="$(mktemp)"
+          trap 'rm -f "$KEY"' EXIT
+          printf '%s' "$SA" > "$KEY"
+          GOOGLE_APPLICATION_CREDENTIALS="$KEY" \
+            npx --yes firebase-tools@15 deploy --only firestore:rules --project laf1201 --non-interactive

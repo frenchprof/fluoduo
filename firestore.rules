@@ -64,12 +64,22 @@ rules_version = '2';
 // ══════════════════════════════════════════════════════════════════════════
 //
 // APP CHECK — the only real defence for the two anonymous-write collections.
-// NOT ENABLED HERE, because turning it on before the apps are registered
-// breaks every write instantly. To adopt it: register the web apps for App
-// Check in the Firebase console (reCAPTCHA Enterprise for the web), ship the
-// SDK init, watch the console's "unverified requests" metric fall to zero,
-// THEN uncomment the function and add `&& appChecked()` to the create rules on
-// feedback/{id} and vlrain_hiscores/{id}.
+// LESS REMAINS TO BE DONE THAN THIS NOTE FIRST CLAIMED: the SDK side ALREADY
+// SHIPS. src/lib/firebase/client.ts initialises App Check whenever
+// NEXT_PUBLIC_FIREBASE_APPCHECK_KEY is set at build time (reCAPTCHA v3, or
+// Enterprise when NEXT_PUBLIC_FIREBASE_APPCHECK_PROVIDER=enterprise). So the
+// outstanding work is the KEY and the CONSOLE, not the client.
+//
+// That file also records why enforcement is deliberately off: "keep Firestore
+// enforcement OFF in the Firebase console until App Check metrics show ~100%
+// verified traffic (the legacy laf1201 sites share this project and must be
+// attested too before enforcing)". The same reason applies to the rule below —
+// turning it on first would deny every write from an unattested legacy site.
+//
+// So: set the key at build time, watch the console's unverified-requests
+// metric fall to zero across ALL the laf1201 sites, THEN uncomment the
+// function and add `&& appChecked()` to the create rules on feedback/{id} and
+// vlrain_hiscores/{id}.
 //
 //   function appChecked() { return request.app != null; }
 //

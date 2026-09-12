@@ -8,6 +8,7 @@ import { initializeTestEnvironment, assertFails, assertSucceeds }
   from "@firebase/rules-unit-testing";
 import { doc, setDoc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import fs from "node:fs";
+import { clearWithRetry } from "./clear.mjs";
 
 const RULES = process.argv[2];
 const LABEL = process.argv[3];
@@ -31,7 +32,7 @@ const env = await initializeTestEnvironment({
  * A create test that silently becomes an update test is exactly the false
  * green this suite was written to prevent, so: clear, and use a uid nothing
  * else has used. */
-await env.clearFirestore();
+await clearWithRetry(env);
 const FRESH = (p) => `${p}_${Math.random().toString(36).slice(2, 8)}`;
 
 const student  = env.authenticatedContext("student1", { email: "s1@x.com", email_verified: true }).firestore();
