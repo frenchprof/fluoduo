@@ -115,12 +115,18 @@ const folderKey = (id: string) => `f:${id}`;
 
 /** The menu a ⋯ opens: absolutely positioned against its row, like a context
  *  menu, so opening one never pushes the list around. */
-function Menu({ children }: { children: ReactNode }) {
+function Menu({ children, align = "right" }: { children: ReactNode; align?: "left" | "right" }) {
   return (
     <div
       data-menu
       role="menu"
-      className="absolute right-0 top-full z-20 mt-1 flex min-w-44 flex-col overflow-hidden rounded-lg border-2 shadow-lg"
+      className={`absolute top-full z-20 mt-1 flex min-w-44 flex-col overflow-hidden rounded-lg border-2 shadow-lg ${
+        // A row's ⋯ is at the right edge, so its menu hangs from the right. The
+        // toolbar's « Move to… » is at the LEFT, and a right-hung menu there
+        // lands on top of « Select all » and « Done » — seen at 1440px, where
+        // there is room for the buttons to sit apart.
+        align === "left" ? "left-0" : "right-0"
+      }`}
       style={{ borderColor: LINE, background: PAPER }}
     >
       {children}
@@ -134,7 +140,9 @@ function MenuItem({ onClick, children }: { onClick: () => void; children: ReactN
       type="button"
       role="menuitem"
       onClick={onClick}
-      className="min-h-11 px-3 text-left text-sm font-bold hover:opacity-70"
+      // A folder name that wraps turns a menu row into two, and the tick of
+      // one row into the tick of half of another. Names do not wrap.
+      className="min-h-11 whitespace-nowrap px-3 text-left text-sm font-bold hover:opacity-70"
       style={{ color: INK, borderBottom: `1px solid ${RULE}` }}
     >
       {children}
@@ -374,17 +382,41 @@ export default function FavouritesContent() {
               <span className="fluo-mono text-[11px] font-black" style={{ color: INK }}>
                 {sel.length} SELECTED
               </span>
-              <button
-                type="button"
-                className={BTN}
-                style={CHROME}
-                disabled={sel.length === 0}
-                onClick={() => setMenu(menu === "bulk" ? null : "bulk")}
-                data-menu
-                aria-haspopup="menu"
-              >
-                📁 Move to…
-              </button>
+              <span className="relative">
+                <button
+                  type="button"
+                  className={BTN}
+                  style={CHROME}
+                  disabled={sel.length === 0}
+                  onClick={() => setMenu(menu === "bulk" ? null : "bulk")}
+                  data-menu
+                  aria-haspopup="menu"
+                >
+                  📁 Move to…
+                </button>
+                {menu === "bulk" && (
+                  <Menu align="left">
+                    <span className="fluo-mono whitespace-nowrap px-3 pt-2 text-[10px] font-black" style={{ color: SOFT }}>
+                      MOVE {sel.length} TO
+                    </span>
+                    {here && (
+                      <MenuItem onClick={() => { commit(moveMany(fav, sel, null)); exitSelect(); }}>
+                        ★ Favourites (top)
+                      </MenuItem>
+                    )}
+                    {fav.folders.filter((f) => f.id !== (here ? here.id : null)).map((f) => (
+                      <MenuItem key={f.id} onClick={() => { commit(moveMany(fav, sel, f.id)); exitSelect(); }}>
+                        📁 {f.name}
+                      </MenuItem>
+                    ))}
+                    {fav.folders.length === 0 && (
+                      <span className="whitespace-nowrap px-3 py-2 text-xs" style={{ color: SOFT }}>
+                        No folders yet — make one first.
+                      </span>
+                    )}
+                  </Menu>
+                )}
+              </span>
               <button
                 type="button"
                 className={BTN}
@@ -403,30 +435,6 @@ export default function FavouritesContent() {
                 {sel.length === items.length && items.length > 0 ? "Clear" : "Select all"}
               </button>
               <button type="button" className={BTN} style={CHROME} onClick={exitSelect}>Done</button>
-              {menu === "bulk" && (
-                <div className="relative">
-                  <Menu>
-                    <span className="fluo-mono px-3 pt-2 text-[10px] font-black" style={{ color: SOFT }}>
-                      MOVE {sel.length} TO
-                    </span>
-                    {here && (
-                      <MenuItem onClick={() => { commit(moveMany(fav, sel, null)); exitSelect(); }}>
-                        ★ Favourites (top)
-                      </MenuItem>
-                    )}
-                    {fav.folders.filter((f) => f.id !== (here ? here.id : null)).map((f) => (
-                      <MenuItem key={f.id} onClick={() => { commit(moveMany(fav, sel, f.id)); exitSelect(); }}>
-                        📁 {f.name}
-                      </MenuItem>
-                    ))}
-                    {fav.folders.length === 0 && (
-                      <span className="px-3 py-2 text-xs" style={{ color: SOFT }}>
-                        No folders yet — make one first.
-                      </span>
-                    )}
-                  </Menu>
-                </div>
-              )}
             </>
           ) : (
           <>
