@@ -9104,6 +9104,25 @@ used. All removed; the touched files are at zero.
 
 ### 12 Sep — the same instruction answered three times, and what that cost
 
+> **RULED, same day: the colour-review session (`claude/home-goal-and-byline`)
+> OWNS ALL REMAINING SIZE WORK.** Dan, asked how far to take it: *"color review
+> will take it all."* No other lane touches box sizes — not the Home keys, not
+> the 28 lines, not `MapBody`'s zoom readout. If you are not that lane and you
+> find a frozen box, write it down here; do not fix it.
+>
+> **WHAT IS ALREADY DONE, so that lane does not redo it:**
+> - `verify270-fluid-controls.py` is THE check (`verify245` was withdrawn as a
+>   duplicate). Its budget is **116**, lowered from 120 by the four boxes below.
+> - `ProfileContent.tsx` and `AccentColours.tsx` are CLEAN: the FRILLS slots'
+>   `h-[58px]` became `min-h-14`, three px floors became `min-h-10/11/14`, four
+>   raw radii became `rounded`/`rounded-sm`/`rounded-lg`.
+> - `verify270` now PRINTS its breakdown, so the next lane starts from the
+>   split rather than from a lump of 116.
+> - **Still broken and still yours:** `MapBody`'s `w-[68px]` zoom readout reads
+>   « 10( » with the browser's text set large. Its own comment records the same
+>   bug at 52px, hand-widened to 62 then 68. Best single argument for the rule.
+
+
 Dan asked *"is this exactly the same thing as what colour review wants to do"*.
 Near enough, and the honest answer is worse: **THREE lanes answered "PLEASE
 NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES" within hours of each other**,
