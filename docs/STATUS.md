@@ -153,6 +153,31 @@ nothing left to test.
 Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
 every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
 
+### 12 Sep — No favourites row is named after the site
+
+Dan asked to see the page with something in it. Starring ten real pages is what
+found this, and nothing else would have: **`/guide` and all ~50 `/lessons/*`
+routes set no title of their own**, so they inherit the root layout's and
+`describeHere`'s last-resort branch named them « FluOLinGo ». Star five lessons
+and you get five identical rows — exactly the list-nobody-uses that
+`favouriteHere.ts` was written to prevent, and invisible on an empty page.
+
+The address is the honest fallback: it is the page's own name, not an
+invention, and never the site's.
+
+    before   /guide                        « FluOLinGo »
+    after    /guide                        « Guide »
+    after    /lessons/atelier-avis-resto   « Atelier avis resto »
+
+A page that DOES title itself still wins — `/map` is « Map of FluOLinGo-land »,
+not « Map ». `verify400` executes all four.
+
+**STILL ROUGH, recorded rather than quietly fixed: two lessons both read
+« MneMemo ».** The registry's prefix match is doing what it is supposed to —
+`/lessons/colors` really is opened through MneMemo — but a favourites list
+wants to know WHICH lesson, and only one of the two had a stop for `where` to
+name (« goal 5 »). Naming it is Dan's call, not a silent change.
+
 ### 12 Sep — Favourites takes the map's tile in the ☰ menu
 
 **Dan: *"put Favourites in the burger grid menu in the yellow lesson strip
