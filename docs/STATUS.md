@@ -8455,3 +8455,36 @@ that it exists, and says why.
 
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
+
+### 12 Sep — the rows that had nothing in them are gone
+
+Shown each row opened in the real app, Dan ruled on all four, and then on a
+fifth the next message:
+
+| row | ruling | built as |
+|---|---|---|
+| FRILLS | *"should not appear… until the student has completed one creation (either ChaTutor or ComposeIt)"* | appears on a first ComposeIt tally |
+| ILLS | *"is unclear what this is about - i suggest also to hide until we figure out to use it"* | never shown |
+| THRILLS | *"Don't show this section until there is something to show for it. And don't show the items that are not yet achived"* | appears once a badge is earned; lists earned badges only |
+| — | *"As for the 'payable' colors, move them into Settings instead"* | `components/AccentColours.tsx`, in Settings |
+| SKILLS | *"drop skills"* | never shown |
+
+SKILLS is worth the note. The day before, Dan asked it to *"list out all the
+skills they have successfully acquired"*. Shown what it actually renders — four
+tiles reading 0 / 21, 0 / 26, 0 / 2, 0 / 1 for an account twenty-one goals in,
+because it counts ANSWERS LOGGED and not goals done — he dropped it instead of
+having it rebuilt. The panel is now RE-DRILLS (with the grid and its key) and
+THRILLS, and nothing else.
+
+The five rows stay in `ROWS` and keep their glyphs; a `rowsToShow()` gate
+decides which appear. So `verify30`'s five-row and glyph assertions still hold,
+and any row can come back by changing one line rather than being rewritten.
+
+**KNOWN GAP, flagged rather than papered over:** a ChaTutor conversation cannot
+be detected. `activityLedger`'s `PREFIX_TO_KEY` maps ComposeIt (`compose`) and
+has no ChaTutor entry, so "one creation" covers half of what Dan named. Wiring
+ChaTutor into the ledger is its own change.
+
+**Still in THRILLS and also purchases:** the Bouclier and the expert game decks,
+with the gem balance beside them. Dan moved the colours; he has not said where
+these go. Flagged, not moved.

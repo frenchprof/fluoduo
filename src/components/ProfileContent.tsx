@@ -102,6 +102,13 @@ function rowsToShow(p: Progress, hasCreation: boolean): typeof ROWS[number][] {
   return ROWS.filter((r) => {
     if (r.key === "frills") return hasCreation;
     if (r.key === "ills") return false;
+    // SKILLS dropped (Dan, 2026-09-12: "drop skills"). He had asked the day
+    // before for it to list the skills a learner has actually acquired; shown
+    // the row as it stands — four tiles reading 0 / 21, 0 / 26, 0 / 2, 0 / 1
+    // for an account 21 goals in, because it counts answers logged and not
+    // goals done — he dropped it instead. No condition brings it back: unlike
+    // FRILLS, which returns on a first creation, this one waits on a decision.
+    if (r.key === "skills") return false;
     if (r.key === "thrills") return p.badges.length > 0;
     return true;
   });
