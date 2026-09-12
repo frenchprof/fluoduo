@@ -134,6 +134,12 @@ out.byKey = describeHere("/practice/say-it/aimer-activites", "", "FluOLinGo", "w
 out.byPath = describeHere("/tutor", "", "FluOLinGo").auto;
 // The title is a trail; only the head of it is a name.
 out.byTitle = describeHere("/nowhere", "", "Map of FluOLinGo-land — FluOLinGo · FluOLinGo").auto;
+// NO ROW IS NAMED AFTER THE SITE. `/guide` and all ~50 `/lessons/*` routes
+// set no title of their own, so they inherit the layout's and every row read
+// « FluOLinGo » — five starred lessons would have been five identical rows.
+// Found by starring nine real pages and reading the list.
+out.bareGuide = describeHere("/guide", "", "FluOLinGo").auto;
+out.bareLesson = describeHere("/lessons/atelier-avis-resto", "", "FluOLinGo").auto;
 // `where` is never invented.
 out.whereNull = describeHere("/tutor", "", "x", "tutor").where;
 // The User page's four tabs are four rows, not one.
@@ -199,6 +205,13 @@ console.log(JSON.stringify(out));
         check(got["byTitle"] == "Map of FluOLinGo-land",
               "a page title is trimmed to its head, not stored as a trail",
               f"the title fallback kept the trail: {got['byTitle']!r}")
+        check(got["bareGuide"] == "Guide" and got["bareLesson"] == "Atelier avis resto",
+              "a page with no title of its own is named after its address, "
+              "never after the site",
+              f"a titleless page named itself {got['bareGuide']!r} / "
+              f"{got['bareLesson']!r} — a list of rows all reading « FluOLinGo » "
+              "is a list nobody uses, and it is invisible until the page has "
+              "something in it")
         check(got["whereNull"] is None,
               "a page that belongs to no stop says nothing rather than a wrong goal",
               "`where` invented a goal for a page that has none — a label that "

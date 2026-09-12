@@ -39,6 +39,10 @@ import { ACTIVITIES, activity } from "@/content/activities";
 import { SIOS } from "@/content/sios";
 import { stopForDeck } from "@/lib/stopTag";
 
+/** The root layout's title. A page that sets none inherits it, and a row
+ *  wearing it names the site rather than the page. */
+const SITE_NAME = "FluOLinGo";
+
 export type HereEntry = {
   href: string;
   auto: string;
@@ -118,5 +122,24 @@ export function describeHere(
   // site, then the site again. A learner wants the first part. Everything
   // from the first dash on is the trail, so it goes.
   const clean = title.split(/\s[—–]\s/)[0].replace(/\s*·.*$/, "").trim();
-  return { href, auto: clean || path, emoji: "📄", where };
+
+  // ...AND SOMETIMES THE TRAIL IS ALL THERE IS. Found by starring nine real
+  // pages and looking at the list: every one of the ~50 `/lessons/*` routes
+  // and `/guide` set no title of their own, so they inherit the root layout's
+  // and the row reads « FluOLinGo ». Star five lessons and you get five
+  // identical rows — precisely the list-nobody-uses this file exists to
+  // prevent, and invisible until the page has something in it.
+  //
+  // The ADDRESS is the honest fallback: it is the page's own name, not an
+  // invention, and it is never the site's. « /lessons/atelier-avis-resto »
+  // reads « Atelier avis resto ».
+  if (!clean || clean === SITE_NAME) {
+    const last = path.split("/").filter(Boolean).pop();
+    const fromPath = last
+      ? last.replace(/[-_]+/g, " ").replace(/^./, (c) => c.toUpperCase())
+      : "";
+    return { href, auto: fromPath || path, emoji: "📄", where };
+  }
+
+  return { href, auto: clean, emoji: "📄", where };
 }
