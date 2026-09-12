@@ -50,7 +50,7 @@
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { useCourse } from "@/components/CourseGate";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
@@ -60,13 +60,6 @@ import { equippedAccent } from "@/lib/economy";
 import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
 import { HOME_HREF } from "@/lib/routes";
 
-/** The four letters the brand is built from: Fluency On Linguistic Goals.
- *  COLOURED, ON DAN'S MOCK (8 Sep: "text bigger and More like this with the
- *  colors on F, O, L and G" — his render supersedes the earlier size-and-
- *  weight-only ruling in this file). The four hues are the app's own pens,
- *  as vars so the ratchet counts no new hex; the drop shadow both lines
- *  already wear is what keeps them legible on the dawn band. */
-const CAP = "text-[1.3em] font-black leading-none";
 /** The dark ground each line of the greeting sits on, from Dan's three mocks
  *  of 8 Sep. Translucent, so the sky reads through it and the page stays one
  *  picture rather than a caption pasted over a photograph. */
@@ -130,21 +123,48 @@ const BRAND: Record<string, string> = {
   L: "var(--sio-vocab)",   // blue
   G: "var(--sio-grammar)", // pink
 };
-/** The name with its four letters lit — one span per character, spoken once. */
-function BrandName({ word }: { word: string }) {
-  return (
-    <>
-      <span aria-hidden>
-        {word.split("").map((ch, i) => (
-          <span key={i} style={"FOLG".includes(ch) ? { color: BRAND[ch] } : undefined}>
-            {ch}
-          </span>
-        ))}
+/**
+ * THE HERO, LETTER BY LETTER.
+ *
+ * `keep` is not a style — it is whether the letter is part of the NAME. The
+ * survivors, read in order, are F l u O L i n G o, and that is the whole point
+ * of the animation: the tagline is not decorated into the brand, it IS the
+ * brand with the rest taken away.
+ *
+ * Note « On »: the O stays and the n goes. Dan's own frame 0 colours that n
+ * blue and then drops it two seconds later — one of the *"issues with
+ * consistency of colors"* he warned about. Here a letter's colour and its fate
+ * are the same fact, so they cannot disagree.
+ */
+const HERO_TEXT = "Fluency, built On Linguistic Goals";
+/** Which characters survive, by index, spelling FluOLinGo. */
+const HERO_KEEP = new Set([0, 1, 2, 15, 18, 19, 20, 29, 30]);
+/** The two O's, which become targets once everything else has fallen. */
+const HERO_O = new Set([15, 30]);
+
+const HERO_LETTERS = Array.from(HERO_TEXT).map((ch, i) => {
+  if (!HERO_KEEP.has(i)) {
+    // A space that is shed still needs to occupy width until it goes, so it is
+    // a non-breaking space — a plain one collapses and the gap shuts early.
+    return (
+      <span key={i} className="fluo-hero-shed" style={{ "--d": `${900 + i * 26}ms` } as CSSProperties}>
+        <i>{ch === " " ? "\u00a0" : ch}</i>
       </span>
-      <span className="sr-only">{word}</span>
-    </>
-  );
-}
+    );
+  }
+  // The map's blue, from the one table that holds this page's pens — the
+  // same token the stops below are painted with, and the colour Dan's own
+  // gif already used (sampled: #1cacff against --sio-vocab #1ca6ff).
+  const style = { color: BRAND.F } as CSSProperties;
+  if (HERO_O.has(i)) {
+    return (
+      <span key={i} className="fluo-hero-o" style={{ ...style, "--d": "2500ms" } as CSSProperties}>
+        <span>{ch}</span>
+      </span>
+    );
+  }
+  return <span key={i} style={style}>{ch}</span>;
+});
 
 export default function WelcomeBody() {
   const router = useRouter();
@@ -315,53 +335,42 @@ export default function WelcomeBody() {
             now: a 5rem hand face over a moonlit sky needs a ground, not a
             glow. It is translucent, so the sky still shows through it and the
             page is still one picture. */}
+        {/* THE HERO IS THE GIF, AND IT REPLACES BOTH LINES THAT WERE HERE
+            (Dan, 2026-09-12: *"i want to swap the hero now what you see in the
+            gif i sent a turn ago"*, then *"not just the line, the exact
+            animation too!"*).
+
+            « Welcome to / FluOLinGo » and « Building your Fluency on Linguistic
+            Goals » are gone, which supersedes his 8 Sep ruling that the greeting
+            *"still has to appear before that line"*. The litmus test is what
+            retires it rather than a change of heart about greetings: this line
+            ENDS as the word FluOLinGo, so a second line saying FluOLinGo above
+            it would be the same word twice, eighty pixels apart — the exact
+            reasoning the corner wordmark was deleted for on 9 Sep.
+
+            WHY EVERY LETTER IS ITS OWN ELEMENT. The animation is not a
+            treatment applied to a line; it is the line taking itself apart. The
+            letters that are not in the name come loose and fall, and what is
+            left closes up into « FluOLinGo ». That has to be per-character, and
+            it has to be DECLARED per character — a rule like "keep the
+            capitals" would not survive the lower-case l, u, i, n and o the name
+            is also made of.
+
+            ROBOTO 900, NOT THE HAND, because the gif is a heavy grotesque and a
+            hand face cannot be one. Roboto is already loaded at 900 and is one
+            of the three faces Dan named on 6 Sep, so this borrows nothing new.
+
+            THE STAGGER RUNS LEFT TO RIGHT, as it does in the gif: `--d` is set
+            per letter from its position, so the line sheds in a wave rather
+            than all at once. The two O's wait until the fall is over before
+            their targets drop. */}
         <h1
-          className="text-[3.2rem] font-black leading-[1.02] text-white sm:text-[4.4rem] [@media(max-height:480px)]:text-[1.6rem]"
-          style={{ fontFamily: "var(--font-fluohand-stack)", ...OUTLINE }}
+          className="fluo-hero inline-block px-3 py-0.5 text-[1.12rem] font-black leading-[1.1] tracking-[-0.015em] text-white min-[380px]:text-[1.24rem] sm:px-4 sm:text-[2.7rem] lg:text-[3.1rem] [@media(max-height:480px)]:text-[0.95rem]"
+          style={{ fontFamily: "var(--font-readable), Roboto, sans-serif", background: BAND }}
         >
-          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>Welcome to</span>
-          <br />
-          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>
-            <BrandName word="FluOLinGo" />
-          </span>
+          <span aria-hidden>{HERO_LETTERS}</span>
+          <span className="sr-only">FluOLinGo — Fluency, built On Linguistic Goals</span>
         </h1>
-        {/* THE LINE ARRIVES STRUCK (Dan, 2026-09-12, sending a frame of a gif:
-            *"see if you can transpose this gif animation (minus the background)
-            onto the sky of the ENTER landing page, while adjusting the colors to
-            match the map's colors"*).
-
-            `fluo-name-strike` is the whole transposition — see globals.css for
-            what was kept and what was deliberately not. Two notes belong here,
-            where the words are:
-
-            THE COLOURS WERE ALREADY THE MAP'S. Dan's second message — *"keep
-            the colors consistent, the gif has some issues with consistency of
-            colors"* — asks for the thing this line has done since 9 Sep: the
-            raised letters take `--sio-vocab` and `--sio-grammar`, the blue and
-            pink a learner can see on the stops two hundred pixels below. So
-            nothing here changed colour; what changed is that the colours now
-            hold still while the type moves, which is what the gif does not do.
-
-            THE WORDS ARE UNCHANGED. His frame reads « Fluency, built On
-            Linguistic Goals »; this line reads « Building your Fluency on
-            Linguistic Goals », which is the wording he settled on 8 Sep and
-            which spells the same F·O·L·G. He asked to transpose the ANIMATION,
-            so the animation is all that moved. */}
-        <p
-          className="fluo-name-strike mt-1.5 inline-block px-4 py-0.5 text-[1.35rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.8rem] [@media(max-height:480px)]:mt-1 [@media(max-height:480px)]:text-[0.9rem]"
-          style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
-        >
-          {/* One span per raised letter, and the sentence given once to a
-              screen reader — otherwise it reads out four stray characters. */}
-          <span aria-hidden>
-            Building your{" "}
-            <span className={CAP} style={{ color: BRAND.F }}>F</span>luency{" "}
-            <span className={CAP} style={{ color: BRAND.o }}>o</span>n{" "}
-            <span className={CAP} style={{ color: BRAND.L }}>L</span>inguistic{" "}
-            <span className={CAP} style={{ color: BRAND.G }}>G</span>oals
-          </span>
-          <span className="sr-only">Building your Fluency on Linguistic Goals</span>
-        </p>
         {named && course && (
           <p
             data-course-tag={course.key}

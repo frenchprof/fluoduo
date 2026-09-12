@@ -2049,51 +2049,119 @@ h3.cahier-display { font-size: var(--fs-h3); }
    who asked for less motion the faintest version of the thing that was already
    too faint. */
 /* ===========================================================================
- *  THE NAME ARRIVES — kinetic type in the welcome sky (2026-09-12)
+ *  THE TAGLINE COLLAPSES INTO THE NAME — the welcome hero (2026-09-12)
  *
- *  Dan sent a frame of a gif: « Fluency, built On Linguistic Goals » in heavy
- *  type, a coloured layer and a dark layer sliding out of register against a
- *  yellow ground. *"see if you can transpose this gif animation (minus the
- *  background) onto the sky of the ENTER landing page, while adjusting the
- *  colors to match the map's colors"* — and then, before anything was built:
- *  *"keep the colors consistent, the gif has some issues with consistency of
- *  colors"*.
+ *  Dan sent a gif, then had to send it twice: the first upload reached this
+ *  session as ONE STILL FRAME, so the first attempt transposed a guess — a
+ *  displaced twin — and he sent it back: *"did i not say to TRANSPOSE THE
+ *  ANIMATION MINUS THE BACKGROUND"*, *"not just the line, the exact animation
+ *  too!"*. The 63-frame file is what this is built from.
  *
- *  HE IS DESCRIBING THE ONE THING NOT TO COPY. In his frame the two layers
- *  have drifted apart across the line, so « Flu » is blue, « ency, built » is
- *  dark, « On Lin » is blue again — the colour changes in the MIDDLE of words
- *  and even inside a glyph. That is the gif's accident, not its idea. The idea
- *  is the double: one copy displaced from another, hard-edged, so the words
- *  look struck rather than typed.
+ *  WHAT THE GIF ACTUALLY DOES, read off the frames:
  *
- *  So the displacement is kept and the drift is not. Which letters are
- *  coloured is decided by the name — F · O · L · G, the four the brand is
- *  built from — and stays decided while the type moves.
+ *    0.0s   « Fluency, built On Linguistic Goals », some letters blue
+ *    2.6s   every letter that is NOT part of the name comes loose and falls
+ *    9.1s   what is left closes up: F l u O L i n G o
+ *    11.6s  two targets drop in from above and land on the two O's
+ *    13.5s  a dart flies in and sticks in one of them
  *
- *  IT PLAYS ONCE, and that is a ruling this file already carries. The ENTER
- *  coin is *"THE ONE THING THAT MOVES ON THIS PAGE"* (Dan, 11 Sep, moving the
- *  beat off goal 1 and onto the door). A headline looping beside it would be a
- *  second thing asking for the eye, on the one screen whose whole job is to
- *  point at a single control. This arrives, settles, and is still.
+ *  So it is not a type effect. It is the brand's own argument, animated:
+ *  Fluency On Linguistic Goals IS FluOLinGo, and the Goals are targets. That is
+ *  why this replaces the two lines that were here rather than joining them —
+ *  the old hero said « Welcome to FluOLinGo » and then explained the name
+ *  underneath, and this does both in one move.
  *
- *  THE DARK TWIN IS A SHADOW, NOT A SECOND ELEMENT: `text-shadow` with no blur
- *  gives the hard displaced copy the gif has, for one property that can be
- *  animated, and leaves the sentence in the document once — a duplicated
- *  headline is read twice by a screen reader.
+ *  THE COLOURS. Dan: *"keep the colors consistent, the gif has some issues with
+ *  consistency of colors"*, then *"use the best colors that complement the
+ *  current colors on this page"*. His own blue, sampled off the file, is
+ *  #1cacff — six units of green away from `--sio-vocab`, the blue of the map's
+ *  vocabulary stops, which this page has used since 9 Sep. So the gif already
+ *  agreed with the page and the palette needed no invention: the letters that
+ *  SURVIVE take that blue, the targets take `--sio-grammar`, and the pair is
+ *  the blue-and-pink Dan picked off the stop buttons.
+ *
+ *  The inconsistency he means is visible in frame 0: the « n » of « On » is
+ *  blue there and falls away two seconds later. Here the rule is exact — blue
+ *  is what the name is made of, white is what leaves — so no letter changes
+ *  its mind.
+ *
+ *  WHITE, NOT THE GIF'S BLACK, for the letters that leave. On yellow they are
+ *  near-black; over a sky that runs midnight to noon that is the one colour
+ *  that vanishes, and these letters have to be READ before they can be missed.
+ *
+ *  THE GAPS CLOSE BY THEMSELVES. Each leaving letter is an inline-block whose
+ *  `max-width` goes to zero, so the survivors are pulled together by normal
+ *  flow — no measuring, no per-letter translate, and it stays right when the
+ *  face or the size changes.
+ *
+ *  IT PLAYS ONCE. The gif loops over 18 seconds; a door does not. The ENTER
+ *  coin is *"THE ONE THING THAT MOVES ON THIS PAGE"* (Dan, 11 Sep) and a
+ *  headline restarting behind it every 18s would be a second thing asking for
+ *  the eye.
  */
-@keyframes fluo-name-strike {
-  0%   { transform: translateX(-0.5em); opacity: 0; text-shadow: 0.24em 0.12em 0 var(--cahier-ink); }
-  55%  { opacity: 1; }
-  100% { transform: translateX(0);      opacity: 1; text-shadow: 0.055em 0.045em 0 var(--cahier-ink); }
+.fluo-hero { --hero-fall: 1100ms; }
+/* The letters that leave: the wrapper collapses, the glyph inside falls. Two
+   elements because one cannot both hold layout width and be thrown. */
+@keyframes fluo-hero-shed {
+  0%, 38%  { max-width: 1.4em; }
+  70%, 100% { max-width: 0; }
 }
-.fluo-name-strike {
-  animation: fluo-name-strike 900ms cubic-bezier(0.16, 0.84, 0.28, 1) both;
-  text-shadow: 0.055em 0.045em 0 var(--cahier-ink);
+@keyframes fluo-hero-fall {
+  0%, 30%  { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100%     { transform: translateY(1.6em) rotate(16deg); opacity: 0; }
 }
-/* No motion: the settled frame, with none of the travel. The displaced twin is
-   the LOOK rather than the movement, so it stays — what goes is the slide. */
+.fluo-hero-shed {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: fluo-hero-shed var(--hero-fall) cubic-bezier(0.6, 0, 0.35, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.fluo-hero-shed > i {
+  display: inline-block;
+  font-style: inherit;
+  animation: fluo-hero-fall var(--hero-fall) cubic-bezier(0.5, 0, 0.75, 0) both;
+  animation-delay: var(--d, 0ms);
+}
+/* The target that lands on an O. It arrives from above and slightly right, the
+   way both of them do in the gif, and overshoots once on landing. */
+@keyframes fluo-hero-target {
+  0%   { transform: translate(0.9em, -2.6em) scale(1.35); opacity: 0; }
+  40%  { opacity: 1; }
+  75%  { transform: translate(0, 0.06em) scale(0.92); opacity: 1; }
+  100% { transform: translate(0, 0) scale(1); opacity: 1; }
+}
+@keyframes fluo-hero-letter-out { to { opacity: 0; } }
+.fluo-hero-o { position: relative; display: inline-block; }
+.fluo-hero-o > span {
+  animation: fluo-hero-letter-out 260ms linear both;
+  animation-delay: var(--d, 0ms);
+}
+.fluo-hero-o::after {
+  content: "";
+  position: absolute;
+  inset: 12% 4% 18% 4%;
+  border-radius: 50%;
+  /* Concentric rings, as the gif draws them: ring, gap, ring, filled centre. */
+  background:
+    radial-gradient(closest-side,
+      var(--sio-grammar) 0 26%,
+      #fff0 26% 44%,
+      var(--sio-grammar) 44% 62%,
+      #fff0 62% 80%,
+      var(--sio-grammar) 80% 100%);
+  animation: fluo-hero-target 620ms cubic-bezier(0.2, 1.5, 0.4, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+/* Reduced motion: the END of the story, with none of the journey. The letters
+   that leave are simply never there, and the targets are already home — which
+   is the settled frame, not a frozen mid-point. */
 @media (prefers-reduced-motion: reduce) {
-  .fluo-name-strike { animation: none; }
+  .fluo-hero-shed { display: none; }
+  .fluo-hero-shed > i,
+  .fluo-hero-o > span,
+  .fluo-hero-o::after { animation: none; }
+  .fluo-hero-o > span { opacity: 0; }
 }
 
 @keyframes fluo-edge-beat {
