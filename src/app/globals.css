@@ -3325,6 +3325,123 @@ input.fluo-bookmark:focus,
 }
 
 /* ===========================================================================
+ *  THE FAMILY BAND AND ITS DOORS — sized in em, off the ramp
+ *
+ *  Dan, 2026-09-12: *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON
+ *  SIZES !!!"*, after the goal card's tiles came out distorted beside the ☰'s.
+ *
+ *  THE DISTORTION AND THE MAGIC NUMBER WERE THE SAME FAULT. The tile was
+ *  `min-h-[64px]` with its name on the type ramp, so on a desktop the words
+ *  grew 36% and the box did not; the first fix pinned the WIDTH to 5.958rem —
+ *  a number derived from the menu's 20.6rem dropdown — which froze the other
+ *  axis instead of freeing it. Two fixed numbers cannot hold a proportion
+ *  between them while the thing inside moves.
+ *
+ *  So every measurement here is in `em`, and the band sets its own em basis
+ *  from the ramp:
+ *
+ *      .fam-band { font-size: var(--fs-body) }   <- 1rem + the step
+ *      tile        4em tall, at most 6em wide
+ *      padding, gaps, the sideways label, the emoji — all em
+ *
+ *  The box and the text now grow by the same factor at every width, on every
+ *  surface, and the aspect ratio is a consequence rather than a constant
+ *  anybody has to maintain. There is no number in this block that would need
+ *  changing if the ramp changed.
+ * =========================================================================== */
+/* THE STACK CARRIES THE EM BASIS AND THE WIDTH.
+   Both were tried on the children first and both failed. `width: fit-content`
+   on the menu's dropdown collapsed every tile to 12px — its padding and
+   border, nothing else — because `.fam-tile-name` is `width: 100%`, which
+   contributes ZERO to intrinsic sizing, so a `minmax(0, 6em)` track had no
+   max-content to fit to. An absolutely positioned dropdown shrink-wraps, so
+   it took the zero.
+
+   `21em` is three 6em doors plus the label, the gaps and the padding — and it
+   is in `em` of a font-size taken from the ramp, so it is a PROPORTION of the
+   type rather than a fixed box. That is the difference between this and the
+   `w-[20.6rem]` it replaces. */
+.fam-bandstack {
+  font-size: var(--fs-body);
+  /* `width` then `max-width`, NOT `min(100%, 21em)`. The ☰'s dropdown sits in
+     an absolutely positioned wrapper that shrink-wraps its child, so a `100%`
+     here resolved against a parent that was itself being sized BY this
+     element — circular, and it collapsed every tile to 12px, the padding and
+     border with no content between them. A definite width breaks the loop and
+     the wrapper takes it; `max-width` still lets a narrow goal card squeeze
+     the stack without feeding back into the parent's intrinsic size. */
+  width: 21em;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 0.5em;
+}
+
+.fam-band {
+  display: grid;
+  /* Three doors after the label, each at most 6em — wide enough for the
+     name at this size, and never wider, so a band in a full-width card cannot
+     stretch its tiles into letterboxes the way a `1fr` track did. */
+  grid-template-columns: auto repeat(3, minmax(0, 6em));
+  align-items: center;
+  gap: 0.375em;
+  padding: 0.375em;
+  background: var(--fam);
+}
+
+/* BLACK, NOT WHITE AND NOT THE FAMILY'S DARK RUNG (Dan, 2026-09-11: "black
+   font instead of white font over these background for the leftmost cat
+   names"). */
+.fam-band-name {
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+  align-self: center;
+  font-size: 0.625em;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--cahier-ink);
+}
+
+/* The door: raised paper, outlined in the family's darkest rung. */
+.fam-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125em;
+  min-height: 4em;
+  padding: 0.25em 0.25em 0.375em;
+  border: 0.125em solid var(--fam-ink);
+  border-radius: 0.75em;
+  background: var(--cahier-paper-raised);
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.12s;
+}
+/* GUARDED, because it MOVES (verify108). An unguarded :hover that transforms
+   leaves a phone showing the last tile tapped in its lifted state until
+   something else is tapped — the tap sticks the hover on. */
+@media (hover: hover) and (pointer: fine) {
+  .fam-tile:hover { transform: translateY(-0.125em); }
+}
+.fam-tile-emoji { font-size: 1.125em; line-height: 1; }
+
+/* TRUNCATE, NEVER BREAK MID-WORD — the trade Dan chose for the ☰ on
+   2026-09-11 (*"It is OK to truncate some long names"*) and confirmed for the
+   goal card on 12 Sep (*"Truncation with '...' is perfect!"*). */
+.fam-tile-name {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 1em;
+  line-height: 1.1;
+  color: var(--cahier-ink);
+}
+
+/* ===========================================================================
  *  A STATION RUNNING INSIDE THE CAHIER
  *
  *  Dan, 2026-09-07: *"EVERYTHING (LIKE THE MAP) MUST NOW RUN WITHIN THE CAHIER

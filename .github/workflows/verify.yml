@@ -532,8 +532,6 @@ jobs:
         run: python3 verify/verify212-guided-steps.py
       # Builds once itself to ask the chooser's own functions what they offer,
       # then checks every answer against the exported pages.
-      - name: "The stop chooser offers nothing that goes nowhere (11 Sep)"
-        run: python3 verify/verify200-chooser-no-dead-stops.py
 
       # A page tour skips a step whose target it cannot find — correct for a
       # conditional target, and the reason three tours in FirstTour.tsx rotted

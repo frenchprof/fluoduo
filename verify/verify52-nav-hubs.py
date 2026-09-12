@@ -125,6 +125,57 @@ ok(not os.path.exists("src/components/FamilyHub.tsx"),
    "DELIBERATE_DOOR (9 Sep) and FAMILY_HUBS is empty, so this component has "
    "no page to render — delete it, or restore a hub on purpose and say so.")
 
+# ── EVERY DOOR IN THE ☰ IS A LINK TO A PAGE ────────────────────────────────
+#
+# Dan, 2026-09-12: *"replace all the pop ups for activities by actual pages (no
+# more pop ups for going into those activities)"*.
+#
+# On 9 Sep seven tiles traded a hub page for a pop-up: six opened a 1-to-50
+# slider, one a two-choice card. The reasoning recorded at the time was that
+# the hubs had been "made redundant". What it missed is that a family HUB and
+# an activity's own CHOOSER were never the same page, and only the hubs went —
+# every one of those activities still had a real page listing what it can play,
+# and had throughout:
+#
+#   MémoiRecall   /practice/flip-it        ActivityLanding, fifty stops
+#   GramMarathon  /practice/grammarathon   ActivityLanding, fifty stops
+#   WorDrill      /practice/wordrill       its own page
+#   VocabulaRain  /games/vocabularain      LetrisIndexPage, every deck
+#   LexicaLocker  /games/lexicalater       LexicalatorIndexPage, every deck
+#   ComposeIt     /games/compose           every bank
+#   Numbers       /games/numbers           NumBus and NumBourse — Dan's own
+#                                          hub-tab from 31 Aug
+#
+# So carrying this out wrote no page at all: the tiles stopped intercepting
+# the click. These rows are what stops a pop-up growing back in front of a
+# page that already works.
+ok(not os.path.exists("src/components/ActivityGoalPicker.tsx"),
+   "the activity pop-ups are gone — every ☰ door is a link",
+   "src/components/ActivityGoalPicker.tsx is back. Dan retired the slider and "
+   "two-choice pop-ups on 2026-09-12: an activity is entered through its own "
+   "page, not a card in front of one.")
+
+MENU_SRC = read("src/components/MenuGrid.tsx")
+for gone, what in (("openSlider", "the 1-to-50 goal slider"),
+                   ("openTwoChoice", "the two-choice card"),
+                   ('kind: "picker"', "the picker cell kind"),
+                   ('kind: "numbers"', "the numbers cell kind")):
+    ok(gone not in nocomment(MENU_SRC),
+       f"MenuGrid has no {what}",
+       f"MenuGrid is calling {what} again — a door that opens a pop-up instead "
+       f"of navigating (Dan, 2026-09-12)")
+
+# lib/activityStops.ts existed ONLY to gate and route that slider, and went
+# with it. `lib/indexMatrix.cellHref` is the gate the landing pages use and is
+# untouched, so the app kept one implementation of "can this activity play
+# this stop" instead of two.
+ok(not os.path.exists("src/lib/activityStops.ts"),
+   "the slider's own stop gate is gone; cellHref is the one left",
+   "src/lib/activityStops.ts is back. It existed only to gate and route the "
+   "goal slider; the landing pages gate themselves through indexMatrix's "
+   "cellHref, and two implementations of the same question is what this repo "
+   "keeps learning not to keep.")
+
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}

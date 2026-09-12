@@ -37,7 +37,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { deckActivityTabs } from "@/components/CahierShell";
 import { FAMILIES, familyName, familyOf, type FamilyKey } from "@/content/activities";
-import { BAND, BAND_NAME, TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
+import { BAND, BAND_NAME, BAND_STACK, TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import type { Sio } from "@/content/sios";
 
@@ -147,7 +147,7 @@ export default function GoalCard({
            three tiles spread over 290px of paper read as three separate things
            a long way apart, which is the opposite of a grid. Dan's reference is
            the HELP sheet, whose icons sit together. */
-        <div className={`${compact ? "mt-3" : "mt-4"} mx-auto w-fit max-w-full overflow-hidden rounded-lg`}>
+        <div className={`${BAND_STACK} ${compact ? "mt-3" : "mt-4"} mx-auto`}>
           {/* THE COLOUR MOVED BEHIND THE TILES (Dan, 2026-09-12, with the ☰
               and a goal card side by side: *"can you see to it that the same
               tiles with colored backgrounds behind the tiles appear under the
@@ -178,11 +178,10 @@ export default function GoalCard({
                visible difference there is between two screens meant to match.
                `fam-${fam}` supplies --fam and --fam-ink, which are the tokens
                MenuGrid's PEN and INK maps hold; verify96 pins both. */
-            <div key={fam} className={`${BAND} fam-${fam}`} style={{ background: "var(--fam)" }}>
+            <div key={fam} className={`${BAND} fam-${fam}`}>
               <span className={BAND_NAME}>{familyName(fam)}</span>
               {tiles.map((t) => (
-                <Link key={t.key} href={t.href!} title={t.label}
-                      className={TILE} style={{ borderColor: "var(--fam-ink)" }}>
+                <Link key={t.key} href={t.href!} title={t.label} className={TILE}>
                   <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
                   {/* The name is either DRAWN or announced, never both — a
                       screen reader that meets the visible label and the

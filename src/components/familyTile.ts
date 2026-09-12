@@ -1,91 +1,58 @@
 /**
  * The family band and its door tiles — one definition, two surfaces.
  *
- * Dan, 2026-09-12, having seen the goal card take the ☰ menu's arrangement:
- * *"the idea is correct but make sure everything including font is
- * identical"*, and *"Truncation with "..." is perfect!"*.
+ * Dan, 2026-09-12: *"make sure everything including font is identical"*, then,
+ * when the desktop tiles came out stretched and the fix used a magic number:
+ * *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"*
  *
- * "Identical" is not something to achieve by copying a class list and hoping;
- * the first cut of the goal card did exactly that and drifted immediately —
- * its names came out in the body face at `--fs-micro` where the menu sets the
- * FluOLinGo hand at 16px, which is the single most visible difference between
- * the two screens. So the strings live here and both files import them, the
- * same reason `.fluo-tilegrid` holds one grid floor for five surfaces and
- * `optionGrid.ts` holds one threshold for four drills.
+ * These are class NAMES only. Every measurement behind them lives in
+ * globals.css under `.fam-*`, in `em` against a band whose font-size is
+ * `var(--fs-body)` — so the box and the words it holds grow by the same factor
+ * at every width, and the tile's proportion is a consequence rather than a
+ * constant somebody has to keep true.
  *
- * WHAT EACH PIECE IS FOR, since a reader meeting a class string has no way to
- * tell which ruling it carries:
+ * WHAT THIS FILE IS FOR. "Identical" is not a thing to achieve by copying a
+ * class list: the first cut of the goal card did exactly that and drifted at
+ * once, its names in the body face where the ☰ sets the FluOLinGo hand. One
+ * import, two surfaces, no drift — the same reason `.fluo-tilegrid` holds one
+ * grid floor for five surfaces and `optionGrid.ts` one threshold for four
+ * drills.
  *
- *   BAND       one family's row. Solid, in the family's BRIGHT shade — Dan,
- *              2026-09-11: *"the background needs to be brighter like this"*,
- *              after a 15%-alpha wash (8 Sep) and then the darkest rung were
- *              both sent back. The caller supplies the colour.
- *   BAND_NAME  the family's name, set sideways down the left in the HOUSE INK
- *              — Dan, same day: *"black font instead of white font over these
- *              background for the leftmost cat names"*. Not white, and not the
- *              family's dark rung.
- *   TILE       the door: raised paper, outlined in the family's darkest rung,
- *              which the caller supplies as `borderColor`.
- *   TILE_EMOJI the glyph above the name. Half of a door's identity, and the
- *              half that survives when the other half truncates.
- *   TILE_NAME  the door's name, TRUNCATED rather than wrapped. Dan chose that
- *              trade for the menu on 2026-09-11 (*"It is OK to truncate some
- *              long names"*) and confirmed it for the goal card on 12 Sep.
- *              16px in the hand face: it was 13px and "hardly legible", and
- *              the face is already at its heaviest weight, so size is what
- *              makes a hand face's strokes thicker.
+ * THREE FIXED SIZES ARE GONE FROM HERE, and it is worth naming them because
+ * each looked harmless:
+ *   min-h-[64px]   the tile's height, while its name rode the ramp — so the
+ *                  words grew 36% on a desktop and the box did not;
+ *   5.958rem       the tile's width, derived from the menu's 20.6rem
+ *                  dropdown. It made the two surfaces agree by freezing the
+ *                  other axis, which is not the same as making them scale;
+ *   text-[16px]    on the ramp via globals, so it did adapt — but it reads as
+ *   text-[10px]    a pixel, and a size that must be looked up elsewhere to
+ *                  know whether it is fixed is a size worth not writing.
  *
- * The ROW GRID is three columns after the label, fixed rather than counted.
- * That is safe here and not an oversight: no family has more than three
- * activities in the registry, so a band never needs a second line. If one ever
- * does, the label needs `grid-row: 1 / -1` before the count changes, or it
- * will sit beside the first row only.
+ * The ROW GRID is three doors after the label, fixed rather than counted: no
+ * family has more than three activities in the registry, so a band never needs
+ * a second line. If one ever does, the label needs `grid-row: 1 / -1` before
+ * the count changes, or it will sit beside the first row only.
  */
 
-/** One family's row. The caller sets `background` to the family's bright shade.
- *
- *  THE TILE TRACK IS CAPPED, NOT `1fr`. Dan, 2026-09-12, looking at the goal
- *  card on a desktop: *"the tiles are looking distorted in your desktop view
- *  (as compared to what is on the menu). why can't you maintain aspect ratio
- *  proportions?"* — and he was right. `1fr` fills whatever box the band is
- *  given, so the same tile came out 95px wide in the ☰ and 227px on a
- *  full-width goal card, both still 64px tall: the menu's neat near-square
- *  stretched into a letterbox.
- *
- *  5.958rem is not a taste; it is the menu's own width, derived from it:
- *
- *      dropdown            20.6rem  = 329.6px
- *      less p-1.5 x2                = -12
- *      less gap-1.5 x3              = -18
- *      less the sideways label      = -13.6
- *      -------------------------------------
- *      three tiles share             286.0  ->  95.3px  =  5.958rem
- *
- *  and 95.3px is exactly what the ☰ measured at before this change. So the cap
- *  is a NO-OP for the menu — its three tracks already resolve to that — and a
- *  fix for every other surface. One string, both right, which is the whole
- *  reason this file exists.
- *
- *  The caller is responsible for not stretching the band itself: a band in a
- *  box wider than its content should be `w-fit`, or it will sit as a wide
- *  coloured strip with the tiles bunched at one end. */
-export const BAND =
-  "grid grid-cols-[auto_repeat(3,minmax(0,5.958rem))] items-center gap-1.5 p-1.5";
+/** The wrapper the bands stack inside. Carries the em basis (from the ramp)
+ *  and the stack's width, because both fail on the children: see the note in
+ *  globals.css about a fit-content dropdown collapsing every tile to 12px. */
+export const BAND_STACK = "fam-bandstack";
+
+/** One family's row. The caller sets `background` to the family's bright
+ *  shade — or gives the element a `fam-<key>` class, which defines it. */
+export const BAND = "fam-band";
 
 /** The family's name, sideways down the left, in the house ink. */
-export const BAND_NAME =
-  "self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black " +
-  "uppercase tracking-[0.12em] leading-none text-[color:var(--cahier-ink)]";
+export const BAND_NAME = "fam-band-name";
 
-/** A door. The caller sets `borderColor` to the family's darkest rung. */
-export const TILE =
-  "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
-  "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
-  "transition hover:-translate-y-0.5";
+/** A door. Takes its outline from the band's `--fam-ink`. */
+export const TILE = "fam-tile";
 
-/** The glyph above the name. */
-export const TILE_EMOJI = "text-lg leading-none";
+/** The glyph above the name — the half of a door's identity that survives
+ *  when the other half truncates. */
+export const TILE_EMOJI = "fam-tile-emoji";
 
-/** The door's name — truncated, never wrapped. */
-export const TILE_NAME =
-  "fluo-btn-hand block w-full truncate text-[16px] leading-tight text-[color:var(--cahier-ink)]";
+/** The door's name — truncated with an ellipsis, never wrapped. */
+export const TILE_NAME = "fam-tile-name";
