@@ -57,16 +57,25 @@ def strip_comments(s):
 PROFILE = strip_comments(read("src/components/ProfileContent.tsx"))
 REWARDS = strip_comments(read("src/components/Rewards.tsx"))
 MODEL = read("src/lib/learnerModel.ts")
-MOI = read("src/app/moi/embed/page.tsx")
+MOI = read("src/app/moi/page.tsx")
 PROFIL = read("src/app/profil/embed/page.tsx")
 NAV = read("src/content/nav.ts")
 HIST = read("src/app/moi/historique/HistoryContent.tsx")
 PROGRESS = read("src/lib/progress.ts")
 
 print("\n1 · one page, two routes")
-check("<ProfileContent" in MOI and "<ProfileContent" in PROFIL,
-      "/moi and /profil both render ProfileContent",
-      "the two routes do not share one component")
+# STRONGER SINCE 2026-09-11, not weaker. The claim was "/moi and /profil render
+# the same component, so the two routes cannot drift". They are now literally
+# one page: /moi forwards into the User page's Me tab, and that tab's twin is
+# the only thing rendering ProfileContent. Two routes, one page, checked as
+# such — a /moi that stopped forwarding, or a Me tab that stopped rendering the
+# profile, each fails here.
+check('tab="me"' in MOI and "UserTabRedirect" in MOI,
+      "/moi forwards into the User page's Me tab",
+      "/moi no longer forwards to the one User page — the two routes can drift again")
+check("<ProfileContent" in PROFIL,
+      "the Me tab's twin renders ProfileContent",
+      "the Me tab stopped rendering ProfileContent, so /moi forwards to a panel without the profile in it")
 check(not os.path.exists("src/app/moi/MoiContent.tsx"),
       "the old MoiContent is gone", "MoiContent.tsx is still there")
 check("redirect(" not in MOI and "redirect(" not in PROFIL,
@@ -81,10 +90,36 @@ rows = re.findall(r'label: "([A-Z-]+)"', PROFILE[PROFILE.find("const ROWS"):PROF
 check(rows == ["RE-DRILLS", "SKILLS", "FRILLS", "ILLS", "THRILLS"],
       f"five rows in Dan's order: {' · '.join(rows)}",
       f"rows are {rows}, expected RE-DRILLS · SKILLS · FRILLS · ILLS · THRILLS")
-glosses = re.findall(r'gloss: "([^"]+)"', PROFILE)
-check(glosses == ["showcase", "problems noted", "rewards"],
-      "the three glosses are in lower case, in brackets after the rhyme",
-      f"glosses are {glosses}")
+# THE BRACKETS ARE GONE (Dan, 2026-09-11): "am trying to explore deleting the
+# english in brackets and putting an emoji at the start of the line instead".
+# This used to pin the three glosses — FRILLS (showcase), ILLS (problems
+# noted), THRILLS (rewards). It now pins what replaced them, and pins it
+# harder, because a glyph can fail in a way a word cannot: by meaning two
+# things at once.
+check("gloss:" not in PROFILE,
+      "no bracketed English is left on the rows",
+      "a gloss came back — the brackets were deleted on 2026-09-11")
+glyphs = re.findall(r'emoji: "([^"]+)"', PROFILE[PROFILE.find("const ROWS"):PROFILE.find("] as const")])
+check(len(glyphs) == 5,
+      "all five rows lead with a glyph",
+      f"{len(glyphs)} of 5 rows have one — a row with no glyph and no gloss is a bare rhyme")
+check(len(set(glyphs)) == len(glyphs),
+      "the five glyphs are all different",
+      f"two rows share a glyph: {[g for g in glyphs if glyphs.count(g) > 1]}")
+# The reward MARKS live in this same file (🔥 ⭐ 💎 🏅) and sit on the THRILLS
+# row itself. A row glyph that is also a mark puts one symbol on two meanings
+# in one line — caught exactly this way on 2026-09-11, when THRILLS led with
+# the 🏅 that already counted its badges.
+# Compare BARE codepoints: "\N{SPARKLES}\ufe0f" and "\N{SPARKLES}" are the same
+# symbol on screen, and a row glyph written with the variation selector would
+# never match a mark written without it — which is how this check passed a
+# straight reuse of the badge mark the first time it was tried.
+bare = lambda t: "".join(c for c in t if c != "\ufe0f")
+marks = re.findall(r'[\U0001F300-\U0001FAFF\u2600-\u27BF]', bare(PROFILE[PROFILE.find("function RewardMarks"):]))
+clash = sorted({bare(g) for g in glyphs} & set(marks))
+check(not clash,
+      "no row glyph is also one of the reward marks",
+      f"{clash} is both a row's glyph and a mark inside a row — one symbol, two meanings")
 check("DO THIS NEXT" in PROFILE and 'setWhy' in PROFILE and "Why this?" in PROFILE,
       "the one next action, with its 'Why this?' behind a button",
       "the next action or its WHY is missing")
@@ -117,9 +152,20 @@ check("TEMPLATES[s.skill](" in MODEL and "fetch(" not in MODEL and "await " not 
 check(re.search(r"goal\?:\s*\{\s*sio: string; by: string \| null\s*\}", PROGRESS) is not None,
       "the goal stores only WHICH outcome and BY WHEN",
       "the goal stores more than the commitment")
-check("canDo" in PROFILE and "GoalPicker" in PROFILE,
-      "the verbatim can-do appears when you open the goal, not on the pin",
-      "the can-do sentence is not behind the goal picker")
+# THE PINNED GOAL CAME OFF THE PROFILE (Dan, 2026-09-11: "There is no need for
+# the black strip and the words above the black strip. Start directly after the
+# 4 tabs with REDRILLS"). The black strip WAS the goal pin, and opening it was
+# the only way to set a goal-and-a-date, so the picker and the can-do sentence
+# behind it went with the strip.
+#
+# The storage is untouched — `progress.goal` still exists and still holds only
+# {sio, by}, asserted above — so nothing a learner already pinned is lost and
+# the feature can come back behind any control Dan wants. What this now guards
+# is that it stays GONE FROM THE PANEL rather than creeping back onto the top
+# of the page, and that no half-removed remnant is left behind.
+check("GoalPicker" not in PROFILE and "setPicking" not in PROFILE,
+      "the goal pin is off the profile panel, with no remnant left",
+      "the goal strip or its picker is back on the panel Dan asked to open on RE-DRILLS")
 check("weak: boolean" in MODEL and "due: boolean" in MODEL,
       "one queue, tagged with BOTH reasons (weak = accuracy, due = interval)",
       "the queue does not separate weak from due")

@@ -8959,3 +8959,228 @@ scripts, all passing.** (Container note: `node_modules` here was a fortnight
 stale, which failed six playwright-core scripts and one Pillow one for reasons
 that had nothing to do with the change — `npm ci` and `pip install pillow`
 first if the same thing happens again.)
+
+## 11 Sep — the 👤 User family becomes ONE page with four tabs
+
+Sole editor of STATUS.md in this commit: this session (branch
+`claude/user-pages-tabs`). **Not merged — handed to fluoduo-main.**
+
+Dan: *"the user pages are very un-userfriendly counter-intuitive. i wouldn't
+know what to do or how to navigate my way around."* Photographed before
+touching anything (`scripts/user-pages-scan.mjs`, a seeded learner 21 goals in,
+phone + desktop), the four pages disagreed with each other in every way
+siblings can:
+
+| | navigation | band said |
+|---|---|---|
+| `/profil` | MAP · EXPORT · HISTORY at the **bottom** | PROFILE |
+| `/reglages` | My Progress · Leaderboard · Profile at the **top**, not itself | SETTINGS |
+| `/leaderboard` | **none** — signed out it is one card on blank paper | LEADERBOARD |
+| `/moi/historique` | a `‹ PROFILE` back link, the only one | **USER** (the family) |
+
+Three navigations in three places, and no page saying which of the four you
+were on.
+
+**Dan chose, asked one question at a time:** one page with four tabs (over four
+pages sharing a strip, and over a smallest-fix patch) · the `-ILLS` rhyme
+**stays** · and a flagged problem should do **both** — push its goal into the
+revise queue AND reach the teacher's dashboard.
+
+### What this branch builds (the layout half)
+
+- `src/content/userTabs.ts` — the four tabs in one place: label, own URL, twin.
+- `UserTabs.tsx` — the strip; `UserPage.tsx` — the host that keeps the band and
+  strip still and swaps only the framed panel, so a tab costs no page load.
+- Three new framed twins (`/leaderboard/embed`, `/moi/historique/embed`,
+  `/reglages/embed`) and `SettingsContent.tsx`, so the framed and standalone
+  copies cannot drift — the `/profil/embed` pattern of 7 Sep.
+- The four old addresses **forward** rather than dying: printed QRs, the ☰
+  menu, the ⌛ icon and the account chip all keep working.
+- `/moi/embed` **deleted** — a duplicate of `/profil/embed`, unreachable once
+  `/moi` forwards.
+- The row words go 11px → 15px (Dan, same day: *"the words frills ills etc can
+  be bigger (without overflowing the line)"*), letter-spacing .08em → .03em to
+  buy the width back. `ILLS (problems noted)` was the longest row; it and every
+  other still sit on one line beside their count at 390px.
+- **The bracketed English is gone, a glyph leads instead** (Dan: *"am trying to
+  explore deleting the english in brackets and putting an emoji at the start of
+  the line instead"*): ⏱️ RE-DRILLS · 🧮 SKILLS · 🎞️ FRILLS · 🩹 ILLS · 💫 THRILLS.
+  All five are unused elsewhere in `src/`, per the one-glyph-one-meaning rule.
+
+### Four checks updated — every one of them stricter, none weakened
+
+- **verify117** (a twin must be reachable at its own URL) learned the second
+  legal shape: a route may forward into the User page if `userTabs.ts` lists
+  its twin and the host frames it. It also now requires the frame to be
+  **mounted** (`<EmbedFrame`) rather than merely imported — the old test passed
+  a file that imported it and never rendered it, for every station in the app.
+- **verify30** §1 now asserts the stronger one-page shape; §2 pins the glyphs
+  instead of the three deleted glosses, and fails if two rows share one or if a
+  row's glyph is also one of the reward marks on its own row.
+- **verify99** follows the Settings body to `SettingsContent.tsx`.
+- **verify82** drops its row for the deleted `/moi/embed`.
+
+### Two faults found by break-testing, not by reading
+
+1. THRILLS first led with 🏅 — which is not the badge mark (that is 🎖️) but is
+   indistinguishable from it at 15px. A look-alike, not a collision: the
+   comment in the file says so accurately now.
+2. **The clash check passed a straight reuse of 🎖️.** Emoji written with the
+   variation selector (`🎖️`) never matched the same symbol written without it,
+   so the rule compared sets that could not intersect. It strips `️` from
+   both sides now, and catches reuse of all three marks.
+
+Green the way CI runs it: `tsc`, wall build + 97 checks, open build + 25,
+eslint on every touched file.
+
+### Still open
+
+- **The other half of Dan's answer 3** — flagging pushing a goal into the
+  revise queue and onto `/teacher` — is NOT in this branch. `teacher/page.tsx`
+  has three branches in flight on it (`qc/color-217` +13, `qc/icon-glyph-swap`
+  +4, `claude/icon-glyph-swap-lexicalocker` +1); a second PR after those land.
+- **The Me panel's own insides** — the U0–U4 grid still has no key, THRILLS is
+  still last though it is the only row that is never empty, and FRILLS still
+  reads EMPTY. Shown to Dan as a mock-up; not built, pending his word.
+- ~~A naming wrinkle: the tab says **Me**, the ☰ menu says **Profile**.~~
+  **RESOLVED THE SAME DAY, and it was never Dan's to resolve.** He looked at
+  the live app and said *"i see User and Profile, i do not see Me"* — because
+  « Me » existed only on this branch. It was invented here; the mock-up he
+  approved happened to carry it, which let it pass as decided. Then: *"use the
+  same words colors and emojis"*. So the strip no longer writes any of them
+  down. `userTabs.ts` reads `activities.ts` for the label and the glyph, and
+  the colour is the User family's own pen and wash:
+
+      👤 Profile · 🏆 Leaderboard · ⌛ History · ⚙️ Settings
+
+  History is the one tab with no registry entry — it is not a menu tile (the
+  9 Sep grid gives User three) — so it names itself there and wears the ⌛ the
+  top bar has meant « my learning history » with since 2026-07-25.
+
+  THE LESSON, because it is the second time this session: a mock-up is a
+  QUESTION, and everything in it that was not asked about is still unasked. A
+  reader cannot tell which words in a picture are the proposal and which are
+  filler, so anything invented inside one has to be named as invented when the
+  picture is sent — or it gets approved by accident.
+
+  Measured at 320 / 360 / 390px: the four tabs total 303px at the narrowest,
+  and no label is clipped at any width.
+
+### Same day, later — the Profile panel, and one feature removed with it
+
+Dan, on the panel itself:
+
+1. *"The name of the overarching title and the sub part names should not repeat
+   each other"* — the band said PROFILE directly above a tab saying Profile.
+   **The band is the FAMILY now** (`familyName("user")` → « User », the ☰
+   menu's own word) and it no longer moves when a tab does: you are still in
+   User whichever panel is open. The tabs keep the registry's words.
+2. *"There is no need for the black strip and the words above the black strip.
+   Start directly after the 4 tabs with REDRILLS"* — gone: the course line
+   (« Moi · LAF1201 · A1 · GOAL 22 / 50 ») and the black pinned-goal bar.
+3. *"There shouldn't be any text between the green stripe REDRILL and the grid
+   items below"* — the « Nothing waiting » sentence is gone, and so is the rule
+   that used to separate it from the grid, which now separated nothing.
+4. *"Instead there should be a legend below that grid… one-word-per color…
+   in a single row"* — **STRONG · MIXED · WEAK · NEW · DONE**, one row at
+   320px. The swatches read `--tier-good/medium/weak` and `--cahier-line`, the
+   very tokens HeatStrip paints the cells with, so the key cannot say a
+   different green from the tiles. DONE is the ring, drawn as an outline.
+   (« UNTRIED » was the first word tried and it pushed DONE onto a second line
+   on a phone; « NEW » says the same thing in three letters.)
+
+**A FEATURE WENT WITH THE BLACK STRIP, AND DAN SHOULD KNOW.** That bar *was*
+the goal pin: tapping it opened `GoalPicker`, the only way in the app to pin
+one of the fifty AND a date. Removing the bar removed the picker, the verbatim
+can-do sentence behind it, and `setGoal`'s only caller. **The stored data is
+untouched** — `progress.goal` still holds `{sio, by}` — so nothing a learner
+pinned is lost and the feature can return behind any control Dan likes. The
+☰ menu's 1–50 slider is NOT the same thing: it picks what to practise now, with
+no date. `verify30` §5 now guards that the pin stays off the panel rather than
+that it exists, and says why.
+
+Nine lint warnings appeared when the strip went — imports and state only it
+used. All removed; the touched files are at zero.
+
+### 12 Sep — the rows that had nothing in them are gone
+
+Shown each row opened in the real app, Dan ruled on all four, and then on a
+fifth the next message:
+
+| row | ruling | built as |
+|---|---|---|
+| FRILLS | *"should not appear… until the student has completed one creation (either ChaTutor or ComposeIt)"* | appears on a first ComposeIt tally |
+| ILLS | *"is unclear what this is about - i suggest also to hide until we figure out to use it"* | never shown |
+| THRILLS | *"Don't show this section until there is something to show for it. And don't show the items that are not yet achived"* | appears once a badge is earned; lists earned badges only |
+| — | *"As for the 'payable' colors, move them into Settings instead"* | `components/AccentColours.tsx`, in Settings |
+| SKILLS | *"drop skills"* | never shown |
+
+SKILLS is worth the note. The day before, Dan asked it to *"list out all the
+skills they have successfully acquired"*. Shown what it actually renders — four
+tiles reading 0 / 21, 0 / 26, 0 / 2, 0 / 1 for an account twenty-one goals in,
+because it counts ANSWERS LOGGED and not goals done — he dropped it instead of
+having it rebuilt. The panel is now RE-DRILLS (with the grid and its key) and
+THRILLS, and nothing else.
+
+The five rows stay in `ROWS` and keep their glyphs; a `rowsToShow()` gate
+decides which appear. So `verify30`'s five-row and glyph assertions still hold,
+and any row can come back by changing one line rather than being rewritten.
+
+**KNOWN GAP, flagged rather than papered over:** a ChaTutor conversation cannot
+be detected. `activityLedger`'s `PREFIX_TO_KEY` maps ComposeIt (`compose`) and
+has no ChaTutor entry, so "one creation" covers half of what Dan named. Wiring
+ChaTutor into the ledger is its own change.
+
+### 12 Sep — the other two purchases found their homes
+
+The open question above (*"still in THRILLS and also purchases: the Bouclier
+and the expert game decks… he has not said where these go"*) was put to Dan and
+he answered both in one message: **"leave the expert deck under frills. that is
+all. move the bouclier to settings too. but we should call it streak-freezer
+instead of bouclier (better contrast between fire and ice)."**
+
+| what | where it is now | why |
+|---|---|---|
+| the expert deck — « Tous les pays (Expert) », 185 country tiles | the FRILLS panel, under the three CLIPS/DRAFTS/REVISED slots | it is extra COURSE, not a preference |
+| the Bouclier, renamed **Streak-Freezer** ❄️ | Settings, under a **Gems** heading | it is arranged in advance, like the accent colour |
+
+`Rewards.tsx` is therefore earned badges and nothing else — THRILLS is now
+purely what a learner has achieved, which is what Dan asked for on 11 Sep.
+
+**The rename is 🛡️ → ❄️, and the reason is contrast.** The streak is 🔥
+everywhere in the app; a shield has no quarrel with fire and ice does. It is a
+display rename only — the storage field is still `shields`, `buyShield()` and
+`SHIELD_COST` keep their names, the Memo/LexicaLocker precedent. Renamed on the
+two learner-visible surfaces (the Settings control, and `RewardToast`'s
+morning-after « Your Streak-Freezer did its job ») and in the comments that
+explain them. ❄️ also appears in `weather-letris.json`, but as the vocabulary
+card « la neige » — the one-glyph-one-meaning rule is about the app's own doors
+and icons, not about what a French deck teaches.
+
+**FRILLS' gate had to widen, and this is the reasoning, not an oversight.** The
+row was hidden until a first creation (above). The shelf the expert deck came
+from is gone, so that gate would have left the deck unbuyable — the same class
+of fault as the goal picker that vanished with the black strip on 11 Sep, and
+worth naming because it is invisible in the diff. FRILLS now also opens when
+the deck is OWNED or AFFORDABLE, which is the same test the row was given in
+the first place: never open on nothing, always open on something you can act
+on. Its closed summary stopped saying `EMPTY` and says `0 / 1 DECKS`, per the
+collapse rule's "a closed section says what is behind it".
+
+**ONE BALANCE, NOT TWO.** First build of Settings printed « 💎 340 » twice,
+forty pixels apart — once in the colours, once in the freezer — because each
+component read `progress` for itself. That is exactly the text the litmus test
+deletes. Hoisting the chip alone would have left it stale after a purchase, so
+the STATE came up instead: `components/GemShelf.tsx` owns the read, draws one
+balance, and passes `p` / `onChange` down to `AccentColours` and
+`StreakFreezer`, which are now controlled (the shape `Rewards` used to have).
+
+`verify116-gem-utilities` followed the move. Its loss-word scan — no shield
+surface may speak in loss — read `Rewards.tsx`, a file that no longer mentions
+the shield, so it would have passed by looking at nothing; it now reads
+`StreakFreezer.tsx` and `ProfileContent.tsx` too. A new assertion holds that
+`buyShield(` lives in `StreakFreezer.tsx`, because nothing else sells it any
+more. Break-tested: replacing that one call makes the check fail.
+
+Full gate green — `tsc` clean, both builds, all 123 checks across the wall and
+open phases, zero lint problems on every touched file.

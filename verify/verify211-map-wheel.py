@@ -78,7 +78,10 @@ if "wheelDownComesBack: true" not in prefs:
     fail.append("the default is no longer 'wheel down comes back'. Dan asked for the "
                 "behaviour changed AND a setting to change it back, in that order")
 
-reglages = open(os.path.join(ROOT, "src/app/reglages/page.tsx"), encoding="utf-8").read()
+# 12 Sep: /reglages became a redirect to the User page's Settings tab, so the
+# switch itself lives here now. This check is the reason the move did not eat
+# it — it read for `wheelDownComesBack`, did not find it, and said so.
+reglages = open(os.path.join(ROOT, "src/app/reglages/SettingsContent.tsx"), encoding="utf-8").read()
 if "wheelDownComesBack" not in reglages:
     fail.append("Settings no longer offers the choice. Dan asked for it by name: "
                 "\"we also want the user to decide IN THE SETTINGS which way is more "

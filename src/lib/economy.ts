@@ -12,7 +12,7 @@
  *             spent. (Absorbs the old "gems == XP" conflation, plus tokens /
  *             points / score.)
  *   💎 Gems  — a SPENDABLE balance, paid out by badges/milestones/level-ups
- *             and spent on cosmetics, the Bouclier, and expert-game unlocks
+ *             and spent on cosmetics, the Streak-Freezer, and expert-game unlocks
  *             (Dan, 7 Sep: "we can unlock difficult parts of the portal" —
  *             GAMES ONLY; "nothing is locked" stays the hard rule for every
  *             goal, lesson, drill and revision on the course spine).
