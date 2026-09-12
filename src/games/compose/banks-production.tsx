@@ -323,15 +323,58 @@ export const POSTCARD_BANK: ComposeBank = {
     { label: "Commencer", phrases: ["Salut", "Cher", "Chère", "Bonjour"] },
     { label: "Où je suis", phrases: ["Je suis", "On est", "à Paris", "aux Philippines", "au Canada", "au Japon"] },
     { label: "La météo", phrases: ["Il fait beau", "Il fait chaud", "C'est ensoleillé", "C'est nuageux", "Il y a des nuages", "Il pleut", "mais"] },
-    { label: "Activités", phrases: ["je visite", "on peut visiter", "je vais à la plage", "on prend le métro", "le musée", "C'est magnifique"] },
+    /* CAPITALISED, because every one of these OPENS the card's fourth line and
+       this group was the only one on the card that was not. « je visite le
+       musée » came out lower-case in the middle of five properly-capitalised
+       sentences — found by the model clause, which could not build « Je visite »
+       out of a bank whose chip says « je visite ». « le musée » stays lower-case:
+       it is a complement, never a first word. */
+    { label: "Activités", phrases: ["Je visite", "On peut visiter", "Je vais à la plage", "On prend le métro", "le musée", "C'est magnifique"] },
     { label: "Finir", phrases: ["À bientôt", "Bises", "Écris-moi", "Au revoir"] },
   ]),
   newScenario() {
-    const t = pick(TRIPS, Math.floor(Date.now() / 60000));
+    /* THE BOOK'S FIVE PARTS, ASKED ONE AT A TIME. The atelier is a five-part
+       card — opening formula → where you are → the weather → what you're doing
+       → closing formula — and the old instruction listed all five in one
+       English sentence, then asked all three questions at once in French. A
+       learner who wrote two of the five had no way to know which three were
+       missing. Each part is now its own question, and the group that answers it
+       leads. (Dan, 2026-09-12, on the same fault in Présenter un pays: *"the
+       questions followed by a model paragraph"*.)
+
+       WHAT THIS DOES NOT DO IS MOVE THE CARD. Its subject is the weather and
+       where you are — SIO-031 and SIO-032 — while its deck is SIO-040's
+       itinerary atelier. That is not drift: the syllabus audit found the book's
+       U3 written atelier had no home, and Dan's decision (2026-08-23) was to
+       present it at stop 40 beside the itinerary with the SIOs untouched. It is
+       recorded here because the mismatch looks like a bug every time someone
+       reads this file. */
+    const i = Math.floor(Date.now() / 60000) % TRIPS.length;
+    const t = TRIPS[i];
+    const m = TRIPS[(i + 1) % TRIPS.length];   // the model is never the learner's own trip
     return {
       headline: `${t.emoji} ${t.fr}`,
-      instructionEn: `You are ${t.en}. Write your e-postcard to a friend: open it, say where you are, give the weather, tell what you are doing, and sign off.`,
-      openingFr: `Alors, c'est comment ${t.fr} ? Quel temps fait-il ? Qu'est-ce que tu fais ?`,
+      instructionEn: `You are ${t.en}. Write your e-postcard to a friend, one line at a time.`,
+      prompts: [
+        { ask: "Commence ta carte ! Tu écris à qui ?", use: "Commencer" },
+        { ask: `Et tu es où ?`, use: "Où je suis" },
+        { ask: "Il fait quel temps là-bas ?", use: "La météo" },
+        { ask: "Qu'est-ce que tu fais ?", use: "Activités" },
+        { ask: "Et pour finir ?", use: "Finir" },
+      ],
+      /* Five lines for five questions, every phrase of them a chip on this
+         card — verify440 fails the build if that stops being true. */
+      model: {
+        label: `${m.emoji} Une carte ${m.fr} — un modèle`,
+        /* ONE SENTENCE PER QUESTION, and every one of them a chip EXACTLY as the
+           chip is written — capital included. The first draft read « …beau mais
+           c'est nuageux », which no learner can produce: the chip is « C'est
+           nuageux », so joining it after « mais » puts a capital in the middle
+           of their sentence. The model was quietly showing better French than
+           the palette can make. */
+        text: `Salut ! Je suis ${m.fr}. Il fait beau. Je visite le musée. À bientôt`,
+      },
+      openingFr: `Alors, c'est comment ${t.fr} ?`,
     };
   },
 };

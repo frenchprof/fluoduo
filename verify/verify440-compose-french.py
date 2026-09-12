@@ -49,7 +49,7 @@ const { listComposeBanks } = await jiti.import("@/games/compose/banks");
 const real = Date.now;
 const out = [];
 for (const b of listComposeBanks()) {
-  const lines = new Set(); const heads = new Set(); const uses = new Set();
+  const lines = new Set(); const heads = new Set(); const uses = new Set(); const models = new Set();
   for (let m = 0; m < 120; m++) {           // covers every pool size in use
     Date.now = () => m * 60000;
     let s; try { s = b.newScenario(); } catch { continue; }
@@ -57,9 +57,10 @@ for (const b of listComposeBanks()) {
       if (t) lines.add(t);
     if (s.headline) heads.add(s.headline);
     for (const q of s.prompts ?? []) if (q.use) uses.add(q.use);
+    if (s.model?.text) models.add(s.model.text);
   }
   Date.now = real;
-  out.push({ id: b.id, lines: [...lines], heads: [...heads], uses: [...uses],
+  out.push({ id: b.id, lines: [...lines], heads: [...heads], uses: [...uses], models: [...models],
              cats: b.categories.map((c) => ({ label: c.label, phrases: c.phrases })) });
 }
 process.stdout.write(JSON.stringify(out));
@@ -140,6 +141,41 @@ else:
            f"draws the odd one out cannot {need}. These lists are generated from COUNTRIES — a country was "
            f"added without its field, or the group holds only the frame and none of the words that go in it.")
 
+# ── 2c · a bank may not teach a word its own deck does not ──────────────────
+# THE HAND-WRITTEN LIST IS THE ONE THAT DRIFTS. `Aux objets trouvés` takes its
+# twenty nouns straight off `objets-articles`, so it cannot disagree with the
+# deck — but `Les quatre repas` picks TWENTY of the forty-two entries in
+# `aliments` by hand, because the deck carries de la farine, du sel and de
+# l'huile, which are ingredients rather than meals, and a forty-chip group is a
+# wall rather than a palette. A named subset is the right answer there; this is
+# what makes it safe. Edit the deck, rename an item, and the bank fails here
+# instead of silently offering a word the learner has never been taught.
+DECK_BACKED = {
+    "repas":   ("src/content/collections/aliments.json",         ("À manger", "À boire", "Le repas")),
+    "magasin": ("src/content/collections/objets-articles.json",  ("Les objets",)),
+}
+for bank_id, (deck_path, labels) in DECK_BACKED.items():
+    bank = next((b for b in BANKS if b["id"] == bank_id), None)
+    if bank is None:
+        ok(False, "", f"the {bank_id} bank is gone — repoint or remove this clause")
+        continue
+    with open(deck_path, encoding="utf-8") as fh:
+        deck = json.load(fh)
+    # Match on the bare noun: the meal chips are « Au petit-déjeuner » where the
+    # deck says « le petit-déjeuner », because one is a sentence opener and the
+    # other a dictionary entry. Stripping the article from both is what lets a
+    # generated contraction be compared with the deck that feeds it.
+    bare = lambda t: re.sub(r"^(au |à la |à l'|aux |le |la |les |l'|un |une |des |du |de la |de l')", "", t.strip().lower())
+    known = {bare(i["fr"]) for i in deck["items"]}
+    chips = [p for c in bank["cats"] if c["label"] in labels for p in c["phrases"]]
+    unknown = [p for p in chips if bare(p) not in known]
+    ok(chips and not unknown,
+       f"{bank_id}: all {len(chips)} chips are words {deck['id']} teaches",
+       (f"{bank_id}: the named groups {labels} are empty — the labels were renamed "
+        f"and this clause stopped measuring anything" if not chips else
+        f"{bank_id} offers {len(unknown)} chip(s) its own deck ({deck['id']}) does not teach: "
+        + ", ".join(f"« {p} »" for p in unknown)))
+
 # ── 2a · the model must be buildable from the chips ─────────────────────────
 # THIS IS THE CLAUSE THAT COUNTS [Situer] AND [Langues], and it does it without
 # a number. Six countries sit on four continents and share languages, so those
@@ -150,13 +186,35 @@ else:
 # a wall, not a model.
 #
 # It is also the clause that would have caught the two holes driving the app
-# found by hand. Before this patch, « C'est quel pays ? » had no country name
+# found by hand. Before that patch, « C'est quel pays ? » had no country name
 # to tap and « On y parle quelle langue ? » had « On parle » and then nothing —
 # a learner with no French was stuck on two of the four questions, and the
 # nationality count sailed through green.
+#
+# IT RUNS OVER EVERY BANK THAT HAS A MODEL, from the `model.text` field itself.
+# The first draft took the models to be "any generated line with three full
+# stops", which worked while one bank had one — and would have quietly stopped
+# testing anything the day a model was written as two sentences.
 def buildable(text, chips):
-    """Greedy longest-chip match. Returns the first remainder it cannot cover."""
-    norm = lambda t: " ".join(t.replace(".", " ").replace(",", " ").lower().split())
+    """Greedy longest-chip match. Returns the first remainder it cannot cover.
+
+    CASE AND COMMAS COUNT; only sentence-final marks are dropped. The first
+    draft lowercased and stripped commas, and driving the finished screens
+    found two things it had waved through — both of them the model showing
+    French the chips cannot actually make:
+
+        model   « Au petit-déjeuner, je mange du pain »   the bank had no comma chip
+        model   « …beau mais c'est nuageux »              the chip is « C'est nuageux »,
+                                                          so the learner gets a capital
+                                                          in the middle of their sentence
+
+    Neither is a typo in the model; both are the palette and the model
+    disagreeing, which is the exact thing this clause exists to catch. A full
+    stop is different — the composer adds those between committed sentences,
+    so no chip ever carries one.
+    """
+    strip = str.maketrans({c: " " for c in ".!?;:"})
+    norm = lambda t: " ".join(t.translate(strip).split())
     rest, pool = norm(text), sorted({norm(c) for c in chips if norm(c)}, key=len, reverse=True)
     while rest:
         hit = next((c for c in pool if rest.startswith(c)), None)
@@ -166,19 +224,15 @@ def buildable(text, chips):
     return None
 
 models = []
-for b in [x for x in [pays] if x]:
+for b in BANKS:
     chips = [p for c in b["cats"] for p in c["phrases"]]
-    # The models are the generated lines the bank hands back as `model.text`;
-    # they are the only lines with four sentences, so take them from the probe
-    # rather than re-deriving them here.
-    for line in b["lines"]:
-        if line.count(".") < 3:
-            continue
-        models.append((b["id"], line, buildable(line, chips)))
+    for text in b["models"]:
+        models.append((b["id"], text, buildable(text, chips)))
 stuck = [f"{i}: « {l} »\n            first word the chips cannot make: « {r} »"
          for i, l, r in models if r]
 ok(models and not stuck,
-   f"every model paragraph is buildable from the bank's own chips ({len(models)} models)",
+   f"every model paragraph is buildable from the bank's own chips "
+   f"({len(models)} models, {len({m[0] for m in models})} banks)",
    ("no model paragraph was found to test — the clause is measuring nothing"
     if not models else
     "a model shows the learner French their chips cannot produce:\n        " + "\n        ".join(stuck)))
@@ -199,6 +253,30 @@ ok(not bad_use,
    f"every question points at a chip group that exists ({guided} bindings)",
    "a question steers the learner at a group that is not there — the guidance "
    "silently falls back to the bank's own order:\n        " + "\n        ".join(bad_use))
+
+# ── 2d · every bank has a persona on the server ─────────────────────────────
+# THE SILENT WRONG ANSWER. functions/api/compose.js resolves the persona as
+# `SCENES[body.scene] || SCENES.cafe`, so a bank whose id has no entry there
+# does not error — it gets THE CAFÉ WAITER, menu and all. On 2026-09-12 eight
+# of the fourteen banks were in that state: « Au restaurant » was run by the
+# café's waiter off the café's menu, and the "check my work" pass on a written
+# country paragraph was a waiter being handed four sentences about le Viêt Nam.
+# Nothing threw, nothing 500'd, and no screenshot of any page looked wrong.
+#
+# The fallback is worth keeping — a scene that 500s is worse than one that
+# improvises — but only because this clause makes it unreachable.
+API = "functions/api/compose.js"
+with open(API, encoding="utf-8") as fh:
+    api = fh.read()
+# Top-level keys of the SCENES object: two-space indent, bare or quoted.
+personas = set(re.findall(r'^  "?([a-z][a-z-]*)"?: \{', api, re.M))
+orphans = [b["id"] for b in BANKS if b["id"] not in personas]
+ok(not orphans,
+   f"every bank has its own persona in {API} ({len(personas)} scenes, {len(BANKS)} banks)",
+   f"{len(orphans)} bank(s) have no persona and would silently get the café waiter — "
+   + ", ".join(orphans)
+   + f". Add a SCENES entry in {API}; the fallback is `SCENES[scene] || SCENES.cafe`, "
+     "so this never shows up as an error.")
 
 # ── 3 · a task may not ask for a step the chips cannot perform ─────────────
 # DERIVED, NOT A LIST OF BANKS. Dan, 2026-09-12: *"what matters is the SIO

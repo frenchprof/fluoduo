@@ -6,6 +6,69 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — three ComposeIt scenes rebuilt around the goal they hang off (this session, branch, NOT merged)
+
+**Dan: *"do the three strict-SIO redesigns now"***, following his earlier
+ruling — ***"what matters is the SIO attached. we need to think of scenarios in
+which those SIOs are applied strictly, no distraction and irrelevant deviation
+with payment and what not"***.
+
+**1 · `À la papeterie` → `Aux objets trouvés` (SIO-021).** The goal is *"I can
+point out and name objects and people and ask what something is"* and it scores
+« c'est + un/une », « ce sont + des » and « C'est quoi ? ». The bank was a
+SHOPPING TRANSACTION — « Je voudrais », « Avez-vous », a [Quantité / prix]
+group — and the app already trains shopping properly twice over (`marche` on
+SIO-044, `au-restaurant` on SIO-050). **The vocabulary gave it away before the
+goal did**: the deck is « Un, une ou des ? » and five of its twenty items —
+un passeport, une carte d'identité, un portefeuille, des lunettes, une clé —
+are not sold in a stationery shop by anybody. They are exactly what turns up at
+a lost-property desk. The clerk holds things up and asks what they are; the
+chips are **generated from the deck, bare** (« sac », not « un sac »), with
+[Un, une ou des ?] as a group of its own, so the article is the learner's
+decision again — which is the whole of what the goal marks. Key and route stay
+`magasin`.
+
+**2 · SIO-041 gets an exercise at all.** Its deck is `aliments` — *"Les repas et
+les aliments — What I eat & drink at each meal"* — and the only bank on it was
+`Au café`, ordering from a waiter. Same words, which is why nobody noticed, but
+the competence is *"Name the 4 meals and ≥2 foods/drinks each"* and a café order
+names no meal. **New bank `repas` — « Les quatre repas »**, four questions one
+per meal, using the machinery built for Présenter un pays the same day; [Le
+repas] leads every question because an answer that does not name the meal scores
+nothing. **`Au café` stays on the deck** — it is the one ComposeIt scene with a
+rule-engine fallback, so retargeting it would have cost the only exercise that
+works with the backend down. If the café should leave stop 41 that is a one-line
+`deckId` move and it is DAN'S, because it changes what the map shows.
+
+**3 · `L'e-carte postale` — five questions, and the deck DOES NOT MOVE.** The
+book's card has five parts (open → where → weather → doing → sign off); the bank
+asked three of them at once and mentioned the other two only in English. Five
+questions now, each floating the group that answers it, then the book's model
+card on a different destination. **Its deck stays `atelier-sio-040`**: the
+subject is weather and place, not an itinerary, but that placement is Dan's own
+23 Aug decision (the book's U3 atelier had no home and he parked it beside the
+itinerary, SIOs untouched). Recorded in the file so it stops reading as a bug.
+
+**AND THE FAULT UNDERNEATH ALL THREE: EIGHT BANKS HAD NO PERSONA.**
+`functions/api/compose.js` resolves `SCENES[scene] || SCENES.cafe`, so a bank id
+with no entry does not error — **it gets the café waiter, menu and all**. Eight
+of the fourteen were in that state: « Au restaurant » was served by the café's
+waiter reading the café's menu, and the "check my work" pass on a written
+country paragraph was a waiter handed four sentences about le Viêt Nam. Nothing
+threw and no screenshot looked wrong. Eight personas written; `greetings` also
+corrected to Léa at a first meeting (the scene changed on 12 Sep, the persona
+still said "a friendly classmate"); the shared RULES block de-caféd.
+
+**verify440 is 13 clauses.** Three new ones, each proved to fail first: every
+bank has a persona (no silent café); every chip is a word its own deck teaches
+(the meals bank picks 20 of 42 by hand — the check is what makes a hand-list
+safe); and the model clause now counts **case and commas**, not just words.
+Tightening it immediately named three faults the loose version had waved
+through — the meals bank had no comma chip, « mais C'est nuageux » capitalised
+mid-sentence, and « je visite » was the one lower-case opener on the postcard.
+All three were the palette and the model disagreeing, which is exactly what that
+clause exists to catch.
+
 ## 12 Sep — Présenter un pays asks four questions, and answers become possible (this session, branch, NOT merged)
 
 **Dan: *"ComposeIt for Vietnam would only make sense for the learner if there
