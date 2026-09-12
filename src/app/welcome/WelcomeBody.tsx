@@ -141,6 +141,8 @@ const HERO_TEXT = "Fluency, built On Linguistic Goals";
 const HERO_KEEP = new Set([0, 1, 2, 15, 18, 19, 20, 29, 30]);
 /** The two O's, which become targets once everything else has fallen. */
 const HERO_O = new Set([15, 30]);
+/** …and which of them takes the dart. */
+const HERO_LAST_O = 30;
 
 const HERO_LETTERS = Array.from(HERO_TEXT).map((ch, i) => {
   if (!HERO_KEEP.has(i)) {
@@ -157,9 +159,15 @@ const HERO_LETTERS = Array.from(HERO_TEXT).map((ch, i) => {
   // gif already used (sampled: #1cacff against --sio-vocab #1ca6ff).
   const style = { color: BRAND.F } as CSSProperties;
   if (HERO_O.has(i)) {
+    // THE DART GOES IN THE LAST O ONLY, as the gif has it. Two darts at the end
+    // of a line whose point has already been made is two things to watch.
+    const last = i === HERO_LAST_O;
     return (
       <span key={i} className="fluo-hero-o" style={{ ...style, "--d": "2500ms" } as CSSProperties}>
-        <span>{ch}</span>
+        <span className="fluo-hero-glyph">{ch}</span>
+        {last && (
+          <span aria-hidden className="fluo-hero-dart" style={{ "--d": "3200ms" } as CSSProperties} />
+        )}
       </span>
     );
   }
@@ -365,7 +373,7 @@ export default function WelcomeBody() {
             than all at once. The two O's wait until the fall is over before
             their targets drop. */}
         <h1
-          className="fluo-hero inline-block px-3 py-0.5 text-[1.12rem] font-black leading-[1.1] tracking-[-0.015em] text-white min-[380px]:text-[1.24rem] sm:px-4 sm:text-[2.7rem] lg:text-[3.1rem] [@media(max-height:480px)]:text-[0.95rem]"
+          className="fluo-hero inline-block font-black leading-[1.1] tracking-[-0.015em] text-white"
           style={{ fontFamily: "var(--font-readable), Roboto, sans-serif", background: BAND }}
         >
           <span aria-hidden>{HERO_LETTERS}</span>
@@ -374,7 +382,7 @@ export default function WelcomeBody() {
         {named && course && (
           <p
             data-course-tag={course.key}
-            className="mt-1.5 inline-block px-3 py-0.5 text-[1rem] font-bold leading-[1.15] text-white/90 sm:mt-2 sm:text-[1.2rem] [@media(max-height:480px)]:hidden"
+            className="mt-1.5 inline-block px-3 py-0.5 text-[length:var(--fs-small)] font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:hidden"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}

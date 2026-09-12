@@ -2099,7 +2099,28 @@ h3.cahier-display { font-size: var(--fs-h3); }
  *  headline restarting behind it every 18s would be a second thing asking for
  *  the eye.
  */
-.fluo-hero { --hero-fall: 1100ms; }
+/* THE SIZE IS FLUID, NOT A LADDER OF BREAKPOINTS (Dan, 2026-09-12: *"PLEASE
+   NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"*).
+
+   The first build of this hero carried five pinned sizes in the markup — one
+   for phones, one above 380px, one at `sm`, one at `lg`, one for short
+   landscape — which is five guesses that each go wrong on the width between
+   them, and none of which knows the one thing that matters here: this line is
+   34 characters and it has to stay on ONE line.
+
+   So it is measured against the viewport instead. The clamp's floor and
+   ceiling are the app's own type scale (globals' --fs-* tokens, themselves
+   fluid), and the middle term is what keeps the line whole — width-relative,
+   so the type and the space it has to fit grow together. Nothing here needs a
+   breakpoint and nothing needs revisiting when the copy changes length: the
+   one number to touch is the vw, and the reason to touch it is written down. */
+.fluo-hero {
+  --hero-fall: 1100ms;
+  font-size: clamp(var(--fs-small), 4.1vw, var(--fs-display));
+  /* Padding in `em` so the plate around the words grows with them rather than
+     being a second size to keep in step. */
+  padding: 0.08em 0.5em;
+}
 /* The letters that leave: the wrapper collapses, the glyph inside falls. Two
    elements because one cannot both hold layout width and be thrown. */
 @keyframes fluo-hero-shed {
@@ -2133,7 +2154,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 @keyframes fluo-hero-letter-out { to { opacity: 0; } }
 .fluo-hero-o { position: relative; display: inline-block; }
-.fluo-hero-o > span {
+/* THE LETTER, BY ITS OWN NAME — not `.fluo-hero-o > span`.
+   That descendant selector also matched the DART, which is a span in the same
+   element, and beat `.fluo-hero-dart` on specificity (one class + one type vs
+   one class). So the dart inherited the letter's fade-out: measured, the
+   animation running on it was `fluo-hero-letter-out` and its opacity settled at
+   8.9e-16. The flight was never wrong; it was invisible.
+   A class says which element is meant. A descendant selector says which
+   elements happen to be there. */
+.fluo-hero-glyph {
   animation: fluo-hero-letter-out 260ms linear both;
   animation-delay: var(--d, 0ms);
 }
@@ -2153,15 +2182,98 @@ h3.cahier-display { font-size: var(--fs-h3); }
   animation: fluo-hero-target 620ms cubic-bezier(0.2, 1.5, 0.4, 1) both;
   animation-delay: var(--d, 0ms);
 }
+/* THE DART, AND IT CANNOT MISS.
+ *
+ * Dan, 2026-09-12: *"i need the animation of the darts, but please please make
+ * sure it lands on the bulls eye EXACTLY"*.
+ *
+ * So it is not aimed — it is PINNED, and the flight is the only thing animated.
+ * Three facts do it, and together they make a miss impossible rather than
+ * unlikely:
+ *
+ *   1 · the dart is a child of the same element that draws the target, so both
+ *       are measured against one box. No coordinates travel between them.
+ *   2 · its `left`/`top` are the target's own centre. The rings are drawn by
+ *       `.fluo-hero-o::after` at `inset: 12% 4% 18% 4%`, so that centre is
+ *       50% across and 12% + (100-12-18)/2 = 47% down. Change the inset and
+ *       change these two numbers with it — they are the same measurement.
+ *   3 · `transform-origin: 0 50%` puts the origin at the dart's TIP, and the
+ *       flight is `translateX` applied AFTER the rotate, which moves it along
+ *       its own shaft. Whatever the angle, whatever the distance, the tip
+ *       returns to the origin — and the origin is the bullseye.
+ *
+ * That is why there is no arithmetic tying the flight to the landing. The
+ * landing is where the element is; the flight is a distance that goes to zero.
+ *
+ * ONE DART, ON THE LAST O, as the gif has it. Two would be two things to watch
+ * at the end of a line whose point has already been made.
+ */
+@keyframes fluo-hero-dart {
+  0%   { transform: rotate(-42deg) translateX(-5.2em); opacity: 0; }
+  18%  { opacity: 1; }
+  70%  { transform: rotate(-42deg) translateX(0.055em); opacity: 1; }
+  /* the thud: it goes in, gives half a millimetre back, and stops */
+  100% { transform: rotate(-42deg) translateX(0); opacity: 1; }
+}
+.fluo-hero-dart {
+  --dart-h: 0.075em;
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  /* PULL IT UP BY HALF ITS OWN THICKNESS, or the tip lands low. `top` places
+     the dart's TOP EDGE, while `transform-origin: 0 50%` — the tip — is half a
+     shaft-width further down. Measured before this line: dx -0.01px, dy 1.85px
+     at 1280. The horizontal was already exact because origin-x is 0, the left
+     edge, which is what `left` places. */
+  margin-top: calc(var(--dart-h) / -2);
+  width: 0.86em;
+  height: var(--dart-h);
+  border-radius: 0.04em;
+  background: currentColor;
+  transform-origin: 0 50%;
+  animation: fluo-hero-dart 520ms cubic-bezier(0.35, 0, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+  pointer-events: none;
+}
+/* The point, at the tip — drawn BACKWARDS from the origin so it adds no length
+   in front of it. A tip that stuck out would be the one thing that lands past
+   the bullseye. */
+.fluo-hero-dart::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 0.16em;
+  height: 0.16em;
+  transform: translateY(-50%);
+  background: currentColor;
+  clip-path: polygon(100% 0, 100% 100%, 0 50%);
+}
+/* The flight at the far end. */
+.fluo-hero-dart::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  width: 0.3em;
+  height: 0.3em;
+  transform: translate(-40%, -50%);
+  background: currentColor;
+  clip-path: polygon(0 50%, 100% 0, 72% 50%, 100% 100%);
+}
+
 /* Reduced motion: the END of the story, with none of the journey. The letters
    that leave are simply never there, and the targets are already home — which
    is the settled frame, not a frozen mid-point. */
 @media (prefers-reduced-motion: reduce) {
   .fluo-hero-shed { display: none; }
   .fluo-hero-shed > i,
-  .fluo-hero-o > span,
-  .fluo-hero-o::after { animation: none; }
-  .fluo-hero-o > span { opacity: 0; }
+  .fluo-hero-glyph,
+  .fluo-hero-o::after,
+  .fluo-hero-dart { animation: none; }
+  .fluo-hero-glyph { opacity: 0; }
+  /* Landed, not in flight: the same `translateX(0)` the flight ends on. */
+  .fluo-hero-dart { transform: rotate(-42deg) translateX(0); opacity: 1; }
 }
 
 @keyframes fluo-edge-beat {

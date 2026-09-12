@@ -167,7 +167,9 @@ function Arrow({ side, move }: { side: Side; move: NonNullable<RailMove> }) {
           not read as an indication of anything, even to the person who asked
           for it. If the name is what makes it an indication, it cannot be the
           part that is dropped when the screen gets small. */}
-      <span className="whitespace-nowrap text-[12px] font-black leading-none">
+      {/* The app's own micro step, not a pinned pixel — it is fluid with the
+          rest of the type scale (globals.css --fs-*). */}
+      <span className="whitespace-nowrap text-[length:var(--fs-micro)] font-black leading-none">
         {printed(side, move.name)}
       </span>
       {(side === "right" || side === "down") && (
