@@ -2401,22 +2401,58 @@ h3.cahier-display { font-size: var(--fs-h3); }
    the reference makes THRILLS neutral on purpose, and so does this. */
 .fam-none     { --strip: var(--cahier-line-strong); --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
 
-/* Ten stops, two to a row (Dan, 2026-08-30: "the columns are to be split
-   halfway at the screen's width"). One grid rather than two columns, so the
-   divide is the container's exact midpoint; `minmax(0,1fr)` because a long
-   French title would otherwise push its column wider than its neighbour. One
-   column below 520px, where two would give each stop about 120px. */
+/* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
+   at the screen's width"). One grid rather than floated columns, so a divide
+   is the container's exact midpoint and `1fr` stops a long French title
+   pushing its column wider than its neighbour.
+
+   The "two to a row" half of that 30 Aug note is superseded below — it is now
+   two to four, and 2026-08-30's reason survives as the LOWER bound. */
 .stop-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
+  /* AS MANY AS FIT, BETWEEN TWO AND FOUR (Dan, 2026-09-11: *"I also asked for
+     SpecuLearn tiles to allow more of them per row. Maybe up to 4 per row.
+     While keeping them neatly vertically and horizontally aligned"*).
+
+     It was `repeat(2, minmax(0,1fr))` at EVERY width — a 320px phone and a
+     1920px screen both got two columns, so « 8. Les instructions de classe »
+     wrapped to three lines on the phone while half the card sat empty on the
+     desktop. Measured on the built app: 2 columns up to ~600px, 3 around 900,
+     4 from ~1100.
+
+     THE FLOOR DOES BOTH CAPS BY ITSELF, which is why there is no breakpoint
+     and no `max-width` ribbon centred in a half-empty card:
+
+       min(50% - 3px, …)          no column may be wider than half   -> >= 2
+       max(11rem, 25% - 4.5px)    no column may be narrower than a quarter -> <= 4
+
+     A breakpoint would be wrong here twice over: it would only be right at the
+     widths someone remembered to write, and these landings run INSIDE the
+     cahier's iframe, where a media query sees the frame and not the phone —
+     390px of device is 313px of frame.
+
+     TWO ON A PHONE IS STILL THE RULE (Dan, 2026-09-07: *"put buttons in two
+     columns"*, looking at SpecuLearn at 390px). The `min(50% - 3px, …)` half
+     is what guarantees it: at 320px the quarter-floor would give one column,
+     and the half-floor overrides it. */
+  grid-template-columns: repeat(auto-fit,
+    minmax(min(calc(50% - 3px), max(11rem, calc(25% - 4.5px))), 1fr));
 }
-/* TWO COLUMNS ON A PHONE TOO (Dan, 2026-09-07: *"put buttons in two
-   columns"*, looking at SpecuLearn at 390px). This rule collapsed the grid to
-   one column below 520px, so every phone — the way the course is actually
-   used — saw a single stack of full-width rows, which is also what the
-   no-full-width-control rule forbids. The grid keeps its 6px gap; the rows
-   themselves already truncate rather than overflow. */
+/* NEATLY ALIGNED, VERTICALLY AS WELL AS HORIZONTALLY — the second half of the
+   same instruction. The tiles were already equal height in a row (`h-full`
+   plus the grid's default `stretch`); what was ragged is the SUBTITLE, which
+   started wherever its title happened to stop. Pinning it to the FOOT of its
+   tile puts every subtitle of a row on one baseline however many lines the
+   title takes above it.
+
+   A `min-height` of two lines was tried first and is the worse answer: it
+   works at most widths and fails at 320px, where a long title wraps to three.
+   The foot never needs to know. */
+.stop-grid a,
+.stop-grid a > span { align-items: stretch; }
+.stop-grid a > span > span { display: flex; flex-direction: column; }
+.stop-grid a > span > span > span:last-child { margin-top: auto; }
 
 /* ── ONE BAND COLOUR LEFT, AND THAT IS THE WHOLE STORY ────────────────────
    Dan, 2026-09-11, shown the six swatches and where each is actually drawn:
