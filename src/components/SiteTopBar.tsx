@@ -36,6 +36,7 @@ import type { ReactNode } from "react";
 import MenuGrid from "@/components/MenuGrid";
 import { useActivityPicker } from "@/components/ActivityGoalPicker";
 import AccountButton from "@/components/AccountButton";
+import FavouriteStar from "@/components/FavouriteStar";
 import SoundControl from "@/components/SoundControl";
 import { type ShellTab } from "@/components/TabFlap";
 
@@ -276,6 +277,11 @@ export default function SiteTopBar({
               (verify31's rule) and a streak is a reading. It renders as plain
               text so the icon strip keeps meaning "these go somewhere". */}
           <StopMark />
+          {/* THE ★, BESIDE THE ACCOUNT CHIP — Dan, 2026-09-12, asked where the
+              favourites live: "At the top right next to their name". The chip
+              is the learner's name (an initialled chip signed in, the red
+              power icon signed out), so this is the last thing before it. */}
+          <FavouriteStar activeKey={active} />
           <AccountButton />
         </div>
       </div>

@@ -458,6 +458,9 @@ jobs:
       - name: No control is nailed to a pixel — counted or ramped, never frozen
         run: python3 verify/verify270-fluid-controls.py
 
+      - name: "Favourites — the star, the page, the caps and the rules (12 Sep)"
+        run: python3 verify/verify300-favourites.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"

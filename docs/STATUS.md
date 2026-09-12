@@ -6,6 +6,80 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+### 12 Sep — FAVOURITES: star any page, and a proper page to keep them on
+
+Dan, after ruling that pinning a single goal stays out: *"what we can do
+though, is to allow learners to favourite particular pages or activity so they
+can revisit when want to, like bookmarks"*. Then, one question at a time:
+
+| asked | answered |
+|---|---|
+| what can be starred? | *"i can't think of anything that should not be able to star"* |
+| where does the list live? | *"At the top right next to their name"* — then *"option A"* |
+| what does a line say? | *"options 3 and 4"* — where it sits AND when AND renameable, *"so long as it is linked"* |
+| and? | *"it should even allow them to organise into folders"*, and *"there should be a proper favourites page"* |
+
+**THIS IS NOT THE OTHER BOOKMARK, and the difference is worth keeping.**
+`StopBookmark` (2 Sep) marks ONE thing — the stop you left off at, the editable
+« 22 » in the top bar — and answers *where am I*. This answers *what do I want
+to come back to*, and there are many. Two features, two names, and nothing in
+the new code touches `continuer.ts`.
+
+**What shipped:** a ★ in the top bar beside the account chip on all 28
+surfaces (tap to star; once starred it is a link to the list, because a
+long-press is invisible); `/favourites`, a real page with a User-grey band;
+rows that link, carry « goal 23 · 3 days ago », rename with ✎ and move into
+folders; folders as native `<details>` with their counts.
+
+**FIREBASE, since Dan asked — and the surprising half is how LITTLE was
+needed.** `users/{uid}/favourites/list`, one document, pushed local-first
+exactly like progress. The rules already allowed it: the `{sub=**}` wildcard
+under `users/{uid}` grants the owner everything not explicitly denied. What was
+ADDED is a shaped rule with the caps — and **the trap worth inheriting is that
+a shaped rule beside that wildcard is DECORATIVE**, because Firestore rules are
+OR-ed: the wildcard would still allow the write the shaped rule refuses. So
+`favourites` had to go into the wildcard's exclusion list in the same edit.
+`verify300` fails if it is ever taken out.
+
+Two other honest notes on the rules. There are no loops in that language, so
+the SIZE and TYPE of the two lists are enforceable and the shape of each row is
+not — the caps are the real protection, and the client's `coerce()` drops
+malformed rows on read so a poisoned document degrades to an empty list rather
+than a broken page. And the repo has **no `firebase.json`**: `firestore.rules`
+is the source of truth but nothing deploys it, so a rules change still has to
+be pasted into the Firebase console by hand. Flagged, not fixed.
+
+**THREE FAULTS FOUND BY DRIVING THE BUILT APP, none visible in the source:**
+
+1. **The star named a page « FluOLinGo ».** Guessing the name from the path
+   failed on `/practice/say-it/aimer-activites`, because WorDrill's registry
+   href is `/practice/wordrill` while its deck route is `/practice/say-it/…` —
+   the door and the route are different strings for the same activity. Fixed by
+   asking the shell for its own `active` key instead of guessing. `verify300`
+   executes that case.
+2. **No heading band.** `CahierShell` renders the band only `{famKey && …}`,
+   and `favourites` had no entry in `SITE_FAMILY`, so the page drew no spine,
+   no family ink and no band — the three-faults-in-one that block's own comment
+   warns about. Added as `favourites: "user"`, which colours it without making
+   it an eighth family in the ☰.
+3. **The rows ran off the right edge on a phone, and under the coils on the
+   left.** Measured at 390px: the iframe starts at x=18 and the coil strip ends
+   at x=56, so the first 38px of ANY framed document is under the rings —
+   globals.css hands that gutter out through `.cahier-foolscap`, which this
+   page deliberately does not wear (it also draws ruled paper, the second sheet
+   the 11 Sep ruling forbids). The page takes the same 3rem itself, and the row
+   wraps under `sm` so the ✕ is never half off-screen.
+
+**`verify82` caught a fourth.** The new file had hand-written
+`SIOS.find(s => s.collectionId === …)`, the deck→stop lookup that is supposed
+to live only in `lib/stopTag.ts`. That check exists because the same lookup was
+already written out twice; it now uses `stopForDeck`.
+
+`verify300-favourites.py` holds the star being MOUNTED and not merely imported
+(verify117's lesson), the naming rules EXECUTED, the two caps agreeing between
+client and rules, the wildcard exclusion, and that deleting a folder keeps the
+pages inside it. Break-tested four ways, all red.
+
 ## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
 
 **MERGED: #306** (the guided first run, five activities — ConjugaZone held on

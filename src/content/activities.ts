@@ -498,6 +498,14 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   // whose `active` is its view key and already resolves) and `dice` is Diced
   // Practice. Both were passing keys with no entry, so both drew no spine.
   deck: "goals", dice: "practice",
+  // FAVOURITES (2026-09-12) — the pages a learner starred. It belongs to the
+  // USER family (it is their own shelf) but is deliberately NOT an activity:
+  // the ☰ menu is seven families with fixed membership (9 Sep) and this is
+  // not an eighth door. Without an entry HERE it would draw no spine, no
+  // family ink and — because CahierShell renders the band only `{famKey &&
+  // …}` — no heading band either, which is exactly the three-faults-in-one
+  // the comment above this block describes. Found by driving the built page.
+  favourites: "user",
   games: "svplay", svplay: "svplay",
   // THE THREE ROUTES WHOSE TILE WAS FOLDED AWAY (Dan, 2026-09-07: pages never
   // lose their coloured strip at the top). NumBus and NumBourse were parked

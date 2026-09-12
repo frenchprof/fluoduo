@@ -7,6 +7,7 @@ rules_version = '2';
 //   users/{uid}/attempts/{id}        APPEND-ONLY audit log            (owner create, never edited)
 //   users/{uid}/responses/{id}       APPEND-ONLY item-level analytics (owner create, shape-checked)
 //   users/{uid}/sessions/{id}        session telemetry                (owner create/update, monotonic)
+//   users/{uid}/favourites/{id}      starred pages + folders          (owner write, SHAPE-CHECKED)
 //   users/{uid}/{sub=**}             pretest state/skills/runs, srs, notes, reviser sessions
 //   leaderboard/{uid}                unified combined-total board     (owner write, VALUE-CHECKED, signed-in read)
 //   events / authEvents              telemetry                        (signed-in create; events shape-checked)
@@ -94,6 +95,32 @@ service cloud.firestore {
         && (!('activityId' in request.resource.data)
             || (request.resource.data.activityId is string
                 && request.resource.data.activityId.size() <= 60));
+    }
+    // FAVOURITES (2026-09-12). Dan: "allow learners to favourite particular
+    // pages or activity so they can revisit ... it should even allow them to
+    // organise into folders". One document holds the whole list — a folder
+    // move and a rename both touch two rows at once, and a single document is
+    // one read, one write and no query.
+    //
+    // WHAT RULES CAN AND CANNOT CHECK, said plainly: there are no loops in
+    // this language, so the SIZE and TYPE of the two lists are enforceable and
+    // the shape of each row inside them is not. The caps are therefore the
+    // real protection — they stop the document being used as free storage —
+    // and the row shape is enforced by the client (`coerce` in
+    // lib/favourites.ts drops anything malformed on read, so a poisoned
+    // document degrades to an empty list rather than a broken page).
+    function validFavourites() {
+      return request.resource.data.keys().hasOnly(['v', 'items', 'folders', 'updatedAt'])
+        && request.resource.data.v is int
+        && request.resource.data.v >= 1
+        && request.resource.data.v <= 100
+        && request.resource.data.items is list
+        && request.resource.data.items.size() <= 200
+        && request.resource.data.folders is list
+        && request.resource.data.folders.size() <= 20
+        && (!('updatedAt' in request.resource.data)
+            || (request.resource.data.updatedAt is int
+                && request.resource.data.updatedAt >= 0));
     }
     function validDeck() {
       return request.resource.data.title is string
@@ -204,6 +231,16 @@ service cloud.firestore {
           && request.resource.data.level >= resource.data.level;
         allow delete: if false;
       }
+      // Starred pages and their folders. THIS MATCH ONLY BITES BECAUSE
+      // 'favourites' IS EXCLUDED FROM THE WILDCARD BELOW — rules are OR-ed,
+      // so a shaped rule sitting beside a permissive `{sub=**}` is decorative:
+      // the wildcard would allow the write this block refuses. Adding a path
+      // here means adding it to that list in the same edit, or the caps are a
+      // comment rather than a rule.
+      match /favourites/{favDocId} {
+        allow read:  if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid) && validFavourites();
+      }
       // Everything else under the user doc (pretest state/skills/runs, srs,
       // notes, reviser sessions). The sub[0] guard keeps this wildcard from
       // re-granting what the append-only matches above just denied (rules are
@@ -214,7 +251,7 @@ service cloud.firestore {
       match /{sub=**} {
         allow read:  if isOwner(uid) || isAdmin();
         allow write: if isOwner(uid)
-          && !(sub[0] in ['attempts', 'responses', 'sessions']);
+          && !(sub[0] in ['attempts', 'responses', 'sessions', 'favourites']);
       }
     }
     match /leaderboard/{uid} {
