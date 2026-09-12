@@ -45,8 +45,25 @@
  * keyboard and is hard with a tremor or a trackpad; the menu is the accessible
  * path to the same move. iOS Files ships both for the same reason.
  *
- * STILL NOT COPIED: multi-select. It earns its place at hundreds of files; the
- * cap here is 200 and the realistic number is a dozen.
+ * ── MULTI-SELECT (Dan, same day: *"add multi-select too"*) ───────────────
+ * Two ways in, because the two devices have different hands:
+ *
+ *   finger  the « ☑︎ Select » button turns the list into a picker: rows stop
+ *           navigating and start ticking, and « Done » turns it back. That is
+ *           iOS Files, and it is the ONLY workable way on touch — a tap has to
+ *           keep meaning "open this", or the page loses its primary action.
+ *   mouse   ⌘/Ctrl-click toggles one, Shift-click takes the range from the
+ *           last one touched. Both enter Select mode on the spot, the Finder
+ *           and Explorer behaviour people try without being told.
+ *
+ * A SELECTION DRAGS AS ONE. Pick up any row that is ticked and the whole
+ * selection comes with it — Finder does this, and a multi-select that still
+ * moved one row at a time would be a tick-box with nothing behind it.
+ *
+ * FOLDERS ARE NOT SELECTABLE. With one level of nesting there is nowhere to
+ * move a folder TO, so a ticked folder could only be deleted — and mixing "a
+ * folder I am deleting" into a set of "pages I am filing" is how a learner
+ * loses something they meant to keep.
  *
  * ── WHAT SURVIVES FROM THE FIRST BUILD, because Dan asked for it by name ──
  * A row still links, still says where it sits and when it was starred, still
@@ -70,8 +87,10 @@ import {
   countIn,
   listing,
   loadFavourites,
+  moveMany,
   moveToFolder,
   removeFavourite,
+  removeMany,
   removeFolder,
   renameFavourite,
   renameFolder,
@@ -94,6 +113,35 @@ const RULE = "var(--cahier-line)";
 const pageKey = (href: string) => `p:${href}`;
 const folderKey = (id: string) => `f:${id}`;
 
+/** The menu a ⋯ opens: absolutely positioned against its row, like a context
+ *  menu, so opening one never pushes the list around. */
+function Menu({ children }: { children: ReactNode }) {
+  return (
+    <div
+      data-menu
+      role="menu"
+      className="absolute right-0 top-full z-20 mt-1 flex min-w-44 flex-col overflow-hidden rounded-lg border-2 shadow-lg"
+      style={{ borderColor: LINE, background: PAPER }}
+    >
+      {children}
+    </div>
+  );
+}
+
+function MenuItem({ onClick, children }: { onClick: () => void; children: ReactNode }) {
+  return (
+    <button
+      type="button"
+      role="menuitem"
+      onClick={onClick}
+      className="min-h-11 px-3 text-left text-sm font-bold hover:opacity-70"
+      style={{ color: INK, borderBottom: `1px solid ${RULE}` }}
+    >
+      {children}
+    </button>
+  );
+}
+
 export default function FavouritesContent() {
   const [fav, setFav] = useState<Favourites | null>(null);
   const [now, setNow] = useState<number | null>(null);
@@ -104,6 +152,11 @@ export default function FavouritesContent() {
   const [renaming, setRenaming] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [newFolder, setNewFolder] = useState(false);
+  /** Multi-select. `sel` holds hrefs; `anchor` is the last row touched, which
+   *  is what a Shift-click measures its range from. */
+  const [selMode, setSelMode] = useState(false);
+  const [sel, setSel] = useState<string[]>([]);
+  const [anchor, setAnchor] = useState<string | null>(null);
   /** The page being dragged, and where the pointer is, so the ghost can follow. */
   const [drag, setDrag] = useState<{ href: string; label: string; emoji: string; x: number; y: number } | null>(null);
   /** The drop target under the pointer: a folder id, or "root" for the crumb. */
@@ -221,9 +274,14 @@ export default function FavouritesContent() {
         const target = dropAt(ev.clientX, ev.clientY);
         if (target !== null) {
           const dest = target === "root" ? null : target;
-          // Dropping a page where it already lives is not a move, and writing
+          // A DRAG THAT STARTS ON A TICKED ROW CARRIES THE WHOLE SELECTION —
+          // Finder's behaviour, and the difference between a multi-select and
+          // a row of tick-boxes with nothing behind them.
+          const carried = sel.includes(it.href) ? sel : [it.href];
+          const changed = fav.items.filter((i) => carried.includes(i.href) && (i.folder ?? null) !== dest);
+          // Dropping pages where they already live is not a move, and writing
           // it anyway would bump nothing but the save.
-          if ((it.folder ?? null) !== dest) commit(moveToFolder(fav, it.href, dest));
+          if (changed.length) { commit(moveMany(fav, changed.map((i) => i.href), dest)); exitSelect(); }
         }
       }
       end();
@@ -246,33 +304,28 @@ export default function FavouritesContent() {
     document.addEventListener("pointercancel", end);
   };
 
+  const exitSelect = () => { setSelMode(false); setSel([]); setAnchor(null); };
+
+  /** Toggle one row. `range` is a Shift-click: everything between the last row
+   *  touched and this one, in the order the list is CURRENTLY sorted — a range
+   *  measured against anything else selects rows the learner cannot see. */
+  const pick = (href: string, range: boolean) => {
+    setSelMode(true);
+    if (range && anchor) {
+      const order = items.map((i) => i.href);
+      const a = order.indexOf(anchor), b = order.indexOf(href);
+      if (a !== -1 && b !== -1) {
+        const span = order.slice(Math.min(a, b), Math.max(a, b) + 1);
+        setSel((cur) => Array.from(new Set([...cur, ...span])));
+        return;
+      }
+    }
+    setAnchor(href);
+    setSel((cur) => (cur.includes(href) ? cur.filter((h) => h !== href) : [...cur, href]));
+  };
+
   const BTN = "min-h-11 shrink-0 rounded-lg border-2 px-2.5 text-xs font-extrabold";
   const CHROME = { borderColor: LINE, background: PAPER, color: INK };
-
-  /** The menu a ⋯ opens: absolutely positioned against its row, like a context
-   *  menu, so opening one never pushes the list around. */
-  const Menu = ({ children }: { children: ReactNode }) => (
-    <div
-      data-menu
-      role="menu"
-      className="absolute right-0 top-full z-20 mt-1 flex min-w-44 flex-col overflow-hidden rounded-lg border-2 shadow-lg"
-      style={{ borderColor: LINE, background: PAPER }}
-    >
-      {children}
-    </div>
-  );
-
-  const MenuItem = ({ onClick, children }: { onClick: () => void; children: ReactNode }) => (
-    <button
-      type="button"
-      role="menuitem"
-      onClick={onClick}
-      className="min-h-11 px-3 text-left text-sm font-bold hover:opacity-70"
-      style={{ color: INK, borderBottom: `1px solid ${RULE}` }}
-    >
-      {children}
-    </button>
-  );
 
   return (
     <div
@@ -312,6 +365,76 @@ export default function FavouritesContent() {
         {/* ── THE TOOLBAR: a new folder, and how the list is ordered. Both
             content-sized; neither wears the page's width. ── */}
         <div className="mb-2 flex flex-wrap items-center gap-2 border-b pb-2" style={{ borderColor: RULE }}>
+          {/* ── SELECTION BAR. It REPLACES the toolbar rather than joining it:
+              while you are picking, "new folder" and the sort are not what the
+              bar is for, and iOS Files swaps the bar for exactly this reason.
+              Every button is content-sized; none wears the page's width. ── */}
+          {selMode ? (
+            <>
+              <span className="fluo-mono text-[11px] font-black" style={{ color: INK }}>
+                {sel.length} SELECTED
+              </span>
+              <button
+                type="button"
+                className={BTN}
+                style={CHROME}
+                disabled={sel.length === 0}
+                onClick={() => setMenu(menu === "bulk" ? null : "bulk")}
+                data-menu
+                aria-haspopup="menu"
+              >
+                📁 Move to…
+              </button>
+              <button
+                type="button"
+                className={BTN}
+                style={CHROME}
+                disabled={sel.length === 0}
+                onClick={() => { commit(removeMany(fav, sel)); exitSelect(); }}
+              >
+                🗑 Remove
+              </button>
+              <button
+                type="button"
+                className={BTN}
+                style={CHROME}
+                onClick={() => setSel(sel.length === items.length ? [] : items.map((i) => i.href))}
+              >
+                {sel.length === items.length && items.length > 0 ? "Clear" : "Select all"}
+              </button>
+              <button type="button" className={BTN} style={CHROME} onClick={exitSelect}>Done</button>
+              {menu === "bulk" && (
+                <div className="relative">
+                  <Menu>
+                    <span className="fluo-mono px-3 pt-2 text-[10px] font-black" style={{ color: SOFT }}>
+                      MOVE {sel.length} TO
+                    </span>
+                    {here && (
+                      <MenuItem onClick={() => { commit(moveMany(fav, sel, null)); exitSelect(); }}>
+                        ★ Favourites (top)
+                      </MenuItem>
+                    )}
+                    {fav.folders.filter((f) => f.id !== (here ? here.id : null)).map((f) => (
+                      <MenuItem key={f.id} onClick={() => { commit(moveMany(fav, sel, f.id)); exitSelect(); }}>
+                        📁 {f.name}
+                      </MenuItem>
+                    ))}
+                    {fav.folders.length === 0 && (
+                      <span className="px-3 py-2 text-xs" style={{ color: SOFT }}>
+                        No folders yet — make one first.
+                      </span>
+                    )}
+                  </Menu>
+                </div>
+              )}
+            </>
+          ) : (
+          <>
+          {items.length > 0 && (
+            <button type="button" className={BTN} style={CHROME} onClick={() => setSelMode(true)}>
+              ☑︎ Select
+            </button>
+          )}
           {!here && (newFolder ? (
             <>
               <input
@@ -358,6 +481,8 @@ export default function FavouritesContent() {
           <span className="fluo-mono ml-auto text-[10px] font-bold" style={{ color: SOFT }}>
             {here ? `${items.length} ${items.length === 1 ? "ITEM" : "ITEMS"}` : `${fav.items.length} STARRED`}
           </span>
+          </>
+          )}
         </div>
 
         {empty && (
@@ -445,6 +570,7 @@ export default function FavouritesContent() {
                 // The row it came from fades while it is in the air — the
                 // "this is the thing you are carrying" cue every OS gives.
                 opacity: drag?.href === it.href ? 0.4 : 1,
+                background: selMode && sel.includes(it.href) ? "var(--fam-user-wash)" : undefined,
               }}
             >
               {renaming === it.href ? (
@@ -471,17 +597,39 @@ export default function FavouritesContent() {
                 <>
                   <Link
                     href={it.href}
+                    aria-checked={selMode ? sel.includes(it.href) : undefined}
+                    role={selMode ? "checkbox" : undefined}
                     onPointerDown={(e) => pressStart(e, it)}
                     onClickCapture={(e) => {
                       // A drop lands on the row it started from as a CLICK. If
                       // the pointer moved, that click is the tail of a drag and
                       // must not navigate — found the first time a drop opened
                       // the page it was meant to file.
-                      if (didDrag.current) { e.preventDefault(); e.stopPropagation(); didDrag.current = false; }
+                      if (didDrag.current) { e.preventDefault(); e.stopPropagation(); didDrag.current = false; return; }
+                      // IN SELECT MODE A ROW TICKS INSTEAD OF OPENING; outside
+                      // it, ⌘/Ctrl-click and Shift-click enter select mode on
+                      // the spot, which is what a mouse user tries unprompted.
+                      if (selMode || e.metaKey || e.ctrlKey || e.shiftKey) {
+                        e.preventDefault(); e.stopPropagation();
+                        pick(it.href, e.shiftKey);
+                      }
                     }}
                     onDragStart={(e) => e.preventDefault()}
                     className="flex min-h-11 min-w-0 flex-1 cursor-grab select-none items-center gap-2 py-2 no-underline active:cursor-grabbing"
                   >
+                    {selMode && (
+                      // A drawn box, not an <input>: the row is the control, and
+                      // a real checkbox inside a link takes the tap for itself.
+                      <span
+                        aria-hidden
+                        className="grid size-5 shrink-0 place-items-center rounded border-2 text-[11px] font-black"
+                        style={sel.includes(it.href)
+                          ? { borderColor: "var(--fam-user-ink)", background: "var(--fam-user-ink)", color: PAPER }
+                          : { borderColor: LINE, background: PAPER, color: "transparent" }}
+                      >
+                        ✓
+                      </span>
+                    )}
                     <span aria-hidden className="shrink-0 text-base">{it.emoji}</span>
                     <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>
                       {it.label}
@@ -555,7 +703,9 @@ export default function FavouritesContent() {
           style={{ left: drag.x + 14, top: drag.y + 14, borderColor: LINE, background: PAPER, color: INK }}
         >
           <span aria-hidden>{drag.emoji}</span>
-          <span className="max-w-52 truncate">{drag.label}</span>
+          <span className="max-w-52 truncate">
+            {sel.includes(drag.href) && sel.length > 1 ? `${sel.length} pages` : drag.label}
+          </span>
         </div>
       )}
     </div>

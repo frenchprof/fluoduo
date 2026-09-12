@@ -196,6 +196,26 @@ export function removeFolder(f: Favourites, id: string): Favourites {
   };
 }
 
+/**
+ * MOVE MANY AT ONCE — the multi-select half (Dan, 2026-09-12: *"add
+ * multi-select too"*).
+ *
+ * Separate from `moveToFolder` rather than a loop over it, because a loop over
+ * a function that rebuilds the whole item list is N passes for one gesture,
+ * and because ONE pure function is one thing a check can execute. The set is
+ * hrefs, which is the identity everywhere else in this file.
+ */
+export function moveMany(f: Favourites, hrefs: string[], folder: string | null): Favourites {
+  const set = new Set(hrefs);
+  return { ...f, items: f.items.map((i) => (set.has(i.href) ? { ...i, folder } : i)) };
+}
+
+/** Remove many at once. Same reasoning as `moveMany`. */
+export function removeMany(f: Favourites, hrefs: string[]): Favourites {
+  const set = new Set(hrefs);
+  return { ...f, items: f.items.filter((i) => !set.has(i.href)) };
+}
+
 export function moveToFolder(f: Favourites, href: string, folder: string | null): Favourites {
   return { ...f, items: f.items.map((i) => (i.href === href ? { ...i, folder } : i)) };
 }

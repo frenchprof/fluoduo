@@ -64,8 +64,38 @@ enough. Comments are stripped now. verify152, verify153, verify106 and
 verify270 each learned this separately; apparently it has to be learned once
 per author.
 
-**STILL NOT COPIED FROM A DESKTOP OS: multi-select.** It earns its place at
-hundreds of files; the cap here is 200 and the realistic number is a dozen.
+**MULTI-SELECT followed the same afternoon** (*"add multi-select too"*), and
+the trap is the OPPOSITE of the drag's. The obvious build — a plain click
+selects, like Finder — takes the tap away from OPENING a page, which is the
+list's whole reason to exist. So the two devices get different doors:
+
+    finger  « ☑︎ Select » turns the list into a picker: rows stop navigating
+            and start ticking, « Done » turns it back. That is iOS Files, and
+            it is the only shape that keeps a tap meaning "open this".
+    mouse   ⌘/Ctrl-click toggles one, Shift-click takes the range from the
+            last row touched — Finder and Explorer, and what people try
+            unprompted. Both enter Select mode on the spot.
+
+**A SELECTION DRAGS AS ONE.** Pick up any ticked row and the whole selection
+comes with it, and the ghost says « 3 pages ». Finder does this, and a
+multi-select that still moved one row at a time would be a tick-box with
+nothing behind it. **Folders are not selectable**: with one level of nesting
+there is nowhere to move a folder TO, so a ticked folder could only be deleted,
+and mixing "a folder I am deleting" into "pages I am filing" is how a learner
+loses something they meant to keep.
+
+`moveMany` / `removeMany` are pure and separate from their singular cousins —
+one pass per gesture instead of N, and one thing `verify300` can execute.
+Driven in the built app: ⌘-click does not navigate ✓, Shift-click takes the
+range (2→4 = 3) ✓, bulk Move filed exactly those three ✓, a tap in Select mode
+does not navigate ✓, bulk Remove removed exactly the two ticked ✓, the bar
+clears after ✓, and a drag from a ticked row filed all three ✓.
+
+**ONE REAL LINT FAULT CAME OUT OF IT, and it was not a style rule.** `Menu` and
+`MenuItem` were defined inside the component, so every keystroke rebuilt them —
+`react-hooks/static-components`. A component re-created each render REMOUNTS
+its subtree, so an open menu would lose focus whenever anything above it
+changed. Hoisted to module scope.
 
 ### 12 Sep — FAVOURITES: star any page, and a proper page to keep them on
 

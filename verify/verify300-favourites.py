@@ -126,7 +126,7 @@ check(os.path.isfile(here_js) and os.path.isfile(fav_js),
 if os.path.isfile(here_js) and os.path.isfile(fav_js):
     SCRIPT = r"""
 const { describeHere } = require("%s");
-const { emptyFavourites, toggleFavourite, addFolder, moveToFolder, removeFolder, listing, countIn } = require("%s");
+const { emptyFavourites, toggleFavourite, addFolder, moveToFolder, removeFolder, listing, countIn, moveMany, removeMany } = require("%s");
 const out = {};
 // The shell's key beats the path — the « FluOLinGo » bug.
 out.byKey = describeHere("/practice/say-it/aimer-activites", "", "FluOLinGo", "wordrill").auto;
@@ -168,6 +168,16 @@ h = toggleFavourite(h, { href: "/b", auto: "Beta", emoji: "b", where: null }, 10
 h = toggleFavourite(h, { href: "/a", auto: "Alpha", emoji: "a", where: null }, 200).next;
 out.recent = listing(h, null, "recent").items.map((i) => i.label);
 out.byName = listing(h, null, "name").items.map((i) => i.label);
+// Bulk: move three of four, remove two of four, and leave the rest alone.
+let k = emptyFavourites();
+for (const n of [1, 2, 3, 4]) k = toggleFavourite(k, { href: `/k${n}`, auto: `K${n}`, emoji: "k", where: null }, n).next;
+k = addFolder(k, "Box", 9);
+const kid = k.folders[0].id;
+const moved = moveMany(k, ["/k1", "/k2", "/k3"], kid);
+out.bulkMoved = moved.items.filter((i) => i.folder === kid).length;
+out.bulkUntouched = moved.items.filter((i) => i.folder === null).map((i) => i.href);
+const culled = removeMany(k, ["/k1", "/k4"]);
+out.bulkLeft = culled.items.map((i) => i.href).sort();
 console.log(JSON.stringify(out));
 """ % (here_js, fav_js)
     r = subprocess.run(["node", "-e", SCRIPT], capture_output=True, text=True)
@@ -214,6 +224,13 @@ console.log(JSON.stringify(out));
         check(got["recent"] == ["Alpha", "Beta"] and got["byName"] == ["Alpha", "Beta"],
               "Recent puts the newest first and Name sorts alphabetically",
               f"the sorts are wrong — recent {got['recent']}, name {got['byName']}")
+        check(got["bulkMoved"] == 3 and got["bulkUntouched"] == ["/k4"],
+              "moving a selection moves exactly the selection and nothing else",
+              f"a bulk move went wrong: {got['bulkMoved']} moved, "
+              f"{got['bulkUntouched']} left behind (expect 3 and ['/k4'])")
+        check(got["bulkLeft"] == ["/k2", "/k3"],
+              "removing a selection removes exactly the selection",
+              f"a bulk remove went wrong: {got['bulkLeft']} left (expect /k2, /k3)")
 
 shutil.rmtree(TMP, ignore_errors=True)
 
@@ -310,6 +327,28 @@ check("Move to…" in page,
       "« Move to… » survives as the path that needs no drag",
       "« Move to… » is gone. A drag cannot be done from a keyboard, and is "
       "hard with a tremor or a trackpad — iOS Files ships both for that reason")
+
+# ── 7 · multi-select ──────────────────────────────────────────────────────
+# Dan, 12 Sep: "add multi-select too". The trap here is the opposite of the
+# drag's: the OBVIOUS build — a plain click selects, like Finder — takes the
+# tap away from OPENING a page, which is the list's whole reason to exist. So
+# touch gets an explicit Select mode and a mouse gets the modifier clicks.
+check("selMode" in bare_page and "Select" in page,
+      "there is a Select mode, so a tap can still mean « open this »",
+      "the Select mode is gone — without it, selecting on a touch screen has "
+      "to steal the tap, and a favourites list you cannot open is not one")
+check("metaKey" in bare_page and "shiftKey" in bare_page,
+      "⌘/Ctrl-click toggles and Shift-click takes a range (what a mouse tries)",
+      "the modifier clicks are gone — Finder and Explorer both do this and "
+      "people try it without being told")
+check("moveMany" in bare_page and "removeMany" in bare_page,
+      "a selection can be moved and removed in one go",
+      "a selection cannot be acted on in bulk — a tick-box with nothing behind "
+      "it is worse than no tick-box")
+check("sel.includes(it.href) ? sel : [it.href]" in bare_page,
+      "dragging a ticked row carries the WHOLE selection (Finder's behaviour)",
+      "a drag that starts on a ticked row moves only that row, so the "
+      "selection is decoration as soon as you touch it")
 
 check("w-full" not in page,
       "no control on the page wears the whole width",
