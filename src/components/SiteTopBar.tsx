@@ -35,6 +35,7 @@ import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
 import MenuGrid from "@/components/MenuGrid";
 import AccountButton from "@/components/AccountButton";
+import FavouriteStar from "@/components/FavouriteStar";
 import SoundControl from "@/components/SoundControl";
 import { type ShellTab } from "@/components/TabFlap";
 
@@ -271,6 +272,17 @@ export default function SiteTopBar({
               else there is no map to sit above, so the mark stays here. One
               reading, one place on any given screen. */}
           {!onHome && <StopMark />}
+          {/* THE ★, BESIDE THE ACCOUNT CHIP — Dan, 2026-09-12, asked where the
+              favourites live: "At the top right next to their name". The chip
+              is the learner's name (an initialled chip signed in, the red
+              power icon signed out), so this is the last thing before it.
+
+              BOTH SIDES OF THIS MERGE WERE NEEDED. main hid the stop mark on
+              Home the same afternoon this branch added the star after it, so
+              the two edits landed on one line. Keeping either alone loses a
+              feature nobody would see go: drop main's and Home shows the stop
+              twice; drop this and there is no way to star a page at all. */}
+          <FavouriteStar activeKey={active} />
           <AccountButton />
         </div>
       </div>

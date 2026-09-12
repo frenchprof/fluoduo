@@ -448,6 +448,24 @@ export default function WelcomeBody() {
           STILL CONTENT-SIZED. The standing rule is that no single control
           wears the page's width, and on this page a full-width bar would also
           be a wall laid across the road. */}
+      {/* THE GAP IS 1rem, NOT 0.75rem, AND THE PULSE IS WHY (main went red on
+          2026-09-12, at tablet 1024x768: "Enter sits 9px from the bottom edge
+          — it needs at least 10px").
+
+          `.home-map3d-pulse` scales the coin to 1.08, and a bounding box
+          INCLUDES the transform, so the animated box reaches about 3px below
+          where the layout puts it — 12px of clearance measured as 9. The check
+          was right and the gap was the thing that was wrong: a learner's thumb
+          meets the animated coin, not the resting one.
+
+          It passed locally and failed in CI for the dullest possible reason —
+          the animation was at a different phase when each measured. A rule
+          about a moving control has to hold at its LARGEST, so the offset now
+          covers the pulse's own overshoot rather than the resting position.
+
+          Same trap as the 53vw width cap on this very element, recorded a few
+          hours earlier: 58vw measured 61% because the pulse was what was being
+          measured. Second time today this animation has moved a number. */}
       {/* A GAP BETWEEN THE COIN AND STOP 1 (Dan, 8 Sep, over the first
           render: *"why is the ENTER button so close to the 1 button? Can
           there be gap?"*). Measured before touching it, and it was worse
@@ -462,8 +480,23 @@ export default function WelcomeBody() {
           down — which is the edge that was colliding. Height comes off rather
           than width: an ellipse seen in perspective is flat, so a shorter
           coin reads MORE like the stops it imitates, and the width (and so
-          the prominence Dan asked for) is untouched. */}
-      <div className="absolute inset-x-0 bottom-[max(0.75rem,0.5%)] flex flex-col items-center px-6">
+          the prominence Dan asked for) is untouched.
+
+          THE ANCHOR IS 1rem AND NOT 0.75rem, AND THE REASON IS THE BEAT, NOT
+          THE LAYOUT. The coin pulses (`home-map3d-pulse`, scale 1.08 every
+          2s), and an animated element's bounding box includes its transform —
+          so at the top of the beat its bottom edge sits ~3px LOWER than at
+          rest. Anchored at 12px it measured 12.0px at rest and 8.7px at full
+          beat on a 1024x768 tablet and a 1440x900 desktop, under the 10px
+          verify151 requires for a thumb rail. The check therefore went red or
+          green on which tenth of a second it happened to sample, and main did
+          go red on it (12 Sep). At 16px the worst point of the beat is 12.7px
+          on the widest shapes and 13.8px on phones.
+
+          Worth knowing because it was misread twice: the failure looks like a
+          layout bug and is not one — nothing about the coin's LAYOUT position
+          changed. A future beat larger than 1.08 reopens this. */}
+      <div className="absolute inset-x-0 bottom-[max(1rem,0.5%)] flex flex-col items-center px-6">
         {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
             PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
             ENTER"*). The gold ring used to pulse on goal 1, which on a still

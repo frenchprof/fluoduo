@@ -132,12 +132,33 @@ const hrefOf = (key: string) => activity(key)?.href ?? "/map";
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
 const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
-  // LESSON (Dan, 2026-09-09) — Map, the goal itself, and Help now live
-  // together. "Goals" still opens Home for now: the per-SIO page ("Goal =
-  // Specific Instructional Objective") is a separate, larger piece Dan has
-  // someone else building — this tile will point there once it lands.
+  // LESSON — the goal itself, Help, and (2026-09-12) Favourites in the slot
+  // the map used to hold. "Goals" still opens Home for now: the per-SIO page
+  // ("Goal = Specific Instructional Objective") is a separate, larger piece
+  // Dan has someone else building — this tile will point there once it lands.
+  //
+  // WHY THE MAP GAVE UP ITS TILE, AND WHY NOTHING WAS LOST. Dan, 2026-09-12:
+  // *"put Favourites in the burger grid menu in the yellow lesson strip
+  // replacing Map (Map already has multiple doors and does not need this
+  // space)"*. He is right about the count — `/map` is reached from the 🗺️ in
+  // the icon strip two rows above this grid, from the MneMemo tile in the
+  // Practice row below it, and from the hero on Home. Favourites had ONE door
+  // (the ★ beside the account chip) and it only becomes a link once something
+  // is starred, so a learner who has never starred anything could not reach
+  // the page to find out what it was for. This tile is that door.
+  //
+  // ★ AND NOT ⭐. The filled text star is what the top-bar button and the
+  // Favourites page already wear; the emoji ⭐ is XP (StatsHelp: "earned every
+  // answer", and the XP row on the User page), and one glyph means one thing.
+  //
+  // THE TILE AND THE PAGE ARE BOTH YELLOW. For a few hours they were not —
+  // the tile sat here and `SITE_FAMILY` still had `favourites: "user"`, so a
+  // yellow tile opened a grey page. Dan: *"make the favourites page yellow to
+  // match its door"*. The rule that settles it is the plain one: the strip a
+  // door sits in is the colour the page wears. See `SITE_FAMILY` in
+  // activities.ts, where the entry now reads "goals".
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
-    { kind: "one", emoji: "🧭", name: "Map", href: "/map" },
+    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
     { kind: "one", emoji: "🎯", name: "Goals", href: HOME_HREF },
     { kind: "help" },
   ]},
@@ -298,23 +319,51 @@ export default function MenuGrid({
           if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
         }}
       >
-        <span className="flex items-center gap-[0.35em] pl-[0.2em] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+        <span className="flex items-center justify-center gap-[0.1em] font-black uppercase text-[color:var(--cahier-ink)]">
+          {/* TIGHT TO THE GLYPH, AND THE GLYPH IS THE BIG THING (Dan,
+              2026-09-12: *"GO TO Uppercase is correct but is too far from the
+              emoji. -- Make it bigger like in mine"*). The gap was 0.35em with
+              0.2em of padding before it; the two now read as one mark. Both
+              sizes are RAMP sizes rather than em multipliers, so they can be
+              set against each other and measured — 30px beside the number's
+              22px, which is what *"closer to my number size"* asks for. */}
           <span className={NAME}>Go to</span>
-          <span aria-hidden className="text-[1.6em] leading-none">🎯</span>
+          <span aria-hidden className="text-[30px] leading-none">🎯</span>
         </span>
-        <label className={TILE} style={{ borderColor: "var(--cahier-ink)" }}>
+        {/* NOT A TILE. Dan, same message: *"reduce the height of the pink
+            strip. There is no need for a single number to occupy such a big
+            space"*. It was wearing `TILE`, whose `.fluo-row-tall` floor is
+            what makes a DOOR tall enough to hold an emoji over a name — two
+            lines of content this cell does not have. It keeps `.fluo-tap`,
+            the 44px touch floor, because a finger still has to hit it: that
+            is the smallest this may ever be.
+
+            AND IT IS `min-h-[44px]`, THE BARE FLOOR, NOT `.fluo-tap`. That
+            class reads `max(44px, calc(2.75rem + var(--fs-step) * 2.4))`, so
+            it GROWS to about 58px on a desktop — which is what was making this
+            strip tall, not the number in it. A touch floor is about the
+            finger, and a finger does not get bigger on a larger screen: 44 is
+            the number, at every width. verify270 exempts exactly this spelling
+            for exactly this reason. */}
+        <label
+          className="flex min-h-[44px] items-center justify-center rounded-xl border-2 bg-[color:var(--cahier-paper-raised)] px-1"
+          style={{ borderColor: "var(--cahier-ink)" }}
+        >
           <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
           {/* A real number input with its native arrows — Dan asked for "the
               up-down by the side of the field". globals.css strips spinners
               app-wide; `.fluo-stepper` is the one opt-in, and it has to be
-              written `input[type="number"].fluo-stepper` to outrank that rule. */}
+              written `input[type="number"].fluo-stepper` to outrank that rule —
+              and its SIZE lives in that same rule for the same reason: the
+              cahier's form skin sets 0.95rem at a specificity no utility class
+              here can beat, so `text-[22px]` on this element rendered at 15px. */}
           <input
             type="number"
             min={1}
             max={SIOS.length}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            className="fluo-stepper w-full bg-transparent text-center text-[1.35em] font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+            className="fluo-stepper w-full bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
           />
         </label>
         <span className="flex items-center justify-center">
@@ -322,7 +371,7 @@ export default function MenuGrid({
               not open an activity. Still on the touch floor. */}
           <button
             type="submit"
-            className="fluo-tap rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
+            className="min-h-[44px] rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
             style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
           >
             <span className={NAME}>OK</span>
