@@ -184,8 +184,16 @@ export default function MenuGrid({
   // top strip and left spine already wear). The tiles keep their
   // raised-paper ground on top — pen never behind text, per the colour
   // law above — so the effect is light cards on a solid, saturated band.
+  // THE GRID GROWS WITH THE TYPE RAMP (Dan, 12 Sep: "NEVER EVER HARD CODE
+  // FONT SIZES AND BUTTON SIZES"). The names are on the ramp — 16px on a
+  // phone, ~21.8px on a 1440px desktop — but the grid was a fixed 20.6rem, so
+  // the tiles stayed 85px while their names grew, and on a desktop seven of
+  // the twenty clipped to an ellipsis. Measured: at the desktop step the names
+  // run about 1.36x, so the width takes the same step, x21
+  // (20.6rem + 0.36rem*21 = 28.2rem). The tiles now grow with the text they
+  // hold; max-w-[90vw] still caps a narrow phone.
   return (
-    <div className="w-[20.6rem] max-w-[90vw] overflow-hidden rounded-lg">
+    <div className="w-[calc(20.6rem+var(--fs-step)*21)] max-w-[90vw] overflow-hidden rounded-lg">
       {ROWS.map((row, r) => (
         <div
           key={r}
