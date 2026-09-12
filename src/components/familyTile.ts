@@ -90,7 +90,7 @@ export const BAND_NAME =
  *  same 64px on a phone, where the step is zero, and grows with everything
  *  else above it. */
 export const TILE =
-  "flex min-h-[calc(4rem+var(--fs-step)*4)] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
+  "flex fluo-row-tall flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
 

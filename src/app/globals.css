@@ -2946,6 +2946,127 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
    hues, no box around it (the draft removed the card). It is DECORATION —
    the heading on it is ink, never paper, so nothing depends on the gradient
    for contrast. */
+/* THE READING COLUMN, AND TWO CONTROLS THAT ARE NOT SQUARE (same 12 Sep sweep).
+
+   A `max-w-[600px]` on a column of text is the worst hard-coded size of all: a
+   measure exists to keep a line of type readable, so it must be expressed IN
+   type. 600px is 37.5rem at the default, and as `rem` it now widens with the
+   learner's own text size instead of squeezing more words onto a line that was
+   already at its limit. DrillShell used the literal five times.
+
+   The 2D/3D switch and the floating Outils button are real controls, so they
+   take the same treatment as Home's keys: fluid, with the finger's floor
+   pinned. The switch's KNOB is derived from its track (28/38 ≈ 0.74) rather
+   than declared, so the two can never drift apart. */
+.fluo-measure { max-width: 37.5rem; }
+.fluo-switch {
+  --track-h: max(44px, calc(2.375rem + var(--fs-step) * 2));
+  height: var(--track-h);
+  width: calc(var(--track-h) * 1.9);
+}
+.fluo-switch-knob {
+  height: calc(var(--track-h) * 0.74);
+  width: calc(var(--track-h) * 0.74);
+}
+.fluo-fab {
+  --fab: max(44px, calc(2.875rem + var(--fs-step) * 2.5));
+  height: var(--fab);
+  width: var(--fab);
+}
+
+/* CONTROLS GROW WITH THE TYPE — the general form of the Home-keys rule (Dan,
+   2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!",
+   then "just take it all").
+
+   A size typed as `min-h-[44px]` is 44 real pixels forever: it does not follow
+   the window, and — unlike `text-[NNpx]`, which the ramp below rewrites — it
+   does not follow a learner who turns their browser's text up. Measured on
+   Home before this: at LARGE text the keys stayed 58px while the number beside
+   them grew to 60, so the control ended up smaller than its own label.
+
+   TWO SHAPES, AND THE DIFFERENCE MATTERS.
+   `.fluo-tap` is for a control whose height is the ACCESSIBILITY MINIMUM. 44px
+   is what a finger needs, so it is pinned with `max()` and only the growth
+   above it is fluid — a floor that shrank with the type would stop being a
+   floor. At the default text size the two agree exactly (2.75rem = 44px), so
+   nothing moves on a phone.
+   `.fluo-row` and `.fluo-row-tall` are for heights that were a DESIGN choice
+   (56px, 64px), not a floor. Those need no pixel at all: 3.5rem already IS 56
+   at the default, and grows from there. */
+.fluo-tap      { min-height: max(44px, calc(2.75rem + var(--fs-step) * 2.4)); }
+.fluo-row      { min-height: calc(3.5rem + var(--fs-step) * 3); }
+.fluo-row-tall { min-height: calc(4rem + var(--fs-step) * 3.4); }
+
+/* HOME'S THREE KEYS — FLUID, WITH THE TOUCH FLOOR AS A FLOOR (Dan,
+   2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!",
+   then "do the home keys first, then all the rest pls").
+
+   WHAT WAS WRONG. Each key read
+       h-[44px] w-[44px] rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]
+   — six fixed numbers, then all six again at a breakpoint. Unlike `text-[NNpx]`,
+   which globals.css rewrites onto the ramp, NOTHING remaps a size: 58px was 58
+   real pixels on a 13-inch laptop and on a 32-inch monitor alike, and a learner
+   who turned their browser's text up got bigger words around keys that did not
+   move. Measured at 900px wide: text size normal -> keys 58, the goal well 51;
+   text size large -> keys STILL 58, the well 60. The keys ended up smaller than
+   the number beside them.
+
+   THE ONE NUMBER THAT STAYS A NUMBER IS THE FLOOR. 44px is the touch-target
+   minimum a finger needs, not a design size, and a minimum that shrank with the
+   type would stop being a minimum — so it is pinned with `max()` and only the
+   growth above it is fluid. At the default text size on a phone the two agree
+   exactly (2.75rem = 44px), so nothing moves there; a desktop opens the step
+   and lands on ~58px, which is what the old breakpoint jumped to.
+
+   The radius is DERIVED, not declared: 13/44 and 17/58 are both ≈ 0.295 of the
+   side, so one ratio reproduces both of the old corners and keeps reproducing
+   them at any size in between. */
+.home-key {
+  --key-side: max(44px, calc(2.75rem + var(--fs-step) * 2.4));
+  width: var(--key-side);
+  height: var(--key-side);
+  border-radius: calc(var(--key-side) * 0.295);
+}
+
+/* HOME'S GOAL WELL — ONE FLUID SIZE, NO PIXELS, NO BREAKPOINT (Dan,
+   2026-09-12: "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!").
+
+   The first cut of this well did the wrong thing twice over: it named sizes as
+   `text-[28px]` / `text-[22px]` and then swapped them for smaller pixel names
+   at `sm:` to squeeze the row onto a 320px phone. Two hard-coded ladders where
+   one fluid one does the whole job.
+
+   `--fs-step` IS the squeeze. It is 0 on a phone and opens to 0.36rem on a
+   desktop, so one `calc()` per element gives the small phone size and the
+   large desktop size with nothing to switch between — and a learner who raises
+   their browser's text size takes the well with them, which a pixel can never
+   do. Everything else here is in `em`, so the padding and the gap follow the
+   digits instead of being set a second time.
+
+   The multipliers below sit on the same ramp as the app's other sizes; they
+   are chosen so the whole group measures under the 231px that the keys row
+   leaves at 320px — measured, not guessed. */
+.home-goal {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.22em;
+  font-size: calc(1.25rem + var(--fs-step) * 1.55);
+}
+.home-goal-target {
+  line-height: 1;
+  font-size: 1.12em;
+}
+.home-goal-well {
+  padding: 0.2em 0.42em;
+  line-height: 1;
+}
+.home-goal-digits {
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
 .home-strip {
   background: linear-gradient(90deg,
     var(--dopa-focus) 0%, var(--dopa-win) 34%, var(--dopa-joy) 66%, var(--dopa-reward) 100%);

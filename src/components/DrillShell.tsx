@@ -643,7 +643,7 @@ export default function DrillShell({
           disagree. `data-subhead` is the address it portals to. */}
       <div data-subhead className="shrink-0 px-4">{subhead}</div>
       <div className={`flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden${snapRows ? " snap-y snap-mandatory" : ""}`}>
-        <div className="mx-auto flex w-full max-w-[600px] flex-col justify-start pb-4 pt-6 sm:pt-10">
+        <div className="mx-auto flex w-full fluo-measure flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
           {/* HINTS ARE GUIDANCE TOWARD AN UNANSWERED QUESTION (Dan, 2026-08-27:
               "The red error stays after you fix it. You correct your answer,
@@ -686,7 +686,7 @@ export default function DrillShell({
         }`}
       >
         {finish ? (
-          <div className="mx-auto w-full max-w-[600px] px-4 py-3">
+          <div className="mx-auto w-full fluo-measure px-4 py-3">
             <div className="flex min-w-0 items-center gap-2.5">
               <span className="shrink-0 text-lg font-black text-[color:var(--drill-ok-ink)]" aria-hidden>✓</span>
               {next && <NextChip step={next} />}
@@ -727,7 +727,7 @@ export default function DrillShell({
           </div>
         ) : (
         <>
-        <div className="mx-auto grid w-full max-w-[600px] grid-cols-5 gap-2 px-4 py-3">
+        <div className="mx-auto grid w-full fluo-measure grid-cols-5 gap-2 px-4 py-3">
           {secondary && !feedback && (
             <button
               type="button"
@@ -760,11 +760,11 @@ export default function DrillShell({
             }`}
           >
             {feedback.why && whyOpen && (
-              <div className="drill-why mx-auto w-full max-w-[600px] px-4 pt-3 text-sm text-[color:var(--cahier-ink)]">
+              <div className="drill-why mx-auto w-full fluo-measure px-4 pt-3 text-sm text-[color:var(--cahier-ink)]">
                 {feedback.why}
               </div>
             )}
-            <div className="mx-auto flex w-full max-w-[600px] flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
+            <div className="mx-auto flex w-full fluo-measure flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
               <p
                 className={`min-w-0 flex-1 text-sm font-black ${
                   feedback.kind === "correct" ? "text-[color:var(--drill-ok-ink)]" : "text-[color:var(--drill-bad-ink)]"

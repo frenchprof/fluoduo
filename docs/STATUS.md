@@ -83,6 +83,84 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
+## 12 Sep — the goal comes down onto Home, and the byline hangs off the heading
+
+Dan, over a marked-up screen of Home with three things ringed. **He kept 1 and
+2 and dropped 3** once he had seen it working.
+
+**1 · THE EDITABLE GOAL COMES OFF THE TOP BAR, ON HOME.** *"yes i do mean to
+bring down the editable field to just above the map"*, then, seeing it land
+below the keys with a band of empty paper above: *"yes but on the same row as
+the buttons to the right please"*. So 🎯 + the editable `01` now sit at the
+LEFT end of the keys row — goal left, ▶ ⏭ ⏪ right, map below.
+
+**THE SLOT WAS ALREADY SHAPED FOR IT.** It replaces the empty `<div/>` that had
+been holding the left end of that `justify-between` row ever since the old
+`1/50` well was retired.
+
+**AND IT DOES NOT WRAP.** The note beside that slot had concluded 320px could
+not hold both and let the row break — the well on one line, the keys on the
+next. Dan sent that phone back: ***"i don'T want them on separate lines. you
+have to squeeze them into the same row"***. Measured, it was short by FIVE
+pixels: 231px of row against 88 (well) + 8 (gap) + 140 (keys). The well gives,
+never the keys — they sit at the touch-target floor, and shrinking them trades
+a wrap for a missed tap.
+
+**HOW IT GIVES, AND THE MISTAKE ON THE WAY.** The first squeeze named four
+pixel sizes and then swapped them for four smaller pixel sizes at `sm:` —
+two hard-coded ladders where one fluid one does the job. Dan: ***"PLEASE NEVER
+EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"***
+
+`.home-goal` in globals.css is the repair: ONE `font-size` off `--fs-step`,
+which is zero on a phone and opens to 0.36rem on a desktop, with the target,
+the padding and the gap all in `em` so they follow it. No pixel is named in the
+markup and there is no breakpoint to keep in step with anything — the squeeze
+IS the ramp. A learner who raises their browser's text size takes the well with
+them, which a pixel could never do. Measured after: 72 + 8 + 140 = 220 into
+231px, clear at 320 rather than by a hair.
+
+**IT SOFTENS THE 7 SEP RULING, ON ONE PAGE ONLY.** That day the stop replaced
+the streak in the top bar — *"the stop info (and make that editable) at the top
+right ... so we free up the space between the play rewind etc buttons at the
+hero"* — and it still rides the other 27 surfaces there, where there is no map
+to sit above. The freed space BETWEEN the keys is untouched: this sits beside
+them. `SiteTopBar` hides its own mark when `active === "home"` rather than Home
+drawing a second one; it is the same `StopBookmark`, so typing a number here
+bookmarks the stop and every surface hears it through `BOOKMARK_EVENT` — a
+second door onto one value, never a copy.
+
+**2 · « par Dr Chan » HANGS OFF THE HEADING'S OWN LEFT EDGE.** Dan: *"option 2,
+but make it rely on (left-aligned to) the centred line above it"*, then *"make
+it sit much nearer. the gap is currently too big between lines"*.
+
+The heading is centred in a full-width strip, so "left" cannot mean the strip's
+left — that would strand the byline out by the coils. The heading and byline
+now share an `inline-block` wrapper that SHRINKS to the heading's own line: the
+strip's `text-center` still centres it, and inside, everything aligns left.
+Measured at 1280, 390 and 320px, the byline starts within **0px** of
+« Bienvenue » at every one, with nothing hard-coded.
+
+**The old 8px gap could go because its reason went away.** It was there so the
+byline cleared the brand pill, whose highlighter ink overshoots the letters by
+0.18em and paints over whatever is beneath (measured at 1440px: byline y=138,
+pill bottom y=143). Left-aligned, the byline sits under « Bienvenue » and the
+pill is round « FluOLinGo » at the other end of the line. The `z-[1]` stays as
+insurance for the narrow widths where the heading wraps.
+
+**3 · THE BULLSEYE O's — BUILT, SHOWN, DROPPED.** Dan's mock replaced both O's
+in the hero « FluOLinGo » with 🎯. It was built and driven on the real page, in
+two sizes, because he asked to see it before deciding: *"for 3 could you make
+it work (i need to see before i decide)"*. What the measuring found, and what
+would have mattered had it shipped: the emoji is **31px wider** than the two
+letters it replaces, which pushed the heading onto two lines at 320px where it
+had been one. A trimmed version (0.62em) held one line. Dan, shown both:
+***"but we shall leave 3 alone. Just 1 and 2"***. Reverted; nothing of it
+remains. Recorded so the next session knows it was tried, measured, and
+declined rather than forgotten.
+
+Gate: all **130** checks green, `tsc --noEmit` clean, eslint clean on both
+touched files.
+
 ## 11 Sep — the third build goes; the chooser asks the app directly (verify lane)
 
 Dan, shown the three `npm run build`s in one run: ***"do the third build one"***.

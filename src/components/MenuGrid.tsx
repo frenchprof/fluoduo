@@ -163,6 +163,16 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
    still renders from the same strings, which is what makes "identical" a fact
    rather than an intention. */
 
+/* THEIR ONE SUBSTANTIVE CHANGE MOVED INTO THE SHARED STRING, 12 Sep. This
+   branch re-declared TILE and NAME locally to swap `min-h-[64px]` for the
+   new `.fluo-row-tall`; taking that as written would have undone the whole
+   point of the shared file — the menu and the goal card cannot drift only
+   because they read ONE definition. So the class went into familyTile's TILE
+   and the local copies stayed gone. Their class is the better half of the
+   trade: `.fluo-row-tall` sits beside `.fluo-tap` and `.fluo-row` in
+   globals.css, where a reader meets the touch FLOOR and the design heights
+   together, rather than an inline calc() repeated per component. */
+
 
 export default function MenuGrid({
   onNavigate,

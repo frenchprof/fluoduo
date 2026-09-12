@@ -161,11 +161,30 @@ ok('aria-disabled="true"' in home,
 #     both, escaping at 390 by 0.3px. So the literal 50 is gone and the RULE is
 #     asserted instead: two sizes, and the phone one between the 44px
 #     touch-target floor and 50px. verify25 pins the row's matching wrap.
-m = re.search(r"h-\[(\d+)px\] w-\[\1px\] place-items-center", home)
-phone = int(m.group(1)) if m else 0
-ok("sm:h-[58px]" in home and 44 <= phone <= 50,
-   f"the keys are {phone}px on a phone and 58px from sm",
-   f"the phone key size is {phone or 'missing'}px: below 44 it is under the touch-target floor, above 50 the four keys and the 1/50 well do not fit a 360px row")
+#     AND THE TWO LITERAL SIZES ARE GONE (Dan, 2026-09-12: "PLEASE NEVER EVER
+#     HARD CODE FONT SIZES AND BUTTON SIZES !!!"). The keys read `.home-key`
+#     now — one fluid side off `--fs-step` with the 44px touch floor pinned by
+#     `max()`, so a phone still gets exactly 44 and a desktop lands on ~58,
+#     which is what the old breakpoint jumped to.
+#     SO THE CLAIM MOVES FROM THE SPELLING TO THE RULE. Greping for `h-[44px]`
+#     could only ever see how the size was typed; what matters is that the
+#     floor is a floor and the growth is fluid. Both halves are asserted here,
+#     and `verify106-fluidtype` owns the wider ban.
+keys = re.findall(r'className=\{?[`"][^`"]*\bhome-key\b[^`"]*[`"]', home)
+ok(len(keys) >= 3,
+   f"the {len(keys)} keys take their size from .home-key, not from a pixel",
+   "the keys no longer carry .home-key — a hard-coded size has come back")
+ok(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
+   "no key names its own pixel size",
+   "a key is back to a literal h-[NNpx] w-[NNpx]")
+rule = re.search(r"\.home-key\s*\{[^}]*\}", css or "", re.S)
+body = rule.group(0) if rule else ""
+ok("max(44px" in body.replace(" ", "") or "max(44px" in body,
+   "the 44px touch floor is pinned with max(), and only the growth above it is fluid",
+   ".home-key does not pin the 44px touch-target floor with max() — a key could shrink under a finger")
+ok("--fs-step" in body,
+   "the key grows with the type ramp rather than at a breakpoint",
+   ".home-key does not read --fs-step, so the keys are fixed again")
 # THE WELL LEFT THE ROW (Dan, 7 Sep: the editable stop rides the top bar
 # now — "so we free up the space between the play rewind etc buttons").
 # The fit-at-320 worry the shrink rule answered is gone with it: the row
