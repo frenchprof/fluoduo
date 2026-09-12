@@ -392,7 +392,13 @@ export default function MapBody() {
           onClose={() => {
             setOpenSioId(null);
             try {
-              window.history.replaceState(null, "", "/map");
+              // `/home`, NOT `/map` (12 Sep). Closing a `#SIO-nnn` deep link
+              // clears the hash by rewriting the address, and this still named
+              // the page the map used to be. `/map` forwards to `/home` now, so
+              // the learner was left holding an address that bounces: reload and
+              // you go to /map, which redirects you back here. The address bar
+              // should say where you actually are.
+              window.history.replaceState(null, "", "/home");
             } catch {
               // fine
             }
