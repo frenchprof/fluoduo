@@ -204,19 +204,49 @@ check('"Check"' not in specu,
 # The rule it protected — a typed drill gives graded help and records it — is
 # still held for every typed drill that exists, by verify28's own table.
 
-# Word-bank tiles below sm: the typed drills keep their <input> for sm-and-up
-# and render tappable chips beneath it — one `value`, either surface.
+# Word-bank tiles below sm: the typed drills render tappable chips beneath the
+# sentence — one `value`, either surface.
 bank = strip_comments(read("src/components/WordBank.tsx"))
 check(bool(bank) and "onChange(idxs.map((i) => tokens[i]).join(\" \"))" in bank,
       "WordBank exists and mirrors chips into the host's value",
       "src/components/WordBank.tsx missing or not mirroring value")
-# iComplete dropped out of this pair on 31 Aug with its route; GramMarathon is
-# the typed drill that carries the word-bank contract now.
-for name, p in (("GramMarathon", CONTENTS["GramMarathon"]),):
-    src = read(p)
-    check("WordBank" in src and 'className="sm:hidden"' in src and "hidden w-full sm:block" in src,
-          f"{name}: typing above sm, word-bank tiles below it",
-          f"{p}: word-bank/input breakpoint pair missing")
+
+# THE ANSWER IS TYPED IN THE SENTENCE'S OWN GAP (Dan, 2026-09-11: *"whenever
+# there is a blank to complete in a question (gap-fill), please do NOT make a
+# separate long blank that is on a line separate from that gap … Don't
+# multiply lines for nothing"*).
+#
+# THIS ROW USED TO ASSERT THE OPPOSITE, and that is the point of rewriting it
+# rather than deleting it. It required `hidden w-full sm:block` — the 600px
+# bar on its own line — as proof that a drill was wired correctly. Measured on
+# the built app at 1100px before the change: GramMarathon drew a 48px rule
+# inside « J'aime ___ cinéma. » AND a 600px input 62px below it, and the one
+# the learner typed into was the lower one.
+#
+# So the check now holds the new shape and, in the same breath, fails the old
+# one: a `w-full` answer bar coming back is the regression, not the fix.
+# strip_comments, NOT read: the first cut of this row used the raw file and
+# passed on a planted violation, because the prose above the call site says
+# the word "builtInGap" too. A check a comment can satisfy is not a check.
+for name, path in (("GramMarathon", CONTENTS["GramMarathon"]),
+                   ("ConjugaZone", "src/app/conjugaison/embed/page.tsx")):
+    src = strip_comments(read(path))
+    check("GapField" in src and "WordBank" in src and "builtInGap" in src,
+          f"{name}: the gap is the field, and the bank drops its own built row",
+          f"{path}: gap-fill is not on GapField + WordBank builtInGap")
+    check("hidden w-full sm:block" not in src,
+          f"{name}: no full-width answer bar on a line of its own",
+          f"{path}: the `hidden w-full sm:block` answer bar is back — the gap "
+          f"belongs in the sentence (Dan, 2026-09-11)")
+
+# GapField sizes the blank to the ANSWER, not to its container — "exactly
+# where the word is supposed to be if that gap had been filled". A field that
+# went back to filling its parent would satisfy every row above and still be
+# the thing Dan objected to.
+gapf = strip_comments(read("src/components/GapField.tsx"))
+check("ch" in gapf and "answer.length" in gapf,
+      "GapField is as wide as the word that belongs in it",
+      "src/components/GapField.tsx no longer sizes itself from the answer")
 
 # 4Mémoire: the card drill in the shell; the whole-deck TABLE split out to
 # /decks/:id (CuratedDeckTable). One judge (shared.judgePart) grades both
@@ -277,10 +307,21 @@ check("e.defaultPrevented" in shell_code,
       "the shell stands down when a body handled the key itself",
       "DrillShell ignores defaultPrevented — ÉcouTexte's Enter would draw a new text")
 
-# ConjugaZone: the drill leads, the table is the REWARD screen. The old
-# three-mode study table (shown/hidden/typing columns — a fourth interaction
-# grammar nobody else used) is gone; evidence ids (conj-<verb>-<person>) and
-# the phrases-complètes banks survive.
+# ConjugaZone: THE TABLE LEADS AND THE QUESTIONS FOLLOW (Dan, 2026-09-11:
+# *"The main focus of ConjugaZone should be the verb table. The questions are
+# secondary and only come after that table."*).
+#
+# THIS ROW SAID THE OPPOSITE UNTIL TODAY, and pinned it by the component's
+# NAME — it required `RewardTable`, the table a learner earned by finishing
+# the drill (patch 20–21). Dan has reversed that, so the row is rewritten
+# rather than deleted: what it guards now is the new order, and the two things
+# from the old ruling that are still true.
+#
+# The old three-mode study table (shown/hidden/typing COLUMNS — a fourth
+# interaction grammar nobody else used) stays gone. That is not what came
+# back: the modes now live on one switch over the whole table, REVEAL and
+# TYPE IT, which is what Dan asked for in the same breath. Evidence ids
+# (conj-<verb>-<person>) and the phrases-complètes banks survive untouched.
 #
 # 2026-08-24 (approved guidance flow): the pin loosened from "CahierShell not
 # in the file" — the SIGNED-OUT gate now renders inside the page's normal
@@ -294,9 +335,28 @@ check("DrillShell" in conj,
 check("<CahierShell" not in conj or "REQUIRE_SIGN_IN && !user" in conj,
       "CahierShell appears only as the signed-out gate's chrome",
       "ConjugaZone wraps CahierShell outside the signed-out gate")
-check("RewardTable" in conj and "🙈" not in conj and "peeked" not in conj,
-      "the conjugation table is the reward screen; the column modes are gone",
-      "ConjugaZone still carries the shown/hidden/typing column modes")
+check("StudyTable" in conj and "RewardTable" not in conj,
+      "ConjugaZone opens on the table, not on the drill",
+      "ConjugaZone is back on RewardTable — the table is the page's main "
+      "event now, not what the drill pays out (Dan, 2026-09-11)")
+check('useState<"drill" | "table">("table")' in conj,
+      "the table is the screen a learner lands on",
+      "ConjugaZone's first screen is not the table")
+# The effect that rebuilds the run must NOT set the screen. It fires on mount
+# as well as on a verb change, so a setScreen("drill") there made the default
+# above unreachable however it was declared — found by driving the page and
+# landing on the questions anyway.
+run_effect = conj[conj.index("setQueue(shuffle("):] if "setQueue(shuffle(" in conj else ""
+check("setScreen" not in run_effect.split("}, [shown]);")[0],
+      "rebuilding the run leaves the learner on the screen they were on",
+      "the run-rebuild effect sets the screen again — it fires on mount, so "
+      "it overrides the table default")
+check("🙈" not in conj and "peeked" not in conj,
+      "the old per-column shown/hidden/typing modes are still gone",
+      "ConjugaZone has the shown/hidden/typing column modes back")
+check("ConjugaTable" in conj and "GapField" in conj,
+      "the table is the shared ConjugaTable and the drill types in its gap",
+      "ConjugaZone is not using ConjugaTable/GapField")
 check("recordItemResult(`conj-" in conj and "SENTENCE_BANKS" in conj,
       "ConjugaZone keeps its evidence ids and the phrases-complètes banks",
       "ConjugaZone lost its evidence ids or the phrases-complètes banks")

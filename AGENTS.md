@@ -739,3 +739,73 @@ its reason beside it — never as a filename buried in a regex.
 This is the sibling of the mock-up rule, not an exception to it: a mock-up Dan
 is asked to judge must use this same scale, or the type he approves is not the
 type that ships.
+
+# No CONTROL is nailed to a pixel either — permanent (2026-09-12)
+
+**Dan, after a goal-card row whose tiles were pinned to `5.958rem` and would
+only fit two across a phone: *"i hope this is adaptive width and not hard
+coded. i am pretty sure you can very easily [fit] four or more per width"*,
+then, plainly: ***"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES
+!!!"***.**
+
+The font half has been a rule since 5 Sep. This is its other half, and it had
+to be said because the font rule was obeyed while the BOX around the text was
+frozen — which fails in a way that looks like a different bug entirely:
+
+    tile width  w-[5.958rem]          phone 95px · desktop 95px
+    name inside text-[16px] (ramped)  phone 16px · desktop ~21px
+
+So on a desktop the text grew a third and the box did not, and « GramMarathon »
+came out « GramMara… ». Nobody reads that as a width being hard-coded; they
+read it as a name being too long, and the next session shortens the name.
+
+**A CONTROL'S SIZE IS EITHER A PROPORTION OR ON THE RAMP.** Two ways, both
+already in the app:
+
+    counted    .fluo-tilegrid  — `minmax(min(50% - gap, max(…, 25% - gap)), 1fr)`
+                                 no column wider than half, none narrower than
+                                 a quarter: two to four, and it counts the room
+                                 rather than being told a number
+    ramped     min-h-[calc(4rem + var(--fs-step) * 4)]
+                                 the same 64px on a phone, growing with the
+                                 type it contains
+
+The counted form is right whenever several of a thing share a row. The ramped
+form is right for a lone control that must simply keep pace with its label.
+**A bare `w-[95px]` on a control is neither and is the thing being banned.**
+
+**A SECOND WORKED CASE, from the lane that answered the same instruction the
+same hour** (`claude/subdomains`, #317 — folded in here rather than left as a
+second section saying the same thing): the ☰ menu's names went on the ramp,
+16px on a phone and ~21.8px at 1440px, while the grid itself stayed a fixed
+`w-[20.6rem]`. On a desktop **seven of the twenty names clipped to an
+ellipsis**, and nobody saw it at 390px where the step is zero. Same fault as the
+goal card's tiles, on the other side of the same screen, found independently.
+
+    fixed        w-[20.6rem]                          phone 330 · desktop 330
+    on the ramp  w-[calc(20.6rem+var(--fs-step)*21)]  phone 330 · desktop 451
+
+**`min-h-[44px]` AS A TOUCH FLOOR IS NOT THIS FAULT** — 44px is the smallest a
+finger reliably hits, and a floor is not a size. `verify270` exempts exactly
+that pair (`min-h`/`min-w` at 44px) and nothing else, because the exemption is
+about the FINGER, which does not grow on a desktop. What is the fault is a box
+that is only a pixel number with ramped text inside it.
+
+**WHAT THIS DOES NOT COVER, said plainly so the rule is not read as a sweep.**
+There are ~127 `w-[…]` / `h-[…]` arbitrary sizes across 34 files today, and most
+are not controls — a 6px progress rail, an 18px swatch, a `max-w-[600px]`
+column. Turning them all red would paint every pull request on day one, which
+is the mistake the lint policy already records. So `verify270-fluid-controls.py`
+holds TWO things and neither is a sweep:
+
+- **the shared control definitions carry no frozen box** — `familyTile.ts` and
+  the tile-grid call sites, by name, because these size every door in the app
+  at once;
+- **a RATCHET on the rest**, the same device `verify19b` uses for raw hex: the
+  count may fall and may not rise. A new hard-coded control size fails; fixing
+  an old one lowers the bar behind you.
+
+The precedent this follows is the one the Geist ban set: the rule goes in this
+file AND into a check in the same patch, and the check takes a list or a count
+rather than a single hard-coded name, because the next ruling will not be about
+this tile.

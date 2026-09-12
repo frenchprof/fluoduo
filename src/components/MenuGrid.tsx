@@ -24,6 +24,17 @@
  * (8 Sep), corrected 9 Sep ("too light... the darkest shade in there").
  */
 import Link from "next/link";
+import { useState } from "react";
+import { stopHref } from "@/lib/activityStops";
+import { loadProgress } from "@/lib/progress";
+import { nextGoalNumber, loadBookmark } from "@/lib/continuer";
+import { SIOS } from "@/content/sios";
+import {
+  BAND as SHARED_BAND,
+  BAND_NAME as SHARED_BAND_NAME,
+  TILE as SHARED_TILE,
+  TILE_NAME as SHARED_TILE_NAME,
+} from "@/components/familyTile";
 import { familyName, activity } from "@/content/activities";
 import { ECOUTEXTE_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
 import { type StopActivityKey } from "@/lib/activityStops";
@@ -36,6 +47,9 @@ import { HOME_HREF } from "@/lib/routes";
 // the set at all — are resolved there, not re-decided here). A hard-coded
 // hex in a component is exactly the drift verify19b's ratchet exists to
 // catch, and it very nearly reintroduced it: use the token, not the value.
+const TILE = SHARED_TILE;
+const NAME = SHARED_TILE_NAME;
+
 const PEN = {
   goals: "var(--fam-goals)",
   practice: "var(--fam-practice)",
@@ -147,25 +161,28 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   ]},
 ];
 
-const TILE =
-  "flex fluo-row-tall flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
-  "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
-  "transition hover:-translate-y-0.5";
-/* BIGGER, AND TRUNCATION IS THE PRICE DAN CHOSE (2026-09-11: *"make the font
-   on the grid menu bigger and maybe thicker, it is hardly legible now. It is
-   OK to truncate some long names"*). 13px in the hand face on a 90px tile
-   was the size that let every name fit whole, and it was not readable. 16px
-   is a fifth larger; the face is already at its heaviest weight (800, the
-   ExtraBold file in layout.tsx — there is no 900 to reach for), so "thicker"
-   is met by the size, which is what makes a hand face's strokes wider. The
-   longest names (Leaderboard, GramMarathon, VocabulaRain, LexicaLocker) may
-   now end in an ellipsis on a narrow phone; the emoji above each one is the
-   other half of its identity, and Dan accepted the trade. */
-const NAME = "fluo-btn-hand block w-full truncate text-[16px] leading-tight text-[color:var(--cahier-ink)]";
+/* TILE, NAME, the band and its sideways label all moved to
+   components/familyTile.ts on 2026-09-12, when the goal card was asked to
+   take this exact arrangement (Dan: *"make sure everything including font is
+   identical"*). They are unchanged — only their address moved — and this menu
+   still renders from the same strings, which is what makes "identical" a fact
+   rather than an intention. */
+
+/* THEIR ONE SUBSTANTIVE CHANGE MOVED INTO THE SHARED STRING, 12 Sep. This
+   branch re-declared TILE and NAME locally to swap `min-h-[64px]` for the
+   new `.fluo-row-tall`; taking that as written would have undone the whole
+   point of the shared file — the menu and the goal card cannot drift only
+   because they read ONE definition. So the class went into familyTile's TILE
+   and the local copies stayed gone. Their class is the better half of the
+   trade: `.fluo-row-tall` sits beside `.fluo-tap` and `.fluo-row` in
+   globals.css, where a reader meets the touch FLOOR and the design heights
+   together, rather than an inline calc() repeated per component. */
+
 
 export default function MenuGrid({
   onNavigate,
   picker,
+  currentStop,
 }: {
   /** Close the dropdown — called on every door, Help included now that it
    *  is one (2026-09-09: Help navigates to /guide instead of summoning a
@@ -177,25 +194,124 @@ export default function MenuGrid({
    *  cell opens must already live one level up, or it would unmount in the
    *  same tick it opens. */
   picker: ActivityPicker;
+  /** The learner's current stop, so GO TO opens on it and the common case
+   *  needs no typing. Passed in rather than read here: this component
+   *  unmounts on every navigation, and localStorage cannot be read during
+   *  render in a static export. */
+  currentStop?: number;
 }) {
+  /* THE CHOSEN STOP LIVES HERE, not in the caller, and that is safe where the
+     pop-ups' state was not: a pop-up had to outlive `onNavigate` (which
+     unmounts this whole component), so it lived one level up in SiteTopBar.
+     This row does the opposite — it is only ever read WHILE the menu is open,
+     and a fresh open should start from the learner's own stop rather than
+     whatever they typed last time. */
+  /* READ ONCE, LAZILY, AT OPEN. This component is rendered only inside
+     `{menuOpen && …}`, so it does not exist during the static export's
+     prerender and a lazy initialiser may touch localStorage — which is why
+     this needs neither an effect nor the `set-state-in-effect` disable the
+     top bar's own StopMark carries. */
+  const initial = () => {
+    if (currentStop) return currentStop;
+    try { return nextGoalNumber(loadProgress(), loadBookmark()) ?? 1; } catch { return 1; }
+  };
+  const [stop, setStop] = useState(initial);
+  const [draft, setDraft] = useState(() => String(initial()));
+
   // Each row is its OWN band, filled SOLID with the family's darkest rung
   // (Dan, 2026-09-09: a pale 15%-alpha wash "is too light... the darkest
   // shade in there for the background" — matching the ink the page's own
   // top strip and left spine already wear). The tiles keep their
   // raised-paper ground on top — pen never behind text, per the colour
   // law above — so the effect is light cards on a solid, saturated band.
+  // THE GRID GROWS WITH THE TYPE RAMP (Dan, 12 Sep: "NEVER EVER HARD CODE
+  // FONT SIZES AND BUTTON SIZES"). The names are on the ramp — 16px on a
+  // phone, ~21.8px on a 1440px desktop — but the grid was a fixed 20.6rem, so
+  // the tiles stayed 85px while their names grew, and on a desktop seven of
+  // the twenty clipped to an ellipsis. Measured: at the desktop step the names
+  // run about 1.36x, so the width takes the same step, x21
+  // (20.6rem + 0.36rem*21 = 28.2rem). The tiles now grow with the text they
+  // hold; max-w-[90vw] still caps a narrow phone.
   return (
-    <div className="w-[20.6rem] max-w-[90vw] overflow-hidden rounded-lg">
+    <div className="w-[calc(20.6rem+var(--fs-step)*21)] max-w-[90vw] overflow-hidden rounded-lg">
+      {/* GO TO — THE STOP IS CHOSEN ONCE, HERE (Dan, 2026-09-12: *"it would
+          make sense to add a row above LESSON for selection of SIO perhaps in
+          pink: so that the activities can grey as necessary: just a field
+          after GO TO 🎯 [ ] --> OK button"*).
+
+          THIS IS WHAT REPLACES THE SEVEN POP-UPS, and it is a better shape for
+          the same job. Each of those tiles used to open a 1-to-50 slider of its
+          own: the learner answered "which goal?" again for every activity, in a
+          modal in front of the page, and a tile with nothing at that stop said
+          so only after they had committed. One row answers it once for all of
+          them, in the menu, before anything is chosen — and the greying below
+          is the answer made visible rather than reported.
+
+          PINK IS DAN'S PICK and it is the map's grammar pen (--sio-grammar),
+          not a new colour: the row names a STOP, and stops are drawn in the
+          map's four pens. Nothing new for verify19b's ratchet to count.
+
+          It opens on the learner's own stop, so the common case needs no
+          typing at all. */}
+      <form
+        /* NO SIDEWAYS LABEL, AND THREE EQUAL THIRDS (Dan, 2026-09-12: *"there
+           is no need for the category label on the left. Just have the text in
+           the first third on the left 'GO TO 🎯'"*, then *"the field occupying
+           the second third"*).
+
+           So this row does NOT use the shared band grid. Every row below has a
+           label column plus three tiles; this one has no family to name — «Go
+           to» is an instruction, not a category — so it drops the column and
+           takes the full width in thirds: the words, the field, the button. */
+        className="grid grid-cols-3 items-center gap-1.5 p-1.5"
+        style={{ background: "var(--sio-grammar)" }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const n = parseInt(draft, 10);
+          if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
+        }}
+      >
+        <span className="flex items-center gap-[0.35em] pl-[0.2em] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+          <span className={NAME}>Go to</span>
+          <span aria-hidden className="text-[1.6em] leading-none">🎯</span>
+        </span>
+        <label className={TILE} style={{ borderColor: "var(--cahier-ink)" }}>
+          <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
+          {/* A real number input with its native arrows — Dan asked for "the
+              up-down by the side of the field". globals.css strips spinners
+              app-wide; `.fluo-stepper` is the one opt-in, and it has to be
+              written `input[type="number"].fluo-stepper` to outrank that rule. */}
+          <input
+            type="number"
+            min={1}
+            max={SIOS.length}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            className="fluo-stepper w-full bg-transparent text-center text-[1.35em] font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+          />
+        </label>
+        <span className="flex items-center justify-center">
+          {/* SMALLER than a door, deliberately: it confirms a number, it does
+              not open an activity. Still on the touch floor. */}
+          <button
+            type="submit"
+            className="fluo-tap rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
+            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+          >
+            <span className={NAME}>OK</span>
+          </button>
+        </span>
+      </form>
       {ROWS.map((row, r) => (
         <div
           key={r}
-          className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
+          className={SHARED_BAND}
           style={{ background: row.band }}
         >
           {/* BLACK, NOT WHITE AND NOT THE FAMILY'S DARK RUNG (Dan, 2026-09-11:
               "black font instead of white font over these background for the
               leftmost cat names"). The house ink is the app's black. */}
-          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black uppercase tracking-[0.12em] leading-none text-[color:var(--cahier-ink)]">
+          <span className={SHARED_BAND_NAME}>
             {row.label}
           </span>
           {row.cells.map((cell, c) => {
@@ -281,17 +397,44 @@ export default function MenuGrid({
               );
             }
             if (cell.kind === "picker") {
+              /* NO POP-UP. The stop is chosen once, on the GO TO row at the top
+                 of this menu, and every per-stop door below answers for it —
+                 Dan, 2026-09-12: *"when they click OK, the tiles below in the
+                 grid menu has to react to grey"*, and *"the user still has to
+                 decide what activity they want to go to"*. So the row sets
+                 WHERE and the tile still chooses WHAT: two decisions, two
+                 controls, and neither of them a modal in front of the page.
+
+                 A door with nothing at this stop is GREYED, not hidden — the
+                 same ruling as the goal card's doors, for the same reason: a
+                 missing tile cannot tell a learner whether the activity is
+                 absent here or gone altogether. */
+              const href = stopHref(cell.sioKey, stop);
+              if (!href) {
+                return (
+                  <span
+                    key={key}
+                    aria-disabled="true"
+                    title={`${cell.name} — nothing at goal ${stop}`}
+                    className={`${TILE} cursor-default opacity-45`}
+                    style={{ borderColor: "var(--cahier-line-strong)" }}
+                  >
+                    <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
+                    <span className={NAME}>{cell.name}</span>
+                  </span>
+                );
+              }
               return (
-                <button
+                <Link
                   key={key}
-                  type="button"
-                  onClick={() => { onNavigate(); picker.openSlider(cell.sioKey, cell.emoji, cell.name); }}
+                  href={href}
+                  onClick={onNavigate}
                   className={TILE}
                   style={{ borderColor: row.ink }}
                 >
                   <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                   <span className={NAME}>{cell.name}</span>
-                </button>
+                </Link>
               );
             }
             return (

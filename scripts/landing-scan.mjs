@@ -26,7 +26,7 @@
 //   · one action. A landing page answers "what is this" and "how do I start";
 //     a second button is a second answer to the second question.
 //
-// Three viewports, because the fault is a geometry fault: a desktop, a phone,
+// Twelve viewports, because the fault is a geometry fault: a desktop, a phone,
 // and a phone held sideways — where the whole page is 390px tall and anything
 // mispositioned lands on the horizon by default.
 import { createServer } from "node:http";
@@ -111,7 +111,12 @@ const MEASURE = (band) => {
     : 0;
   const actions = [...(main ? main.querySelectorAll("a[href], button") : [])]
     .filter((el) => !(map && map.contains(el)))
-    .map((el) => { const r = el.getBoundingClientRect(); return { text: (el.textContent || "").trim().slice(0, 40), width: Math.round(r.width) }; });
+    .map((el) => { const r = el.getBoundingClientRect(); return {
+      text: (el.textContent || "").trim().slice(0, 40),
+      width: Math.round(r.width),
+      // Position too, since 12 Sep — see the CTA clearance rule below.
+      top: Math.round(r.top), bottom: Math.round(r.bottom), height: Math.round(r.height),
+    }; });
   return {
     vw, vh,
     mapBox: map ? { w: Math.round(map.getBoundingClientRect().width), h: Math.round(map.getBoundingClientRect().height) } : null,
@@ -126,12 +131,30 @@ const exe = process.env.ROAD_BROWSER
   ?? (existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null);
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 
+// TWELVE SHAPES, NOT THREE — 12 Sep. Three was enough to catch the fault Dan
+// reported and not enough to catch the next one: a SMALL phone (320x568) had
+// the welcome text sitting 19px over the horizon in production, for weeks,
+// because no scan had ever opened that size. The list below is deliberately
+// awkward — a very short landscape window, a square, an ultrawide — since the
+// faults this page has produced were all geometry, and geometry only breaks at
+// shapes nobody pictured.
+//
+// `ground` is off wherever the frame is under ~480px tall: the bottom third is
+// then a sliver of near road with barely any ground in it to judge, which is a
+// fact about the camera and not a thing to assert.
 const VIEWS = [
-  // `ground` is off for the sideways phone: at 390px tall its bottom third is a
-  // sliver of near road, and the scene has barely any ground in it to judge.
   ["desktop 1440x900", { width: 1440, height: 900 }, { ground: true }],
+  ["monitor 1920x1080", { width: 1920, height: 1080 }, { ground: true }],
+  ["ultrawide 2560x1080", { width: 2560, height: 1080 }, { ground: true }],
+  ["tablet 1024x768", { width: 1024, height: 768 }, { ground: true }],
+  ["tablet upright 768x1024", { width: 768, height: 1024 }, { ground: true }],
+  ["square 800x800", { width: 800, height: 800 }, { ground: true }],
   ["phone 390x844", { width: 390, height: 844 }, { ground: true }],
+  ["phone tall 360x1180", { width: 360, height: 1180 }, { ground: true }],
+  ["phone small 320x568", { width: 320, height: 568 }, { ground: true }],
   ["phone sideways 844x390", { width: 844, height: 390 }, { ground: false }],
+  ["phone sideways small 667x375", { width: 667, height: 375 }, { ground: false }],
+  ["very short 1024x320", { width: 1024, height: 320 }, { ground: false }],
 ];
 const bad = [];
 
@@ -154,6 +177,26 @@ for (const [label, viewport, checks] of VIEWS) {
     bad.push(`${label}: ${m.intruders.length} thing(s) sit across the horizon band `
       + `(y ${Math.round(m.vh * BAND_TOP)}–${Math.round(m.vh * BAND_BOTTOM)}): `
       + m.intruders.map((i) => `<${i.tag}> "${i.text}" at ${i.top}–${i.bottom}`).join("; "));
+  }
+  // THE WAY IN IS REACHABLE, AT EVERY SHAPE (Dan, 12 Sep: *"can we ensure that
+  // the ENTER button is always visible at the base of the screen no matter what
+  // the screen size or shape"*).
+  //
+  // Measured across twelve shapes before writing this, the coin was never
+  // actually CUT — it is bottom-anchored inside a 100dvh frame, so it is on
+  // screen everywhere. What it had was 4px of clearance on a phone, and a
+  // handset spends that on its own browser bar or home indicator: on screen in
+  // a desktop viewport, under someone's thumb rail in real life. So the rule is
+  // a GAP, not mere presence, and it is asserted rather than assumed because
+  // "it is at bottom: 0.5%" reads fine in a diff at every size.
+  const CTA_GAP = 10;
+  for (const a of m.actions) {
+    if (a.height < 20) continue;               // not the coin
+    if (a.top < 0 || a.bottom > m.vh) {
+      bad.push(`${label}: "${a.text}" runs off the screen (y ${a.top}–${a.bottom} in a ${m.vh}px frame) — the one way in has to be on the page`);
+    } else if (m.vh - a.bottom < CTA_GAP) {
+      bad.push(`${label}: "${a.text}" sits ${m.vh - a.bottom}px from the bottom edge — under a phone's own browser bar. It needs at least ${CTA_GAP}px`);
+    }
   }
   const wide = m.actions.filter((a) => a.width > m.vw * 0.6);
   if (wide.length) {
@@ -192,4 +235,4 @@ if (bad.length) {
   console.log("  between them carries nothing.");
   process.exit(1);
 }
-console.log(`\nlanding-scan: the scene fills all three viewports, the horizon band is clear, and there is one content-sized way in.`);
+console.log(`\nlanding-scan: the scene fills all ${VIEWS.length} viewports, the horizon band is clear, the way in keeps its distance from the bottom edge, and it is content-sized.`);

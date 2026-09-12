@@ -50,7 +50,11 @@ if not os.path.isfile("package.json"):
 prefs = nocomment(read("src/lib/uiPrefs.ts"))
 bar = nocomment(read("src/components/BottomBar.tsx"))
 nav = nocomment(read("src/content/nav.ts"))
-reglages = nocomment(read("src/app/reglages/page.tsx"))
+# The Settings BODY moved to SettingsContent.tsx on 2026-09-11, when the four
+# User pages became one page with four tabs and /reglages became the
+# forwarder into its tab. Same markup, same rules, different file — read
+# both so this passes wherever the body lives.
+reglages = nocomment(read("src/app/reglages/SettingsContent.tsx")) + nocomment(read("src/app/reglages/page.tsx"))
 topbar = nocomment(read("src/components/SiteTopBar.tsx"))
 drill = nocomment(read("src/components/DrillShell.tsx"))
 css = read("src/app/globals.css")
