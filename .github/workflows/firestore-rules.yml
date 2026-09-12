@@ -46,10 +46,28 @@ jobs:
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
       - run: npm ci
+
+      # THE EMULATOR JAR IS ~60 MB AND IS FETCHED ON FIRST USE. The first run of
+      # this workflow timed out waiting for a port that was still downloading.
+      # Cached here so only the first run on a new key pays for it.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/firebase/emulators
+          key: firebase-emulators-${{ runner.os }}-firestore
+
+      # Installed GLOBALLY, on purpose: firebase-tools is large, and putting it
+      # in package.json would slow `npm ci` in `verify` — which runs on EVERY
+      # pull request, and whose runtime is the thing this repo has been cutting
+      # all month. Here it is paid for only when the rules change.
+      - name: Install firebase-tools
+        run: npm install -g firebase-tools@15
+
       # Compiles the rules (the emulator's :securityRules endpoint, not
       # `emulators:exec`, which exits 0 on a file with a syntax error), then
       # runs both suites: the attacks, and the legitimate learner paths.
       - name: Rules compile, attacks refused, real learners still served
+        env:
+          FIREBASE_BIN: firebase      # already on PATH — skips an npx fetch
         run: node scripts/rules-test/run.mjs
 
   deploy:

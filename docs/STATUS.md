@@ -342,6 +342,30 @@ broken emulator can never become a silent pass — the `settle.mjs` rule, retry 
 handover and never a verdict. Break-tested after: main's rules through the
 runner exit **1** naming the three failures, this branch's exit **0**.
 
+**AND THE WORKFLOW'S FIRST CI RUN WENT RED — THREE MORE FAULTS, none visible
+from a green local run.** Worth the paragraph because all three are the same
+species: a test that measures something other than what it claims to.
+
+1. **"emulator never came up."** The wait was 60 s, a number taken from this
+   container where firebase-tools and the 131 MB emulator JAR were already
+   cached. A COLD runner fetches both before the port ever opens. 240 s now —
+   it costs nothing on a warm run, since it returns the moment the port
+   answers.
+2. **The log said nothing else**, because the spawn used `stdio: "ignore"`. The
+   one question worth asking — downloading, or broken? — had no answer
+   anywhere. The output is buffered now and printed only on a timeout.
+3. **A STALE EMULATOR FAKED A COLD-START PASS.** With the JAR deleted on
+   purpose, the "cold" run reported 9 PASS in **1.4 seconds** — it had
+   connected to an emulator left running by an earlier invocation, enforcing
+   whatever rules that process was last given. `run.mjs` now refuses to start
+   when the port already answers (exit 2, break-tested). A genuine cold start
+   then took 8 s here and passed 9/9.
+
+CI also gets `actions/cache` on `~/.cache/firebase/emulators` and a GLOBAL
+`npm install -g firebase-tools` — global on purpose, because putting it in
+`package.json` would slow `npm ci` in `verify`, which runs on every pull
+request and whose runtime is the thing this repo has spent the month cutting.
+
 **ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
 SDK init still had to be shipped. **It already ships** — `client.ts` initialises
 App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.

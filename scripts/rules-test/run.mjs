@@ -36,7 +36,12 @@ writeFileSync(join(WORK, "firestore.rules"), readFileSync(join(ROOT, "firestore.
 
 const sh = (cmd, args, opts = {}) => spawn(cmd, args, { stdio: "inherit", ...opts });
 
-async function waitFor(url, tries = 60) {
+/* 240 s, not 60. The 60 came from this container, where firebase-tools and the
+ * emulator JAR were already cached; a COLD GitHub runner fetches both before
+ * the port ever opens, and the first CI run timed out at 60 s mid-download.
+ * The wait costs nothing on a warm run — it returns the moment the port
+ * answers — so the number only has to be larger than the worst cold start. */
+async function waitFor(url, tries = 240) {
   for (let i = 0; i < tries; i++) {
     try { const r = await fetch(url); if (r.ok) return true; } catch { /* not up yet */ }
     await new Promise((r) => setTimeout(r, 1000));
@@ -56,14 +61,49 @@ async function compile(path) {
   return JSON.parse(await res.text())?.error?.message ?? `HTTP ${res.status}`;
 }
 
-const emu = sh("npx", ["--yes", "firebase-tools@15", "emulators:start", "--only", "firestore",
-                       "--project", PROJECT], { cwd: WORK, stdio: "ignore" });
+/* THE EMULATOR'S OUTPUT IS KEPT, NOT DISCARDED. The first CI run of this
+ * workflow died on "emulator never came up" and the log said nothing else,
+ * because this spawn used stdio:"ignore" — so the one question worth asking
+ * (was it downloading, or was it broken?) had no answer anywhere. Buffered
+ * here and printed only if the wait times out: quiet on a green run, and
+ * diagnosable on a red one. */
+let emuLog = "";
+const bin = process.env.FIREBASE_BIN;          // set by CI, which installs it once
+/* REFUSE TO RUN AGAINST AN EMULATOR THIS SCRIPT DID NOT START, and this guard
+ * is here because its absence faked a pass. A stale emulator from an earlier
+ * invocation was still holding the port; the "cold start" test connected to it
+ * and reported 9 PASS in 1.4 seconds with the emulator JAR deleted — a result
+ * that was measuring the OLD process, with whatever rules it was last given.
+ * A port that already answers is not a convenience, it is a different
+ * experiment. */
+{
+  let taken = false;
+  try { taken = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { taken = false; }
+  if (taken) {
+    console.error(`\n  Port ${PORT} is already answering — something else is running there.`);
+    console.error("  Stop it first; this script must own the emulator it tests against,");
+    console.error("  or the rules it thinks it loaded are not the rules being enforced.\n");
+    process.exit(2);
+  }
+}
+
+const emu = bin
+  ? spawn(bin, ["emulators:start", "--only", "firestore", "--project", PROJECT],
+          { cwd: WORK, stdio: ["ignore", "pipe", "pipe"] })
+  : spawn("npx", ["--yes", "firebase-tools@15", "emulators:start", "--only", "firestore",
+                  "--project", PROJECT], { cwd: WORK, stdio: ["ignore", "pipe", "pipe"] });
+emu.stdout?.on("data", (d) => { emuLog += d; });
+emu.stderr?.on("data", (d) => { emuLog += d; });
 const stop = () => { try { emu.kill("SIGTERM"); } catch { /* already gone */ } };
 process.on("exit", stop); process.on("SIGINT", () => { stop(); process.exit(130); });
 
 let failed = false;
 try {
-  if (!await waitFor(`http://127.0.0.1:${PORT}/`)) throw new Error("emulator never came up");
+  if (!await waitFor(`http://127.0.0.1:${PORT}/`)) {
+    console.error("\n  The emulator never opened port " + PORT + ". Its own output:\n");
+    console.error(emuLog || "  (nothing — the process produced no output at all)");
+    throw new Error("emulator never came up");
+  }
 
   const targets = [[join(ROOT, "firestore.rules"), "firestore.rules (this branch)"]];
   if (COMPARE) {
