@@ -458,6 +458,11 @@ jobs:
       - name: No control is nailed to a pixel — counted or ramped, never frozen
         run: python3 verify/verify270-fluid-controls.py
 
+      # The chiptune loop ran as loud as the win jingle and never got out of
+      # a sentence's way. Two levels, and the loop follows every voice.
+      - name: "The music is a bed under the voice, never over it (12 Sep)"
+        run: python3 verify/verify280-music-under-voice.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"

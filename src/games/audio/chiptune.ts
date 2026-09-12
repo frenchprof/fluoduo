@@ -11,6 +11,7 @@ type Chan = { type: OscillatorType; duty?: number; vol: number; notes: [Note, nu
 type Song = { bpm: number; swing: number; ch: Chan[]; drums: string[]; len?: number };
 
 import { isChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
+import { voiceClipActive } from "@/games/audio/voiceState";
 
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null; // the volume knob — channels mute separately
@@ -19,7 +20,50 @@ let fxBus: GainNode | null = null; // jingles & stings — the "sfx" mute channe
 let vol = 0.6;
 let tempoScale = 1; // >1 slows the loop (notes spaced further + held longer) — used at "nightfall"
 
-const musicGain = () => (isChannelMuted("music") ? 0 : 1);
+/* THE MUSIC IS A BED, NOT THE VOICE (Dan, 2026-09-12: "the music tends to be
+   very loud once it starts, how can we make it softer and not overpowering
+   the texttospeech?"). Two things, both on the music bus only — jingles and
+   stings keep their level, the volume knob keeps its meaning:
+
+   MUSIC_LEVEL  the loop's own share of the master. It was 1 — the loop sat
+                as loud as the win jingle — and a French sentence read over
+                it was the quieter of the two. 0.45 is about 7 dB down.
+   VOICE_DUCK   while ANY voice is speaking (the browser synth, a banked
+                studio clip, or a cloud clip — see voiceState.ts) the loop
+                drops to this fraction of MUSIC_LEVEL, and comes back a
+                quarter-second after the voice stops. The same idea as
+                duckMusic() under a sting, held for as long as the voice
+                lasts. 0.3 leaves the tune audible under the sentence
+                without competing with it.
+
+   Both read through musicGain(), which every place the bus is set already
+   goes through — play(), stop()'s fresh bus, the mute toggle, the sting
+   duck — so there is one number for "how loud is the music now". */
+const MUSIC_LEVEL = 0.45;
+const VOICE_DUCK = 0.3;
+let voiceDucked = false;
+
+const musicGain = () => (isChannelMuted("music") ? 0 : MUSIC_LEVEL * (voiceDucked ? VOICE_DUCK : 1));
+
+/** Is any voice speaking? Polled from the loop's own 25 ms tick — the browser
+ *  synth has no reliable start/end events across engines (speech.ts documents
+ *  onend never firing), so the flag is read, not pushed. */
+function voiceSpeaking(): boolean {
+  return !!(typeof window !== "undefined" && window.speechSynthesis?.speaking) || voiceClipActive();
+}
+
+/** Follow the voice: ramp the bus down when speech starts, up when it stops.
+ *  Called every tick while a tune runs; only a CHANGE schedules a ramp. */
+function followVoice() {
+  if (!ctx || !musicBus) return;
+  const now = voiceSpeaking();
+  if (now === voiceDucked) return;
+  voiceDucked = now;
+  const n = ctx.currentTime;
+  musicBus.gain.cancelScheduledValues(n);
+  musicBus.gain.setValueAtTime(musicBus.gain.value, n);
+  musicBus.gain.linearRampToValueAtTime(musicGain(), n + (now ? 0.08 : 0.25));
+}
 
 function initAudio() {
   if (ctx) return;
@@ -43,7 +87,7 @@ function initAudio() {
 onChannelMuteChange((ch, m) => {
   if (ch === "music" && musicBus && ctx) {
     musicBus.gain.cancelScheduledValues(ctx.currentTime);
-    musicBus.gain.value = m ? 0 : 1;
+    musicBus.gain.value = m ? 0 : musicGain();
   }
   if (ch === "sfx" && fxBus) fxBus.gain.value = m ? 0 : 1;
 });
@@ -384,6 +428,7 @@ function scheduleStep(song: Song, s: number, t: number) {
 }
 function loop() {
   if (!current || !ctx) return;
+  followVoice();
   while (nextTime < ctx.currentTime + LOOKAHEAD) {
     const song = SONGS[current];
     scheduleStep(song, step, nextTime);
