@@ -136,7 +136,7 @@ try {
     const err = await compile(path);
     if (err) { console.error(`\n  COMPILE FAILED — ${label}\n    ${err}`); failed = true; continue; }
     console.log(`\n  compiles clean — ${label}`);
-    for (const suite of ["attacks.mjs", "legit-paths.mjs"]) {
+    for (const suite of ["attacks.mjs", "legit-paths.mjs", "favourites.mjs"]) {
       const code = await new Promise((res) =>
         sh("node", [join(HERE, suite), path, `${suite.replace(".mjs", "")} · ${label}`],
            { cwd: ROOT }).on("exit", res));
