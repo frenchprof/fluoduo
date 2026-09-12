@@ -36,12 +36,36 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { deckActivityTabs } from "@/components/CahierShell";
-import { FAMILIES, familyOf, type FamilyKey } from "@/content/activities";
+import { FAMILIES, activity, familyOf, type FamilyKey } from "@/content/activities";
 import { sioKind, sioSecondary, KIND_LABEL, type SioKind } from "@/content/sioKinds";
 import { KIND_COLOR } from "@/components/HomeMap";
 import { TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import type { Sio } from "@/content/sios";
+
+/** THE EIGHT DOORS A GOAL CAN HAVE, in `deckActivityTabs`' own order.
+ *
+ *  Kept here rather than derived from the registry, because the registry holds
+ *  every activity in the app — including the ones that are not per-goal at all
+ *  (the map, the profile, the tools). This is the list that function can emit,
+ *  and a mismatch shows up as a permanently grey tile, which is visible rather
+ *  than silent. */
+/*  THE TAB KEY IS NOT ALWAYS THE REGISTRY KEY, and WorDrill is the one that
+ *  bites: its tab is keyed `say` — the Memo-rename precedent, so SioModal
+ *  embedding and every withActive caller keep working — while the registry row
+ *  is `wordrill`. Matching on the registry key alone greyed WorDrill on all
+ *  fifty stops, and it is available on all fifty: `deckActivityTabs` emits it
+ *  unconditionally. The two are spelt separately here for that reason. */
+const GOAL_DOORS: { tab: string; reg: string }[] = [
+  { tab: "speculearn", reg: "speculearn" },
+  { tab: "lesson", reg: "lesson" },
+  { tab: "flip", reg: "flip" },
+  { tab: "grammarathon", reg: "grammarathon" },
+  { tab: "vocabularain", reg: "vocabularain" },
+  { tab: "lexicalator", reg: "lexicalator" },
+  { tab: "compose", reg: "compose" },
+  { tab: "say", reg: "wordrill" },
+];
 
 export default function GoalCard({
   sio,
@@ -50,7 +74,37 @@ export default function GoalCard({
   sio: Sio;
   compact?: boolean;
 }) {
+  /* EVERY DOOR A GOAL CAN HAVE, WITH THE ONES IT CANNOT PLAY GREYED OUT
+     rather than missing (Dan, 2026-09-12: *"if the activity does not exist for
+     a particular stop, then grey out the item on the menu!"*).
+
+     WHAT IT WAS, AND WHY IT READ AS A BUG. `deckActivityTabs` builds its list
+     conditionally — an activity with nothing for this deck is simply not in
+     the array — so the card silently showed a DIFFERENT NUMBER of doors on
+     every goal: seven on SIO-023, five on another, and nothing anywhere saying
+     why. A learner cannot tell "this goal has no ComposeIt" from "ComposeIt
+     moved". Absence is not an answer; it is the absence of one.
+
+     GOAL_DOORS is the universe — the eight keys `deckActivityTabs` can emit,
+     in its own order — and what the deck actually offers is looked up against
+     it. So the row is the same length on all fifty stops and the colour does
+     the talking, which is what makes a greyed tile READ as "not here" instead
+     of leaving a hole. */
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
+  const doors = useMemo(() => {
+    const got = new Map(items.map((t) => [t.key, t]));
+    return GOAL_DOORS.map(({ tab, reg: regKey }) => {
+      const live = got.get(tab);
+      const reg = activity(regKey);
+      return {
+        key: tab,
+        label: live?.label ?? reg?.name ?? regKey,
+        emoji: live?.emoji ?? reg?.emoji ?? "",
+        href: live?.href ?? null,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `items` is rebuilt each render from sio.collectionId, so that is the real input
+  }, [sio.collectionId]);
 
   /* Grouped into the ☰'s own row order, and only for families that actually
      have a door on this goal — an empty band would claim a family the goal
@@ -59,8 +113,8 @@ export default function GoalCard({
      grouping rather than given a colour it has refused; none of the deck
      activity tabs is one today, and this is what keeps that true. */
   const byFamily = useMemo(() => {
-    const bag = new Map<FamilyKey, typeof items>();
-    for (const t of items) {
+    const bag = new Map<FamilyKey, typeof doors>();
+    for (const t of doors) {
       const fam = familyOf(t.key);
       if (!fam) continue;
       const got = bag.get(fam);
@@ -69,8 +123,7 @@ export default function GoalCard({
     }
     return FAMILIES.map((f) => [f.key, bag.get(f.key)] as const)
       .filter((e): e is readonly [FamilyKey, NonNullable<typeof e[1]>] => !!e[1] && e[1].length > 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `items` is rebuilt each render from sio.collectionId, so that is the real input
-  }, [sio.collectionId]);
+  }, [doors]);
 
   /* THE NAME UNDER THE TILE (Dan, 2026-09-11: *"it would help to add the name
      of each activity below the tile by default) we can allow userss to remove
@@ -280,9 +333,16 @@ export default function GoalCard({
                    fill: the family reads as the ground around it, exactly as it
                    does in the ☰, and the paper stays paper. The pad is what the
                    band used to be — one tile wide instead of a whole row. */
-                <span key={t.key} className={`fam-${fam} rounded-xl p-1`}
-                      style={{ background: "var(--fam)" }}>
-                <Link href={t.href!} title={t.label}
+                /* GREYED, NOT MISSING, when this goal has nothing for it.
+                   A `<span>` rather than a `<Link>`: an anchor with no href is
+                   still focusable in some browsers and announces as a link that
+                   goes nowhere, which is worse than a plain tile. `aria-disabled`
+                   plus the word in the title says why out loud. */
+                <span key={t.key}
+                      className={`${t.href ? `fam-${fam}` : ""} rounded-xl p-1`}
+                      style={{ background: t.href ? "var(--fam)" : "var(--cahier-line)" }}>
+                {t.href ? (
+                <Link href={t.href} title={t.label}
                       className={`${TILE} w-full`}
                       style={{ borderColor: "var(--fam-ink)" }}>
                   <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
@@ -295,6 +355,19 @@ export default function GoalCard({
                     <span className="sr-only">{t.label}</span>
                   )}
                 </Link>
+                ) : (
+                <span aria-disabled="true"
+                      title={`${t.label} — not on this goal`}
+                      className={`${TILE} w-full cursor-default opacity-45`}
+                      style={{ borderColor: "var(--cahier-line-strong)" }}>
+                  <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
+                  {labels ? (
+                    <span className={TILE_NAME}>{t.label}</span>
+                  ) : (
+                    <span className="sr-only">{t.label} — not on this goal</span>
+                  )}
+                </span>
+                )}
                 </span>
               )))}
           </div>
