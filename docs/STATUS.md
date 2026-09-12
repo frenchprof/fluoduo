@@ -6,6 +6,75 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — one map page, not two (peers lane, PR #342, HANDED OVER, NOT merged)
+
+Sole editor of STATUS.md in this commit: the peers lane (`claude/peers-guided`).
+
+**Dan, sending Home and /map side by side: *"We have a two pages doing the same
+thing... Can we just keep the Bienvenue one and move the 3D-2D switch and the
+zoom control and navigators '> Goal', legend there."*** Home already drew the
+map — a second, smaller copy under « Course map » — and `/map` drew the same map
+with all the controls. Two pages, one subject, and the controls on the one a
+learner does not arrive at.
+
+**HOME NOW RENDERS THE MAP ITSELF.** The map, its switch, its zoom and its
+legend live in `src/app/map/MapBody.tsx`; `HomeDashboard` imports it and puts it
+in the « Course map » section. `/map` is a `MapRedirect` that forwards to
+`/home` keeping `?search` and `#hash` — a URL is never deleted outright, and
+`/carte` and `/unit/[unit]`, which used to land on `/map`, now forward straight
+to `/home` so nobody makes two hops.
+
+**THE TWO VIEWS SHARE ONE FRAME** (Dan: *"the frame itself (not the content) for
+both maps must be identical in shape and size... zoom in and out should also
+make the shared shape and size for those maps tied together"*). One `zoom`
+wrapper holds both; 2D stays mounted and goes `visibility: hidden` under 3D so
+the frame keeps the taller view's box, and the CSS `zoom` scales both together.
+Measured on the built export, `[data-map-well]` at three zooms:
+
+        zoom     2D frame            3D frame
+         75%     760 × 1113          760 × 1113
+        100%     760 × 1484          760 × 1484
+        150%     760 × 2226          760 × 2226
+
+**AN OPEN QUESTION FOR DAN, ASKED AND NOT YET ANSWERED.** Because the frame is
+the taller view's size, 3D leaves ~200px of blank paper below the scene. Three
+answers were offered — leave it, centre the 3D scene in the frame, or make the
+frame the 3D size and let 2D scroll inside. Nothing changes until he picks.
+
+**`fill` ON HomeMap3D WAS WRONG TWICE, and the number says why.** Inside a grid
+cell, `h-full` of an auto row is indeterminate, so the scene fell back to its own
+scroll height — **142,800px**, which is the road itself. Once bounded it fitted
+exactly and `verify211` then showed wheel and finger moving the road **0px**.
+The scene keeps its own height inside the shared frame.
+
+**THE LINKS DAN NAMED.** `stopHref` in `src/lib/activityStops.ts` gained two
+cases: `sio` → `/sio/<id>` (*"Goals will lead to SIOs"* — the ☰'s 🎯 opened
+Home, which would now be circular) and `mnemo` → `/lessons/deck/<deck>`
+(*"MneMemo will lead to MneMemo (the current link is wrong)"* — it pointed at
+`/map`, a stand-in left over from the Practice hub's retirement). Both go
+through the same gate as every other entry, so a stop with no deck is not
+offered. **Map is out of the ☰** (*"it is already in the Kallang Wave"*) and the
+🏠 is off the top bar (*"We allso don't need the home button at the top right"*).
+The ⭐ Favourites tile Dan asked for in that slot is deferred by his own later
+choice — whoever lands `claude/favourites` owns it.
+
+**TWO BUGS THAT ONLY A DRIVEN BROWSER FOUND, both the same shape.**
+`.cahier-page input` and `.cahier-page p` are specificity (0,1,1) and beat every
+Tailwind utility (0,1,0): the zoom field clipped « 100 », and the legend ran
+**79px off a 320px phone**. The zoom field took `!` modifiers; the legend went to
+a container query (`clamp(0.625rem, 4.9cqw, var(--legend-max))` inside
+`.fluo-map-legendbox`, scoped two classes deep so it outranks `.cahier-page p`).
+`clamp(a, b, calc(… var() …))` is rejected outright by the parser, which is why
+the max is a variable and not an inline `calc`.
+
+**SIX CHECKS RETARGETED, NONE WEAKENED** — `verify80` (follows the delegation;
+its `fill` assertion is inverted and the view switch is now REQUIRED), `verify25b`
+(Home renders MapBody and does not navigate to `/map`), `verify108`, `verify150`,
+`verify152`, `verify211`, plus `scripts/map-fit-scan.mjs` measuring
+`[data-map-well]` rather than the viewport and `scripts/wheel-scan.mjs` aiming
+its gestures at the scene's own rect — on Home the viewport centre lands on the
+hero, so every gesture was moving nothing and passing.
+
 ## 12 Sep — the floating 🐞 steps off the control it was covering (pre-tests lane, branch, NOT merged)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane
