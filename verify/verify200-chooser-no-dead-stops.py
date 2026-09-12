@@ -36,17 +36,28 @@ bug wearing a different coat — that is exactly how `modaux-plans` would have
 slipped through, resolving through a set alias that `generateStaticParams`
 never exported.
 
-COST, STATED PLAINLY: this check runs `npm run build` once itself, to render a
-throwaway page that calls the very functions the pop-up calls. That is roughly
-a minute in CI. The alternative is a Python re-implementation of six activities'
-readiness rules, which is precisely the "second opinion" that gapSentence.ts was
-written to stop. The probe route is deleted from out/ afterwards so the rest of
-the sweep sees the export the real build produced.
+HOW IT ASKS THEM, AND WHY THAT CHANGED (11 Sep). It calls the app's own
+functions through `scripts/chooser-probe.mjs`, which loads them with `jiti` —
+TypeScript, straight from src/, no compiler in between. The alternative was
+never a Python re-implementation of six activities' readiness rules; that is
+precisely the "second opinion" gapSentence.ts was written to stop, and it is
+still ruled out. The same modules answer by the same `@/…` specifiers.
 
-It needs `out/`:  NEXT_PUBLIC_OPEN_APP=1 npm run build
+It USED TO get its answer by writing a throwaway page into src/app and running
+`npm run build` to render it — honest about its cost ("roughly a minute in CI",
+this docstring said), but it made the app compile THREE times a run: the closed
+build, the open rebuild, and this. Measured on run #755, that was 54s + 56s +
+55s of a 7m33s run.
+
+THE SWAP WAS PROVED, NOT ASSUMED: the build-rendered answer and the jiti answer
+were captured on the same commit and compared field by field — all six
+activities, all 203 offered stops, byte-identical. 98.5s became 1.4s.
+
+It needs `out/` (to check each href against the real export, not to ask the
+question):  NEXT_PUBLIC_OPEN_APP=1 npm run build
 Run from the repo root: python3 verify/verify200-chooser-no-dead-stops.py
 """
-import json, os, re, subprocess, sys, tempfile
+import json, os, re, subprocess, sys
 
 OK, FAIL = [], []
 def ok(c, good, bad): (OK if c else FAIL).append(good if c else bad)
@@ -79,94 +90,26 @@ ok("SIO_HREF" not in code,
    "SIO_HREF is back; it could not say whether a deck was playable")
 
 # ---- 2 · every offered stop resolves to a page that was really exported -------
-# Ask the app itself, through a throwaway page, so this uses the SAME functions
-# the pop-up uses rather than a Python re-implementation of them.
-
-# NOT an underscore-prefixed name: Next treats `_foo` as a private folder and
-# does not route it, so the page builds and no HTML is ever emitted — which
-# reads exactly like a build failure. Cost ten minutes the first time.
-probe = "src/app/verify200-probe"
-os.makedirs(probe, exist_ok=True)
-open(os.path.join(probe, "page.tsx"), "w", encoding="utf-8").write("""
-import { playableStops, stopHref } from "@/lib/activityStops";
-import { SIOS } from "@/content/sios";
-import { CURATED } from "@/content/collections";
-import { gappedItems } from "@/lib/collections/gramMarathonReady";
-import { lexReadyItems } from "@/lib/collections/lexReady";
-import { letrisSlugForDeck, getLetrisSet } from "@/games/letris/sets";
-import { composeBanksForDeck } from "@/games/compose/banks";
-
-const KEYS = ["flip","grammarathon","wordrill","lexicalator","vocabularain","compose"] as const;
-
-/** HOW MANY THINGS WOULD THE GAME ACTUALLY HAVE TO PLAY at this stop, counted
- *  with the activity's OWN item function — deliberately a different function
- *  from the gate, so a check built on this catches a gate that has been
- *  removed or loosened. "The page exists" cannot catch that: GramMarathon and
- *  LexicaLocker export a page for all fifty and open empty. */
-function playableItems(key: string, stop: number): number {
-  const deck = SIOS[stop - 1]?.collectionId ?? "";
-  const c = CURATED.find((x) => x.id === deck);
-  if (key === "grammarathon") return c ? gappedItems(c).length : 0;
-  if (key === "lexicalator") return c ? lexReadyItems(c).length : 0;
-  if (key === "flip" || key === "wordrill") return c ? c.items.length : 0;
-  if (key === "vocabularain") {
-    const slug = letrisSlugForDeck(deck);
-    return slug ? (getLetrisSet(slug)?.tiles.length ?? 0) : 0;
-  }
-  if (key === "compose") return composeBanksForDeck(deck).length;
-  return 0;
-}
-
-export default function P() {
-  const out: Record<string, { stop: number; href: string | null; items: number }[]> = {};
-  for (const k of KEYS) {
-    out[k] = playableStops(k).map((n) => ({ stop: n, href: stopHref(k, n), items: playableItems(k, n) }));
-  }
-  return <pre id="d">{JSON.stringify(out)}</pre>;
-}
-""")
-
+# Ask the app itself rather than re-implementing it: chooser-probe.mjs imports
+# playableStops/stopHref and the six item functions by their `@/…` specifiers and
+# prints what the pop-up would offer. It needs no build and no out/ of its own —
+# out/ is still read below, to check each offered href against the real export.
+data = {}
+probe_err = ""
 try:
-    env = dict(os.environ, NEXT_PUBLIC_OPEN_APP="1")
-    r = subprocess.run(["npm", "run", "build"], capture_output=True, text=True, env=env)
-    built = r.returncode == 0 and os.path.isfile("out/verify200-probe.html")
-    data = {}
-    if built:
-        html = open("out/verify200-probe.html", encoding="utf-8").read()
-        m = re.search(r'id="d"[^>]*>(.*?)</pre>', html, re.S)
-        if m:
-            import html as H
-            data = json.loads(H.unescape(re.sub(r"<[^>]+>", "", m.group(1))))
-finally:
-    import shutil
-    shutil.rmtree(probe, ignore_errors=True)
-    # Leave out/ exactly as the real build left it — later checks in the CI
-    # run scan this directory, and a stray route of ours is not their business.
-    for leftover in ("out/verify200-probe.html", "out/verify200-probe.txt"):
-        if os.path.isfile(leftover):
-            os.remove(leftover)
-    # AND LEAVE .next/ CLEAN, which the first version did not. Next writes a
-    # route-type file naming every page it built, so once the probe is deleted
-    # that file references a module that no longer exists and the NEXT
-    # `tsc --noEmit` in this working tree fails:
-    #
-    #   .next/types/validator.ts(771,39): error TS2307:
-    #     Cannot find module '../../src/app/verify200-probe/page.js'
-    #
-    # Harmless in CI, which always starts from a clean tree — and therefore
-    # exactly the kind of fault that only ever wastes a human's time. It bit
-    # three separate local typechecks before being fixed. The generated file
-    # is rebuilt by the next build, so removing it costs nothing.
-    validator = os.path.join(".next", "types", "validator.ts")
-    if os.path.isfile(validator):
-        try:
-            if "verify200-probe" in open(validator, encoding="utf-8").read():
-                os.remove(validator)
-        except OSError:
-            pass
+    r = subprocess.run(["node", "scripts/chooser-probe.mjs"],
+                       capture_output=True, text=True)
+    if r.returncode == 0:
+        data = json.loads(r.stdout)
+    else:
+        probe_err = (r.stderr or "").strip().splitlines()[-1:] or [""]
+        probe_err = probe_err[0][:200]
+except (OSError, ValueError) as e:
+    probe_err = str(e)[:200]
 
-ok(bool(data), "the probe build produced the chooser's own offer list",
-   "could not build the probe page — cannot verify the offers against the export")
+ok(bool(data), "the chooser's own functions produced its offer list",
+   "scripts/chooser-probe.mjs did not answer, so the offers cannot be checked "
+   "against the export" + (f" — {probe_err}" if probe_err else ""))
 
 if data:
     total, dead, empty = 0, [], []
