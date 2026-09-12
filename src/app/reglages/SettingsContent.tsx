@@ -13,7 +13,7 @@
 import { useEffect, useState } from "react";
 import { DEFAULTS, readUiPrefs, writeUiPrefs, type UiPrefs } from "@/lib/uiPrefs";
 import { FAMILIES, familyShort } from "@/content/activities";
-import AccentColours from "@/components/AccentColours";
+import GemShelf from "@/components/GemShelf";
 
 export default function SettingsContent() {
   const [prefs, setPrefs] = useState<UiPrefs>(DEFAULTS);
@@ -115,16 +115,19 @@ export default function SettingsContent() {
           </div>
         </section>
 
-        {/* THE ACCENT COLOURS (Dan, 2026-09-12: "As for the 'payable' colors,
-            move them into Settings instead"). They used to sit in the profile's
-            THRILLS shop; a colour you own is a preference, not an achievement,
-            and preferences live here. */}
+        {/* WHAT GEMS BUY, AND ONLY WHAT GEMS BUY (Dan, 2026-09-12, two
+            messages: "As for the 'payable' colors, move them into Settings
+            instead" and "move the bouclier to settings too. but we should
+            call it streak-freezer instead of bouclier"). Both left the
+            profile's reward shelf for the same reason — a colour you own and
+            a freezer you hold are things you ARRANGE, not things you earned.
+            One balance covers both; see GemShelf's own note. */}
         <section
           className="mt-5 rounded-xl border-2 p-4"
           style={{ background: "var(--cahier-paper-raised, #fff)", borderColor: "var(--cahier-line-strong, #ddd)" }}
         >
-          <h2 className="mb-2.5 text-base font-extrabold" style={{ color: "var(--cahier-ink)" }}>Accent colour</h2>
-          <AccentColours />
+          <h2 className="mb-2.5 text-base font-extrabold" style={{ color: "var(--cahier-ink)" }}>Gems</h2>
+          <GemShelf />
         </section>
       </div>
   );

@@ -9,41 +9,30 @@
  * achievement, and a colour you have is a PREFERENCE — which is what Settings
  * is for. The badges stay on the profile; the paint moves here.
  *
- * The gem balance comes with them, because a price you cannot weigh against
- * your balance is not a price a learner can act on.
+ * IT DOES NOT DRAW THE GEM BALANCE. `GemShelf` does, once, above both this
+ * and the Streak-Freezer — the first build printed « 💎 340 » twice, forty
+ * pixels apart, which is the litmus test's own example of text you can delete
+ * without anyone losing their way. `GemShelf` owns the progress state so one
+ * balance still moves the moment either of them is spent.
  */
-import { useEffect, useState } from "react";
-
 import { COSMETICS, DEFAULT_ACCENT } from "@/lib/economy";
-import { buyCosmetic, equipCosmetic, loadProgress, type Progress } from "@/lib/progress";
+import { buyCosmetic, equipCosmetic, type Progress } from "@/lib/progress";
 
 const INK = "var(--cahier-ink)";
 const SOFT = "var(--cahier-ink-soft)";
 const LINE = "var(--cahier-line-strong)";
 const PAPER = "var(--cahier-paper-raised)";
 
-export default function AccentColours() {
-  const [p, setP] = useState<Progress | null>(null);
-
-  useEffect(() => {
-    // localStorage cannot be read during render on a static export.
-    /* eslint-disable-next-line react-hooks/set-state-in-effect */
-    setP(loadProgress());
-  }, []);
-
-  if (!p) return null;
+export default function AccentColours({ p, onChange }: { p: Progress; onChange: (p: Progress) => void }) {
   const equipped = p.cosmetics.equipped.homeAccent ?? null;
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      <span className="fluo-mono rounded-md border-2 px-2 py-1.5 text-[12px] font-bold" style={{ borderColor: LINE, color: INK }}>
-        💎 {p.gems}
-      </span>
       <SwatchButton
         swatch={DEFAULT_ACCENT}
         label="Default"
         state={equipped === null ? "equipped" : "owned"}
-        onClick={() => setP(equipCosmetic(null))}
+        onClick={() => onChange(equipCosmetic(null))}
       />
       {COSMETICS.map((c) => {
         const owned = p.cosmetics.owned.includes(c.id);
@@ -55,7 +44,7 @@ export default function AccentColours() {
             label={c.label}
             cost={owned ? undefined : c.cost}
             state={state}
-            onClick={() => setP(owned ? equipCosmetic(c.id) : buyCosmetic(c.id))}
+            onClick={() => onChange(owned ? equipCosmetic(c.id) : buyCosmetic(c.id))}
           />
         );
       })}

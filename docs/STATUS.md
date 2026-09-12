@@ -8485,6 +8485,56 @@ be detected. `activityLedger`'s `PREFIX_TO_KEY` maps ComposeIt (`compose`) and
 has no ChaTutor entry, so "one creation" covers half of what Dan named. Wiring
 ChaTutor into the ledger is its own change.
 
-**Still in THRILLS and also purchases:** the Bouclier and the expert game decks,
-with the gem balance beside them. Dan moved the colours; he has not said where
-these go. Flagged, not moved.
+### 12 Sep — the other two purchases found their homes
+
+The open question above (*"still in THRILLS and also purchases: the Bouclier
+and the expert game decks… he has not said where these go"*) was put to Dan and
+he answered both in one message: **"leave the expert deck under frills. that is
+all. move the bouclier to settings too. but we should call it streak-freezer
+instead of bouclier (better contrast between fire and ice)."**
+
+| what | where it is now | why |
+|---|---|---|
+| the expert deck — « Tous les pays (Expert) », 185 country tiles | the FRILLS panel, under the three CLIPS/DRAFTS/REVISED slots | it is extra COURSE, not a preference |
+| the Bouclier, renamed **Streak-Freezer** ❄️ | Settings, under a **Gems** heading | it is arranged in advance, like the accent colour |
+
+`Rewards.tsx` is therefore earned badges and nothing else — THRILLS is now
+purely what a learner has achieved, which is what Dan asked for on 11 Sep.
+
+**The rename is 🛡️ → ❄️, and the reason is contrast.** The streak is 🔥
+everywhere in the app; a shield has no quarrel with fire and ice does. It is a
+display rename only — the storage field is still `shields`, `buyShield()` and
+`SHIELD_COST` keep their names, the Memo/LexicaLocker precedent. Renamed on the
+two learner-visible surfaces (the Settings control, and `RewardToast`'s
+morning-after « Your Streak-Freezer did its job ») and in the comments that
+explain them. ❄️ also appears in `weather-letris.json`, but as the vocabulary
+card « la neige » — the one-glyph-one-meaning rule is about the app's own doors
+and icons, not about what a French deck teaches.
+
+**FRILLS' gate had to widen, and this is the reasoning, not an oversight.** The
+row was hidden until a first creation (above). The shelf the expert deck came
+from is gone, so that gate would have left the deck unbuyable — the same class
+of fault as the goal picker that vanished with the black strip on 11 Sep, and
+worth naming because it is invisible in the diff. FRILLS now also opens when
+the deck is OWNED or AFFORDABLE, which is the same test the row was given in
+the first place: never open on nothing, always open on something you can act
+on. Its closed summary stopped saying `EMPTY` and says `0 / 1 DECKS`, per the
+collapse rule's "a closed section says what is behind it".
+
+**ONE BALANCE, NOT TWO.** First build of Settings printed « 💎 340 » twice,
+forty pixels apart — once in the colours, once in the freezer — because each
+component read `progress` for itself. That is exactly the text the litmus test
+deletes. Hoisting the chip alone would have left it stale after a purchase, so
+the STATE came up instead: `components/GemShelf.tsx` owns the read, draws one
+balance, and passes `p` / `onChange` down to `AccentColours` and
+`StreakFreezer`, which are now controlled (the shape `Rewards` used to have).
+
+`verify116-gem-utilities` followed the move. Its loss-word scan — no shield
+surface may speak in loss — read `Rewards.tsx`, a file that no longer mentions
+the shield, so it would have passed by looking at nothing; it now reads
+`StreakFreezer.tsx` and `ProfileContent.tsx` too. A new assertion holds that
+`buyShield(` lives in `StreakFreezer.tsx`, because nothing else sells it any
+more. Break-tested: replacing that one call makes the check fail.
+
+Full gate green — `tsc` clean, both builds, all 123 checks across the wall and
+open phases, zero lint problems on every touched file.

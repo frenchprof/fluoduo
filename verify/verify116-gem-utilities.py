@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 The gem utilities (2026-09-07) — Dan's three rulings in one evening:
-the Bouclier ("to buy back a streak?" → protection bought in advance),
+the Streak-Freezer, « Bouclier » until Dan renamed it on 12 Sep
+("to buy back a streak?" → protection bought in advance),
 the expert-game unlocks ("we can unlock difficult parts of the portal" —
 GAMES only), and +20 gems per level-up ("yes").
 
@@ -96,7 +97,7 @@ console.log(JSON.stringify(out));
               "a consecutive day climbs and spends nothing",
               f"consecutive day wrong: {got['consec']}")
         check(got["heldOne"] == {"streak": 11, "shields": 0},
-              "one missed day with a Bouclier: the shield spends, the chain holds",
+              "one missed day with a Streak-Freezer: it spends, the chain holds",
               f"the shield does not hold a one-day gap: {got['heldOne']}")
         check(got["gapTwo"] == {"streak": 1, "shields": 1},
               "two missed days: reset, and the shield is NOT wasted on it",
@@ -120,7 +121,19 @@ toast = read("src/components/RewardToast.tsx")
 check('"shield"' in prog and 'case "shield"' in toast,
       "the morning-after toast exists",
       "the shield toast is gone — the shield would spend itself and never be seen")
-surfaces = toast + read("src/components/Rewards.tsx") + read("src/components/GameGallery.tsx")
+# The shield and the expert deck each moved house on 12 Sep — the shield to
+# Settings as the Streak-Freezer, the deck into the profile's FRILLS panel —
+# so the surfaces this rule reads had to move with them. A loss-word scan
+# pointed at a file that no longer mentions the shield is a check that passes
+# because it is looking at nothing.
+surfaces = (toast + read("src/components/StreakFreezer.tsx")
+            + read("src/components/ProfileContent.tsx")
+            + read("src/components/Rewards.tsx")
+            + read("src/components/GameGallery.tsx"))
+check("buyShield(" in read("src/components/StreakFreezer.tsx"),
+      "the Streak-Freezer is bought from its own Settings control",
+      "no buyShield call in StreakFreezer.tsx — the shield moved to Settings "
+      "on 12 Sep and nothing else sells it, so it would be unbuyable")
 banned = [w for w in ["don't lose", "you'll lose", "losing", "streak dies", "about to lose",
                       "last chance", "hurry", "don't break", "before it's too late", "expires"]
           if w in surfaces.lower()]

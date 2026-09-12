@@ -48,9 +48,10 @@
  */
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { SIOS } from "@/content/sios";
-import { loadProgress, type Progress } from "@/lib/progress";
+import { buyUnlock, loadProgress, type Progress } from "@/lib/progress";
 import { useAuthUser } from "@/lib/firebase/auth";
 import { loadLedger } from "@/lib/activityLedger";
+import { EXPERT_UNLOCKS } from "@/lib/economy";
 import { outcomeAccuracy, tierToken } from "@/lib/outcomeRows";
 import {
   attemptedCount, nextAction, redrills, skillCoverage,
@@ -99,8 +100,15 @@ type RowKey = (typeof ROWS)[number]["key"];
  * ComposeIt creation alone.
  */
 function rowsToShow(p: Progress, hasCreation: boolean): typeof ROWS[number][] {
+  const deck = EXPERT_UNLOCKS.some((u) => (p.unlocks ?? []).includes(u.id) || p.gems >= u.cost);
   return ROWS.filter((r) => {
-    if (r.key === "frills") return hasCreation;
+    // ...WITH ONE ADDITION THE SAME DAY. Dan moved the expert game deck into
+    // FRILLS ("leave the expert deck under frills"), and the shelf it came
+    // from is gone — so a FRILLS hidden until a first creation would be a
+    // deck nobody can buy. It therefore also opens once the deck is OWNED or
+    // AFFORDABLE, which is the same test the row was given in the first
+    // place: never open on nothing, always open on something you can act on.
+    if (r.key === "frills") return hasCreation || deck;
     if (r.key === "ills") return false;
     // SKILLS dropped (Dan, 2026-09-12: "drop skills"). He had asked the day
     // before for it to list the skills a learner has actually acquired; shown
@@ -234,7 +242,7 @@ export default function ProfileContent() {
   const summaryOf = (k: RowKey): string =>
     k === "redrills" ? `${queue.length} SIOS`
       : k === "skills" ? `${attempted} / ${SIOS.length}`
-      : k === "frills" ? "EMPTY"
+      : k === "frills" ? `${EXPERT_UNLOCKS.filter((u) => (p.unlocks ?? []).includes(u.id)).length} / ${EXPERT_UNLOCKS.length} DECKS`
       : `${Math.min(blockers.filter((b) => b.week === weekKey(now)).length, 3)} / 3`;
 
   return (
@@ -407,18 +415,51 @@ export default function ProfileContent() {
               )}
 
               {row.key === "frills" && (
-                // Honestly empty: nothing in the app stores recordings or
-                // drafts yet, so the three slots state what they will hold
-                // rather than inventing a count.
-                <div className="flex gap-2">
-                  {[["🎙", "CLIPS"], ["✎", "DRAFTS"], ["↩", "REVISED"]].map(([icon, what]) => (
-                    <span key={what} className="flex h-[58px] flex-1 flex-col items-center justify-center gap-1 rounded-lg border-[1.5px] border-dashed"
-                          style={{ borderColor: "var(--fluo-card-accent)", color: "var(--fluo-card-accent)" }}>
-                      <span aria-hidden className="text-[1.05rem]">{icon}</span>
-                      <span className="fluo-mono text-[9px] font-black">0 {what}</span>
+                <>
+                  {/* Honestly empty: nothing in the app stores recordings or
+                      drafts yet, so the three slots state what they will hold
+                      rather than inventing a count. */}
+                  <div className="flex gap-2">
+                    {[["🎙", "CLIPS"], ["✎", "DRAFTS"], ["↩", "REVISED"]].map(([icon, what]) => (
+                      <span key={what} className="flex h-[58px] flex-1 flex-col items-center justify-center gap-1 rounded-lg border-[1.5px] border-dashed"
+                            style={{ borderColor: "var(--fluo-card-accent)", color: "var(--fluo-card-accent)" }}>
+                        <span aria-hidden className="text-[1.05rem]">{icon}</span>
+                        <span className="fluo-mono text-[9px] font-black">0 {what}</span>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* THE EXPERT DECK LIVES HERE NOW (Dan, 2026-09-12: "leave
+                      the expert deck under frills. that is all."). It used to
+                      sit on the reward shelf beside the Bouclier and the
+                      accent colours; those two are preferences and went to
+                      Settings, and this one is not — « Tous les pays
+                      (Expert) », 185 country tiles, is extra COURSE, which is
+                      what FRILLS is for. The gem balance travels with it: a
+                      price with no balance beside it cannot be weighed. */}
+                  <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                    <span className="fluo-mono rounded-md border-2 px-2 py-1.5 text-[12px] font-bold" style={{ borderColor: LINE, color: INK }}>
+                      💎 {p.gems}
                     </span>
-                  ))}
-                </div>
+                    {EXPERT_UNLOCKS.map((u) => {
+                      const owned = (p.unlocks ?? []).includes(u.id);
+                      return (
+                        <button
+                          key={u.id}
+                          type="button"
+                          disabled={owned || p.gems < u.cost}
+                          onClick={() => setP(buyUnlock(u.id))}
+                          title={owned ? `${u.label} — unlocked, find it in the games` : `${u.label} — an expert game deck, 💎 ${u.cost}`}
+                          className="flex items-center gap-2 rounded-lg border-2 px-2.5 py-2 text-left text-[12px] font-bold disabled:opacity-55"
+                          style={{ borderColor: LINE, background: PAPER, color: INK }}
+                        >
+                          <span>{u.emoji} {u.label}</span>
+                          <span className="fluo-mono text-[11px]" style={{ color: SOFT }}>{owned ? "✓" : `💎${u.cost}`}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
               )}
 
               {row.key === "ills" && (
@@ -450,7 +491,7 @@ export default function ProfileContent() {
                 </>
               )}
 
-              {row.key === "thrills" && <Rewards p={p} onChange={setP} />}
+              {row.key === "thrills" && <Rewards p={p} />}
             </Section>
           ))}
 
