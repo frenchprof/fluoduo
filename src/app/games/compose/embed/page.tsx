@@ -13,7 +13,8 @@
 import GameGallery, { type GalleryEntry } from "@/components/GameGallery";
 import { listComposeBanks } from "@/games/compose/banks";
 
-/** The ComposeIt gallery — one ▶ Jouer card and a sheet of banks (patch 23). */
+/** The ComposeIt gallery — the ▶ Play card, and every bank on the page under
+ *  it, folded by unit (Dan, 2026-09-12). */
 export default function Page() {
   const entries: GalleryEntry[] = listComposeBanks()
     .slice()

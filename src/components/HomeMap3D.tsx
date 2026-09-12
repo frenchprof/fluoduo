@@ -925,7 +925,7 @@ export default function HomeMap3D({
           data-no-scroll-on
           className={fill
             ? `home-map3d-box relative h-full overflow-x-hidden ${still ? "overflow-y-hidden" : "overflow-y-auto"}`
-            : "home-map3d-box relative h-[520px] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[640px]"}
+            : "home-map3d-box relative h-[32.5rem] overflow-y-auto overflow-x-hidden rounded-2xl border md:h-[40rem]"}
           // touchAction pan-y: travel is the ONLY gesture — no pinch zoom in the
           // 3D view (Dan, 2026-08-20: "zooming in or out should not be allowed")
           style={{
@@ -1217,6 +1217,17 @@ export default function HomeMap3D({
                           title={`${st.id} · ${st.topic} (${KIND_LABEL[kind]}${second ? ` + ${KIND_LABEL[second]}` : ""})`}
                           aria-label={`${st.id} · ${st.topic} (${KIND_LABEL[kind]})${active ? " — continue here" : ""}`}
                           aria-current={active ? "step" : undefined}
+                          /* data-tour, on the CURRENT stop only: the home tour's
+                             first step lights this and the ▶ Continue key at the
+                             same time (Dan, 2026-09-12 — *"the walk through on
+                             the home page should at the same time point out both
+                             the Continue button and the map's stop button"*).
+                             They are one idea in two places, and a tour that
+                             showed them one after the other would teach them as
+                             two. `active` is the same flag the gold pulse uses,
+                             so the anchor cannot drift onto a different stop
+                             from the one the map is highlighting. */
+                          data-tour={active ? "map-stop" : undefined}
                           className="home-map3d-node fluo-spring relative block"
                           style={{ width: baseW, height: totalH, background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
                         >

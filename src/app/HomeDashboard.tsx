@@ -35,7 +35,8 @@ import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { SIOS } from "@/content/sios";
 import { defaultProgress, loadProgress, isSioDone, type Progress } from "@/lib/progress";
-import { nextSioId, loadBookmark, BOOKMARK_EVENT } from "@/lib/continuer";
+import { nextSioId, loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
+import StopBookmark from "@/components/StopBookmark";
 import { equippedAccent } from "@/lib/economy";
 import { dueForReview } from "@/lib/reviser";
 
@@ -143,6 +144,9 @@ export default function HomeDashboard() {
   // computation (Dan, 2 Sep). From state, not loadBookmark(): the first
   // client render must agree with the prerender.
   const activeId = nextSioId(progress, bookmark);
+  // The same number the top bar's mark computes, from the same two inputs —
+  // so the well below the hero and the bar can never disagree.
+  const goalNo = nextGoalNumber(progress, bookmark) ?? null;
   const activeSio = SIOS.find((s) => s.id === activeId);
   // THE STOP AFTER THIS ONE (Dan, 1 Sep: "add a forward button (= Next
   // stop)"). Taken from the map's own order — the SIOS array IS the study path
@@ -233,6 +237,17 @@ export default function HomeDashboard() {
             and shrink CONTINUOUSLY with the viewport or it will either wrap at
             360px or sit small at 1024. Measured at the ends — 320px gives
             27px, 1280px is capped at 52px before the line outgrows its band. */}
+        {/* THE BYLINE HANGS OFF THE HEADING'S OWN LEFT EDGE (Dan, 2026-09-12:
+            "option 2, but make it rely on (left-aligned to) the centred line
+            above it", then "make it sit much nearer. the gap is currently too
+            big between lines").
+            The heading is centred in a full-width strip, so "left" cannot mean
+            the strip's left — that would strand « par Dr Chan » out by the
+            coils. This wrapper is an inline-block, so it SHRINKS to the
+            heading's own line and the strip's text-center still centres it;
+            inside, everything aligns left. The byline therefore starts exactly
+            where « Bienvenue » starts, at every width, with no measuring. */}
+        <div className="inline-block text-left">
         <h1 className="fluo-band-hand font-black leading-[1.05] text-[color:var(--fluo-ink)] text-[clamp(1.7rem,7.4vw,3.25rem)]">
           <span className="whitespace-nowrap">Bienvenue sur</span>{" "}
           <span
@@ -255,11 +270,16 @@ export default function HomeDashboard() {
           role="img"
           aria-label="par Dr Chan"
           viewBox="0 0 134 36"
-          /* Centred, the byline lands under the brand pill, whose ink overshoots
-             the letters by 0.18em and paints over anything beneath. So it sits
-             a step lower and above the pill in stacking order — measured at
-             1440px: byline y=138, pill bottom y=143 before this. */
-          className={`fluo-byline relative z-[1] mx-auto mt-2 h-4 w-auto${heroPlay ? " is-play" : ""}`}
+          /* WHY THE OLD `mt-2` COULD GO. Centred, the byline landed under the
+             brand pill, whose highlighter ink overshoots the letters by 0.18em
+             and paints over anything beneath — so it was pushed a step lower
+             AND lifted above the pill in stacking order (measured at 1440px:
+             byline y=138, pill bottom y=143). Left-aligned it no longer sits
+             under the pill at all: the pill is around « FluOLinGo » at the end
+             of the line, and the byline now starts under « Bienvenue ». The
+             `z-[1]` stays as cheap insurance for the narrow widths where the
+             heading wraps and the pill drops onto the byline's own line. */
+          className={`fluo-byline relative z-[1] -mt-0.5 h-4 w-auto${heroPlay ? " is-play" : ""}`}
         >
           <g
             transform="translate(4 0) skewX(-8)"
@@ -274,6 +294,7 @@ export default function HomeDashboard() {
             ))}
           </g>
         </svg>
+        </div>
       </section>
 
       {/* THE 3XL COLUMN starts here, not around the strip — see the note on
@@ -305,7 +326,48 @@ export default function HomeDashboard() {
             CTA). Supersedes 2 Sep's flip-in-place: the postcard is pinned to
             the tight 2D grid, and 2D/3D is chosen where it matters — on /map,
             whose PillSwitch (verify25b/c) is untouched. */}
-        <div />
+
+        {/* THE GOAL COMES DOWN OFF THE BAR, AND SITS IN THE ROW'S LEFT SLOT
+            (Dan, 2026-09-12: "yes i do mean to bring down the editable field
+            to just above the map", then "yes but on the same row as the
+            buttons to the right please").
+
+            THIS SOFTENS HIS OWN 7 SEP RULING, and only on this page. That day
+            the stop replaced the streak in the TOP BAR — "the stop info (and
+            make that editable) at the top right ... so we free up the space
+            between the play rewind etc buttons at the hero" — and it still
+            rides the other 27 surfaces there, where there is no map to sit
+            above. What changed is that Home now DRAWS the road: the number and
+            the thing it points at belong next to each other, and the top-right
+            corner was the furthest point on the screen from the stop it names.
+            The space between the keys stays free — this sits beside them, not
+            among them.
+
+            THE SLOT WAS ALREADY SHAPED FOR IT. This replaces the empty `<div/>`
+            that held the left end of the `justify-between` row, and the wrap
+            note below was written for a well exactly here: at 320px the row
+            wraps and "the well takes the first line and the keys the second".
+
+            `SiteTopBar` hides its own mark on Home rather than this page
+            drawing a second one — one reading must never appear twice on a
+            screen. It is the SAME `StopBookmark` the bar carries, so typing a
+            number here bookmarks the stop and every other surface hears it
+            through BOOKMARK_EVENT: a second door onto one value, not a copy. */}
+        {goalNo === null ? (
+          <div />
+        ) : (
+          <div className="home-goal">
+            <span aria-hidden className="home-goal-target">🎯</span>
+            <span
+              className="neo-well home-goal-well rounded-xl"
+              title={`Your goal, ${goalNo}/50 — edit the number to bookmark a stop`}
+            >
+              <span className="fluo-mono home-goal-digits">
+                <StopBookmark stopNo={goalNo} totalClassName="hidden" />
+              </span>
+            </span>
+          </div>
+        )}
 
         {/* FOUR pillows since Dan's Next-stop key (1 Sep). The FILL is the
             dopamine role; the depth is the affordance. Rewind sinks to a flat
@@ -318,10 +380,22 @@ export default function HomeDashboard() {
             UNDER the keys at both 320 and 360, and only 390 escaped by 0.3px.
             Nobody would have caught that from a 390px screenshot.
             44px below sm (still the 44px touch-target floor) with a 6px gap
-            makes the group 194px, which fits 360. 320 cannot hold four keys
-            AND the well on one line at any size a finger can hit, so the row
-            is allowed to WRAP there — the well takes the first line and the
-            keys the second, rather than one of them disappearing. */}
+            makes the group 194px, which fits 360.
+
+            AND IT NO LONGER WRAPS AT 320 (Dan, 2026-09-12, sent the wrapped
+            phone back: "i don'T want them on separate lines. you have to
+            squeeze them into the same row"). The earlier note here concluded
+            320 could not hold both and let the row break — the goal well on
+            one line, the keys on the next. Measured, it was short by FIVE
+            pixels: 231px of row against 88 (well) + 8 (gap) + 140 (keys).
+
+            The well gives, not the keys: they are at the touch-target floor
+            and shrinking them trades a wrap for a missed tap. How it gives is
+            `.home-goal` in globals.css — ONE fluid size off `--fs-step`, which
+            is zero on a phone and opens on a desktop, with the padding and gap
+            in `em` so they follow it. No pixel is named here and there is no
+            `sm:` swap to keep in step with anything (Dan, same day: "PLEASE
+            NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"). */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           {/* The squeezed counter well (pre-tests' build of Dan's earlier
               "squeeze the 1/50 in between" instruction) came out at the QC
@@ -342,7 +416,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label="Diplômé — all 50 goals done. The course ends; the French doesn't: keep it alive in revision"
               title="Diplômé ! All 50 goals done — the course ends; the French doesn't. Revision keeps every word coming back."
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
               <span aria-hidden className="text-[1.5rem] leading-none sm:text-[1.75rem]">🎓</span>
@@ -375,7 +449,7 @@ export default function HomeDashboard() {
                  requires every tour step to name a data-tour hook for exactly
                  that reason. */
               data-tour="continue"
-              className={`neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]${doneTotal === 0 ? " fluo-play-halo" : ""}`}
+              className={`neo-key home-key grid place-items-center${doneTotal === 0 ? " fluo-play-halo" : ""}`}
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 55%, white) 0%, var(--dopa-win) 52%, color-mix(in oklab, var(--dopa-win) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -398,7 +472,7 @@ export default function HomeDashboard() {
               href={`/unit/${afterSio.unit}#${afterSio.id}`}
               aria-label={`Next goal — ${afterSio.topic}`}
               title={`Next goal — « ${afterSio.topic} »`}
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-win) 34%, white) 0%, color-mix(in oklab, var(--dopa-win) 72%, white) 52%, color-mix(in oklab, var(--dopa-win) 55%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -412,7 +486,7 @@ export default function HomeDashboard() {
               href="/reviser"
               aria-label={`Rewind — ${dueCount} to repeat`}
               title="Rewind — repeat the words you missed"
-              className="neo-key relative grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key relative grid place-items-center"
               style={{ background: "linear-gradient(155deg, color-mix(in oklab, var(--dopa-focus) 55%, white) 0%, var(--dopa-focus) 52%, color-mix(in oklab, var(--dopa-focus) 70%, black) 100%)" }}
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden>
@@ -428,7 +502,7 @@ export default function HomeDashboard() {
             <span
               aria-disabled="true"
               title="Rewind — nothing waiting to be repeated"
-              className="neo-key grid h-[44px] w-[44px] place-items-center rounded-[13px] sm:h-[58px] sm:w-[58px] sm:rounded-[17px]"
+              className="neo-key home-key grid place-items-center"
             >
               <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden style={{ opacity: 0.4 }}>
                 <path d="M12.5 6.5 L12.5 19.5 L3.5 13 Z" fill="var(--key-ink-focus)" stroke="var(--key-ink-focus)" strokeWidth="2.4" strokeLinejoin="round" />

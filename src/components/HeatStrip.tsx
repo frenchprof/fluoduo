@@ -39,7 +39,7 @@ export default function HeatStrip({
   label?: string;
   className?: string;
 }) {
-  const cell = size === "sm" ? "h-3" : "h-[18px]";
+  const cell = size === "sm" ? "h-3" : "h-[1.125rem]";
   const units = unitNumbers();
   return (
     <div role={hrefFor || onPick ? "group" : "img"} aria-label={label} className={`heat-strip ${className}`}>

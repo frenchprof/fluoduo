@@ -57,8 +57,8 @@ function Board({
   const colour = state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : warm ? "#ffb84d" : "#ffc233";
   const wide = blindWidth(blind) <= 5;
   const cellCls = wide
-    ? "h-[56px] w-[44px] text-[30px] sm:h-[66px] sm:w-[54px] sm:text-[38px]"
-    : "h-[44px] w-[26px] text-[19px] sm:h-[54px] sm:w-[38px] sm:text-[28px]";
+    ? "h-[3.5rem] w-[2.75rem] text-[30px] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[2.75rem] w-[1.625rem] text-[19px] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -117,7 +117,7 @@ const QUEUE = ["👵", "🧑‍🦱", "🧔", "👩‍🦰", "👨‍🦳"];
 
 function Queue({ bubble, boarding }: { bubble: string; boarding: boolean }) {
   return (
-    <div className="pointer-events-none absolute bottom-[48px] left-[3.6rem] flex items-end gap-0 sm:left-[11.8rem]">
+    <div className="pointer-events-none absolute bottom-[3rem] left-[3.6rem] flex items-end gap-0 sm:left-[11.8rem]">
       {QUEUE.map((p, i) => (
         <span
           key={i}
@@ -154,9 +154,11 @@ function Vehicle({
 }) {
   const skin = train ? "#dfe6ee" : "#f4b400";
   const trim = train ? "#1f5fa8" : "#d18f00";
-  const width = train ? 252 : 210;
+  // In rem, not a bare number: React renders a bare number as px, which would
+  // leave the bus a fixed size inside a scene that now scales (12 Sep sweep).
+  const width = train ? "15.75rem" : "13.125rem";
   return (
-    <div className="absolute bottom-[52px] right-2 origin-bottom-right scale-[0.74] sm:right-6 sm:scale-100" style={{ width }}>
+    <div className="absolute bottom-[3.25rem] right-2 origin-bottom-right scale-[0.74] sm:right-6 sm:scale-100" style={{ width }}>
       <div
         style={{
           transform: spot === "off" ? "translateX(150%)" : spot === "gone" ? "translateX(-190%)" : "none",
@@ -180,15 +182,15 @@ function Vehicle({
           </div>
           <div className="absolute inset-x-2 top-8 flex gap-1.5">
             {Array.from({ length: train ? 6 : 4 }).map((_, i) => (
-              <span key={i} className="h-[22px] flex-1 rounded-[3px]" style={{ background: "linear-gradient(180deg,#cfeaf8,#8dc2df)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)" }} />
+              <span key={i} className="h-[1.375rem] flex-1 rounded-[3px]" style={{ background: "linear-gradient(180deg,#cfeaf8,#8dc2df)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)" }} />
             ))}
           </div>
         </div>
-        <div className="relative -mt-[7px] flex justify-between px-6">
+        <div className="relative -mt-[0.4375rem] flex justify-between px-6">
           {[0, 1].map((i) => (
             <span
               key={i}
-              className="block h-[18px] w-[18px] rounded-full border-[4px] border-[#22262b] bg-[#5b626b]"
+              className="block h-[1.125rem] w-[1.125rem] rounded-full border-[4px] border-[#22262b] bg-[#5b626b]"
               style={{ animation: spot !== "stop" ? "nbwheel .45s linear infinite" : undefined }}
             />
           ))}
@@ -231,32 +233,32 @@ function BusStopScene({
     ? "linear-gradient(180deg,#5a5f66 0%,#3a3e44 100%)"
     : "linear-gradient(180deg,#5c6470 0%,#3f4650 100%)";
   return (
-    <div className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[248px]" style={{ background: sky }}>
-      <div className="pointer-events-none absolute inset-x-0 bottom-[52px] flex items-end gap-[5px] px-2 opacity-85">
+    <div className="relative h-[11.625rem] overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
+      <div className="pointer-events-none absolute inset-x-0 bottom-[3.25rem] flex items-end gap-[0.3125rem] px-2 opacity-85">
         {Array.from({ length: 11 }).map((_, i) => (
           <div key={i} className="rounded-t-[4px] bg-[#7f96ad]" style={{ height: 34 + ((i * 43) % 68), width: 34 + ((i * 29) % 36), boxShadow: "inset -5px 0 0 rgba(0,0,0,.2)" }} />
         ))}
       </div>
-      <div className="absolute inset-x-0 bottom-0 h-[56px]" style={{ background: ground }}>
+      <div className="absolute inset-x-0 bottom-0 h-[3.5rem]" style={{ background: ground }}>
         <div
-          className="absolute inset-x-0 top-1/2 h-[4px]"
+          className="absolute inset-x-0 top-1/2 h-[0.25rem]"
           style={{
             backgroundImage: "repeating-linear-gradient(90deg,#f5f0d8 0 48px,transparent 48px 96px)",
             animation: spot === "stop" ? undefined : "nbroad .5s linear infinite",
           }}
         />
       </div>
-      <div className="pointer-events-none absolute bottom-[50px] left-1 flex items-end sm:left-4">
+      <div className="pointer-events-none absolute bottom-[3.125rem] left-1 flex items-end sm:left-4">
         <div className="flex flex-col items-center">
           <div className="rounded-md border-2 border-white/90 bg-[#14304a] px-2 py-[3px] text-[10px] font-black tracking-wider text-[#ffc233] shadow-md">
             {label}
           </div>
-          <div className="h-[86px] w-[4px] bg-[#aeb9c4]" />
+          <div className="h-[5.375rem] w-[0.25rem] bg-[#aeb9c4]" />
         </div>
       </div>
       {mode === "bus" && <Queue bubble={bubble} boarding={boarding} />}
       {mode === "time" && (
-        <div className="pointer-events-none absolute bottom-[58px] left-1/2 -translate-x-1/2 rounded-lg border-2 border-[#1e3a52] bg-[#0c1824] px-4 py-2 shadow-xl">
+        <div className="pointer-events-none absolute bottom-[3.625rem] left-1/2 -translate-x-1/2 rounded-lg border-2 border-[#1e3a52] bg-[#0c1824] px-4 py-2 shadow-xl">
           <p className="text-center text-[10px] font-black uppercase tracking-[0.2em] text-[#7eb8e8]">Prochains départs</p>
           <p className="mt-1 text-center font-mono text-2xl font-black text-[#ffc233]">{panel === "??" ? "--:--" : `${panel.slice(0, 2)}:${panel.slice(2, 4)}`}</p>
         </div>
@@ -278,7 +280,7 @@ function BusStopScene({
       >
         📢
       </button>
-      <div className="absolute inset-x-0 top-0 h-[6px] bg-black/20">
+      <div className="absolute inset-x-0 top-0 h-[0.375rem] bg-black/20">
         <div className="h-full transition-[width] duration-100 ease-linear" style={{ width: `${Math.max(0, left) * 100}%`, background: timerHue }} />
       </div>
     </div>
@@ -302,7 +304,7 @@ function BurgerScene({
 }) {
   return (
     <div
-      className="relative h-[124px] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[248px]"
+      className="relative h-[7.75rem] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[15.5rem]"
       style={{ background: "linear-gradient(180deg,#fff8e8 0%,#ffe0b2 55%,#ffcc80 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b-2 border-[#e65100]/20 bg-[#ff6f00] px-4 py-2">
@@ -316,10 +318,10 @@ function BurgerScene({
         <p className="text-[10px] font-black uppercase tracking-[0.25em] text-[#a1887f]">Total à payer</p>
         <p className="mt-1 font-mono text-2xl font-black text-[#ffb74d] sm:text-3xl">{totalLabel || "· · ·"}</p>
       </div>
-      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-4 top-[50px] text-2xl sm:left-1/2 sm:-translate-x-1/2" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
+      <button type="button" onClick={onRepeat} title="Repeat" className="absolute left-4 top-[3.125rem] text-2xl sm:left-1/2 sm:-translate-x-1/2" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
       </button>
-      <div className="absolute inset-x-0 top-[42px] h-[6px] bg-black/10">
+      <div className="absolute inset-x-0 top-[2.625rem] h-[0.375rem] bg-black/10">
         <div className="h-full transition-[width] duration-100 ease-linear" style={{ width: `${Math.max(0, left) * 100}%`, background: timerHue }} />
       </div>
     </div>
@@ -343,7 +345,7 @@ function BureauScene({
 }) {
   return (
     <div
-      className="relative h-[186px] overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl sm:h-[248px]"
+      className="relative h-[11.625rem] overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl sm:h-[15.5rem]"
       style={{ background: "linear-gradient(180deg,#eceff1 0%,#cfd8dc 55%,#b0bec5 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 border-b border-[#78909c] bg-[#546e7a] px-4 py-2">
@@ -359,7 +361,7 @@ function BureauScene({
       <button type="button" onClick={onRepeat} title="Repeat" className="absolute right-3 top-12 text-2xl sm:top-14" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
       </button>
-      <div className="absolute inset-x-0 top-[42px] h-[6px] bg-black/10">
+      <div className="absolute inset-x-0 top-[2.625rem] h-[0.375rem] bg-black/10">
         <div className="h-full transition-[width] duration-100 ease-linear" style={{ width: `${Math.max(0, left) * 100}%`, background: timerHue }} />
       </div>
     </div>
@@ -897,7 +899,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
-          className="absolute inset-x-2 top-2.5 h-[68px] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none sm:inset-x-4 sm:top-3 sm:h-[78px]"
+          className="absolute inset-x-2 top-2.5 h-[4.25rem] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none sm:inset-x-4 sm:top-3 sm:h-[4.875rem]"
           onChange={(e) => {
             if (stage !== "asking") return;
             if (!typingOpen) setTypingOpen(true);

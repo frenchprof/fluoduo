@@ -203,9 +203,29 @@ kr = keyrow.group(0) if keyrow else ""
 check("flex-wrap" in kr,
       "the key row may wrap — at 320px the well takes a line of its own",
       "the key row cannot wrap; at 320px four keys crush the 1/50 well to nothing and draw over it")
-check("h-[44px]" in home and "sm:h-[58px]" in home,
-      "the keys are 44px below sm (the touch-target floor) and 58 above",
-      "the keys no longer shrink below sm; four of them plus the well do not fit a 360px phone")
+# THE SIZE IS NO LONGER TYPED (Dan, 2026-09-12: "PLEASE NEVER EVER HARD CODE
+# FONT SIZES AND BUTTON SIZES !!!"). It was `h-[44px] … sm:h-[58px]` — two fixed
+# ladders — and is now `.home-key`: one fluid side off `--fs-step` with the
+# touch floor pinned by `max(44px, …)`. A phone still measures exactly 44, a
+# desktop lands on ~58, and a learner who turns their browser's text up takes
+# the keys with them, which the old pixels never did. What this check cares
+# about is unchanged — the keys must not outgrow a 360px row — so it asserts
+# the FLOOR and the fluidity rather than how they were spelled.
+_css = open("src/app/globals.css", encoding="utf-8").read()
+_rule = re.search(r"\.home-key\s*\{[^}]*\}", _css, re.S)
+_body = _rule.group(0) if _rule else ""
+check("home-key" in home and "max(44px" in _body.replace(" ", ""),
+      "the keys size from .home-key, with the 44px touch floor pinned by max()",
+      "the keys no longer hold the 44px floor; four of them plus the well do not fit a 360px phone")
+check("--fs-step" in _body,
+      "and they grow on the type ramp, not at a breakpoint",
+      ".home-key does not read --fs-step — the keys are a fixed size again")
+# Found by break-testing the two clauses above: re-typing ONE key as a literal
+# left them both passing, because four keys still carried `.home-key`. The row
+# only fits if EVERY key is on the fluid side, so say that.
+check(not re.search(r"h-\[\d+px\] w-\[\d+px\] place-items-center", home),
+      "no key on Home names its own pixel size",
+      "a key is back to a literal h-[NNpx] w-[NNpx] — it will not shrink on a 360px phone")
 
 # Dan, 2026-08-21 and again 22 Aug: no huge CONTINUER, no full-width CTA.
 # Still true, and still a CI failure rather than a matter of taste.

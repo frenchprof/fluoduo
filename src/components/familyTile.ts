@@ -69,8 +69,32 @@
  *  The caller is responsible for not stretching the band itself: a band in a
  *  box wider than its content should be `w-fit`, or it will sit as a wide
  *  coloured strip with the tiles bunched at one end. */
+/*  THE TILE TRACK FILLS THE ROW AGAIN — `1fr`, not a cap.
+ *
+ *  Dan, 2026-09-12, pointing at the ☰ on a desktop: *"why is space between the
+ *  category and the tiles?? wasn't it to expand the tiles to fit the name (but
+ *  ONLY on desktop)??"*
+ *
+ *  HE IS DESCRIBING A GAP THIS LANE OPENED, by landing two correct changes
+ *  together. One widened the dropdown so its names would stop clipping
+ *  (`w-[calc(20.6rem + var(--fs-step)*21)]`); the other capped each tile track
+ *  at 5.958rem so the GOAL CARD's tiles would stop stretching into letterboxes.
+ *  Each was right about its own surface. Together, on a desktop, the dropdown
+ *  grew and the tiles did not, and the difference came out as dead coloured
+ *  band between the sideways label and the first tile.
+ *
+ *  THE CAP'S REASON IS GONE, WHICH IS WHY THIS IS A REVERT AND NOT A
+ *  COMPROMISE. It existed for the goal card, and the goal card no longer draws
+ *  a band at all — its doors flow on `.fluo-tilegrid` now, and it imports only
+ *  TILE from this file. The ☰ is the last caller, and in the ☰ filling IS the
+ *  behaviour Dan asked for: the tile grows with the room, so the name has
+ *  somewhere to go.
+ *
+ *  "ONLY ON DESKTOP" falls out rather than being coded: `--fs-step` is zero on
+ *  a phone, so the dropdown is its old 20.6rem there and three equal tiles
+ *  across it are exactly what they were. Nothing is keyed on a breakpoint. */
 export const BAND =
-  "grid grid-cols-[auto_repeat(3,minmax(0,5.958rem))] items-center gap-1.5 p-1.5";
+  "grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5";
 
 /** The family's name, sideways down the left, in the house ink. */
 export const BAND_NAME =
@@ -90,7 +114,7 @@ export const BAND_NAME =
  *  same 64px on a phone, where the step is zero, and grows with everything
  *  else above it. */
 export const TILE =
-  "flex min-h-[calc(4rem+var(--fs-step)*4)] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
+  "flex fluo-row-tall flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
 

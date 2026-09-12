@@ -110,10 +110,28 @@ for path, what in sorted(SHARED_CONTROLS.items()):
        "PROPORTION (.fluo-tilegrid counts the room) or on the RAMP "
        "(calc(Xrem + var(--fs-step) * X)), never a bare number")
 
-# And the ramped form must actually read the step, or it is a constant wearing
-# a calc(). Found by writing this check: `calc(4rem + 0px)` would have passed.
+# And the shared tile must actually be SIZED fluidly, by one of the two means
+# the app has. This clause was written when the tile carried an inline
+# `calc(4rem + var(--fs-step) * 4)` and it asked only that such a calc read the
+# step — because `calc(4rem + 0px)` is a constant wearing brackets.
+#
+# IT WENT VACUOUS THE MOMENT THAT CALC WAS REPLACED. The subdomains lane swapped
+# it for `.fluo-row-tall`, which is the better form — a named class beside
+# `.fluo-tap`, the touch floor — and the clause then found zero calcs and passed
+# by finding nothing, reporting "0 of them" in its own success line. A check
+# that passes because its subject disappeared is the quietest way for a rule to
+# stop being enforced, and this file's whole argument is that a shared control
+# must not be frozen. So it asks the real question now: the tile is sized by a
+# ramped calc OR by one of the named fluid classes, and never by neither.
+FLUID_CLASSES = ("fluo-row-tall", "fluo-row", "fluo-tap")
 tile = bare(read("src/components/familyTile.ts")) if os.path.isfile("src/components/familyTile.ts") else ""
 sized = re.findall(r"\b(?:min-h|max-h|h|min-w|max-w|w)-\[calc\([^\]]*\]", tile)
+named = [c for c in FLUID_CLASSES if c in tile]
+ok(sized or named,
+   f"the shared tile is sized fluidly ({len(sized)} ramped calc(s), classes: {', '.join(named) or 'none'})",
+   "src/components/familyTile.ts sizes its tile by neither a ramped calc() nor "
+   "one of " + "/".join(FLUID_CLASSES) + " — so every door in the app is a "
+   "frozen box again")
 ok(all("--fs-step" in s for s in sized),
    f"every calc() box in the shared tile reads --fs-step ({len(sized)} of them)",
    "a calc() box in familyTile.ts does not read --fs-step, so it is a constant "
@@ -123,7 +141,22 @@ ok(all("--fs-step" in s for s in sized),
 # Counted over the whole of src/, comments stripped. Lower it when you fix one;
 # never raise it. It is a COUNT and not a list of places on purpose: a list
 # invites the next session to append rather than to fix.
-BUDGET = 120
+# 120 -> 86 on 2026-09-12, and NOT because anything was fixed that day. The
+# real count has been 86 on both main and the branch that lowered this: 120 was
+# slack. (Integration lane, same day: it is 84 now — #325/#328/#329 removed two
+# more between that measurement and this merge, and the check's own advice line
+# is what said so. Lowered again, for the branch's own reason: an empty slot is
+# a frozen box somebody can add without failing anything.)
+# slack from the hour this check was written, and 34 empty slots is 34 frozen
+# boxes the next session can add without failing anything.
+#
+# THE TRAP THAT ALMOST WENT IN AS THE REASON, recorded because it is the same
+# shape as the fault the check is about. FROZEN_ANY matches `px` AND `rem`, on
+# purpose — a bare `4.25rem` is as frozen as `68px`; it follows the learner's
+# text size but not the screen. So a sweep converting px to rem moves this
+# number by ZERO, and the branch that did 47 of them read the drop from 120 as
+# its own work. Measured: origin/main 86, that branch 86.
+BUDGET = 84
 
 total = 0
 for dirpath, _dirs, files in os.walk(SRC):

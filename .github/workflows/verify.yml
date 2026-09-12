@@ -452,11 +452,22 @@ jobs:
       - name: "One sheet per page, and the coils run up to the band (11 Sep)"
         run: python3 verify/verify230-one-sheet.py
 
+      # Drives the HOST routes, not the embeds: the float is rendered by the
+      # root layout and the controls it was covering are inside the cahier's
+      # iframe, so a one-document scan sees no collision at all.
+      - name: "The floating 🐞 never rests on a control (12 Sep)"
+        run: python3 verify/verify340-float-clear.py
+
       - name: One tile grid — two to four columns, never a hard count
         run: python3 verify/verify260-tile-grid.py
 
       - name: No control is nailed to a pixel — counted or ramped, never frozen
         run: python3 verify/verify270-fluid-controls.py
+
+      # The chiptune loop ran as loud as the win jingle and never got out of
+      # a sentence's way. Two levels, and the loop follows every voice.
+      - name: "The music is a bed under the voice, never over it (12 Sep)"
+        run: python3 verify/verify280-music-under-voice.py
 
       - name: "Favourites — the star, the page, the caps and the rules (12 Sep)"
         run: python3 verify/verify300-favourites.py
@@ -550,6 +561,7 @@ jobs:
       # screen.
       - name: "One hand-hold at a time, and every tour still lights something (11 Sep)"
         run: python3 verify/verify220-one-handhold.py
+
 
       - name: "A custom domain serves at the root — no Pages subpath (2 Sep)"
         run: python3 verify/verify91-pages-basepath.py

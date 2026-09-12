@@ -85,7 +85,7 @@ export default function PillSwitch({
       aria-label={`${label}: ${spoken}`}
       title={title ?? `${label} — ${spoken}`}
       onClick={() => onFlip(!on)}
-      className={`neo-well relative flex h-[38px] w-[72px] shrink-0 items-center rounded-full p-[4px] transition ${className}`}
+      className={`neo-well relative flex fluo-switch shrink-0 items-center rounded-full p-[4px] transition ${className}`}
     >
       {/* The knob wears the same hue as the word, so the pill reads as one
           object in one state rather than a coloured word next to a neutral
@@ -113,7 +113,7 @@ export default function PillSwitch({
         // knob's height straight out of this string with `neo-key block h-[Np]`
         // to check the travel arithmetic, and a class wedged between them makes
         // it unreadable. Better to keep their check strict than to loosen it.
-        className="neo-key block h-[28px] w-[28px] fluo-spring rounded-[9px]"
+        className="neo-key block fluo-switch-knob fluo-spring rounded-[9px]"
         style={{ transform: on ? "translateX(36px)" : "translateX(0)", background: KNOB[hue] }}
       />
     </button>

@@ -16,8 +16,8 @@ import { CURATED } from "@/content/collections";
 import { isLexReadyId } from "@/lib/collections/lexReady";
 import { shortTitle } from "@/lib/shortTitles";
 
-/** The Lexicalator gallery — one ▶ Jouer card (the next deck) and a bottom
- *  sheet for « Choisir un autre » (patch 23). */
+/** The LexicaLocker gallery — the ▶ Play card for the next deck, and every
+ *  lex-ready deck on the page under it, folded by unit (Dan, 2026-09-12). */
 export default function LexicalatorIndexPage() {
   const entries: GalleryEntry[] = CURATED.filter((c) => isLexReadyId(c.id))
     .sort((a, b) => (a.unit ?? 9) - (b.unit ?? 9))

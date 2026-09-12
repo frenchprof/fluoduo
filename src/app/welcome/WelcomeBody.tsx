@@ -49,6 +49,7 @@
  * do I start, and each of them now has exactly one answer on screen.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { useCourse } from "@/components/CourseGate";
@@ -56,15 +57,9 @@ import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { SIOS } from "@/content/sios";
 import { equippedAccent } from "@/lib/economy";
-import { WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
+import { SKYLINE_Y, WELCOME_SKY_LIFT } from "@/lib/map3d/projection";
+import { HOME_HREF } from "@/lib/routes";
 
-/** The four letters the brand is built from: Fluency On Linguistic Goals.
- *  COLOURED, ON DAN'S MOCK (8 Sep: "text bigger and More like this with the
- *  colors on F, O, L and G" — his render supersedes the earlier size-and-
- *  weight-only ruling in this file). The four hues are the app's own pens,
- *  as vars so the ratchet counts no new hex; the drop shadow both lines
- *  already wear is what keeps them legible on the dawn band. */
-const CAP = "text-[1.3em] font-black leading-none";
 /** The dark ground each line of the greeting sits on, from Dan's three mocks
  *  of 8 Sep. Translucent, so the sky reads through it and the page stays one
  *  picture rather than a caption pasted over a photograph. */
@@ -103,48 +98,27 @@ const OUTLINE = {
   WebkitTextStrokeColor: "black",
   paintOrder: "stroke fill",
 } as const;
-/* TWO COLOURS, NOT FOUR, AND THEY COME FROM THE MAP (Dan, 2026-09-09: *"the
-   two colored F O L G have reverted to 4 again. I only need 2 colors, since we
-   are at it, can we use the colors that are the colors visible on the stop
-   buttons, the ones in blue and pink."*)
+/* THE F·O·L·G PEN TABLE IS GONE WITH THE TYPESET HERO (12 Sep). Dan's own
+   artwork carries its colours — the blue of his letters is 1cacff (spelled
+   without its hash, see OUTLINE above: verify19b's ratchet greps the raw
+   source, so a hex in PROSE counts as the palette drifting back), six units
+   of green from the map's --sio-vocab, which is why the two have always looked
+   like one system. The course tag below is the only text left in this sky and
+   it is white. */
+/* THE PER-LETTER HERO TABLE IS GONE (12 Sep). It drove a CSS rebuild of Dan's
+   gif — which letter survives, which O takes a dart — and the gif itself is the
+   hero now. Nothing derives from the words any more, so nothing here describes
+   them. */
 
-   THEY "REVERTED" BECAUSE THEY WERE BORROWED. These four letters pointed at
-   four FAMILY tokens, so the ☰ menu's recolour to Dan's 12-swatch palette
-   moved every one of them without anyone touching this page — pink→violet,
-   green→yellow, blue→teal. It is the same fault, on the same day, as the fifty
-   stops silently following that recolour: a surface with no palette of its own
-   inherits whatever happens to the palette it is borrowing.
-
-   So they take the MAP's own pens now, the ones a learner can see on the stop
-   buttons two hundred pixels below this line: --sio-vocab blue and
-   --sio-grammar pink, alternating F·O·L·G. Those belong to the map, not to the
-   menu, so the next family recolour cannot reach them — and the welcome page
-   now matches the road it is a picture of, which is what makes the pairing
-   read as deliberate rather than decorative. */
-const BRAND: Record<string, string> = {
-  F: "var(--sio-vocab)",   // blue — the vocabulary stops
-  o: "var(--sio-grammar)", // pink — the grammar stops
-  O: "var(--sio-grammar)",
-  L: "var(--sio-vocab)",   // blue
-  G: "var(--sio-grammar)", // pink
-};
-/** The name with its four letters lit — one span per character, spoken once. */
-function BrandName({ word }: { word: string }) {
-  return (
-    <>
-      <span aria-hidden>
-        {word.split("").map((ch, i) => (
-          <span key={i} style={"FOLG".includes(ch) ? { color: BRAND[ch] } : undefined}>
-            {ch}
-          </span>
-        ))}
-      </span>
-      <span className="sr-only">{word}</span>
-    </>
-  );
-}
+/** WHERE THE SKY ENDS, read off the scene rather than off a screenshot.
+ *  `SKYLINE_Y` is a fraction of the rendered BOX and this page renders that box
+ *  `WELCOME_SKY_LIFT` times the window's height, so the two together are the
+ *  fraction of the WINDOW the sky occupies. `dvh` and not `vh` because a phone's
+ *  toolbar slides away and the horizon moves with it. */
+const SKY_H = `${(SKYLINE_Y * WELCOME_SKY_LIFT * 100).toFixed(2)}dvh`;
 
 export default function WelcomeBody() {
+  const router = useRouter();
   // Progress lives in localStorage, which the static export must not read at
   // prerender — a build baked with one learner's ticks would ship them to
   // everyone. Same reason the embed body does this.
@@ -196,7 +170,34 @@ export default function WelcomeBody() {
     // 100dvh, not 100vh: on a phone the browser's own bars come and go, and
     // vh is measured against the TALLEST state, so a vh page hides its own
     // bottom — which here is the CTA — behind the address bar on arrival.
-    <main className="fluo-embed relative h-[100dvh] w-full overflow-hidden">
+    <main
+      className="fluo-embed relative h-[100dvh] w-full cursor-pointer overflow-hidden"
+      /* THE WHOLE DOOR OPENS, NOT JUST THE HANDLE (Dan, 2026-09-12: *"the Start
+         page : allow users to enter the site no matter where they click. since
+         there is no other branches from there"*).
+
+         He is describing a page with exactly ONE destination. Every pixel of it
+         — the sky, the road, the fifty stops, the greeting — is a picture of
+         where you are going, and none of it does anything else, so a tap that
+         lands an inch from the coin currently does nothing at all and reads as
+         the app ignoring you.
+
+         THE COIN STAYS, and that is not redundant under the litmus test: it is
+         what SAYS the page is a door. Remove it and a learner is looking at a
+         landscape with no reason to touch it. The coin teaches the gesture; this
+         makes the gesture forgiving.
+         `cursor-pointer` is the desktop half of the same message.
+
+         ANYTHING THAT IS ITSELF A CONTROL IS LEFT ALONE. There is only the coin
+         today, and its own <Link> already goes here — but the guard is written
+         against ANY anchor or button so that adding one later (a course tag, a
+         sign-in, a language pick) cannot be swallowed by the page beneath it.
+         That is the failure this page would report as "the button is dead". */
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest("a,button,[role='button'],input,select")) return;
+        router.push(HOME_HREF);
+      }}
+    >
       <div className="absolute inset-0">
         <HomeMap3D
           progress={progress}
@@ -239,7 +240,56 @@ export default function WelcomeBody() {
           a swipe that starts on the headline still travels the road — the
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[3%] flex flex-col items-center px-6 text-center sm:top-[3%]">
+      {/* BEHIND THE TREES (Dan, 2026-09-12: *"let it drop behind the trees in
+          the background"*).
+
+          The letters fall out of the sky, so they should go BEHIND the scenery
+          on the way down rather than over it — which is a z-index, not an
+          animation. The scene stacks by depth: `zOrder(scale) = scale * 900`
+          (lib/map3d/projection.ts), so a tree on the skyline is small and sits
+          LOW, a tree in the near grass is large and sits high. The sky+ground
+          SVG that everything stands on is z-0.
+
+          z-1 is therefore the one slot that is above the sky and below every
+          prop in the scene, however far away. Nothing here creates a stacking
+          context between this block and the props — the map's box is
+          `position: relative` with `z-index: auto`, and `overflow` alone does
+          not make one — so the two really do compare in the same context.
+
+          The course tag below is text and has to stay readable, so it is lifted
+          back out on its own. */}
+      {/* …AND THE SKY IS WHERE THEY STOP (Dan, 2026-09-12: *"the letters should
+          fall behind the horizon, not onto the trees"*, then, asked how far
+          down counts: *"basically anything that is sky is horizon"*).
+
+          The z-index above put the letters behind the trees but not out of
+          sight — measured at 1440x900, the deepest of them tumbled to y≈330
+          with the skyline at 293, so « c y » and « a s » came to rest sitting
+          IN the treeline rather than passing behind it. Depth alone cannot fix
+          that: a thing drawn low in the stack is still drawn.
+
+          So the artwork is CLIPPED to the sky. The height is not a number
+          picked off a screenshot — the scene exports both halves of it:
+
+            SKYLINE_Y (0.29)          the true sky line, a fraction of the box
+            WELCOME_SKY_LIFT (1.12)   this page renders the scene into a box
+                                      that much taller than the window
+
+          so the skyline lands at 0.29 x 1.12 = 32.48% of the window, which is
+          exactly where the pixels put it (32.5% at 1440x900 and at 390x844).
+          Read them, and the clip follows the horizon if either ever moves.
+
+          THE BOX CENTRES WHAT IS IN IT and the art is nudged down by 15.14% of
+          its own height, because the name does not sit in the middle of the
+          frame — measured on the finished asset it lands at 34.86% of it, the
+          rest being the space the letters fall through. Centring the ART would
+          hang the name a fifth of the sky too high; this centres the NAME.
+          A percentage on `translateY` resolves against the element's own
+          height, so one figure holds at every width. */}
+      <div
+        className="fluo-hero-sky pointer-events-none absolute inset-x-0 top-0 z-[1]"
+        style={{ height: SKY_H }}
+      >
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
@@ -285,41 +335,80 @@ export default function WelcomeBody() {
             now: a 5rem hand face over a moonlit sky needs a ground, not a
             glow. It is translucent, so the sky still shows through it and the
             page is still one picture. */}
-        <h1
-          className="fluo-welcome-title font-black leading-[1.02] text-white"
-          style={{ fontFamily: "var(--font-fluohand-stack)", ...OUTLINE }}
+        {/* THE HERO IS DAN'S OWN ARTWORK, NOT A REBUILD OF IT.
+            (2026-09-12: *"when i said to transpose, i literally mean to copy in
+            the gifs except with a transparent background"*, and *"cos when you
+            rebuild, you are bound to make it look different — which I don't
+            want"*.)
+
+            He is right, and he said it after two attempts proved it. The first
+            read a single still frame — his upload reached this session
+            flattened — and guessed at the motion. The second had all 63 frames
+            and rebuilt the whole thing in CSS: per-letter spans, a shed
+            animation, gradient rings, a dart pinned to the bullseye. It worked,
+            and it still looked nothing like his file, because his letters are
+            EXTRUDED — a bright face with a darker slab down-left and a cast
+            shadow — his boards are red-and-white and three-dimensional, and
+            there are TWO darts, not one. None of that survives being described
+            in CSS by someone reading a contact sheet.
+
+            So the gif is the asset. What changed is the one thing he asked to
+            change: the yellow ground is gone.
+
+            HOW THE BACKGROUND CAME OFF, because a colour-key alone would not
+            have done it. Every glyph is anti-aliased against fcff16, so keying
+            the yellow leaves a yellow rind on every edge — which over a blue
+            sky is the most visible colour there is. Each pixel is instead
+            UN-MIXED: it is `alpha * ink + (1 - alpha) * yellow`, so alpha comes
+            from its distance to the yellow and the ink is recovered by solving
+            for it. Composited onto the page's own sky to check, the edges are
+            clean.
+
+            WEBP, NOT GIF. A GIF's transparency is one bit — a pixel is either
+            there or not — which would put a hard jagged edge on every letter
+            over the sky. WebP carries a real alpha channel, and at native size
+            the file is smaller than the original (428 KB against 637), because
+            resizing his flat colour areas into gradients costs more than it
+            saves: at 1100px wide the same frames came to 952 KB.
+
+            THE STILL IS THE LAST FRAME, for `prefers-reduced-motion` — the end
+            of the story rather than a frozen middle — and it doubles as the
+            fallback anywhere animated WebP is not supported. */}
+        <picture>
+          <source srcSet="/brand/hero-fluolingo.webp" type="image/webp" media="(prefers-reduced-motion: no-preference)" />
+          {/* A plain <img>, on purpose: next/image would re-encode this and
+              drop the animation. It is a fixed, hand-made asset with its own
+              alpha, served exactly as it was made. */}
+          <img
+            src="/brand/hero-fluolingo.png"
+            alt="FluOLinGo — Fluency, built On Linguistic Goals"
+            className="fluo-hero-art"
+            width={1391}
+            height={760}
+            decoding="async"
+          />
+        </picture>
+      </div>
+
+      {/* THE COURSE TAG IS NOT CLIPPED, so it rides the same sky box as a
+          sibling and sits on its bottom edge. It is text a learner has to
+          read; the clip above exists to swallow tumbling letters, and a line
+          naming your course is the one thing in this sky that must not be
+          swallowed. */}
+      {named && course && (
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 z-[2] flex items-end justify-center px-6 text-center"
+          style={{ height: SKY_H }}
         >
-          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>Welcome to</span>
-          <br />
-          <span className="inline-block px-4 py-0.5" style={{ background: BAND }}>
-            <BrandName word="FluOLinGo" />
-          </span>
-        </h1>
-        <p
-          className="fluo-welcome-sub mt-1.5 inline-block px-4 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:mt-1"
-          style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
-        >
-          {/* One span per raised letter, and the sentence given once to a
-              screen reader — otherwise it reads out four stray characters. */}
-          <span aria-hidden>
-            Building your{" "}
-            <span className={CAP} style={{ color: BRAND.F }}>F</span>luency{" "}
-            <span className={CAP} style={{ color: BRAND.o }}>o</span>n{" "}
-            <span className={CAP} style={{ color: BRAND.L }}>L</span>inguistic{" "}
-            <span className={CAP} style={{ color: BRAND.G }}>G</span>oals
-          </span>
-          <span className="sr-only">Building your Fluency on Linguistic Goals</span>
-        </p>
-        {named && course && (
           <p
             data-course-tag={course.key}
-            className="fluo-welcome-course mt-1.5 inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2"
+            className="fluo-welcome-course inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}
           </p>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* THE ONE ACTION — A COIN ON THE ROAD (Dan, 8 Sep, with his own mock
           of this page: *"this is closer to what i would like"*, showing a

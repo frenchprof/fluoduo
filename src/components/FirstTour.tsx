@@ -69,11 +69,22 @@ function tourFor(rawPath: string): Tour | null {
     return {
       key: "home",
       steps: [
+        // BOTH AT ONCE (Dan, 2026-09-12: *"the walk through on the home page
+        // should at the same time point out both the Continue button and the
+        // map's stop button"*). The ▶ key and the glowing stop on the road are
+        // the same goal — « Introductions » — reached two ways, and showing
+        // them one after the other would have taught them as two separate
+        // things to learn. Both light together and either one advances.
+        //
         // `[data-tour="continue"]`, not `a[title^="Continue"]`. The old form
         // hung this step off the first word of a TOOLTIP — « Continue — «
         // Introductions », your goal on the study path » — so rewording that
         // sentence would have unhooked the tour with nothing to show for it.
-        { selector: '[data-tour="continue"]', action: "tap", text: "Continue — your next stop on the path." },
+        {
+          selector: '[data-tour="continue"], [data-tour="map-stop"]',
+          action: "tap",
+          text: "Your next stop — the button and the glowing stop are the same goal.",
+        },
         // ☰, NOT THE BOTTOM BAR (Dan, 2026-09-11: *"the beginning first
         // landing on the home page: the current tour is broken"*).
         //
@@ -255,7 +266,20 @@ export default function FirstTour() {
   const [step, setStep] = useState(0);
   // Steps actually VISITED (absent targets get skipped) — Back pops this.
   const [hist, setHist] = useState<number[]>([]);
-  const [rect, setRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  /**
+   * EVERY BOX THIS STEP LIGHTS, not one (2026-09-12).
+   *
+   * Dan: *"the walk through on the home page should at the same time point out
+   * both the Continue button and the map's stop button."* They are one idea in
+   * two places — the ▶ key and the gold stop on the road are the SAME goal —
+   * and a tour that lit them one after the other would teach them as two
+   * things.
+   *
+   * So a step's selector may match more than once, and every visible match is
+   * lit together. Nothing else changes: a step naming one control still gets
+   * exactly one hole, so the other tours are untouched.
+   */
+  const [rects, setRects] = useState<{ top: number; left: number; width: number; height: number }[]>([]);
 
   const STEPS = tour?.steps ?? [];
 
@@ -291,25 +315,27 @@ export default function FirstTour() {
     let i = step;
     while (i < STEPS.length) {
       const sel = STEPS[i].selector;
-      if (!sel) { setRect(null); if (i !== step) setStep(i); return; }
+      if (!sel) { setRects([]); if (i !== step) setStep(i); return; }
       // THIS DOCUMENT FIRST, THEN ITS FRAMES — see measureScopes. A station
       // moved into an iframe on 7 Sep takes its controls with it, and a tour
       // that only looks here finds nothing and steps over itself in silence.
-      let found: { top: number; left: number; width: number; height: number } | null = null;
+      //
+      // EVERY VISIBLE MATCH, NOT THE FIRST. A step may name two controls that
+      // are one idea — Home's ▶ key and the gold stop on the road — and both
+      // are lit together. A step naming one control still yields one box, so
+      // this is a widening rather than a change of behaviour.
+      const found: { top: number; left: number; width: number; height: number }[] = [];
       for (const sc of measureScopes()) {
-        const el = Array.from(sc.doc.querySelectorAll(sel)).find((n) => {
+        for (const n of Array.from(sc.doc.querySelectorAll(sel))) {
           const r = n.getBoundingClientRect();
-          return r.width > 0 && r.height > 0;
-        });
-        if (!el) continue;
-        const r = el.getBoundingClientRect();
-        // The frame's own offset: a rect inside it is measured against the
-        // frame's viewport, not the window the spotlight is drawn in.
-        found = { top: r.top + sc.dy, left: r.left + sc.dx, width: r.width, height: r.height };
-        break;
+          if (r.width <= 0 || r.height <= 0) continue;
+          // The frame's own offset: a rect inside it is measured against the
+          // frame's viewport, not the window the spotlight is drawn in.
+          found.push({ top: r.top + sc.dy, left: r.left + sc.dx, width: r.width, height: r.height });
+        }
       }
-      if (found) {
-        setRect(found);
+      if (found.length) {
+        setRects(found);
         if (i !== step) setStep(i);
         return;
       }
@@ -424,7 +450,7 @@ export default function FirstTour() {
             type="checkbox"
             checked={never}
             onChange={(e) => setNever(e.target.checked)}
-            className="h-[16px] w-[16px] shrink-0 accent-[color:var(--cahier-ink)]"
+            className="h-[1rem] w-[1rem] shrink-0 accent-[color:var(--cahier-ink)]"
           />
           Never offer again
         </label>
@@ -476,11 +502,29 @@ export default function FirstTour() {
     );
   }
 
-  // The spotlight HOLE stays interactive: the dim is four strips AROUND it,
-  // not one sheet over it, so the learner can do the step's action for real.
-  const hole = rect
-    ? { top: rect.top - 6, left: rect.left - 6, width: rect.width + 12, height: rect.height + 12 }
-    : null;
+  /**
+   * THE HOLES — one per control this step lights.
+   *
+   * The dim used to be FOUR STRIPS drawn around a single hole, which is a neat
+   * trick and cannot be made to do two: four rectangles can only ever leave one
+   * gap. With Home's step lighting both the ▶ key and the stop on the road, it
+   * becomes one sheet with the holes CUT OUT of it, via an SVG mask — white
+   * where the sheet shows, black where it does not.
+   *
+   * What the strips bought was that the hole stayed clickable, and that is kept
+   * a different way: the sheet is `pointer-events: none` and each hole gets its
+   * own catcher. So the learner can still press what is lit, and the rest of
+   * the page is as unreachable as before — the catcher swallows the tap rather
+   * than letting the control fire, which is what stops a tour step navigating
+   * away mid-tour.
+   */
+  const holes = rects.map((r) => ({
+    top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12,
+  }));
+  // The caption is placed against the FIRST box, which is the step's main
+  // target — selectors are read in document order, so on Home that is the ▶ key
+  // rather than whichever stop the road happens to be showing.
+  const rect = rects[0] ?? null;
   // PORTALED to <body> and z-[100] (2026-08-24): the overlay used to render
   // inside the page tree at z-[80] while the bottom bar is fixed at z-90 —
   // so on any step whose bubble landed low, the bar covered the buttons and
@@ -489,22 +533,42 @@ export default function FirstTour() {
   // stacking context above the bar (90) whatever context the page creates.
   return createPortal(
     <div className="fixed inset-0 z-[100]" style={{ pointerEvents: "none" }}>
-      {hole ? (
+      {holes.length ? (
         <>
-          <div className="absolute" style={{ pointerEvents: "auto", background: dim, top: 0, left: 0, right: 0, height: Math.max(0, hole.top) }} />
-          <div className="absolute" style={{ pointerEvents: "auto", background: dim, top: hole.top, left: 0, width: Math.max(0, hole.left), height: hole.height }} />
-          <div className="absolute" style={{ pointerEvents: "auto", background: dim, top: hole.top, left: hole.left + hole.width, right: 0, height: hole.height }} />
-          <div className="absolute" style={{ pointerEvents: "auto", background: dim, top: hole.top + hole.height, left: 0, right: 0, bottom: 0 }} />
-          <div
-            className="absolute rounded-xl border-4 transition-all duration-300"
-            style={{ ...hole, borderColor: "var(--cahier-hl, #eaff00)", pointerEvents: "none" }}
-          />
+          {/* ONE SHEET, WITH THE HOLES CUT OUT. `mask` needs its own element
+              because a CSS mask on a coloured div is what actually removes the
+              paint; the white rect is everything, each black rounded rect is a
+              hole. The sheet blocks nothing — see the catchers below. */}
+          <svg className="absolute inset-0 h-full w-full" style={{ pointerEvents: "none" }} aria-hidden>
+            <defs>
+              <mask id="fluo-tour-holes">
+                <rect x="0" y="0" width="100%" height="100%" fill="white" />
+                {holes.map((h, n) => (
+                  <rect key={n} x={h.left} y={h.top} width={h.width} height={h.height} rx="12" fill="black" />
+                ))}
+              </mask>
+            </defs>
+            <rect x="0" y="0" width="100%" height="100%" fill={dim} mask="url(#fluo-tour-holes)" />
+          </svg>
+          {/* BLOCK THE REST OF THE PAGE, as the four strips used to. The sheet
+              above only paints; this is what stops a learner wandering off
+              mid-tour, and it sits UNDER the catchers so the lit controls stay
+              reachable. */}
+          <div className="absolute inset-0" style={{ pointerEvents: "auto" }} />
+          {holes.map((h, n) => (
+            <div
+              key={n}
+              className="absolute rounded-xl border-4 transition-all duration-300"
+              style={{ ...h, borderColor: "var(--cahier-hl, #eaff00)", pointerEvents: "none" }}
+            />
+          ))}
           {/* tap steps: an invisible catcher advances on the tap itself —
-              without navigating away mid-tour. Drag steps get NO catcher:
-              real pointer events reach the width grip underneath. */}
-          {s.action === "tap" && (
-            <div className="absolute cursor-pointer" style={{ ...hole, pointerEvents: "auto" }} onClick={goNext} />
-          )}
+              without navigating away mid-tour. One per hole, so lighting two
+              controls means either of them advances the step: they are the
+              same idea, so pressing either IS doing what the step asked. */}
+          {s.action === "tap" && holes.map((h, n) => (
+            <div key={n} className="absolute cursor-pointer" style={{ ...h, pointerEvents: "auto" }} onClick={goNext} />
+          ))}
         </>
       ) : (
         <div className="absolute inset-0" style={{ pointerEvents: "auto", background: dim }} />

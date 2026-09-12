@@ -63,3 +63,8 @@ export default function Rewards({ p }: { p: Progress }) {
 }
 
 /** One accent colour: the swatch IS the affordance, the state is the border. */
+/* SwatchButton MOVED to components/AccentColours.tsx when the four user
+   routes became one tabbed page. The subdomains lane edited the copy that
+   used to live here — giving it `.fluo-tap` — and taking that hunk would have
+   restored a component nothing renders, with the fix in it. The fix went to
+   the live copy instead; the stale one stays deleted. */
