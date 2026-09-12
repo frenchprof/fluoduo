@@ -350,7 +350,7 @@ export default function WelcomeBody() {
         {named && course && (
           <p
             data-course-tag={course.key}
-            className="relative z-[2] mt-1.5 inline-block px-3 py-0.5 text-[length:var(--fs-small)] font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:hidden"
+            className="fluo-welcome-course relative z-[2] mt-1.5 inline-block px-3 py-0.5 font-bold leading-[1.15] text-white/90 sm:mt-2"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}
@@ -411,7 +411,7 @@ export default function WelcomeBody() {
           than width: an ellipse seen in perspective is flat, so a shorter
           coin reads MORE like the stops it imitates, and the width (and so
           the prominence Dan asked for) is untouched. */}
-      <div className="absolute inset-x-0 bottom-[0.5%] flex flex-col items-center px-6">
+      <div className="absolute inset-x-0 bottom-[max(0.75rem,0.5%)] flex flex-col items-center px-6">
         {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
             PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
             ENTER"*). The gold ring used to pulse on goal 1, which on a still
@@ -425,7 +425,7 @@ export default function WelcomeBody() {
             is why there is no second guard here. */}
         <Link
           href="/home"
-          className="home-map3d-pulse rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
+          className="home-map3d-pulse max-w-[53vw] rounded-[50%] px-16 py-3 text-2xl font-black uppercase tracking-[0.12em] transition hover:-translate-y-0.5 sm:px-24 sm:py-3.5 sm:text-4xl [@media(max-height:480px)]:px-12 [@media(max-height:480px)]:py-2 [@media(max-height:480px)]:text-xl"
           style={{
             background: "var(--sio-phrases)",
             color: "var(--cahier-ink)",

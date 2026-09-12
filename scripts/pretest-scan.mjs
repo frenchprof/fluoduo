@@ -25,6 +25,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit, settle } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4189;
@@ -81,12 +82,33 @@ const ROUTES = [
   "/practice/speculearn/goal/SIO-020",
 ];
 
+/* What `settle` waits for: the question feed has arrived — rows on screen, or the
+   page saying outright that this pre-test has none. The feed runs in the cahier's
+   iframe, so ask the frames too. An empty answer is a real answer here: a route
+   with no picture pre-test must still be measured, not waited out. */
+const FEED_READY = `
+  (() => {
+    const ready = (d) =>
+      d.querySelectorAll("[data-row]").length > 0 ||
+      /No picture pretest available/.test(d.body ? d.body.textContent || "" : "");
+    if (ready(document)) return true;
+    for (const f of document.querySelectorAll("iframe")) {
+      let d = null;
+      try { d = f.contentDocument; } catch { continue; }
+      if (d && ready(d)) return true;
+    }
+    return false;
+  })()`;
+
 const bad = [];
 for (const route of ROUTES) {
-  await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: "domcontentloaded" });
-  await page.waitForTimeout(2600);
+  // WAIT FOR THE FEED, NOT FOR THE CLOCK. This replaced a flat 2600+500ms sleep on
+  // each of the six routes — 19 of this scan's 29 seconds. The condition is the
+  // one the probe below then asks: the question rows are on screen, or the page
+  // has said in so many words that it has none.
+  await visit(page, `http://localhost:${PORT}${route}`, FEED_READY);
   await dismissHints();
-  await page.waitForTimeout(500);
+  await settle(page, FEED_READY);
   const landed = new URL(page.url()).pathname;
 
   // The question feed runs in the cahier's iframe, so ask every frame and take

@@ -202,13 +202,11 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     on: "drill",
     title: "Pick the ending",
     steps: [
-      // The same two-surface shape as GramMarathon — a text field above `sm`,
-      // word-bank tiles below it, one of them display:none — so the step names
-      // both and the runner lights whichever the learner can see.
-      { text: "Build the form that goes with the pronoun.", selector: '[data-tour="conj-input"], [data-tour="conj-bank"]' },
-      { text: "Then press Check.", selector: '[data-tour="drill-cta"]' },
-      // Plain: « See the table » is a visible button, but what it does — leave
-      // the drill and open the whole verb — is not on its face.
+      // CONJUGAZONE IS NOT WALKED YET — Dan, 11 Sep: he is still vetting this
+      // one, so the integration lane landed the other five and held this.
+      // The guided steps and the two `data-tour` anchors in
+      // app/conjugaison/embed/page.tsx are on claude/peers-guided, ready to
+      // replay whole. Nothing else in this file depends on them.
       "See the table opens the whole conjugation.",
     ],
   },

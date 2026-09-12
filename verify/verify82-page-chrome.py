@@ -282,7 +282,9 @@ ok("mx-auto max-w-3xl px-1" not in code(read("src/app/page.tsx")),
 for path, dup in (
     ("src/app/decks/[id]/mcq/Content.tsx", r"<h1[^>]*>\{collection\.title\}"),
     ("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx", r"<h1[^>]*>\{pretest\.title\}"),
-    ("src/app/reglages/page.tsx", r"<h1[^>]*>⚙️ Settings"),
+    # 12 Sep: the settings themselves moved to the User page's Settings tab;
+    # reglages/page.tsx is a redirect now and would pass by being empty.
+    ("src/app/reglages/SettingsContent.tsx", r"<h1[^>]*>⚙️ Settings"),
 ):
     ok(re.search(dup, code(read(path))) is None,
        f"{os.path.basename(os.path.dirname(path))} does not print its title under its own band",
@@ -303,19 +305,20 @@ for path, want, was in (
     # on 1 Sep — drawn inside the content well it sat 20px lower than every
     # other band on the site. The claim is unchanged: its first word is the
     # activity's, not the signed-in name.
+    # AND IT MOVED A THIRD TIME, 12 Sep: /profil, /moi, /reglages, /historique
+    # and the leaderboard became ONE User page with four tabs, so both sides of
+    # this pin went stale in the same merge — main pinned /moi, which is now a
+    # redirect that draws nothing, and the lane pinned /profil/embed, whose band
+    # the double-sheet fix had already removed. Neither would have failed: a pin
+    # on a file that no longer draws a band passes by reading an empty page,
+    # which is the quietest way for a check to stop checking.
     #
-    # IT MOVED AGAIN ON 11 SEP, ONE ROUTE OF THE TWO, and the move is what
-    # showed the pin had been guarding a string nobody saw. `/profil/embed`
-    # carried `band={{ title: "Moi" }}`, and a CahierShell band inside a frame
-    # is hidden (`html[data-embed]`, globals.css) — the strip a learner reads
-    # on /profil is the HOST's, and the host types no title at all, so it says
-    # « Profile » from the registry. When the embed stopped drawing a shell
-    # (the double-sheet fix) the literal went with it and this went red over a
-    # band that had never been on screen. So the pin names the host now, where
-    # the visible band actually is. /moi keeps its embed line because its embed
-    # still draws a shell; its host, which is the one on screen, is pinned too.
-    ("src/app/moi/page.tsx", 'band={{ title: "Profile" }}', "the signed-in user's name"),
-    ("src/app/moi/embed/page.tsx", 'band={{ title: "Moi" }}', "the signed-in user's name"),
+    # The one band a learner now sees on all four tabs is UserPage's, and it is
+    # DERIVED (`familyName("user")`) rather than typed — so the claim this
+    # clause makes, that the band's first word is not the signed-in name, is
+    # held by construction and the registry is the only place it can change.
+    ("src/app/profil/UserPage.tsx", 'band={{ title: familyName("user") }}',
+     "the signed-in user's name"),
     # « Pretest » became « SpecuLearn » on 5 Sep (Dan: "it is the name for
     # everything pre-tests (old-speculearn and old-pretests)... because they
     # learn by speculating wisely based on prior knowledge", and when this
@@ -336,12 +339,22 @@ for path, want, was in (
 # Pinned as an absence, because that is what it is: the moment someone types a
 # title here, the two profile routes can drift apart again, which is the fault
 # the 1 Sep ruling was about.
-_profil_host = code(read("src/app/profil/page.tsx"))
-ok('band={{ title:' not in _profil_host and 'active="profil"' in _profil_host,
-   "profil's band takes the activity's name from the registry, unspelled",
-   "src/app/profil/page.tsx now types its own band title — /moi spells « Profile » by "
-   "hand only because 'moi' has no registry row; /profil has one, and two routes that "
-   "are ONE page must not each carry their own copy of its name")
+# 12 Sep: the shell moved one file deeper. /profil/page.tsx is a wrapper that
+# renders UserPage, which is where `active` and the band now live — so the
+# clause follows the shell. The CLAIM is unchanged and is the point: the title
+# must be DERIVED, never a string somebody typed. What changed is that the host
+# used to carry no band at all, so "no band here" was a fair test; now there is
+# one, and the test has to be "not a literal" instead of "not present" — the
+# crude version would have failed the correct code and tempted the next session
+# to delete the clause rather than translate it.
+_profil_host = code(read("src/app/profil/UserPage.tsx"))
+ok(re.search(r'band=\{\{\s*title:\s*["\'`]', _profil_host) is None
+   and 'familyName(' in _profil_host and 'active="profil"' in _profil_host,
+   "profil's band takes the family's name from the registry, unspelled",
+   "src/app/profil/UserPage.tsx types its own band title, or stopped marking itself "
+   "active — /moi spells « Profile » by hand only because 'moi' has no registry row; "
+   "the User page has one, and four tabs that are ONE page must not each carry a copy "
+   "of its name")
 # And its framed half draws no band, because it draws no shell (11 Sep).
 ok('CahierShell' not in code(read("src/app/profil/embed/page.tsx")),
    "profil's framed half draws no second notebook",

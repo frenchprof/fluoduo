@@ -30,6 +30,7 @@ export default function WordBank({
   value,
   onChange,
   disabled = false,
+  builtInGap = false,
 }: {
   /** The expected string — its words are the correct tokens. */
   answer: string;
@@ -41,6 +42,16 @@ export default function WordBank({
   onChange: (v: string) => void;
   /** Lock the bank while the verdict is showing. */
   disabled?: boolean;
+  /** Drop this component's own "built answer" row.
+   *
+   *  Dan, 2026-09-11: a gap-fill must not grow "a separate long blank on a
+   *  line separate from that gap". That row IS such a blank — a full-width
+   *  underlined bar showing the words tapped so far, sitting two lines below
+   *  the sentence whose gap they belong in. When the host puts a `GapField`
+   *  in the sentence, the built answer is already visible in its right
+   *  place and this row is the duplicate. The chips below it are not a
+   *  blank and stay: they are the choices, not the answer. */
+  builtInGap?: boolean;
 }) {
   // Chips are index-addressed: an answer can repeat a word ("de la … de la")
   // and each occurrence must be its own chip.
@@ -80,7 +91,11 @@ export default function WordBank({
 
   return (
     <div>
-      {/* The built answer — tap a word to send it back. */}
+      {/* The built answer — tap a word to send it back. Omitted when the
+          host shows it in the sentence's own gap instead; see `builtInGap`.
+          A word is taken back from the BANK instead — see the chip below,
+          which stays live and dashed once used when `builtInGap` is on. */}
+      {!builtInGap && (
       <div className="flex min-h-[2.75rem] flex-wrap items-center gap-1.5 rounded-xl border-b-2 border-[color:var(--cahier-ink)]/40 px-1 py-1.5">
         {chosen.length === 0 && (
           <span className="px-1 text-sm text-[color:var(--cahier-ink)]/35">…</span>
@@ -98,19 +113,35 @@ export default function WordBank({
           </button>
         ))}
       </div>
+      )}
       {/* The bank. */}
       <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
         {tokens.map((w, ti) => {
           const used = chosen.includes(ti);
+          // WITHOUT THE BUILT ROW, THE BANK IS THE ONLY UNDO. A used chip
+          // used to be `disabled` and `text-transparent` — a ghost slot,
+          // because a word was taken back by tapping it in the row above.
+          // With that row gone (builtInGap) the ghost would strand the
+          // learner on their first mistap, so here a used chip stays live
+          // and tapping it returns its LAST occurrence — an answer may
+          // legitimately repeat a word ("de la … de la").
+          const unpick = builtInGap && used;
           return (
             <button
               key={ti}
               type="button"
               lang="fr"
-              disabled={disabled || used}
-              onClick={() => emit([...chosen, ti])}
+              disabled={disabled || (used && !builtInGap)}
+              aria-label={unpick ? `Take back ${w}` : w}
+              onClick={() => {
+                if (!unpick) return emit([...chosen, ti]);
+                const last = chosen.lastIndexOf(ti);
+                emit(chosen.filter((_, j) => j !== last));
+              }}
               className={`rounded-lg border-2 px-2.5 py-1 text-sm font-bold transition ${
-                used
+                unpick
+                  ? "border-dashed border-[color:var(--cahier-ink)]/40 bg-[color:var(--cahier-ink)]/10 text-[color:var(--cahier-ink)]/45"
+                  : used
                   ? "border-transparent bg-[color:var(--cahier-ink)]/10 text-transparent"
                   : "border-[color:var(--cahier-ink)]/30 bg-white text-[color:var(--cahier-ink)] hover:border-[color:var(--cahier-ink)]"
               } disabled:cursor-default`}

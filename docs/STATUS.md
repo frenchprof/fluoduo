@@ -6,6 +6,456 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
+
+**MERGED: #306** (the guided first run, five activities — ConjugaZone held on
+Dan's instruction, *"QC and land it except for the ConjugaZone part that i am
+not done vetting"*). **DEPLOYED** as run #56 and confirmed serving on
+`f1.fluolingo.com`, by finding #306's own hints text in a production chunk —
+not by reading the workflow's conclusion, which only says main was mirrored.
+
+**#308 is the QC of #307** (pre-tests lane). The lane's work lands whole: 23
+sizes written in `rem` were invisible to the type ramp, so `text-[0.7rem]`
+rendered 11.2px on a desktop while `text-[11px]` beside it had grown to 15px —
+the nominally smaller size rendering larger.
+
+**THE HANDOVER SAID `verify151` WAS ALREADY RED ON MAIN. IT WAS NOT**, and the
+reason it looked that way is the part worth keeping. The lane stashed its
+source and re-ran the check. **`verify151` reads `out/`, not `src/`** — stashing
+does not unbuild the app, so the check ran against the branch's own build and
+reported the branch's own fault as main's. Any check that drives the built
+export needs a REBUILD after a stash, or it is measuring the thing you just put
+away. Built both ways here: main green at all three sizes, the branch failing at
+phone-held-sideways.
+
+**AND THE FAULT UNDERNEATH IS OLDER THAN THAT BRANCH.** Every ramp rule is
+`:root .text-[X]` — a pseudo-class plus a class — so it outranks Tailwind's own
+`.sm\:text-[Y]`, which is a class alone. A page's OWN breakpoint override
+therefore lost to the ramp, at every width, in silence:
+
+    welcome, phone sideways   asked 1.6rem   got 3.2rem ramped   59.9px
+    welcome, desktop          asked 4.4rem   got 3.2rem ramped
+    NumBus,  desktop          asked   38px   got   30px ramped
+
+The three px ones have been dead **since the ramp was written on 5 Sep**.
+Nothing noticed: a size that stops changing at a breakpoint looks like a size
+somebody chose. Only `/welcome` had a check watching the geometry, which is why
+adding the rem rules is what finally named it — the headline sat at 59.9px
+where the page asks for 25.6px, on the road. Dan's own words, the day that page
+was built: *"You are COMPLETELY blocking the view of my winding road horizon,
+which is the WHOLE POINT of this page."*
+
+All ten variant spellings now carry their own ramp rule in their own media
+query. `verify106` gains a clause that fails a new one with none — the base
+list could never have caught this, because the spelling it misses is not a base
+spelling.
+
+**ONE SCENE OPTS OUT, and it is a decision, not a workaround.** With the
+breakpoints working again, `/welcome`'s three lines get grown twice — once by
+their own breakpoint, once by the ramp — and the subtitle crossed 10px into the
+horizon band. They are a COMPOSITION, sized against a horizon drawn on the
+page, so they are already adaptive to the screen by another mechanism.
+`welcome-sky-type` restates the page's own numbers, so `/welcome` renders
+exactly what shipped. This is the `em` exemption's twin: never scale twice.
+`verify106` holds the hole at one element, because a hole widens quietly — and
+that clause strips comments first, having counted its own explanation as a
+second use on its first run.
+
+**LEFT FOR DAN, NOT GUESSED AT:** whether the welcome hero should grow on big
+screens. Doing it means retuning numbers he approved by eye, so the QC left it
+rendering what production renders and put the choice to him with a before/after
+picture of the real app.
+
+**THEN #310 LANDED — MERGED BY DAN HIMSELF**, so main moved past the commit
+that had just been deployed. Recorded because it is the ordinary case, not an
+irregularity: main can move between a deploy firing and anyone reading this,
+which is exactly why the deploy resolves main's tip AT FIRE TIME and why
+"deployed" is confirmed by fetching a marker off the live site rather than by
+reading a workflow's conclusion. `deploy-live` run #57 put `f8bda98` live and
+was verified that way; #310 and #309 go out on the next one.
+
+**#309 QC'd HERE** (the third build). Its two break-tests were re-run in this
+lane rather than taken on trust, because the check it rewrites is the one that
+found 97 dead choices and its whole worth is catching a gate that has been
+loosened: with `isGramMarathonReadyId` swapped for a bare `hasDeck` it fails
+naming 23 stops; with one offered page deleted from `out/` it fails naming that
+page. 0.6s where the build-based version took 98s, and the stale
+`.next/types/validator.ts` hazard the old one carried is gone with the probe
+route that caused it. `jiti` as a direct devDependency is a no-op for
+production installs — Tailwind and ESLint, both dev, already pulled it.
+## 11 Sep — the third build goes; the chooser asks the app directly (verify lane)
+
+Dan, shown the three `npm run build`s in one run: ***"do the third build one"***.
+
+**WHERE THE THIRD BUILD WAS.** Two are in the workflow — `Build` (closed, what
+ships) and `Rebuild the export open` (the sign-in wall down, so the browser
+scans can see a lesson). The third was inside a CHECK:
+`verify200-chooser-no-dead-stops.py` wrote a throwaway page into `src/app`, ran
+`npm run build` to render it, read the answer out of the HTML and deleted the
+page. Its own docstring was honest about it — *"roughly a minute in CI"*.
+
+**IT WAS RIGHT ABOUT WHY, AND WRONG ONLY ABOUT HOW.** The check must ask the
+app's OWN `playableStops` / `stopHref` and the six item functions; a Python
+re-implementation of six activities' readiness rules is exactly the "second
+opinion" `lib/collections/gapSentence.ts` was written to stop. That still
+holds. But none of those functions needs a build — they are plain TypeScript
+over plain data, no React, no request, no browser. `scripts/chooser-probe.mjs`
+loads them with `jiti`, by the page's own `@/…` specifiers, and prints the same
+JSON.
+
+    verify200, building the app itself    98.5s
+    verify200, asking the functions        0.2s
+
+**THE SWAP WAS PROVED, NOT ASSUMED.** Both answers were captured on the same
+commit and compared field by field — six activities, **203 offered stops,
+identical**. Then the gate this check exists to guard was REMOVED (GramMarathon's
+`isGramMarathonReadyId` swapped for a bare `hasDeck`) and both versions run
+against it:
+
+    old (builds)  51.2s  FAIL  23 stops offered with 0 items
+    new (jiti)     0.4s  FAIL  the IDENTICAL 23, same "+18 more"
+
+A second fault — an offered page deleted from `out/` — is caught too:
+*"grammarathon: /practice/grammarathon/possessives is offered but
+out/practice/grammarathon/possessives.html was never exported"*. Both failure
+paths live.
+
+**`jiti` IS NOW A DECLARED devDependency.** It was already in the tree as a
+transitive dependency of Next, and a check resting on somebody else's
+dependency tree is a check that breaks on an unrelated upgrade, with a
+confusing error. One line in `package.json`, one in the lockfile, no new
+download.
+
+**A HAZARD WENT WITH IT.** The old version had to clean up after itself in
+three places — the probe folder, `out/verify200-probe.html`, and
+`.next/types/validator.ts`, which names every page built and so made the NEXT
+local `tsc --noEmit` fail with *"Cannot find module
+'../../src/app/verify200-probe/page.js'"*. Its comment records that this "bit
+three separate local typechecks before being fixed". Nothing is written into
+`src/app` any more, so none of that cleanup exists to go wrong.
+
+`out/` is still read — every offered href is checked against the real export.
+What went away is the compiler in between, not the evidence.
+
+Gate: all **130** checks green (suite now 243s locally, was 427s this
+afternoon), `tsc --noEmit` clean, eslint clean, `npm ci` consistent.
+
+Still standing, and still Dan's call: the remaining TWO builds. Dropping the
+closed one would mean CI never compiles the configuration that actually ships —
+a coverage decision, not a speed one.
+
+## 11 Sep — CI waits for the condition now, not the clock (verify lane)
+
+Dan, after a morning where the Actions allowance ran out and NOTHING could
+merge: *"yes, see what it takes to cut the 10 minutes"*.
+
+**MOST OF THE TEN AND A HALF MINUTES WAS SLEEP.** Measured on run #745 (main,
+10m31s), not estimated:
+
+    checkout + node + npm ci + pillow      30s    5%
+    tsc --noEmit                           18s    3%
+    building the app, THREE separate times 167s  27%
+    118 of the 129 checks                  30s    5%
+    the 11 checks that drive a browser    381s   61%
+
+Two plausible savings were measured and are DEAD — written down so the next
+session does not spend an afternoon on either. **Collapsing the 129 workflow
+steps saves nothing**: 118 of them finish in 30 seconds between them, a quarter
+of a second each. **Sharing one browser between the scans saves ~3 seconds**:
+launching Chromium costs 0.14s, measured three times.
+
+What it actually was: every browser scan loaded a page and then slept a flat
+1.4-2.8 seconds by `page.waitForTimeout(...)` — not for anything in particular,
+just long enough that whatever it wanted had surely happened.
+
+    verify126-band-strip    115s, of which 108s asleep   (77 pages x 1400ms)
+    verify150-night-plates   70s, of which  67s asleep   (24 hours x 2800ms)
+    verify171-pretest-feeds  29s, of which  19s asleep   (6 routes x 3100ms)
+
+Seven scans now wait for the thing they are about to measure, through the new
+`scripts/lib/settle.mjs`, which carries the reasoning. Measured on one machine,
+same `out/`, each compared against the version on `main`:
+
+    scan          before    after        output vs main
+    band-scan     113.1s ->  26.2s       identical
+    night-plate    69.9s ->   9.3s       identical
+    pretest        28.2s ->  12.2s       identical
+    sheet          17.9s ->   4.6s       identical
+    map-fit        13.2s ->   3.7s       identical
+    wheel          18.0s ->  11.0s       identical
+    road           14.9s ->   9.6s       identical
+    ---------------------------------------------------
+    total         275.2s ->  76.6s       -199s
+
+**AND THE FASTER VERSIONS STILL CATCH THINGS**, which is the half that matters.
+Faults were injected into the BUILT app and both versions run against them:
+
+  · the rule hiding a framed page's own strip deleted (the 11 Sep double-frame
+    fault): old failed in 113.0s naming 24 routes, new failed in 29.1s naming
+    the IDENTICAL 24.
+  · every map label forced grey-on-grey: old failed in 69.8s flagging 49 hours,
+    new failed in 8.9s flagging the same 49.
+  · the one-question-per-screen snap removed: both failed, identical output.
+
+**TWO THINGS WENT WRONG ON THE WAY, AND BOTH ARE THE POINT.**
+
+1 · **A first cut of the band scan was FLAKY and passed its own review.** It
+    waited for the page's FRAMES to load — which sounds equivalent to waiting
+    for the strip and is not. `/games/lexicalater/[deckId]` and
+    `/decks/[id]/study` build their strip after their deck data arrives, so two
+    runs of the same commit disagreed about whether they had one. A check that
+    fails at random is worse than a check that is slow. **Wait for the thing the
+    check measures, never for a proxy.**
+
+2 · **`landing-scan` IS NOT CONVERTED, on purpose.** The door animates in, so
+    its CTA arrives scaled at ~0.96 and grows: every condition tried read it at
+    379-384px where the sleep reads 394, and the reading drifted between runs.
+    Nothing failed — the test is whether a control spans 60% of the viewport,
+    and neither does — but a scan reporting a different number each run is one
+    waiting to flake. It was worth 7 seconds of 626. Left on the clock.
+
+`map-fit` also has to be recorded as a near-miss: a first condition demanded
+`[data-stop]` markers, which the 3D view HAS NONE OF, so every 3D view sat out
+the full timeout and the scan got SLOWER than the sleep — 13.2s to 40.0s. The
+zoom well is the one control both views carry. A condition that is never true
+is not a slow check, it is a broken one.
+
+Still on the table, NOT done, both Dan's call:
+  · **The app is built three times a run** (the closed build, the open rebuild,
+    and one inside `verify200`) — 167s, 27%. Whether the PII scans can read the
+    open build, and whether verify200 can reuse what is already on disk, needs
+    someone to decide what production-config coverage is worth.
+  · **Nothing stops the sleeps coming back.** AGENTS.md's own lesson is that a
+    rule not written into a check is not a rule. A check that fails on a new
+    `waitForTimeout` after a `goto` would hold this — not written, because it
+    claims a verify number and Dan asked for the sleeps, not a new check.
+
+## 11 Sep — the goal card's doors join the family too (band lane, added to #285)
+
+Dan, shown a goal's seven doors in both: *"the goal sheet keys too, make them
+family colors"*. Added to the open PR rather than a second branch: same one
+token, and the two cannot land apart without the app contradicting itself.
+
+**THE "GOAL SHEET" IS THE GOAL CARD.** `StopSheet.tsx` is what the name points
+at and nothing imports it — verify37's own note claims otherwise ("StopSheet
+stays for /map's deep-link popup path"), and that note is stale. The live
+surface is `GoalCard.tsx`, whose doors mount `ActivityIcon`.
+
+    door           family     was        now
+    SpecuLearn     Practice   periwinkle blue
+    MneMemo        Practice   olive      blue
+    MémoiRecall    Practice   sky        blue
+    VocabulaRain   Games      sky        violet
+    LexicaLocker   Games      sky        violet
+    GramMarathon   Revise     amber      teal
+    WorDrill       Oral       amber      periwinkle
+
+What it costs, and Dan was told before agreeing: the demand axis grouped by KIND
+OF WORK — the two games and MémoiRecall all wore sky because all three are
+"recognise". That reading is gone and three Practice doors are now one blue.
+
+**TWO FAULTS FOUND BY DRIVING, NEITHER VISIBLE IN THE DIFF.**
+
+1 · **WorDrill CAME OUT YELLOW.** Its deck tab keeps the old key `say`
+    (`deckActivityTabs`, so SioModal and withActive keep working), the registry
+    row is `wordrill`, and `familyOf("say")` answered null. Harmless while
+    colour came off the demand axis — `BAND` HAS a `say` entry — and instantly
+    visible once the family decided it. `SITE_FAMILY` gains `say: "oral"` as an
+    ALIAS; the key does not move.
+2 · **AND NULL DID NOT FALL BACK TO PAPER.** A custom property inherits, so
+    `var(--strip, …)` never reaches its fallback on a page that sets one: the
+    tile took the goals page's yellow. The fill is named outright now —
+    `fam ? "var(--strip)" : "var(--cahier-paper-2)"`.
+
+**ONE SURFACE STAYS ON THE OLD AXIS, DELIBERATELY.** GramMarathon's finale is
+built on `band-prod` throughout: frame, progress fill, two card borders and the
+hint/check buttons read `var(--band)`, and its pills read `var(--band-wash)`.
+There is no `--strip-wash`, so moving the four borders alone would put a teal
+edge on an amber fill. Named as an exemption in verify36 with that reason —
+it needs a wash token first, which is a decision rather than a rename.
+
+verify36 gains the tile clause (familyOf + `var(--strip)`) and a sweep for any
+second surface painting from `var(--band)`; verify37's sheet clause follows the
+same move. Break-tested: tile back to `stripOf`, tile back to `var(--band)`, a
+second painter appearing, and the sheet losing its colour — each fails with its
+own message.
+
+## 11 Sep — main took the double-frame fix, and moved the ☰ HALF-WAY to the strips' answer
+
+`#276` was closed unmerged because fluoduo-main landed it as **#284, "One sheet
+per page, coils up to the band"**. Nothing outstanding on that work.
+
+**AND #282 SETTLED THE OPEN QUESTION FROM THE OTHER SIDE, without either lane
+knowing.** Its own message: *"The band is now `--fam-*` itself, the same solid
+pen the heading strips wear, so the menu and the strips read as one system."*
+That sentence is a statement about a system that does not exist yet on `main`:
+the ☰ menu's rows went to the bright family colour, and `PageBand` on `main`
+still reads `var(--band, var(--fam-ink))` — the demand axis. So today, on main:
+
+    ☰ menu, Revise row      #00c197  teal      (from #282)
+    GramMarathon's strip    #e88c00  amber     (--band-prod)
+    ErroReview's strip      #005f49  dark teal (--fam-review-ink)
+
+Three colours for two activities in one family, and the menu row disagrees with
+the page it opens — the exact drift 8 Sep fixed for ConjugaZone alone.
+
+`claude/band-colours-and-allclear` is the missing half and is merged up to this
+main. It was pushed BEFORE #282 landed, so the two arriving together is luck,
+not coordination; the lesson is the one AGENTS.md already draws — look at what
+is in flight on the files you are about to touch.
+
+Merge kept both sides everywhere: `--strip` declared beside `--fam-mouth` on
+each family class (#283's complementary tag), this branch's `emoji` prop on
+CahierShell's band with main's `HOME_HREF`.
+
+## 11 Sep — the strip becomes the family's, and is one length everywhere (band lane, branch, NOT merged, AWAITING DAN)
+
+Branch `claude/band-colours-and-allclear`, cut from `claude/double-frame-fix`.
+**Not handed over yet** — Dan asked to see it before it becomes code, and the
+sample is what he is looking at.
+
+**THE STRIP SAYS WHICH FAMILY, NOT WHAT IT ASKS.** Shown every band beside its
+family, Dan: *"use the left most column colors"* — the bright rung of the seven
+(#fcdf00 #1ca6ff #00c197 #b17eff #9398ff #ff9037 #9ca3af). This REVERSES the
+26 Aug ruling that the strip carries the demand axis (guess / lesson / recognise
+/ produce / create). The demand axis was legible but it cut across the seven
+families a learner navigates by: GramMarathon and ErroReview are both Revise and
+wore orange and teal; VocabulaRain and LexicaLocker are both Games and wore
+MémoiRecall's sky blue. `BAND` in activities.ts is untouched and still checked —
+it is what evidence.ts stores and verify62 holds it — only what gets PAINTED
+moved, which is the separation `stripOf` was built for on 8 Sep.
+
+ConjugaZone's own teal (8 Sep, `OWN_STRIP`) now falls out of the family rule for
+free: Revise IS teal. The exception is redundant and can go when Dan confirms.
+
+**ONE TOKEN, `--strip`,** read by the band, the 6px spine and the binding's
+cover zone. Declared beside `--fam` on every `.fam-*` class and NOT on
+`.cahier-surface`: `/decks/[id]` draws its band inside the content well, off any
+surface, and keyed that way it was the single strip left on the old dark rung.
+
+**THE TITLE IS SPELT, WITH ITS EMOJI.** Dan: *"GramMarathon instead of
+GRAMMARATHON"*, then *"can precede each title with the emoji? we have fixed
+emojis for them"*. Reverses 5 Sep's full caps, and answers the reason that
+ruling gave ("a little too tiny") rather than dropping it: the type goes up two
+steps and the band 8px taller, because lower case leaves headroom where capitals
+fill the em. The letter-spacing goes with the caps that needed it. Emoji comes
+from the registry by key — never spelt at a call site — so the 9 Sep glyph
+deduplication stays true.
+
+**AND THEY ARE ALL ONE LENGTH.** Dan: *"why are some items shorter than others,
+they should all be the same length"*. Measured at 900px: a band the PAGE draws
+ran x=33 w=840 h=76; a band the FRAME draws ran x=97 w=776 h=72 — the four
+stations whose drill carries its own strip (the lesson, MémoiRecall,
+ConjugaZone, ÉcouTexte). Two causes, both fixed:
+- the host's well kept a 48px left gutter for the coils, so the frame started
+  inset. The frame is full-bleed now and the host's rings paint over its left
+  edge (`.cahier-binding` is z-index 3, an iframe is an unpositioned block); the
+  gutter is re-opened inside the framed document instead.
+- the compact band padding lives under `(max-aspect-ratio) and (max-height:
+  38.75em)` — a SHORT LANDSCAPE screen — and a frame is short by definition, so
+  on a 900x700 desktop the framed band alone took the phone's padding.
+
+One residue, measured and left: `--fs-step` is built from `vw`/`vh`, so inside a
+frame the whole type scale is sized against the BOX. At 390x844 and 1440x900 the
+clamp is saturated at both ends and the two match exactly; only mid-sized windows
+differ (49.1px vs 46.7px at 900x700). Naming it rather than patching it — the fix
+is global to the type scale and is not something to slip into a colour change.
+
+**ALSO: « All clear », over the grid.** Dan: *"there is no need to say 'Nothing
+waiting'.... Just say two words 'All clear' and over the middle of the grid
+rather than above the grid"*. The sentence was the litmus test twice over — the
+empty grid says "nothing waiting", and the mechanism nobody needs to know.
+
+**Files:** `src/app/globals.css` (**shared**), `src/components/PageBand.tsx`
+(**shared**), `src/components/CahierShell.tsx` (**shared**),
+`src/components/DrillShell.tsx` (**shared**), `src/content/activities.ts`
+(**shared**, adds `familyEmoji`), `src/components/ProfileContent.tsx`,
+`src/app/decks/[id]/CuratedDeckTable.tsx`, `verify/verify36-band.py`.
+
+**Gate:** tsc clean, open build clean, ESLint clean on the touched files, every
+verify/*.py green. verify36's new clauses break-tested four ways.
+
+**Open for Dan, and not guessed:** the ☰ menu icons and the goal sheet's
+activity keys still read the demand axis (`stripOf` → `band-*`). If the strips
+are the family's, those should follow or the ☰ will disagree with the page it
+opens — which is the exact drift 8 Sep fixed for ConjugaZone.
+
+## 11 Sep — the goal card, the tile names, and options that fit their space (pre-tests lane, ALL MERGED)
+
+Sole editor of STATUS.md in this commit: the pre-tests lane.
+
+Everything below is **on main** — #283 (QC of #278) and #289 (QC of #286).
+Recorded here because it settles two earlier rulings and records three
+mistakes worth not repeating.
+
+**DAN MARKED UP A SCREENSHOT OF `/sio/SIO-011` IN RED**, then asked for three
+more things in the same sitting.
+
+- **The SIO tag takes the COMPLEMENT of the strip above it** (*"To be in
+  complementary color to the above strip"*). No colour was invented: every mark
+  in `highlighterMarks.ts` already carries a `mouth` block = its hue + 180.
+  Two token sets, `--fam-*-mouth` and `--band-*-mouth`, because two different
+  things paint that strip — and THE ORDER MATTERS. Keyed on the family alone
+  the scrap came out ORANGE under the GREEN MneMemo band, because on the
+  lesson's Goal tab the family is in the top bar and the BAND is what sits over
+  the tag. Driving desktop is what caught it.
+- **The gloss under the can-do is gone** on all fifty. `sio.description` stays
+  in `content/sios.ts`; it is no longer rendered.
+- **The five activity tiles wear their names again**, behind Réglages' existing
+  "Icon labels" switch, which now defaults ON and governs both the tiles and the
+  bottom bar rather than gaining a near-identical neighbour. This reverses the
+  7 Sep litmus-test cut, and the distinction is worth keeping: the bar's five
+  icons are a FIXED set learned once, a goal's tiles are a DIFFERENT five each
+  time and the icon is the only thing on them. What 7 Sep cut was the
+  two-column list of labelled PILLS, and that is still gone.
+- **Answer options fit the space they are in** (*"we are NOT dead set on just
+  two columns"*, *"the font ... should be adaptive not fixed. esp on desktop"*).
+  `optionGridClass` now emits `repeat(auto-fit, minmax(…))` — 2 across on a
+  phone as before, 4 on a laptop — and SpecuLearn's option type clamps against
+  the frame (16px phone, 21.8px at 1680). **The English reference reads the
+  same clamp**, which is the 1 Sep rule's own trap: one of the pair sized
+  against a CONSTANT while the other moves.
+
+**THE GOAL CARD'S HEIGHT, WHICH TOOK THREE TRIES, AND WHY.** Dan's 7 Sep rule
+was that the tag and icons sit *"perpetually at the same height"*, so the words
+sat in a box sized to the longest of the fifty.
+
+1. `9rem`, measured at 390px **alone**. On a 360px phone the tallest goals need
+   168 and on a 320px one 192, so the box overflowed and the icons hopped on
+   exactly the two goals it was sized for. *Measuring one width and calling it
+   "measured" is the fault, not the number.*
+2. Stepping it by breakpoint fixes that and buys a worse problem: **these pages
+   run inside the cahier's iframe, so a media query sees the FRAME, not the
+   phone** — 390px of device is 313px of frame. Every breakpoint would be
+   written in frame-widths (284, 313, 350, 416…) and would shift silently the
+   day the notebook's padding changes. This applies to every framed station,
+   not just this card.
+3. A self-measuring invisible twin, correct at every width — and then Dan was
+   shown what it cost (~120px of empty paper under a one-line goal) and chose
+   the other trade: *"let the icons move, hug the text"*. **The box is gone
+   rather than shrunk.** Nothing replaces it, which is the point: the floor had
+   been wrong twice in two days and both versions were maintenance somebody had
+   to keep true.
+
+**ONE COLLISION WITH MAIN, recorded rather than resolved.** Main gave the TEAL
+PEN `#00c197` to the Revise family the same week this lane gave it to
+ConjugaZone's strip. They never share a screen, and ConjugaZone happens to sit
+in the Revise row so its tile and page agree by accident. Dan's ruling stands
+(*"ignore the repo's color pattern based on activity type and family"*); the
+note is in `globals.css` beside the token.
+
+**STILL OPEN, BOTH DAN'S:**
+- Whether `verify120`'s 6-degree hue window should tighten to the exact pen for
+  the six `--band-*` tokens. He has the pictures; break-tested both ways
+  (`#00a396` caught at 15 degrees off, `#3fbfa0` — a teal that is not a pen —
+  passes). Nothing depends on the answer.
+- **`lessonVerbs.ts` records an `essential` / `good` tier for all 67 verbs and
+  NOTHING READS IT.** `/conjugaison/embed` takes the ids and drops the tier, so
+  a lesson's essential verbs and its nice-to-have verbs drill identically. The
+  distinction is Dan's own (*"we need to identify which verbs in the stop are
+  essential, and which are just only good to know"*) and what it should DO is
+  undecided.
+
 ## 11 Sep — one sheet of paper, and the coils reach the band (double-frame lane, branch, NOT merged)
 
 Branch `claude/double-frame-fix`. Handed to fluoduo-main; **not merged by this
@@ -117,6 +567,60 @@ those six tokens only. Break-tested: `#00a396` is caught at 15 degrees off;
 npm run build` green, all 124 verify checks pass, and the twenty source files
 this branch touches lint with one warning inherited from main (PR #176's unused
 `attemptAt` in `EcouTexte.tsx`).
+
+## 12 Sep — Home's welcome strip runs the full paper width, title centred (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+Landed as #310, deployed (run 58, then run 59 by the QC lane).
+
+Dan: *"i am quite sure i asked for the Start page to have the banner full
+width and the hero title to be centralised, or may be the message got lost"*.
+It had not reached this session. Measured before at 1440px: paper x=43
+w=1354, strip x=293 w=860 — the strip bled to the edges of Home's 768px
+`max-w-3xl` COLUMN, not of the page. The strip now renders outside that
+wrapper (the column starts below it, around the keys and the map), so
+verify82's pull-by-the-well's-padding arithmetic reaches the paper: x=49
+w=1348. Heading and byline centred. Centred, « par Dr Chan » landed under
+the brand pill's ink, which overshoots the letters by 0.18em and painted over
+its tail — it sits a step lower and above the pill now. The highlighter wipe
+was driven in a fresh session afterwards and is intact: nib at 2.2s, ragged
+edge mid-word at 3.2s, pinned by 4.5s.
+
+## 11 Sep — the ☰ menu goes bright and bigger; the Guide is rewritten (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+Records work that landed as #282 (the rest of #275, replayed by the QC lane)
+and #290, both deployed: deploy runs 50 and 51.
+
+**THE ☰ MENU** (Dan: *"make the font on the grid menu bigger and maybe
+thicker, it is hardly legible now"*, then, sending the page-strip catalogue,
+*"the background needs to be brighter like this"*, then *"black font instead
+of white font ... for the leftmost cat names"*):
+- tile names 13px → 16px in the hand face; every one of the twenty still fits
+  whole at 390px (18px clips GramMarathon, 20px clips four — both shown to
+  Dan, 16 chosen). The face is already at its heaviest weight; "thicker" is
+  met by the size.
+- row bands `--fam-*-ink` → `--fam-*`, the bright base shade the heading
+  strips wear. SUPERSEDES the 9 Sep "darkest rung" ruling, which answered a
+  pale wash; AGENTS.md updated in the same commit. Vertical family labels are
+  the house ink (black); tile outlines take the dark rung so a cream tile
+  keeps an edge on yellow. Seven bands measured at verify96's seven hexes.
+
+**THE GUIDE** (Dan: *"can you rewrite the guide to make it clearer"*, then
+*"the activities are already on the menu"*). Two of its three one-liners had
+stopped being true — « Unité 0–4 flaps » were retired on 7 Sep. Five steps
+now, in the course's own order, each naming the real button on screen: Find
+your stop (▶ Continue) · Guess first (💡 SpecuLearn, before the lesson) ·
+Learn it (🔊 VoixLà) · Practise and play (the ☰ menu) · Come back
+(❌ ErroReview, ✓ green). The « ❓ HELP! » heading and the second Home button
+are gone. The activity grid went too, at Dan's word — the ☰ menu already
+lists every activity from the same registry — and `verify19c`, which once
+policed that grid's spelling, now holds that it stays gone. Measured at
+390×844: 1,439px → 988px, Continue ends at 787px, one screen.
+
+**SUBDOMAINS, CLOSED OUT THE SAME DAY:** Dan added f2, f3, f4 on the Pages
+project; all four `f*.fluolingo.com` answer 200 and the deployed build carries
+the CourseGate, so f2–f4 show the closed door and f1 the tagged welcome page.
 
 ## 11 Sep — SpecuLearn's landing loses its band; the number joins the title (this session)
 
@@ -8455,3 +8959,228 @@ scripts, all passing.** (Container note: `node_modules` here was a fortnight
 stale, which failed six playwright-core scripts and one Pillow one for reasons
 that had nothing to do with the change — `npm ci` and `pip install pillow`
 first if the same thing happens again.)
+
+## 11 Sep — the 👤 User family becomes ONE page with four tabs
+
+Sole editor of STATUS.md in this commit: this session (branch
+`claude/user-pages-tabs`). **Not merged — handed to fluoduo-main.**
+
+Dan: *"the user pages are very un-userfriendly counter-intuitive. i wouldn't
+know what to do or how to navigate my way around."* Photographed before
+touching anything (`scripts/user-pages-scan.mjs`, a seeded learner 21 goals in,
+phone + desktop), the four pages disagreed with each other in every way
+siblings can:
+
+| | navigation | band said |
+|---|---|---|
+| `/profil` | MAP · EXPORT · HISTORY at the **bottom** | PROFILE |
+| `/reglages` | My Progress · Leaderboard · Profile at the **top**, not itself | SETTINGS |
+| `/leaderboard` | **none** — signed out it is one card on blank paper | LEADERBOARD |
+| `/moi/historique` | a `‹ PROFILE` back link, the only one | **USER** (the family) |
+
+Three navigations in three places, and no page saying which of the four you
+were on.
+
+**Dan chose, asked one question at a time:** one page with four tabs (over four
+pages sharing a strip, and over a smallest-fix patch) · the `-ILLS` rhyme
+**stays** · and a flagged problem should do **both** — push its goal into the
+revise queue AND reach the teacher's dashboard.
+
+### What this branch builds (the layout half)
+
+- `src/content/userTabs.ts` — the four tabs in one place: label, own URL, twin.
+- `UserTabs.tsx` — the strip; `UserPage.tsx` — the host that keeps the band and
+  strip still and swaps only the framed panel, so a tab costs no page load.
+- Three new framed twins (`/leaderboard/embed`, `/moi/historique/embed`,
+  `/reglages/embed`) and `SettingsContent.tsx`, so the framed and standalone
+  copies cannot drift — the `/profil/embed` pattern of 7 Sep.
+- The four old addresses **forward** rather than dying: printed QRs, the ☰
+  menu, the ⌛ icon and the account chip all keep working.
+- `/moi/embed` **deleted** — a duplicate of `/profil/embed`, unreachable once
+  `/moi` forwards.
+- The row words go 11px → 15px (Dan, same day: *"the words frills ills etc can
+  be bigger (without overflowing the line)"*), letter-spacing .08em → .03em to
+  buy the width back. `ILLS (problems noted)` was the longest row; it and every
+  other still sit on one line beside their count at 390px.
+- **The bracketed English is gone, a glyph leads instead** (Dan: *"am trying to
+  explore deleting the english in brackets and putting an emoji at the start of
+  the line instead"*): ⏱️ RE-DRILLS · 🧮 SKILLS · 🎞️ FRILLS · 🩹 ILLS · 💫 THRILLS.
+  All five are unused elsewhere in `src/`, per the one-glyph-one-meaning rule.
+
+### Four checks updated — every one of them stricter, none weakened
+
+- **verify117** (a twin must be reachable at its own URL) learned the second
+  legal shape: a route may forward into the User page if `userTabs.ts` lists
+  its twin and the host frames it. It also now requires the frame to be
+  **mounted** (`<EmbedFrame`) rather than merely imported — the old test passed
+  a file that imported it and never rendered it, for every station in the app.
+- **verify30** §1 now asserts the stronger one-page shape; §2 pins the glyphs
+  instead of the three deleted glosses, and fails if two rows share one or if a
+  row's glyph is also one of the reward marks on its own row.
+- **verify99** follows the Settings body to `SettingsContent.tsx`.
+- **verify82** drops its row for the deleted `/moi/embed`.
+
+### Two faults found by break-testing, not by reading
+
+1. THRILLS first led with 🏅 — which is not the badge mark (that is 🎖️) but is
+   indistinguishable from it at 15px. A look-alike, not a collision: the
+   comment in the file says so accurately now.
+2. **The clash check passed a straight reuse of 🎖️.** Emoji written with the
+   variation selector (`🎖️`) never matched the same symbol written without it,
+   so the rule compared sets that could not intersect. It strips `️` from
+   both sides now, and catches reuse of all three marks.
+
+Green the way CI runs it: `tsc`, wall build + 97 checks, open build + 25,
+eslint on every touched file.
+
+### Still open
+
+- **The other half of Dan's answer 3** — flagging pushing a goal into the
+  revise queue and onto `/teacher` — is NOT in this branch. `teacher/page.tsx`
+  has three branches in flight on it (`qc/color-217` +13, `qc/icon-glyph-swap`
+  +4, `claude/icon-glyph-swap-lexicalocker` +1); a second PR after those land.
+- **The Me panel's own insides** — the U0–U4 grid still has no key, THRILLS is
+  still last though it is the only row that is never empty, and FRILLS still
+  reads EMPTY. Shown to Dan as a mock-up; not built, pending his word.
+- ~~A naming wrinkle: the tab says **Me**, the ☰ menu says **Profile**.~~
+  **RESOLVED THE SAME DAY, and it was never Dan's to resolve.** He looked at
+  the live app and said *"i see User and Profile, i do not see Me"* — because
+  « Me » existed only on this branch. It was invented here; the mock-up he
+  approved happened to carry it, which let it pass as decided. Then: *"use the
+  same words colors and emojis"*. So the strip no longer writes any of them
+  down. `userTabs.ts` reads `activities.ts` for the label and the glyph, and
+  the colour is the User family's own pen and wash:
+
+      👤 Profile · 🏆 Leaderboard · ⌛ History · ⚙️ Settings
+
+  History is the one tab with no registry entry — it is not a menu tile (the
+  9 Sep grid gives User three) — so it names itself there and wears the ⌛ the
+  top bar has meant « my learning history » with since 2026-07-25.
+
+  THE LESSON, because it is the second time this session: a mock-up is a
+  QUESTION, and everything in it that was not asked about is still unasked. A
+  reader cannot tell which words in a picture are the proposal and which are
+  filler, so anything invented inside one has to be named as invented when the
+  picture is sent — or it gets approved by accident.
+
+  Measured at 320 / 360 / 390px: the four tabs total 303px at the narrowest,
+  and no label is clipped at any width.
+
+### Same day, later — the Profile panel, and one feature removed with it
+
+Dan, on the panel itself:
+
+1. *"The name of the overarching title and the sub part names should not repeat
+   each other"* — the band said PROFILE directly above a tab saying Profile.
+   **The band is the FAMILY now** (`familyName("user")` → « User », the ☰
+   menu's own word) and it no longer moves when a tab does: you are still in
+   User whichever panel is open. The tabs keep the registry's words.
+2. *"There is no need for the black strip and the words above the black strip.
+   Start directly after the 4 tabs with REDRILLS"* — gone: the course line
+   (« Moi · LAF1201 · A1 · GOAL 22 / 50 ») and the black pinned-goal bar.
+3. *"There shouldn't be any text between the green stripe REDRILL and the grid
+   items below"* — the « Nothing waiting » sentence is gone, and so is the rule
+   that used to separate it from the grid, which now separated nothing.
+4. *"Instead there should be a legend below that grid… one-word-per color…
+   in a single row"* — **STRONG · MIXED · WEAK · NEW · DONE**, one row at
+   320px. The swatches read `--tier-good/medium/weak` and `--cahier-line`, the
+   very tokens HeatStrip paints the cells with, so the key cannot say a
+   different green from the tiles. DONE is the ring, drawn as an outline.
+   (« UNTRIED » was the first word tried and it pushed DONE onto a second line
+   on a phone; « NEW » says the same thing in three letters.)
+
+**A FEATURE WENT WITH THE BLACK STRIP, AND DAN SHOULD KNOW.** That bar *was*
+the goal pin: tapping it opened `GoalPicker`, the only way in the app to pin
+one of the fifty AND a date. Removing the bar removed the picker, the verbatim
+can-do sentence behind it, and `setGoal`'s only caller. **The stored data is
+untouched** — `progress.goal` still holds `{sio, by}` — so nothing a learner
+pinned is lost and the feature can return behind any control Dan likes. The
+☰ menu's 1–50 slider is NOT the same thing: it picks what to practise now, with
+no date. `verify30` §5 now guards that the pin stays off the panel rather than
+that it exists, and says why.
+
+Nine lint warnings appeared when the strip went — imports and state only it
+used. All removed; the touched files are at zero.
+
+### 12 Sep — the rows that had nothing in them are gone
+
+Shown each row opened in the real app, Dan ruled on all four, and then on a
+fifth the next message:
+
+| row | ruling | built as |
+|---|---|---|
+| FRILLS | *"should not appear… until the student has completed one creation (either ChaTutor or ComposeIt)"* | appears on a first ComposeIt tally |
+| ILLS | *"is unclear what this is about - i suggest also to hide until we figure out to use it"* | never shown |
+| THRILLS | *"Don't show this section until there is something to show for it. And don't show the items that are not yet achived"* | appears once a badge is earned; lists earned badges only |
+| — | *"As for the 'payable' colors, move them into Settings instead"* | `components/AccentColours.tsx`, in Settings |
+| SKILLS | *"drop skills"* | never shown |
+
+SKILLS is worth the note. The day before, Dan asked it to *"list out all the
+skills they have successfully acquired"*. Shown what it actually renders — four
+tiles reading 0 / 21, 0 / 26, 0 / 2, 0 / 1 for an account twenty-one goals in,
+because it counts ANSWERS LOGGED and not goals done — he dropped it instead of
+having it rebuilt. The panel is now RE-DRILLS (with the grid and its key) and
+THRILLS, and nothing else.
+
+The five rows stay in `ROWS` and keep their glyphs; a `rowsToShow()` gate
+decides which appear. So `verify30`'s five-row and glyph assertions still hold,
+and any row can come back by changing one line rather than being rewritten.
+
+**KNOWN GAP, flagged rather than papered over:** a ChaTutor conversation cannot
+be detected. `activityLedger`'s `PREFIX_TO_KEY` maps ComposeIt (`compose`) and
+has no ChaTutor entry, so "one creation" covers half of what Dan named. Wiring
+ChaTutor into the ledger is its own change.
+
+### 12 Sep — the other two purchases found their homes
+
+The open question above (*"still in THRILLS and also purchases: the Bouclier
+and the expert game decks… he has not said where these go"*) was put to Dan and
+he answered both in one message: **"leave the expert deck under frills. that is
+all. move the bouclier to settings too. but we should call it streak-freezer
+instead of bouclier (better contrast between fire and ice)."**
+
+| what | where it is now | why |
+|---|---|---|
+| the expert deck — « Tous les pays (Expert) », 185 country tiles | the FRILLS panel, under the three CLIPS/DRAFTS/REVISED slots | it is extra COURSE, not a preference |
+| the Bouclier, renamed **Streak-Freezer** ❄️ | Settings, under a **Gems** heading | it is arranged in advance, like the accent colour |
+
+`Rewards.tsx` is therefore earned badges and nothing else — THRILLS is now
+purely what a learner has achieved, which is what Dan asked for on 11 Sep.
+
+**The rename is 🛡️ → ❄️, and the reason is contrast.** The streak is 🔥
+everywhere in the app; a shield has no quarrel with fire and ice does. It is a
+display rename only — the storage field is still `shields`, `buyShield()` and
+`SHIELD_COST` keep their names, the Memo/LexicaLocker precedent. Renamed on the
+two learner-visible surfaces (the Settings control, and `RewardToast`'s
+morning-after « Your Streak-Freezer did its job ») and in the comments that
+explain them. ❄️ also appears in `weather-letris.json`, but as the vocabulary
+card « la neige » — the one-glyph-one-meaning rule is about the app's own doors
+and icons, not about what a French deck teaches.
+
+**FRILLS' gate had to widen, and this is the reasoning, not an oversight.** The
+row was hidden until a first creation (above). The shelf the expert deck came
+from is gone, so that gate would have left the deck unbuyable — the same class
+of fault as the goal picker that vanished with the black strip on 11 Sep, and
+worth naming because it is invisible in the diff. FRILLS now also opens when
+the deck is OWNED or AFFORDABLE, which is the same test the row was given in
+the first place: never open on nothing, always open on something you can act
+on. Its closed summary stopped saying `EMPTY` and says `0 / 1 DECKS`, per the
+collapse rule's "a closed section says what is behind it".
+
+**ONE BALANCE, NOT TWO.** First build of Settings printed « 💎 340 » twice,
+forty pixels apart — once in the colours, once in the freezer — because each
+component read `progress` for itself. That is exactly the text the litmus test
+deletes. Hoisting the chip alone would have left it stale after a purchase, so
+the STATE came up instead: `components/GemShelf.tsx` owns the read, draws one
+balance, and passes `p` / `onChange` down to `AccentColours` and
+`StreakFreezer`, which are now controlled (the shape `Rewards` used to have).
+
+`verify116-gem-utilities` followed the move. Its loss-word scan — no shield
+surface may speak in loss — read `Rewards.tsx`, a file that no longer mentions
+the shield, so it would have passed by looking at nothing; it now reads
+`StreakFreezer.tsx` and `ProfileContent.tsx` too. A new assertion holds that
+`buyShield(` lives in `StreakFreezer.tsx`, because nothing else sells it any
+more. Break-tested: replacing that one call makes the check fail.
+
+Full gate green — `tsc` clean, both builds, all 123 checks across the wall and
+open phases, zero lint problems on every touched file.

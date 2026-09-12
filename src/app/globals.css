@@ -862,7 +862,14 @@ html, body { overscroll-behavior-x: none; }
  * compact but lets the box breathe when the metrics need 31px. */
 .cahier-answer {
   font-family: var(--font-body-stack) !important;
-  font-size: 0.92rem !important;
+  /* ON THE RAMP like everything else (Dan, 2026-09-11: *"for font sizes,
+     don't use absolute hard coded font sizes, we want adaptive ones to the
+     screen size"*). This was a flat 0.92rem: it honoured a learner's browser
+     text setting but ignored the screen, so on a desktop the box a learner
+     types their French into stayed at phone size while the question above it
+     had grown. Same multiplier convention as the ramp block: the size in rem
+     is the multiplier. */
+  font-size: calc(0.92rem + var(--fs-step) * 0.92) !important;
   line-height: 1.2 !important;
   padding: 0.3rem 0.5rem !important;
   min-height: 30px !important;
@@ -962,7 +969,7 @@ html, body { overscroll-behavior-x: none; }
      band of its own keeps its family's ink, which is every page this rule
      coloured before today. */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='62' height='26' viewBox='0 0 62 26'%3E%3Cdefs%3E%3ClinearGradient id='c' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fbfdff'/%3E%3Cstop offset='0.35' stop-color='%23d8dce2'/%3E%3Cstop offset='0.6' stop-color='%239aa0a8'/%3E%3Cstop offset='1' stop-color='%23565b63'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='0'%3E%3Cstop offset='0' stop-color='%23141820' stop-opacity='0.3'/%3E%3Cstop offset='1' stop-color='%23141820' stop-opacity='0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='24' y='0' width='16' height='26' fill='url(%23g)'/%3E%3Cellipse cx='49' cy='13.5' rx='5.2' ry='4.2' fill='%231e1a14' opacity='0.88'/%3E%3Cg transform='rotate(-7 29 13)'%3E%3Cellipse cx='29' cy='13.4' rx='21' ry='5.8' fill='none' stroke='%232c2f35' stroke-width='4.4' opacity='0.3'/%3E%3Cellipse cx='29' cy='12.9' rx='21' ry='5.6' fill='none' stroke='url(%23c)' stroke-width='3.1'/%3E%3C/g%3E%3Cellipse cx='50.8' cy='13.4' rx='2.7' ry='2.4' fill='%231e1a14'/%3E%3C/svg%3E"),
-    linear-gradient(to right, transparent 0 24px, var(--band, var(--fam-ink, #82868f)) 24px 36px, transparent 36px);
+    linear-gradient(to right, transparent 0 24px, var(--strip, var(--fam-ink, #82868f)) 24px 36px, transparent 36px);
   background-repeat: repeat-y;
   pointer-events: none;
 }
@@ -1969,7 +1976,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
    guide, Réglages, the family hubs), which is where the spine came from
    before this. */
 .cahier-surface[class*="fam-"] {
-  border-left: 6px solid var(--band, var(--fam-ink, transparent));
+  border-left: 6px solid var(--strip, var(--fam-ink, transparent));
   /* the ruled lines keep their own colour; only the paper under them changes */
   background-color: var(--fam-page, var(--cahier-paper));
 }
@@ -2453,132 +2460,166 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
 /* One class per family sets the trio; SectionBand reads only the trio, so a
    band never hard-codes a hue and a new family is three tokens plus a line. */
-.fam-goals    { --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); --fam-mouth: var(--fam-goals-mouth); }
-.fam-practice { --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); --fam-mouth: var(--fam-practice-mouth); }
-.fam-svplay   { --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); --fam-mouth: var(--fam-svplay-mouth); }
-.fam-review   { --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); --fam-mouth: var(--fam-review-mouth); }
-.fam-oral     { --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); --fam-mouth: var(--fam-oral-mouth); }
-.fam-tools    { --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); --fam-mouth: var(--fam-tools-mouth); }
-.fam-user     { --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
+/* THE STRIP IS THE FAMILY'S OWN COLOUR, the bright rung (Dan, 2026-09-11,
+   shown every band beside its family: *"use the left most column colors"*).
+   ONE token, `--strip`, because THREE things paint it — the heading band, the
+   6px spine and the binding's cover zone — and 8 Sep proved they come apart
+   when each names its own source: ConjugaZone showed a teal band over a blue
+   spine over a blue binding, three facts where there is one.
+
+   IT IS DECLARED HERE, BESIDE `--fam`, AND NOT ON `.cahier-surface`, because
+   not every band sits on one: `/decks/[id]` suppresses the shell's band and
+   heads its table with its own, inside the content well. Keyed on the surface
+   it came out `--fam-practice-ink` there — the old dark rung — while every
+   other strip went bright, which is exactly the kind of single hold-out this
+   token exists to make impossible. Anything carrying a `fam-` class hands it
+   down. */
+.fam-goals { --strip: var(--fam-goals); --fam: var(--fam-goals);    --fam-ink: var(--fam-goals-ink);    --fam-wash: var(--fam-goals-wash);    --fam-page: var(--fam-goals-page); --fam-mouth: var(--fam-goals-mouth); }
+.fam-practice { --strip: var(--fam-practice); --fam: var(--fam-practice); --fam-ink: var(--fam-practice-ink); --fam-wash: var(--fam-practice-wash); --fam-page: var(--fam-practice-page); --fam-mouth: var(--fam-practice-mouth); }
+.fam-svplay { --strip: var(--fam-svplay); --fam: var(--fam-svplay);   --fam-ink: var(--fam-svplay-ink);   --fam-wash: var(--fam-svplay-wash);   --fam-page: var(--fam-svplay-page); --fam-mouth: var(--fam-svplay-mouth); }
+.fam-review { --strip: var(--fam-review); --fam: var(--fam-review);   --fam-ink: var(--fam-review-ink);   --fam-wash: var(--fam-review-wash);   --fam-page: var(--fam-review-page); --fam-mouth: var(--fam-review-mouth); }
+.fam-oral { --strip: var(--fam-oral); --fam: var(--fam-oral);     --fam-ink: var(--fam-oral-ink);     --fam-wash: var(--fam-oral-wash);     --fam-page: var(--fam-oral-page); --fam-mouth: var(--fam-oral-mouth); }
+.fam-tools { --strip: var(--fam-tools); --fam: var(--fam-tools);    --fam-ink: var(--fam-tools-ink);    --fam-wash: var(--fam-tools-wash);    --fam-page: var(--fam-tools-page); --fam-mouth: var(--fam-tools-mouth); }
+.fam-user { --strip: var(--fam-user); --fam: var(--fam-user);     --fam-ink: var(--fam-user-ink);     --fam-wash: var(--fam-user-wash);     --fam-page: var(--fam-user-page); }
 /* The colourless one. A stack where every row is coloured has no hierarchy —
    the reference makes THRILLS neutral on purpose, and so does this. */
-.fam-none     { --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
+.fam-none     { --strip: var(--cahier-line-strong); --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
 
-/* Ten stops, two to a row (Dan, 2026-08-30: "the columns are to be split
-   halfway at the screen's width"). One grid rather than two columns, so the
-   divide is the container's exact midpoint; `minmax(0,1fr)` because a long
-   French title would otherwise push its column wider than its neighbour. One
-   column below 520px, where two would give each stop about 120px. */
-.stop-grid {
+/* ── ONE TILE GRID, FOR EVERY LIST OF NEAR-IDENTICAL TILES ────────────────
+   Dan, 2026-09-11: *"come back and see where all the other pages with
+   near-identical items (e.g. per-SIO-tile display) that can copy from this
+   style"*, then *"take all four"*.
+
+   The floor below was written once for SpecuLearn's stop tiles and was about
+   to be copied into four more places. This repo has a standing lesson about
+   exactly that — `gapSentence` drifted into five implementations and
+   `optionGrid.ts` exists to stop the answer-option threshold doing the same —
+   so the formula lives here and the call sites only choose `--tile-min`.
+
+   THE FLOOR DOES BOTH CAPS BY ITSELF, so there is no breakpoint anywhere:
+
+     min(50% - gap/2, …)          no column wider than half     -> at least 2
+     max(--tile-min, 25% - …)     no column narrower than a 1/4 -> at most 4
+
+   A breakpoint would be wrong twice over: right only at the widths someone
+   remembered to write, and these surfaces run INSIDE the cahier's iframe,
+   where a media query sees the frame and not the phone — 390px of device is
+   313px of frame. GameGallery was the proof: it carried `sm:grid-cols-3`,
+   which asked the frame a question about the phone.
+
+   TWO ON A PHONE IS THE RULE (Dan, 2026-09-07: *"put buttons in two
+   columns"*, looking at SpecuLearn at 390px). The half-floor holds it: at
+   320px the quarter-floor alone would give one column. */
+.fluo-tilegrid,
+.stop-grid,
+.sio-path {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
+  gap: var(--tile-gap, 6px);
+  grid-template-columns: repeat(auto-fit,
+    minmax(min(calc(50% - var(--tile-gap, 6px) / 2),
+               max(var(--tile-min, 11rem), calc(25% - var(--tile-gap, 6px) * 0.75))), 1fr));
 }
-/* TWO COLUMNS ON A PHONE TOO (Dan, 2026-09-07: *"put buttons in two
-   columns"*, looking at SpecuLearn at 390px). This rule collapsed the grid to
-   one column below 520px, so every phone — the way the course is actually
-   used — saw a single stack of full-width rows, which is also what the
-   no-full-width-control rule forbids. The grid keeps its 6px gap; the rows
-   themselves already truncate rather than overflow. */
 
-/* THE FIVE PHASE BANDS ARE FIVE OF THE TWELVE (Dan, 2026-09-06).
-   He sent the palette back — *"i am sorry your colors are very off. these are
-   the correct colors, you need to remedy"* — then the bands themselves,
-   *"these colors are wrrong"*, then the rule that settles it:
-   *"whatever it is, every color on the web can only be one of these"*, with
-   *"use black ink if you have to - for words"*.
+/* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
+   at the screen's width"). `1fr` stops a long French title pushing its column
+   wider than its neighbour.
 
-   The six family pens already WERE the palette's six pens; these five were a
-   separate hand-picked set matching nothing in it. `highlighterMarks.ts` is
-   the source now, and the two axes are the palette's two halves:
+   The "two to a row" half of that 30 Aug note is superseded above — it is now
+   two to four, and 2026-08-30's reason survives as the LOWER bound. */
+.stop-grid { --tile-min: 11rem; }
 
-       the six PENS         -> the six families   (already true)
-       five of the six COMPLEMENTS -> the five phases
+.stop-grid a,
+.stop-grid a > span { align-items: stretch; }
+.stop-grid a > span > span { display: flex; flex-direction: column; }
+.stop-grid a > span > span > span:last-child { margin-top: auto; }
 
-       guess   Periwinkle #9398ff      prod    Amber   #e88c00
-       lesson  Olive      #98b300      create  Magenta #f350ff
-       recog   Sky        #00b2f6      (Teal #00c197 is the sixth — see below)
+/* ── ONE BAND COLOUR LEFT, AND THAT IS THE WHOLE STORY ────────────────────
+   Dan, 2026-09-11, shown the six swatches and where each is actually drawn:
+   *"we don't [need] the five any more do we?"*, then *"yes do the cleanup,
+   keep prod"*.
 
-   TAKEN RAW, at highlighter strength, which is why the words on them are
-   BLACK. White on these measures 1.84-2.84:1 and was unreadable; black
-   measures 8.18, 8.78, 8.70, 8.18 and 7.40 — every one clear. That is Dan's
-   ruling doing the work the old set needed a dimmed, off-palette colour for:
-   the ink moves so the colour does not have to.
+   THERE WERE SIX. Five were the evidence ladder — guess, lesson, recog, prod,
+   create, five of the twelve marks taken raw at highlighter strength — and the
+   sixth was Teal, given to ConjugaZone alone on 8 Sep (*"ConjugaZone pages
+   should be in Teal colored strip ok"*). Each painted a page's heading strip
+   and its left spine.
 
-   NO COLOUR-BLIND SEPARATION RULE ANY MORE. The set these replace was chosen
-   by a search maximising deutan/protan separation, and no five of the twelve
-   can pass that bar — the palette sits at one lightness by design, so its
-   hues collapse in pairs (Sky/Magenta 0.009, Amber/Olive 0.013). Shown the
-   simulation and the numbers, Dan: *"don't care about color blindness pls"*,
-   *"it is NOT OUR CONCERN"*. Recorded here rather than quietly dropped, and
-   the checks that enforced it are removed in verify36 with the same quote —
-   a rule that is deleted for a reason should say whose reason. */
+   #292 ENDED THAT. `PageBand` reads `--strip` now, which every `fam-*` class
+   sets and no `band-*` class does, so a page's strip is its FAMILY's colour.
+   Driven on the built app rather than assumed: of the six, only `prod` is
+   still drawn anywhere. GramMarathon's finale is built on `band-prod`
+   throughout — its frame, its progress fill, two card borders and the hint and
+   check buttons read `var(--band)`, its pills read `var(--band-wash)` — and
+   #292 named that page a deliberate exemption, because there is no
+   `--strip-wash` and moving the borders alone would put a teal edge on an
+   amber fill.
+
+   SO THE OTHER FIVE ARE DELETED, not left unwired — the same precedent as the
+   reading-paper tokens on 6 Sep and the band complements just below: a token
+   nothing reads is a token the next person has to disprove. Their values, if
+   they are ever wanted again, are each pen's `block` in highlighterMarks.ts,
+   which is where they came from:
+
+       guess Periwinkle #9398ff · lesson Olive #98b300 · recog Sky #00b2f6
+       create Magenta #f350ff   · teal Teal #00c197
+
+   WHAT IS NOT DELETED, AND MUST NOT BE. `BAND`, `bandOf()` and `stripOf()` in
+   content/activities.ts are untouched. Those five NAMES are not decoration —
+   they are what kind of evidence an exercise produces, written into every
+   stored answer through lib/evidence.ts and shown to the teacher on /teacher
+   (« recognition », « constrained », « free »). `verify62` holds the two
+   tables together, after Sorting spent five days telling a learner one thing
+   and the record another. Dan, in the same breath as the cleanup: keep the
+   categories.
+
+   A CONSEQUENCE WORTH KNOWING before it puzzles someone. The shells still put
+   a `band-*` class on every page — verify36 requires it and `stripOf` still
+   hands the key out — so pages carry `band-guess`, `band-teal` and the rest.
+   They simply match no rule now and set nothing. ConjugaZone is still teal on
+   screen because REVISE is teal and ConjugaZone lives there, not because of
+   the token that used to do it.
+
+   BLACK INK ON THE BAND for the one that is left (Dan, 6 Sep: *"use black ink
+   if you have to - for words"*). Amber measures 8.18:1 against black, and
+   verify36 re-measures it rather than trusting this line. */
 :root {
-  --band-guess: #9398ff;   --band-lesson: #98b300;  --band-recog: #00b2f6;
-  --band-prod: #e88c00;    --band-create: #f350ff;
-  /* TEAL IS ONE ACTIVITY'S, NOT A BRANCH'S (Dan, 2026-09-08: "ConjugaZone
-     pages should be in Teal colored strip ok"). The five above are the
-     evidence ladder — what an exercise demands — and ConjugaZone shares
-     `prod` with GramMarathon and WorDrill, which is true and stays true in
-     the teacher's record. This is the sixth hue and it belongs to ConjugaZone
-     alone; `stripOf()` in content/activities.ts is what hands it out. Chosen
-     against --band-recog (#00b2f6) rather than in isolation: the two are the
-     only cool hues here, and teal has to read as a different station from the
-     bright blue at a glance on a 12px strip. It is the TEAL PEN's block from
-     highlighterMarks.ts, not a teal chosen by eye — Dan, 6 Sep: "every color
-     on the web can only be one of these", and verify120 measures the hue. The
-     first attempt (#00a396) sat 15 degrees off it and the check said so.
+  --band-prod: #e88c00;
 
-     TEAL IS NOW SPENT TWICE, and that is recorded rather than quietly fixed.
-     Main gave the same pen to the REVISE FAMILY the same week
-     (--fam-review: #00c197, a few lines up). The two never appear on one
-     surface — a family colour paints the ☰ grid tile and the family's own
-     hub, a strip paints one activity's page edges — but they are the same
-     hex, so a learner who reads teal as "Revise" on the menu meets it again
-     on ConjugaZone, which is Practice. Dan's word was *"ignore the repo's
-     color pattern based on activity type and family"*, so ConjugaZone keeps
-     it; whether the two should differ is his call. */
-  --band-teal: #00c197;
+  /* THE SIX BAND COMPLEMENTS WERE HERE, and they are DELETED rather than left
+     unwired. They were right for exactly one day: the SIO scrap took the
+     opposite of the band above it, and that band was the activity's. #292 made
+     the heading band read `--strip`, which only the `fam-*` classes set, so
+     every band above a scrap is the family's now and `--fam-mouth` is the only
+     complement anything needs.
 
-  /* AND THE COMPLEMENT OF EACH BAND, same source and same reason as the family
-     complements above: Dan's *"complementary color to the above strip"*, and on
-     a lesson the strip above the SIO tag is the BAND — « MNEMEMO » in olive —
-     not the family, whose blue is up in the top bar. So the scrap has to read
-     whichever of the two is actually painting the strip over it.
-
-         guess   Periwinkle -> #fcdf00     prod    Amber   -> #1ca6ff
-         lesson  Olive      -> #b17eff     create  Magenta -> #00dd3e
-         recog   Sky        -> #ff9037     teal    Teal    -> #ff4eb2
-
-     Each is that pen's own `mouth` from highlighterMarks.ts — its hue + 180 —
-     so these are the twelve marks' colours and not six new ones. */
-  --band-guess-mouth: #fcdf00;   --band-lesson-mouth: #b17eff;
-  --band-recog-mouth: #ff9037;   --band-prod-mouth: #1ca6ff;
-  --band-create-mouth: #00dd3e;  --band-teal-mouth: #ff4eb2;
+     Removed with their rule, as the reading-paper tokens were on 6 Sep: a
+     token nothing reads is a token the next person has to disprove. The
+     values, if they are ever wanted again, are each pen's `mouth` in
+     highlighterMarks.ts — which is where they came from and the only place
+     they should ever be copied from. */
 }
-.band-guess  { --band: var(--band-guess);  --band-wash: color-mix(in oklab, var(--band-guess) 12%, var(--cahier-paper)); --band-mouth: var(--band-guess-mouth); }
-.band-lesson { --band: var(--band-lesson); --band-wash: color-mix(in oklab, var(--band-lesson) 12%, var(--cahier-paper)); --band-mouth: var(--band-lesson-mouth); }
-.band-recog  { --band: var(--band-recog);  --band-wash: color-mix(in oklab, var(--band-recog) 12%, var(--cahier-paper)); --band-mouth: var(--band-recog-mouth); }
-.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); --band-mouth: var(--band-prod-mouth); }
-.band-create { --band: var(--band-create); --band-wash: color-mix(in oklab, var(--band-create) 12%, var(--cahier-paper)); --band-mouth: var(--band-create-mouth); }
-.band-teal   { --band: var(--band-teal);   --band-wash: color-mix(in oklab, var(--band-teal) 12%, var(--cahier-paper)); --band-mouth: var(--band-teal-mouth); }
+.band-prod   { --band: var(--band-prod);   --band-wash: color-mix(in oklab, var(--band-prod) 12%, var(--cahier-paper)); }
 
 /* ── The SIO sheet's numbered path (approved guidance flow, 2026-08-24) ────
    The practice chain as steps, not equal flaps: done = ✓ + muted, the next
    undone step accented in the PRACTICE family's colour (the chain IS the
    FluOlin Practice sequence, whatever page the sheet opens over). Matches
    flow-mocks/stop-sheet.html. */
-/* TWO COLUMNS (Dan, 2026-08-31: "have them as buttons over two columns like
-   we have always done for other things") — the same shape .stop-grid gives
-   the activity landings, so a stop's links look like every other grid of
-   choices in the app.
-   It does NOT collapse to one column the way .stop-grid does below 520px.
-   That breakpoint exists for a full-width page; this grid lives inside a
-   32rem popup that is already narrower than it, so collapsing would leave
-   eight full-width rows on a phone — the tall single column this replaced. */
+/* TWO COLUMNS AT LEAST (Dan, 2026-08-31: "have them as buttons over two
+   columns like we have always done for other things") — the same shape the
+   activity landings get, so a stop's links look like every other grid of
+   choices in the app. It shares their floor now (see .fluo-tilegrid above),
+   which is two to four rather than exactly two.
+
+   THE OLD NOTE HERE WARNED AGAINST COLLAPSING TO ONE COLUMN below 520px, and
+   that warning is why this rule was left alone when the landings changed. It
+   is obsolete: the collapse it feared was a media query, and the shared floor
+   has none — `min(50% - gap/2, …)` guarantees two columns at every width,
+   including inside this 32rem popup. The fear was right about the old rule
+   and does not apply to the new one. */
 .sio-path {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px; margin: 2px 0 14px; padding: 0; list-style: none;
+  --tile-min: 9rem; --tile-gap: 8px;
+  margin: 2px 0 14px; padding: 0; list-style: none;
 }
 .sio-step {
   display: flex; width: 100%; height: 100%; align-items: center; gap: 8px; text-align: left;
@@ -3056,6 +3097,313 @@ input.fluo-bookmark:focus,
   .text-\[28px\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
   .text-\[30px\] { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
   .text-\[38px\] { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
+
+  /* THE SAME RAMP, FOR THE SIZES WRITTEN IN rem (2026-09-11).
+     Dan: *"for font sizes, don't use absolute hard coded font sizes, we want
+     adaptive ones to the screen size"*. These were the half the ramp could not
+     see: `text-[0.7rem]` is not a pixel, so it honours a learner's browser text
+     setting, but it ignores the VIEWPORT — and the app's other sizes do not.
+     Measured by driving the built app before this block existed: on SpecuLearn
+     at 1500px, 50 deck labels sat at 11.2px while `text-[11px]` beside them had
+     grown to 15px. The nominally SMALLER size rendered larger. The ladder had a
+     rung missing, not a size too many.
+
+     `em` sizes are NOT here and must not be: `text-[1.3em]` is a multiple of its
+     parent, which is already on the ramp, so it rides along by construction.
+     Ramping it would apply the step twice. */
+  .text-\[0\.52rem\] { font-size: calc(0.52rem + var(--fs-step) * 0.52); }
+  .text-\[0\.55rem\] { font-size: calc(0.55rem + var(--fs-step) * 0.55); }
+  .text-\[0\.6rem\] { font-size: calc(0.6rem + var(--fs-step) * 0.60); }
+  .text-\[0\.65rem\] { font-size: calc(0.65rem + var(--fs-step) * 0.65); }
+  .text-\[0\.7rem\] { font-size: calc(0.7rem + var(--fs-step) * 0.70); }
+  .text-\[0\.85rem\] { font-size: calc(0.85rem + var(--fs-step) * 0.85); }
+  .text-\[0\.87rem\] { font-size: calc(0.87rem + var(--fs-step) * 0.87); }
+  .text-\[0\.94rem\] { font-size: calc(0.94rem + var(--fs-step) * 0.94); }
+  .text-\[0\.95rem\] { font-size: calc(0.95rem + var(--fs-step) * 0.95); }
+  .text-\[1\.05rem\] { font-size: calc(1.05rem + var(--fs-step) * 1.05); }
+  .text-\[1\.3rem\] { font-size: calc(1.3rem + var(--fs-step) * 1.30); }
+  .text-\[1\.4rem\] { font-size: calc(1.4rem + var(--fs-step) * 1.40); }
+  .text-\[1\.5rem\] { font-size: calc(1.5rem + var(--fs-step) * 1.50); }
+  .text-\[1\.6rem\] { font-size: calc(1.6rem + var(--fs-step) * 1.60); }
+  .text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+  .text-\[1\.9rem\] { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
+  /* ── AND THE TEN SIZES A PAGE ASKS FOR AT A BREAKPOINT ──────────────────
+     A LIVE FAULT, found by QC on 2026-09-11 and older than the rem block
+     that exposed it. Every rule above is `:root .text-[X]` — a pseudo-class
+     plus a class, so it outranks Tailwind's own `.sm\:text-[Y]`, which is a
+     class alone. The ramp therefore beat the page's OWN breakpoint override,
+     at every width, silently:
+
+       welcome, phone sideways   asked for 1.6rem   got 3.2rem ramped
+       welcome, desktop          asked for 4.4rem   got 3.2rem ramped
+       NumBus, desktop           asked for 38px     got 30px ramped
+
+     The first one is the one that matters and it is the fault Dan named on
+     the day this page was built — "You are COMPLETELY blocking the view of
+     my winding road horizon, which is the WHOLE POINT of this page." Held
+     sideways, the headline stayed at its portrait size and covered the road.
+     verify151 catches it; it did not fire until the rem sizes joined the
+     ramp, because until then no OVERRIDDEN size had a rule here to win with.
+
+     The three px ones have been dead since the ramp was written on 5 Sep.
+     Nothing failed: a size simply stopped changing at the breakpoint, which
+     is invisible unless you measure the two widths side by side.
+
+     So a variant spelling gets its own ramp rule, in its own media query,
+     nested here so it carries the same `:root` weight and wins on order.
+     `verify106` fails a new one that has none — the base list alone could
+     never have caught this, because the spelling it misses is not a base
+     spelling. */
+  @media (min-width: 40rem) {
+    .sm\:text-\[28px\]   { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+    .sm\:text-\[30px\]   { font-size: calc(1.875rem + var(--fs-step) * 1.88); }
+    .sm\:text-\[38px\]   { font-size: calc(2.375rem + var(--fs-step) * 2.38); }
+    .sm\:text-\[1\.75rem\] { font-size: calc(1.75rem + var(--fs-step) * 1.75); }
+    .sm\:text-\[1\.9rem\]  { font-size: calc(1.9rem + var(--fs-step) * 1.90); }
+  }
+  @media (max-height: 480px) {
+  }
+
+  /* ── THE WELCOME HERO IS SIZED BY THE SKY IT STANDS IN ──────────────────
+     Dan, 12 Sep, shown the page at 1440 and 1920 both ways: ***"Yes expand is
+     better"*** — and, in the same breath, that the way in must hold at any
+     screen. Those are one problem, because the hero and the button share one
+     vertical budget.
+
+     WHY THE HERO CAME OFF THE RAMP AND OFF ITS BREAKPOINTS ENTIRELY. The
+     sky on this page is not a style, it is a MEASUREMENT: the road's crest is
+     drawn at SKYLINE_Y x WELCOME_SKY_LIFT of the frame (projection.ts —
+     0.29 x 1.12 = 0.3248), and the one thing this page exists to do is keep
+     the text above it. Sizing that text from the WIDTH, by breakpoint, asks
+     the wrong question — `sm:` is true on a phone held sideways, where there
+     is no height at all. Three shapes proved it:
+
+         1440 x 900   ramped, off the ramp  302 vs 292   10px onto the land
+          320 x 568   as shipped            203 vs 184   19px, live today
+          844 x 390   ramped, no override    59.9px headline, on the road
+
+     The middle one had been live for weeks and no check had ever looked: the
+     scan drove three viewports and a small phone was not one of them.
+
+     SO THE SIZE IS A min() OF THREE THINGS — the height it must fit, the
+     width it must not overflow, and the ramp's own value as a CEILING so a
+     big monitor stops where Dan approved rather than growing forever. The
+     vh term is what makes it hold on a shape nobody thought to test; the
+     ramp term is what makes 1440 land on the size he picked.
+
+     Verified by measuring, not by arithmetic: twelve shapes, phone to
+     ultrawide, in `landing-scan.mjs`. */
+  .fluo-welcome-title  { font-size: min(9.9vh, 13vw,  calc(4.4rem + var(--fs-step) * 4.40)); }
+  .fluo-welcome-sub    { font-size: min(4.2vh,  5.3vw, calc(1.8rem + var(--fs-step) * 1.80)); }
+  .fluo-welcome-course { font-size: min(2.8vh,  3.6vw, calc(1.2rem + var(--fs-step) * 1.20)); }
+
+  /* HELD SIDEWAYS, THE SKY IS ABOUT 110px DEEP. The three sizes above would
+     still fit it, but only just, and the course line has nowhere to go — so
+     the page keeps the shrink it already had, in its own rule rather than as
+     a Tailwind variant. A variant would lose to the classes above, which sit
+     later in this file: that is the same specificity trap that made every
+     `sm:` size dead for a week (#308). */
+  @media (max-height: 480px) {
+    .fluo-welcome-title  { font-size: 1.6rem; }
+    .fluo-welcome-sub    { font-size: 0.9rem; }
+    .fluo-welcome-course { display: none; }
+  }
+}
+
+/* ===========================================================================
+ *  CONJUGAZONE'S TABLE — the page's main event again
+ *
+ *  Dan, 2026-09-11: *"The main focus of ConjugaZone should be the verb table.
+ *  The questions are secondary and only come after that table. The table being
+ *  displayed should show at most two verbs side by side. The conjugation
+ *  should have the subject pronoun right next to the conjugated verb rather
+ *  than being separated in a different column."*
+ *
+ *  THIS REVERSES THE PATCH 20–21 RULING, deliberately and on instruction. The
+ *  page's own docstring said "THE TABLE BECAME THE REWARD SCREEN … Study
+ *  follows proof, instead of gating it." Dan has put the table back in front;
+ *  the drill is still there, below, and still records exactly what it did.
+ *
+ *  ── ONE GRID PER VERB, AND BOTH VERBS SHARE ITS TRACKS ───────────────────
+ *  Dan, same day: *"there has be a clear visual vertical paradigm for all the
+ *  reflex-pronouns and another for the verb form. Exactly like a table with
+ *  invisible grid."* So it is ONE grid for a whole verb, not one per row —
+ *  six rows sharing four tracks — and the two verbs are given identical track
+ *  widths so their columns line up with each other as well. Measured on the
+ *  built page: the verb-form column starts at the same offset in both cards.
+ *
+ *  Tracks are in `ch` so they grow with the type, which is the whole reason
+ *  the columns stay aligned when the ramp opens on a desktop.
+ * =========================================================================== */
+.conjuga-verbs {
+  display: grid;
+  gap: 0.55em;
+  /* AT MOST TWO SIDE BY SIDE (Dan: *"The table being displayed should show at
+     most two verbs side by side"*), and one where two will not fit. The floor
+     enforces both ends by itself, the same trick .stop-grid uses:
+
+       max(10.2em, 50% - half the gap)   no column narrower than half -> <= 2
+       min(100%, …)                      never wider than the row     -> >= 1
+
+     auto-fit, never a breakpoint: this station runs inside the cahier's
+     iframe, where a media query sees the FRAME and not the phone. 8.6em was
+     not guessed — it is the value that survives driving /conjugaison at 320,
+     360, 390 (both 844 and 1000 tall), 412, 430, 768, 1100 and 1500 with no
+     table overflowing its card anywhere: two verbs from 390px up, one at 320
+     and 360 where two genuinely will not fit. The drill shell's well is
+     narrower than the viewport, which is why a number picked from the phone's
+     width alone was wrong by 80px. */
+  grid-template-columns: repeat(auto-fit,
+    minmax(min(100%, max(var(--conjuga-min, 8.6em), calc(50% - 0.275em))), 1fr));
+}
+
+.conjuga-card {
+  border: 0.09em solid var(--cahier-rule, var(--cahier-line));
+  border-radius: 0.45em;
+  background: var(--cahier-paper-raised, #fff);
+  padding: 0.5em 0.32em 0.4em;
+  /* Container queries cannot restyle the container itself, so the narrow
+     card's own padding is set from the grid instead — see .conjuga-verbs. */
+  /* THE CARD DECIDES ITS OWN TYPE, NOT THE WINDOW. A container query measures
+     this card, so it is immune to the iframe problem a media query has here.
+     Without it the max-content verb column outgrew a two-up card on a tall
+     phone, where --fs-step reads vh and the type is a shade larger: measured
+     390x1000 overflowing by 19px while 390x700 fitted. */
+  container-type: inline-size;
+}
+.conjuga-inf { font-size: var(--fs-h3); font-weight: 700; line-height: 1.1; margin: 0; }
+.conjuga-gloss {
+  font-size: var(--fs-micro); font-style: italic;
+  color: var(--cahier-ink-soft); margin: 0.1em 0 0.5em;
+}
+
+.conjuga-tbl {
+  display: grid;
+  align-items: baseline;
+  row-gap: 0.14em;
+  column-gap: 0;
+  grid-template-columns:
+    var(--conjuga-pron, 10ch) var(--conjuga-refl, 4.6ch) max-content auto minmax(0, 1fr);
+}
+.conjuga-cell { padding: 0.16em 0.1em; border-radius: 0.2em; }
+.conjuga-pron {
+  text-align: right; font-size: var(--fs-small);
+  color: var(--cahier-ink-soft); white-space: nowrap; padding-right: 0.55ch;
+}
+/* ONLY THE VERB IS BOLD (Dan, 2026-09-11: *"only the actual verb portion
+   needs to be in bold, not the reflexive pronouns: this is to make the verb
+   occupy less horizontal space and allow two verbs to fit on a single width
+   of the mobile"*). It bought exactly that — measured, it is what takes a
+   390px phone from one verb per row to two. */
+.conjuga-rp { text-align: right; font-weight: 400; white-space: nowrap; padding-right: 0; }
+/* An elision has no space in it: m'appelle is one word, so the track boundary
+   must be invisible there. A whole word (nous, vous) needs the space a word
+   needs. */
+.conjuga-rp-word { padding-right: 0.5ch; }
+.conjuga-form { font-weight: 700; white-space: nowrap; padding-left: 0; }
+.conjuga-tts {
+  background: none; border: 0; cursor: pointer; font-size: var(--fs-micro);
+  padding: 0 0.15em; line-height: 1; opacity: 0.6; justify-self: start;
+}
+.conjuga-tts:hover { opacity: 1; }
+
+/* THE COLOUR RULE. Standard ending: red on yellow. Irregular form: red
+   entire, no yellow — see lib/practice/conjugaShape.ts for which is which and
+   why the group decides it rather than the spelling. */
+.conjuga-end {
+  color: var(--fluo-wrong, #dc2626);
+  background: var(--hl-yellow-tint, #ffea6a);
+  border-radius: 0.15em; padding: 0 0.06em;
+}
+.conjuga-irr { color: var(--fluo-wrong, #dc2626); }
+.conjuga-missing { color: var(--cahier-ink-soft); opacity: 0.45; }
+
+/* REVEAL MODE. The cover must COVER: an ending carries its own red-on-yellow
+   and an irregular form its own red, so `color: transparent` on the wrapper
+   alone left the answer legible through the mask — the one thing the learner
+   is being asked to recall was the one thing still showing. */
+.conjuga-hidden {
+  background: var(--cahier-paper-2, #eceadc);
+  color: transparent;
+  border-radius: 0.2em;
+  box-shadow: inset 0 0 0 0.07em var(--cahier-line);
+  cursor: pointer;
+  min-width: 4ch;
+}
+.conjuga-hidden.conjuga-rp { min-width: 2.2ch; }
+.conjuga-hidden * {
+  color: transparent !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* The example sentence, interleaved right after its own Subject+Verb, in a
+   smaller and quieter face (Dan: *"in the intercalé line right after each
+   SubjectVerb combo in a smaller less prominent font"*). It spans from the
+   verb column rightwards so it hangs under the form, not under the pronoun. */
+.conjuga-ex {
+  grid-column: 3 / -1;
+  font-size: var(--fs-micro); font-style: italic;
+  color: var(--cahier-ink-soft);
+  padding: 0 0 0.35em; line-height: 1.25; margin-top: -0.1em;
+}
+
+/* THE SUBJECT PRONOUN IN TWO LENGTHS, PICKED BY THE CARD'S OWN WIDTH.
+   « il/elle/on » is ten characters and will not fit twice on any phone —
+   measured at 320, 360, 390, 412 and 430px, every one of them clipped. Rather
+   than make Dan choose between the full pronoun and two verbs, both are in
+   the markup and the container query shows whichever the card can hold.
+   `display:none` (not visibility) so a screen reader reads one, never both. */
+.conjuga-pron-short { display: none; }
+
+/* TWO STEPS, BOTH MEASURED ON THE BUILT PAGE, not guessed.
+   One step was not enough. At 15em a card holds the long pronouns and the
+   body type; below it the pronouns shorten and the type drops a rung; below
+   11em — which is what a two-up 390px phone gives, 141px — even that
+   overflowed by 19px, so the type drops again. Every threshold below was set
+   by driving /conjugaison at 320, 360, 390, 412, 430, 768, 1100 and 1500 and
+   reading scrollWidth against clientWidth. */
+@container (max-width: 15em) {
+  .conjuga-tbl { font-size: var(--fs-small); }
+}
+@container (max-width: 11em) {
+  .conjuga-tbl { font-size: var(--fs-micro); }
+  /* The last 8px, taken from padding rather than from the words. A two-up
+     390px phone gives a 141px card and the table wanted 149; the shave is
+     scoped to this step so a roomy card keeps its breathing space. */
+  .conjuga-pron { padding-right: 0.35ch; }
+  .conjuga-tts { padding: 0 0.06em; }
+}
+@container (max-width: 15em) {
+  .conjuga-pron-long { display: none; }
+  .conjuga-pron-short { display: inline; }
+  .conjuga-tbl { --conjuga-pron: 4.4ch; --conjuga-refl: 4.3ch; }
+}
+
+/* LAST IN THIS SECTION, AND THAT IS LOAD-BEARING. A container query adds no
+   specificity — `@container … { .conjuga-pron { … } }` is still 0,1,0 — so
+   every one of these rules was silently losing to the plain `.conjuga-pron`
+   declared below it, and the narrow steps did nothing at all. Measured: the
+   padding read 0.55ch on a 141px card that was asking for 0.35ch. Keep these
+   blocks at the foot of the section, the same discipline the html[data-embed]
+   rules keep at the foot of the file. */
+@container (max-width: 11em) {
+  .conjuga-tbl {
+    font-size: var(--fs-micro);
+    --conjuga-pron: 4.4ch;
+    --conjuga-refl: 4.1ch;
+  }
+  /* The last few pixels, taken from padding and from the COVER, never from
+     the words. A two-up 390px phone gives a 141px card and the table was
+     asking for 137 against 129 of room. The first fix took it out of the
+     pronoun's right padding and « nous » ended up touching the covered cell
+     beside it — legible, but it read as clipped. A narrower cover pays for
+     the gap instead: the cover is furniture, the pronoun is the one thing
+     that must stay readable at all times. */
+  .conjuga-pron { padding-right: 0.5ch; }
+  .conjuga-hidden { min-width: 2.6ch; }
+  .conjuga-hidden.conjuga-rp { min-width: 1.4ch; }
+  .conjuga-tts { padding: 0 0.04em; font-size: 0.62em; }
 }
 
 /* ===========================================================================
@@ -3124,8 +3472,22 @@ html[data-embed] .cahier-deskrow,
 html[data-embed] .cahier-drilldesk { padding: 0 !important; background: transparent !important; }
 html[data-embed] .cahier-page,
 html[data-embed] .cahier-drill { min-height: 100dvh; border-radius: 0 !important; box-shadow: none !important; }
-/* The coils are gone, so the gutter they were holding open goes with them. */
-html[data-embed] .cahier-foolscap { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+/* THE COIL GUTTER IS THE FRAME'S NOW, not the host well's (11 Sep). It used to
+   say "the coils are gone, so the gutter they were holding open goes with
+   them" — true while the host kept 48px of its own to the LEFT of the frame,
+   and that inset is exactly what made a framed strip 64px shorter than a
+   page's. The frame is full-bleed now and the host's rings paint over its left
+   edge, so the gutter has to exist in here or the station runs under them. */
+html[data-embed] .cahier-foolscap { padding-left: 3rem !important; padding-right: 0.75rem !important; }
+/* …and a drill's own 38px clearance would then be a second gutter on top of
+   the first. One gutter, on the well, for both shells. */
+html[data-embed] .cahier-drill .cahier-foolscap > div { padding-left: 0 !important; }
+/* A BAND IS ONE HEIGHT, WHOEVER DRAWS IT. The compact rule at the top of this
+   file fires on a SHORT LANDSCAPE screen — and a frame is short by definition,
+   so on a 900x700 desktop the framed band alone took the phone's padding and
+   came out 72px against the page's 76px. The learner's screen is not short
+   because the box inside it is. */
+html[data-embed] .page-band { padding-top: 0.75rem !important; padding-bottom: 0.75rem !important; }
 /* AND THE FAMILY SPINE, which is the page's own left edge. The notebook around
    the frame already draws one; a second, 10px further in, reads as a stray
    green rule down the middle of the paper — seen on the framed goals before
@@ -3159,54 +3521,27 @@ html[data-embed] body { background: transparent; }
    along. */
 html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 
-/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well —
-   ALL FOUR SIDES, since 2026-09-12. The station inside paints its own paper, so
-   the well's own 20px top and bottom and its right inset would be a frame
-   around a frame: a band of the host's ruled paper down each side of the drill.
+/* AND ON THE HOST SIDE: a well that holds a frame gives it the WHOLE SHEET.
+   The station inside paints its own paper, so the well's own 20px top and
+   bottom and its right inset would be a frame around a frame — visible as a
+   band of the host's ruled paper down each side of the drill.
 
-   THE LEFT GUTTER USED TO BE KEPT, "because the coils live there", and that is
-   the line Dan sent back, with the Goals page beside MneMemo:
+   THE LEFT GUTTER USED TO BE KEPT, "because the coils live there, and they are
+   the notebook", and that is what made a framed station's heading strip a
+   different LENGTH from a page's (Dan, 2026-09-11: *"why are some items
+   shorter than others, they should all be the same length"*). Measured at
+   900px: a band the page draws runs x=33 w=840; a band the FRAME draws ran
+   x=97 w=776 — 64px shorter and 64px further in, on exactly the four stations
+   whose drill carries its own strip (the lesson, MémoiRecall, ConjugaZone,
+   ÉcouTexte). The strip is the same piece of furniture either way and cannot
+   be two sizes.
 
-     "solve this issue of colored strips that seems to end (1) before they reach
-      the ring binds, and (2) where the X is so far away from the left. The
-      Goals page serves as the benchmark standard"
-
-   Both halves are that one gutter. A framed station's heading band is drawn
-   INSIDE the frame and fills it, so wherever the frame starts is where the
-   colour starts — and the gutter began it 64px to the RIGHT of the rings.
-   Measured on the built export at 1280px, against Goals, whose band is drawn by
-   the host and needs no frame:
-
-                    coils      band starts      the ✕
-       Goals        20..82     44   (behind)    88
-       MneMemo      20..82     108  (26 clear)  152
-
-   So the strip stopped in mid-air with a band of paper showing between it and
-   the binding, and the ✕ inherited the whole 64px because it is measured from
-   the band's own left edge. One gutter, two complaints.
-
-   Dropping it puts a framed band at 44 — the same 6px family spine inset Goals
-   has — and the coils, which are drawn by the HOST at z-index 3, paint across
-   its left edge exactly as they paint across Goals'. The ✕ lands at 88 by the
-   same arithmetic that already governs Goals: the `.cahier-binding ~ .page-band`
-   clearance is 3rem, and it was always being applied inside the frame; it was
-   simply being applied to a band that had already cleared the rings by 26px.
-
-   THE STATION'S OWN CONTENT KEEPS ITS DISTANCE — see the rule below. The gutter
-   was doing two jobs and only one of them was the band's. */
-.cahier-foolscap:has(.embed-frame) { padding: 0; }
-
-/* …AND THE STATION KEEPS ITS DISTANCE FROM THE RINGS.
-   The gutter that just went was doing two jobs: starting the band clear of the
-   coils, which was the fault, and keeping the station's CONTENT clear of them,
-   which is still needed — the coils are drawn by the host on top of the frame,
-   so anything under them is simply covered.
-   Only the band bleeds. Everything else inside a framed station is inset by the
-   width the coils occupy, which is the same 3rem the band's ✕ already clears
-   by, so a drill's first control and its ✕ line up on one edge instead of two.
-   `~` and not `>`: the sibling that follows the band is the content, whatever
-   wrapper a station happens to use. */
-html[data-embed] .page-band ~ * { padding-left: 3rem; }
+   So the frame starts at the sheet's edge and THE COILS PAINT OVER IT —
+   `.cahier-binding` is `position: absolute; z-index: 3` and an iframe is an
+   unpositioned block, so the rings land on top without any change to how they
+   are drawn. The gutter they need is re-opened INSIDE the frame instead, on
+   the framed document's own well, where it belongs: see
+   `html[data-embed] .cahier-foolscap` above. */.cahier-foolscap:has(.embed-frame) { padding: 0; }
 
 /* ===========================================================================
  *  THE GOAL'S TAG, ON A TORN SCRAP
@@ -3245,19 +3580,27 @@ html[data-embed] .page-band ~ * { padding-left: 3rem; }
   /* THE OPPOSITE OF THE STRIP ABOVE IT (Dan, 2026-09-11, arrow drawn at this
      tag: *"To be in complementary color to the above strip"*).
 
-     `--band-mouth` first, `--fam-mouth` second, and the order is the whole
-     point: the strip over the tag is the activity BAND where a page has one
-     (the lesson's Goal tab, under olive « MNEMEMO ») and the family's ink
-     where it does not (the goals page, under « GOALS » in Lesson yellow).
-     Keying only on the family painted an orange scrap under a green strip.
-     Both tokens are complements out of highlighterMarks.ts — see the two
-     token blocks — so the scrap turns with the page rather than naming a hue
-     here.
+     `--fam-mouth`, and ONLY that, since #292 — which is the second time this
+     one line has had to follow the band rather than lead it.
+
+     It read `--band-mouth` first, because the strip over the tag was the
+     activity BAND on a lesson (olive « MNEMEMO ») and the family's ink only
+     where there was no band. #292 made `PageBand` take `--strip`, which every
+     `fam-*` class sets and no `band-*` class does, so the band above the tag
+     is now ALWAYS the family's. The old order survived that change and went
+     silently wrong: on the lesson's Goal tab the scrap stayed violet — olive's
+     opposite — under a band that had become Practice blue. Measured on the
+     built app, not spotted by reading.
+
+     The lesson is the one this file keeps teaching: a token that names what
+     something IS survives a change; one that names where it happens to come
+     from does not. `--fam-mouth` is the complement of whatever paints the
+     band, because the band and the scrap now read the same family.
 
      The paper fallback is what it WAS, and it is still what the User family
      gets: grey is not one of the twelve, so it has no opposite and sets no
      mouth. A torn scrap on a page with no complement stays paper. */
-  background: var(--band-mouth, var(--fam-mouth, var(--cahier-paper-raised, var(--cahier-paper))));
+  background: var(--fam-mouth, var(--cahier-paper-raised, var(--cahier-paper)));
   clip-path: polygon(3.2% 3.2%, 11.0% 1.6%, 18.8% 6.0%, 26.6% 0.7%, 34.4% 5.3%, 42.2% 2.0%, 50.0% 6.2%, 57.8% 2.5%, 65.6% 6.4%, 73.4% 2.1%, 81.2% 1.2%, 89.0% 1.4%, 96.8% 3.2%, 95.7% 14.9%, 94.3% 26.6%, 94.2% 38.3%, 95.9% 50.0%, 95.4% 61.7%, 96.4% 73.4%, 98.2% 85.1%, 96.8% 96.8%, 89.0% 94.2%, 81.2% 95.3%, 73.4% 94.5%, 65.6% 95.1%, 57.8% 98.8%, 50.0% 99.3%, 42.2% 98.5%, 34.4% 93.7%, 26.6% 99.7%, 18.8% 94.5%, 11.0% 98.1%, 3.2% 96.8%, 1.4% 85.1%, 0.5% 73.4%, 1.1% 61.7%, 0.1% 50.0%, 4.0% 38.3%, 1.0% 26.6%, 1.0% 14.9%);
   /* The padding is generous on purpose: the tear eats into the box by up to
      6% a side, so text set tight to the edge would be bitten. */

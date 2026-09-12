@@ -24,8 +24,15 @@
  * (8 Sep), corrected 9 Sep ("too light... the darkest shade in there").
  */
 import Link from "next/link";
+import {
+  BAND as SHARED_BAND,
+  BAND_NAME as SHARED_BAND_NAME,
+  TILE as SHARED_TILE,
+  TILE_NAME as SHARED_TILE_NAME,
+} from "@/components/familyTile";
 import { familyName, activity } from "@/content/activities";
-import { SIO_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { ECOUTEXTE_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
+import { type StopActivityKey } from "@/lib/activityStops";
 import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
@@ -35,6 +42,9 @@ import { HOME_HREF } from "@/lib/routes";
 // the set at all — are resolved there, not re-decided here). A hard-coded
 // hex in a component is exactly the drift verify19b's ratchet exists to
 // catch, and it very nearly reintroduced it: use the token, not the value.
+const TILE = SHARED_TILE;
+const NAME = SHARED_TILE_NAME;
+
 const PEN = {
   goals: "var(--fam-goals)",
   practice: "var(--fam-practice)",
@@ -72,9 +82,10 @@ type Cell =
   | { kind: "one"; emoji: string; name: string; href: string }
   | { kind: "help" }
   | { kind: "blank" }
-  // A hub-gallery replaced by the 50-stop slider pop-up — `sioKey` is its
-  // entry in ActivityGoalPicker's SIO_HREF map.
-  | { kind: "picker"; emoji: string; name: string; sioKey: keyof typeof SIO_HREF }
+  // A hub-gallery replaced by the stop-chooser pop-up. `sioKey` names the
+  // activity in `lib/activityStops.ts`, which is also what decides WHICH of
+  // the fifty the chooser may offer — one key, one gate, one route.
+  | { kind: "picker"; emoji: string; name: string; sioKey: StopActivityKey }
   | { kind: "numbers" }; // the one non-SIO pop-up: NumBus or NumBourse
 
 // Each row wears a NAME at its start — "(very subtly!) label each row at the
@@ -121,7 +132,13 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   { band: PEN.oral, ink: INK.oral, label: familyName("oral"), cells: [
     { kind: "one", emoji: "🔊", name: "VoixLà", href: "/tts" },
     { kind: "picker", emoji: "🎙️", name: "WorDrill", sioKey: "wordrill" },
-    { kind: "picker", emoji: "🎧", name: "ÉcouTexte", sioKey: "ecoutexte" },
+    // ÉCOUTEXTE ASKS NOTHING (Dan, 11 Sep: "some of the pages have two pop ups
+    // before the activity" — one question, asked once). It was a picker cell,
+    // but its content is chosen by unit and topic and there is no per-stop
+    // route, so the pop-up took an answer it could not use and opened the
+    // topic picker regardless. A pop-up whose reply is discarded is worse
+    // than no pop-up: it teaches the learner their choice does not matter.
+    { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: ECOUTEXTE_HREF },
   ]},
   // TOOLS (NEW, 2026-09-09) — the other half: the two summonable helpers
   // (see ToolSummon.tsx's own 🛠️ door). ChaTutor is a chat, not a deck, so
@@ -139,21 +156,13 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   ]},
 ];
 
-const TILE =
-  "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
-  "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
-  "transition hover:-translate-y-0.5";
-/* BIGGER, AND TRUNCATION IS THE PRICE DAN CHOSE (2026-09-11: *"make the font
-   on the grid menu bigger and maybe thicker, it is hardly legible now. It is
-   OK to truncate some long names"*). 13px in the hand face on a 90px tile
-   was the size that let every name fit whole, and it was not readable. 16px
-   is a fifth larger; the face is already at its heaviest weight (800, the
-   ExtraBold file in layout.tsx — there is no 900 to reach for), so "thicker"
-   is met by the size, which is what makes a hand face's strokes wider. The
-   longest names (Leaderboard, GramMarathon, VocabulaRain, LexicaLocker) may
-   now end in an ellipsis on a narrow phone; the emoji above each one is the
-   other half of its identity, and Dan accepted the trade. */
-const NAME = "fluo-btn-hand block w-full truncate text-[16px] leading-tight text-[color:var(--cahier-ink)]";
+/* TILE, NAME, the band and its sideways label all moved to
+   components/familyTile.ts on 2026-09-12, when the goal card was asked to
+   take this exact arrangement (Dan: *"make sure everything including font is
+   identical"*). They are unchanged — only their address moved — and this menu
+   still renders from the same strings, which is what makes "identical" a fact
+   rather than an intention. */
+
 
 export default function MenuGrid({
   onNavigate,
@@ -176,18 +185,26 @@ export default function MenuGrid({
   // top strip and left spine already wear). The tiles keep their
   // raised-paper ground on top — pen never behind text, per the colour
   // law above — so the effect is light cards on a solid, saturated band.
+  // THE GRID GROWS WITH THE TYPE RAMP (Dan, 12 Sep: "NEVER EVER HARD CODE
+  // FONT SIZES AND BUTTON SIZES"). The names are on the ramp — 16px on a
+  // phone, ~21.8px on a 1440px desktop — but the grid was a fixed 20.6rem, so
+  // the tiles stayed 85px while their names grew, and on a desktop seven of
+  // the twenty clipped to an ellipsis. Measured: at the desktop step the names
+  // run about 1.36x, so the width takes the same step, x21
+  // (20.6rem + 0.36rem*21 = 28.2rem). The tiles now grow with the text they
+  // hold; max-w-[90vw] still caps a narrow phone.
   return (
-    <div className="w-[20.6rem] max-w-[90vw] overflow-hidden rounded-lg">
+    <div className="w-[calc(20.6rem+var(--fs-step)*21)] max-w-[90vw] overflow-hidden rounded-lg">
       {ROWS.map((row, r) => (
         <div
           key={r}
-          className="grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5"
+          className={SHARED_BAND}
           style={{ background: row.band }}
         >
           {/* BLACK, NOT WHITE AND NOT THE FAMILY'S DARK RUNG (Dan, 2026-09-11:
               "black font instead of white font over these background for the
               leftmost cat names"). The house ink is the app's black. */}
-          <span className="self-center [writing-mode:vertical-rl] rotate-180 text-[10px] font-black uppercase tracking-[0.12em] leading-none text-[color:var(--cahier-ink)]">
+          <span className={SHARED_BAND_NAME}>
             {row.label}
           </span>
           {row.cells.map((cell, c) => {

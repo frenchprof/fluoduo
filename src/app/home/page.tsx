@@ -31,7 +31,10 @@ export default function Home() {
           padded wrapper in between meant it always stopped 4px short on each
           side. Cheaper to delete than to make the strip know about two
           ancestors — and nothing on Home was relying on 4px. */}
-      <div className="mx-auto max-w-3xl py-2">
+      {/* `max-w-3xl` moved INTO HomeDashboard, below its welcome strip (Dan,
+          12 Sep: the banner full width). The `py-2` stays here: the strip's
+          -mt-7 swallows exactly this 8px plus the well's 20px. */}
+      <div className="py-2">
         {/* Hero + journey both live in HomeDashboard (client: they need
             live progress for the CTA, chips and bar). */}
         <HomeDashboard />

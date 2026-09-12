@@ -28,6 +28,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 import { chromium } from "playwright-core";
+import { visit } from "./lib/settle.mjs";
 
 const OUT = "out";
 const PORT = 4199;
@@ -68,10 +69,15 @@ const read = (p) => p.evaluate(() => {
   return { top: Math.round(box.scrollTop), lo: ns[0] ?? null, hi: ns[ns.length - 1] ?? null };
 });
 
+/* What `settle` waits for: the scrollable scene box `seat` then reaches into. */
+const SCENE_READY = `!!document.querySelector(".home-map3d-box")`;
+
 async function seat(ctx) {
   const p = await ctx.newPage();
-  await p.goto(`http://localhost:${PORT}/map/embed?view=3d&hour=12`, { waitUntil: "domcontentloaded" });
-  await p.waitForTimeout(2800);
+  // WAIT FOR THE SCENE, NOT FOR THE CLOCK — this replaced a flat 2800ms sleep.
+  // The waits further down stay: they follow a wheel gesture and are waiting for
+  // momentum to come to rest, which the DOM cannot be asked about.
+  await visit(p, `http://localhost:${PORT}/map/embed?view=3d&hour=12`, SCENE_READY);
   const ok = await p.evaluate((y) => {
     const box = document.querySelector(".home-map3d-box");
     if (!box) return false;

@@ -13,36 +13,33 @@
  * were written separately the tab would drift from the page it is a shortcut
  * to, which is how a learner ends up seeing two different accounts of one goal.
  *
- * NOTHING MOVES BETWEEN GOALS (Dan, 2026-09-07, with a photograph of a torn
- * scrap of paper): *"The SIO0xxx Unit ,,, words can look they were on piece of
- * paper pasted on? and perpetually at the same height. while the icons can just
- * be by themselves below that (also down from the same height onwards)"*.
+ * THE CARD HUGS ITS GOAL (Dan, 2026-09-11: *"let the icons move, hug the
+ * text"*), and this is the second half of a decision, not a slip. The first
+ * half was 7 Sep, with a photograph of a torn scrap of paper: *"The SIO0xxx
+ * Unit ,,, words can look they were on piece of paper pasted on? and
+ * perpetually at the same height. while the icons can just be by themselves
+ * below that (also down from the same height onwards)"*.
  *
- * The tag and the icons are the two things every one of the fifty goals has, in
- * the same shape. On a feed that shows one goal per screen they must therefore
- * land in the same place on all fifty, or a flick through the course reads as
- * fifty different pages rather than one page of fifty. So the card is a stack
- * of FIXED heights rather than a centred pile: the scrap sits at the top, the
- * words get a box of their own that does not grow or shrink with them, and the
- * icons begin wherever that box ends — the same y on every goal.
+ * That bought a still page at the price of empty paper. The words sat in a box
+ * sized to the LONGEST of the fifty, so the icons landed at one y on all of
+ * them — and on the shortest goal, a single line, roughly 120px of nothing
+ * stood between the sentence and its doors. Shown the two side by side, Dan
+ * chose the other trade: the icons may hop as he flicks, and no goal carries
+ * space it has not earned.
  *
- * The box is `min-h` and not `h`: a can-do longer than any written so far
- * should overflow downward and push the icons rather than be clipped. Fifty
- * were re-measured on 2026-09-11 after the description line went, at NINE
- * widths rather than one — see below for why one number was not enough.
+ * So the box is gone rather than shrunk. The scrap still pins to the top (it
+ * is above the words, so it never moved anyway); the words take the height
+ * they need; the icons begin where they end. What replaced the box is nothing
+ * at all — no min-height, no measured constant, no invisible twin — which is
+ * also why this is the version that cannot go stale when a goal is reworded.
  */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import ActivityIcon from "@/components/ActivityIcon";
 import { deckActivityTabs } from "@/components/CahierShell";
+import { FAMILIES, familyOf, type FamilyKey } from "@/content/activities";
+import { TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
 import { readUiPrefs } from "@/lib/uiPrefs";
-import { SIOS, type Sio } from "@/content/sios";
-
-/** The longest can-do of the fifty, rendered invisibly behind every one of
- *  them so the words box is always exactly as tall as the tallest goal — see
- *  the note at the box itself. Computed, not typed out: a longer goal written
- *  next year raises the floor on its own. */
-const LONGEST_CAN_DO = SIOS.reduce((a, x) => (x.canDo.length > a.length ? x.canDo : a), "");
+import type { Sio } from "@/content/sios";
 
 export default function GoalCard({
   sio,
@@ -52,6 +49,26 @@ export default function GoalCard({
   compact?: boolean;
 }) {
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
+
+  /* Grouped into the ☰'s own row order, and only for families that actually
+     have a door on this goal — an empty band would claim a family the goal
+     does not reach. A door whose key has no family (SELF_COLOURED: /moi,
+     /profil) cannot sit on a coloured band at all, so it is dropped from the
+     grouping rather than given a colour it has refused; none of the deck
+     activity tabs is one today, and this is what keeps that true. */
+  const byFamily = useMemo(() => {
+    const bag = new Map<FamilyKey, typeof items>();
+    for (const t of items) {
+      const fam = familyOf(t.key);
+      if (!fam) continue;
+      const got = bag.get(fam);
+      if (got) got.push(t);
+      else bag.set(fam, [t]);
+    }
+    return FAMILIES.map((f) => [f.key, bag.get(f.key)] as const)
+      .filter((e): e is readonly [FamilyKey, NonNullable<typeof e[1]>] => !!e[1] && e[1].length > 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `items` is rebuilt each render from sio.collectionId, so that is the real input
+  }, [sio.collectionId]);
 
   /* THE NAME UNDER THE TILE (Dan, 2026-09-11: *"it would help to add the name
      of each activity below the tile by default) we can allow userss to remove
@@ -84,10 +101,9 @@ export default function GoalCard({
         </span>
       </p>
 
-      {/* THE WORDS, in a box that does not resize with them. `compact` is the
-          lesson's Goal tab, where the card is one panel among four and there is
-          nothing to keep still — it sizes to its content as before. */}
-      {/* THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
+      {/* THE WORDS, and nothing around them.
+
+          THE GLOSS UNDER THE CAN-DO IS GONE (Dan, 2026-09-11, striking out
           « moi, toi, etc. — after a preposition, after c'est, or standing
           alone » on SIO-011). The litmus test's own case: the goal above it
           already says what the learner will be able to do, and the gloss is
@@ -95,46 +111,19 @@ export default function GoalCard({
           content/sios.ts — this stops RENDERING it, it does not delete the
           course's own notes.
 
-          NO BREAKPOINTS EITHER: THE TALLEST GOAL SETS THE FLOOR, AT EVERY
-          WIDTH. The box has to be at least as tall as the tallest can-do or
-          the icons hop between goals (Dan, 7 Sep). A NUMBER cannot do that
-          job, and two rounds of measuring is how that was learned:
+          AND THE BOX AROUND THEM IS GONE (Dan, same day, shown the card with
+          the gloss removed: *"let the icons move, hug the text"*). The words
+          had a floor as tall as the longest of the fifty, so the icons landed
+          at one y on every goal; on a one-line can-do that left about 120px of
+          empty paper between the sentence and its doors. He chose the other
+          trade. Nothing replaces the floor — no min-height, no measured
+          constant, no invisible twin sized off SIOS — so there is also nothing
+          left to go stale when a goal is reworded.
 
-            · 9rem was measured at 390px alone. On a 360px phone the tallest
-              goal needs 168 and on a 320px one 192, so the box overflowed and
-              the icons hopped on exactly the two goals it was sized for.
-            · Stepping it by breakpoint fixed the overflow and bought a new
-              problem. This page runs INSIDE the cahier's iframe, so a media
-              query sees the FRAME, not the phone — 390px of device is 313px
-              of frame. Every breakpoint would have to be written in
-              frame-widths (284, 313, 350, 416…), and every one of them would
-              shift silently the day the notebook's padding changes.
-
-          So the floor is not a number at all. An invisible copy of the longest
-          can-do sits in the same grid cell as the real one, and the cell takes
-          the taller of the two. At 500px of device that is 96px where the
-          breakpoint scheme gave 168: the box is now exactly right at every
-          width instead of right at five of them, and it re-measures itself
-          when a goal is reworded. It held 21rem/336px when it carried a
-          description too, which is why the card in Dan's screenshot was a tall
-          empty rectangle.
-
-          `invisible` is visibility:hidden — it takes its space and draws
-          nothing; `aria-hidden` keeps it out of the accessibility tree, so a
-          screen reader still hears one can-do.
-
-          The empty paper under a SHORT goal is what remains, and it is the
-          price of the icons not hopping. That trade is Dan's to make. */}
-      <div className={compact ? "" : "grid"}>
-        <p className={`text-base font-bold text-[color:var(--cahier-ink)]${compact ? "" : " col-start-1 row-start-1"}`}>
-          {sio.canDo}
-        </p>
-        {!compact && (
-          <p aria-hidden className="invisible col-start-1 row-start-1 text-base font-bold">
-            {LONGEST_CAN_DO}
-          </p>
-        )}
-      </div>
+          Worth keeping in view if it is ever revisited: the `compact` branch
+          (the lesson's Goal tab) always sized to its content, so this is the
+          two surfaces agreeing rather than a new behaviour on one of them. */}
+      <p className="text-base font-bold text-[color:var(--cahier-ink)]">{sio.canDo}</p>
 
       {items.length > 0 && (
         /* ICONS ONLY, THREE UP (Dan, 2026-09-07: *"Below grid of 3x3 buttons
@@ -154,48 +143,98 @@ export default function GoalCard({
            the only thing on them, so the name is not repeating anything —
            which is the litmus test's actual question.
 
-           `w-fit` and centred, not three columns stretched across the card:
-           three tiles spread over 290px of paper read as three separate things
-           a long way apart, which is the opposite of a grid. Dan's reference is
-           the HELP sheet, whose icons sit together. */
-        <ul className={`${compact ? "mt-3" : "mt-4"} mx-auto grid w-fit grid-cols-3 gap-3`}>
-          {/* COLOURED BY LEARNING PHASE (Dan, 2026-09-05: *"we need color for
-              those items"*), from `bandOf` inside ActivityIcon — the same map
-              the map's stop sheet reads, so a Pre-Test is the same colour
-              whichever door a learner opens it from. */}
-          {items.map((t) => (
-            <li key={t.key}>
-              <Link
-                href={t.href!}
-                title={t.label}
-                /* 44px, not the icon's own 40 — PR 192's tap floor. The tile
-                   inside stays 40 and the ring around it takes the rest, so
-                   the target grows without the artwork changing size.
+           `w-fit` and centred, not stretched across the card: tiles spread
+           over 290px of paper read as separate things a long way apart, which
+           is the opposite of a grid. Dan's reference is the HELP sheet, whose
+           icons sit together. With the flowing row below, `w-fit` is also what
+           makes a short list centre rather than hug the left edge, while
+           `max-w-full` is the wrap point — so the row breaks at the card's
+           width, which is the "horizontal space" Dan means. */
+        <div className={`${compact ? "mt-3" : "mt-4"} w-full overflow-hidden rounded-lg`}>
+          {/* THE COLOUR IS THE TILE'S OWN BACKGROUND, AND THE ROWS ARE JUST
+              ROWS (Dan, 2026-09-12, shown the goal card wearing the ☰ menu's
+              full arrangement): *"there is no need to present these like in the
+              grid menu layout. i just need the tiles to be laid out side by
+              side, relevant bacground colors, does not matter if revise shares
+              the same row as practice, so long as their background identifies
+              them. this way we can layout as many as the horizontal space can
+              take before it goes to the next line"*.
 
-                   WITH A LABEL the cell is a fixed 5rem wide so the three
-                   columns stay square with each other: the names run from
-                   « Idée » to « MémoiRecall », and letting each cell size to
-                   its own word would make a ragged grid out of a tidy one.
-                   80px holds the longest at 10px without hyphenating. */
-                className={`grid place-items-center rounded-xl no-underline transition hover:scale-110 ${
-                  labels ? "h-auto w-20 gap-1 py-1" : "h-11 w-11"
-                }`}
-              >
-                <ActivityIcon activityKey={t.key} emoji={t.emoji} />
-                {/* The name is either DRAWN or announced, never both — a
-                    screen reader that meets the visible label and the
-                    sr-only one says every activity twice. */}
-                {labels ? (
-                  <span className="text-center text-[10px] font-bold leading-tight text-[color:var(--cahier-ink)]">
-                    {t.label}
-                  </span>
-                ) : (
-                  <span className="sr-only">{t.label}</span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
+              THIS REVERSES THE MENU-SHAPE VERSION OF THE SAME DAY, and the
+              reason is worth keeping because the earlier reading was not
+              unreasonable. Asked for *"coloured backgrounds behind the tiles"*,
+              the first cut gave the menu's whole structure: a band per family,
+              the family's name sideways down the left, three fixed columns.
+              That is the ☰'s shape, and it cost two things Dan then saw — the
+              card grew about 40% taller, and every name truncated, because a
+              row of three fixed columns is narrower than the card it sits in.
+
+              What he actually wanted is smaller: the COLOUR carries the family,
+              nothing else has to. So the family label goes (the colour says
+              it), the per-family rows go (a row is just a row), and the tiles
+              flow — as many across as the space takes, wrapping when it runs
+              out. Grouping survives only as ORDER: the doors are still listed
+              in the ☰'s family order, so the colours arrive in runs and the
+              grouping is still legible without a single line drawn for it.
+
+              The tile keeps its fixed width rather than stretching, which is
+              what makes "as many as fit" mean the same thing on a phone and a
+              desktop — and it is the menu's own width, so a door is the same
+              size on both screens even though the arrangement is not.
+
+              THE WIDTH RIDES THE TYPE RAMP, and that is not decoration: the
+              name inside is `text-[16px]`, which the ramp grows to about 21px
+              on a desktop. A fixed tile therefore truncated on a big screen
+              and not on a phone — « GramMarathon » whole at 390px and
+              « GramMara… » at 1440, which reads as a bug in the name rather
+              than a mismatch between two numbers. The tile takes the same
+              step as its text, so a door is the same SHAPE at every size. */}
+          {/* ADAPTIVE, NOT A NUMBER. Dan, 2026-09-12, shown two per row on a
+              phone: *"i hope this is adaptive width and not hard coded. i am
+              pretty sure you can very easily [fit] four or more per width"*.
+              He was right and it was hard-coded — `5.958rem`, lifted from the
+              ☰'s own tile so a door would be the same size on both screens.
+              That is a fine idea inside a 20.6rem dropdown and a bad one in a
+              card that is 290px on a phone and 700px on a desktop: the width
+              stopped being a proportion and became a quota of two.
+
+              So the row is the app's SHARED tile floor (`.fluo-tilegrid`,
+              globals.css) — the same rule SpecuLearn's stops, the Réglages
+              picker, the games sheet and this goal's own pop-up already use.
+              It counts the room: never a column wider than half, so a phone
+              always gets at least two, and never narrower than a quarter, so
+              it never exceeds four. Both halves are Dan's — two from 7 Sep,
+              four from 11 Sep. Nothing here names a number. */}
+          <div className="fluo-tilegrid" style={{ ["--tile-min" as string]: "4.5rem", ["--tile-gap" as string]: "6px" }}>
+            {byFamily.flatMap(([fam, tiles]) =>
+              tiles.map((t) => (
+                /* WHITE WITHIN, COLOURED OUTSIDE — Dan, 2026-09-12, on a first
+                   cut of this row that had painted the family colour ONTO the
+                   tile: *"you changed my background again! The background
+                   should be white within and colored outside!"*
+                   So the colour is a pad the door stands on, not the door's own
+                   fill: the family reads as the ground around it, exactly as it
+                   does in the ☰, and the paper stays paper. The pad is what the
+                   band used to be — one tile wide instead of a whole row. */
+                <span key={t.key} className={`fam-${fam} rounded-xl p-1`}
+                      style={{ background: "var(--fam)" }}>
+                <Link href={t.href!} title={t.label}
+                      className={`${TILE} w-full`}
+                      style={{ borderColor: "var(--fam-ink)" }}>
+                  <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
+                  {/* The name is either DRAWN or announced, never both — a
+                      screen reader that meets the visible label and the
+                      sr-only one says every activity twice. */}
+                  {labels ? (
+                    <span className={TILE_NAME}>{t.label}</span>
+                  ) : (
+                    <span className="sr-only">{t.label}</span>
+                  )}
+                </Link>
+                </span>
+              )))}
+          </div>
+        </div>
       )}
     </>
   );

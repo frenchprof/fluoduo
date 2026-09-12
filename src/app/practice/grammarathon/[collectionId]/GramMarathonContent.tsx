@@ -25,6 +25,7 @@ import { speak } from "@/games/letris/speech";
 import { gradeGap, splitGap, type Grade } from "@/lib/practice/cloze";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
 import { gapDecoyPool, gapSentence, gapSentenceEn } from "@/lib/collections/gapSentence";
+import GapField from "@/components/GapField";
 import { gappedItems } from "@/lib/collections/gramMarathonReady";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
@@ -187,12 +188,25 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
     setI(0); setValue(""); setResult(null); setRetry(false); setScore({ ok: 0, total: 0 });
   }
 
+  // THE GAP IS THE ANSWER SURFACE (Dan, 2026-09-11: *"the gap itself must be
+  // exactly where the word is supposed to be if that gap had been filled …
+  // Don't multiply lines for nothing"*). It used to be a dead 3ch rule here
+  // and a live 600px input three lines below, and the learner typed into the
+  // one that was not in the sentence. Once graded it stops being a field and
+  // shows the correct form, so the line reads as finished French.
   const sentence = item ? (
     <p lang="fr" className="mt-1 text-xl font-black text-[color:var(--fluo-ink)]">
       {before}
-      <span className={`mx-0.5 inline-block min-w-[3ch] border-b-2 px-1 text-center ${result === null ? "border-[color:var(--fluo-ink)] text-[color:var(--fluo-ink-soft)]" : isRight ? "border-emerald-500 text-emerald-700" : "border-rose-500 text-rose-700"}`}>
-        {result === null ? " " : gap}
-      </span>
+      <GapField
+        ref={inputRef}
+        data-tour="gap-input"
+        answer={gap}
+        value={value}
+        onChange={setValue}
+        disabled={result !== null}
+        state={result === null ? "idle" : isRight ? "right" : "wrong"}
+        reveal={result === null ? null : gap}
+      />
       {after}
     </p>
   ) : null;
@@ -222,27 +236,16 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
 
   // Typing above sm; word-bank tiles below it (patch 20–21) — one `value`,
   // so grading/XP/evidence never know which surface produced the string.
+  // The typed field moved INTO the sentence above, so what is left down here
+  // is the phone's chips — and `builtInGap` drops the bank's own built-answer
+  // bar, which was the second blank on a third line.
+  // data-tour: the guided first run names both surfaces; GuidedSteps lights
+  // whichever is visible, and on a phone that is this one.
   const answerInput = (
-    <>
-      <input
-        ref={inputRef}
-        lang="fr"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        disabled={result !== null}
-        // data-tour: the guided first run lights this field first
-        // (content/hints.ts).
-        data-tour="gap-input"
-        placeholder="the missing word…"
-        className={`cahier-answer hidden w-full sm:block ${result === null ? "" : isRight ? "!border-emerald-500 !text-emerald-700" : "!border-rose-500 !text-rose-700"}`}
-        autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-      />
-      {/* data-tour: the phone's half of the same answer. The step names both
-          surfaces and GuidedSteps lights whichever is visible. */}
-      <div data-tour="gap-bank" className="sm:hidden">
-        <WordBank answer={gap} pool={bankPool} value={value} onChange={setValue} disabled={result !== null} />
-      </div>
-    </>
+    <div data-tour="gap-bank" className="sm:hidden">
+      <WordBank answer={gap} pool={bankPool} value={value} onChange={setValue}
+                disabled={result !== null} builtInGap />
+    </div>
   );
 
   if (!embedded) {

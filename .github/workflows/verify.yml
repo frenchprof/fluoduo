@@ -20,6 +20,40 @@ on:
   pull_request:
     branches: [main]
 
+# ONE RUN PER BRANCH — a newer push supersedes the one still going (11 Sep).
+#
+# WHY, WITH THE ARITHMETIC. This repo is PRIVATE, so every Actions minute is
+# metered against the account's monthly allowance, and this workflow is the
+# expensive one: 129 checks, ~10½ minutes a run, where it was under two
+# minutes on 1 September. Measured over 11 days: ~405 runs, and 59 of them
+# between 02:32 and 10:25 on the 11th alone — about seven hours of runner time
+# in one morning. The allowance ran out mid-morning and every run, on every
+# branch INCLUDING main, then died in 2-5 seconds with no logs. Nothing could
+# merge and `deploy-live` could not fire, because it refuses any commit whose
+# verify check is not green.
+#
+# Three things compound: the suite keeps growing, several lanes push at once,
+# and — until this block — nothing cancelled a superseded run. Five pushes to
+# one branch in an afternoon meant five full runs, four of them measuring a
+# commit nobody would look at again. That last one is the only one a config
+# can fix, so it is fixed here.
+#
+# MAIN IS EXEMPT, AND THAT IS THE LOAD-BEARING HALF. `deploy-live` reads the
+# `verify` check's conclusion for the commit it is about to mirror. A
+# CANCELLED run is not a green one, so cancelling a run on main would leave
+# that commit permanently undeployable — the workflow would refuse it forever
+# and the only way out would be another commit. Pushes to main therefore QUEUE
+# rather than cancel; they are merges, so they are rare, and a few minutes of
+# queue is not worth a commit that can never ship.
+#
+# `github.ref` is `refs/pull/<n>/merge` on a pull_request event, so each PR is
+# its own group, and `refs/heads/main` on a push, which is the one we spare.
+# The workflow name is in the group because concurrency groups are
+# repository-wide: `pages-preview.yml` has its own and the two must not meet.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -418,6 +452,12 @@ jobs:
       - name: "One sheet per page, and the coils run up to the band (11 Sep)"
         run: python3 verify/verify230-one-sheet.py
 
+      - name: One tile grid — two to four columns, never a hard count
+        run: python3 verify/verify260-tile-grid.py
+
+      - name: No control is nailed to a pixel — counted or ramped, never frozen
+        run: python3 verify/verify270-fluid-controls.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
@@ -493,6 +533,20 @@ jobs:
       # activity.
       - name: "No guided step points at nothing (11 Sep)"
         run: python3 verify/verify212-guided-steps.py
+      # Builds once itself to ask the chooser's own functions what they offer,
+      # then checks every answer against the exported pages.
+      - name: "The stop chooser offers nothing that goes nowhere (11 Sep)"
+        run: python3 verify/verify200-chooser-no-dead-stops.py
+
+      # A page tour skips a step whose target it cannot find — correct for a
+      # conditional target, and the reason three tours in FirstTour.tsx rotted
+      # for weeks in silence. When a screen moves into a frame the tour does
+      # not follow it; the selectors stay correct, just in another document.
+      # Driven, because only the running page knows every step skipped, and
+      # only a browser can see two prompts drawn in two documents share a
+      # screen.
+      - name: "One hand-hold at a time, and every tour still lights something (11 Sep)"
+        run: python3 verify/verify220-one-handhold.py
 
       # A page tour skips a step whose target it cannot find — correct for a
       # conditional target, and the reason three tours in FirstTour.tsx rotted

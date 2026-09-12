@@ -1,90 +1,80 @@
 /**
- * The Quick Guide — Dan's final cut (2026-07-14): three one-liners and a red
- * ▶ Continue, NOTHING else. Shared between /guide and the first-visit splash.
- * On the splash, Continue dismisses it for good (onContinue); on the page it
- * simply leads home. Everything longer lives behind 💡 About and the tour.
+ * The Guide — the one manual, at /guide.
  *
- * The activity grid DERIVES from the registry (patch 19c). This panel used to
- * keep its own list of 15 activities with its own names ("Lesson", "Flip It")
- * and its own emoji — one of the four disagreeing surfaces the registry was
- * built to end, and the one patch 19 did not reach. Two of its tiles both
- * truncated to "GramMara…" and became the same button. Now: every registry
- * activity, grouped by family in family order, four columns, names never
- * truncated — and a rename in activities.ts lands here by itself.
+ * REWRITTEN 2026-09-11 (Dan: *"can you rewrite the guide to make it
+ * clearer"*). The three one-liners it replaced were Dan's own 14 Jul cut,
+ * and two of the three had stopped being true: step 1 said « Unité 0–4 flaps
+ * → tap the goal », and the six flaps were retired on 7 Sep (the 3x5 grid
+ * took their place, then the seven-row ☰ menu); step 3 said « After class,
+ * drill with these » over nineteen tiles and no order. A learner opening
+ * Help met a door that no longer existed, in shorthand.
+ *
+ * WHAT IT SAYS NOW: the course's own order, one line each, in plain words.
+ *
+ *   1  Find your stop        Home is the road; every numbered stop is a goal.
+ *   2  Guess first           SpecuLearn, BEFORE the lesson; wrong costs nothing.
+ *   3  Learn it              the goal's lesson, read and heard.
+ *   4  Practise and play     after class; the ☰ menu top-left holds every door.
+ *   5  Come back             ErroReview keeps what you got wrong; ✓ turns green.
+ *
+ * Each step names the real button or door a learner will see (▶ Continue,
+ * ☰, SpecuLearn, ErroReview), because a guide that describes the app in its
+ * own words is a second thing to learn.
+ *
+ * NO ACTIVITY GRID ANY MORE (Dan, same day, on seeing it folded under
+ * « All the activities · 17 »: *"the activities are already on the menu"*).
+ * The ☰ menu one tap away lists every activity by family, with the same
+ * names and glyphs, from the same registry — so a second copy here was the
+ * litmus test's definition of redundant. Step 4 points at the menu instead.
+ * verify19c, which once policed that grid's spelling against the registry,
+ * now holds that the grid stays gone.
+ *
+ * Shared between /guide and any first-visit use: `onContinue` dismisses;
+ * without it Continue leads Home.
  */
 import Link from "next/link";
-import { FAMILIES, activitiesIn, familyShort } from "@/content/activities";
 
-const STEPS: { hue: number; what: React.ReactNode }[] = [
-  { hue: 1, what: <>🏠 <b>Unité 0–4</b> flaps → tap the goal</> },
-  { hue: 3, what: <>💡 Pre-Test <b className="cahier-hl px-0.5">before</b> it&rsquo;s taught</> },
-  { hue: 4, what: <>🎲 After class, drill with these</> },
+const STEPS: { hue: number; title: string; what: React.ReactNode }[] = [
+  { hue: 1, title: "Find your stop.", what: <>Home shows the road; each numbered stop is a goal. Tap yours, or press <b>▶ Continue</b>.</> },
+  { hue: 3, title: "Guess first.", what: <>Open <b>💡 SpecuLearn</b> and answer <b className="cahier-hl px-0.5">before</b> the lesson. Wrong costs nothing.</> },
+  { hue: 2, title: "Learn it.", what: <>Read the goal’s lesson; hear it with <b>🔊 VoixLà</b>.</> },
+  { hue: 4, title: "Practise and play.", what: <>After class, drill it with a game or a deck. Every door is in the <b>☰ menu</b>, top left.</> },
+  { hue: 5, title: "Come back.", what: <><b>❌ ErroReview</b> brings back what you got wrong. A stop goes <b>✓ green</b> when done.</> },
 ];
 
 const CONTINUE_STYLE =
-  "mt-5 inline-flex items-center gap-2 rounded-xl border-2 border-[#9f1239] bg-[#e11d48] px-5 py-2 font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5";
+  "mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-[#9f1239] bg-[#e11d48] px-5 py-2 font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.18)] transition hover:-translate-y-0.5";
 
 export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
   return (
     <>
-      {/* Steps 1 and 2 share the row, half each; step 3 (with the icons)
-          takes the full width (Dan, 2026-07-14). */}
-      <ol className="mt-3 grid grid-cols-2 gap-2.5">
+      {/* ONE SCREEN BEFORE ANYTHING OPENS (the long-pages rule). Five cards,
+          each one sentence or two, the title run into the line rather than
+          set above it — the first cut stacked title and text and ran to
+          1,350px on a phone; this one is measured to fit 844. */}
+      <ol className="mt-2 flex flex-col gap-2">
         {STEPS.map((s, i) => (
           <li
             key={i}
-            // Step 3 stacks on a phone: beside the number circle the grid got
-            // ~64px per column and 12-char names (VocabulaRain, LexicaLater)
-            // collided — caught on the 390px screenshot, invisible to the
-            // structural check.
-            className={`fluo-h-${s.hue} flex items-center gap-3 rounded-xl border-2 p-3 ${i === 2 ? "col-span-2 !items-start max-sm:flex-col max-sm:!items-stretch" : ""}`}
+            className={`fluo-h-${s.hue} flex items-start gap-2.5 rounded-xl border-2 px-3 py-2`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
             <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
+              /* On the ramp like the text beside it — a fixed 28px circle next to
+                 type that grows to 20px on a desktop reads as a badge that
+                 stayed small (Dan, 12 Sep: no hard-coded button sizes). */
+              className="mt-0.5 flex h-[calc(1.75rem+var(--fs-step)*1.75)] w-[calc(1.75rem+var(--fs-step)*1.75)] shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
               style={{ background: "var(--fluo-card-accent)" }}
             >
               {i + 1}
             </span>
-            <span className="min-w-0 flex-1">
-              <p className="text-sm font-bold leading-relaxed text-[color:var(--cahier-ink)]">{s.what}</p>
-              {i === 2 && (
-                <div className="mt-3 flex flex-col gap-3">
-                  {FAMILIES.map((f) => (
-                    <div key={f.key}>
-                      {/* The family name is navigation text — it is the same
-                          label the bottom bar derives (nav.ts), pointing at
-                          the same doors. */}
-                      <p className="text-[11px] font-black uppercase tracking-wide text-[color:var(--cahier-ink)]/60">
-                        <span aria-hidden>{f.emoji}</span> {familyShort(f)}
-                      </p>
-                      <ul className="mt-1.5 grid grid-cols-4 gap-x-1 gap-y-3 sm:gap-x-2">
-                        {activitiesIn(f.key).map((a) => (
-                          <li key={a.key} className="flex flex-col items-center gap-1" title={a.blurb}>
-                            <Link
-                              href={a.href ?? "/map"}
-                              className="flex h-12 w-12 items-center justify-center rounded-2xl border-2 bg-white/80 text-2xl shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
-                              style={{ borderColor: a.hue }}
-                            >
-                              {a.emoji}
-                            </Link>
-                            {/* Full name, always — 8 of 15 used to cut to
-                                "GramMara…". Wrapping is allowed; cutting is
-                                not. */}
-                            <span className="w-full break-words text-center text-[10px] font-bold leading-tight tracking-tight text-[color:var(--cahier-ink)] sm:text-[11px] sm:tracking-normal">
-                              {a.name}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </span>
+            <p className="min-w-0 flex-1 text-[15px] leading-snug text-[color:var(--cahier-ink)]">
+              <b className="cahier-hand text-[1.15em]">{s.title}</b> {s.what}
+            </p>
           </li>
         ))}
       </ol>
+
       {onContinue ? (
         <button type="button" onClick={onContinue} className={CONTINUE_STYLE}>
           <span aria-hidden>▶</span> Continue

@@ -112,6 +112,19 @@ for key, name, _emoji, href in FAMILIES:
 # still exists — it redirects rather than disappearing outright, so a
 # bookmark or an old link still lands somewhere — but none of them renders
 # <FamilyHub> any more, and FAMILY_HUBS is empty.
+#
+# THE COMPONENT ITSELF IS GONE TOO (Dan, 2026-09-11: *"delete FamilyHub"*).
+# It had been rendered by nothing since the three hubs were retired on 9 Sep —
+# dead code carrying a hard two-column grid, which is exactly the kind of file
+# a later session restyles without noticing that the page it draws does not
+# exist. The rows below already fail if a retired route starts rendering
+# <FamilyHub>; this one fails if the file comes back without a route.
+ok(not os.path.exists("src/components/FamilyHub.tsx"),
+   "FamilyHub.tsx is gone — no family has a hub page to draw",
+   "src/components/FamilyHub.tsx is back. Every family hub redirects to its "
+   "DELIBERATE_DOOR (9 Sep) and FAMILY_HUBS is empty, so this component has "
+   "no page to render — delete it, or restore a hub on purpose and say so.")
+
 hubs = re.search(r"FAMILY_HUBS[^=]*=\s*\{([^}]*)\}", ACT_C)
 ok(hubs is not None, "FAMILY_HUBS is declared", "FAMILY_HUBS has gone from activities.ts")
 hub_keys = dict(re.findall(r'(\w+):\s*"([a-z]+)"', hubs.group(1))) if hubs else {}
