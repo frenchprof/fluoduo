@@ -600,3 +600,6 @@ jobs:
 
       - name: "Three type families ship: FluOLinGo, Roboto, Patrick in reserve (7 Sep)"
         run: python3 verify/verify118-three-faces.py
+
+      - name: "ComposeIt speaks correct French, and its chips cover their pools (12 Sep)"
+        run: python3 verify/verify440-compose-french.py

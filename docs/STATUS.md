@@ -6,6 +6,245 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — three ComposeIt scenes rebuilt around the goal they hang off (this session, branch, NOT merged)
+
+**Dan: *"do the three strict-SIO redesigns now"***, following his earlier
+ruling — ***"what matters is the SIO attached. we need to think of scenarios in
+which those SIOs are applied strictly, no distraction and irrelevant deviation
+with payment and what not"***.
+
+**1 · `À la papeterie` → `Aux objets trouvés` (SIO-021).** The goal is *"I can
+point out and name objects and people and ask what something is"* and it scores
+« c'est + un/une », « ce sont + des » and « C'est quoi ? ». The bank was a
+SHOPPING TRANSACTION — « Je voudrais », « Avez-vous », a [Quantité / prix]
+group — and the app already trains shopping properly twice over (`marche` on
+SIO-044, `au-restaurant` on SIO-050). **The vocabulary gave it away before the
+goal did**: the deck is « Un, une ou des ? » and five of its twenty items —
+un passeport, une carte d'identité, un portefeuille, des lunettes, une clé —
+are not sold in a stationery shop by anybody. They are exactly what turns up at
+a lost-property desk. The clerk holds things up and asks what they are; the
+chips are **generated from the deck, bare** (« sac », not « un sac »), with
+[Un, une ou des ?] as a group of its own, so the article is the learner's
+decision again — which is the whole of what the goal marks. Key and route stay
+`magasin`.
+
+**2 · SIO-041 gets an exercise at all.** Its deck is `aliments` — *"Les repas et
+les aliments — What I eat & drink at each meal"* — and the only bank on it was
+`Au café`, ordering from a waiter. Same words, which is why nobody noticed, but
+the competence is *"Name the 4 meals and ≥2 foods/drinks each"* and a café order
+names no meal. **New bank `repas` — « Les quatre repas »**, four questions one
+per meal, using the machinery built for Présenter un pays the same day; [Le
+repas] leads every question because an answer that does not name the meal scores
+nothing. **`Au café` stays on the deck** — it is the one ComposeIt scene with a
+rule-engine fallback, so retargeting it would have cost the only exercise that
+works with the backend down. If the café should leave stop 41 that is a one-line
+`deckId` move and it is DAN'S, because it changes what the map shows.
+
+**3 · `L'e-carte postale` — five questions, and the deck DOES NOT MOVE.** The
+book's card has five parts (open → where → weather → doing → sign off); the bank
+asked three of them at once and mentioned the other two only in English. Five
+questions now, each floating the group that answers it, then the book's model
+card on a different destination. **Its deck stays `atelier-sio-040`**: the
+subject is weather and place, not an itinerary, but that placement is Dan's own
+23 Aug decision (the book's U3 atelier had no home and he parked it beside the
+itinerary, SIOs untouched). Recorded in the file so it stops reading as a bug.
+
+**AND THE FAULT UNDERNEATH ALL THREE: EIGHT BANKS HAD NO PERSONA.**
+`functions/api/compose.js` resolves `SCENES[scene] || SCENES.cafe`, so a bank id
+with no entry does not error — **it gets the café waiter, menu and all**. Eight
+of the fourteen were in that state: « Au restaurant » was served by the café's
+waiter reading the café's menu, and the "check my work" pass on a written
+country paragraph was a waiter handed four sentences about le Viêt Nam. Nothing
+threw and no screenshot looked wrong. Eight personas written; `greetings` also
+corrected to Léa at a first meeting (the scene changed on 12 Sep, the persona
+still said "a friendly classmate"); the shared RULES block de-caféd.
+
+**verify440 is 13 clauses.** Three new ones, each proved to fail first: every
+bank has a persona (no silent café); every chip is a word its own deck teaches
+(the meals bank picks 20 of 42 by hand — the check is what makes a hand-list
+safe); and the model clause now counts **case and commas**, not just words.
+Tightening it immediately named three faults the loose version had waved
+through — the meals bank had no comma chip, « mais C'est nuageux » capitalised
+mid-sentence, and « je visite » was the one lower-case opener on the postcard.
+All three were the palette and the model disagreeing, which is exactly what that
+clause exists to catch.
+
+## 12 Sep — Présenter un pays asks four questions, and answers become possible (this session, branch, NOT merged)
+
+**Dan: *"ComposeIt for Vietnam would only make sense for the learner if there
+were a model reference text on another country. Or if the questions were asked
+one by one!"*** — then, offered both: ***"the questions followed by a model
+paragraph"***. And, once it was built: ***"IS THE ANSWER GUIDED FOR CLUELESS
+LEARNER? E.G. ARE THERE PHRASES THEY CAN START WITH OR PICK FROM"***
+
+**THE HONEST ANSWER TO THE SECOND QUESTION WAS "NO", AND IT WAS WORSE THAN
+UNGUIDED.** The bank asked « Où est-ce ? On y parle quelle langue ? » and
+offered five chip groups. Driving the built page, forcing the clock to the
+minute that draws le Viêt Nam, two of the three questions turned out to be
+**unanswerable, not merely unhelped**:
+
+    « C'est quel pays ? »            no chip anywhere said « le Viêt Nam »
+    « On y parle quelle langue ? »   [Langues] held « On parle » and then nothing
+
+The nationality-chip count added the same morning passed green throughout,
+because it counted one list and trusted the rest.
+
+**WHAT SHIPS.** Four questions, one per sentence, in the order SIO-020's
+competence lists its elements — name, location, language, one cultural fact.
+`prompts[lines.length]` is the live question, so the index IS the number of
+committed sentences and the two cannot fall out of step; a bank with no
+`prompts` keeps its single opener and behaves exactly as before. Each question
+carries a `use` label that floats the group answering it to the top, keeping
+its original index so the colours do not repaint. Then, and only after all four
+are written, a model paragraph on **a different country** — index + 1, so it
+can never be the learner's own.
+
+**EVERY WORD OF THAT MODEL IS ON A CHIP THE LEARNER WAS GIVEN.** That is the
+new check's strongest clause and it needs no number: `verify440` greedily
+tokenises each of the six models against the bank's own chips and fails on the
+first fragment they cannot build. It is what would have caught both holes above,
+and it counts [Situer] and [Langues] correctly — six countries sit on four
+continents and share languages, so a `>= 6` count on those two would be wrong.
+
+Three new/changed chip groups, all generated from `COUNTRIES` so a country
+cannot arrive without its words: **[Le pays]** (`C'est` + the six names with
+their articles), **[Langues]** (+ the six languages, deduplicated), **[Un fait]**
+(the six facts — the element the competence scores and the bank could not
+state). `verify440` is 10 clauses now; each new one was proved to fail first.
+
+**AND ONE PRE-EXISTING BUG, FOUND ONLY BY DRIVING IT.** The answer box is a flex
+item in a `flex-col` scroller with `min-h-[7.5rem]` and no `shrink-0`, so the
+browser squeezed it to exactly 120px while it held 300px of content: « ✔ Add the
+sentence », « 🔊 Speak it all » and « 🚶 The passer-by checks » painted **on top
+of the first chip group**, on all thirteen ComposeIt banks. One class fixes it;
+the box measures 318px now. It predates this work and got worse with it, since
+the committed sentences and the model both live in that box.
+
+## 12 Sep — Se saluer becomes a first meeting, because its own deck said so (this session, branch, NOT merged)
+
+**Dan, having watched a ComposeIt lesson: *"I saw one lesson where the absurd
+situation of meeting a friend and in that situation the friend was being asked
+what is your name!?!"*** Then, given the choice between cutting the chips and
+moving the scene: ***"i would say change the situation to talking with someone
+who they meet for the first time"*.**
+
+**HE WAS WATCHING A SCENE ARGUE WITH ITSELF.** `greetings` said
+
+    context : A friend runs into you in the street — greet her, ask how she is…
+    opening : « Salut ! Ça va ? »
+    chips   : [Se présenter] Je m'appelle · Moi, c'est · Enchanté · Enchantée
+
+You do not tell a friend your name, and « Enchanté » means "delighted to MEET
+you" — it exists ONLY at a first meeting. The persona is AI-driven with no
+script, so it followed the learner's lead: handed an introduction by someone it
+had been told was a friend, it asked for a name. **The AI did not invent the
+absurdity; the chips invited it.**
+
+**THE DECK HAD ALREADY DECIDED THIS, which is why the fix is the situation and
+not the chips.** `salutations.json` — the deck this bank attaches to — teaches
+« Enchanté ! — Nice to meet you! » as one of its fourteen items. The scene was
+contradicting its own vocabulary list. Cutting the chips would have left the
+deck teaching a phrase its own composer had no room for.
+
+    before   « Salut ! Ça va ? »                     a friend, greeted like a stranger
+    after    « Bonjour ! Moi, c'est Léa. Enchantée ! »   a stranger, greeted like one
+
+All four chip groups now fit one scene: Saluer → Se présenter → Ça va →
+Prendre congé, in that order, which is the arc the instruction names.
+
+**IT DOES NOT COLLIDE WITH `premiere-rencontre`**, also a first meeting: that
+one is the first day of CLASS and its subject is SPELLING a name aloud
+(« Ça s'écrit… »); this one is the salutations deck's own subject — choosing
+the right greeting and the right way to leave. Léa, not Camille, so the two
+personas do not read as one person.
+
+**AND THE INSTRUCTION AND THE CONTEXT NOW AGREE.** The old pair said "A FRIEND
+runs into you" and "Greet your CLASSMATE" — two relationships in one lesson,
+which nobody had noticed because each reads fine alone.
+
+**THE THREE CONTENT BUGS, AND A COURSE CORRECTION MID-FIX (same day).** Dan:
+*"fix the three content bugs first, then we'll rethink the scenes"*, then, while
+the fix was being written: ***"what matters is the SIO attached. we need to
+think of scenarios in which those SIOs are applied strictly, no distraction and
+irrelevant deviation with payment and what not"*.**
+
+**1 · THE APP WAS SPEAKING BROKEN FRENCH, in four of six scenarios.**
+`Présenter un pays` built its opening by joining `"Parle-moi de " + c.fr`, where
+`c.fr` carried the article: *« Parle-moi de le Canada »*. `de + le` contracts to
+`du`. It had been there since the bank was written, and nobody saw it because
+the country rotates on a CLOCK — `pick(COUNTRIES, floor(Date.now()/60000))` — so
+whether you meet it depends on the minute you open the page.
+
+This is the 1 Sep line, on the machine's side of it: a LEARNER's wrong
+contraction is a legitimate distractor and must not be filtered, but « Bon
+chance » was cut because the FRAME printed it. Nobody chose « de le ».
+
+The entries carry their FEATURES now and `lib/textgen/french.ts` builds every
+article — that module's own stated doctrine, *"a lexicon entry only ever carries
+its features — never a hand-typed du"*. Reusing it rather than writing a second
+contraction beside it is the `gapSentence.ts` rule: one opinion per question.
+
+    before   « Parle-moi de le Canada »   « Parle-moi de le Viêt Nam »
+    after    « Parle-moi du Canada »      « Parle-moi du Viêt Nam »
+
+**2 · SIX COUNTRIES, FIVE NATIONALITY CHIPS.** Draw « le Viêt Nam » and
+« Les habitants sont … » could not be finished. The chip list is GENERATED from
+the country array now, so the two cannot disagree again — a country added
+without its `people` is impossible rather than merely unlikely.
+
+**3 · THE PAPETERIE, AND THE FIX I GOT WRONG FIRST.** Its task said *"ask for
+what you need and the price, then pay"* and the bank had no payment chip, so the
+instruction could not be followed. The obvious repair — add [Payer] — was
+written, and it was the WRONG ONE. This bank hangs off **SIO-021**, whose
+competence scores « c'est + un/une », « ce sont + des » and « C'est quoi ? ».
+Money appears nowhere in it. Adding chips made the deviation POSSIBLE; Dan's
+instruction was to remove it. The step is gone and the scene points at the
+objective.
+
+**RECORDED BECAUSE IT IS THE TEMPTING MOVE:** the bug reads as *"a missing
+chip"* when it is really *"a step that should not be here"*. Which of the two it
+is can only be settled by the SIO, never by the task text alone.
+
+**4 · THE CAFÉ'S CONTEXT DESCRIBED A DIFFERENT CAFÉ.** It said *"then ask for
+the bill"*; `ComposeDialogue` presents the bill the moment the learner CLOSES
+the order (« C'est tout » / « Non, merci ») and its `pay` stage then accepts any
+polite close. Nothing was missing — the sentence was wrong. **Reading the rule
+engine is what showed that**; from the chips alone it looked like a third
+missing-chip bug.
+
+**`verify440-compose-french.py`** holds all of it, in the app's own modules
+through jiti — no browser, no build, milliseconds. Three clauses, each
+break-tested: put the article back and it names the four broken lines; add a
+seventh country without its adjective and it counts 7 against 6; and the third
+clause is DERIVED rather than a list of banks — *if a task names a step, the
+learner must be able to take it*, satisfied either by dropping the step or by
+carrying the chips. Its first draft said "the shop banks must be able to pay",
+which encoded exactly the instinct Dan corrected.
+
+**THREE MORE FINDINGS FROM THE SAME REVIEW, NOT IN THIS BRANCH** — they are
+Dan's to rule on, and two are pedagogical rather than plain faults:
+
+  1 · `À la papeterie` says "ask for what you need and the price, THEN PAY" and
+      has no payment chip at all. Its sibling `Chez les commerçants` carries
+      exactly the missing category — [Payer] Voilà dix euros · Voilà vingt
+      euros — and the papeterie is `aiOnly`, so nothing else supplies it. **The
+      task asks for a step the palette cannot perform.**
+  2 · `Présenter un pays` offers SIX countries and FIVE nationality adjectives.
+      Draw « le Viêt Nam » and "Les habitants sont …" cannot be finished. One
+      session in six dead-ends.
+  3 · `Au café`'s context says "then ask for the bill", but the waiter presents
+      it the moment the learner says « C'est tout » / « Non, merci ». Wording,
+      not chips — **and reading the rule engine is what corrected that: it was
+      nearly filed as a fourth missing-chip bug.**
+
+**ONE I WITHDREW.** « un livre » at `Chez les commerçants` looked wrong for a
+food market — but the `commerces` deck includes « librairie », and the
+instruction says the shopkeeper runs whichever shop sells it. Correct as
+written.
+
+Gate: `tsc --noEmit` clean, eslint clean on the one touched file,
+`NEXT_PUBLIC_OPEN_APP=1` build green, and the scene driven on the built app at
+430px before and after.
 ## 12 Sep — one map page, not two (peers lane, PR #342, HANDED OVER, NOT merged)
 
 Sole editor of STATUS.md in this commit: the peers lane (`claude/peers-guided`).

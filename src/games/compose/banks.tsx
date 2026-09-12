@@ -8,6 +8,12 @@
  */
 
 import { PRODUCTION_BANKS } from "./banks-production";
+// The chip lists below are GENERATED FROM THE DECKS THEY TEACH, not retyped
+// beside them. Same doctrine as `COUNTRIES` in banks-production: a bank cannot
+// offer a word its own deck does not teach, and cannot miss one it does.
+import OBJETS from "@/content/collections/objets-articles.json";
+import ALIMENTS from "@/content/collections/aliments.json";
+import { aLe } from "@/lib/textgen/french";
 
 export type ComposeCategory = { label: string; chip: string; phrases: string[] };
 
@@ -62,7 +68,38 @@ export type ComposeBank = {
   /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects.
    *  openingFr, when present, is a persona line that opens the scene (spoken +
    *  shown) so the Composer never starts on a blank sheet (Dan, 2026-07-19). */
-  newScenario(): { instructionEn: string; headline: string; openingFr?: string };
+  newScenario(): {
+    instructionEn: string;
+    headline: string;
+    openingFr?: string;
+    /** ONE QUESTION AT A TIME (Dan, 2026-09-12: *"ComposeIt for Vietnam would
+     *  only make sense for the learner if there were a model reference text on
+     *  another country. Or if the questions were asked one by one!"*).
+     *
+     *  SIO-020's can-do ends *"…if I can prepare"*, and the composer offered
+     *  no preparation at all: a blank sheet, a country, and a pile of chips.
+     *  Asking in turn is the preparation, and it also ENFORCES the four
+     *  elements the competence scores — name, location, language, one cultural
+     *  fact — where a single open instruction merely hoped for them.
+     *
+     *  The live question is `prompts[lines.length]`: the index IS the number of
+     *  sentences already committed, so the sequence advances on ✔ with no state
+     *  machine of its own and no way for the two to fall out of step. A bank
+     *  that omits this behaves exactly as before, from `openingFr`.
+     *
+     *  `use` NAMES THE CHIP GROUP THAT ANSWERS THE QUESTION, and the composer
+     *  floats it to the top. Dan, 2026-09-12: *"IS THE ANSWER GUIDED FOR
+     *  CLUELESS LEARNER? E.G. ARE THERE PHRASES THEY CAN START WITH OR PICK
+     *  FROM"* — the phrases were always there, six groups of them, but nothing
+     *  tied them to the question on screen, so the learner had to work out
+     *  which group was the right one before they could begin. Surfacing it
+     *  needs no extra words: the group simply arrives first. */
+    prompts?: { ask: string; use?: string }[];
+    /** Shown once every prompt is answered — a finished paragraph about a
+     *  DIFFERENT subject from the one the learner was given, so it is a shape
+     *  to compare against and never an answer to copy. */
+    model?: { label: string; text: string };
+  };
 };
 
 /** Fixed chip/header palette by category index (same hues as the original game). */
@@ -206,6 +243,108 @@ export const CAFE_PRICES: Record<string, number> = {
   "un coca": 4,
 };
 
+// ---------------------------------------------------------------------------
+// Les quatre repas (solo — SIO-041: say what you eat and drink at each meal)
+//
+// SIO-041 HAD NO EXERCISE OF ITS OWN. Its deck is `aliments`, « Les repas et
+// les aliments — What I eat & drink at each meal », and the only ComposeIt bank
+// on it was `Au café` — ordering from a waiter. Ordering uses the same words,
+// which is why nobody noticed, but it is not the goal: the competence is
+// *"Name the 4 meals and ≥2 foods/drinks each; say what I eat/drink"*, and a
+// café order names no meal and says nothing about what the learner eats. It
+// says what they want, once, now.
+//
+// So the goal gets a bank that IS the goal, and `Au café` keeps its place on
+// the deck as the exchange that applies the same vocabulary — it is also the
+// one ComposeIt scene with a rule-engine fallback, so retargeting it would
+// have cost the only exercise that works with the backend down. (If the café
+// should leave stop 41 altogether that is a one-line `deckId` move and it is
+// Dan's call, because it changes what the map shows.)
+//
+// FOUR QUESTIONS, ONE PER MEAL, using the machinery built for Présenter un pays
+// the same day: the competence counts four meals, so the exercise asks four
+// times rather than hoping an open instruction produces them.
+// ---------------------------------------------------------------------------
+
+/** The four meals, as « Au petit-déjeuner » — the sentence opener, not the
+ *  dictionary form. Generated from the deck's own `col:repas` items, and the
+ *  preposition comes from `aLe()` rather than being typed: the app never spells
+ *  a contraction by hand (see verify440's first clause, and « de le Canada »
+ *  for what happens when it does). */
+const REPAS: string[] = ALIMENTS.items
+  .filter((i) => i.tags?.includes("col:repas"))
+  .map((i) => {
+    const bare = i.fr.replace(/^(le |la |les |l')/, "");
+    const at = aLe({ g: i.gender === "f" ? "f" : "m", vowel: /^l'/.test(i.fr) });
+    return at.charAt(0).toUpperCase() + at.slice(1) + bare;
+  });
+
+/** The drinks, straight off the deck's own `col:boissons` tag — the deck
+ *  already carries each one's partitive (« du café », « de l'eau »), so the
+ *  chip is literally what the deck teaches. */
+const BOISSONS_REPAS: string[] = ALIMENTS.items
+  .filter((i) => i.tags?.includes("col:boissons"))
+  .map((i) => i.fr);
+
+/** The food a learner needs to answer four times over. A NAMED SUBSET, not the
+ *  whole deck: `aliments` carries forty-two entries including de la farine, du
+ *  sel and de l'huile — ingredients, not meals — and a forty-chip group is a
+ *  wall rather than a palette. Every entry here must exist in the deck, which
+ *  verify440 checks; the check is what makes a hand-written list safe. */
+const ALIMENTS_REPAS: string[] = [
+  "du pain", "du beurre", "de la confiture", "un croissant", "un œuf",
+  "du fromage", "du jambon", "du poulet", "du poisson", "du riz",
+  "des pâtes", "de la salade", "de la soupe", "des frites", "un sandwich",
+  "une pomme", "une banane", "un gâteau", "du chocolat", "une glace",
+];
+
+const MEALS_BANK: ComposeBank = {
+  id: "repas",
+  title: "Les quatre repas",
+  emoji: "🥣",
+  unit: 4,
+  deckId: "aliments",
+  mode: "solo",
+  aiCheck: true,
+  categories: withPalette([
+    { label: "Le repas", phrases: REPAS },
+    /* THE COMMA IS A CHIP, because the sentence needs one and the learner has
+       no keyboard here: « Au petit-déjeuner, je mange… ». The composer already
+       knows how to render it (`", "` prints as «,  (comma)») and how to join it
+       without a space in front — `directions` has carried one since it was
+       ported. Its absence was found by the model clause, which could not build
+       its own model out of this bank's chips. */
+    { label: "Manger et boire", phrases: ["je mange", "je prends", "je bois", "et", "avec", ", ", "je ne mange rien"] },
+    { label: "À manger", phrases: ALIMENTS_REPAS },
+    { label: "À boire", phrases: BOISSONS_REPAS },
+  ]),
+  newScenario() {
+    return {
+      headline: "🥣 Une journée de repas",
+      instructionEn: "Say what you eat and drink at each of the four meals — one meal at a time.",
+      /* Each answer OPENS with the meal, which is why all four point at the
+         same group: the competence scores naming the four meals, and a learner
+         who answers « je mange du pain » has said nothing the goal counts. */
+      prompts: [
+        { ask: "Alors, qu'est-ce que tu prends le matin ?", use: "Le repas" },
+        { ask: "Et à midi ?", use: "Le repas" },
+        { ask: "Tu prends quelque chose vers quatre heures ?", use: "Le repas" },
+        { ask: "Et le soir, qu'est-ce que tu manges ?", use: "Le repas" },
+      ],
+      /* Somebody else's day, shown only once the learner's four are written.
+         Every phrase in it is a chip they were given — verify440 fails the
+         build if that ever stops being true. */
+      model: {
+        label: "🇫🇷 La journée de Léa — un modèle",
+        text: "Au petit-déjeuner, je mange du pain et je bois du café. "
+          + "Au déjeuner, je prends du riz avec du poulet. "
+          + "Au goûter, je mange un gâteau. "
+          + "Au dîner, je prends de la soupe et du fromage.",
+      },
+    };
+  },
+};
+
 const CAFE_BANK: ComposeBank = {
   id: "cafe",
   title: "Au café",
@@ -213,7 +352,14 @@ const CAFE_BANK: ComposeBank = {
   unit: 4,
   deckId: "aliments",
   mode: "dialogue",
-  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE, contextEn: "You're the customer at a café — order food and drink from the waiter, then ask for the bill." },
+  scene: { opening: "Bonsoir ! Vous désirez ?", emoji: "🤵", voice: "m", theme: THEME_CAFE, /* "then ask for the bill" was wrong, and reading the rule engine is what
+     showed it (2026-09-12). ComposeDialogue's café flow presents the bill the
+     moment the learner CLOSES the order — « C'est tout » or « Non, merci » —
+     and its `pay` stage then accepts any polite close, « merci » or
+     « Au revoir ». The learner never asks, and there is no chip to ask with.
+     Nothing is missing from the bank; the sentence was describing a different
+     café. It is now what actually happens. */
+  contextEn: "You're the customer at a café — order food and drink from the waiter, say when you've finished, and close politely when he brings the bill." },
   categories: withPalette([
     { label: "Commander", phrases: ["Je voudrais", "Je prends", "Pour moi,"] },
     {
@@ -237,7 +383,7 @@ const CAFE_BANK: ComposeBank = {
   newScenario() {
     return {
       headline: "☕ Au café",
-      instructionEn: "Order dinner at the café — answer the waiter by tapping phrases.",
+      instructionEn: "Order at the café — answer the waiter by tapping phrases, then close politely.",
     };
   },
 };
@@ -253,7 +399,27 @@ const GREETINGS_BANK: ComposeBank = {
   unit: 1,
   deckId: "salutations",
   mode: "dialogue",
-  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN, contextEn: "A friend runs into you in the street — greet her, ask how she is, then say goodbye." },
+  /* THE SCENE IS A FIRST MEETING, not a friend in the street (Dan, 2026-09-12).
+   *
+   * It used to say "A friend runs into you" and open « Salut ! Ça va ? », while
+   * handing the learner [Se présenter] — « Je m'appelle », « Enchanté ». You do
+   * not tell a friend your name, and « Enchanté » means "delighted to MEET
+   * you": it exists only at a first meeting. The persona is AI-driven, so it
+   * followed the learner's lead — offered an introduction, it asked for a name,
+   * and Dan watched a friend ask a friend what she was called.
+   *
+   * THE DECK HAD ALREADY DECIDED THIS. `salutations.json`, the deck this bank
+   * attaches to, teaches « Enchanté ! — Nice to meet you! » as one of its
+   * fourteen items. The scene was contradicting its own vocabulary list; the
+   * chips were right and the situation was wrong, which is why the fix is here
+   * and not in the chips.
+   *
+   * It does not collide with `premiere-rencontre` (Unit 0), which is also a
+   * first meeting: that one is the first day of CLASS and its subject is
+   * SPELLING your name aloud (« Ça s'écrit… »). This one is the salutations
+   * deck's own subject — picking the right greeting and the right way to leave.
+   * Léa, not Camille, so nobody reads them as the same person. */
+  scene: { opening: "Bonjour ! Moi, c'est Léa. Enchantée !", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN, contextEn: "You are meeting Léa for the first time — greet her, say your name, ask how she is, then say goodbye." },
   categories: withPalette([
     { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir", "Coucou"] },
     { label: "Ça va", phrases: ["Ça va bien", "Très bien", "Ça va, merci", "Comme ci comme ça", "Et toi ?"] },
@@ -261,7 +427,9 @@ const GREETINGS_BANK: ComposeBank = {
     { label: "Prendre congé", phrases: ["Au revoir", "À bientôt", "À demain", "Bonne journée", "Salut !"] },
   ]),
   newScenario() {
-    return { headline: "👋 Se saluer", instructionEn: "Greet your classmate and chat — answer by tapping phrases." };
+    // "classmate" is gone with the friend: the old line said classmate while
+    // the context said friend — two relationships in one lesson.
+    return { headline: "👋 Se saluer", instructionEn: "Meet someone new — greet her, give your name, ask how she is, then say goodbye." };
   },
 };
 
@@ -289,25 +457,68 @@ const RENDEZVOUS_BANK: ComposeBank = {
 };
 
 // ---------------------------------------------------------------------------
-// À la papeterie (AI shopkeeper — buy objects, ask the price)
+// Aux objets trouvés (AI clerk — SIO-021: name objects, ask what something is)
+//
+// THIS WAS « À la papeterie » AND THE SHOP WAS THE PROBLEM (Dan, 2026-09-12:
+// *"what matters is the SIO attached. we need to think of scenarios in which
+// those SIOs are applied strictly, no distraction and irrelevant deviation
+// with payment and what not"*).
+//
+// SIO-021's can-do is "I can point out and name objects and people and ask what
+// something is", and its competence scores « c'est + un/une », « ce sont + des »
+// and « C'est quoi ? ». A shop is a TRANSACTION: « Je voudrais », « Avez-vous »,
+// a price, a goodbye — none of which the goal contains, and two of which the
+// app already trains properly elsewhere (`marche` on SIO-044, `au-restaurant`
+// on SIO-050). Three shopping scenes, one of them standing where a naming
+// exercise should be.
+//
+// AND THE VOCABULARY GAVE IT AWAY. The deck is « Un, une ou des ? » and five of
+// its twenty items — un passeport, une carte d'identité, un portefeuille, des
+// lunettes, une clé — are not sold in a stationery shop by anybody. They ARE
+// exactly what turns up at a lost-property desk, along with all the rest of it.
+// The clerk lays things on the counter and asks what they are; the learner
+// names them and asks « C'est quoi ? » for the ones they don't know. That is
+// the goal, said out loud, with nothing else in the room.
+//
+// The KEY and the ROUTE stay `magasin` — the Memo-rename precedent: a display
+// rename never moves a URL someone may have bookmarked.
 // ---------------------------------------------------------------------------
+
+/** The deck's twenty objects, BARE — « sac », not « un sac ». The article is
+ *  the learner's decision and it is the whole of what SIO-021 scores, so the
+ *  chips must not make it for them. (A learner who picks « une sac » has made
+ *  the mistake this exercise exists to train out — Dan, 2026-09-01: a wrong
+ *  answer is allowed to be wrong French.) */
+const OBJET_NOMS: string[] = OBJETS.items.map((o) => o.fr);
 
 const SHOP_BANK: ComposeBank = {
   id: "magasin",
-  title: "À la papeterie",
-  emoji: "🛍️",
+  title: "Aux objets trouvés",
+  emoji: "🧳",
   unit: 2,
   deckId: "objets-articles",
   mode: "dialogue",
-  scene: { opening: "Bonjour ! Je peux vous aider ?", emoji: "🛍️", voice: "f", aiOnly: true, theme: THEME_BLUE, contextEn: "You're at the stationery shop — ask for what you need and the price, then pay." },
+  scene: {
+    opening: "Bureau des objets trouvés, bonjour ! Regardez ce que j'ai ici… Qu'est-ce que c'est ?",
+    emoji: "🧳",
+    voice: "f",
+    aiOnly: true,
+    theme: THEME_BLUE,
+    contextEn: "You're at the lost-property desk — the clerk holds things up one by one. Say what each one is, and ask what it is when you don't know the word.",
+  },
   categories: withPalette([
-    { label: "Demander", phrases: ["Je voudrais", "Je cherche", "Avez-vous"] },
-    { label: "Objets", phrases: ["un cahier", "un stylo", "un crayon", "une trousse", "une gomme", "un sac", "des ciseaux"] },
-    { label: "Quantité / prix", phrases: ["deux", "trois", "C'est combien ?", "Ça fait combien ?"] },
-    { label: "Terminer", phrases: ["s'il vous plaît", "C'est tout", "merci", "Au revoir"] },
+    { label: "Identifier", phrases: ["C'est", "Ce sont", "Ce n'est pas"] },
+    // SEPARATE FROM THE NOUNS ON PURPOSE — see OBJET_NOMS above.
+    { label: "Un, une ou des ?", phrases: ["un", "une", "des"] },
+    { label: "Les objets", phrases: OBJET_NOMS },
+    { label: "Demander", phrases: ["C'est quoi ?", "Qu'est-ce que c'est ?", "Je ne sais pas", "Comment ça s'écrit ?"] },
+    { label: "Réclamer", phrases: ["C'est à moi", "Ce n'est pas à moi", "Bonjour", "merci", "Au revoir"] },
   ]),
   newScenario() {
-    return { headline: "🛍️ À la papeterie", instructionEn: "Buy what you need at the stationery shop — answer the shopkeeper." };
+    return {
+      headline: "🧳 Aux objets trouvés",
+      instructionEn: "Name each thing the clerk holds up — c'est un…, c'est une…, ce sont des… — and ask « C'est quoi ? » when you don't know the word.",
+    };
   },
 };
 
@@ -363,7 +574,10 @@ const MARCHE_BANK: ComposeBank = {
 // Registry
 // ---------------------------------------------------------------------------
 
-const BANKS: ComposeBank[] = [DIRECTIONS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK, MARCHE_BANK, ...PRODUCTION_BANKS];
+// MEALS_BANK BEFORE CAFE_BANK, and the order is load-bearing: both sit on
+// `aliments`, and composeBanksForDeck() gives the deck's rail flap to the
+// FIRST bank it finds. The goal's own exercise takes that slot.
+const BANKS: ComposeBank[] = [DIRECTIONS_BANK, MEALS_BANK, CAFE_BANK, GREETINGS_BANK, RENDEZVOUS_BANK, SHOP_BANK, MARCHE_BANK, ...PRODUCTION_BANKS];
 
 export function listComposeBanks(): ComposeBank[] {
   return BANKS;

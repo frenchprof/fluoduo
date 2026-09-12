@@ -29,6 +29,10 @@
  * one mastery signal. See DATA_INTEGRITY / evidence-schema work.
  */
 import type { ComposeBank, ComposeCategory, DialogueTheme } from "./banks";
+// The app's one source of French morphology — see its header: every article in
+// a generated text comes from here, so a lexicon entry never hand-types "du".
+import { def, deLe } from "@/lib/textgen/french";
+import type { Gram } from "@/lib/textgen/types";
 
 const THEME_ROSE: DialogueTheme = { edge: "#eec4cc", strong: "#c9677f", deep: "#a04a60", personaBg: "#fdf1f3", meBg: "#f8d9df", ink: "#4a1c28" };
 const THEME_SAND: DialogueTheme = { edge: "#e3d4b0", strong: "#b99a52", deep: "#8f7538", personaBg: "#fdfaf1", meBg: "#f0e4c6", ink: "#403418" };
@@ -83,14 +87,49 @@ export const FIRST_MEETING_BANK: ComposeBank = {
 // ---------------------------------------------------------------------------
 // SIO-020 · Unité 1 · Mini-text: present a country  (solo, written)
 // ---------------------------------------------------------------------------
+/* THE ARTICLE IS COMPUTED, NEVER TYPED (2026-09-12).
+ *
+ * These entries used to carry the article in the string — `fr: "le Canada"` —
+ * and the opening line was built by joining: `"Parle-moi de " + c.fr`. French
+ * does not allow that: `de + le` contracts to `du`. FOUR OF THE SIX COUNTRIES
+ * therefore opened the scene in broken French, from the app's own mouth:
+ *
+ *     « Parle-moi de le Canada ! »     « Parle-moi de le Sénégal ! »
+ *     « Parle-moi de le Maroc ! »      « Parle-moi de le Viêt Nam ! »
+ *
+ * That is the fault the 1 Sep ruling draws a line at. A LEARNER's wrong
+ * contraction is a legitimate distractor — "could a learner have made this?" —
+ * but « Bon chance » was cut from the atelier cards because the FRAME printed
+ * it. Same here: nobody chose « de le ».
+ *
+ * So the entry carries its FEATURES and `lib/textgen/french.ts` builds every
+ * article, which is that module's own stated doctrine: "a lexicon entry only
+ * ever carries its features — never a hand-typed du". Reusing it also means
+ * this bank cannot drift from the rest of the app's morphology.
+ *
+ * `people` is here for the same reason the article is: the [Habitants] chip
+ * list used to be hand-typed and had FIVE adjectives for SIX countries, so a
+ * learner who drew Viêt Nam could not finish "Les habitants sont …". The
+ * chips are generated from this array below, so the two can never disagree
+ * again. */
+/* `where` and `fact` carry the two elements the competence names and the bank
+ * could not previously produce. SIO-020 scores "all 4 elements present (name,
+ * location, language, ONE CULTURAL FACT)", and the old task asked instead for
+ * "why it interests you" — an opinion where the assessment wants a fact. Both
+ * fields are short enough to be a chip and plain enough for Unit 1. */
 const COUNTRIES = [
-  { fr: "le Canada", emoji: "🇨🇦", lang: "le français et l'anglais" },
-  { fr: "la Suisse", emoji: "🇨🇭", lang: "le français, l'allemand et l'italien" },
-  { fr: "le Sénégal", emoji: "🇸🇳", lang: "le français" },
-  { fr: "la Belgique", emoji: "🇧🇪", lang: "le français et le néerlandais" },
-  { fr: "le Maroc", emoji: "🇲🇦", lang: "l'arabe et le français" },
-  { fr: "le Viêt Nam", emoji: "🇻🇳", lang: "le vietnamien" },
-] as const;
+  { name: "Canada",   g: "m", people: "canadiens",   emoji: "🇨🇦", where: "en Amérique", lang: "le français et l'anglais",            fact: "En hiver, il fait très froid." },
+  { name: "Suisse",   g: "f", people: "suisses",     emoji: "🇨🇭", where: "en Europe",   lang: "le français, l'allemand et l'italien", fact: "Il y a beaucoup de montagnes." },
+  { name: "Sénégal",  g: "m", people: "sénégalais",  emoji: "🇸🇳", where: "en Afrique",  lang: "le français",                          fact: "La capitale est Dakar." },
+  { name: "Belgique", g: "f", people: "belges",      emoji: "🇧🇪", where: "en Europe",   lang: "le français et le néerlandais",        fact: "On y mange des frites et du chocolat." },
+  { name: "Maroc",    g: "m", people: "marocains",   emoji: "🇲🇦", where: "en Afrique",  lang: "l'arabe et le français",               fact: "La ville de Marrakech est très belle." },
+  { name: "Viêt Nam", g: "m", people: "vietnamiens", emoji: "🇻🇳", where: "en Asie",     lang: "le vietnamien",                        fact: "La capitale est Hanoï." },
+] as const satisfies readonly (Gram & { name: string; people: string; emoji: string; where: string; lang: string; fact: string })[];
+
+/** « le Canada » / « la Suisse » — the name as it is spoken about. */
+const countryName = (c: (typeof COUNTRIES)[number]) => `${def(c)}${c.name}`;
+/** « du Canada » / « de la Suisse » — after `parler de`, `près de`, … */
+const ofCountry = (c: (typeof COUNTRIES)[number]) => `${deLe(c)}${c.name}`;
 
 export const PRESENT_COUNTRY_BANK: ComposeBank = {
   id: "presenter-pays",
@@ -101,18 +140,66 @@ export const PRESENT_COUNTRY_BANK: ComposeBank = {
   mode: "solo",
   aiCheck: true,
   categories: withPalette([
+    /* THE FIRST QUESTION NEEDS A FIRST CHIP. « C'est quel pays ? » is answered
+       with the country's NAME, and no group carried one — a learner with no
+       French had nothing to tap, on question 1 of 4. The names are generated,
+       so a country added to COUNTRIES arrives with its own chip and its own
+       article (« le Viêt Nam », « la Suisse ») rather than a hand-typed one. */
+    { label: "Le pays", phrases: ["C'est", ...COUNTRIES.map(countryName)] },
     { label: "Situer", phrases: ["C'est", "Il est", "Elle est", "en Europe", "en Afrique", "en Asie", "en Amérique"] },
-    { label: "Langues", phrases: ["On parle", "la langue officielle est", "et", "aussi"] },
+    /* THE LANGUAGES THEMSELVES, for the same reason the country names are here:
+       « On y parle quelle langue ? » was answerable only as far as « On parle »
+       and then stopped — the group held the frame and none of the words that go
+       in it. Deduplicated because le français is spoken in more than one of
+       them; generated so a country cannot arrive without its language. */
+    { label: "Langues", phrases: ["On parle", "la langue officielle est", "et", "aussi", ...new Set(COUNTRIES.map((c) => c.lang))] },
     { label: "Décrire", phrases: ["C'est un pays", "grand", "petit", "magnifique", "intéressant"] },
-    { label: "Habitants", phrases: ["Les habitants sont", "canadiens", "suisses", "sénégalais", "belges", "marocains"] },
+    // Generated from COUNTRIES, so a country added without its adjective is
+    // impossible rather than merely unlikely.
+    { label: "Habitants", phrases: ["Les habitants sont", ...COUNTRIES.map((c) => c.people)] },
+    /* THE FOURTH ELEMENT NOW HAS CHIPS. SIO-020 scores "one cultural fact" and
+       the bank offered no way to state one — [Opinion] answers a different
+       question ("why it interests you"), which is what the old task asked for
+       instead. Generated from COUNTRIES for the same reason [Habitants] is:
+       one fact per country, and the learner picks the one that belongs to
+       theirs. [Opinion] stays — a sentence about why you'd visit is a fine
+       fifth sentence, it just is not the element being assessed. */
+    { label: "Un fait", phrases: COUNTRIES.map((c) => c.fact) },
     { label: "Opinion", phrases: ["J'aime", "J'adore", "parce que", "Je voudrais visiter"] },
   ]),
   newScenario() {
-    const c = pick(COUNTRIES, Math.floor(Date.now() / 60000));
+    const i = Math.floor(Date.now() / 60000) % COUNTRIES.length;
+    const c = COUNTRIES[i];
+    /* THE MODEL IS ALWAYS A DIFFERENT COUNTRY — the next one round the list, so
+       it can never be the one the learner was given. Dan, 2026-09-12: a model
+       "on another country". Same shape, different content: something to
+       compare four sentences against, never something to copy. It is BUILT
+       from that country's own fields rather than hand-written, so it cannot
+       drift from the chips the learner is offered, and every article in it
+       comes from lib/textgen/french.ts. */
+    const m = COUNTRIES[(i + 1) % COUNTRIES.length];
+    /* FOUR SENTENCES, ONE PER QUESTION, in the same order — so the model is a
+       shape the learner can lay their own four against, line for line, and not
+       a paragraph they have to take apart first. Every phrase in it is one the
+       chips can build: « C'est » and « Il est » are [Le pays] and [Situer],
+       « On parle » is [Langues], the fact is [Un fait]. A model that used
+       French the palette cannot produce would be a wall, not a model. */
+    const model = `C'est ${countryName(m)}. ${m.g === "f" ? "Elle est" : "Il est"} ${m.where}. `
+      + `On parle ${m.lang}. ${m.fact}`;
     return {
-      headline: `${c.emoji} ${c.fr}`,
-      instructionEn: `Write three or four sentences presenting ${c.fr}: where it is, what language is spoken, and why it interests you.`,
-      openingFr: `Parle-moi de ${c.fr} ! Où est-ce ? On y parle quelle langue ?`,
+      headline: `${c.emoji} ${countryName(c)}`,
+      instructionEn: `Present ${countryName(c)} in four sentences — answer one question at a time.`,
+      /* FOUR QUESTIONS, ONE PER SENTENCE, in the order the competence lists its
+         elements: name, location, language, one cultural fact. The learner
+         answers each with ✔ and the next appears. */
+      prompts: [
+        { ask: `Parle-moi ${ofCountry(c)} ! C'est quel pays ?`, use: "Le pays" },
+        { ask: `Où est-ce ?`, use: "Situer" },
+        { ask: `On y parle quelle langue ?`, use: "Langues" },
+        { ask: `Et dis-moi une chose sur ce pays.`, use: "Un fait" },
+      ],
+      model: { label: `${m.emoji} ${countryName(m)} — un modèle`, text: model },
+      openingFr: `Parle-moi ${ofCountry(c)} ! C'est quel pays ?`,
     };
   },
 };
@@ -236,15 +323,58 @@ export const POSTCARD_BANK: ComposeBank = {
     { label: "Commencer", phrases: ["Salut", "Cher", "Chère", "Bonjour"] },
     { label: "Où je suis", phrases: ["Je suis", "On est", "à Paris", "aux Philippines", "au Canada", "au Japon"] },
     { label: "La météo", phrases: ["Il fait beau", "Il fait chaud", "C'est ensoleillé", "C'est nuageux", "Il y a des nuages", "Il pleut", "mais"] },
-    { label: "Activités", phrases: ["je visite", "on peut visiter", "je vais à la plage", "on prend le métro", "le musée", "C'est magnifique"] },
+    /* CAPITALISED, because every one of these OPENS the card's fourth line and
+       this group was the only one on the card that was not. « je visite le
+       musée » came out lower-case in the middle of five properly-capitalised
+       sentences — found by the model clause, which could not build « Je visite »
+       out of a bank whose chip says « je visite ». « le musée » stays lower-case:
+       it is a complement, never a first word. */
+    { label: "Activités", phrases: ["Je visite", "On peut visiter", "Je vais à la plage", "On prend le métro", "le musée", "C'est magnifique"] },
     { label: "Finir", phrases: ["À bientôt", "Bises", "Écris-moi", "Au revoir"] },
   ]),
   newScenario() {
-    const t = pick(TRIPS, Math.floor(Date.now() / 60000));
+    /* THE BOOK'S FIVE PARTS, ASKED ONE AT A TIME. The atelier is a five-part
+       card — opening formula → where you are → the weather → what you're doing
+       → closing formula — and the old instruction listed all five in one
+       English sentence, then asked all three questions at once in French. A
+       learner who wrote two of the five had no way to know which three were
+       missing. Each part is now its own question, and the group that answers it
+       leads. (Dan, 2026-09-12, on the same fault in Présenter un pays: *"the
+       questions followed by a model paragraph"*.)
+
+       WHAT THIS DOES NOT DO IS MOVE THE CARD. Its subject is the weather and
+       where you are — SIO-031 and SIO-032 — while its deck is SIO-040's
+       itinerary atelier. That is not drift: the syllabus audit found the book's
+       U3 written atelier had no home, and Dan's decision (2026-08-23) was to
+       present it at stop 40 beside the itinerary with the SIOs untouched. It is
+       recorded here because the mismatch looks like a bug every time someone
+       reads this file. */
+    const i = Math.floor(Date.now() / 60000) % TRIPS.length;
+    const t = TRIPS[i];
+    const m = TRIPS[(i + 1) % TRIPS.length];   // the model is never the learner's own trip
     return {
       headline: `${t.emoji} ${t.fr}`,
-      instructionEn: `You are ${t.en}. Write your e-postcard to a friend: open it, say where you are, give the weather, tell what you are doing, and sign off.`,
-      openingFr: `Alors, c'est comment ${t.fr} ? Quel temps fait-il ? Qu'est-ce que tu fais ?`,
+      instructionEn: `You are ${t.en}. Write your e-postcard to a friend, one line at a time.`,
+      prompts: [
+        { ask: "Commence ta carte ! Tu écris à qui ?", use: "Commencer" },
+        { ask: `Et tu es où ?`, use: "Où je suis" },
+        { ask: "Il fait quel temps là-bas ?", use: "La météo" },
+        { ask: "Qu'est-ce que tu fais ?", use: "Activités" },
+        { ask: "Et pour finir ?", use: "Finir" },
+      ],
+      /* Five lines for five questions, every phrase of them a chip on this
+         card — verify440 fails the build if that stops being true. */
+      model: {
+        label: `${m.emoji} Une carte ${m.fr} — un modèle`,
+        /* ONE SENTENCE PER QUESTION, and every one of them a chip EXACTLY as the
+           chip is written — capital included. The first draft read « …beau mais
+           c'est nuageux », which no learner can produce: the chip is « C'est
+           nuageux », so joining it after « mais » puts a capital in the middle
+           of their sentence. The model was quietly showing better French than
+           the palette can make. */
+        text: `Salut ! Je suis ${m.fr}. Il fait beau. Je visite le musée. À bientôt`,
+      },
+      openingFr: `Alors, c'est comment ${t.fr} ?`,
     };
   },
 };
