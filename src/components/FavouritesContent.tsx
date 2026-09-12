@@ -23,11 +23,30 @@
  *   folder actions were two buttons     they live in the folder's own ⋯
  *     wedged under the folder
  *
- * WHAT IS DELIBERATELY *NOT* COPIED FROM A DESKTOP OS: drag-and-drop to move,
- * and multi-select. Both are mouse-first — dragging is unreliable on a phone,
- * which is what a learner uses, and iOS Files itself leads with « Move to… »
- * for exactly that reason. Multi-select earns its place at hundreds of files;
- * the cap here is 200 and the realistic number is a dozen.
+ * ── DRAG AND DROP (Dan, same day: *"add drag and drop"*) ─────────────────
+ * Drag a page onto a folder to file it; inside a folder, drag it onto the
+ * « ★ Favourites » crumb to bring it back out. Built on POINTER events, not
+ * HTML5 `draggable`, and that is the whole reason it works on a phone: the
+ * HTML5 drag API does not fire for touch at all, so a `draggable` row is a
+ * desktop-only feature wearing a cross-platform name.
+ *
+ * THE GESTURE IS DIFFERENT PER DEVICE, because the devices are:
+ *
+ *   mouse   press and move ~6px           a mouse cannot scroll by dragging,
+ *                                         so movement can only mean a drag
+ *   finger  press and HOLD ~350ms, then   a finger that moves first is
+ *           move                          SCROLLING, and stealing that would
+ *                                         make the list unscrollable
+ *
+ * That long-press-to-lift is the iOS Files / Photos gesture, and it is why a
+ * plain tap still follows the link.
+ *
+ * « MOVE TO… » STAYS, and is not a leftover. A drag cannot be done from a
+ * keyboard and is hard with a tremor or a trackpad; the menu is the accessible
+ * path to the same move. iOS Files ships both for the same reason.
+ *
+ * STILL NOT COPIED: multi-select. It earns its place at hundreds of files; the
+ * cap here is 200 and the realistic number is a dozen.
  *
  * ── WHAT SURVIVES FROM THE FIRST BUILD, because Dan asked for it by name ──
  * A row still links, still says where it sits and when it was starred, still
@@ -85,7 +104,14 @@ export default function FavouritesContent() {
   const [renaming, setRenaming] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [newFolder, setNewFolder] = useState(false);
+  /** The page being dragged, and where the pointer is, so the ghost can follow. */
+  const [drag, setDrag] = useState<{ href: string; label: string; emoji: string; x: number; y: number } | null>(null);
+  /** The drop target under the pointer: a folder id, or "root" for the crumb. */
+  const [over, setOver] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
+  /** Set the moment a drag actually moves, and read by the row's click — a
+   *  drop must never also follow the link underneath it. */
+  const didDrag = useRef(false);
 
   const reread = useCallback(() => setFav(loadFavourites()), []);
 
@@ -113,6 +139,15 @@ export default function FavouritesContent() {
     return () => { document.removeEventListener("mousedown", away); document.removeEventListener("keydown", esc); };
   }, [menu]);
 
+  /** What is under the pointer, asked of the document rather than tracked with
+   *  enter/leave handlers — one question at drop time beats N listeners, and it
+   *  is the only approach that works the same for a finger and a mouse. */
+  const dropAt = (x: number, y: number): string | null => {
+    const el = document.elementFromPoint(x, y);
+    const hit = el instanceof Element ? el.closest("[data-drop]") : null;
+    return hit ? hit.getAttribute("data-drop") : null;
+  };
+
   if (!fav || now === null) {
     return <p className="py-6 pl-12 pr-3 text-sm" style={{ color: SOFT }}>Loading your favourites…</p>;
   }
@@ -122,6 +157,94 @@ export default function FavouritesContent() {
   const here = at ? fav.folders.find((f) => f.id === at) ?? null : null;
   const { folders, items } = listing(fav, here ? here.id : null, sort);
   const empty = folders.length === 0 && items.length === 0;
+
+  /**
+   * ONE PRESS HANDLER FOR MOUSE, FINGER AND PEN.
+   *
+   * Listeners go on the DOCUMENT rather than the row, because a drag that
+   * leaves the row it started on must keep tracking — and it always does: the
+   * whole point is to land somewhere else.
+   */
+  const pressStart = (e: React.PointerEvent, it: Fav) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (e.target instanceof Element && e.target.closest("[data-menu]")) return;
+    const sx = e.clientX, sy = e.clientY;
+    let started = false;
+    let timer: number | null = null;
+    didDrag.current = false;
+
+    /* STOPPING THE PAGE SCROLLING UNDER A DRAG TOOK THREE GOES, and the two
+       that failed are worth keeping, because both LOOK right:
+
+         1  `touch-action: none` on the ROWS only — a finger that left a row
+            onto the breadcrumb handed the gesture back to the browser, which
+            fired `pointercancel`. A page could go INTO a folder and never back
+            OUT of one.
+         2  `touch-action: none` on the whole page, applied when the drag
+            starts — too late. The browser decides at TOUCHSTART what a gesture
+            is; changing the property mid-gesture does not take it back, and
+            this broke the INTO case that had been working.
+
+       What actually works is preventing the TOUCHMOVE itself. `pointermove`'s
+       preventDefault does not stop scrolling — only touchmove's does — and it
+       has to be a native non-passive listener, because React's are passive. */
+    const stopScroll = (ev: TouchEvent) => ev.preventDefault();
+
+    const begin = (x: number, y: number) => {
+      started = true;
+      document.addEventListener("touchmove", stopScroll, { passive: false });
+      setDrag({ href: it.href, label: it.label, emoji: it.emoji, x, y });
+      setOver(dropAt(x, y));
+    };
+
+    const move = (ev: PointerEvent) => {
+      const dx = Math.abs(ev.clientX - sx), dy = Math.abs(ev.clientY - sy);
+      if (!started) {
+        if (ev.pointerType === "mouse") {
+          // A mouse cannot scroll by dragging, so movement can only be a drag.
+          if (dx > 6 || dy > 6) { if (timer) clearTimeout(timer); begin(ev.clientX, ev.clientY); }
+        } else if (dx > 10 || dy > 10) {
+          // A finger that moves before the hold is SCROLLING. Let it go.
+          end();
+        }
+        return;
+      }
+      // Non-passive, so this actually stops the page scrolling under the drag.
+      ev.preventDefault();
+      didDrag.current = true;
+      setDrag((d) => (d ? { ...d, x: ev.clientX, y: ev.clientY } : d));
+      setOver(dropAt(ev.clientX, ev.clientY));
+    };
+
+    const up = (ev: PointerEvent) => {
+      if (started) {
+        const target = dropAt(ev.clientX, ev.clientY);
+        if (target !== null) {
+          const dest = target === "root" ? null : target;
+          // Dropping a page where it already lives is not a move, and writing
+          // it anyway would bump nothing but the save.
+          if ((it.folder ?? null) !== dest) commit(moveToFolder(fav, it.href, dest));
+        }
+      }
+      end();
+    };
+
+    const end = () => {
+      if (timer) { clearTimeout(timer); timer = null; }
+      started = false;
+      setDrag(null); setOver(null);
+      document.removeEventListener("touchmove", stopScroll);
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
+      document.removeEventListener("pointercancel", end);
+    };
+
+    // The hold that lifts a row on a touch screen — the iOS Files gesture.
+    timer = window.setTimeout(() => begin(sx, sy), 350);
+    document.addEventListener("pointermove", move, { passive: false });
+    document.addEventListener("pointerup", up);
+    document.addEventListener("pointercancel", end);
+  };
 
   const BTN = "min-h-11 shrink-0 rounded-lg border-2 px-2.5 text-xs font-extrabold";
   const CHROME = { borderColor: LINE, background: PAPER, color: INK };
@@ -152,7 +275,17 @@ export default function FavouritesContent() {
   );
 
   return (
-    <div className="py-4 pl-12 pr-3" ref={rootRef}>
+    <div
+      className="py-4 pl-12 pr-3"
+      ref={rootRef}
+      /* THE WHOLE PAGE REFUSES TO PAN WHILE A DRAG IS UP, and it has to be the
+         whole page rather than the rows. Measured: with `touch-action: none`
+         on the rows only, a finger that left a row onto the breadcrumb handed
+         the gesture back to the browser, which fired `pointercancel` and
+         killed the drag mid-air — so a page could be dragged INTO a folder
+         (folders are rows) and never back OUT of one (the crumb is not). */
+      style={{ touchAction: drag ? "none" : undefined }}
+    >
       <div className="mx-auto max-w-3xl">
 
         {/* ── THE PATH BAR. Drawn only INSIDE a folder: at the top there is
@@ -162,9 +295,12 @@ export default function FavouritesContent() {
           <nav aria-label="Where you are" className="mb-2 flex flex-wrap items-center gap-1.5 text-sm">
             <button
               type="button"
+              data-drop="root"
               onClick={() => { setAt(null); setMenu(null); }}
               className="min-h-11 rounded-lg px-2 font-extrabold underline"
-              style={{ color: INK }}
+              style={over === "root"
+                ? { color: INK, background: "var(--fam-user-wash)", boxShadow: "inset 0 0 0 2px var(--fam-user-ink)" }
+                : { color: INK }}
             >
               ★ Favourites
             </button>
@@ -252,8 +388,14 @@ export default function FavouritesContent() {
             <li key={f.id} className="relative flex items-center gap-2 border-b" style={{ borderColor: RULE }}>
               <button
                 type="button"
+                data-drop={f.id}
                 onClick={() => { setAt(f.id); setMenu(null); }}
-                className="flex min-h-11 min-w-0 flex-1 items-center gap-2 py-2 text-left"
+                className="flex min-h-11 min-w-0 flex-1 items-center gap-2 rounded-lg py-2 text-left"
+                style={over === f.id
+                  // The target a drop would land in, said in the family's own
+                  // ink rather than a new colour invented for dragging.
+                  ? { background: "var(--fam-user-wash)", boxShadow: "inset 0 0 0 2px var(--fam-user-ink)" }
+                  : undefined}
               >
                 <span aria-hidden className="shrink-0 text-base">📁</span>
                 <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>{f.name}</span>
@@ -291,7 +433,20 @@ export default function FavouritesContent() {
 
           {/* ── PAGES. The row IS the link; everything else is behind the ⋯. ── */}
           {items.map((it: Fav) => (
-            <li key={it.href} className="relative flex items-center gap-2 border-b" style={{ borderColor: RULE }}>
+            <li
+              key={it.href}
+              className="relative flex items-center gap-2 border-b"
+              style={{
+                borderColor: RULE,
+                // pan-y, ALWAYS: a swipe that is not a drag must still scroll
+                // the list. Flipping this to `none` when a drag starts is the
+                // fix that did not work — see the note in `begin`.
+                touchAction: "pan-y",
+                // The row it came from fades while it is in the air — the
+                // "this is the thing you are carrying" cue every OS gives.
+                opacity: drag?.href === it.href ? 0.4 : 1,
+              }}
+            >
               {renaming === it.href ? (
                 <>
                   <input
@@ -314,7 +469,19 @@ export default function FavouritesContent() {
                 </>
               ) : (
                 <>
-                  <Link href={it.href} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 py-2 no-underline">
+                  <Link
+                    href={it.href}
+                    onPointerDown={(e) => pressStart(e, it)}
+                    onClickCapture={(e) => {
+                      // A drop lands on the row it started from as a CLICK. If
+                      // the pointer moved, that click is the tail of a drag and
+                      // must not navigate — found the first time a drop opened
+                      // the page it was meant to file.
+                      if (didDrag.current) { e.preventDefault(); e.stopPropagation(); didDrag.current = false; }
+                    }}
+                    onDragStart={(e) => e.preventDefault()}
+                    className="flex min-h-11 min-w-0 flex-1 cursor-grab select-none items-center gap-2 py-2 no-underline active:cursor-grabbing"
+                  >
                     <span aria-hidden className="shrink-0 text-base">{it.emoji}</span>
                     <span className="min-w-0 flex-1 truncate text-sm font-extrabold" style={{ color: INK }}>
                       {it.label}
@@ -377,6 +544,20 @@ export default function FavouritesContent() {
           ))}
         </ul>
       </div>
+
+      {/* THE GHOST — what you are carrying. `fixed` is measured against this
+          FRAME's viewport, and the pointer coordinates are too, so the two
+          agree even though the page runs inside an iframe. */}
+      {drag && (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed z-50 flex items-center gap-2 rounded-lg border-2 px-2.5 py-1.5 text-sm font-extrabold shadow-lg"
+          style={{ left: drag.x + 14, top: drag.y + 14, borderColor: LINE, background: PAPER, color: INK }}
+        >
+          <span aria-hidden>{drag.emoji}</span>
+          <span className="max-w-52 truncate">{drag.label}</span>
+        </div>
+      )}
     </div>
   );
 }

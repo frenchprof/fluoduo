@@ -6,6 +6,67 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+### 12 Sep — Favourites, take two: a file manager, then drag and drop
+
+**Dan on the first build: *"this is not very user friendly, please rethink and
+redo. refer to current file management systems in the latest popular OS"*.** It
+was a form, not a file manager — ✎ + a folder `<select>` + ✕ on EVERY line, and
+folders as accordions that unfolded in place. Rebuilt on the Finder / Windows 11
+/ iOS Files shape: folders first with their counts, a folder is a PLACE you go
+into with a breadcrumb back, one ⋯ per row opening Rename · Move to… · Remove,
+and Recent / Name ordering. `grouped()` retired for `listing(fav, folderId,
+sort)`.
+
+**Then: *"add drag and drop"*.** Drag a page onto a folder to file it; inside a
+folder, drag it onto the « ★ Favourites » crumb to bring it out.
+
+**BUILT ON POINTER EVENTS, AND THAT IS THE WHOLE POINT.** The obvious way —
+HTML5 `draggable` + `onDragStart` — **does not fire for touch at all**, so it
+ships as a desktop-only feature wearing a cross-platform name, and nobody
+notices because the desktop is where it gets tested. `verify300` fails on the
+word `draggable` for that reason.
+
+The gesture differs by device because the devices do: a **mouse** drags on ~6px
+of movement (a mouse cannot scroll by dragging, so movement can only mean a
+drag); a **finger** must press and HOLD ~350ms first, because a finger that
+moves straight away is SCROLLING and stealing that would make the list
+unscrollable. That is the iOS Files/Photos gesture, and it is why a plain tap
+still follows the link.
+
+**STOPPING THE PAGE SCROLLING UNDER A DRAG TOOK THREE GOES, and the two that
+failed both LOOK right:**
+
+    1  `touch-action: none` on the ROWS only.  A finger that left a row onto
+       the breadcrumb handed the gesture back to the browser, which fired
+       `pointercancel`. A page could go INTO a folder and never back OUT.
+    2  `touch-action: none` on the whole page, applied when the drag starts.
+       Too late — the browser decides at TOUCHSTART what a gesture is, and
+       changing the property mid-gesture does not take it back. This broke the
+       INTO case that had been working.
+    3  A native NON-PASSIVE `touchmove` listener calling preventDefault for the
+       duration.  `pointermove`'s preventDefault does not stop scrolling; only
+       touchmove's does, and React's listeners are passive so it cannot be a
+       React handler.
+
+All three were found by driving the built app with real touch events, not by
+reading. Measured after the fix, seven cases: mouse in ✓, mouse out ✓, mouse
+drop does not navigate ✓, touch swipe still scrolls the list ✓, touch in ✓,
+touch out ✓, touch drop does not navigate ✓.
+
+**« MOVE TO… » STAYS.** A drag cannot be done from a keyboard and is hard with
+a tremor or a trackpad, so the menu is the accessible path to the same move —
+iOS Files ships both for that reason. `verify300` fails if it disappears.
+
+**AND THE CHECK CAUGHT ITSELF, a fourth time for this repo.** The new clause
+`'draggable' not in page` failed on its first run — because the file's own
+docstring EXPLAINS that `draggable` is the desktop-only trap, and the word was
+enough. Comments are stripped now. verify152, verify153, verify106 and
+verify270 each learned this separately; apparently it has to be learned once
+per author.
+
+**STILL NOT COPIED FROM A DESKTOP OS: multi-select.** It earns its place at
+hundreds of files; the cap here is 200 and the realistic number is a dozen.
+
 ### 12 Sep — FAVOURITES: star any page, and a proper page to keep them on
 
 Dan, after ruling that pinning a single goal stays out: *"what we can do

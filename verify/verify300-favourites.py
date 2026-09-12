@@ -274,6 +274,43 @@ check("countIn(fav" in page,
 check('"recent"' in page and '"name"' in page,
       "the list can be ordered by most-recent or by name",
       "the sort control is gone — every file list has one")
+# ── 6 · drag and drop, and the path that does not need it ─────────────────
+# Dan, 12 Sep: "add drag and drop". The trap is that the OBVIOUS way to build
+# it — HTML5 `draggable` + onDragStart — does not fire for touch AT ALL, so it
+# ships as a desktop-only feature wearing a cross-platform name, and nobody
+# notices because the desktop is where it gets tested.
+check("onPointerDown" in page and "pointermove" in page,
+      "the drag is built on POINTER events, so a finger can do it too",
+      "the drag is not on pointer events — if it went back to HTML5 "
+      "`draggable`/onDragStart it fires for a mouse and NEVER for touch, which "
+      "is the device a learner actually holds")
+# COMMENTS STRIPPED FIRST, and this check earned that the hard way: it failed
+# on its own first run because the file's docstring EXPLAINS that `draggable`
+# is the desktop-only trap, and the word was enough. Fourth time this repo has
+# had a check read its own documentation as the defect (verify152, verify153,
+# verify106, verify270) — apparently it has to be learned once per author.
+bare_page = re.sub(r"/\*[\s\S]*?\*/", "", re.sub(r"(?m)^\s*//.*$", "", page))
+check("draggable" not in bare_page,
+      "no HTML5 draggable attribute (it would be the desktop-only trap)",
+      "an HTML5 `draggable` attribute is back on a row — it fires for a mouse "
+      "and never for touch")
+check('data-drop' in page and '"root"' in page,
+      "a folder row is a drop target, and the crumb is the way back OUT",
+      "the drop targets are gone — a drag with nowhere to land is an animation")
+check("350" in page,
+      "a touch drag starts on a HOLD, so a finger can still scroll the list",
+      "the long-press delay is gone: if a drag starts on the first movement of "
+      "a finger, the list cannot be scrolled at all")
+check("didDrag" in page,
+      "a drop does not also follow the link under it",
+      "nothing suppresses the click at the end of a drag — dropping a page "
+      "onto a folder would file it AND navigate to it")
+# The menu path must survive the drag, not be replaced by it.
+check("Move to…" in page,
+      "« Move to… » survives as the path that needs no drag",
+      "« Move to… » is gone. A drag cannot be done from a keyboard, and is "
+      "hard with a tremor or a trackpad — iOS Files ships both for that reason")
+
 check("w-full" not in page,
       "no control on the page wears the whole width",
       "a full-width control is back on the Favourites page (Dan, 5 Sep)")
