@@ -2408,54 +2408,49 @@ h3.cahier-display { font-size: var(--fs-h3); }
    the reference makes THRILLS neutral on purpose, and so does this. */
 .fam-none     { --strip: var(--cahier-line-strong); --fam: var(--cahier-line-strong); --fam-ink: var(--cahier-ink-soft); --fam-wash: var(--cahier-paper-2); }
 
-/* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
-   at the screen's width"). One grid rather than floated columns, so a divide
-   is the container's exact midpoint and `1fr` stops a long French title
-   pushing its column wider than its neighbour.
+/* ── ONE TILE GRID, FOR EVERY LIST OF NEAR-IDENTICAL TILES ────────────────
+   Dan, 2026-09-11: *"come back and see where all the other pages with
+   near-identical items (e.g. per-SIO-tile display) that can copy from this
+   style"*, then *"take all four"*.
 
-   The "two to a row" half of that 30 Aug note is superseded below — it is now
-   two to four, and 2026-08-30's reason survives as the LOWER bound. */
-.stop-grid {
+   The floor below was written once for SpecuLearn's stop tiles and was about
+   to be copied into four more places. This repo has a standing lesson about
+   exactly that — `gapSentence` drifted into five implementations and
+   `optionGrid.ts` exists to stop the answer-option threshold doing the same —
+   so the formula lives here and the call sites only choose `--tile-min`.
+
+   THE FLOOR DOES BOTH CAPS BY ITSELF, so there is no breakpoint anywhere:
+
+     min(50% - gap/2, …)          no column wider than half     -> at least 2
+     max(--tile-min, 25% - …)     no column narrower than a 1/4 -> at most 4
+
+   A breakpoint would be wrong twice over: right only at the widths someone
+   remembered to write, and these surfaces run INSIDE the cahier's iframe,
+   where a media query sees the frame and not the phone — 390px of device is
+   313px of frame. GameGallery was the proof: it carried `sm:grid-cols-3`,
+   which asked the frame a question about the phone.
+
+   TWO ON A PHONE IS THE RULE (Dan, 2026-09-07: *"put buttons in two
+   columns"*, looking at SpecuLearn at 390px). The half-floor holds it: at
+   320px the quarter-floor alone would give one column. */
+.fluo-tilegrid,
+.stop-grid,
+.sio-path {
   display: grid;
-  gap: 6px;
-  /* AS MANY AS FIT, BETWEEN TWO AND FOUR (Dan, 2026-09-11: *"I also asked for
-     SpecuLearn tiles to allow more of them per row. Maybe up to 4 per row.
-     While keeping them neatly vertically and horizontally aligned"*).
-
-     It was `repeat(2, minmax(0,1fr))` at EVERY width — a 320px phone and a
-     1920px screen both got two columns, so « 8. Les instructions de classe »
-     wrapped to three lines on the phone while half the card sat empty on the
-     desktop. Measured on the built app: 2 columns up to ~600px, 3 around 900,
-     4 from ~1100.
-
-     THE FLOOR DOES BOTH CAPS BY ITSELF, which is why there is no breakpoint
-     and no `max-width` ribbon centred in a half-empty card:
-
-       min(50% - 3px, …)          no column may be wider than half   -> >= 2
-       max(11rem, 25% - 4.5px)    no column may be narrower than a quarter -> <= 4
-
-     A breakpoint would be wrong here twice over: it would only be right at the
-     widths someone remembered to write, and these landings run INSIDE the
-     cahier's iframe, where a media query sees the frame and not the phone —
-     390px of device is 313px of frame.
-
-     TWO ON A PHONE IS STILL THE RULE (Dan, 2026-09-07: *"put buttons in two
-     columns"*, looking at SpecuLearn at 390px). The `min(50% - 3px, …)` half
-     is what guarantees it: at 320px the quarter-floor would give one column,
-     and the half-floor overrides it. */
+  gap: var(--tile-gap, 6px);
   grid-template-columns: repeat(auto-fit,
-    minmax(min(calc(50% - 3px), max(11rem, calc(25% - 4.5px))), 1fr));
+    minmax(min(calc(50% - var(--tile-gap, 6px) / 2),
+               max(var(--tile-min, 11rem), calc(25% - var(--tile-gap, 6px) * 0.75))), 1fr));
 }
-/* NEATLY ALIGNED, VERTICALLY AS WELL AS HORIZONTALLY — the second half of the
-   same instruction. The tiles were already equal height in a row (`h-full`
-   plus the grid's default `stretch`); what was ragged is the SUBTITLE, which
-   started wherever its title happened to stop. Pinning it to the FOOT of its
-   tile puts every subtitle of a row on one baseline however many lines the
-   title takes above it.
 
-   A `min-height` of two lines was tried first and is the worse answer: it
-   works at most widths and fails at 320px, where a long title wraps to three.
-   The foot never needs to know. */
+/* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
+   at the screen's width"). `1fr` stops a long French title pushing its column
+   wider than its neighbour.
+
+   The "two to a row" half of that 30 Aug note is superseded above — it is now
+   two to four, and 2026-08-30's reason survives as the LOWER bound. */
+.stop-grid { --tile-min: 11rem; }
+
 .stop-grid a,
 .stop-grid a > span { align-items: stretch; }
 .stop-grid a > span > span { display: flex; flex-direction: column; }
@@ -2533,17 +2528,21 @@ h3.cahier-display { font-size: var(--fs-h3); }
    undone step accented in the PRACTICE family's colour (the chain IS the
    FluOlin Practice sequence, whatever page the sheet opens over). Matches
    flow-mocks/stop-sheet.html. */
-/* TWO COLUMNS (Dan, 2026-08-31: "have them as buttons over two columns like
-   we have always done for other things") — the same shape .stop-grid gives
-   the activity landings, so a stop's links look like every other grid of
-   choices in the app.
-   It does NOT collapse to one column the way .stop-grid does below 520px.
-   That breakpoint exists for a full-width page; this grid lives inside a
-   32rem popup that is already narrower than it, so collapsing would leave
-   eight full-width rows on a phone — the tall single column this replaced. */
+/* TWO COLUMNS AT LEAST (Dan, 2026-08-31: "have them as buttons over two
+   columns like we have always done for other things") — the same shape the
+   activity landings get, so a stop's links look like every other grid of
+   choices in the app. It shares their floor now (see .fluo-tilegrid above),
+   which is two to four rather than exactly two.
+
+   THE OLD NOTE HERE WARNED AGAINST COLLAPSING TO ONE COLUMN below 520px, and
+   that warning is why this rule was left alone when the landings changed. It
+   is obsolete: the collapse it feared was a media query, and the shared floor
+   has none — `min(50% - gap/2, …)` guarantees two columns at every width,
+   including inside this 32rem popup. The fear was right about the old rule
+   and does not apply to the new one. */
 .sio-path {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px; margin: 2px 0 14px; padding: 0; list-style: none;
+  --tile-min: 9rem; --tile-gap: 8px;
+  margin: 2px 0 14px; padding: 0; list-style: none;
 }
 .sio-step {
   display: flex; width: 100%; height: 100%; align-items: center; gap: 8px; text-align: left;

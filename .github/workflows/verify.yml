@@ -452,6 +452,9 @@ jobs:
       - name: "One sheet per page, and the coils run up to the band (11 Sep)"
         run: python3 verify/verify230-one-sheet.py
 
+      - name: One tile grid — two to four columns, never a hard count
+        run: python3 verify/verify260-tile-grid.py
+
       # Reported twice in one day, and the first fix addressed a case that was
       # never broken — so the road is measured where it PAINTS, at four zooms.
       - name: "The map's road lands on its stops at every zoom (7 Sep)"
