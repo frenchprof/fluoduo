@@ -6,6 +6,222 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — the queue emptied: five merged, five closed, three deploys, and the email box shut (integration lane, MERGED)
+
+Sole editor of STATUS.md in this commit: fluoduo-main (integration).
+
+**Dan: *"pls merge all and deploy all and sync stage and prod"*.** At the end of
+it there are **no open pull requests**. Production is live at `2221f9d`.
+
+    MERGED   #338 GO TO row   #340 pulse comment   #339 Favourites
+             #344 Firestore rules   #345 profile boxes
+    CLOSED   #326  #330  #331  #335  #336      (work already on main, or QC'd elsewhere)
+    DEPLOYS  run 67 -> 434cc21    run 68 -> 92b53fe    run 69 -> 2221f9d
+
+### THREE PULL REQUESTS WERE FINISHED AND WOULD HAVE REVERTED MAIN
+
+#326 and #330 each looked like ordinary open work. Both were behind main, and
+the tell is worth memorising: **`git diff origin/main <branch>` comes back as net
+DELETIONS.**
+
+    #330  hero-fluolingo.webp  795418 bytes on BOTH sides — byte-identical
+          merging it would have deleted verify280 (93 lines), cut 39 from
+          verify270, and reverted NumBus's pixel sweep
+    #326  the coin anchor is the SAME STRING on both sides, bottom-[max(1rem,0.5%)]
+          merging it would have stripped 18 lines from WelcomeBody to add 5
+
+This is the case AGENTS.md already records under *"BEFORE YOU RENUMBER A SECOND
+TIME, DIFF THE BRANCH AGAINST main"*. The addition here is the diagnostic: a
+finished branch does not look empty, it looks like a deletion patch.
+
+**ONE THING WAS RESCUED RATHER THAN CLOSED WITH THE BRANCH.** #326's five-line
+comment says why the coin's anchor is `1rem` and not `0.75rem`, and main's own
+long comment at that line never did — it is entirely about ENTER colliding with
+stop 1. The reason is the BEAT: the coin pulses to 1.08, an animated element's
+bounding box includes its transform, so its bottom edge sits ~3px lower at the
+top of the beat than at rest.
+
+    shape             at rest   at full beat
+    tablet 1024x768     12.0        8.7      <- under the 10px verify151 needs
+    desktop 1440x900    12.0        8.7
+    phone 390x844       12.0        9.8
+
+So the check went red or green on which tenth of a second it sampled, and main
+DID go red on it. **The failure looks like a layout bug and is not one** — it was
+misread twice in one day, once as the fly-past art, which never touched the coin.
+Landed as #340, credited to `claude/subdomains-c43n66`.
+
+### THE COLLISION ONLY AN INTEGRATION LANE COULD SEE — AND THE CHECK FOR IT
+
+#335 (Favourites) and #331 (rules hardening) **both edit `firestore.rules`, and
+git merges them with no conflict.** That proves the text does not overlap and
+nothing else. **Firestore ORs its matches**, so a shaped `favourites` rule beside
+a permissive `users/{uid}/{sub=**}` is decorative — the wildcard allows what the
+shaped rule refuses. The interaction exists only once both edits are in one
+file, so neither lane could have tested it and neither was wrong not to.
+
+The merged file IS correct (`favourites` sits in the exclusion list beside
+`attempts`, `responses`, `sessions`). Nothing asserted it, so the next edit could
+have dropped the word silently. `scripts/rules-test/favourites.mjs` now does —
+seven cases, wired into `run.mjs`, run by the `firestore-rules` workflow.
+
+**BREAK-TESTED, which is the only reason to believe it.** Deleting the single
+word `favourites` from the exclusion list turns **five of seven** into
+`Expected request to fail, but it succeeded`.
+
+    lost    the 200-item cap, the 20-folder cap, unknown-key rejection,
+            the type check, and the nested-doc dodge
+    kept    ownership — isOwner(uid) guards the wildcard too
+
+**Which two survive is the useful part.** Data stays private; only the LIMITS on
+what can be stored vanish. That is a failure that looks fine in review forever,
+and it is the fifth entry in #331's own "false greens" list.
+
+### CI HAS A FAILURE MODE THAT IS NOT A FAILURE
+
+Four jobs across three unrelated branches went red inside ninety seconds:
+
+    duration 2s · steps: [] · runner_name: "" · runner_id: 0
+
+No runner was ever assigned, so **no check ever ran**. `claude/favourites` had
+been green on the same tree ten minutes earlier and githubstatus.com reported
+all systems operational. A re-run cleared it. `claude/peers-guided` had flagged
+this same symptom at the foot of #330 and guessed the private-repo Actions
+allowance; the instinct was right, the cause was allocation.
+
+**Read `steps: []` before reading `conclusion: failure`.** A branch that never
+got a runner looks identical to a branch that is broken, and it blocks
+`deploy-live` as well as merging.
+
+### A DEPLOY MARKER NEEDS A VERIFIED-ZERO BASELINE, TAKEN BEFORE FIRING
+
+`deploy-live` only MIRRORS main to Cloudflare; Cloudflare then builds. Green
+workflow != live. Every deploy this session was confirmed by measuring the real
+site, and each marker was validated against the local build first:
+
+    run 67   11.625rem        0 -> 1 at 220s   (248px as the negative control)
+    run 68   /favourites 404 -> 200, fluolingo:favourites 0 -> 2 at 160s
+    run 69   min-h-14         0 -> 1 at 140s
+
+**The trap, hit once and avoided twice after.** `186px` is still in the new build
+twice for unrelated reasons, so it would have read as "never deployed" forever;
+`58px` appears six times, same problem. **A marker must be absent from production
+AND present in the new build, both measured, before the deploy is fired.**
+
+### FAVOURITES TOOK MAP'S SLOT, AND THE PLACEMENT QUESTION WAS ALREADY ANSWERED
+
+Dan, on the built row: ***"maps has been taken out because there are already
+doors to the maps elsewhere"***. Verified: `/map` keeps the 🗺️ in the icon strip,
+the Practice row's MneMemo tile (which has no page of its own and deliberately
+opens the map), and Home's hero.
+
+**This lane flagged the Lesson placement as possible miscategorisation and was
+wrong.** Dan: ***"why would facourites mnot fall under lesosns"***. The answer is
+in the menu's own data — that row is not a row of lessons:
+
+    goals      ★ Favourites  ·  🎯 Goals  ·  🆘 Help      <- ORIENTATION
+    practice   💡 SpecuLearn ·  📚 MneMemo ·  🃏 MémoiRecall
+    user       👤 User       ·  🏆 Leaderboard · ⚙️ Settings
+
+Every other row is its family's activities. Lesson's three are *where am I, what
+am I aiming at, how does this work* — and "take me back to the pages I saved" is
+orientation. `activities.ts` had already recorded that the entry was `user` for a
+few hours and that Dan moved the tile and then ruled the page yellow to match its
+door. **The decision was his and already made; reopening it cost an exchange.**
+
+### THE RATCHET LANDED ON EXACTLY 81, WHICH WAS NOT GUARANTEED
+
+#336 lowered `verify270`'s budget 84 -> 81 for three `ProfileContent` fixes. Main
+had since taken Favourites and the GO TO row, either of which could have pushed
+the real count above 81 — the branch would have been lowering the bar under its
+own feet through no fault of its own. Measured on the merged tree:
+
+    ok    81 frozen box sizes in src/, within the budget of 81
+
+**Both of the day's new features added none.** Dan's 12 Sep ruling is holding in
+NEW work, not only being retrofitted onto old.
+
+### THE ORAL TEST IS RETIRED, THE MAIL BOX IS SHUT, AND THE SEVERITY WAS OVERSTATED
+
+`mail/{id}` accepted a create from **any** signed-in account with a well-shaped
+letter — it checked subject and body length and never who the letter was going
+to or who sent it. #331 hardened it to require an invite the sender created.
+
+**The order-dependency warning was resolved by reading the live site, not by
+guessing.** oraltest.withdrchan.com ships its logic inline, so it is readable by
+anyone with a browser. It already enforces, in the client, everything the new
+rule enforces in the database:
+
+    if (!user || !bookings[user.uid]) return;                    // must hold a booking
+    if (ems.includes(canon(user.email))) return toast("That's yourself!");
+    await setDoc(doc(db, INVC, em), { by: user.uid, ... });      // invite FIRST, awaited
+    addDoc(collection(db, "mail"), { to:[em], ... });            // mail SECOND
+
+Exactly one writer to `mail` exists on the whole project; fluoduo and laf2201
+have none.
+
+**THEN DAN ENDED THE QUESTION: *"YOU KNOW WHAT, YOU SHOULD HAVE JUST ASKED ME, I
+AM NEVER GOING TO BE USING THIS TO DO ORAL EXAM EVER AGAIN"*.** With the feature
+retired the right rule is not "require an invite" but **deny everything**, which
+is what shipped. `mail/{id}` is now `allow read, create, update, delete: if false`
+with the reason in the block.
+
+**AND THE SEVERITY WAS WRONG, which is the entry.** Dan: *"guess what i have a
+clean slate there — no such extension found"*. **The Trigger Email extension is
+not installed**, so nothing on the other end ever posted those letters. Writing
+to `mail` sent nothing; it was a storage nuisance, not an email hole, and would
+only have become one if someone later installed the extension and found a queue
+waiting. This lane read the RULE and the WRITING CODE and never checked whether
+anything was listening. **A pipe is only a leak if something is pumping.**
+
+### TWO LESSONS, AND THEY ARE THE SAME LESSON
+
+**ASK BEFORE INVESTIGATING.** An hour went into proving the mail fix safe against
+a site whose feature Dan had already abandoned. One question first — *"are you
+still using this?"* — would have skipped all of it, and Dan said so in exactly
+those words.
+
+**CHECK THE FAR END BEFORE NAMING A SEVERITY.** The same omission twice: is the
+feature still used, and is anything actually listening.
+
+### HOUSEKEEPING
+
+`.gitignore` gained `.tmp-verify-find/` (verify109 leaves 26 untracked `.js`
+files after every sweep) and `firestore-debug.log` / `firebase-debug.log` /
+`ui-debug.log` (the rules suite writes them into the repo root). **Third and
+fourth instances of the same hazard** — the file already carried this fix for
+verify112's scratch, added after a `git add -A` mid-sweep committed it by
+accident on 9 Sep.
+
+`firebase-tools` and `@firebase/rules-unit-testing` are needed to run the rules
+suite locally; `npm install` supplies the second, the first is global.
+
+### STILL OPEN, AND NOT FIXED BY ANY MERGE
+
+- **Nothing in this repo deploys `firestore.rules`.** `deploy-live` mirrors the
+  static site to Cloudflare and does not touch Firebase. #344's `firestore-rules`
+  workflow CAN deploy them, but its deploy job is `workflow_dispatch` +
+  `deploy: true` only and needs a service account with **Firebase Rules Admin**
+  saved as the repo secret `FIREBASE_SERVICE_ACCOUNT`. **That secret does not
+  exist and the workflow has never run.** Dan publishes rules by hand, which
+  takes two minutes and is the working arrangement, not a gap.
+- **If a service account is ever made, it must be a NEW one with only Rules
+  Admin.** A key was briefly created on `firebase-adminsdk-fbsvc` and deleted
+  the same hour: that account also holds Firebase Admin SDK (reads and writes all
+  Firestore data, bypassing the rules) and Firebase Authentication Admin (can
+  change any learner's login). A GitHub secret that can read every learner's
+  record, for a job that only publishes a rules file, is the wrong trade.
+- Leaderboard XP is self-reported; only a Cloud Function totalling
+  `users/{uid}/responses` can bound it.
+- `feedback` and `vlrain_hiscores` take anonymous writes that rules cannot
+  rate-limit. App Check is the answer and the SDK side already ships; the key and
+  console enforcement are outstanding, and enforcement must wait until the legacy
+  laf1201 sites are attested.
+- **`LIVE_DEPLOY_TOKEN` expires 2 Oct 2026.**
+- The 🐞 still covers a tile on VocabulaRain and LexicaLocker; the pre-tests
+  lane's suggested real fix is to take it off the floating layer as a ☰ entry.
+  Dan's call.
+
 ## 12 Sep — the floating 🐞 steps off the control it was covering (pre-tests lane, branch, NOT merged)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane
