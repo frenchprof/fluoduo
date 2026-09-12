@@ -225,7 +225,7 @@ export function GoalPadPicker({
       />
 
       {query ? (
-        <div className="mb-4 max-h-[190px] overflow-auto">
+        <div className="mb-4 max-h-[11.875rem] overflow-auto">
           {hits.length ? hits.map((s) => (
             <button
               key={s.num}
@@ -250,7 +250,7 @@ export function GoalPadPicker({
         <div className="mb-3 space-y-1.5">
           {[0, 1, 2, 3, 4].map((u) => (
             <div key={u} className="flex items-center gap-2">
-              <span className="fluo-mono w-[52px] shrink-0 text-[10px] font-bold uppercase text-[color:var(--cahier-ink-faint)]">
+              <span className="fluo-mono w-[3.25rem] shrink-0 text-[10px] font-bold uppercase text-[color:var(--cahier-ink-faint)]">
                 Unité {u}
               </span>
               <div className="flex flex-wrap gap-1.5">

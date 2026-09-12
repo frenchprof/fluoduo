@@ -251,13 +251,13 @@ export default function MapBody() {
             // A WELL: the app's word for a value you read and type into,
             // rather than a key you press (Dan, 7 Sep: "the zoom counter is
             // not showing any 3D depression like the 2D control is showing").
-            /* w-[62px], not 52 (QC, 8 Sep). At 52px "100" measured 58px of content
+            /* w-[3.875rem], not 52 (QC, 8 Sep). At 52px "100" measured 58px of content
                and the browser scrolled the leading digit out of sight: a desktop
                read « 00 » at 100% and « ?00 » at 200%. A phone was fine, which
                is why it survived — the mono face is set from a smaller step
                there. Three digits is the widest this field can ever hold
                (max=200), and 68 leaves room for the datalist arrow beside them. */
-            className="neo-well w-[68px] rounded-lg px-1 py-1 text-center leading-none"
+            className="neo-well w-[4.25rem] rounded-lg px-1 py-1 text-center leading-none"
             style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
           <datalist id="fluo-zoom-milestones">

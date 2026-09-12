@@ -156,7 +156,7 @@ function QuestionCard({
         <span className="fluo-serif text-base font-bold leading-snug text-[color:var(--fluo-ink)]">
           <span lang="fr">{item.sentenceBefore}</span>
           <span
-            className={`mx-1 inline-block min-w-[56px] rounded-md border-b-2 border-dashed px-1.5 text-center align-baseline ${
+            className={`mx-1 inline-block min-w-[3.5rem] rounded-md border-b-2 border-dashed px-1.5 text-center align-baseline ${
               !showResult
                 ? "border-sky-400 bg-sky-50 text-sky-600"
                 : correct

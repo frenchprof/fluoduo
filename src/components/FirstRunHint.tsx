@@ -150,7 +150,7 @@ export default function FirstRunHint({
             type="checkbox"
             checked={never}
             onChange={(e) => setNever(e.target.checked)}
-            className="h-[18px] w-[18px] shrink-0 accent-[color:var(--cahier-ink)]"
+            className="h-[1.125rem] w-[1.125rem] shrink-0 accent-[color:var(--cahier-ink)]"
           />
           Do not show me again
         </label>

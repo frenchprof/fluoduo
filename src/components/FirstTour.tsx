@@ -424,7 +424,7 @@ export default function FirstTour() {
             type="checkbox"
             checked={never}
             onChange={(e) => setNever(e.target.checked)}
-            className="h-[16px] w-[16px] shrink-0 accent-[color:var(--cahier-ink)]"
+            className="h-[1rem] w-[1rem] shrink-0 accent-[color:var(--cahier-ink)]"
           />
           Never offer again
         </label>

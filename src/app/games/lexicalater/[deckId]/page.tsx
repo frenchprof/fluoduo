@@ -39,7 +39,7 @@ export default async function ConveyorPage({
       <AuthGate what="play">
         <GameFrame title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLocker</>} exitHref="/games/lexicalater" progress={null}>
           <div className="mx-auto max-w-md px-6 py-20 text-center text-[color:var(--cahier-ink)]">
-            <ChestArt tint={CHEST_GOLD} className="mx-auto block w-[52px]" />
+            <ChestArt tint={CHEST_GOLD} className="mx-auto block w-[3.25rem]" />
             <p className="mt-3 text-xl font-black">LexicaLocker is being prepared for “{collection.title}”.</p>
             <BackLink fallback="/games/lexicalater" className="cahier-btn mt-5 inline-block">← Back</BackLink>
           </div>
