@@ -480,7 +480,22 @@ export default function WelcomeBody() {
           down — which is the edge that was colliding. Height comes off rather
           than width: an ellipse seen in perspective is flat, so a shorter
           coin reads MORE like the stops it imitates, and the width (and so
-          the prominence Dan asked for) is untouched. */}
+          the prominence Dan asked for) is untouched.
+
+          THE ANCHOR IS 1rem AND NOT 0.75rem, AND THE REASON IS THE BEAT, NOT
+          THE LAYOUT. The coin pulses (`home-map3d-pulse`, scale 1.08 every
+          2s), and an animated element's bounding box includes its transform —
+          so at the top of the beat its bottom edge sits ~3px LOWER than at
+          rest. Anchored at 12px it measured 12.0px at rest and 8.7px at full
+          beat on a 1024x768 tablet and a 1440x900 desktop, under the 10px
+          verify151 requires for a thumb rail. The check therefore went red or
+          green on which tenth of a second it happened to sample, and main did
+          go red on it (12 Sep). At 16px the worst point of the beat is 12.7px
+          on the widest shapes and 13.8px on phones.
+
+          Worth knowing because it was misread twice: the failure looks like a
+          layout bug and is not one — nothing about the coin's LAYOUT position
+          changed. A future beat larger than 1.08 reopens this. */}
       <div className="absolute inset-x-0 bottom-[max(1rem,0.5%)] flex flex-col items-center px-6">
         {/* THE ONE THING THAT MOVES ON THIS PAGE (Dan, 11 Sep: *"THE ENTER
             PAGE - IS MISLEADING : THE BLINKING STOP IS ON 1 RATHER THAN ON
