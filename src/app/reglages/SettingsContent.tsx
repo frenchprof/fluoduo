@@ -13,6 +13,7 @@
 import { useEffect, useState } from "react";
 import { DEFAULTS, readUiPrefs, writeUiPrefs, type UiPrefs } from "@/lib/uiPrefs";
 import { FAMILIES, familyShort } from "@/content/activities";
+import AccentColours from "@/components/AccentColours";
 
 export default function SettingsContent() {
   const [prefs, setPrefs] = useState<UiPrefs>(DEFAULTS);
@@ -112,6 +113,18 @@ export default function SettingsContent() {
               </label>
             ))}
           </div>
+        </section>
+
+        {/* THE ACCENT COLOURS (Dan, 2026-09-12: "As for the 'payable' colors,
+            move them into Settings instead"). They used to sit in the profile's
+            THRILLS shop; a colour you own is a preference, not an achievement,
+            and preferences live here. */}
+        <section
+          className="mt-5 rounded-xl border-2 p-4"
+          style={{ background: "var(--cahier-paper-raised, #fff)", borderColor: "var(--cahier-line-strong, #ddd)" }}
+        >
+          <h2 className="mb-2.5 text-base font-extrabold" style={{ color: "var(--cahier-ink)" }}>Accent colour</h2>
+          <AccentColours />
         </section>
       </div>
   );

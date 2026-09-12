@@ -77,6 +77,36 @@ type RowKey = (typeof ROWS)[number]["key"];
  *  The tokens are HeatStrip's own (`--tier-*`, `--cahier-line`), never a
  *  hand-picked hex — verify19b's raw-hex ratchet, and so the key cannot say a
  *  different green from the one on the tiles. */
+/**
+ * WHICH ROWS APPEAR AT ALL (Dan, 2026-09-12). Three of the five were on the
+ * page with nothing in them, each for a different reason, and he ruled on each:
+ *
+ *   FRILLS   "should not appear in here until the student has completed one
+ *            creation (either ChaTutor or ComposeIt)"
+ *   ILLS     "is unclear what this is about - i suggest also to hide until we
+ *            figure out to use it"
+ *   THRILLS  "Don't show this section until there is something to show for it"
+ *
+ * This is the collapse rule's harder sibling: that one folds away what earns
+ * its place but not its position; this removes what has not earned a place at
+ * all. A row that always reads EMPTY teaches a learner only that the app has
+ * a hole in it.
+ *
+ * KNOWN GAP, not an oversight: a ChaTutor conversation is invisible here.
+ * `activityLedger`'s PREFIX_TO_KEY maps ComposeIt (`compose`) and not ChaTutor,
+ * so "one creation" can only be detected for half of what Dan named. Wiring
+ * ChaTutor into the ledger is its own change; until then FRILLS opens on a
+ * ComposeIt creation alone.
+ */
+function rowsToShow(p: Progress, hasCreation: boolean): typeof ROWS[number][] {
+  return ROWS.filter((r) => {
+    if (r.key === "frills") return hasCreation;
+    if (r.key === "ills") return false;
+    if (r.key === "thrills") return p.badges.length > 0;
+    return true;
+  });
+}
+
 const LEGEND: { word: string; token: string; ring?: boolean }[] = [
   { word: "STRONG", token: "var(--tier-good)" },
   { word: "MIXED", token: "var(--tier-medium)" },
@@ -168,6 +198,19 @@ export default function ProfileContent() {
 
   // Signed in: the answer log. Signed out: this device's ledger. Same shape.
   const acc = useMemo<Accuracy>(() => (resp ? outcomeAccuracy(resp) : ledgerAcc), [resp, ledgerAcc]);
+
+  /** Has the learner made something? ComposeIt tallies under `compose` in the
+   *  ledger; a single attempt on any deck counts as one creation. */
+  const hasCreation = useMemo(() => {
+    const byDeck = loadLedger()["compose"];
+    return !!byDeck && Object.values(byDeck).some((t) => t.right + t.wrong > 0);
+    // `ledgerAcc` is not read here — it is the SIGNAL. It is set by the same
+    // effect that reads localStorage, so it is the only thing in this component
+    // that changes when the ledger does, and dropping it would freeze this at
+    // whatever the ledger held on mount. The rule cannot see a dependency that
+    // exists to time a re-read rather than to be read.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ledgerAcc]);
   const queue = useMemo(() => (p && now ? redrills(p, acc, now) : []), [p, acc, now]);
   const skills = useMemo(() => skillCoverage(acc), [acc]);
   const next = useMemo(() => (p && now ? nextAction(p, queue, now) : null), [p, queue, now]);
@@ -269,7 +312,7 @@ export default function ProfileContent() {
         {/* ── The record. One open at a time; every row states its own value
             on the right, so the page reads shut. ── */}
         <div className="lg:min-w-0">
-          {ROWS.map((row) => (
+          {rowsToShow(p, hasCreation).map((row) => (
             <Section
               key={row.key}
               hue={row.hue}

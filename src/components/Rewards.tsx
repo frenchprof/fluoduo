@@ -18,8 +18,8 @@
  * GAME decks (Dan, 7 Sep) — never a goal, lesson, drill or revision
  * ("nothing is locked", progress.ts).
  */
-import { buyCosmetic, buyShield, buyUnlock, equipCosmetic, type Progress } from "@/lib/progress";
-import { BADGES, COSMETICS, DEFAULT_ACCENT, EXPERT_UNLOCKS, SHIELD_COST, SHIELD_MAX } from "@/lib/economy";
+import {buyShield, buyUnlock, type Progress } from "@/lib/progress";
+import { BADGES, EXPERT_UNLOCKS, SHIELD_COST, SHIELD_MAX } from "@/lib/economy";
 
 const INK = "var(--cahier-ink)";
 const SOFT = "var(--cahier-ink-soft)";
@@ -27,14 +27,16 @@ const LINE = "var(--cahier-line-strong)";
 const PAPER = "var(--cahier-paper-raised)";
 
 export default function Rewards({ p, onChange }: { p: Progress; onChange: (p: Progress) => void }) {
-  const equipped = p.cosmetics.equipped.homeAccent ?? null;
   return (
     <div className="flex flex-col gap-3.5">
-      {/* Badges — earned ones in ink, the rest greyed at the same size, so the
-          collection reads as a set with holes rather than a list of locks. */}
+      {/* EARNED BADGES ONLY (Dan, 2026-09-12: "don't show the items that are
+          not yet achieved"). They used to show as a set with holes — every
+          badge at the same size, the unearned ones greyed with their price.
+          That is a catalogue of what you have not done, on the page a learner
+          opens to see what they have. */}
       <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4">
-        {BADGES.map((b) => {
-          const has = p.badges.includes(b.id);
+        {BADGES.filter((b) => p.badges.includes(b.id)).map((b) => {
+          const has = true;
           return (
             <div
               key={b.id}
@@ -50,31 +52,15 @@ export default function Rewards({ p, onChange }: { p: Progress; onChange: (p: Pr
         })}
       </div>
 
-      {/* The gem balance and the one thing it buys. */}
+      {/* THE COLOURS MOVED TO SETTINGS (Dan, 2026-09-12: "As for the
+          'payable' colors, move them into Settings instead") — see
+          components/AccentColours.tsx. The gem balance stays here because the
+          Bouclier and the expert decks below are still priced in gems, and a
+          price with no balance beside it cannot be weighed. */}
       <div className="flex flex-wrap items-center gap-1.5">
         <span className="fluo-mono rounded-md border-2 px-2 py-1.5 text-[12px] font-bold" style={{ borderColor: LINE, color: INK }}>
           💎 {p.gems}
         </span>
-        <SwatchButton
-          swatch={DEFAULT_ACCENT}
-          label="Default"
-          state={equipped === null ? "equipped" : "owned"}
-          onClick={() => onChange(equipCosmetic(null))}
-        />
-        {COSMETICS.map((c) => {
-          const owned = p.cosmetics.owned.includes(c.id);
-          const state = equipped === c.id ? "equipped" : owned ? "owned" : p.gems >= c.cost ? "buyable" : "locked";
-          return (
-            <SwatchButton
-              key={c.id}
-              swatch={c.swatch}
-              label={c.label}
-              cost={owned ? undefined : c.cost}
-              state={state}
-              onClick={() => onChange(owned ? equipCosmetic(c.id) : buyCosmetic(c.id))}
-            />
-          );
-        })}
       </div>
 
       {/* The utility shelf (Dan's 7 Sep rulings): the Bouclier and the expert
@@ -120,36 +106,3 @@ export default function Rewards({ p, onChange }: { p: Progress; onChange: (p: Pr
 }
 
 /** One accent colour: the swatch IS the affordance, the state is the border. */
-function SwatchButton({
-  swatch, label, cost, state, onClick,
-}: {
-  swatch: string;
-  label: string;
-  cost?: number;
-  state: "equipped" | "owned" | "buyable" | "locked";
-  onClick: () => void;
-}) {
-  const title = state === "equipped" ? `${label} — equipped`
-    : state === "locked" ? `${label} — 💎 ${cost}, not enough gems`
-    : state === "buyable" ? `${label} — buy for 💎 ${cost}`
-    : `${label} — equip`;
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={state === "locked" || state === "equipped"}
-      aria-label={title}
-      title={title}
-      className="flex min-h-[40px] items-center gap-1.5 rounded-md border-2 px-2 py-1 disabled:cursor-default"
-      style={{
-        borderColor: state === "equipped" ? INK : LINE,
-        background: PAPER,
-        opacity: state === "locked" ? 0.45 : 1,
-      }}
-    >
-      <span aria-hidden className="h-4 w-4 shrink-0 rounded-full border-2" style={{ background: swatch, borderColor: INK }} />
-      {cost !== undefined && <span className="fluo-mono text-[10px] font-bold" style={{ color: SOFT }}>💎{cost}</span>}
-      {state === "equipped" && <span aria-hidden className="fluo-mono text-[10px] font-black" style={{ color: INK }}>✓</span>}
-    </button>
-  );
-}
