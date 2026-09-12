@@ -3110,12 +3110,54 @@ html[data-embed] body { background: transparent; }
    along. */
 html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 
-/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well.
-   The station inside paints its own paper, so the well's own 20px top and
-   bottom and its right inset would be a frame around a frame — visible as a
-   band of the host's ruled paper down each side of the drill. The LEFT gutter
-   is kept on purpose: the coils live there, and they are the notebook. */
-.cahier-foolscap:has(.embed-frame) { padding-top: 0; padding-bottom: 0; padding-right: 0; }
+/* AND ON THE HOST SIDE: a well that holds a frame gives it the whole well —
+   ALL FOUR SIDES, since 2026-09-12. The station inside paints its own paper, so
+   the well's own 20px top and bottom and its right inset would be a frame
+   around a frame: a band of the host's ruled paper down each side of the drill.
+
+   THE LEFT GUTTER USED TO BE KEPT, "because the coils live there", and that is
+   the line Dan sent back, with the Goals page beside MneMemo:
+
+     "solve this issue of colored strips that seems to end (1) before they reach
+      the ring binds, and (2) where the X is so far away from the left. The
+      Goals page serves as the benchmark standard"
+
+   Both halves are that one gutter. A framed station's heading band is drawn
+   INSIDE the frame and fills it, so wherever the frame starts is where the
+   colour starts — and the gutter began it 64px to the RIGHT of the rings.
+   Measured on the built export at 1280px, against Goals, whose band is drawn by
+   the host and needs no frame:
+
+                    coils      band starts      the ✕
+       Goals        20..82     44   (behind)    88
+       MneMemo      20..82     108  (26 clear)  152
+
+   So the strip stopped in mid-air with a band of paper showing between it and
+   the binding, and the ✕ inherited the whole 64px because it is measured from
+   the band's own left edge. One gutter, two complaints.
+
+   Dropping it puts a framed band at 44 — the same 6px family spine inset Goals
+   has — and the coils, which are drawn by the HOST at z-index 3, paint across
+   its left edge exactly as they paint across Goals'. The ✕ lands at 88 by the
+   same arithmetic that already governs Goals: the `.cahier-binding ~ .page-band`
+   clearance is 3rem, and it was always being applied inside the frame; it was
+   simply being applied to a band that had already cleared the rings by 26px.
+
+   THE STATION'S OWN CONTENT KEEPS ITS DISTANCE — see the rule below. The gutter
+   was doing two jobs and only one of them was the band's. */
+.cahier-foolscap:has(.embed-frame) { padding: 0; }
+
+/* …AND THE STATION KEEPS ITS DISTANCE FROM THE RINGS.
+   The gutter that just went was doing two jobs: starting the band clear of the
+   coils, which was the fault, and keeping the station's CONTENT clear of them,
+   which is still needed — the coils are drawn by the host on top of the frame,
+   so anything under them is simply covered.
+   Only the band bleeds. Everything else inside a framed station is inset by the
+   width the coils occupy, which is the same 3rem the band's ✕ already clears
+   by, so a drill's first control and its ✕ line up on one edge instead of two.
+   `~` and not `>`: the sibling that follows the band is the content, whatever
+   wrapper a station happens to use. */
+html[data-embed] .page-band ~ * { padding-left: 3rem; }
 
 /* ===========================================================================
  *  THE GOAL'S TAG, ON A TORN SCRAP

@@ -61,6 +61,15 @@ const CORNER = [
   "/profil", "/tutor", "/map", "/reviser", "/tts",
   "/games/vocabularain", "/sio/SIO-041",
   "/practice/grammarathon/salutations", "/decks/salutations",
+  /* ADDED 2026-09-12, AND THE LIST WAS USELESS FOR SECTION 3 WITHOUT THEM.
+     Every route above draws its band in the HOST document, so the strip-reaches-
+     the-rings check could not fail on any of them: restoring the fault and
+     re-running left it green. These three draw their band INSIDE the frame,
+     which is the only place the fault lives — a check whose subject is absent
+     from its own list reports safety.
+     `/conjugaison` and the lesson are DrillShell-in-a-frame; `/practice/say-it`
+     is a third shape of the same thing. */
+  "/conjugaison", "/lessons/deck/salutations", "/practice/say-it/salutations",
 ];
 
 const MIME = {
@@ -176,6 +185,75 @@ for (const route of CORNER) {
     }
   }
   process.stdout.write(`  corner     ${route}${seen ? "" : "   (no shell band — its heading is inside the well)"}\n`);
+}
+
+/* ── 3 · THE STRIP REACHES THE RINGS, IN EVERY DOCUMENT ──────────────────────
+ *
+ * Dan, 2026-09-12, with the Goals page beside MneMemo: *"solve this issue of
+ * colored strips that seems to end (1) before they reach the ring binds, and
+ * (2) where the X is so far away from the left. The Goals page serves as the
+ * benchmark standard"*.
+ *
+ * Section 2 above cannot see this, and the reason is the whole point of this
+ * one: it measures a band and the coils WITHIN ONE DOCUMENT. A framed station
+ * draws its band inside the frame, where `.cahier-binding` is hidden and
+ * therefore zero-wide — so every assertion up there passed while the strip
+ * started 64px to the right of the rings with a band of paper showing between.
+ *
+ * Measured at 1280px before the fix, against Goals, whose band the host draws:
+ *
+ *                  coils      band starts      the ✕
+ *     Goals        20..82     44   (behind)    88
+ *     MneMemo      20..82     108  (26 clear)  152
+ *
+ * So: find the coils in the HOST document and the band wherever it really is,
+ * put both in the same coordinates, and require the strip to run behind the
+ * rings and the ✕ to clear them. One measurement, both of Dan's complaints.
+ */
+for (const route of CORNER) {
+  if (!resolveFile(route)) continue;
+  await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: "domcontentloaded" });
+  await page.waitForTimeout(1500);
+
+  const host = await page.evaluate(() => {
+    const b = document.querySelector(".cahier-binding");
+    const fr = document.querySelector("iframe");
+    return {
+      bindRight: b ? Math.round(b.getBoundingClientRect().right) : null,
+      frameLeft: fr ? Math.round(fr.getBoundingClientRect().left) : 0,
+    };
+  });
+  if (host.bindRight === null) { process.stdout.write(`  reach      ${route}   (no coils)\n`); continue; }
+
+  // The band, in HOST coordinates wherever it is drawn.
+  let band = null;
+  for (const f of page.frames()) {
+    const dx = f === page.mainFrame() ? 0 : host.frameLeft;
+    const got = await f.evaluate((d) => {
+      const el = [...document.querySelectorAll(".page-band")]
+        .find((e) => getComputedStyle(e).display !== "none" && e.getBoundingClientRect().height > 0);
+      if (!el) return null;
+      const r = el.getBoundingClientRect();
+      const lead = el.firstElementChild?.getBoundingClientRect();
+      return { left: Math.round(r.left + d), x: lead ? Math.round(lead.left + d) : null };
+    }, dx).catch(() => null);
+    if (got) { band = got; break; }
+  }
+  if (!band) { process.stdout.write(`  reach      ${route}   (no shell band)\n`); continue; }
+
+  if (band.left >= host.bindRight) {
+    bad.push(`${route}: the coloured strip starts at ${band.left}px and the coils end at ` +
+      `${host.bindRight}px — it stops ${band.left - host.bindRight}px SHORT of the binding, with ` +
+      "the page's own paper showing between them. Goals runs its strip behind the rings; a framed " +
+      "station must too, which means the well gives the frame its left gutter as well as the rest.");
+  }
+  if (band.x !== null && band.x - host.bindRight > 24) {
+    bad.push(`${route}: the band's ✕ is ${band.x - host.bindRight}px clear of the coils — it is ` +
+      "measured from the band's own left edge, so a strip that starts late carries the ✕ out with " +
+      "it. On Goals the gap is 6px.");
+  }
+  process.stdout.write(`  reach      ${route}   strip ${band.left} · coils end ${host.bindRight}` +
+    `${band.x === null ? "" : ` · ✕ ${band.x}`}\n`);
 }
 
 await browser.close();
