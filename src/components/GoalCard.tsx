@@ -36,10 +36,36 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { deckActivityTabs } from "@/components/CahierShell";
-import { FAMILIES, familyOf, type FamilyKey } from "@/content/activities";
+import { FAMILIES, activity, familyOf, type FamilyKey } from "@/content/activities";
+import { sioKind, sioSecondary, KIND_LABEL, type SioKind } from "@/content/sioKinds";
+import { KIND_COLOR } from "@/components/HomeMap";
 import { TILE, TILE_EMOJI, TILE_NAME } from "@/components/familyTile";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import type { Sio } from "@/content/sios";
+
+/** THE EIGHT DOORS A GOAL CAN HAVE, in `deckActivityTabs`' own order.
+ *
+ *  Kept here rather than derived from the registry, because the registry holds
+ *  every activity in the app — including the ones that are not per-goal at all
+ *  (the map, the profile, the tools). This is the list that function can emit,
+ *  and a mismatch shows up as a permanently grey tile, which is visible rather
+ *  than silent. */
+/*  THE TAB KEY IS NOT ALWAYS THE REGISTRY KEY, and WorDrill is the one that
+ *  bites: its tab is keyed `say` — the Memo-rename precedent, so SioModal
+ *  embedding and every withActive caller keep working — while the registry row
+ *  is `wordrill`. Matching on the registry key alone greyed WorDrill on all
+ *  fifty stops, and it is available on all fifty: `deckActivityTabs` emits it
+ *  unconditionally. The two are spelt separately here for that reason. */
+const GOAL_DOORS: { tab: string; reg: string }[] = [
+  { tab: "speculearn", reg: "speculearn" },
+  { tab: "lesson", reg: "lesson" },
+  { tab: "flip", reg: "flip" },
+  { tab: "grammarathon", reg: "grammarathon" },
+  { tab: "vocabularain", reg: "vocabularain" },
+  { tab: "lexicalator", reg: "lexicalator" },
+  { tab: "compose", reg: "compose" },
+  { tab: "say", reg: "wordrill" },
+];
 
 export default function GoalCard({
   sio,
@@ -48,7 +74,37 @@ export default function GoalCard({
   sio: Sio;
   compact?: boolean;
 }) {
+  /* EVERY DOOR A GOAL CAN HAVE, WITH THE ONES IT CANNOT PLAY GREYED OUT
+     rather than missing (Dan, 2026-09-12: *"if the activity does not exist for
+     a particular stop, then grey out the item on the menu!"*).
+
+     WHAT IT WAS, AND WHY IT READ AS A BUG. `deckActivityTabs` builds its list
+     conditionally — an activity with nothing for this deck is simply not in
+     the array — so the card silently showed a DIFFERENT NUMBER of doors on
+     every goal: seven on SIO-023, five on another, and nothing anywhere saying
+     why. A learner cannot tell "this goal has no ComposeIt" from "ComposeIt
+     moved". Absence is not an answer; it is the absence of one.
+
+     GOAL_DOORS is the universe — the eight keys `deckActivityTabs` can emit,
+     in its own order — and what the deck actually offers is looked up against
+     it. So the row is the same length on all fifty stops and the colour does
+     the talking, which is what makes a greyed tile READ as "not here" instead
+     of leaving a hole. */
   const items = sio.collectionId ? deckActivityTabs(sio.collectionId).filter((t) => t.href) : [];
+  const doors = useMemo(() => {
+    const got = new Map(items.map((t) => [t.key, t]));
+    return GOAL_DOORS.map(({ tab, reg: regKey }) => {
+      const live = got.get(tab);
+      const reg = activity(regKey);
+      return {
+        key: tab,
+        label: live?.label ?? reg?.name ?? regKey,
+        emoji: live?.emoji ?? reg?.emoji ?? "",
+        href: live?.href ?? null,
+      };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `items` is rebuilt each render from sio.collectionId, so that is the real input
+  }, [sio.collectionId]);
 
   /* Grouped into the ☰'s own row order, and only for families that actually
      have a door on this goal — an empty band would claim a family the goal
@@ -57,8 +113,8 @@ export default function GoalCard({
      grouping rather than given a colour it has refused; none of the deck
      activity tabs is one today, and this is what keeps that true. */
   const byFamily = useMemo(() => {
-    const bag = new Map<FamilyKey, typeof items>();
-    for (const t of items) {
+    const bag = new Map<FamilyKey, typeof doors>();
+    for (const t of doors) {
       const fam = familyOf(t.key);
       if (!fam) continue;
       const got = bag.get(fam);
@@ -67,8 +123,7 @@ export default function GoalCard({
     }
     return FAMILIES.map((f) => [f.key, bag.get(f.key)] as const)
       .filter((e): e is readonly [FamilyKey, NonNullable<typeof e[1]>] => !!e[1] && e[1].length > 0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `items` is rebuilt each render from sio.collectionId, so that is the real input
-  }, [sio.collectionId]);
+  }, [doors]);
 
   /* THE NAME UNDER THE TILE (Dan, 2026-09-11: *"it would help to add the name
      of each activity below the tile by default) we can allow userss to remove
@@ -95,10 +150,72 @@ export default function GoalCard({
       {/* THE TAG IS A TORN SCRAP, pasted on. `.goal-scrap` in globals.css holds
           the tear and the shadow; the wrapper is what pins it to one edge so it
           does not centre itself differently on a long id than a short one. */}
-      <p className="goal-scrap -mt-1 mb-3 flex justify-start">
+      {/* THREE SEPARATE LABELS, NOT ONE STRIP (Dan, 2026-09-12: *"they can
+          actually be three spearate labels"*). The id, the unit and the kind
+          are three different facts and were being read as one run of text with
+          a dot in the middle of it; torn apart, each is its own scrap and the
+          coloured one stops looking like a suffix. */}
+      <p className="goal-scrap -mt-1 mb-3 flex flex-wrap items-center justify-start gap-[0.4em]">
         <span className="fluo-mono text-[11px] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
-          {sio.id} · {sio.unitLabel}
+          {sio.id}
         </span>
+        <span className="fluo-mono text-[11px] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+          {sio.unitLabel}
+          {/* WHAT KIND OF STOP THIS IS, AS A LABELLED TAG IN THE MAP'S OWN
+              PENS (Dan, 2026-09-12: *"can we tag each SIO with the four stop
+              colors seen in the legend of the map? like right next to 'SIO
+              -0XX UNITÉ X' in the respective colors?"*, then, on a first cut
+              that drew coloured dots: *"actually i mean a real tag with the tag
+              label"*).
+
+              A DOT IS A KEY, AND A KEY NEEDS A LEGEND. That is what was wrong
+              with the first version: on the map the four colours sit beside
+              their words, so the colour is readable; lifted onto a goal card on
+              its own it asks the learner to have memorised which of four hues
+              means grammar. The word carries the meaning and the colour carries
+              the link back to the map — both, or neither works.
+
+              The words are `KIND_LABEL` and the pens are `KIND_COLOR`, the two
+              the MAP itself reads. That is the whole point, and it is this
+              file's own recent lesson twice over: the welcome page's four brand
+              letters silently turned grey when the menu was recoloured because
+              they had BORROWED family tokens, and these very doors wore the
+              demand axis until the strip ruling pointed them at the family. A
+              second copy of "blue means vocabulary" is a copy that will one day
+              disagree with the map.
+
+              TWO TAGS WHERE A STOP HAS A SECOND FOCUS — `sioSecondary()` already
+              answers that and eleven of the fifty say yes, so one tag would have
+              quietly called them all single-focus.
+
+              EVERY SIZE HERE IS IN `em`, so the tag rides the type ramp with the
+              label beside it and needs no rule of its own — Dan, the same day:
+              *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES"*. A tag
+              is not a control, but a frozen 9px chip beside text that grows a
+              third on a desktop is the same fault in smaller clothes. */}
+          {/* `inline-flex`, not `flex`, and it matters: `.goal-scrap > *` forces
+              its direct child to `inline-block`, so a block-level flex box here
+              becomes its own line and the tags drop UNDER the label. That is
+              what the first build did. */}
+        </span>
+        {[sioKind(sio.id), sioSecondary(sio.id)]
+          .filter((k): k is SioKind => !!k)
+          .map((k) => (
+            <span
+              key={k}
+              /* BLACK, NOT WHITE (Dan, 2026-09-12, shown both rendered from
+                 one build with only the ink swapped). He asked for white first
+                 and changed it on seeing it measured: against these four pens
+                 white runs 1.84-3.01 where small text wants 4.5, worst on the
+                 green. Black runs 6.98-11.41 on the same four. The house ink
+                 rather than a hex, so it follows the paper if the paper ever
+                 moves. */
+              className="fluo-mono rounded-[0.35em] px-[0.5em] py-[0.1em] text-[11px] font-black uppercase leading-none tracking-wider text-[color:var(--cahier-ink)]"
+              style={{ background: KIND_COLOR[k] }}
+            >
+              {KIND_LABEL[k]}
+            </span>
+          ))}
       </p>
 
       {/* THE WORDS, and nothing around them.
@@ -216,9 +333,16 @@ export default function GoalCard({
                    fill: the family reads as the ground around it, exactly as it
                    does in the ☰, and the paper stays paper. The pad is what the
                    band used to be — one tile wide instead of a whole row. */
-                <span key={t.key} className={`fam-${fam} rounded-xl p-1`}
-                      style={{ background: "var(--fam)" }}>
-                <Link href={t.href!} title={t.label}
+                /* GREYED, NOT MISSING, when this goal has nothing for it.
+                   A `<span>` rather than a `<Link>`: an anchor with no href is
+                   still focusable in some browsers and announces as a link that
+                   goes nowhere, which is worse than a plain tile. `aria-disabled`
+                   plus the word in the title says why out loud. */
+                <span key={t.key}
+                      className={`${t.href ? `fam-${fam}` : ""} rounded-xl p-1`}
+                      style={{ background: t.href ? "var(--fam)" : "var(--cahier-line)" }}>
+                {t.href ? (
+                <Link href={t.href} title={t.label}
                       className={`${TILE} w-full`}
                       style={{ borderColor: "var(--fam-ink)" }}>
                   <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
@@ -231,6 +355,19 @@ export default function GoalCard({
                     <span className="sr-only">{t.label}</span>
                   )}
                 </Link>
+                ) : (
+                <span aria-disabled="true"
+                      title={`${t.label} — not on this goal`}
+                      className={`${TILE} w-full cursor-default opacity-45`}
+                      style={{ borderColor: "var(--cahier-line-strong)" }}>
+                  <span aria-hidden className={TILE_EMOJI}>{t.emoji}</span>
+                  {labels ? (
+                    <span className={TILE_NAME}>{t.label}</span>
+                  ) : (
+                    <span className="sr-only">{t.label} — not on this goal</span>
+                  )}
+                </span>
+                )}
                 </span>
               )))}
           </div>
