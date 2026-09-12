@@ -132,26 +132,37 @@ const hrefOf = (key: string) => activity(key)?.href ?? HOME_HREF;
 // bare grid). The family rows take their family's own display name so a
 // rename in FAMILIES carries here.
 const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
-  // LESSON — two tiles now, not three (Dan, 2026-09-12).
+  // LESSON — ★ Favourites, the goal itself, and Help. TWO BRANCHES LANDED ON
+  // THIS ROW WITHIN AN HOUR OF EACH OTHER and both were right; this is the
+  // merge, spelled out because a careless resolution silently loses one.
   //
-  // MAP IS GONE because the page it opened is gone: /map forwards to Home,
-  // which draws the map itself. Dan, shown the two: *"We don't need Map in the
-  // menu it is already in the Kallang Wave"* — the map is the thing on the
-  // page you are already looking at, so a menu door to it was a door to here.
+  // MAP GAVE UP THIS TILE, from both sides at once. Dan to the Favourites
+  // lane: *"put Favourites in the burger grid menu in the yellow lesson strip
+  // replacing Map (Map already has multiple doors and does not need this
+  // space)"*. Dan to this lane, the same day: *"We don't need Map in the menu
+  // it is already in the Kallang Wave"*. The second reason is now the stronger
+  // one — `/map` forwards to Home, which DRAWS the map, so a menu door to it
+  // was a door to the page you were already looking at.
   //
-  // GOALS LEADS TO THE GOAL (*"Goals will lead to SIOs"*), which is what the
-  // comment this replaces promised: it opened Home only while `/sio/[id]` was
-  // still being built by another lane. It has landed, and with Home now being
-  // the map, pointing 🎯 back at Home would have been a door to the page you
-  // pressed it on. A picker rather than a link, because "which goal?" is the
-  // question — the same slider every other per-stop tile opens.
+  // ★ FAVOURITES is the Favourites lane's tile, unchanged. It needed a door:
+  // the ★ beside the account chip only becomes a LINK once something is
+  // starred, so a learner who had never starred anything could not reach the
+  // page to find out what it was for. ★ and not ⭐ — the filled text star is
+  // what the button and the page wear, while ⭐ is XP, and one glyph means one
+  // thing.
   //
-  // ⭐ FAVOURITES IS NOT HERE YET, deliberately. Dan asked for it in Map's
-  // place; `claude/favourites` has already built the feature (a /favourites
-  // page, the star, sync, verify300) and it is not on main, so a tile added
-  // now would be a door to nothing. His call, put to him: remove Map, add the
-  // star when that branch lands. Whoever lands it owns this slot.
+  // 🎯 GOALS IS A PICKER, WHICH IS THIS LANE'S HALF AND THE PART A NAIVE MERGE
+  // WOULD HAVE DROPPED. main's tile still read `href: HOME_HREF` with a
+  // comment saying the per-SIO page was "a separate, larger piece Dan has
+  // someone else building — this tile will point there once it lands". IT HAS
+  // LANDED. Dan, 2026-09-12: *"Goals will lead to SIOs"*. And with Home now
+  // being the map, `HOME_HREF` here would be a door to the page you pressed it
+  // on. A picker rather than a plain link because "which goal?" is the
+  // question — the same slider every other per-stop tile opens. See
+  // `stopHref`'s `sio` case, the one entry that cannot fail: its addresses are
+  // built from the same array the slider counts.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
+    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
     { kind: "picker", emoji: "🎯", name: "Goals", sioKey: "sio" },
     { kind: "help" },
   ]},

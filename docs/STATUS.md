@@ -338,6 +338,227 @@ nothing left to test.
 Green here: `tsc --noEmit`, `NEXT_PUBLIC_OPEN_APP=1 npm run build`, eslint on
 every touched file, `verify-wiring`, and all of `verify/*.py` (0 failing).
 
+### 12 Sep — Favourites takes the map's tile in the ☰ menu
+
+**Dan: *"put Favourites in the burger grid menu in the yellow lesson strip
+replacing Map (Map already has multiple doors and does not need this space)"*.**
+Done — the first cell of the LESSON row is « ★ Favourites » now.
+
+**He is right about the count, and about which door was missing.** `/map` is
+reached from the 🗺️ in the icon strip two rows above the grid, from the MneMemo
+tile in the Practice row of the same grid, and from Home's own hero. Favourites
+had exactly ONE door, the ★ beside the account chip — and that ★ only becomes a
+LINK once something is starred; before that a tap toggles. So a learner who had
+never starred anything could not reach the page to find out what it was for.
+
+**★, NOT ⭐.** The filled text star is what the top-bar button and the page
+already wear. ⭐ is XP — the row on the User page and the line in StatsHelp
+("earned every answer") — and one glyph means one thing (the rule that moved the
+bug button to 🐞 on 9 Sep). `verify400` fails on `emoji: "⭐", name: "Favourites"`.
+
+**THE PAGE WENT YELLOW TOO** — Dan, an hour later: *"make the favourites page
+yellow to match its door"*. It shipped grey for that hour, on the reasoning that
+a learner's own shelf belongs with their own things. The rule that settles it is
+simpler than the reasoning was: **the strip a door sits in is the colour the
+page wears.** Nobody should have to know that a family is also a data structure.
+`SITE_FAMILY.favourites` reads `"goals"` now; it does NOT make Favourites an
+eighth family or a Lesson activity — it is not in `ACTIVITIES` at all, and it
+borrows Lesson's pen the way `map` and `guide` already do.
+
+**AND THAT BROKE THE GLYPH, WHICH IS THE HALF NOBODY LOOKS AT.** The band's
+emoji was `activity(active)?.emoji ?? familyEmoji(famKey)`, and this page is in
+neither list — so it had been wearing 👤 by pure coincidence, and going yellow
+put Lesson's 🧑‍🏫 on it: a teacher, on a page that is not a lesson, contradicting
+the ★ on the tile that opens it. `CahierShell`'s `band` prop takes an `emoji`
+now (`band?.emoji ?? …`, a no-op for every other page), and /favourites passes
+★. Caught by driving the built page, not by reading the diff — the colour was
+the change anyone would check.
+
+`verify400` gained three clauses, anchored on the LESSON row rather than on the
+file, so a tile that drifted into another strip would not satisfy them.
+
+**AND THE CHECK MOVED FROM 300 TO 400.** CI caught the collision that the local
+scan could not: `claude/pre-tests-amendments-hndx8r` claimed `verify300` for
+`verify300-float-clear.py` in the hours between the scan and the push — the
+exact window `verify-wiring`'s in-flight rule exists to close. 400 leaves
+headroom over the 340 frontier, per the 7 Sep note about renumbering into a
+race.
+
+### 12 Sep — Favourites, take two: a file manager, then drag and drop
+
+**Dan on the first build: *"this is not very user friendly, please rethink and
+redo. refer to current file management systems in the latest popular OS"*.** It
+was a form, not a file manager — ✎ + a folder `<select>` + ✕ on EVERY line, and
+folders as accordions that unfolded in place. Rebuilt on the Finder / Windows 11
+/ iOS Files shape: folders first with their counts, a folder is a PLACE you go
+into with a breadcrumb back, one ⋯ per row opening Rename · Move to… · Remove,
+and Recent / Name ordering. `grouped()` retired for `listing(fav, folderId,
+sort)`.
+
+**Then: *"add drag and drop"*.** Drag a page onto a folder to file it; inside a
+folder, drag it onto the « ★ Favourites » crumb to bring it out.
+
+**BUILT ON POINTER EVENTS, AND THAT IS THE WHOLE POINT.** The obvious way —
+HTML5 `draggable` + `onDragStart` — **does not fire for touch at all**, so it
+ships as a desktop-only feature wearing a cross-platform name, and nobody
+notices because the desktop is where it gets tested. `verify400` fails on the
+word `draggable` for that reason.
+
+The gesture differs by device because the devices do: a **mouse** drags on ~6px
+of movement (a mouse cannot scroll by dragging, so movement can only mean a
+drag); a **finger** must press and HOLD ~350ms first, because a finger that
+moves straight away is SCROLLING and stealing that would make the list
+unscrollable. That is the iOS Files/Photos gesture, and it is why a plain tap
+still follows the link.
+
+**STOPPING THE PAGE SCROLLING UNDER A DRAG TOOK THREE GOES, and the two that
+failed both LOOK right:**
+
+    1  `touch-action: none` on the ROWS only.  A finger that left a row onto
+       the breadcrumb handed the gesture back to the browser, which fired
+       `pointercancel`. A page could go INTO a folder and never back OUT.
+    2  `touch-action: none` on the whole page, applied when the drag starts.
+       Too late — the browser decides at TOUCHSTART what a gesture is, and
+       changing the property mid-gesture does not take it back. This broke the
+       INTO case that had been working.
+    3  A native NON-PASSIVE `touchmove` listener calling preventDefault for the
+       duration.  `pointermove`'s preventDefault does not stop scrolling; only
+       touchmove's does, and React's listeners are passive so it cannot be a
+       React handler.
+
+All three were found by driving the built app with real touch events, not by
+reading. Measured after the fix, seven cases: mouse in ✓, mouse out ✓, mouse
+drop does not navigate ✓, touch swipe still scrolls the list ✓, touch in ✓,
+touch out ✓, touch drop does not navigate ✓.
+
+**« MOVE TO… » STAYS.** A drag cannot be done from a keyboard and is hard with
+a tremor or a trackpad, so the menu is the accessible path to the same move —
+iOS Files ships both for that reason. `verify300` fails if it disappears.
+
+**AND THE CHECK CAUGHT ITSELF, a fourth time for this repo.** The new clause
+`'draggable' not in page` failed on its first run — because the file's own
+docstring EXPLAINS that `draggable` is the desktop-only trap, and the word was
+enough. Comments are stripped now. verify152, verify153, verify106 and
+verify270 each learned this separately; apparently it has to be learned once
+per author.
+
+**MULTI-SELECT followed the same afternoon** (*"add multi-select too"*), and
+the trap is the OPPOSITE of the drag's. The obvious build — a plain click
+selects, like Finder — takes the tap away from OPENING a page, which is the
+list's whole reason to exist. So the two devices get different doors:
+
+    finger  « ☑︎ Select » turns the list into a picker: rows stop navigating
+            and start ticking, « Done » turns it back. That is iOS Files, and
+            it is the only shape that keeps a tap meaning "open this".
+    mouse   ⌘/Ctrl-click toggles one, Shift-click takes the range from the
+            last row touched — Finder and Explorer, and what people try
+            unprompted. Both enter Select mode on the spot.
+
+**A SELECTION DRAGS AS ONE.** Pick up any ticked row and the whole selection
+comes with it, and the ghost says « 3 pages ». Finder does this, and a
+multi-select that still moved one row at a time would be a tick-box with
+nothing behind it. **Folders are not selectable**: with one level of nesting
+there is nowhere to move a folder TO, so a ticked folder could only be deleted,
+and mixing "a folder I am deleting" into "pages I am filing" is how a learner
+loses something they meant to keep.
+
+`moveMany` / `removeMany` are pure and separate from their singular cousins —
+one pass per gesture instead of N, and one thing `verify300` can execute.
+Driven in the built app: ⌘-click does not navigate ✓, Shift-click takes the
+range (2→4 = 3) ✓, bulk Move filed exactly those three ✓, a tap in Select mode
+does not navigate ✓, bulk Remove removed exactly the two ticked ✓, the bar
+clears after ✓, and a drag from a ticked row filed all three ✓.
+
+**ONE REAL LINT FAULT CAME OUT OF IT, and it was not a style rule.** `Menu` and
+`MenuItem` were defined inside the component, so every keystroke rebuilt them —
+`react-hooks/static-components`. A component re-created each render REMOUNTS
+its subtree, so an open menu would lose focus whenever anything above it
+changed. Hoisted to module scope.
+
+### 12 Sep — FAVOURITES: star any page, and a proper page to keep them on
+
+Dan, after ruling that pinning a single goal stays out: *"what we can do
+though, is to allow learners to favourite particular pages or activity so they
+can revisit when want to, like bookmarks"*. Then, one question at a time:
+
+| asked | answered |
+|---|---|
+| what can be starred? | *"i can't think of anything that should not be able to star"* |
+| where does the list live? | *"At the top right next to their name"* — then *"option A"* |
+| what does a line say? | *"options 3 and 4"* — where it sits AND when AND renameable, *"so long as it is linked"* |
+| and? | *"it should even allow them to organise into folders"*, and *"there should be a proper favourites page"* |
+
+**THIS IS NOT THE OTHER BOOKMARK, and the difference is worth keeping.**
+`StopBookmark` (2 Sep) marks ONE thing — the stop you left off at, the editable
+« 22 » in the top bar — and answers *where am I*. This answers *what do I want
+to come back to*, and there are many. Two features, two names, and nothing in
+the new code touches `continuer.ts`.
+
+**What shipped:** a ★ in the top bar beside the account chip on all 28
+surfaces (tap to star; once starred it is a link to the list, because a
+long-press is invisible); `/favourites`, a real page with a User-grey band;
+rows that link, carry « goal 23 · 3 days ago », rename with ✎ and move into
+folders; folders as native `<details>` with their counts.
+
+**FIREBASE, since Dan asked — and the surprising half is how LITTLE was
+needed.** `users/{uid}/favourites/list`, one document, pushed local-first
+exactly like progress. The rules already allowed it: the `{sub=**}` wildcard
+under `users/{uid}` grants the owner everything not explicitly denied. What was
+ADDED is a shaped rule with the caps — and **the trap worth inheriting is that
+a shaped rule beside that wildcard is DECORATIVE**, because Firestore rules are
+OR-ed: the wildcard would still allow the write the shaped rule refuses. So
+`favourites` had to go into the wildcard's exclusion list in the same edit.
+`verify300` fails if it is ever taken out.
+
+Two other honest notes on the rules. There are no loops in that language, so
+the SIZE and TYPE of the two lists are enforceable and the shape of each row is
+not — the caps are the real protection, and the client's `coerce()` drops
+malformed rows on read so a poisoned document degrades to an empty list rather
+than a broken page. And the repo has **no `firebase.json`**: `firestore.rules`
+is the source of truth but nothing deploys it, so a rules change still has to
+be pasted into the Firebase console by hand. Flagged, not fixed.
+
+**THREE FAULTS FOUND BY DRIVING THE BUILT APP, none visible in the source:**
+
+1. **The star named a page « FluOLinGo ».** Guessing the name from the path
+   failed on `/practice/say-it/aimer-activites`, because WorDrill's registry
+   href is `/practice/wordrill` while its deck route is `/practice/say-it/…` —
+   the door and the route are different strings for the same activity. Fixed by
+   asking the shell for its own `active` key instead of guessing. `verify300`
+   executes that case.
+2. **No heading band.** `CahierShell` renders the band only `{famKey && …}`,
+   and `favourites` had no entry in `SITE_FAMILY`, so the page drew no spine,
+   no family ink and no band — the three-faults-in-one that block's own comment
+   warns about. Added as `favourites: "user"`, which colours it without making
+   it an eighth family in the ☰.
+3. **The rows ran off the right edge on a phone, and under the coils on the
+   left.** Measured at 390px: the iframe starts at x=18 and the coil strip ends
+   at x=56, so the first 38px of ANY framed document is under the rings —
+   globals.css hands that gutter out through `.cahier-foolscap`, which this
+   page deliberately does not wear (it also draws ruled paper, the second sheet
+   the 11 Sep ruling forbids). The page takes the same 3rem itself, and the row
+   wraps under `sm` so the ✕ is never half off-screen.
+
+**A FOURTH, seen only by asking for the desktop.** The list was
+`mx-auto max-w-2xl … pl-12` — the coil gutter and the centred reading column on
+ONE element, so they fought: the column centred itself, then shoved its own
+contents 3rem further right inside itself. On a phone that reads as a sensible
+indent; at 1280px it read as a narrow strip floating in the middle of the page
+with empty ruled paper down both sides. Split into an outer full-width wrapper
+that carries the gutter and an inner `mx-auto max-w-3xl` that carries the
+column — and `max-w-3xl`, not `2xl`, because that is what the other User pages
+use and this is one of them.
+
+**`verify82` caught a fifth.** The new file had hand-written
+`SIOS.find(s => s.collectionId === …)`, the deck→stop lookup that is supposed
+to live only in `lib/stopTag.ts`. That check exists because the same lookup was
+already written out twice; it now uses `stopForDeck`.
+
+`verify300-favourites.py` holds the star being MOUNTED and not merely imported
+(verify117's lesson), the naming rules EXECUTED, the two caps agreeing between
+client and rules, the wildcard exclusion, and that deleting a folder keeps the
+pages inside it. Break-tested four ways, all red.
+
 ## 11 Sep, night — the rem sizes join the ramp, and the breakpoint sizes with them (fluoduo-main, QC of #307 → #308)
 
 **MERGED: #306** (the guided first run, five activities — ConjugaZone held on
