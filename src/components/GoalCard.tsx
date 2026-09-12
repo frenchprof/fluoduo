@@ -147,7 +147,7 @@ export default function GoalCard({
            three tiles spread over 290px of paper read as three separate things
            a long way apart, which is the opposite of a grid. Dan's reference is
            the HELP sheet, whose icons sit together. */
-        <div className={`${compact ? "mt-3" : "mt-4"} overflow-hidden rounded-lg`}>
+        <div className={`${compact ? "mt-3" : "mt-4"} mx-auto w-fit max-w-full overflow-hidden rounded-lg`}>
           {/* THE COLOUR MOVED BEHIND THE TILES (Dan, 2026-09-12, with the ☰
               and a goal card side by side: *"can you see to it that the same
               tiles with colored backgrounds behind the tiles appear under the

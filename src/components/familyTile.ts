@@ -42,9 +42,35 @@
  * will sit beside the first row only.
  */
 
-/** One family's row. The caller sets `background` to the family's bright shade. */
+/** One family's row. The caller sets `background` to the family's bright shade.
+ *
+ *  THE TILE TRACK IS CAPPED, NOT `1fr`. Dan, 2026-09-12, looking at the goal
+ *  card on a desktop: *"the tiles are looking distorted in your desktop view
+ *  (as compared to what is on the menu). why can't you maintain aspect ratio
+ *  proportions?"* — and he was right. `1fr` fills whatever box the band is
+ *  given, so the same tile came out 95px wide in the ☰ and 227px on a
+ *  full-width goal card, both still 64px tall: the menu's neat near-square
+ *  stretched into a letterbox.
+ *
+ *  5.958rem is not a taste; it is the menu's own width, derived from it:
+ *
+ *      dropdown            20.6rem  = 329.6px
+ *      less p-1.5 x2                = -12
+ *      less gap-1.5 x3              = -18
+ *      less the sideways label      = -13.6
+ *      -------------------------------------
+ *      three tiles share             286.0  ->  95.3px  =  5.958rem
+ *
+ *  and 95.3px is exactly what the ☰ measured at before this change. So the cap
+ *  is a NO-OP for the menu — its three tracks already resolve to that — and a
+ *  fix for every other surface. One string, both right, which is the whole
+ *  reason this file exists.
+ *
+ *  The caller is responsible for not stretching the band itself: a band in a
+ *  box wider than its content should be `w-fit`, or it will sit as a wide
+ *  coloured strip with the tiles bunched at one end. */
 export const BAND =
-  "grid grid-cols-[auto_repeat(3,minmax(0,1fr))] items-center gap-1.5 p-1.5";
+  "grid grid-cols-[auto_repeat(3,minmax(0,5.958rem))] items-center gap-1.5 p-1.5";
 
 /** The family's name, sideways down the left, in the house ink. */
 export const BAND_NAME =
