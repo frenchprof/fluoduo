@@ -151,7 +151,12 @@ export default function GameGallery({
       </div>
 
       <BottomSheet open={open} onClose={() => setOpen(false)} title={<>{emoji} {name}</>}>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+        {/* `sm:grid-cols-3` was a BREAKPOINT, and this sheet opens inside the
+            cahier's iframe, where a media query measures the FRAME and not the
+            phone — 390px of device is 313px of frame, so the `sm` it was
+            asking about was never the phone's. The shared tile floor counts
+            the room it actually has: two at worst, four at best, no query. */}
+        <div className="fluo-tilegrid" style={{ ["--tile-min" as string]: "10rem", ["--tile-gap" as string]: "10px" }}>
           {entries.map((e) => {
             const a = e.unit === null ? "var(--cahier-accent)" : UNIT_ACCENTS[e.unit];
             if (e.locked && !unlocked.includes(e.locked.unlockId)) {
