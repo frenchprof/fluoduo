@@ -24,6 +24,11 @@
  * (8 Sep), corrected 9 Sep ("too light... the darkest shade in there").
  */
 import Link from "next/link";
+import { useState } from "react";
+import { stopHref, type StopActivityKey } from "@/lib/activityStops";
+import { loadProgress } from "@/lib/progress";
+import { nextGoalNumber, loadBookmark } from "@/lib/continuer";
+import { SIOS } from "@/content/sios";
 import {
   BAND as SHARED_BAND,
   BAND_NAME as SHARED_BAND_NAME,
@@ -31,8 +36,6 @@ import {
   TILE_NAME as SHARED_TILE_NAME,
 } from "@/components/familyTile";
 import { familyName, activity } from "@/content/activities";
-import { ECOUTEXTE_HREF, type ActivityPicker } from "@/components/ActivityGoalPicker";
-import { type StopActivityKey } from "@/lib/activityStops";
 import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
@@ -80,13 +83,49 @@ const GREY_INK = "var(--fam-user-ink)";
 
 type Cell =
   | { kind: "one"; emoji: string; name: string; href: string }
-  | { kind: "help" }
-  | { kind: "blank" }
-  // A hub-gallery replaced by the stop-chooser pop-up. `sioKey` names the
-  // activity in `lib/activityStops.ts`, which is also what decides WHICH of
-  // the fifty the chooser may offer — one key, one gate, one route.
+  /* A PER-STOP DOOR. It is not a pop-up any more and it is not a plain link
+     either: the GO TO row at the top of this menu names the stop, and these
+     six answer for it — a real link when the activity can play that stop, a
+     greyed tile when it cannot (Dan, 2026-09-12: *"if the activity does not
+     exist for a particular stop, then grey out the item on the menu!"*).
+
+     THE PRE-TESTS LANE MADE THESE PLAIN `one` CELLS pointing at each
+     activity's landing page, under the same instruction that removed the
+     pop-ups, and it was right when it was written — the row did not exist
+     yet. Keeping that here would have left the GO TO row setting a number
+     nothing read. The pop-up is still gone; what replaced it is the row. */
   | { kind: "picker"; emoji: string; name: string; sioKey: StopActivityKey }
-  | { kind: "numbers" }; // the one non-SIO pop-up: NumBus or NumBourse
+  | { kind: "help" }
+  | { kind: "blank" };
+
+// NO TILE INTERCEPTS A CLICK ANY MORE (Dan, 2026-09-12: *"replace all the pop
+// ups for activities by actual pages (no more pop ups for going into those
+// activities)"*).
+//
+// Six tiles used to open a 1-to-50 goal slider and a seventh a two-choice card,
+// added on 9 Sep when the family HUB pages were retired as "made redundant".
+// What that reasoning missed is that a family hub and an activity's own CHOOSER
+// were never the same page, and only the hubs went. Every one of these still
+// had a real page listing what it can play, and had throughout:
+//
+//   MémoiRecall   /practice/flip-it        ActivityLanding, fifty stops
+//   GramMarathon  /practice/grammarathon   ActivityLanding, fifty stops
+//   WorDrill      /practice/wordrill       its own page
+//   VocabulaRain  /games/vocabularain      every set, folded by unit
+//   LexicaLocker  /games/lexicalater       every deck, folded by unit
+//   ComposeIt     /games/compose           every bank, folded by unit
+//   Numbers       /games/numbers           NumBus and NumBourse, Dan's own
+//                                          hub-tab from 31 Aug
+//
+// So no page had to be written to carry this out — the tiles simply stopped
+// intercepting the click. Each cell names its registry key and the href comes
+// from `activity()`, which is where a name and an address live once.
+
+/** A door's address from the registry, which is where an address lives once.
+ *  Falling back to the map rather than to "#" keeps a tile working if a key is
+ *  ever renamed — the same `??` guard the Numbers tile already used for its
+ *  name and emoji. */
+const hrefOf = (key: string) => activity(key)?.href ?? "/map";
 
 // Each row wears a NAME at its start — "(very subtly!) label each row at the
 // start to identify what each row is about" (Dan, 7 Sep, picking over the
@@ -120,25 +159,25 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
     { kind: "picker", emoji: "🏃", name: "GramMarathon", sioKey: "grammarathon" },
   ]},
   { band: PEN.svplay, ink: INK.svplay, label: familyName("svplay"), cells: [
-    { kind: "numbers" },
+    { kind: "one", emoji: "🔢", name: "Numbers", href: hrefOf("numbers") },
     { kind: "picker", emoji: "🌧️", name: "VocabulaRain", sioKey: "vocabularain" },
     // LexicaLocker (Dan, 2026-09-09) — renamed from LexicaLater, 🔐 instead
     // of 🧰: see the registry entry in activities.ts for why.
     { kind: "picker", emoji: "🔐", name: "LexicaLocker", sioKey: "lexicalator" },
   ]},
   // ORAL (NEW, 2026-09-09) — half of retired Skills: the three that put
-  // French in your mouth or ear. VoixLà has one page and needs no picker;
-  // WorDrill and ÉcouTexte are two more of the seven slider-gated tiles.
+  // French in your mouth or ear.
   { band: PEN.oral, ink: INK.oral, label: familyName("oral"), cells: [
     { kind: "one", emoji: "🔊", name: "VoixLà", href: "/tts" },
     { kind: "picker", emoji: "🎙️", name: "WorDrill", sioKey: "wordrill" },
-    // ÉCOUTEXTE ASKS NOTHING (Dan, 11 Sep: "some of the pages have two pop ups
-    // before the activity" — one question, asked once). It was a picker cell,
-    // but its content is chosen by unit and topic and there is no per-stop
-    // route, so the pop-up took an answer it could not use and opened the
-    // topic picker regardless. A pop-up whose reply is discarded is worse
-    // than no pop-up: it teaches the learner their choice does not matter.
-    { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: ECOUTEXTE_HREF },
+    // ÉCOUTEXTE ASKED NOTHING EVEN WHEN THE OTHERS DID (Dan, 11 Sep: "some of
+    // the pages have two pop ups before the activity" — one question, asked
+    // once). Its content is chosen by unit and topic and there is no per-stop
+    // route, so its slider took an answer it could not use and opened the
+    // topic page regardless. A pop-up whose reply is discarded is worse than
+    // no pop-up: it teaches the learner their choice does not matter. It was
+    // the first of the seven to lose its slider and now simply matches them.
+    { kind: "one", emoji: "🎧", name: "ÉcouTexte", href: hrefOf("ecoutexte") },
   ]},
   // TOOLS (NEW, 2026-09-09) — the other half: the two summonable helpers
   // (see ToolSummon.tsx's own 🛠️ door). ChaTutor is a chat, not a deck, so
@@ -163,22 +202,49 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
    still renders from the same strings, which is what makes "identical" a fact
    rather than an intention. */
 
+/* THEIR ONE SUBSTANTIVE CHANGE MOVED INTO THE SHARED STRING, 12 Sep. This
+   branch re-declared TILE and NAME locally to swap `min-h-[64px]` for the
+   new `.fluo-row-tall`; taking that as written would have undone the whole
+   point of the shared file — the menu and the goal card cannot drift only
+   because they read ONE definition. So the class went into familyTile's TILE
+   and the local copies stayed gone. Their class is the better half of the
+   trade: `.fluo-row-tall` sits beside `.fluo-tap` and `.fluo-row` in
+   globals.css, where a reader meets the touch FLOOR and the design heights
+   together, rather than an inline calc() repeated per component. */
+
 
 export default function MenuGrid({
   onNavigate,
-  picker,
+  currentStop,
 }: {
   /** Close the dropdown — called on every door, Help included now that it
    *  is one (2026-09-09: Help navigates to /guide instead of summoning a
    *  second grid, so it no longer needs a callback of its own). */
   onNavigate: () => void;
-  /** Opens the SIO-slider / two-choice pop-ups. Owned by the CALLER
-   *  (SiteTopBar), not created here — `onNavigate` closes this whole
-   *  component (the ☰ dropdown unmounts it), so any state or modal a picker
-   *  cell opens must already live one level up, or it would unmount in the
-   *  same tick it opens. */
-  picker: ActivityPicker;
+  /** The learner's current stop, so GO TO opens on it and the common case
+   *  needs no typing. Passed in rather than read here: this component
+   *  unmounts on every navigation, and localStorage cannot be read during
+   *  render in a static export. */
+  currentStop?: number;
 }) {
+  /* THE CHOSEN STOP LIVES HERE, not in the caller, and that is safe where the
+     pop-ups' state was not: a pop-up had to outlive `onNavigate` (which
+     unmounts this whole component), so it lived one level up in SiteTopBar.
+     This row does the opposite — it is only ever read WHILE the menu is open,
+     and a fresh open should start from the learner's own stop rather than
+     whatever they typed last time. */
+  /* READ ONCE, LAZILY, AT OPEN. This component is rendered only inside
+     `{menuOpen && …}`, so it does not exist during the static export's
+     prerender and a lazy initialiser may touch localStorage — which is why
+     this needs neither an effect nor the `set-state-in-effect` disable the
+     top bar's own StopMark carries. */
+  const initial = () => {
+    if (currentStop) return currentStop;
+    try { return nextGoalNumber(loadProgress(), loadBookmark()) ?? 1; } catch { return 1; }
+  };
+  const [stop, setStop] = useState(initial);
+  const [draft, setDraft] = useState(() => String(initial()));
+
   // Each row is its OWN band, filled SOLID with the family's darkest rung
   // (Dan, 2026-09-09: a pale 15%-alpha wash "is too light... the darkest
   // shade in there for the background" — matching the ink the page's own
@@ -195,6 +261,74 @@ export default function MenuGrid({
   // hold; max-w-[90vw] still caps a narrow phone.
   return (
     <div className="w-[calc(20.6rem+var(--fs-step)*21)] max-w-[90vw] overflow-hidden rounded-lg">
+      {/* GO TO — THE STOP IS CHOSEN ONCE, HERE (Dan, 2026-09-12: *"it would
+          make sense to add a row above LESSON for selection of SIO perhaps in
+          pink: so that the activities can grey as necessary: just a field
+          after GO TO 🎯 [ ] --> OK button"*).
+
+          THIS IS WHAT REPLACES THE SEVEN POP-UPS, and it is a better shape for
+          the same job. Each of those tiles used to open a 1-to-50 slider of its
+          own: the learner answered "which goal?" again for every activity, in a
+          modal in front of the page, and a tile with nothing at that stop said
+          so only after they had committed. One row answers it once for all of
+          them, in the menu, before anything is chosen — and the greying below
+          is the answer made visible rather than reported.
+
+          PINK IS DAN'S PICK and it is the map's grammar pen (--sio-grammar),
+          not a new colour: the row names a STOP, and stops are drawn in the
+          map's four pens. Nothing new for verify19b's ratchet to count.
+
+          It opens on the learner's own stop, so the common case needs no
+          typing at all. */}
+      <form
+        /* NO SIDEWAYS LABEL, AND THREE EQUAL THIRDS (Dan, 2026-09-12: *"there
+           is no need for the category label on the left. Just have the text in
+           the first third on the left 'GO TO 🎯'"*, then *"the field occupying
+           the second third"*).
+
+           So this row does NOT use the shared band grid. Every row below has a
+           label column plus three tiles; this one has no family to name — «Go
+           to» is an instruction, not a category — so it drops the column and
+           takes the full width in thirds: the words, the field, the button. */
+        className="grid grid-cols-3 items-center gap-1.5 p-1.5"
+        style={{ background: "var(--sio-grammar)" }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          const n = parseInt(draft, 10);
+          if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
+        }}
+      >
+        <span className="flex items-center gap-[0.35em] pl-[0.2em] font-black uppercase tracking-wider text-[color:var(--cahier-ink)]">
+          <span className={NAME}>Go to</span>
+          <span aria-hidden className="text-[1.6em] leading-none">🎯</span>
+        </span>
+        <label className={TILE} style={{ borderColor: "var(--cahier-ink)" }}>
+          <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
+          {/* A real number input with its native arrows — Dan asked for "the
+              up-down by the side of the field". globals.css strips spinners
+              app-wide; `.fluo-stepper` is the one opt-in, and it has to be
+              written `input[type="number"].fluo-stepper` to outrank that rule. */}
+          <input
+            type="number"
+            min={1}
+            max={SIOS.length}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            className="fluo-stepper w-full bg-transparent text-center text-[1.35em] font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+          />
+        </label>
+        <span className="flex items-center justify-center">
+          {/* SMALLER than a door, deliberately: it confirms a number, it does
+              not open an activity. Still on the touch floor. */}
+          <button
+            type="submit"
+            className="fluo-tap rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
+            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+          >
+            <span className={NAME}>OK</span>
+          </button>
+        </span>
+      </form>
       {ROWS.map((row, r) => (
         <div
           key={r}
@@ -247,60 +381,56 @@ export default function MenuGrid({
                 </Link>
               );
             }
-            if (cell.kind === "numbers") {
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => {
-                    onNavigate();
-                    picker.openTwoChoice(
-                      "🔢 Numbers — which game?",
-                      { emoji: "🚌", name: "NumBus", href: "/games/numbus" },
-                      { emoji: "💰", name: "NumBourse", href: "/games/numbourse" },
-                    );
-                  }}
-                  className={TILE}
-                  style={{ borderColor: row.ink }}
-                >
-                  {/* THE TILE READS "Numbers", FROM THE REGISTRY (Dan,
-                      2026-09-09: "NumBus appears twice, once as a menu item in
-                      the grid menu, and another in the next pop up, but maybe
-                      we should call the menu item Numbers instead").
-
-                      He was right, and the registry already agreed with him:
-                      activities.ts has held `name: "Numbers", emoji: "🔢",
-                      blurb: "Numbers by ear — NumBus and NumBourse"` the whole
-                      time. This tile hard-coded "NumBus" over the top of it, so
-                      a learner tapped NumBus only to be asked "NumBus or
-                      NumBourse?" — two doors sharing one name, which the names
-                      ruling forbids for exactly this reason.
-
-                      DERIVED, NOT RETYPED. Spelling "Numbers" here would fix
-                      today's screen and leave the next rename to drift again;
-                      the house rule is that the registry is where a name lives
-                      once and everything else reads it. The `??` keeps a tile
-                      on screen if the key is ever renamed, rather than
-                      rendering a blank button. */}
-                  <span aria-hidden className="text-lg leading-none">
-                    {activity("numbers")?.emoji ?? "🔢"}
-                  </span>
-                  <span className={NAME}>{activity("numbers")?.name ?? "Numbers"}</span>
-                </button>
-              );
-            }
+            /* THE "Numbers" TILE READS ITS NAME FROM THE REGISTRY, and the
+               reason survives the pop-up's removal (Dan, 2026-09-09: "NumBus
+               appears twice, once as a menu item in the grid menu, and another
+               in the next pop up, but maybe we should call the menu item
+               Numbers instead"). activities.ts has held `name: "Numbers",
+               emoji: "🔢"` the whole time; this tile used to hard-code
+               "NumBus" over it, so a learner tapped NumBus and was asked
+               "NumBus or NumBourse?" — two doors sharing one name, which the
+               names ruling forbids. The pop-up that asked is gone and
+               /games/numbers asks it as a page, so the tile is now an ordinary
+               <Link> like every other and needs no branch of its own. */
             if (cell.kind === "picker") {
+              /* NO POP-UP. The stop is chosen once, on the GO TO row at the top
+                 of this menu, and every per-stop door below answers for it —
+                 Dan, 2026-09-12: *"when they click OK, the tiles below in the
+                 grid menu has to react to grey"*, and *"the user still has to
+                 decide what activity they want to go to"*. So the row sets
+                 WHERE and the tile still chooses WHAT: two decisions, two
+                 controls, and neither of them a modal in front of the page.
+
+                 A door with nothing at this stop is GREYED, not hidden — the
+                 same ruling as the goal card's doors, for the same reason: a
+                 missing tile cannot tell a learner whether the activity is
+                 absent here or gone altogether. */
+              const href = stopHref(cell.sioKey, stop);
+              if (!href) {
+                return (
+                  <span
+                    key={key}
+                    aria-disabled="true"
+                    title={`${cell.name} — nothing at goal ${stop}`}
+                    className={`${TILE} cursor-default opacity-45`}
+                    style={{ borderColor: "var(--cahier-line-strong)" }}
+                  >
+                    <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
+                    <span className={NAME}>{cell.name}</span>
+                  </span>
+                );
+              }
               return (
-                <button
+                <Link
                   key={key}
-                  type="button"
-                  onClick={() => { onNavigate(); picker.openSlider(cell.sioKey, cell.emoji, cell.name); }}
+                  href={href}
+                  onClick={onNavigate}
                   className={TILE}
                   style={{ borderColor: row.ink }}
                 >
                   <span aria-hidden className="text-lg leading-none">{cell.emoji}</span>
                   <span className={NAME}>{cell.name}</span>
-                </button>
+                </Link>
               );
             }
             return (

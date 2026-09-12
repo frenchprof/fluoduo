@@ -15,9 +15,9 @@ import { EXPERT_UNLOCKS } from "@/lib/economy";
 import { CURATED } from "@/content/collections";
 import { shortTitle } from "@/lib/shortTitles";
 
-/** The VocabulaRain gallery — one ▶ Jouer card (the next set) and a bottom
- *  sheet for « Choisir un autre » (patch 23). The 24-tile grid that used to
- *  be the page lives in the sheet, still in course order. */
+/** The VocabulaRain gallery — the ▶ Play card for the next set, and all 24
+ *  sets on the page under it, folded by unit (Dan, 2026-09-12: the sheet was
+ *  the last activity pop-up). Still in course order. */
 export default function LetrisIndexPage() {
   const deckOf = (slug: string) => CURATED.find((x) => x.id === slug || x.id === `${slug}-letris`);
   const entries: GalleryEntry[] = listLetrisSets()

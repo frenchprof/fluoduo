@@ -359,7 +359,7 @@ export default function FlashcardLesson({
       {stage === "lesson" && view === "cards" && card && (
         <>
           <div
-            className="relative mx-auto h-[340px] w-full max-w-2xl cursor-pointer select-none"
+            className="relative mx-auto h-[21.25rem] w-full max-w-2xl cursor-pointer select-none"
             style={{ perspective: "1200px" }}
             onClick={() => setFlipped((f) => !f)}
             role="button"

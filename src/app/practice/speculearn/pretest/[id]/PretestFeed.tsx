@@ -425,7 +425,7 @@ function ItemCard({
         <p className="my-3 text-center text-2xl font-bold leading-snug text-slate-900">
           <span lang="fr">{item.sentenceBefore}</span>
           <span
-            className="mx-1.5 inline-block min-w-[110px] rounded-md border-b-2 border-dashed px-3 py-0.5 align-baseline"
+            className="mx-1.5 inline-block min-w-[6.875rem] rounded-md border-b-2 border-dashed px-3 py-0.5 align-baseline"
             style={{
               borderColor: submitted ? (submitted.correct ? "var(--fluo-primary)" : "var(--fluo-danger)") : "var(--fluo-secondary)",
               background: submitted ? (submitted.correct ? "var(--fluo-primary-soft)" : "#ffe1e1") : "#eaf6ff",

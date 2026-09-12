@@ -72,14 +72,20 @@ KEYS = ["flip", "grammarathon", "wordrill", "lexicalator", "vocabularain", "comp
 
 # ---- 1 · the chooser and the router read ONE source ---------------------------
 
-picker = open("src/components/ActivityGoalPicker.tsx", encoding="utf-8").read()
+# THE CHOOSER MOVED, 12 Sep: it is no longer a pop-up but the ☰ menu's own
+# GO TO row, so this reads MenuGrid. The clauses below are unchanged in
+# substance — they still ask whether the thing a learner chooses with routes
+# through ONE gate — and that is why they survived the move at all: they were
+# written about the question, not about the modal that used to ask it.
+picker = open("src/components/MenuGrid.tsx", encoding="utf-8").read()
 code = re.sub(r"\{?/\*[\s\S]*?\*/\}?", "", picker)
 code = re.sub(r"(?m)^\s*//.*$", "", code)
 
-ok("playableStops(" in code and "stopHref(" in code,
-   "the pop-up gates and routes through lib/activityStops",
-   "the pop-up no longer calls playableStops/stopHref — it is back to building "
-   "its own URLs, which is what offered 97 dead choices")
+ok("stopHref(" in code,
+   "the menu's per-stop doors route through lib/activityStops",
+   "MenuGrid no longer calls stopHref — it is back to building its own URLs, "
+   "which is what offered 97 dead choices. The GO TO row's greying reads the "
+   "same function: without it the row sets a number nothing checks")
 
 ok("type=\"range\"" not in code and "fluo-goal-slider" not in code,
    "the 1-to-50 slider is gone",
@@ -88,6 +94,16 @@ ok("type=\"range\"" not in code and "fluo-goal-slider" not in code,
 ok("SIO_HREF" not in code,
    "the old ungated route table is gone",
    "SIO_HREF is back; it could not say whether a deck was playable")
+
+# AND THE GREYING IS PART OF THE SAME PROMISE. Dan's rule was "just don't allow
+# anyone to land on 'there is nothing here'"; the row answers it by SHOWING
+# which doors are dead rather than by hiding them, so a door with no href must
+# still render as a disabled tile. Dropping that branch would re-open the
+# fault from the other side: a live-looking tile with nowhere to go.
+ok("aria-disabled" in code,
+   "a door with nothing at the chosen stop is greyed, not left live",
+   "MenuGrid no longer renders a disabled tile for a stop an activity cannot "
+   "play — the GO TO row would then offer doors that go nowhere")
 
 # ---- 2 · every offered stop resolves to a page that was really exported -------
 # Ask the app itself rather than re-implementing it: chooser-probe.mjs imports

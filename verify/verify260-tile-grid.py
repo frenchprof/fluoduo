@@ -130,7 +130,10 @@ SITES = {
     # CONTROL, not the URL — pointed at the old file it would have passed
     # by reading a page that no longer draws anything.
     "src/app/reglages/SettingsContent.tsx": "the bottom-bar family picker",
-    "src/components/GameGallery.tsx": "the games gallery sheet",
+    # NOT "the gallery sheet" any more: the BottomSheet went on 12 Sep and the
+    # sets are on the page, so this grid is the page's own. Same rule, same
+    # floor — only the thing it sits in changed.
+    "src/components/GameGallery.tsx": "the games gallery",
     "src/components/ProfileContent.tsx": "Profil's tile sections",
 }
 for path, what in SITES.items():
@@ -147,7 +150,7 @@ gallery = code("src/components/GameGallery.tsx")
 ok("sm:grid-cols" not in gallery,
    "the games gallery counts room, not breakpoints",
    "src/components/GameGallery.tsx: a `sm:` grid breakpoint is back. This "
-   "sheet opens inside the cahier's iframe, where a media query measures the "
+   "page runs inside the cahier's iframe, where a media query measures the "
    "frame and not the phone — it was asking `sm` about the wrong box.")
 
 # ── .sio-path keeps its own spacing but not its own column count ────────────

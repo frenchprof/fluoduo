@@ -72,7 +72,12 @@ function SwatchButton({
       disabled={state === "locked" || state === "equipped"}
       aria-label={title}
       title={title}
-      className="flex min-h-10 items-center gap-1.5 rounded-md border-2 px-2 py-1 disabled:cursor-default"
+      /* `.fluo-tap` — the 44px touch FLOOR, ported here from the subdomains
+         lane's edit to the copy of this button that used to live in
+         Rewards.tsx. A floor is not a size: it must not grow with the
+         ramp, because a finger does not. This was min-h-[40px], under the
+         floor it should have been on. */
+      className="flex fluo-tap items-center gap-1.5 rounded-md border-2 px-2 py-1 disabled:cursor-default"
       style={{
         borderColor: state === "equipped" ? INK : LINE,
         background: PAPER,

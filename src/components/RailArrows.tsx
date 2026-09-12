@@ -1,95 +1,182 @@
 "use client";
 
 /**
- * TWO SMALL TRIANGLES ON THE EDGES — the rail, for people who cannot swipe.
+ * THE FOUR EDGES — where you can go from here, said out loud.
  *
- * Dan, 2026-09-07: *"can you also add little subtle triangular indications on
- * the left and right to indicate that there is something to see if we scroll
- * horizontally?"*, and immediately the reason: *"because desktop does not have
- * left right scroll, so we need to provide these accessibility links"*.
+ * Dan asked for these on 2026-09-07 as *"little subtle triangular indications
+ * on the left and right"*, because *"desktop does not have left right scroll,
+ * so we need to provide these accessibility links"*. Both halves of that still
+ * hold: the chain has one gesture, a sideways drag, and a laptop cannot make
+ * one — so without these the rail is unreachable by mouse, by Tab, and by a
+ * screen reader.
  *
- * He is right twice over, and the second point is the sharper one. The chain
- * has had exactly one way along it since 6 Sep — a horizontal drag — and a
- * finger is the only thing that can make one. On a laptop there is no sideways
- * gesture at all, so the whole rail was unreachable: no keyboard route, no
- * pointer route, nothing. Anyone not using a touchscreen simply could not move
- * between stations except through the menu. These are real links, so they work
- * for a mouse, for Tab and Enter, and for a screen reader, which the gesture
- * never did.
+ * ON 2026-09-12 HE REVERSED THE "SUBTLE" HALF, and the reversal is the whole
+ * shape of this file now:
  *
- * THEY SAY WHERE THEY GO, without printing it. The triangle carries no label —
- * Dan asked for "subtle", and a word at each edge would be two more things to
- * read on every screen — but each one has the destination in its `aria-label`
- * and its `title`, so a screen reader announces « Back to Skills » and a mouse
- * hovering gets the same in a tooltip. An icon-only link that announces nothing
- * is a link nobody can use; that lesson is already written down on the goal
- * card's icon grid.
+ *     "The left and right arrow on the page edges for desktop is not loud
+ *      enough to be heard. make it darker and blinking slowly. indicate what
+ *      is on the other side of the edge. similarly what is above and below"
+ *
+ * Subtle was the right instinct and the wrong result. A 25%-ink chevron on 55%
+ * paper is findable if you already know it is there, and invisible if you do
+ * not — and what it has to survive is a learner who has no idea the app
+ * continues past the edge of the screen. A thing nobody notices is not subtle,
+ * it is absent.
+ *
+ * THREE CHANGES, EACH ANSWERING ONE CLAUSE:
+ *
+ *   darker        ink/75 on paper/90 with a real border, not ink/35 on a wash.
+ *   blinking      `fluo-edge-beat`, a 4s opacity breath (globals.css). Slow
+ *                 enough to read as breathing rather than as an alarm, because
+ *                 it lives at the edge of vision where a fast beat nags.
+ *   says where    the destination is PRINTED now, not just announced to a
+ *                 screen reader in a `title`. That was the deepest fault of
+ *                 the old pair: a bare chevron says "something is over there",
+ *                 which is an invitation to guess. « SpecuLearn » says where.
+ *
+ * AND THREE EDGES, NOT TWO AND NOT FOUR. The app is a grid and only one axis
+ * had any signposting:
+ *
+ *     left / right   the ACTIVITY   SpecuLearn -> MneMemo -> MémoiRecall
+ *     down           the COURSE     goal 41 -> goal 42
+ *
+ * There was an UP hint for a few hours. Dan took it off the same day: *"there
+ * is no need to indicate the upper page (it is understood), just need to
+ * indicate the lower page"*. He is describing how a course is read — forward is
+ * where you have not been, and the way back is the way you came. Down reads
+ * `sioNeighbours`, the same list the pull-past-the-end gesture reads
+ * (useScrollOn), so an arrow and the gesture can never come to disagree about
+ * what follows what — the reason both live in lib/swipeRail.ts.
+ *
+ * EVERY HINT PRINTS ITS NAME AT EVERY WIDTH, and that is a correction rather
+ * than a preference. The sides were built with the name as `hidden sm:inline`,
+ * reasoning that a pill holding « MémoiRecall » eats a third of a 390px screen
+ * and that a phone has the gesture anyway. Shown the phone mock-up, Dan asked:
+ * *"we are also missing indication of left and right (or did i look at the
+ * wrong mockup)?"* — they were in it, as bare chevrons. If a chevron with no
+ * name does not read as an indication to the person who commissioned it, the
+ * name is not the part to drop when the screen gets small.
  *
  * ONLY IN THE TOP DOCUMENT. Every station runs inside the cahier's iframe since
  * 7 Sep, and the frame's edges are not the page's edges — arrows drawn in there
  * would sit inset, over the paper, at the wrong height. Mounted inside
  * `TopLevelOnly`, so the framed copy draws none.
  *
- * AND ONLY WHERE THERE IS SOMEWHERE TO GO. `railNeighbours` answers null at the
- * ends of the chain and for a page off it (Home, the guide, Réglages), and an
- * arrow pointing nowhere is worse than no arrow: it promises a page that is not
- * there.
+ * AND ONLY WHERE THERE IS SOMEWHERE TO GO. `railNeighbours` and `sioNeighbours`
+ * both answer null at the ends of their chain and for a page off it (Home, the
+ * guide, Réglages), and an arrow pointing nowhere is worse than no arrow: it
+ * promises a page that is not there.
  */
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { deckFromPath, railNeighbours, recalledRailDeck, type RailMove } from "@/lib/swipeRail";
+import {
+  deckFromPath,
+  railNeighbours,
+  recalledRailDeck,
+  sioNeighbours,
+  type RailMove,
+} from "@/lib/swipeRail";
 import { HOME_HREF } from "@/lib/routes";
 
-function Arrow({ side, move }: { side: "left" | "right"; move: NonNullable<RailMove> }) {
-  const label = side === "left" ? `Back to ${move.name}` : `On to ${move.name}`;
+type Side = "left" | "right" | "down";
+
+/** Which way the chevron points, as a path in an 18x18 box. */
+const MARK: Record<Side, string> = {
+  left: "M12 3 L5 9 L12 15",
+  right: "M6 3 L13 9 L6 15",
+  down: "M3 6 L9 13 L15 6",
+};
+
+/**
+ * WHAT TO PRINT ON THE PILL.
+ *
+ * `sioNeighbours` names its moves « MneMemo · goal 42 », which is right for a
+ * screen reader announcing a destination out of context — and wrong on an
+ * arrow at the bottom of MneMemo, where the first half is the activity the
+ * learner is already looking at. Dan's litmus test deletes exactly that: text
+ * whose removal costs the reader nothing. The vertical axis changes the GOAL
+ * and only the goal, so the goal is what the pill says.
+ *
+ * The sides keep their full name, because there the activity is the thing that
+ * changes.
+ */
+function printed(side: Side, name: string): string {
+  if (side === "left" || side === "right") return name;
+  const tail = name.split(" · ").pop() ?? name;
+  return tail.charAt(0).toUpperCase() + tail.slice(1);
+}
+
+/** What the arrow is FOR, said the way a learner would say it. The full name
+ *  stays here — a screen reader hears the destination with nothing around it,
+ *  so « goal 42 » alone would not say which activity's goal 42. */
+function phrase(side: Side, name: string): string {
+  if (side === "left") return `Back to ${name}`;
+  if (side === "right") return `On to ${name}`;
+  return `Down to ${name}`;
+}
+
+function Arrow({ side, move }: { side: Side; move: NonNullable<RailMove> }) {
+  const label = phrase(side, move.name);
+
+  /* FIXED TO THE VIEWPORT EDGE. Not inside the page: the page is a sheet on a
+     desk with a margin, and a hint indented by that margin reads as part of the
+     sheet rather than as the way off it. z-30 sits over the paper and under the
+     ⋯ sheets and popups (z-40+). The bottom one clears the bottom bar's floor
+     using the var the bar itself publishes. */
+  const place: Record<Side, string> = {
+    left: "left-0.5 top-1/2 -translate-y-1/2",
+    right: "right-0.5 top-1/2 -translate-y-1/2",
+    down: "left-1/2 -translate-x-1/2",
+  };
+
   return (
     <Link
       href={move.href}
       aria-label={label}
       title={label}
-      /* FIXED TO THE VIEWPORT EDGE, vertically centred. Not inside the page:
-         the page is a sheet on a desk with a margin, and an arrow indented by
-         that margin reads as part of the sheet rather than as the way off it.
-         z-30 sits over the paper and under the ⋯ sheets and popups (z-40+). */
-      /* SHOWN ON A PHONE TOO. The accessibility case is desktop's — there is no
-         sideways gesture on a laptop at all — but Dan's first sentence is about
-         INDICATING that something is there, which a thumb-driven learner needs
-         just as much: the swipe was undiscoverable by design. They sit on the
-         desk margin outside the sheet, so they cover nothing at 390px. */
-      /* THE TAP TARGET IS THE BOX, NOT `fluo-hit44`. That helper sets
-         `position: relative` and lives in globals.css, which loads AFTER
-         Tailwind — so at equal specificity it won the position and these two
-         links fell into normal flow, stacked at the foot of the page, each one
-         spanning the full 390px. Which also broke Dan's own 5 Sep rule that no
-         single control ever wears the page's width. `h-11 w-11` is the same
-         44px floor drawn honestly. */
-      /* A FAINT DISC UNDER THE MARK. Driven at 390px first without one: the
-         RIGHT arrow read fine against the desk, and the LEFT one vanished — it
-         lands on the spiral binding, which is a dark coil over a dark spine, so
-         a 25%-ink chevron on top of it is invisible. Paper at 55% is enough to
-         separate the mark from whatever is behind it and still not enough to
-         read as a button, which is what "subtle" has to mean here. */
-      className={`fixed top-1/2 z-30 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-[color:var(--cahier-paper)]/55 text-[color:var(--cahier-ink)]/35 no-underline backdrop-blur-[1px] transition hover:bg-[color:var(--cahier-paper)]/85 hover:text-[color:var(--cahier-ink)]/75 focus-visible:text-[color:var(--cahier-ink)]/75 ${
-        side === "left" ? "left-0.5" : "right-0.5"
-      }`}
+      style={side === "down" ? { bottom: "calc(var(--bottombar-floor, 8px) + 10px)" } : undefined}
+      /* DARKER, AND A BUTTON RATHER THAN A WATERMARK. The old pair was
+         `bg-paper/55 text-ink/35` with no border — which on the LEFT edge, over
+         the dark spiral binding, disappeared completely. Full-strength paper, a
+         real 2px ink border and ink/75 for the mark give the same mark
+         something to sit on at either edge.
+         `fluo-hit44` is deliberately NOT used: it sets `position: relative` from
+         globals.css, which loads after Tailwind, and at equal specificity it
+         wins — which once dropped both links into normal flow at the foot of the
+         page, each spanning the full width and breaking Dan's own rule that no
+         single control wears the page's width. The 44px floor is drawn here
+         honestly instead. */
+      className={`fluo-edge-beat fixed z-30 flex min-h-11 items-center gap-1.5 rounded-full border-2 border-[color:var(--cahier-ink)]/45 bg-[color:var(--cahier-paper)] px-2.5 text-[color:var(--cahier-ink)]/75 no-underline shadow-sm transition hover:border-[color:var(--cahier-ink)] hover:text-[color:var(--cahier-ink)] focus-visible:border-[color:var(--cahier-ink)] focus-visible:text-[color:var(--cahier-ink)] ${place[side]}`}
     >
-      {/* AN SVG, NOT A GLYPH. ◀ and ▶ are not in any of the three faces this
-          app ships (FluOLinGo Hand, Roboto, Patrick Hand), so a character here
-          would summon a fourth from the system — the exact thing Dan ruled out
-          on 6 Sep, and invisibly, because it would only appear on the two
-          smallest marks on the screen. `currentColor` keeps the hover in CSS. */}
-      <svg width="11" height="18" viewBox="0 0 11 18" aria-hidden focusable="false">
-        <path
-          d={side === "left" ? "M10 1 L2 9 L10 17" : "M1 1 L9 9 L1 17"}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      {/* The mark leads on the way BACK and trails on the way ON, so the
+          chevron always sits on the side of the pill it points at. */}
+      {side === "left" && (
+        <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden focusable="false" className="shrink-0">
+          <path d={MARK[side]} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
+      {/* THE NAME, PRINTED, AT EVERY WIDTH (Dan, 2026-09-12: *"we are also
+          missing indication of left and right (or did i look at the wrong
+          mockup)?"*).
+
+          He had not looked at the wrong mockup. The side arrows WERE in it —
+          as bare chevrons, because the name was `hidden sm:inline` and a phone
+          never reached `sm`. Which is the answer: a chevron with no name did
+          not read as an indication of anything, even to the person who asked
+          for it. If the name is what makes it an indication, it cannot be the
+          part that is dropped when the screen gets small. */}
+      {/* The app's own micro step, not a pinned pixel — it is fluid with the
+          rest of the type scale (globals.css --fs-*). */}
+      <span className="whitespace-nowrap text-[length:var(--fs-micro)] font-black leading-none">
+        {printed(side, move.name)}
+      </span>
+      {(side === "right" || side === "down") && (
+        <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden focusable="false" className="shrink-0">
+          <path d={MARK[side]} fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      )}
     </Link>
   );
 }
@@ -104,11 +191,30 @@ export default function RailArrows() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage does not exist on the server, so the remembered deck cannot be read during render; after mount is the only place it can be read at all, and the first render already renders correctly from the path alone.
   useEffect(() => { setDeck(deckFromPath(path) ?? recalledRailDeck()); }, [path]);
 
-  const { back, forward } = railNeighbours(path, deck ?? deckFromPath(path));
+  /* THE WHOLE "WHERE DOES THE TOP HINT GO" PROBLEM WENT WITH THE HINT
+     (Dan, 2026-09-12: *"there is no need to indicate the upper page (it is
+     understood), just need to indicate the lower page"*).
+
+     Placing it took three goes and an effect that measured the heading band
+     across the frame boundary, and none of that exists any more. Worth one
+     line of history because it was a real finding: a page has no empty row to
+     drop furniture into — under the band is the tab strip, under that the
+     level chooser — so the answer was the band's own middle, which is empty by
+     construction. If anything ever needs to float at the top again, that is
+     where it goes.
+
+     Going UP is still reachable without this: the ✕, the ☰ and the map all
+     lead back. What it costs is the one-tap route on a laptop, which has no
+     upward gesture — Dan weighed that and called the upper page understood. */
+
+  const here = deck ?? deckFromPath(path);
+  const { back, forward } = railNeighbours(path, here);
+  const { down } = sioNeighbours(path, here);
   return (
     <>
       {back && <Arrow side="left" move={back} />}
       {forward && <Arrow side="right" move={forward} />}
+      {down && <Arrow side="down" move={down} />}
     </>
   );
 }

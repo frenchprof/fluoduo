@@ -17,6 +17,7 @@
  */
 
 import { isChannelMuted, onChannelMuteChange } from "@/games/audio/mute";
+import { trackVoice } from "@/games/audio/voiceState";
 import {
   registerCloudPauseHooks,
   segmentBilingual,
@@ -105,6 +106,7 @@ function playUrl(url: string, myToken: number): Promise<boolean> {
   return new Promise((res) => {
     if (myToken !== token) { res(false); return; }
     const a = new Audio(url);
+    trackVoice(a); // so the game music ducks under it — voiceState.ts
     current = a;
     a.onended = () => res(true);
     a.onerror = () => res(false);

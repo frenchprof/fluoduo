@@ -90,7 +90,7 @@ export default function SectionBand({
           type="button"
           onClick={onToggle}
           aria-expanded={open}
-          className="flex min-h-[56px] w-full items-center gap-2.5 px-3.5 py-3 text-left"
+          className="flex fluo-row w-full items-center gap-2.5 px-3.5 py-3 text-left"
           style={{
             background: "var(--fam-wash)",
             borderLeft: spine,
@@ -101,7 +101,7 @@ export default function SectionBand({
         </button>
       ) : (
         <div
-          className="flex min-h-[56px] w-full items-center gap-2.5 px-3.5 py-3"
+          className="flex fluo-row w-full items-center gap-2.5 px-3.5 py-3"
           style={{
             background: "var(--fam-wash)",
             borderLeft: spine,
