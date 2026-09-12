@@ -36,6 +36,7 @@ import {
   TILE_NAME as SHARED_TILE_NAME,
 } from "@/components/familyTile";
 import { familyName, activity } from "@/content/activities";
+import { HOME_HREF } from "@/lib/routes";
 
 // Every colour here is a CSS custom property, never a literal hex — the ONE
 // palette lives in globals.css (Dan's fixed 12-swatch brand set, 2026-09-09:
@@ -124,7 +125,7 @@ type Cell =
  *  Falling back to the map rather than to "#" keeps a tile working if a key is
  *  ever renamed — the same `??` guard the Numbers tile already used for its
  *  name and emoji. */
-const hrefOf = (key: string) => activity(key)?.href ?? "/map";
+const hrefOf = (key: string) => activity(key)?.href ?? HOME_HREF;
 
 // Each row wears a NAME at its start — "(very subtly!) label each row at the
 // start to identify what each row is about" (Dan, 7 Sep, picking over the

@@ -78,7 +78,9 @@ check("router.replace(`/practice/flip-it/${id}`)" in study, "the redirect lands 
 bare = [f for f in SRC if "No deck specified." in read(f)]
 check(not bare, "no page renders the bare string \"No deck specified.\"", f"bare string still in {bare}")
 nodeck = CODE.get("src/app/decks/NoDeck.tsx", "")
-check('href="/map"' in nodeck and "CahierShell" in nodeck,
+# The map is Home since 12 Sep — what matters is that the empty-deck page
+# offers a way back to it, not which of its two addresses it spells.
+check("HOME_HREF" in nodeck and "CahierShell" in nodeck,
       "NoDeck links to the map inside the shell",
       "NoDeck lacks a map link / shell")
 for p in ("src/app/decks/view/page.tsx", "src/app/decks/study/page.tsx", "src/app/decks/mcq/page.tsx"):
@@ -159,8 +161,11 @@ check(not rolled,
       "and neither hand-rolls the can-do plus its links alongside it",
       f"{rolled} builds its own can-do + link list next to the shared card.")
 kn = CODE["src/components/KeyNav.tsx"]
-check("`/map?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
-      "KeyNav two-digit jump opens the outcome on The Map", "KeyNav does not deep-link into /map")
+check("`${HOME_HREF}?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
+      "KeyNav two-digit jump opens the outcome on The Map",
+      "KeyNav does not deep-link the two-digit jump to the map. The address moved to\n"
+      "       HOME_HREF on 12 Sep; the second half of this check is the in-place branch,\n"
+      "       which only fires when the pathname test names the page the map is on.")
 
 # ── 5 · DEPLOY.md ─────────────────────────────────────────────────────────
 dep = read("docs/DEPLOY.md")

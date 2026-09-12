@@ -186,7 +186,9 @@ check("FAMILIES.filter" in NAV and 'f.key !== "user"' in NAV,
       "the bar is not the five families minus User")
 
 print("\n7 · the footer's doors")
-check("/map" in PROFILE and "exportCsv" in PROFILE and "/moi/historique" in PROFILE,
+# MAP is HOME_HREF since 12 Sep — the map is drawn on Home and /map only
+# forwards. The door is what is checked; its spelling is verify210's job.
+check("HOME_HREF" in PROFILE and "exportCsv" in PROFILE and "/moi/historique" in PROFILE,
       "MAP · EXPORT · HISTORY all resolve",
       "a footer door is missing")
 check("SortableTable" in HIST and "CAP" not in HIST,

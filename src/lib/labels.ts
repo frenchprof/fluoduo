@@ -151,6 +151,11 @@ const PATH_NAMES: Array<[string, string]> = [
   ["/tutor", "ChaTutor"],
   ["/moi", "My Progress"],
   ["/teacher", "Teacher"],
+  // `/home` IS the map since 12 Sep, and the teacher's view had no label for
+  // it — line 294 names `/` "Home" and the root stopped being Home on 9 Sep,
+  // so every visit here has been printing raw. `/map` keeps its entry because
+  // rows logged before the merge are still in the data.
+  ["/home", "Home"],
   ["/map", "Map"],
   ["/leaderboard", "Leaderboard"],
   ["/profil", "Profile"],

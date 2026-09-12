@@ -168,28 +168,44 @@ ok("postcard" not in hm_code,
    "the `postcard` prop is back in HomeMap.tsx — Dan, 9 Sep: 'please throw "
    "that postcard away forever'")
 
-# ---- the map is still reachable the ordinary way -----------------------------
-# /map is a REDIRECT since 12 Sep, so these doors are hops rather than
-# destinations — and they must keep existing for exactly that reason. Fifty
-# stops' worth of `/map#SIO-0nn` deep links, printed QR codes and these six
-# in-app links all rely on the forward still being wired to something. A door
-# that 404s is the failure this guards; one that forwards is the design.
+# ---- the map is still reachable, and the old address still lands -----------
+# TWO THINGS, AND THEY MOVED IN OPPOSITE DIRECTIONS ON 12 SEP.
+#
+# The map merged onto Home, so the in-app doors stopped naming `/map` — they
+# name HOME_HREF, because a link to the redirect stub costs a second page load
+# and a flash (verify210 now forbids the old spelling outright). Counting
+# `/map` links here would therefore have gone red on the fix and green on a
+# regression, which is the fault this file has already recorded three times
+# about its own `fill` assertion.
+#
+# What is worth guarding is what the old assertion MEANT: the zoom, the legend
+# and the 2D view must be reachable without typing an address.
 doors = []
 for root, _dirs, fs in os.walk("src"):
     for f in fs:
         if not f.endswith((".tsx", ".ts")):
             continue
-        p = os.path.join(root, f)
-        if p.replace(os.sep, "/").startswith("src/app/map/"):
+        p_ = os.path.join(root, f).replace(os.sep, "/")
+        if p_.startswith("src/app/map/") or p_ == "src/lib/routes.ts":
             continue  # the map linking to itself is not a way in
-        t = open(p, encoding="utf-8").read()
-        if re.search(r'href=(?:"|\{")/map"|href:\s*"/map"|push\("/map"\)', t):
-            doors.append(p.replace(os.sep, "/"))
+        t = re.sub(r"(?m)^\s*//.*$", "", open(p_, encoding="utf-8").read())
+        if re.search(r'href=(?:\{)?HOME_HREF|href:\s*HOME_HREF|push\(HOME_HREF', t):
+            doors.append(p_)
 ok(len(doors) >= 1,
-   f"the map still has {len(doors)} door(s) outside itself: "
+   f"the map has {len(doors)} door(s) outside itself: "
    + ", ".join(sorted(os.path.basename(d) for d in doors)[:4]),
-   "NOTHING links to /map any more — the zoom, the legend and the 2D view "
-   "are reachable only by typing the address")
+   "NOTHING links to the page that draws the map — the zoom, the legend and "
+   "the 2D view are reachable only by typing the address")
+
+# AND THE STUB STAYS. Fifty stops' worth of `/map#SIO-0nn` deep links, printed
+# QR codes and outside bookmarks rely on the forward being wired to something.
+# A door that 404s is the failure; one that forwards is the design.
+stub = open("src/app/map/MapRedirect.tsx", encoding="utf-8").read() \
+    if os.path.isfile("src/app/map/MapRedirect.tsx") else ""
+ok("location.replace" in stub and "/home" in stub,
+   "/map still forwards to Home, so old links and printed QR codes still land",
+   "/map no longer forwards — every bookmark, QR code and `/map#SIO-0nn` deep "
+   "link in the wild now 404s. The route may never be deleted outright.")
 
 print("\n".join("  ok    " + s for s in OK))
 if FAIL: print("\n".join("  FAIL  " + s for s in FAIL))

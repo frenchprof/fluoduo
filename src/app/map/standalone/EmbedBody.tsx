@@ -22,6 +22,7 @@ import { KindLegend } from "@/components/HomeMap";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
 import { nextSioId } from "@/lib/continuer";
 import { equippedAccent } from "@/lib/economy";
+import { HOME_HREF } from "@/lib/routes";
 
 export default function EmbedBody() {
   // Progress lives in localStorage, which the prerender must not read — an
@@ -48,7 +49,7 @@ export default function EmbedBody() {
           accent={equippedAccent(progress)}
           onOpenSio={(_unit, id) => {
             // Out of the frame, into the app.
-            window.open(`/map#${id}`, "_top");
+            window.open(`${HOME_HREF}#${id}`, "_top");
           }}
         />
         <div className="mt-2.5">
