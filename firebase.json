@@ -1,0 +1,11 @@
+{
+  "//": "ONLY firestore. Deliberately no `hosting` block — the site is served by Cloudflare Pages (deploy-live mirrors main to dckg/fluo), so a `firebase deploy` with no --only flag must not be able to publish a second, stale copy of the app over it.",
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "emulators": {
+    "firestore": { "port": 8181 },
+    "ui": { "enabled": false },
+    "singleProjectMode": true
+  }
+}

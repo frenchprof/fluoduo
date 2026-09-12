@@ -451,7 +451,187 @@ page. 0.6s where the build-based version took 98s, and the stale
 `.next/types/validator.ts` hazard the old one carried is gone with the probe
 route that caused it. `jiti` as a direct devDependency is a no-op for
 production installs — Tailwind and ESLint, both dev, already pulled it.
-## 12 Sep — the last of the geometry joins the ramp (this session, branch, NOT merged)
+## 12 Sep — the Firestore rules get tested, and three holes close (this session, branch, NOT merged)
+
+Dan asked whether `firestore.rules` was sufficient. **It was not, and nothing
+had ever tested it.** Three attacks a signed-in student could run today were
+ACCEPTED by the rules as they stood; all three are now refused, and the refusal
+is proved by driving the REAL Firestore emulator rather than by reading.
+
+**1 · `mail/{id}` WAS AN OPEN EMAIL RELAY.** `isSignedIn()` plus a shape check
+let any student post a document the Trigger Email extension then SENDS — any
+address, any subject, any body, from this project's sender:
+
+    to:      ["victim@anywhere.com"]
+    message: { subject: "Your NUS result", text: "<anything>" }
+
+The shape check never touched the two things that matter: WHO receives it and
+WHO sent it. **"No writer in this repo" is not a defence** — it is the reason
+this one is dangerous. The oraltest site shares this Firebase project, so every
+fluoduo learner is a signed-in principal against `mail/`, whether or not any
+code here writes to it. Now the recipient must have an invite doc THIS sender
+created.
+
+**2 · INVITE SQUATTING FROZE THE BOOKING FLOW.** `create` only fires on a
+MISSING doc and `update` is `false`, so the first write wins forever. One
+account could write one doc per classmate — `byName` is free text, so it could
+read "Dr Chan" — and no real leader could ever invite those people again. Now
+the creator must hold an actual booking and may not invite themselves.
+
+**3 · LEADERBOARD XP COULD SILENTLY FALL.** `sessions` has carried a monotonic
+guard since it was written ("a client can't quietly rewrite history"); the
+board — the most public surface in the app — had none.
+
+**WHAT THE TESTS ARE, AND WHY THERE ARE TWO HALVES.** `scripts/rules-test/`
+drives the emulator's own rules engine. `attacks.mjs` sends each attack as an
+attacker would; `legit-paths.mjs` exists because **a rule that denies
+everything passes every attack test**, and this repo has twice shipped a rule
+that quietly denied real learners — the `xp <= 100` ceiling that rejected every
+correct answer from anyone on a 7-day streak, and the leaderboard allowlist
+that needed `weekXp`/`weekKey` before a new learner could join the board. Both
+were swallowed by a client-side `catch`. So every change is checked against the
+three awkward shapes that really exist: a brand-new learner, a legacy laf1201
+row with no `xp` and no `term`, and a cohort reset where XP legitimately falls.
+
+    attacks       origin/main  3 FAIL of 6      this branch  6 PASS
+    legit-paths   origin/main  3 PASS of 3      this branch  3 PASS
+
+**THE FIRST VALIDATOR WAS WORTHLESS AND THAT IS THE LESSON.**
+`firebase emulators:exec --only firestore "true"` printed a cheerful start and
+exited 0 — so the rules were broken ON PURPOSE (`allow read: if isSignedIn(`,
+unclosed) and it exited 0 again. **It never compiles the rules.** The emulator's
+`:securityRules` REST endpoint does, and rejects that file naming the line
+(`L408:7 Unexpected 'allow'.`). A validator nobody has seen fail is not a
+validator — the same rule that caught `verify25` passing a re-typed literal.
+
+**AND THE SUITE ITSELF PRODUCED A FALSE PASS ON ITS FIRST OUTING — the same
+fault it exists to catch, one level up.** `legit-paths.mjs` never called
+`clearFirestore()`, and the emulator keeps data for its whole lifetime. So the
+SECOND run of "a brand-new learner creates their first board row" found the row
+the FIRST run had left behind, and Firestore evaluated `allow update` instead of
+`allow create` — the one rule the test exists to exercise. It reported PASS
+against a rules file that DENIES that create. Fixed by clearing the database and
+minting a random uid per run, then break-tested the only way that counts:
+
+    stale rules (no weekXp in the create allowlist)   FAIL  <- was a false PASS
+    this branch's rules                               PASS
+
+Which also settles a claim made to Dan earlier in the day and then doubted: the
+leaderboard create allowlist really does need `weekXp`/`weekKey`. A rules file
+without them denies a new learner's FIRST board row, and the client's `catch`
+deletes it — so the learner never appears. That is the 2026-08-21 fix; anyone
+holding an older copy of this file should not deploy it.
+
+**ONE PREDICTION OF MINE WAS WRONG, recorded so it is not cited later.** I
+expected a deck with no `visibility` to make `collections`' read rule ERROR and
+lock out its own owner. Seeded exactly that deck: **the owner reads it fine.**
+The `.get('visibility', 'private')` form is kept because it states the intent,
+but it changes no behaviour and fixes nothing.
+
+**AND THE RULES NOW HAVE A DEPLOY PATH, which is the fault underneath all of
+this.** `firestore.rules` was a file NOTHING deployed — no `firebase.json`, no
+`.firebaserc`, no workflow mentioning Firestore, and `deploy-live` mirrors main
+to Cloudflare Pages, which is the static site and not Firebase at all. The file
+in git was a copy of what someone had pasted into the console, with no way to
+tell whether the two still agreed. **They did not:** the copy in circulation on
+12 Sep was missing the 21 Aug `weekXp`/`weekKey` fix, and a rules file without
+it denies a new learner's FIRST board write, which the client's `catch` then
+deletes — so the learner never appears on the board. Proved, after the
+false-pass fix above, by running the new-learner path against both:
+
+    the copy in circulation   first board row for a NEW learner: DENIED
+    the repo's rules          first board row for a NEW learner: ACCEPTED
+
+`.github/workflows/firestore-rules.yml` closes the gap: tests on `paths:
+['firestore.rules', 'scripts/rules-test/**']`, and a deploy job that is
+`workflow_dispatch` + `deploy: true` only, `needs: test`. **Landing and
+publishing stay two decisions** — the `deploy-live` posture (Dan, 2026-08-31:
+*"we go through fluoduo main"*), and doubly so here, because these rules are
+the only thing between a signed-in student and everyone else's data. Needs a
+one-time `FIREBASE_SERVICE_ACCOUNT` secret; the job fails with instructions
+until it exists. `firebase.json` declares firestore ONLY — no `hosting` block,
+so a bare `firebase deploy` cannot publish a stale copy of the app over
+Cloudflare Pages.
+
+**THE WORKFLOW WOULD HAVE BEEN PERMANENTLY RED ON A GREEN RULES FILE**, and
+only running it exactly as CI runs it caught that. `clearFirestore()` throws
+`CANCELLED` when one suite starts as the previous one's gRPC streams are still
+closing — a HANDOVER race, not a broken emulator. attacks passed 6/6, then
+legit-paths crashed before printing a line and the runner exited 1.
+`clear.mjs` retries, narrowly: a cancelled or unavailable call only, so a
+broken emulator can never become a silent pass — the `settle.mjs` rule, retry a
+handover and never a verdict. Break-tested after: main's rules through the
+runner exit **1** naming the three failures, this branch's exit **0**.
+
+**AND THE WORKFLOW'S FIRST CI RUN WENT RED — THREE MORE FAULTS, none visible
+from a green local run.** Worth the paragraph because all three are the same
+species: a test that measures something other than what it claims to.
+
+1. **"emulator never came up."** The wait was 60 s, a number taken from this
+   container where firebase-tools and the 131 MB emulator JAR were already
+   cached. A COLD runner fetches both before the port ever opens. 240 s now —
+   it costs nothing on a warm run, since it returns the moment the port
+   answers.
+2. **The log said nothing else**, because the spawn used `stdio: "ignore"`. The
+   one question worth asking — downloading, or broken? — had no answer
+   anywhere. The output is buffered now and printed only on a timeout.
+3. **A STALE EMULATOR FAKED A COLD-START PASS.** With the JAR deleted on
+   purpose, the "cold" run reported 9 PASS in **1.4 seconds** — it had
+   connected to an emulator left running by an earlier invocation, enforcing
+   whatever rules that process was last given. `run.mjs` now refuses to start
+   when the port already answers (exit 2, break-tested). A genuine cold start
+   then took 8 s here and passed 9/9.
+
+CI also gets `actions/cache` on `~/.cache/firebase/emulators` and a GLOBAL
+`npm install -g firebase-tools` — global on purpose, because putting it in
+`package.json` would slow `npm ci` in `verify`, which runs on every pull
+request and whose runtime is the thing this repo has spent the month cutting.
+
+**THEN IT WENT RED A SECOND TIME, AND THE FIX FROM ROUND ONE PAID FOR ITSELF
+IMMEDIATELY** — the buffered emulator output named the cause in one line:
+
+    Error: firebase-tools no longer supports Java version before 21.
+
+The workflow pinned **Java 17**. This container has **21**, which is why the
+same script passed locally every time: works-on-my-machine, from the direction
+where the machine is the one that is right and the version was never checked
+before being written down. Pinned to 21, with a comment saying not to lower it.
+
+**AND THAT FAILURE COST FOUR MINUTES TO LEARN, TWICE.** The 240 s wait is for a
+cold runner still downloading; a process that has already EXITED will never
+open the port, so `run.mjs` watches for the child's exit and bails at once.
+Break-tested with a stub that dies the way the real one did: **1.1 s, exit 1,
+and it prints the emulator's own error** — against 240 s of silence before.
+
+**ONE MORE, FOUND WHILE BREAK-TESTING THAT.** `run.mjs` was not killing its own
+emulator: `firebase emulators:start` is a LAUNCHER, and the thing holding the
+port is a Java process it spawns, which survived SIGTERM to the launcher. So a
+second local run found port 8181 still answering and stopped at the port guard
+with exit 2 — a clean tree looking like a broken setup. `detached: true` plus a
+negative-pid signal kills the group. Verified: port free after a run, and two
+back-to-back runs both green.
+
+**ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
+SDK init still had to be shipped. **It already ships** — `client.ts` initialises
+App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.
+What is outstanding is the key and the console, not the client, and that file
+records why enforcement stays off: the legacy laf1201 sites share this project
+and must be attested before enforcing, or the rule denies their writes.
+
+**THE TESTS ARE NOT IN `verify.yml`, deliberately.** The emulator is a ~60 MB cold
+download and ~25 s of boot, and CI was cut from 10.5 minutes to ~7 this month
+because the Actions allowance ran out mid-morning and nothing could merge. They live in their own workflow instead, on the `paths:`
+filters above, so the 99% of pull requests that never touch the rules pay
+nothing.
+
+**STILL OPEN, and NOT fixable in rules — the file says so in its own header:**
+leaderboard XP is self-reported (a learner can publish 10,000,000; only a Cloud
+Function totalling `responses` fixes that), and `feedback` takes a 300 KB
+screenshot with NO sign-in at all while `vlrain_hiscores` is open too. Rules
+cannot rate-limit; App Check is the answer and the header carries a
+ready-to-enable block, switched OFF because enabling it before the apps are
+registered breaks every write instantly.
+## 12 Sep — the last of the geometry joins the ramp (MERGED as #333, QC of #324)
 
 Dan, on a goal-card row that nailed a tile to a pixel: ***"PLEASE NEVER EVER
 HARD CODE FONT SIZES AND BUTTON SIZES !!!"*** — then, once the Home keys were
