@@ -100,7 +100,7 @@ export default function ToolSummon({
         title={tools.length === 1 ? (tools[0] === "chatutor" ? "ChaTutor" : "VoixLà") : "Outils — VoixLà & ChaTutor"}
         aria-label="Outils"
         aria-expanded={tray}
-        className="fixed bottom-[132px] right-[14px] z-50 flex h-[46px] w-[46px] items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] text-xl shadow-lg transition-transform hover:brightness-95 active:scale-95"
+        className="fixed bottom-[132px] right-[14px] z-50 flex fluo-fab items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] text-xl shadow-lg transition-transform hover:brightness-95 active:scale-95"
         style={{ background: "var(--cahier-paper-raised)" }}
       >
         🛠️

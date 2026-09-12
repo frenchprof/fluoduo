@@ -157,7 +157,13 @@ if wrap:
           "above it, so a single value leaves the desktop at the gap Dan rejected — the "
           "same fault surviving at the width he was not looking at.")
 
-DS_PAD = re.search(r'className="mx-auto flex w-full max-w-\[600px\][^"]*"', open("src/components/DrillShell.tsx", encoding="utf-8").read())
+# The measure is `.fluo-measure` now, not `max-w-[600px]` (Dan, 2026-09-12:
+# "PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"). A column of
+# text has to be measured IN type or it stops being a measure — 600px is 37.5rem
+# at the default, and as rem it widens with a learner's own text size instead of
+# cramming more words onto a line already at its limit. What THIS check cares
+# about is the padding, not how the width is spelled, so it matches the class.
+DS_PAD = re.search(r'className="mx-auto flex w-full fluo-measure[^"]*"', open("src/components/DrillShell.tsx", encoding="utf-8").read())
 check(DS_PAD is not None and "pt-6" in DS_PAD.group(0) and "sm:pt-10" in DS_PAD.group(0),
       "DrillShell's own content beat is untouched — all 28 surfaces keep it",
       "DrillShell's content padding changed. That is the shared beat every drill card "

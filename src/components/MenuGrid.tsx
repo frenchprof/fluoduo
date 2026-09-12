@@ -148,7 +148,7 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
 ];
 
 const TILE =
-  "flex min-h-[64px] flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
+  "flex fluo-row-tall flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
   "transition hover:-translate-y-0.5";
 /* BIGGER, AND TRUNCATION IS THE PRICE DAN CHOSE (2026-09-11: *"make the font
