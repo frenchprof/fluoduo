@@ -9696,6 +9696,107 @@ that it exists, and says why.
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
 
+### 12 Sep — pinning a goal stays OUT, deliberately
+
+When the black strip above REDRILLS went (Dan, 11 Sep: *"There is no need for
+the black strip and the words above the black strip"*), it took with it the only
+control in the app that could PIN A GOAL with a date. `setGoal` in
+`progress.ts` has had **zero callers** ever since. Flagged; put to Dan; his
+answer: ***"we leave it out for now."***
+
+**So this is a decision, not an oversight — do not restore it.** The next
+session to run `grep setGoal` will find an exported function nothing calls and
+read it as dead code with a missing button. It is neither.
+
+**Nothing breaks, and this is why it was safe to leave.** Every reader of
+`progress.goal` already handles it being unset, checked one by one:
+
+    goalLine()      returns null when nothing is pinned; the caller renders nothing
+    nextAction()    the goal only RE-ORDERS the re-drill queue — it prefers an
+                    outcome the goal needs — so with none pinned it simply takes
+                    the head of the queue
+    PageBand        takes its own `goal` prop from the shell, not from progress
+
+**The one real loss, stated plainly:** the re-drill queue no longer jumps
+outcomes that sit before a learner's target stop. It drills in plain due order
+instead. `setGoal` and the `goal` field stay in place, and any learner who
+pinned one before 11 Sep keeps it — so bringing the feature back later is a
+button, not a migration.
+
+### 12 Sep — the same instruction answered three times, and what that cost
+
+> **RULED, same day: the colour-review session (`claude/home-goal-and-byline`)
+> OWNS ALL REMAINING SIZE WORK.** Dan, asked how far to take it: *"color review
+> will take it all."* No other lane touches box sizes — not the Home keys, not
+> the 28 lines, not `MapBody`'s zoom readout. If you are not that lane and you
+> find a frozen box, write it down here; do not fix it.
+>
+> **WHAT IS ALREADY DONE, so that lane does not redo it:**
+> - `verify270-fluid-controls.py` is THE check (`verify245` was withdrawn as a
+>   duplicate). Its budget is **116**, lowered from 120 by the four boxes below.
+> - `ProfileContent.tsx` and `AccentColours.tsx` are CLEAN: the FRILLS slots'
+>   `h-[58px]` became `min-h-14`, three px floors became `min-h-10/11/14`, four
+>   raw radii became `rounded`/`rounded-sm`/`rounded-lg`.
+> - `verify270` now PRINTS its breakdown, so the next lane starts from the
+>   split rather than from a lump of 116.
+> - **Still broken and still yours:** `MapBody`'s `w-[68px]` zoom readout reads
+>   « 10( » with the browser's text set large. Its own comment records the same
+>   bug at 52px, hand-widened to 62 then 68. Best single argument for the rule.
+
+
+Dan asked *"is this exactly the same thing as what colour review wants to do"*.
+Near enough, and the honest answer is worse: **THREE lanes answered "PLEASE
+NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES" within hours of each other**,
+none knowing about the others.
+
+    qc/menu-ramp + claude/subdomains   verify270-fluid-controls.py   MERGED to main
+    claude/home-goal-and-byline        the Home keys                  in flight
+    this branch                        verify245-frozen-boxes.py      DUPLICATE
+
+`verify245` and `verify270` were the same check: both stripped comments first,
+both used `verify19b`'s ratchet, both exempted the 44px touch floor, both kept a
+named list of protected files. They even recorded the same trap in the same
+words — a check reading its own documentation as the defect.
+
+**`verify245` IS WITHDRAWN. `verify270` is the check.** This branch was
+restarted from `main` (which had already taken the User-pages work as #314 and
+the sizing ruling as #319) and re-applies only what main does not have:
+
+1. **The four frozen boxes on the profile** — `h-[58px]` on the FRILLS slots
+   (which clipped: 56px box, 60px of words at large browser text), three px
+   floors and four raw radii. `verify270`'s budget drops 120 -> 116.
+2. **`verify270` now prints what its number is made of**, because the count was
+   a lump and Dan's next question was "I NEED TO SEE":
+
+       a fixed box >24px round text or an emoji ...  60   <- the real cleanup (28 lines)
+       a hairline, dot, wheel or tick box <=24px .   23   leave it: it holds no text
+       a min-* floor .............................   21   right shape already, px spelling
+       a max-* reading cap .......................   12   leave it: Dan's own exception
+
+   The target is NOT zero and the check now says so.
+3. **`verify30`'s width rule, rewritten.** It read `"w-full" not in rows or
+   "min-h-[44px] rounded" in PROFILE` — an escape hatch that passed the whole
+   claim as long as that one pixel string survived somewhere in the file, so
+   removing a frozen pixel failed a rule about WIDTH. It now names the two
+   elements that may legitimately span the page (a text input, and the row's
+   disclosure header) and flags anything else, with no size spelling in it.
+   Break-tested with a `w-full` Save button.
+
+**THE ZOOM READOUT IS STILL BROKEN ON MAIN, AND IS THE BEST ARGUMENT FOR THE
+RULE.** `MapBody`'s `w-[68px]` carries a comment recording that at 52px a
+desktop read « 00 » for 100% and « ?00 » for 200%; it was hand-widened to 62
+and then 68. Driven today with the browser's text set large it reads
+**« 10( »** — the same bug, one setting further out. Hand-tuning the pixel
+twice moved it; it never fixed it. Left alone deliberately, so two lanes do not
+edit `MapBody` at once.
+
+**THE LESSON IS ABOUT LANES, NOT ABOUT SIZES.** AGENTS.md already says to look
+at what is in flight before opening a branch. What it does not say is that a
+RULING Dan states in one sentence is heard by every session listening, and each
+will build the check for it. A one-line instruction is the highest-collision
+event there is. Say in STATUS which lane owns a ruling, in the same hour it is
+made.
+
 ### 12 Sep — the rows that had nothing in them are gone
 
 Shown each row opened in the real app, Dan ruled on all four, and then on a
