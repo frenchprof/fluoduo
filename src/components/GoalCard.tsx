@@ -150,7 +150,14 @@ export default function GoalCard({
           .map((k) => (
             <span
               key={k}
-              className="fluo-mono rounded-[0.35em] px-[0.5em] py-[0.1em] text-[11px] font-black uppercase leading-none tracking-wider text-white"
+              /* BLACK, NOT WHITE (Dan, 2026-09-12, shown both rendered from
+                 one build with only the ink swapped). He asked for white first
+                 and changed it on seeing it measured: against these four pens
+                 white runs 1.84-3.01 where small text wants 4.5, worst on the
+                 green. Black runs 6.98-11.41 on the same four. The house ink
+                 rather than a hex, so it follows the paper if the paper ever
+                 moves. */
+              className="fluo-mono rounded-[0.35em] px-[0.5em] py-[0.1em] text-[11px] font-black uppercase leading-none tracking-wider text-[color:var(--cahier-ink)]"
               style={{ background: KIND_COLOR[k] }}
             >
               {KIND_LABEL[k]}
