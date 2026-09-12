@@ -41,10 +41,17 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # The emulator is a JAR. ubuntu-latest ships a JDK, but naming it here
-      # means a runner image change fails loudly instead of mysteriously.
+      # The emulator is a JAR, and firebase-tools REQUIRES JDK 21 OR ABOVE —
+      # it refuses to start on anything older with "firebase-tools no longer
+      # supports Java version before 21". Do not lower this number.
+      #
+      # 17 was pinned here first and CI failed on it twice, while the same
+      # script passed locally: this container happens to have 21, and the
+      # version was never checked before being written down. The classic
+      # works-on-my-machine, from the direction where the machine is the one
+      # that is right.
       - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: '17' }
+        with: { distribution: temurin, java-version: '21' }
       - run: npm ci
 
       # THE EMULATOR JAR IS ~60 MB AND IS FETCHED ON FIRST USE. The first run of

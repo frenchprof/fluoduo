@@ -366,6 +366,30 @@ CI also gets `actions/cache` on `~/.cache/firebase/emulators` and a GLOBAL
 `package.json` would slow `npm ci` in `verify`, which runs on every pull
 request and whose runtime is the thing this repo has spent the month cutting.
 
+**THEN IT WENT RED A SECOND TIME, AND THE FIX FROM ROUND ONE PAID FOR ITSELF
+IMMEDIATELY** — the buffered emulator output named the cause in one line:
+
+    Error: firebase-tools no longer supports Java version before 21.
+
+The workflow pinned **Java 17**. This container has **21**, which is why the
+same script passed locally every time: works-on-my-machine, from the direction
+where the machine is the one that is right and the version was never checked
+before being written down. Pinned to 21, with a comment saying not to lower it.
+
+**AND THAT FAILURE COST FOUR MINUTES TO LEARN, TWICE.** The 240 s wait is for a
+cold runner still downloading; a process that has already EXITED will never
+open the port, so `run.mjs` watches for the child's exit and bails at once.
+Break-tested with a stub that dies the way the real one did: **1.1 s, exit 1,
+and it prints the emulator's own error** — against 240 s of silence before.
+
+**ONE MORE, FOUND WHILE BREAK-TESTING THAT.** `run.mjs` was not killing its own
+emulator: `firebase emulators:start` is a LAUNCHER, and the thing holding the
+port is a Java process it spawns, which survived SIGTERM to the launcher. So a
+second local run found port 8181 still answering and stopped at the port guard
+with exit 2 — a clean tree looking like a broken setup. `detached: true` plus a
+negative-pid signal kills the group. Verified: port free after a run, and two
+back-to-back runs both green.
+
 **ONE MORE CORRECTION, to this file's own advice.** The App Check note said the
 SDK init still had to be shipped. **It already ships** — `client.ts` initialises
 App Check whenever `NEXT_PUBLIC_FIREBASE_APPCHECK_KEY` is set at build time.

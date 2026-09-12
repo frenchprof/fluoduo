@@ -36,6 +36,13 @@ writeFileSync(join(WORK, "firestore.rules"), readFileSync(join(ROOT, "firestore.
 
 const sh = (cmd, args, opts = {}) => spawn(cmd, args, { stdio: "inherit", ...opts });
 
+/* A DEAD EMULATOR IS AN ANSWER, NOT SOMETHING TO WAIT OUT. The wait is 240 s
+ * so a cold runner can finish downloading; but when the process has already
+ * EXITED, no amount of waiting will open the port, and the four minutes buy
+ * nothing but a slower red build. CI spent them twice over a wrong JDK pin
+ * before this existed. `waitFor` bails the moment this flips. */
+let emuDead = false;
+
 /* 240 s, not 60. The 60 came from this container, where firebase-tools and the
  * emulator JAR were already cached; a COLD GitHub runner fetches both before
  * the port ever opens, and the first CI run timed out at 60 s mid-download.
@@ -44,6 +51,7 @@ const sh = (cmd, args, opts = {}) => spawn(cmd, args, { stdio: "inherit", ...opt
 async function waitFor(url, tries = 240) {
   for (let i = 0; i < tries; i++) {
     try { const r = await fetch(url); if (r.ok) return true; } catch { /* not up yet */ }
+    if (emuDead) return false;          // it exited; the port is never coming
     await new Promise((r) => setTimeout(r, 1000));
   }
   return false;
@@ -89,12 +97,23 @@ const bin = process.env.FIREBASE_BIN;          // set by CI, which installs it o
 
 const emu = bin
   ? spawn(bin, ["emulators:start", "--only", "firestore", "--project", PROJECT],
-          { cwd: WORK, stdio: ["ignore", "pipe", "pipe"] })
+          { cwd: WORK, stdio: ["ignore", "pipe", "pipe"], detached: true })
   : spawn("npx", ["--yes", "firebase-tools@15", "emulators:start", "--only", "firestore",
-                  "--project", PROJECT], { cwd: WORK, stdio: ["ignore", "pipe", "pipe"] });
+                  "--project", PROJECT], { cwd: WORK, stdio: ["ignore", "pipe", "pipe"], detached: true });
 emu.stdout?.on("data", (d) => { emuLog += d; });
 emu.stderr?.on("data", (d) => { emuLog += d; });
-const stop = () => { try { emu.kill("SIGTERM"); } catch { /* already gone */ } };
+emu.on("exit", () => { emuDead = true; });
+/* KILL THE GROUP, NOT THE CHILD. `firebase emulators:start` is a launcher: the
+ * thing holding the port is a JAVA process it spawned. SIGTERM to the launcher
+ * alone left that Java running, so the NEXT run of this script found port 8181
+ * still answering and stopped at the guard above with exit 2 — a clean tree
+ * looking like a broken setup. Measured: after a green run the port still
+ * returned 200. `detached: true` puts the launcher in its own process group,
+ * and a negative pid signals the whole group. */
+const stop = () => {
+  try { process.kill(-emu.pid, "SIGTERM"); }
+  catch { try { emu.kill("SIGTERM"); } catch { /* already gone */ } }
+};
 process.on("exit", stop); process.on("SIGINT", () => { stop(); process.exit(130); });
 
 let failed = false;
