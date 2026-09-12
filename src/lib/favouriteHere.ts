@@ -36,6 +36,7 @@
  */
 
 import { ACTIVITIES, activity } from "@/content/activities";
+import { LESSONS } from "@/content/lessons";
 import { SIOS } from "@/content/sios";
 import { stopForDeck } from "@/lib/stopTag";
 
@@ -106,6 +107,21 @@ export function describeHere(
   const href = canonicalHref(pathname, search);
   const path = href.split("?")[0];
   const where = whereFor(path);
+
+  // A LESSON IS CALLED WHAT IT CALLS ITSELF. Dan, shown what the rows would
+  // otherwise say: *"what should they be called then?"* — and the answer was
+  // already in the repo. All 59 rows of `LESSONS` carry a real French title
+  // (« Comment ça s'écrit ? », « Moi aussi, moi non plus »), and nothing was
+  // reading them here, so a starred lesson fell all the way through to the
+  // registry's prefix match and came out « MneMemo » — the same name for every
+  // lesson in the course — or, before that, « FluOLinGo ».
+  //
+  // THIS RUNS BEFORE THE KEY, and that is the whole point. `activeKey` is the
+  // ACTIVITY (« MneMemo », the reader), which is right for a deck route and
+  // wrong here: fifty lessons share one reader, so the activity cannot tell
+  // two of them apart. The lesson's own title can.
+  const lesson = path.startsWith("/lessons/") ? LESSONS[path.split("/")[2]] : undefined;
+  if (lesson) return { href, auto: lesson.title, emoji: "📖", where };
 
   const byKey = activeKey ? activity(activeKey) : undefined;
   if (byKey) return { href, auto: byKey.name, emoji: byKey.emoji, where };
