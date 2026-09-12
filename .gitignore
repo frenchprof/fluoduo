@@ -68,3 +68,9 @@ work/**/*.png
 # here while it runs. Committed by accident on 2026-09-09 by a `git add -A`
 # that ran while a sweep was mid-flight; ignored so it cannot happen again.
 .tmp-verify-vslastweek/
+
+# Scratch from verify109-lucky-find.py, which transpiles src/lib and
+# src/content here to run them. Same hazard as the line above, found the
+# same way: a full verify sweep leaves 26 untracked .js files behind, and
+# the next `git add -A` sweeps them in. Ignored before that happens.
+.tmp-verify-find/
