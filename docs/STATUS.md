@@ -9102,6 +9102,61 @@ that it exists, and says why.
 Nine lint warnings appeared when the strip went — imports and state only it
 used. All removed; the touched files are at zero.
 
+### 12 Sep — the same instruction answered three times, and what that cost
+
+Dan asked *"is this exactly the same thing as what colour review wants to do"*.
+Near enough, and the honest answer is worse: **THREE lanes answered "PLEASE
+NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES" within hours of each other**,
+none knowing about the others.
+
+    qc/menu-ramp + claude/subdomains   verify270-fluid-controls.py   MERGED to main
+    claude/home-goal-and-byline        the Home keys                  in flight
+    this branch                        verify245-frozen-boxes.py      DUPLICATE
+
+`verify245` and `verify270` were the same check: both stripped comments first,
+both used `verify19b`'s ratchet, both exempted the 44px touch floor, both kept a
+named list of protected files. They even recorded the same trap in the same
+words — a check reading its own documentation as the defect.
+
+**`verify245` IS WITHDRAWN. `verify270` is the check.** This branch was
+restarted from `main` (which had already taken the User-pages work as #314 and
+the sizing ruling as #319) and re-applies only what main does not have:
+
+1. **The four frozen boxes on the profile** — `h-[58px]` on the FRILLS slots
+   (which clipped: 56px box, 60px of words at large browser text), three px
+   floors and four raw radii. `verify270`'s budget drops 120 -> 116.
+2. **`verify270` now prints what its number is made of**, because the count was
+   a lump and Dan's next question was "I NEED TO SEE":
+
+       a fixed box >24px round text or an emoji ...  60   <- the real cleanup (28 lines)
+       a hairline, dot, wheel or tick box <=24px .   23   leave it: it holds no text
+       a min-* floor .............................   21   right shape already, px spelling
+       a max-* reading cap .......................   12   leave it: Dan's own exception
+
+   The target is NOT zero and the check now says so.
+3. **`verify30`'s width rule, rewritten.** It read `"w-full" not in rows or
+   "min-h-[44px] rounded" in PROFILE` — an escape hatch that passed the whole
+   claim as long as that one pixel string survived somewhere in the file, so
+   removing a frozen pixel failed a rule about WIDTH. It now names the two
+   elements that may legitimately span the page (a text input, and the row's
+   disclosure header) and flags anything else, with no size spelling in it.
+   Break-tested with a `w-full` Save button.
+
+**THE ZOOM READOUT IS STILL BROKEN ON MAIN, AND IS THE BEST ARGUMENT FOR THE
+RULE.** `MapBody`'s `w-[68px]` carries a comment recording that at 52px a
+desktop read « 00 » for 100% and « ?00 » for 200%; it was hand-widened to 62
+and then 68. Driven today with the browser's text set large it reads
+**« 10( »** — the same bug, one setting further out. Hand-tuning the pixel
+twice moved it; it never fixed it. Left alone deliberately, so two lanes do not
+edit `MapBody` at once.
+
+**THE LESSON IS ABOUT LANES, NOT ABOUT SIZES.** AGENTS.md already says to look
+at what is in flight before opening a branch. What it does not say is that a
+RULING Dan states in one sentence is heard by every session listening, and each
+will build the check for it. A one-line instruction is the highest-collision
+event there is. Say in STATUS which lane owns a ruling, in the same hour it is
+made.
+
 ### 12 Sep — the rows that had nothing in them are gone
 
 Shown each row opened in the real app, Dan ruled on all four, and then on a

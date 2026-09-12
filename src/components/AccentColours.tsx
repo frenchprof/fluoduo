@@ -72,7 +72,7 @@ function SwatchButton({
       disabled={state === "locked" || state === "equipped"}
       aria-label={title}
       title={title}
-      className="flex min-h-[40px] items-center gap-1.5 rounded-md border-2 px-2 py-1 disabled:cursor-default"
+      className="flex min-h-10 items-center gap-1.5 rounded-md border-2 px-2 py-1 disabled:cursor-default"
       style={{
         borderColor: state === "equipped" ? INK : LINE,
         background: PAPER,
