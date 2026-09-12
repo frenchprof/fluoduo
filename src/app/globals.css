@@ -2049,231 +2049,52 @@ h3.cahier-display { font-size: var(--fs-h3); }
    who asked for less motion the faintest version of the thing that was already
    too faint. */
 /* ===========================================================================
- *  THE TAGLINE COLLAPSES INTO THE NAME — the welcome hero (2026-09-12)
+ *  THE WELCOME HERO IS DAN'S OWN GIF, MINUS ITS BACKGROUND (2026-09-12)
  *
- *  Dan sent a gif, then had to send it twice: the first upload reached this
- *  session as ONE STILL FRAME, so the first attempt transposed a guess — a
- *  displaced twin — and he sent it back: *"did i not say to TRANSPOSE THE
- *  ANIMATION MINUS THE BACKGROUND"*, *"not just the line, the exact animation
- *  too!"*. The 63-frame file is what this is built from.
+ *  *"when i said to transpose, i literally mean to copy in the gifs except with
+ *  a transparent background"* — said after two attempts at rebuilding it proved
+ *  his other sentence: *"cos when you rebuild, you are bound to make it look
+ *  different — which I don't want"*.
  *
- *  WHAT THE GIF ACTUALLY DOES, read off the frames:
+ *  He was right. The CSS rebuild that stood here — per-letter spans, a shed
+ *  animation, gradient rings, a dart pinned to the bullseye — worked exactly as
+ *  specified and looked nothing like his file. His letters are EXTRUDED, a
+ *  bright face over a darker slab with a cast shadow; his boards are red and
+ *  white and three-dimensional; there are TWO darts. None of that survives
+ *  being retyped in CSS by someone reading a contact sheet. So all of it is
+ *  gone and the artwork is the asset.
  *
- *    0.0s   « Fluency, built On Linguistic Goals », some letters blue
- *    2.6s   every letter that is NOT part of the name comes loose and falls
- *    9.1s   what is left closes up: F l u O L i n G o
- *    11.6s  two targets drop in from above and land on the two O's
- *    13.5s  a dart flies in and sticks in one of them
+ *  WHAT IS LEFT HERE IS SIZE, and it is fluid for the reason Dan gave the same
+ *  day: *"PLEASE NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"*. The
+ *  art is 1391x760 with the words across its middle, so it is sized by WIDTH
+ *  against the viewport and capped, and its height follows its own ratio. No
+ *  breakpoints.
  *
- *  So it is not a type effect. It is the brand's own argument, animated:
- *  Fluency On Linguistic Goals IS FluOLinGo, and the Goals are targets. That is
- *  why this replaces the two lines that were here rather than joining them —
- *  the old hero said « Welcome to FluOLinGo » and then explained the name
- *  underneath, and this does both in one move.
- *
- *  THE COLOURS. Dan: *"keep the colors consistent, the gif has some issues with
- *  consistency of colors"*, then *"use the best colors that complement the
- *  current colors on this page"*. His own blue, sampled off the file, is
- *  #1cacff — six units of green away from `--sio-vocab`, the blue of the map's
- *  vocabulary stops, which this page has used since 9 Sep. So the gif already
- *  agreed with the page and the palette needed no invention: the letters that
- *  SURVIVE take that blue, the targets take `--sio-grammar`, and the pair is
- *  the blue-and-pink Dan picked off the stop buttons.
- *
- *  The inconsistency he means is visible in frame 0: the « n » of « On » is
- *  blue there and falls away two seconds later. Here the rule is exact — blue
- *  is what the name is made of, white is what leaves — so no letter changes
- *  its mind.
- *
- *  WHITE, NOT THE GIF'S BLACK, for the letters that leave. On yellow they are
- *  near-black; over a sky that runs midnight to noon that is the one colour
- *  that vanishes, and these letters have to be READ before they can be missed.
- *
- *  THE GAPS CLOSE BY THEMSELVES. Each leaving letter is an inline-block whose
- *  `max-width` goes to zero, so the survivors are pulled together by normal
- *  flow — no measuring, no per-letter translate, and it stays right when the
- *  face or the size changes.
- *
- *  IT PLAYS ONCE. The gif loops over 18 seconds; a door does not. The ENTER
- *  coin is *"THE ONE THING THAT MOVES ON THIS PAGE"* (Dan, 11 Sep) and a
- *  headline restarting behind it every 18s would be a second thing asking for
- *  the eye.
+ *  `image-rendering: auto` is deliberate rather than default-by-omission: the
+ *  source is 3D-shaded with soft cast shadows, so it must be resampled
+ *  smoothly, not snapped to pixels the way the app's pixel-art icons are.
  */
-/* THE SIZE IS FLUID, NOT A LADDER OF BREAKPOINTS (Dan, 2026-09-12: *"PLEASE
-   NEVER EVER HARD CODE FONT SIZES AND BUTTON SIZES !!!"*).
-
-   The first build of this hero carried five pinned sizes in the markup — one
-   for phones, one above 380px, one at `sm`, one at `lg`, one for short
-   landscape — which is five guesses that each go wrong on the width between
-   them, and none of which knows the one thing that matters here: this line is
-   34 characters and it has to stay on ONE line.
-
-   So it is measured against the viewport instead. The clamp's floor and
-   ceiling are the app's own type scale (globals' --fs-* tokens, themselves
-   fluid), and the middle term is what keeps the line whole — width-relative,
-   so the type and the space it has to fit grow together. Nothing here needs a
-   breakpoint and nothing needs revisiting when the copy changes length: the
-   one number to touch is the vw, and the reason to touch it is written down. */
-.fluo-hero {
-  --hero-fall: 1100ms;
-  font-size: clamp(var(--fs-small), 4.1vw, var(--fs-display));
-  /* Padding in `em` so the plate around the words grows with them rather than
-     being a second size to keep in step. */
-  padding: 0.08em 0.5em;
-}
-/* The letters that leave: the wrapper collapses, the glyph inside falls. Two
-   elements because one cannot both hold layout width and be thrown. */
-@keyframes fluo-hero-shed {
-  0%, 38%  { max-width: 1.4em; }
-  70%, 100% { max-width: 0; }
-}
-@keyframes fluo-hero-fall {
-  0%, 30%  { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100%     { transform: translateY(1.6em) rotate(16deg); opacity: 0; }
-}
-.fluo-hero-shed {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  animation: fluo-hero-shed var(--hero-fall) cubic-bezier(0.6, 0, 0.35, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-.fluo-hero-shed > i {
-  display: inline-block;
-  font-style: inherit;
-  animation: fluo-hero-fall var(--hero-fall) cubic-bezier(0.5, 0, 0.75, 0) both;
-  animation-delay: var(--d, 0ms);
-}
-/* The target that lands on an O. It arrives from above and slightly right, the
-   way both of them do in the gif, and overshoots once on landing. */
-@keyframes fluo-hero-target {
-  0%   { transform: translate(0.9em, -2.6em) scale(1.35); opacity: 0; }
-  40%  { opacity: 1; }
-  75%  { transform: translate(0, 0.06em) scale(0.92); opacity: 1; }
-  100% { transform: translate(0, 0) scale(1); opacity: 1; }
-}
-@keyframes fluo-hero-letter-out { to { opacity: 0; } }
-.fluo-hero-o { position: relative; display: inline-block; }
-/* THE LETTER, BY ITS OWN NAME — not `.fluo-hero-o > span`.
-   That descendant selector also matched the DART, which is a span in the same
-   element, and beat `.fluo-hero-dart` on specificity (one class + one type vs
-   one class). So the dart inherited the letter's fade-out: measured, the
-   animation running on it was `fluo-hero-letter-out` and its opacity settled at
-   8.9e-16. The flight was never wrong; it was invisible.
-   A class says which element is meant. A descendant selector says which
-   elements happen to be there. */
-.fluo-hero-glyph {
-  animation: fluo-hero-letter-out 260ms linear both;
-  animation-delay: var(--d, 0ms);
-}
-.fluo-hero-o::after {
-  content: "";
-  position: absolute;
-  inset: 12% 4% 18% 4%;
-  border-radius: 50%;
-  /* Concentric rings, as the gif draws them: ring, gap, ring, filled centre. */
-  background:
-    radial-gradient(closest-side,
-      var(--sio-grammar) 0 26%,
-      #fff0 26% 44%,
-      var(--sio-grammar) 44% 62%,
-      #fff0 62% 80%,
-      var(--sio-grammar) 80% 100%);
-  animation: fluo-hero-target 620ms cubic-bezier(0.2, 1.5, 0.4, 1) both;
-  animation-delay: var(--d, 0ms);
-}
-/* THE DART, AND IT CANNOT MISS.
- *
- * Dan, 2026-09-12: *"i need the animation of the darts, but please please make
- * sure it lands on the bulls eye EXACTLY"*.
- *
- * So it is not aimed — it is PINNED, and the flight is the only thing animated.
- * Three facts do it, and together they make a miss impossible rather than
- * unlikely:
- *
- *   1 · the dart is a child of the same element that draws the target, so both
- *       are measured against one box. No coordinates travel between them.
- *   2 · its `left`/`top` are the target's own centre. The rings are drawn by
- *       `.fluo-hero-o::after` at `inset: 12% 4% 18% 4%`, so that centre is
- *       50% across and 12% + (100-12-18)/2 = 47% down. Change the inset and
- *       change these two numbers with it — they are the same measurement.
- *   3 · `transform-origin: 0 50%` puts the origin at the dart's TIP, and the
- *       flight is `translateX` applied AFTER the rotate, which moves it along
- *       its own shaft. Whatever the angle, whatever the distance, the tip
- *       returns to the origin — and the origin is the bullseye.
- *
- * That is why there is no arithmetic tying the flight to the landing. The
- * landing is where the element is; the flight is a distance that goes to zero.
- *
- * ONE DART, ON THE LAST O, as the gif has it. Two would be two things to watch
- * at the end of a line whose point has already been made.
- */
-@keyframes fluo-hero-dart {
-  0%   { transform: rotate(-42deg) translateX(-5.2em); opacity: 0; }
-  18%  { opacity: 1; }
-  70%  { transform: rotate(-42deg) translateX(0.055em); opacity: 1; }
-  /* the thud: it goes in, gives half a millimetre back, and stops */
-  100% { transform: rotate(-42deg) translateX(0); opacity: 1; }
-}
-.fluo-hero-dart {
-  --dart-h: 0.075em;
-  position: absolute;
-  left: 50%;
-  top: 47%;
-  /* PULL IT UP BY HALF ITS OWN THICKNESS, or the tip lands low. `top` places
-     the dart's TOP EDGE, while `transform-origin: 0 50%` — the tip — is half a
-     shaft-width further down. Measured before this line: dx -0.01px, dy 1.85px
-     at 1280. The horizontal was already exact because origin-x is 0, the left
-     edge, which is what `left` places. */
-  margin-top: calc(var(--dart-h) / -2);
-  width: 0.86em;
-  height: var(--dart-h);
-  border-radius: 0.04em;
-  background: currentColor;
-  transform-origin: 0 50%;
-  animation: fluo-hero-dart 520ms cubic-bezier(0.35, 0, 0.2, 1) both;
-  animation-delay: var(--d, 0ms);
-  pointer-events: none;
-}
-/* The point, at the tip — drawn BACKWARDS from the origin so it adds no length
-   in front of it. A tip that stuck out would be the one thing that lands past
-   the bullseye. */
-.fluo-hero-dart::before {
-  content: "";
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 0.16em;
-  height: 0.16em;
-  transform: translateY(-50%);
-  background: currentColor;
-  clip-path: polygon(100% 0, 100% 100%, 0 50%);
-}
-/* The flight at the far end. */
-.fluo-hero-dart::after {
-  content: "";
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  width: 0.3em;
-  height: 0.3em;
-  transform: translate(-40%, -50%);
-  background: currentColor;
-  clip-path: polygon(0 50%, 100% 0, 72% 50%, 100% 100%);
-}
-
-/* Reduced motion: the END of the story, with none of the journey. The letters
-   that leave are simply never there, and the targets are already home — which
-   is the settled frame, not a frozen mid-point. */
-@media (prefers-reduced-motion: reduce) {
-  .fluo-hero-shed { display: none; }
-  .fluo-hero-shed > i,
-  .fluo-hero-glyph,
-  .fluo-hero-o::after,
-  .fluo-hero-dart { animation: none; }
-  .fluo-hero-glyph { opacity: 0; }
-  /* Landed, not in flight: the same `translateX(0)` the flight ends on. */
-  .fluo-hero-dart { transform: rotate(-42deg) translateX(0); opacity: 1; }
+.fluo-hero-art {
+  display: block;
+  /* BIGGER (Dan, 2026-09-12: *"Can the word in the sky be bigger than this"*).
+     96vw on a phone — the art's own transparent margins keep it off both edges
+     — and a ceiling in rem so it stops growing before it outruns the sky on a
+     wide monitor. The crop below is in percentages of this width, so raising it
+     scales the whole framing rather than needing new numbers. */
+  width: min(96vw, 74rem);
+  height: auto;
+  image-rendering: auto;
+  /* THE ART IS MOSTLY EMPTY, AND THE EMPTY PART IS THE POINT: the words sit
+     across its middle and everything below them is the space the letters fall
+     through. Laid out honestly, that space is reserved as height and pushes the
+     words down onto the horizon — measured at 1280, they landed at y≈210 with
+     the skyline at 279, close enough to read as sitting on the treeline.
+     So both margins are pulled in: the top one lifts the words into the sky,
+     the bottom one stops the fall zone reserving ground it never draws on.
+     Percentages, because a margin-block percentage resolves against the
+     element's WIDTH — which is the one thing here that scales with the
+     viewport, so the crop holds at every size without a breakpoint. */
+  margin-block: -7% -24%;
 }
 
 @keyframes fluo-edge-beat {

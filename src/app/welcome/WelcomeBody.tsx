@@ -50,7 +50,7 @@
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import HomeMap3D from "@/components/HomeMap3D";
 import { useCourse } from "@/components/CourseGate";
 import { defaultProgress, loadProgress, type Progress } from "@/lib/progress";
@@ -98,82 +98,15 @@ const OUTLINE = {
   WebkitTextStrokeColor: "black",
   paintOrder: "stroke fill",
 } as const;
-/* TWO COLOURS, NOT FOUR, AND THEY COME FROM THE MAP (Dan, 2026-09-09: *"the
-   two colored F O L G have reverted to 4 again. I only need 2 colors, since we
-   are at it, can we use the colors that are the colors visible on the stop
-   buttons, the ones in blue and pink."*)
-
-   THEY "REVERTED" BECAUSE THEY WERE BORROWED. These four letters pointed at
-   four FAMILY tokens, so the ☰ menu's recolour to Dan's 12-swatch palette
-   moved every one of them without anyone touching this page — pink→violet,
-   green→yellow, blue→teal. It is the same fault, on the same day, as the fifty
-   stops silently following that recolour: a surface with no palette of its own
-   inherits whatever happens to the palette it is borrowing.
-
-   So they take the MAP's own pens now, the ones a learner can see on the stop
-   buttons two hundred pixels below this line: --sio-vocab blue and
-   --sio-grammar pink, alternating F·O·L·G. Those belong to the map, not to the
-   menu, so the next family recolour cannot reach them — and the welcome page
-   now matches the road it is a picture of, which is what makes the pairing
-   read as deliberate rather than decorative. */
-const BRAND: Record<string, string> = {
-  F: "var(--sio-vocab)",   // blue — the vocabulary stops
-  o: "var(--sio-grammar)", // pink — the grammar stops
-  O: "var(--sio-grammar)",
-  L: "var(--sio-vocab)",   // blue
-  G: "var(--sio-grammar)", // pink
-};
-/**
- * THE HERO, LETTER BY LETTER.
- *
- * `keep` is not a style — it is whether the letter is part of the NAME. The
- * survivors, read in order, are F l u O L i n G o, and that is the whole point
- * of the animation: the tagline is not decorated into the brand, it IS the
- * brand with the rest taken away.
- *
- * Note « On »: the O stays and the n goes. Dan's own frame 0 colours that n
- * blue and then drops it two seconds later — one of the *"issues with
- * consistency of colors"* he warned about. Here a letter's colour and its fate
- * are the same fact, so they cannot disagree.
- */
-const HERO_TEXT = "Fluency, built On Linguistic Goals";
-/** Which characters survive, by index, spelling FluOLinGo. */
-const HERO_KEEP = new Set([0, 1, 2, 15, 18, 19, 20, 29, 30]);
-/** The two O's, which become targets once everything else has fallen. */
-const HERO_O = new Set([15, 30]);
-/** …and which of them takes the dart. */
-const HERO_LAST_O = 30;
-
-const HERO_LETTERS = Array.from(HERO_TEXT).map((ch, i) => {
-  if (!HERO_KEEP.has(i)) {
-    // A space that is shed still needs to occupy width until it goes, so it is
-    // a non-breaking space — a plain one collapses and the gap shuts early.
-    return (
-      <span key={i} className="fluo-hero-shed" style={{ "--d": `${900 + i * 26}ms` } as CSSProperties}>
-        <i>{ch === " " ? "\u00a0" : ch}</i>
-      </span>
-    );
-  }
-  // The map's blue, from the one table that holds this page's pens — the
-  // same token the stops below are painted with, and the colour Dan's own
-  // gif already used (sampled: #1cacff against --sio-vocab #1ca6ff).
-  const style = { color: BRAND.F } as CSSProperties;
-  if (HERO_O.has(i)) {
-    // THE DART GOES IN THE LAST O ONLY, as the gif has it. Two darts at the end
-    // of a line whose point has already been made is two things to watch.
-    const last = i === HERO_LAST_O;
-    return (
-      <span key={i} className="fluo-hero-o" style={{ ...style, "--d": "2500ms" } as CSSProperties}>
-        <span className="fluo-hero-glyph">{ch}</span>
-        {last && (
-          <span aria-hidden className="fluo-hero-dart" style={{ "--d": "3200ms" } as CSSProperties} />
-        )}
-      </span>
-    );
-  }
-  return <span key={i} style={style}>{ch}</span>;
-});
-
+/* THE F·O·L·G PEN TABLE IS GONE WITH THE TYPESET HERO (12 Sep). Dan's own
+   artwork carries its colours — the blue of his letters is #1cacff, six units
+   of green from the map's --sio-vocab, which is why the two have always looked
+   like one system. The course tag below is the only text left in this sky and
+   it is white. */
+/* THE PER-LETTER HERO TABLE IS GONE (12 Sep). It drove a CSS rebuild of Dan's
+   gif — which letter survives, which O takes a dart — and the gif itself is the
+   hero now. Nothing derives from the words any more, so nothing here describes
+   them. */
 export default function WelcomeBody() {
   const router = useRouter();
   // Progress lives in localStorage, which the static export must not read at
@@ -297,7 +230,25 @@ export default function WelcomeBody() {
           a swipe that starts on the headline still travels the road — the
           scene underneath is the page, and text laid over it must not become
           a dead patch of screen. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[4%] flex flex-col items-center px-6 text-center sm:top-[4%]">
+      {/* BEHIND THE TREES (Dan, 2026-09-12: *"let it drop behind the trees in
+          the background"*).
+
+          The letters fall out of the sky, so they should go BEHIND the scenery
+          on the way down rather than over it — which is a z-index, not an
+          animation. The scene stacks by depth: `zOrder(scale) = scale * 900`
+          (lib/map3d/projection.ts), so a tree on the skyline is small and sits
+          LOW, a tree in the near grass is large and sits high. The sky+ground
+          SVG that everything stands on is z-0.
+
+          z-1 is therefore the one slot that is above the sky and below every
+          prop in the scene, however far away. Nothing here creates a stacking
+          context between this block and the props — the map's box is
+          `position: relative` with `z-index: auto`, and `overflow` alone does
+          not make one — so the two really do compare in the same context.
+
+          The course tag below is text and has to stay readable, so it is lifted
+          back out on its own. */}
+      <div className="pointer-events-none absolute inset-x-0 top-[4%] z-[1] flex flex-col items-center px-6 text-center sm:top-[4%]">
         {/* THE GREETING, THEN WHAT THE NAME MEANS (Dan, 8 Sep: *"too many
             words: pls keep it short: 'Building your Fluency on Linguistic
             Goals' (make the relevant letters stand out)"*, then *"the Welcome
@@ -343,46 +294,63 @@ export default function WelcomeBody() {
             now: a 5rem hand face over a moonlit sky needs a ground, not a
             glow. It is translucent, so the sky still shows through it and the
             page is still one picture. */}
-        {/* THE HERO IS THE GIF, AND IT REPLACES BOTH LINES THAT WERE HERE
-            (Dan, 2026-09-12: *"i want to swap the hero now what you see in the
-            gif i sent a turn ago"*, then *"not just the line, the exact
-            animation too!"*).
+        {/* THE HERO IS DAN'S OWN ARTWORK, NOT A REBUILD OF IT.
+            (2026-09-12: *"when i said to transpose, i literally mean to copy in
+            the gifs except with a transparent background"*, and *"cos when you
+            rebuild, you are bound to make it look different — which I don't
+            want"*.)
 
-            « Welcome to / FluOLinGo » and « Building your Fluency on Linguistic
-            Goals » are gone, which supersedes his 8 Sep ruling that the greeting
-            *"still has to appear before that line"*. The litmus test is what
-            retires it rather than a change of heart about greetings: this line
-            ENDS as the word FluOLinGo, so a second line saying FluOLinGo above
-            it would be the same word twice, eighty pixels apart — the exact
-            reasoning the corner wordmark was deleted for on 9 Sep.
+            He is right, and he said it after two attempts proved it. The first
+            read a single still frame — his upload reached this session
+            flattened — and guessed at the motion. The second had all 63 frames
+            and rebuilt the whole thing in CSS: per-letter spans, a shed
+            animation, gradient rings, a dart pinned to the bullseye. It worked,
+            and it still looked nothing like his file, because his letters are
+            EXTRUDED — a bright face with a darker slab down-left and a cast
+            shadow — his boards are red-and-white and three-dimensional, and
+            there are TWO darts, not one. None of that survives being described
+            in CSS by someone reading a contact sheet.
 
-            WHY EVERY LETTER IS ITS OWN ELEMENT. The animation is not a
-            treatment applied to a line; it is the line taking itself apart. The
-            letters that are not in the name come loose and fall, and what is
-            left closes up into « FluOLinGo ». That has to be per-character, and
-            it has to be DECLARED per character — a rule like "keep the
-            capitals" would not survive the lower-case l, u, i, n and o the name
-            is also made of.
+            So the gif is the asset. What changed is the one thing he asked to
+            change: the yellow ground is gone.
 
-            ROBOTO 900, NOT THE HAND, because the gif is a heavy grotesque and a
-            hand face cannot be one. Roboto is already loaded at 900 and is one
-            of the three faces Dan named on 6 Sep, so this borrows nothing new.
+            HOW THE BACKGROUND CAME OFF, because a colour-key alone would not
+            have done it. Every glyph is anti-aliased against #fcff16, so keying
+            the yellow leaves a yellow rind on every edge — which over a blue
+            sky is the most visible colour there is. Each pixel is instead
+            UN-MIXED: it is `alpha * ink + (1 - alpha) * yellow`, so alpha comes
+            from its distance to the yellow and the ink is recovered by solving
+            for it. Composited onto the page's own sky to check, the edges are
+            clean.
 
-            THE STAGGER RUNS LEFT TO RIGHT, as it does in the gif: `--d` is set
-            per letter from its position, so the line sheds in a wave rather
-            than all at once. The two O's wait until the fall is over before
-            their targets drop. */}
-        <h1
-          className="fluo-hero inline-block font-black leading-[1.1] tracking-[-0.015em] text-white"
-          style={{ fontFamily: "var(--font-readable), Roboto, sans-serif", background: BAND }}
-        >
-          <span aria-hidden>{HERO_LETTERS}</span>
-          <span className="sr-only">FluOLinGo — Fluency, built On Linguistic Goals</span>
-        </h1>
+            WEBP, NOT GIF. A GIF's transparency is one bit — a pixel is either
+            there or not — which would put a hard jagged edge on every letter
+            over the sky. WebP carries a real alpha channel, and at native size
+            the file is smaller than the original (428 KB against 637), because
+            resizing his flat colour areas into gradients costs more than it
+            saves: at 1100px wide the same frames came to 952 KB.
+
+            THE STILL IS THE LAST FRAME, for `prefers-reduced-motion` — the end
+            of the story rather than a frozen middle — and it doubles as the
+            fallback anywhere animated WebP is not supported. */}
+        <picture>
+          <source srcSet="/brand/hero-fluolingo.webp" type="image/webp" media="(prefers-reduced-motion: no-preference)" />
+          {/* A plain <img>, on purpose: next/image would re-encode this and
+              drop the animation. It is a fixed, hand-made asset with its own
+              alpha, served exactly as it was made. */}
+          <img
+            src="/brand/hero-fluolingo.png"
+            alt="FluOLinGo — Fluency, built On Linguistic Goals"
+            className="fluo-hero-art"
+            width={1391}
+            height={760}
+            decoding="async"
+          />
+        </picture>
         {named && course && (
           <p
             data-course-tag={course.key}
-            className="mt-1.5 inline-block px-3 py-0.5 text-[length:var(--fs-small)] font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:hidden"
+            className="relative z-[2] mt-1.5 inline-block px-3 py-0.5 text-[length:var(--fs-small)] font-bold leading-[1.15] text-white/90 sm:mt-2 [@media(max-height:480px)]:hidden"
             style={{ fontFamily: "var(--font-fluohand-stack)", background: BAND, ...OUTLINE }}
           >
             {course.name} · {course.level}
