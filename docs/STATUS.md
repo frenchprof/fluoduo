@@ -906,6 +906,41 @@ npm run build` green, all 124 verify checks pass, and the twenty source files
 this branch touches lint with one warning inherited from main (PR #176's unused
 `attemptAt` in `EcouTexte.tsx`).
 
+## 12 Sep — the music is a bed under the voice, never over it (this session)
+
+Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
+
+Dan: *"the music tends to be very loud once it starts, how can we make it
+softer and not overpowering the texttospeech?"*
+
+**WHY IT WAS LOUD.** The chiptune loop (NumBus, NumBourse, Letris,
+LexicaLocker) ran through its bus at gain 1 — the same level as the win
+jingle — and nothing lowered it while a sentence was being read. The only
+duck that existed was a half-second dip under a sting. The voice, coming from
+a separate player (the browser synth, a banked clip or a cloud clip), was the
+quieter of the two.
+
+**TWO NUMBERS, ONE READER**, in `games/audio/chiptune.ts`:
+
+    MUSIC_LEVEL = 0.45   the loop's share of the master           ~ -7 dB
+    VOICE_DUCK  = 0.3    the loop's share while a voice speaks    ~ -10 dB more
+
+Both read through `musicGain()`, which every place the bus is set already
+goes through — play(), stop()'s fresh bus, the mute toggle, the sting duck.
+`followVoice()` runs on the loop's own 25 ms tick and ramps the bus down
+(80 ms) when a voice starts and back (250 ms) when it stops.
+
+**WHAT COUNTS AS A VOICE:** the browser synth (polled —
+`speechSynthesis.speaking`, since its onend is unreliable across engines),
+and the two `<audio>` paths, which now hand their element to
+`trackVoice()` in the new `games/audio/voiceState.ts` (banked clips in
+`letris/speech.ts`, cloud clips in `lib/cloudVoice.ts`). Jingles, stings and
+the volume knob are untouched.
+
+**`verify280-music-under-voice.py`** pins the two levels, the tick, the poll,
+both trackVoice calls and the mute toggle; break-tested four ways. No
+visual surface, so the evidence is the check and the numbers above.
+
 ## 12 Sep — Home's welcome strip runs the full paper width, title centred (this session)
 
 Sole editor of STATUS.md in this commit: this session (`claude/subdomains-c43n66`).
