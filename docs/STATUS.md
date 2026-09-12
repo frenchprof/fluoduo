@@ -6,6 +6,73 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 12 Sep — Se saluer becomes a first meeting, because its own deck said so (this session, branch, NOT merged)
+
+**Dan, having watched a ComposeIt lesson: *"I saw one lesson where the absurd
+situation of meeting a friend and in that situation the friend was being asked
+what is your name!?!"*** Then, given the choice between cutting the chips and
+moving the scene: ***"i would say change the situation to talking with someone
+who they meet for the first time"*.**
+
+**HE WAS WATCHING A SCENE ARGUE WITH ITSELF.** `greetings` said
+
+    context : A friend runs into you in the street — greet her, ask how she is…
+    opening : « Salut ! Ça va ? »
+    chips   : [Se présenter] Je m'appelle · Moi, c'est · Enchanté · Enchantée
+
+You do not tell a friend your name, and « Enchanté » means "delighted to MEET
+you" — it exists ONLY at a first meeting. The persona is AI-driven with no
+script, so it followed the learner's lead: handed an introduction by someone it
+had been told was a friend, it asked for a name. **The AI did not invent the
+absurdity; the chips invited it.**
+
+**THE DECK HAD ALREADY DECIDED THIS, which is why the fix is the situation and
+not the chips.** `salutations.json` — the deck this bank attaches to — teaches
+« Enchanté ! — Nice to meet you! » as one of its fourteen items. The scene was
+contradicting its own vocabulary list. Cutting the chips would have left the
+deck teaching a phrase its own composer had no room for.
+
+    before   « Salut ! Ça va ? »                     a friend, greeted like a stranger
+    after    « Bonjour ! Moi, c'est Léa. Enchantée ! »   a stranger, greeted like one
+
+All four chip groups now fit one scene: Saluer → Se présenter → Ça va →
+Prendre congé, in that order, which is the arc the instruction names.
+
+**IT DOES NOT COLLIDE WITH `premiere-rencontre`**, also a first meeting: that
+one is the first day of CLASS and its subject is SPELLING a name aloud
+(« Ça s'écrit… »); this one is the salutations deck's own subject — choosing
+the right greeting and the right way to leave. Léa, not Camille, so the two
+personas do not read as one person.
+
+**AND THE INSTRUCTION AND THE CONTEXT NOW AGREE.** The old pair said "A FRIEND
+runs into you" and "Greet your CLASSMATE" — two relationships in one lesson,
+which nobody had noticed because each reads fine alone.
+
+**THREE MORE FINDINGS FROM THE SAME REVIEW, NOT IN THIS BRANCH** — they are
+Dan's to rule on, and two are pedagogical rather than plain faults:
+
+  1 · `À la papeterie` says "ask for what you need and the price, THEN PAY" and
+      has no payment chip at all. Its sibling `Chez les commerçants` carries
+      exactly the missing category — [Payer] Voilà dix euros · Voilà vingt
+      euros — and the papeterie is `aiOnly`, so nothing else supplies it. **The
+      task asks for a step the palette cannot perform.**
+  2 · `Présenter un pays` offers SIX countries and FIVE nationality adjectives.
+      Draw « le Viêt Nam » and "Les habitants sont …" cannot be finished. One
+      session in six dead-ends.
+  3 · `Au café`'s context says "then ask for the bill", but the waiter presents
+      it the moment the learner says « C'est tout » / « Non, merci ». Wording,
+      not chips — **and reading the rule engine is what corrected that: it was
+      nearly filed as a fourth missing-chip bug.**
+
+**ONE I WITHDREW.** « un livre » at `Chez les commerçants` looked wrong for a
+food market — but the `commerces` deck includes « librairie », and the
+instruction says the shopkeeper runs whichever shop sells it. Correct as
+written.
+
+Gate: `tsc --noEmit` clean, eslint clean on the one touched file,
+`NEXT_PUBLIC_OPEN_APP=1` build green, and the scene driven on the built app at
+430px before and after.
+
 ## 12 Sep — the floating 🐞 steps off the control it was covering (pre-tests lane, branch, NOT merged)
 
 Sole editor of STATUS.md in this commit: the pre-tests lane

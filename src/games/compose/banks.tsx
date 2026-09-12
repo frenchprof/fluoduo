@@ -253,7 +253,27 @@ const GREETINGS_BANK: ComposeBank = {
   unit: 1,
   deckId: "salutations",
   mode: "dialogue",
-  scene: { opening: "Salut ! Ça va ?", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN, contextEn: "A friend runs into you in the street — greet her, ask how she is, then say goodbye." },
+  /* THE SCENE IS A FIRST MEETING, not a friend in the street (Dan, 2026-09-12).
+   *
+   * It used to say "A friend runs into you" and open « Salut ! Ça va ? », while
+   * handing the learner [Se présenter] — « Je m'appelle », « Enchanté ». You do
+   * not tell a friend your name, and « Enchanté » means "delighted to MEET
+   * you": it exists only at a first meeting. The persona is AI-driven, so it
+   * followed the learner's lead — offered an introduction, it asked for a name,
+   * and Dan watched a friend ask a friend what she was called.
+   *
+   * THE DECK HAD ALREADY DECIDED THIS. `salutations.json`, the deck this bank
+   * attaches to, teaches « Enchanté ! — Nice to meet you! » as one of its
+   * fourteen items. The scene was contradicting its own vocabulary list; the
+   * chips were right and the situation was wrong, which is why the fix is here
+   * and not in the chips.
+   *
+   * It does not collide with `premiere-rencontre` (Unit 0), which is also a
+   * first meeting: that one is the first day of CLASS and its subject is
+   * SPELLING your name aloud (« Ça s'écrit… »). This one is the salutations
+   * deck's own subject — picking the right greeting and the right way to leave.
+   * Léa, not Camille, so nobody reads them as the same person. */
+  scene: { opening: "Bonjour ! Moi, c'est Léa. Enchantée !", emoji: "🙋", voice: "f", aiOnly: true, theme: THEME_GREEN, contextEn: "You are meeting Léa for the first time — greet her, say your name, ask how she is, then say goodbye." },
   categories: withPalette([
     { label: "Saluer", phrases: ["Bonjour", "Salut", "Bonsoir", "Coucou"] },
     { label: "Ça va", phrases: ["Ça va bien", "Très bien", "Ça va, merci", "Comme ci comme ça", "Et toi ?"] },
@@ -261,7 +281,9 @@ const GREETINGS_BANK: ComposeBank = {
     { label: "Prendre congé", phrases: ["Au revoir", "À bientôt", "À demain", "Bonne journée", "Salut !"] },
   ]),
   newScenario() {
-    return { headline: "👋 Se saluer", instructionEn: "Greet your classmate and chat — answer by tapping phrases." };
+    // "classmate" is gone with the friend: the old line said classmate while
+    // the context said friend — two relationships in one lesson.
+    return { headline: "👋 Se saluer", instructionEn: "Meet someone new — greet her, give your name, ask how she is, then say goodbye." };
   },
 };
 
