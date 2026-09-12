@@ -66,6 +66,52 @@ export default function SettingsContent() {
               className="fluo-switch mt-1"
             />
           </label>
+
+          {/* THE MAP'S WHEEL (Dan, 2026-09-11). He asked for the direction
+              changed AND for the learner to be able to change it back — and
+              he drew the line that matters himself: *"there are two things:
+              swipe down with finger, and scroll down with mouse. don't
+              confuse them"*. This switch is the WHEEL only. A finger drags
+              the road and always has; that half was already right, and
+              flipping the container would have flipped both.
+
+              One switch, not two. Nobody wants to configure their mouse and
+              their thumb separately.
+
+              The line under it says what the CURRENT position means, per
+              Dan's 5 Sep rule — not what the other one would do.
+
+              REPLAYED HERE BY THE INTEGRATION LANE, 12 Sep — and this one was
+              genuinely LOST, not merely moved. The four user routes became one
+              tabbed page in the same hours this switch was added to the old
+              /reglages, so the branch that carried the settings into this file
+              was cut before the switch existed and arrived without it. Nothing
+              conflicted; the control simply stopped being on the page. It was
+              `verify211-map-wheel.py` that said so, reading for
+              `wheelDownComesBack` and not finding it — the difference between
+              this and the two stale pins resolved in the same merge is that
+              those checks were pointing at the wrong file and this one was
+              pointing at the right file and telling the truth. */}
+          <label className="mt-4 flex items-start justify-between gap-3 border-t-2 pt-4" style={{ borderColor: "var(--cahier-line)" }}>
+            <span>
+              <span className="block font-bold text-[color:var(--cahier-ink)]">
+                Mouse wheel on the map
+              </span>
+              <span className="block text-sm text-[color:var(--cahier-ink-soft)]">
+                {prefs.wheelDownComesBack
+                  ? "Rolling down brings the road toward you."
+                  : "Rolling down travels forward, away from you."}
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              checked={prefs.wheelDownComesBack}
+              disabled={!ready}
+              onChange={(e) => set("wheelDownComesBack", e.target.checked)}
+              className="fluo-switch mt-1"
+            />
+          </label>
         </section>
 
         {/* Dan, 2026-09-05: "the bottom bar is optional and users can opt to
