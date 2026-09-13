@@ -87,7 +87,7 @@
     },
     {
       "id": "loin-lesson-07-a-cote-de",
-      "fr": "à côté",
+      "fr": "à côté de",
       "en": "next to / beside",
       "emoji": "🤝",
       "tags": [
@@ -96,12 +96,13 @@
       "syllables": [
         "à",
         "cô",
-        "té"
+        "té",
+        "de"
       ]
     },
     {
       "id": "loin-lesson-08-a-gauche-de",
-      "fr": "à gauche",
+      "fr": "à gauche de",
       "en": "to the left of",
       "emoji": "⬅️",
       "tags": [
@@ -109,12 +110,13 @@
       ],
       "syllables": [
         "à",
-        "gauche"
+        "gauche",
+        "de"
       ]
     },
     {
       "id": "loin-lesson-09-a-droite-de",
-      "fr": "à droite",
+      "fr": "à droite de",
       "en": "to the right of",
       "emoji": "➡️",
       "tags": [
@@ -122,36 +124,39 @@
       ],
       "syllables": [
         "à",
-        "droite"
+        "droite",
+        "de"
       ]
     },
     {
       "id": "loin-lesson-10-pres-de",
-      "fr": "près",
+      "fr": "près de",
       "en": "near",
       "emoji": "📏",
       "tags": [
         "col:avec_de"
       ],
       "syllables": [
-        "près"
+        "près",
+        "de"
       ]
     },
     {
       "id": "loin-lesson-11-loin-de",
-      "fr": "loin",
+      "fr": "loin de",
       "en": "far from",
       "emoji": "🛣️",
       "tags": [
         "col:avec_de"
       ],
       "syllables": [
-        "loin"
+        "loin",
+        "de"
       ]
     },
     {
       "id": "loin-lesson-12-en-face-de",
-      "fr": "en face",
+      "fr": "en face de",
       "en": "opposite / facing",
       "emoji": "🪞",
       "tags": [
@@ -159,7 +164,8 @@
       ],
       "syllables": [
         "en",
-        "face"
+        "face",
+        "de"
       ]
     },
     {
