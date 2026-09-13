@@ -359,9 +359,30 @@ Both shells open the binding region ABOVE the band now, the coils paint OVER it
 (`.cahier-binding { z-index: 3 }` against `.page-band`'s 2 — a real coil crosses
 the cover strip), and the band takes a 3rem left clearance so the rings do not
 cross its ✕. **The clearance is keyed on `.cahier-binding ~ .page-band`, not on
-PageBand's own padding**, because a band drawn INSIDE a content well
-(`decks/[id]/CuratedDeckTable.tsx`) is already clear of the coils and must not
-move. The binding still stops short of the SITE BAR, for the 6 Sep reason.
+PageBand's own padding**, so it applies to a band the coils actually run past.
+The binding still stops short of the SITE BAR, for the 6 Sep reason.
+
+> ⚠️ **THIS PARAGRAPH CARRIED A WRONG EXEMPTION FOR TWO DAYS, and it cost the
+> fix on one page.** It used to end: *"because a band drawn INSIDE a content
+> well (`decks/[id]/CuratedDeckTable.tsx`) is already clear of the coils and
+> must not move."* That band is not in a well. Measured on the built app at
+> 390px on 13 Sep, it spans the paper's full width, x=13 to x=417.
+>
+> The sentence was written from the markup, not from the screen, and both the
+> code and the CHECK were built on it: `sheet-scan.mjs` only measured a band
+> that is the binding's SIBLING, so `/decks/<id>` — whose band sat outside the
+> coil region entirely — printed "(no shell band)" and passed without being
+> looked at. `CahierFrame.tsx`, the deck table's own frame and the only file
+> the 11 Sep patch did not touch, kept the 6 Sep shape: **67px of bare margin
+> beside the MémoiRecall strip, the desk showing where every other station has
+> rings.** Dan photographed that corner and asked whether the bug he had chased
+> away had come back. It had never been chased away there.
+>
+> Fixed 13 Sep: CahierFrame renders `{topBar}` inside the binding's region,
+> after the binding, exactly as CahierShell does. The scan no longer treats a
+> non-sibling band as an exemption — a page with coils and a band that is not
+> the binding's sibling now FAILS and says so. **The lesson is the older one
+> restated: an exemption written from the markup is a check that does not run.**
 
 **The same nesting broke `html[data-embed] .cahier-page > .page-band`**, whose
 child combinator no longer matched — every framed station drew its strip twice

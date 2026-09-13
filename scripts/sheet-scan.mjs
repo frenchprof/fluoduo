@@ -126,15 +126,26 @@ const corner = (f) =>
   f.evaluate(() => {
     const b = document.querySelector(".cahier-binding");
     /* THE SHELL'S BAND, which is the one the coils run past — the same
-       `.cahier-binding ~ .page-band` the stylesheet keys its clearance on. A
-       band drawn INSIDE a content well is a different animal: /decks/[id]
-       suppresses the shell's and heads its table with one of its own
-       (CuratedDeckTable.tsx), 47px down the paper and already clear of the
-       coils. Measuring that one against the binding reported a fault that is
-       not there, which is how this probe learned to name what it means. */
-    const band = b && [...b.parentElement.children].find(
-      (e) => e.classList.contains("page-band") && getComputedStyle(e).display !== "none");
-    if (!b || !band) return null;
+       `.cahier-binding ~ .page-band` the stylesheet keys its clearance on.
+
+       THIS SIBLING TEST USED TO BE AN EXEMPTION, AND IT HID THE FAULT IT WAS
+       WRITTEN BESIDE. The note here said /decks/[id] draws its band "inside a
+       content well, 47px down the paper and already clear of the coils", so a
+       band that was not the binding's sibling was skipped and the route
+       printed "(no shell band)" — safe-looking, and untested. Measured on the
+       built app 13 Sep, that band was not in a well at all: it spanned the
+       paper's full width, x=13 to x=417, and the coils opened 67px BELOW it,
+       which is precisely the stepped edge this section exists to catch. Dan
+       photographed the corner and asked whether the bug was back. It had never
+       been fixed there — CahierFrame kept the 6 Sep shape CahierShell left on
+       11 Sep.
+
+       So the sibling test still says WHICH band to measure, but no longer
+       excuses a page from being measured: an orphan is reported below. */
+    const bands = [...document.querySelectorAll(".page-band")]
+      .filter((e) => getComputedStyle(e).display !== "none");
+    const band = b && bands.find((e) => e.parentElement === b.parentElement);
+    if (!b || !band) return bands.length && b ? { orphan: bands.length } : null;
     const br = b.getBoundingClientRect(), ar = band.getBoundingClientRect();
     // Where the band's first control actually starts.
     const lead = band.firstElementChild;
@@ -199,6 +210,13 @@ for (const route of CORNER) {
     const c = await corner(f).catch(() => null);
     if (!c) continue;
     seen = true;
+    if (c.orphan) {
+      bad.push(`${route}: the page has ${c.orphan} band(s) and coils, but no band is the ` +
+        "binding's sibling — so the coils cannot open above it and `.cahier-binding ~ " +
+        ".page-band` gives it no clearance. Render the band INSIDE the binding's region, " +
+        "after the binding, the way CahierShell does.");
+      continue;
+    }
     if (c.bindTop > c.bandTop + 1) {
       bad.push(`${route}: the coils start ${c.bindTop - c.bandTop}px BELOW the band — ` +
         "the page's left edge changes width halfway down. Open the binding region above the band.");

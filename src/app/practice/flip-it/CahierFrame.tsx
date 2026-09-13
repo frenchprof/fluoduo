@@ -82,11 +82,28 @@ export function CahierFrame({
       <div className="cahier-deskrow">
         <main ref={pageRef} className={`cahier-page flex min-h-screen flex-col${famKey ? ` fam-${famKey}` : ""}${bandKey ? ` band-${bandKey}` : ""}`}>
           <SiteTopBar active={siteActive} />
-          {topBar}
-          {/* Coils below the chrome, overhanging the page edge — same move
-              as CahierShell (Dan's 6 Sep coil photos). */}
-          <div className="relative flex-1">
+          {/* THE COILS START AT THE BAND, NOT BELOW IT — and this frame was
+              the one page in the app still doing it the old way.
+
+              The 11 Sep ruling opened the binding region ABOVE the band in
+              CahierShell so the page's left edge is one width all the way
+              down; this file kept the 6 Sep shape it was copied from, with
+              `{topBar}` OUTSIDE the coil region. On /decks/<id> — the only
+              caller — that left 67px of bare margin beside the MémoiRecall
+              strip, the desk showing through where every other station has
+              rings. Dan photographed the corner (13 Sep) and asked whether the
+              bug he had chased away was back; it had never been fixed here.
+
+              AGENTS.md's own note is why it was missed: it exempted "a band
+              drawn INSIDE a content well (decks/[id]/CuratedDeckTable.tsx),
+              which is already clear of them". Measured on the built app, that
+              band is not in a well — it spans the page, x=13 to x=417, the
+              paper's full width. The clearance rule
+              `.cahier-binding ~ .page-band` now matches it, which is exactly
+              what that rule is for. */}
+          <div className="relative flex flex-1 flex-col">
             <div className="cahier-binding" aria-hidden />
+            {topBar}
             <div className="py-5 pl-12 pr-4 sm:pl-16 sm:pr-7">{children}</div>
           </div>
         </main>
