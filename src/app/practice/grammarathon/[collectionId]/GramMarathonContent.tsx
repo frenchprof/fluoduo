@@ -18,7 +18,9 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import ActivityUsher from "@/components/ActivityUsher";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
+import { usherFor } from "@/lib/usher";
 import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
@@ -99,6 +101,10 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   const run = useMemo(() => (order === null ? null : cap(order, chosen)), [order, chosen]);
   const total = run?.length ?? 0;
   const done = run === null || i >= total;
+  // The compass for the end card. Computed unconditionally (hooks run before
+  // the early returns) and null for a deck that belongs to no stop, which is
+  // what makes ActivityUsher render nothing rather than a row of dead keys.
+  const usher = useMemo(() => usherFor("grammarathon", { collectionId }), [collectionId]);
   const item = done || !deck ? null : pool[run![i]];
   const gap = item?.gap ?? "";
   const { before, after } = item ? splitGap(gapSentence(item), gap) : { before: "", after: "" };
@@ -259,8 +265,13 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
         progress={done ? null : { done: i, total }}
         right={<>✓ {score.ok}</>}
         cta={
+          /* NO « ↻ Again » ON THE SHELL WHEN DONE. Redo is one of Dan's five
+             ushering moves and now sits on the row below the score, so a
+             second one in the shell's primary slot would be the same door
+             twice — the fault the ✕/« Back to the map » pair had. A null cta
+             is the shell's own documented "body owns flow" case. */
           done
-            ? { label: "↻ Again", onClick: restart }
+            ? null
             : result === null && !retry
               ? { label: "Check", onClick: check, disabled: !value.trim() }
               : null
@@ -296,6 +307,10 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
             <p className="text-4xl" aria-hidden>🎉</p>
             <p className="mt-2 text-2xl font-black text-[color:var(--cahier-ink)]">✓ {score.ok}/{total}</p>
             <p lang="fr" className="mt-1 text-sm font-bold text-[color:var(--cahier-ink)]/60">{deck.title}</p>
+            {/* Dan, 13 Sep: *"for all the stops there should be something like
+                this at the end"*. A door appears only where it leads
+                somewhere — see lib/usher.ts. */}
+            <ActivityUsher usher={usher} onRedo={restart} className="mt-5" />
           </div>
         ) : item ? (
           <div>

@@ -26,7 +26,8 @@
  * never a dead link.
  */
 import { SIOS, type Sio } from "@/content/sios";
-import { activitiesIn, activity } from "@/content/activities";
+import { activity } from "@/content/activities";
+import { deckActivityTabs } from "@/components/CahierShell";
 import { cellHref } from "@/lib/indexMatrix";
 import { sioHref } from "@/lib/routes";
 import { goalNumber, stopForDeck } from "@/lib/stopTag";
@@ -56,14 +57,36 @@ export type Usher = {
   onward?: UsherMove;
 };
 
-/** The stop's chain, in map order, listing only activities with a real door.
- *  A near-copy of nextStep's private `stepsOf` — kept separate deliberately:
- *  that one is the ledger-aware "what should they do next", this one is the
- *  plain running order, and folding them would make one of the two lie. */
+/** `deckActivityTabs` keys differ from registry keys in one place — the same
+ *  mapping `indexMatrix` keeps, in the other direction. */
+const REGISTRY_KEY: Record<string, string> = { say: "wordrill" };
+
+/**
+ * The stop's chain — the goal's own activities, in the goal's own order.
+ *
+ * THIS READS `deckActivityTabs`, AND THE FIRST VERSION DID NOT. It walked
+ * `activitiesIn("practice")`, i.e. the PRACTICE FAMILY, which is not the same
+ * set at all: GramMarathon and ErroReview live in 🔄 Revise, ÉcouTexte and
+ * WorDrill in 💬 Oral, ComposeIt in 🛠️ Tools. So a learner finishing
+ * GramMarathon — a stop activity by any reading of Dan's sentence — matched
+ * nothing in the chain, `findIndex` returned -1, and BOTH the ← and → doors
+ * were silently absent. Same shape of fault as the ↓ door that went missing
+ * through `stopHref`: a key cast into a set that does not contain it.
+ *
+ * `deckActivityTabs` is the one list that already knows a goal's activities
+ * AND their canonical order (Dan, 2026-07-19: SpecuLearn → Lesson → Flip It →
+ * … → GramMarathon → WorDrill). `cellHref` reads the same table, so the two
+ * halves of this compass cannot drift apart.
+ *
+ * A tab with no `href` is the CURRENT page (`withActive` drops it) and a
+ * supplement is not a registry activity — both are skipped, so no door here
+ * can be dead or nameless.
+ */
 function chainOf(sio: Sio): { key: string; href: string }[] {
-  return activitiesIn("practice").flatMap((a) => {
-    const href = cellHref(a.key, sio);
-    return href ? [{ key: a.key, href }] : [];
+  if (!sio.collectionId) return [];
+  return deckActivityTabs(sio.collectionId).flatMap((t) => {
+    const key = REGISTRY_KEY[t.key] ?? t.key;
+    return t.href && activity(key) ? [{ key, href: t.href }] : [];
   });
 }
 
