@@ -126,7 +126,20 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     setAiDone(false);
     setDebrief(null);
     setDebriefBusy(false);
-    speak(opening, lang, { gender: personaVoice });
+    /* THE OPENING LINE NO LONGER SPEAKS ITSELF (Dan, 2026-09-13: ComposeIt
+       *"plays TTS even before the learner gets to look at the page"*).
+     *
+     * `start()` runs from a mount effect, so the persona began talking while
+     * the page was still painting — before the learner had read the scene,
+     * and with no way to have asked for it. That is not what a messenger
+     * does: a message ARRIVES, you read it, and you tap if you want to hear
+     * it. Every bubble already carries its own 🔊 (see the `actions` on each
+     * ChatMessage below), so nothing is lost — the sound is now the
+     * learner's choice instead of the app's.
+     *
+     * Speech that ANSWERS the learner is untouched: sending a reply still
+     * voices their line and the persona's answer, because they asked for it
+     * by pressing ✔ Reply. */
   };
 
   // The learner can ask for the bilan any time; it also auto-loads when the

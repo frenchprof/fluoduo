@@ -6,6 +6,49 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, PR #358, NOT merged)
+
+**Dan, in one message: *"The [victory] jingle is sometimes playing for no good
+reason. The floating tour button should now be deleted for good. The ComposeIt
+activity … plays TTS even before the learner gets to look at the page."***
+
+Measured in the built app, before → after:
+
+    /home, tour already seen   floats:  Feedback · On to Goal · Replay the tour
+                                    ->  Feedback · On to Goal
+    ComposeIt /au-restaurant   speech attempts in the first 4s:  2  ->  0
+                               (fetch:/api/tts, then synth:"Bonsoir ! Vous
+                                avez réservé ?" — over the first paint)
+
+**THERE IS NOW NO WAY TO REPLAY A TOUR**, and that is the ruling, not an
+oversight: the first-visit offer is the only entry point and it never returns.
+If a way back is wanted it goes in ⚙️ Réglages, never as a third floating
+circle beside 🐞 and 🛠️.
+
+`sfx.stage()` (full jingle + site-wide confetti) came off ConjugaZone's « See
+the table » and start button and off WorDrill's « End here ». The runs' own
+celebrations are untouched and `verify600-unasked.py` pins them, so the check
+cannot pass on an app that lost its celebration entirely. Full rule in
+AGENTS.md, *"The app does not perform unasked"*.
+
+## 13 Sep — the ushering row reaches every end screen (same branch/PR)
+
+GramMarathon, MémoiRecall, WorDrill and ÉcouTexte now draw the row; each was
+played to its end in the built app and photographed at 430px and 1280px
+against its own before.
+
+**Two corrections to what shipped that morning.** `chainOf` walked
+`activitiesIn("practice")` — the practice FAMILY — which is not a goal's
+activities (GramMarathon is 🔄 Revise, ÉcouTexte and WorDrill are 💬 Oral), so
+← and → were silently absent wherever the finished activity was not in that
+family. It reads `deckActivityTabs` now, the same table `cellHref` reads. And
+**`SayItContent.tsx` is WorDrill, not VoixLà** — VoixLà is `/tts`, a free-form
+studio with no deck, no run and no end, so it has no end screen to usher from.
+
+Redo moved onto the row, so three shells lost their done-state primary
+(« ↻ Again », « 🃏 Again », « Restart »): two doors for one move. ÉcouTexte
+gets 🎯 alone, on purpose — it is in no goal's chain and cannot repeat a text.
+
 ## 13 Sep — a learner manual with real screenshots, and the Help line it caught (guide lane, MERGED as #357)
 
 **Dan: *"write the guide in very plain English … then present it in the colors

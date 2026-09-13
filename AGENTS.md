@@ -468,6 +468,52 @@ cannot report "all clear" over an empty page.
 **The lesson is the Geist ban's, restated for behaviour instead of type: a rule
 about what the app DOES has to be measured in the app, not read in its source.**
 
+# The app does not perform unasked — permanent (2026-09-13)
+
+**Dan, in one message:** ***"The [victory] jingle is sometimes playing for no
+good reason. The floating tour button should now be deleted for good. The
+ComposeIt activity … plays TTS even before the learner gets to look at the
+page."***
+
+Three subsystems, one fault: the app being loud without being asked.
+
+    a float nobody summoned    the ✨ « Replay the tour » chip, pinned
+                               bottom-right on every page with a tour, from
+                               the moment that tour had been seen once
+    a fanfare nobody earned    sfx.stage() — the full victory jingle AND
+                               site-wide confetti — on ConjugaZone's « See
+                               the table » (the GIVE-UP button), on its start
+                               button (nothing answered yet), and on
+                               WorDrill's « End here »
+    a voice nobody played      ComposeIt's persona speaking its opening line
+                               from a mount effect, over the first paint
+
+**The rules, stated so they generalise beyond these three:**
+
+- **A float has to earn a permanent place on every screen.** Three circles
+  already float (🐞 report a bug, 🛠️ Outils, and this was the third); one that
+  does nothing until tapped is not one of them. **The ✨ chip is deleted for
+  good, and there is now NO way to replay a tour** — the first-visit offer is
+  the only entry point and it never returns. That is what Dan asked for, after
+  a fortnight of tours that were broken or looping. If a way back is wanted, it
+  goes in ⚙️ Réglages as a line of settings, never as a circle over the lesson.
+- **`sfx.stage()` marks COMPLETING a run.** Not starting one, not abandoning
+  one. In practice that means it is reached from a drill's own flow and never
+  wired straight to an `onClick` — which is the distinction `verify660` tests,
+  because « fanfare then change screen » is the shape of BOTH the give-up
+  button and the real finish, and only one of them is a click handler.
+- **Nothing speaks before the learner has looked.** Speech that ANSWERS a
+  learner's action is untouched (ComposeIt still voices the exchange when they
+  press ✔ Reply). Speech that greets them is not. The replacement is already
+  there and must stay: every message bubble carries its own 🔊 — a check that
+  only silenced the autoplay would have turned « unasked » into « unavailable ».
+
+`verify660-unasked.py` holds all three, **each as a LIST**, following the Geist
+ban to the letter: *a ban that is not written down and not checked is not a
+ban*, and the next ruling will not be about this float, this button or this
+scene. It also pins the fanfares that ARE earned, so the check cannot pass on
+an app that lost its celebration entirely.
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

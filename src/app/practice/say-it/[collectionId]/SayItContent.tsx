@@ -341,13 +341,17 @@ export default function SayItContent({
     setCard(prev.it);
   }, [trail, card, resetTurn]);
 
-  // End here = stop now and show the summary.
+  /* End here = stop now and show the summary. NO FANFARE (Dan, 2026-09-13:
+     *"The [victory] jingle is sometimes playing for no good reason."*).
+     It used to fire `sfx.stage()` whenever anything at all had been attempted,
+     so answering two words out of twenty and then quitting was celebrated
+     exactly as hard as finishing the run. The jingle marks COMPLETING a run —
+     `next()` above still fires it when the queue empties — not stopping one. */
   const endNow = useCallback(() => {
     stopRec();
     setCard(null);
     setFinished(true);
-    if (score.total > 0) sfx.stage(); // something was attempted — celebrate the run
-  }, [stopRec, score.total]);
+  }, [stopRec]);
 
   const restart = useCallback(() => {
     // A replay reshuffles and asks again — someone who did ten may want
