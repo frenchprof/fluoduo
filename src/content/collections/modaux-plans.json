@@ -74,6 +74,30 @@
    "tags": [],
    "gap": "va",
    "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-09",
+   "fr": "Je ne vais pas faire du sport.",
+   "en": "I'm not going to do sport.",
+   "tags": [],
+   "gap": "vais",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-10",
+   "fr": "Elle ne va pas manger au restaurant.",
+   "en": "She's not going to eat at the restaurant.",
+   "tags": [],
+   "gap": "va",
+   "lemma": "aller"
+  },
+  {
+   "id": "modaux-plans-11",
+   "fr": "Nous n'allons pas visiter le marché.",
+   "en": "We're not going to visit the market.",
+   "tags": [],
+   "gap": "allons",
+   "lemma": "aller"
   }
  ]
 }

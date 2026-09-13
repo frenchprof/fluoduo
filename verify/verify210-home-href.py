@@ -97,6 +97,12 @@ SHAPES = [
     (re.compile(r'\bhref:\s*"/"'), 'an `href: "/"` in a tab or registry row'),
     (re.compile(r'\bhref="/"'), 'an `href="/"` on a link'),
     (re.compile(r'router\.(?:push|replace)\("/"\)'), 'a router push to "/"'),
+    # A VARIABLE THAT HOLDS THE ADDRESS. Found on 13 Sep, by Dan clicking it:
+    # FirstTour's finish card read `const href = sio ? ... : "/"`, so the tour's
+    # last act sent a first-run learner to the front door. Every shape above
+    # expects `href=` or `??` — a plain assignment matched none of them, which
+    # is the same blind spot the `href={`…`}` template literal had.
+    (re.compile(r'\b(?:const|let|var)\s+\w*[Hh]ref\w*\s*=[^;\n]*[^\w]"/"'), 'a variable assigned "/" as a destination'),
 ]
 
 # The map's old address, in the same shapes. `/map/standalone` and `/map/embed`
@@ -118,6 +124,8 @@ MAP_SHAPES = [
     # An optional `{` is the whole fix, and it is the reason this rule is
     # written as one alternation rather than repeated per shape.
     (re.compile(r'\b\w*[Hh]ref\s*=\s*\{?\s*[`"\']/unit/'), 'a link or default of "/unit/N", which only forwards'),
+    # Same blind spot, same day: `const href = ...` + a /unit/N template.
+    (re.compile(r'\b(?:const|let|var)\s+\w*[Hh]ref\w*\s*=[^;\n]*[`"\']/unit/'), 'a variable assigned "/unit/N", which only forwards'),
     (re.compile(r'\?\?\s*[`"\']/unit/'), 'a `?? "/unit/N"` fallback, which only forwards'),
 ]
 

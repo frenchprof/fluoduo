@@ -36,7 +36,7 @@
     { "id": "negpas-14", "fr": "Elles adorent la musique, mais pas le sport.", "en": "They love music, but not sport.", "gap": "le", "emoji": "🎵", "tags": ["col:def"] },
     { "id": "negpas-15", "fr": "Le stylo n'est plus sur la table.", "en": "The pen is no longer on the table.", "gap": "plus", "emoji": "🖊️", "tags": ["col:plus"], "example": "le stylo est sur la table → il n'est plus sur la table" },
     { "id": "negpas-16", "fr": "Les lunettes ne sont plus sur la table.", "en": "The glasses are no longer on the table.", "gap": "plus", "emoji": "👓", "tags": ["col:plus"] },
-    { "id": "negpas-17", "fr": "Le cahier n'est plus dans le sac.", "en": "The notebook is no longer in the bag.", "gap": "plus", "emoji": "📓", "tags": ["col:plus"] },
+    { "id": "negpas-17", "fr": "Le cahier n'est plus dans le sac.", "en": "The exercise book is no longer in the bag.", "gap": "plus", "emoji": "📓", "tags": ["col:plus"] },
     { "id": "negpas-18", "fr": "Il n'y a plus de café.", "en": "There is no more coffee.", "gap": "plus", "emoji": "☕", "tags": ["col:plus"], "example": "il y a du café → il n'y a plus de café" },
     { "id": "negpas-19", "fr": "Je ne fais plus de tennis.", "en": "I don't play tennis any more.", "gap": "plus", "emoji": "🎾", "tags": ["col:plus"], "example": "faire du tennis → ne … plus de tennis" },
     { "id": "negpas-20", "fr": "Elle n'habite plus à Paris.", "en": "She doesn't live in Paris any more.", "gap": "plus", "emoji": "🏠", "tags": ["col:plus"] }

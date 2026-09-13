@@ -13,7 +13,7 @@
  "items": [
   {
    "id": "lieux-letris-01-cafe",
-   "fr": "café",
+   "fr": "au café",
    "en": "the café",
    "emoji": "☕",
    "tags": [
@@ -29,7 +29,7 @@
   },
   {
    "id": "lieux-letris-02-restaurant",
-   "fr": "restaurant",
+   "fr": "au restaurant",
    "en": "the restaurant",
    "emoji": "🍽️",
    "tags": [
@@ -46,7 +46,7 @@
   },
   {
    "id": "lieux-letris-03-cinema",
-   "fr": "cinéma",
+   "fr": "au cinéma",
    "en": "the cinema",
    "emoji": "🎬",
    "tags": [
@@ -63,7 +63,7 @@
   },
   {
    "id": "lieux-letris-04-musee",
-   "fr": "musée",
+   "fr": "au musée",
    "en": "the museum",
    "emoji": "🏛️",
    "tags": [
@@ -79,7 +79,7 @@
   },
   {
    "id": "lieux-letris-05-parc",
-   "fr": "parc",
+   "fr": "au parc",
    "en": "the park",
    "emoji": "🌳",
    "tags": [
@@ -94,7 +94,7 @@
   },
   {
    "id": "lieux-letris-08-stade",
-   "fr": "stade",
+   "fr": "au stade",
    "en": "the stadium",
    "emoji": "🏟️",
    "tags": [
@@ -109,7 +109,7 @@
   },
   {
    "id": "lieux-letris-09-banque",
-   "fr": "banque",
+   "fr": "à la banque",
    "en": "the bank",
    "emoji": "🏦",
    "tags": [
@@ -125,7 +125,7 @@
   },
   {
    "id": "lieux-letris-10-pharmacie",
-   "fr": "pharmacie",
+   "fr": "à la pharmacie",
    "en": "the pharmacy",
    "emoji": "💊",
    "tags": [
@@ -142,7 +142,7 @@
   },
   {
    "id": "lieux-letris-11-bibliotheque",
-   "fr": "bibliothèque",
+   "fr": "à la bibliothèque",
    "en": "the library",
    "emoji": "📚",
    "tags": [
@@ -159,7 +159,7 @@
   },
   {
    "id": "lieux-letris-13-gare",
-   "fr": "gare",
+   "fr": "à la gare",
    "en": "the train station",
    "emoji": "🚉",
    "tags": [
@@ -174,7 +174,7 @@
   },
   {
    "id": "lieux-letris-14-poste",
-   "fr": "poste",
+   "fr": "à la poste",
    "en": "the post office",
    "emoji": "📮",
    "tags": [
@@ -189,7 +189,7 @@
   },
   {
    "id": "lieux-letris-15-piscine",
-   "fr": "piscine",
+   "fr": "à la piscine",
    "en": "the pool",
    "emoji": "🏊",
    "tags": [
@@ -205,7 +205,7 @@
   },
   {
    "id": "lieux-letris-16-mairie",
-   "fr": "mairie",
+   "fr": "à la mairie",
    "en": "the town hall",
    "emoji": "🏛️",
    "tags": [
@@ -221,7 +221,7 @@
   },
   {
    "id": "lieux-letris-17-hopital",
-   "fr": "hôpital",
+   "fr": "à l'hôpital",
    "en": "the hospital",
    "emoji": "🏥",
    "tags": [
@@ -238,7 +238,7 @@
   },
   {
    "id": "lieux-letris-18-eglise",
-   "fr": "église",
+   "fr": "à l'église",
    "en": "the church",
    "emoji": "⛪",
    "tags": [
@@ -254,7 +254,7 @@
   },
   {
    "id": "lieux-letris-19-ecole",
-   "fr": "école",
+   "fr": "à l'école",
    "en": "the school",
    "emoji": "🏫",
    "tags": [
@@ -270,7 +270,7 @@
   },
   {
    "id": "lieux-letris-20-universite",
-   "fr": "université",
+   "fr": "à l'université",
    "en": "the university",
    "emoji": "🎓",
    "tags": [
@@ -289,7 +289,7 @@
   },
   {
    "id": "lieux-letris-21-aeroport",
-   "fr": "aéroport",
+   "fr": "à l'aéroport",
    "en": "the airport",
    "emoji": "✈️",
    "tags": [
@@ -307,7 +307,7 @@
   },
   {
    "id": "lieux-letris-22-hotel",
-   "fr": "hôtel",
+   "fr": "à l'hôtel",
    "en": "the hotel",
    "emoji": "🏨",
    "tags": [
@@ -323,7 +323,7 @@
   },
   {
    "id": "lieux-letris-23-arret-de-bus",
-   "fr": "arrêt de bus",
+   "fr": "à l'arrêt de bus",
    "en": "the bus stop",
    "emoji": "🚏",
    "tags": [
@@ -341,7 +341,7 @@
   },
   {
    "id": "lieux-letris-26-toilettes-publiques",
-   "fr": "toilettes publiques",
+   "fr": "aux toilettes publiques",
    "en": "the public toilets",
    "emoji": "🚻",
    "tags": [
@@ -359,7 +359,7 @@
   },
   {
    "id": "lieux-letris-27-feux-de-circulation",
-   "fr": "feux de circulation",
+   "fr": "aux feux de circulation",
    "en": "the traffic lights",
    "emoji": "🚦",
    "tags": [
@@ -379,7 +379,7 @@
   },
   {
    "id": "lieux-letris-28-jardins-publics",
-   "fr": "jardins publics",
+   "fr": "aux jardins publics",
    "en": "the public gardens",
    "emoji": "🌳",
    "tags": [

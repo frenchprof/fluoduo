@@ -104,7 +104,7 @@ export const quandLesson: NativeLesson = {
     ),
   },
   dice: {
-    instruction: "Say the time on the clock in French.",
+    instruction: "Say when you do it: the day, the routine, or the clock time.",
     newQuestion() {
       const h = randH();
       const m = randM();

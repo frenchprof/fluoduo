@@ -14,6 +14,8 @@
   "voudrais": "voudrait",
   "veux": "veut",
   "envie": "besoin",
+  "envie d'": "besoin d'",
+  "envie de": "besoin de",
   "aimerais": "rêve"
  },
  "items": [
@@ -34,14 +36,14 @@
   {
    "id": "envies-besoins-03",
    "fr": "J'aimerais voyager.",
-   "en": "I'd love to travel. (wish)",
+   "en": "I'd like to travel. (wish)",
    "tags": [],
    "gap": "aimerais"
   },
   {
    "id": "envies-besoins-04",
    "fr": "J'aimerais une chambre pour deux personnes.",
-   "en": "I'd love a room for two. (wish)",
+   "en": "I'd like a room for two. (wish)",
    "tags": [],
    "gap": "aimerais"
   },
@@ -78,14 +80,14 @@
    "fr": "J'ai envie d'un chocolat chaud.",
    "en": "I feel like a hot chocolate.",
    "tags": [],
-   "gap": "envie"
+   "gap": "envie d'"
   },
   {
    "id": "envies-besoins-10",
    "fr": "J'ai envie de dormir.",
    "en": "I feel like sleeping.",
    "tags": [],
-   "gap": "envie"
+   "gap": "envie de"
   }
  ]
 }

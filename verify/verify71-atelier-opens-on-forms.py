@@ -80,10 +80,27 @@ memos, detail = code(read(MEMOS)), code(read(DETAIL))
 ok(bool(tabs) and bool(pager), "the lesson pager and its tabs exist",
    f"{TABS} or {PAGER} is missing")
 
-# ---- 1 · the opening tab is a prop, and the default is unchanged ----------
-ok(re.search(r'open\s*=\s*"exercice"', tabs) is not None,
-   "the opening tab defaults to the exercise — an ordinary lesson is unchanged",
-   "the default opening tab is gone or changed; every lesson would land somewhere new, which is not what Dan asked for")
+# ---- 1 · the opening tab is a prop, and the ateliers override it ----------
+#
+# THE DEFAULT IS « Idée » NOW, NOT « Exercice » (Dan, 2026-09-13: *"MneMemo is
+# still landing immediately on Exercice, it should land on Idee"*). This clause
+# read `open = "exercice"` and its failure text said changing it "is not what
+# Dan asked for" — which was true when it was written and is now the opposite
+# of what he asked for.
+#
+# WHAT THIS CHECK IS ACTUALLY FOR IS UNCHANGED, which is why the assertion
+# moves rather than goes: the atelier override below only means something if
+# ordinary lessons open somewhere ELSE. So the default is still pinned — to the
+# tab Dan named — and the two must differ.
+_default = re.search(r'open\s*=\s*"(\w+)"', tabs)
+ok(_default is not None and _default.group(1) == "concept",
+   "an ordinary lesson opens on « Idée » — the lesson, not its exercise",
+   f"the default opening tab is {_default.group(1) if _default else 'gone'!r}, not 'concept'. "
+   "Dan, 13 Sep: MneMemo must land on Idée, not Exercice.")
+ok(_default is not None and _default.group(1) != "formes",
+   "and it is not the ateliers' own tab, so their override still says something",
+   "the default is now 'formes', which makes the atelier override below a no-op — "
+   "the clause would pass while testing nothing")
 
 # ---- 2 · it SEEDS state, never controls it -------------------------------
 # useState(open) reads the prop once. useState + an effect that re-applies it,

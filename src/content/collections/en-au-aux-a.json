@@ -55,7 +55,7 @@
   "items": [
     {
       "id": "en-au-aux-a-01",
-      "fr": "France",
+      "fr": "en France",
       "en": "France (f. country)",
       "syllables": [
         "France"
@@ -69,7 +69,7 @@
     },
     {
       "id": "en-au-aux-a-02",
-      "fr": "Italie",
+      "fr": "en Italie",
       "en": "Italy (f. country)",
       "syllables": [
         "I",
@@ -85,7 +85,7 @@
     },
     {
       "id": "en-au-aux-a-03",
-      "fr": "Japon",
+      "fr": "au Japon",
       "en": "Japan (m. country)",
       "syllables": [
         "Ja",
@@ -100,7 +100,7 @@
     },
     {
       "id": "en-au-aux-a-04",
-      "fr": "Canada",
+      "fr": "au Canada",
       "en": "Canada (m. country)",
       "syllables": [
         "Ca",
@@ -116,7 +116,7 @@
     },
     {
       "id": "en-au-aux-a-05",
-      "fr": "États-Unis",
+      "fr": "aux États-Unis",
       "en": "United States (pl. country)",
       "syllables": [
         "É",
@@ -133,7 +133,7 @@
     },
     {
       "id": "en-au-aux-a-06",
-      "fr": "Pays-Bas",
+      "fr": "aux Pays-Bas",
       "en": "Netherlands (pl. country)",
       "syllables": [
         "Pays",
@@ -148,7 +148,7 @@
     },
     {
       "id": "en-au-aux-a-07",
-      "fr": "Paris",
+      "fr": "à Paris",
       "en": "Paris (city)",
       "syllables": [
         "Pa",
@@ -163,7 +163,7 @@
     },
     {
       "id": "en-au-aux-a-08",
-      "fr": "Tokyo",
+      "fr": "à Tokyo",
       "en": "Tokyo (city)",
       "syllables": [
         "To",
@@ -178,7 +178,7 @@
     },
     {
       "id": "en-au-aux-a-09",
-      "fr": "Espagne",
+      "fr": "en Espagne",
       "en": "Spain (f. country)",
       "syllables": [
         "Es",
@@ -193,7 +193,7 @@
     },
     {
       "id": "en-au-aux-a-10",
-      "fr": "Chine",
+      "fr": "en Chine",
       "en": "China (f. country)",
       "syllables": [
         "Chine"
@@ -207,7 +207,7 @@
     },
     {
       "id": "en-au-aux-a-11",
-      "fr": "Portugal",
+      "fr": "au Portugal",
       "en": "Portugal (m. country)",
       "syllables": [
         "Por",
@@ -223,7 +223,7 @@
     },
     {
       "id": "en-au-aux-a-12",
-      "fr": "Brésil",
+      "fr": "au Brésil",
       "en": "Brazil (m. country)",
       "syllables": [
         "Bré",
@@ -238,7 +238,7 @@
     },
     {
       "id": "en-au-aux-a-13",
-      "fr": "Philippines",
+      "fr": "aux Philippines",
       "en": "Philippines (pl. country)",
       "syllables": [
         "Phi",
@@ -254,7 +254,7 @@
     },
     {
       "id": "en-au-aux-a-14",
-      "fr": "Maldives",
+      "fr": "aux Maldives",
       "en": "Maldives (pl. country)",
       "syllables": [
         "Mal",
@@ -269,7 +269,7 @@
     },
     {
       "id": "en-au-aux-a-15",
-      "fr": "Londres",
+      "fr": "à Londres",
       "en": "London (city)",
       "syllables": [
         "Londres"
@@ -283,7 +283,7 @@
     },
     {
       "id": "en-au-aux-a-16",
-      "fr": "Singapour",
+      "fr": "à Singapour",
       "en": "Singapore (city-state)",
       "syllables": [
         "Sin",
@@ -299,7 +299,7 @@
     },
     {
       "id": "en-au-aux-a-17",
-      "fr": "Inde",
+      "fr": "en Inde",
       "en": "India (f. country, vowel)",
       "syllables": [
         "Inde"

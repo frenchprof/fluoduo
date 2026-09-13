@@ -247,17 +247,39 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
   // The card's own "Got it" is what starts a guided run: read the two lines,
   // then be walked through them. Kept in one state here rather than inside
   // FirstRunHint, so a row with no selectors is byte-for-byte what it was.
-  const [walking, setWalking] = useState(false);
+  //
+  // THREE PHASES, NOT A BOOLEAN, AND THE THIRD IS THE BUG FIX (Dan, 13 Sep:
+  // *"GramMarathon and WorDrill and possibly others have a tour that is broken
+  // and looping"* — it is all five guided rows: lesson, flip, grammarathon,
+  // ecoutexte, wordrill).
+  //
+  // It was `const [walking, setWalking] = useState(false)`, and the walk's
+  // `onDone` set it back to FALSE — which re-rendered the card. FirstRunHint
+  // then MOUNTS FRESH, its open-effect reads localStorage, finds the "do not
+  // show me again" flag unset (the learner pressed « Show me », not the
+  // checkbox), and opens the card again. Show me -> walk -> card -> show me,
+  // with no way out but the checkbox, on the five activities that guide.
+  //
+  // The card is deliberately shown on EVERY visit until a learner opts out —
+  // "shown on arrival, until the learner says stop", the header's own words —
+  // so the flag is not the answer and setting it would silently opt them out.
+  // What must not repeat is the card WITHIN ONE VISIT, after its own walk has
+  // just finished. `done` is that, and it lives in component state, so the
+  // next arrival offers the card again exactly as before.
+  const [phase, setPhase] = useState<"card" | "walking" | "done">("card");
   if (!hint || hint.on !== on) return null;
 
   // A ROW WITH SELECTORS GUIDES; A ROW WITHOUT ONE ONLY TELLS, exactly as
   // before. That is what lets the seventeen activities move one at a time
   // instead of all on the day the pattern lands.
   if (guided.length) {
-    return walking
-      ? <GuidedSteps steps={guided} onDone={() => setWalking(false)} />
+    // The walk has run this visit: say nothing more until the learner arrives
+    // again. Returning null rather than the card is the whole of the fix.
+    if (phase === "done") return null;
+    return phase === "walking"
+      ? <GuidedSteps steps={guided} onDone={() => setPhase("done")} />
       : (
-        <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setWalking(true)}>
+        <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setPhase("walking")}>
           <ol className="ml-4 list-decimal space-y-1.5">
             {hint.steps.map((s) => <li key={stepText(s)}>{stepText(s)}</li>)}
           </ol>
