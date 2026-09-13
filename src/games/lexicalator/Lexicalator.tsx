@@ -880,6 +880,7 @@ export default function Lexicalator({
           was forged against, and where that word lives on the path. */}
       {over && (
         <GameOver
+          activityKey="lexicalator"
           emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />}
           title="Out of lives!"
           score={<>{score} · level {level}</>}

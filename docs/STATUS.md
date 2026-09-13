@@ -41,6 +41,243 @@ ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
 Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
 clean on the touched files.
 
+## 13 Sep — the leaderboard erased every beginner, and a rule bound was why (peers lane, branch `claude/peers-vd2h6h`, NOT merged — ⚠️ THE RULES MUST BE DEPLOYED BY HAND)
+
+**Dan: *"the leaderboard is not happening yet? why?"*, and when given an
+answer: *"i already proved it, the leader board did not register anything at
+all"*.**
+
+**THE FIRST ANSWER HE WAS GIVEN WAS WRONG, and the way it was wrong is worth
+keeping.** He was told the board looked empty because HIS account is on the
+admin allowlist and teachers are excluded from the student board (his own
+ruling, 5 Jul). That is TRUE of his row and it was NOT the reason. He settled
+it the only way it could be settled — signed in on a non-admin account, earned
+XP, and watched nothing appear.
+
+    app     publishLeaderboard writes { level: levelForXp(xp).level, … }
+    code    levelForXp starts at 0; LEVEL_SPANS[0] is 2000
+            → every learner is level 0 until 2000 XP
+    rule    request.resource.data.level >= 1
+            → DENIED for every beginner — i.e. a whole cohort in week one
+    client  a denied write is read as "teacher / opted out" and DELETES the row
+
+So the board did not merely fail to list new learners. **It erased them**, and
+then printed « Nobody yet — be the first 💎! », which reads as a term that has
+not started rather than a write that cannot land.
+
+The clause arrived 7 Sep (bc30fdc). Nothing in `verify/` had ever read
+`firestore.rules` — they are not TypeScript and the build does not exercise
+them — and neither side is wrong alone: level 0 is a correct level, and a lower
+bound on a public write is correct caution. The fault lives only in the
+relationship between the two files.
+
+**FIXED IN BOTH PLACES.** The leaderboard block is the proven one. The
+`sessions` block carries the identical `level >= 1`, and that fix is
+PRECAUTIONARY, not proven: its writer is in the legacy laf1201 suite and cannot
+be seen from this repo. Loosening a lower bound can only ever ALLOW a write
+that was denied, never deny one that passed — which is why it is safe without
+sight of the writer, unlike tightening, which that file warns against doing
+blind.
+
+`verify580-rule-bounds.py` reads the app's own floor out of `economy.ts` and
+every `>= N` bound out of the rules, and fails when a rule cannot admit what
+the app writes. Also `xp`, `gems`, `streak` — all counters that start at zero.
+Break-tested by restoring the bug.
+
+> ⚠️ **THE FIX IS INERT UNTIL THE RULES ARE DEPLOYED.** `firestore.rules` is a
+> file in this repo; the live rules live in the Firebase console and are pushed
+> by hand (`firebase deploy --only firestore:rules`, or Console → Firestore →
+> Rules). Merging this branch does NOT fix the live board. A green
+> `verify580` means the FILE is right and says nothing about what is live —
+> the check says so in its own docstring because that gap cannot be closed
+> from here.
+
+**SAME DAY, LATER — Dan sent the LIVE file and asked for it back with the fix
+in it, and the diff turned up a second drift going the other way.** The two
+copies disagreed in two places, on opposite sides of the console:
+
+    mail/{id}    LIVE AHEAD.  Dan closed the letterbox 12 Sep; the closure
+                              never came back into git. The repo still had
+                              the weaker "tied to an invite" create rule, so
+                              deploying the repo copy would have RE-OPENED it.
+    level >= 1   GIT AHEAD.   Only by yesterday's fix. Still `>= 1` live.
+
+Reconciled: `firestore.rules` is now the live file plus the two bounds, and it
+carries a block saying it is not the source of truth. **Ask Dan for the live
+copy before editing it** — a correct-looking edit rolls a live fix backwards.
+
+**AND THE EMULATOR SUITE WAS GREEN THROUGH THE WHOLE BUG.** `legit-paths.mjs`
+called itself *"the EXACT payload publishLeaderboard() sends"* and hard-coded
+`level: 3` — a level none of its three learners has, since `levelForXp` starts
+at 0 and the first span is 2000 XP. The one suite that drives the real rules
+engine could not see the thing that was erasing beginners. Default is `0` now,
+a second case covers `update` (which re-runs `validLeaderboardRow` too), and
+the mail case is kept with its expectation flipped to `deny` so re-opening the
+box turns the suite red rather than green.
+
+Break-tested with the real engine, `node scripts/rules-test/run.mjs --compare`:
+
+    origin/main's rules     4 of 4 leaderboard cases FAIL
+    this branch's rules     17 / 17 PASS, run.mjs exits 0
+
+## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, branch `claude/peers-vd2h6h`, NOT merged; the usher row is HALF DONE)
+
+**Dan: *"when one chooses to close any activity, it must take the learner back
+to that 🎯 page, NOT to the map"*, and the reason: *"with the latter they would
+have to select the stop that they have not completed again, it is a hassle"*.**
+
+MEASURED IN THE BUILT APP, BEFORE AND AFTER:
+
+    MémoiRecall     /home?unit=0  ->  /sio/SIO-009
+    SpecuLearn      /home?unit=3  ->  /sio/SIO-038
+    MneMemo         /home?unit=0  ->  /sio/SIO-009
+    GramMarathon    /home?unit=0  ->  /sio/SIO-023
+    VoixLà          /home?unit=0  ->  /sio/SIO-023
+    the deck table  /home?unit=0  ->  /sio/SIO-009
+
+One function, `drillExitHref`, is six of those. The finish footer's back link
+goes to the same place now and says « Back to 🎯 N » — the label is read off
+the address so the two cannot disagree; it used to say « Back to the map » and
+would have been pointing at the goal page while still saying map. `GameLanding`
+takes a `deck` so Match It and LexicaLocker follow the same rule; NumBus and
+NumBourse have no stop behind them and keep the map. ÉcouTexte's topic-picker
+route keeps it too — no stop has been chosen there yet.
+
+**THE MAP IS NOT LOST, and that half was already solved** — Dan's own note:
+*"(The return to the map is already available at the top via the FluOLinGo
+chartreuse)"*.
+
+**AND A CORRECTION I OWE THE RECORD.** Asked where the ✕ went, I answered in a
+way Dan read as contradicting him — *"why are you contradicting me"*. I was
+agreeing that it went to the map and needed changing, but the sentence did not
+say so. The table above is what settled it, and driving the app rather than
+arguing is what should have happened first.
+
+## THE USHERING NAVIGATORS — LIVE ON SPECULEARN'S RECAP, six end-screens to go
+
+Dan's five, in his words: *"one step back to the previous activity of that
+goal, or forward to the next activity for that goal, or return to the 🎯 page
+(SIO) to select another activity. or to redo, or to go down towards the same
+activity for the next available stop (Not all stops have all activities)"*.
+
+BUILT: `src/lib/usher.ts` (the compass — four addresses; « redo » is an action
+the caller supplies) and `src/components/ActivityUsher.tsx` with its
+`.fluo-usher` block. Wired into `DrillShell`'s finish row.
+
+**NOT DONE, AND THE REASON MATTERS: only TWO surfaces use that finish row** —
+LessonPager (MneMemo) and ConjugaZone. Measured by grepping `finish=`:
+MémoiRecall, VoixLà, GramMarathon, SpecuLearn and the six games each end on
+their OWN screen — `GameOver`, SpecuLearn's `Recap`, or merely a swapped
+« Restart » CTA. So *"for all the stops there should be something like this at
+the end"* is about six more wirings, not one component.
+
+**IT IS NOW WIRED INTO SPECULEARN'S `Recap` — the card Dan photographed** —
+and screenshotted there at 430px and 1280px. Reached via that page's own « Skip
+pretest » button, which is the trick that made it drivable at all: the
+DrillShell finish states could not be reached by a blind clicker.
+
+    was   ↻ Retry  ·  ← SpecuLearn        the second one a PICKER, which is
+                                          the same hassle as the map
+    now   🎯 11  ·  ↻ Redo  ·  📚 MneMemo →  ·  ↓ 💡 SpecuLearn · 🎯 12
+
+The fifth door, ← previous, is absent there ON PURPOSE: SpecuLearn is first in
+that goal's chain. A door appears only where it leads somewhere.
+
+**AND THE ↓ DOOR WAS MISSING ON THE FIRST BUILD — the one Dan drew.** `usherFor`
+asked `stopHref`, whose `StopActivityKey` union names the eight activities whose
+pop-up asks "which goal?" — and `speculearn` is not one of them. The cast
+compiled, matched no branch and returned null for all fifty stops, so the door
+was silently absent from SpecuLearn's own recap. It goes through `cellHref` now,
+the same table `chainOf` uses, so both halves of the compass read one source.
+
+**`GameOver` IS WIRED TOO — six games in one component.** Each names itself
+with an `activityKey` (matching · lexicalator · vocabularain · compose ×2 ·
+numbus · numbourse) because the card knew its deck and not which activity it
+was, and `usherFor` needs the key to find its place in the chain. Without one
+the row degrades honestly: the 🎯 door and « redo », no arrows — never arrows
+pointing at a guess.
+
+**`verify23` FAILED ON IT, CORRECTLY, and the rewrite is the interesting part.**
+It guaranteed « Play again » and « Back » BY THEIR LITERAL STRINGS. Both moved
+into the row (the replay is `onRedo={onReplay}`, the way out is the 🎯 door), so
+keeping the old assertion would have meant keeping two controls for one move —
+a card saying « Play again » AND « Redo ». The check tests the GUARANTEE now.
+
+**AND ITS SECOND CLAUSE IS A HOLE LINT FOUND.** Folding « ← Back » into the row
+left `exitHref` unused — which is only a warning until you notice WHY it
+matters: `usherFor` returns null for a game with neither a deck nor a fallback
+stop, the row then draws nothing, and such a card would have had no exit at
+all. The fallback link is restored for exactly that case and pinned. Both
+clauses break-tested.
+
+**STILL TO WIRE**: VoixLà's swapped-CTA end, MémoiRecall, GramMarathon,
+ÉcouTexte — those four end by swapping a CTA rather than drawing a finish card,
+so each needs its own look.
+
+**WHAT HAS BEEN SEEN ON SCREEN, said exactly.** SpecuLearn's recap: yes,
+430px and 1280px. `GameOver` and the two DrillShell finish states: NO — a
+brute-force driver could not clear a Match It board or reach either finish, so
+those are wired and building green but unseen. Do not upgrade that claim
+without a picture.
+
+**A NOTE ON THE SWEEP.** `verify79-jam-scan` failed once during this work and it
+was self-inflicted: a rebuild rewrote `out/` while the scan was reading it. Green
+on a settled build. Do not chase it as a real failure — run the sweep when no
+build is in flight.
+
+## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+
+**Dan: *"SpecuLearn, I am still hearing TTS for individual parts words WHEN I
+SHOULD BE HEARING FULL SENTENCES !"*** — « still », because the 12 Sep pass had
+recorded SpecuLearn as already correct.
+
+**WHY THAT PASS WAS HONESTLY WRONG.** His rule of 12 Sep has two halves —
+*"a noun always with its article, OR an entire sentence if that is what we are
+dealing with"*. SpecuLearn does say « le sport » and never « sport »; the
+second half was never applied here. `transport` is twelve cards of twelve:
+
+    said « en train »          example « J'y vais en train. »
+    said « prendre le métro »  example « Je prends le métro. »
+
+**55 of 190 spoken strings change**, across transport (12), lieux-letris (23)
+and objets-articles (20). One `spokenFor()`, used at all SEVEN speak() call
+sites on that screen — the say-it prompt, the reveal, the 🔊 key and four
+replay buttons.
+
+**TWO THINGS CAUGHT BY MEASURING THE FIX, both worse than the bug:**
+
+  colors        its examples are things that ARE the colour — « le feu rouge »
+                for « le rouge ». Reading that at a learner who must say
+                « rouge » teaches another word. The rule is terminal
+                punctuation, so the colours keep their word.
+  lieux-letris  was PRINTING « le au café » — the column's article pasted onto
+                French that already had a contracted one (au = à + le), all 23
+                items, on the card as the answer, not merely spoken.
+
+**AND THE CHECK'S OWN FIRST DRAFT FAILED THE SAME WAY THE CODE DID.** It
+carried a Python copy of both rules, so it measured the decks against a policy
+it had invented: reverting `withArticle` AND dropping the sentence test both
+left it green. It reads the module's own regexes now — and strips comments
+first, because the clause looking for « au » in the source found it in the
+PROSE explaining why « au » matters. `verify560-speculearn-says.py`, 13 clauses,
+all three regressions break-tested.
+
+**THE SAME SCREEN, TWO MORE ASKS.** Dan, over a screenshot of the four answer
+options: *"and why are the buttons in the question not 3D??"* — because that
+card predates the neo-key system and nobody came back for it. They are
+`.neo-key` now; the green/red state rides a new `--key-bg` token because
+`.neo-key` sets `background` itself and this stylesheet loads last, so a
+Tailwind `bg-` class of equal specificity loses silently.
+
+And, with a mock-up: *"After each question in speculearn, have a button with
+blinking arrows appear below the box which reads NEXT QUESTION"*. **This
+SUPERSEDES the 7 Sep decision** that the way on is the gesture and its marker a
+bare « ⌄ » (*"a « Next → » would be a second answer to the question the swipe
+already answers"*). The swipe is untouched; the chevron was not reading as a
+control. It calls the same `onNext` ↵ has always called.
+
+Gate: tsc clean, build green, eslint clean on the three touched files.
+
 ## 13 Sep — every control answers the pointer (peers lane, MERGED as 15e4525, #356)
 
 **Dan: *"The mouseover effects are not everywhere. are they. they should be"*.**

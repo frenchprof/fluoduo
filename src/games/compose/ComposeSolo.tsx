@@ -217,6 +217,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
 
       {feedback?.done && (
         <GameOver
+          activityKey="compose"
           emoji={bank.emoji}
           title="Bravo !"
           score={<>{lines.length} ✎</>}

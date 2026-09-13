@@ -49,8 +49,11 @@
  */
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 
+import ActivityUsher from "@/components/ActivityUsher";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
+import { usherFor, type Usher } from "@/lib/usher";
 import SnapFeed, { type SnapFeedHandle } from "@/components/SnapFeed";
 import { TAB_ICONS } from "@/content/activities";
 import { speak } from "@/games/letris/speech";
@@ -362,6 +365,7 @@ function Run({ pool, pretest, sioId, deck }: {
             submitted={verdicts[i] ?? null}
             onPick={(c) => pick(i, c)}
             onSpeak={() => ttsOn && row.item.speak && speak(row.item.speak, "fr-FR")}
+            onNext={() => feed.current?.scrollToRow(i + 1)}
           />
         ))}
         <Recap
@@ -370,6 +374,9 @@ function Run({ pool, pretest, sioId, deck }: {
           answered={answered}
           total={total}
           onRestart={() => setRun((r) => r + 1)}
+          /* The compass is anchored on the GOAL, not the deck: a pre-test's
+             pool is the stop's, and `sioId` is what this runner is given. */
+          usher={usherFor("speculearn", { sioId })}
         />
       </SnapFeed>
     </div>
@@ -397,16 +404,19 @@ function ItemCard({
   submitted,
   onPick,
   onSpeak,
+  onNext,
 }: {
   item: PoolItem;
   choices: string[];
   submitted: Verdict | null;
   onPick: (c: string) => void;
   onSpeak: () => void;
+  onNext: () => void;
 }) {
   const bare = isBare(item);
   const hasSentence = item.sentenceBefore !== undefined;
   return (
+    <>
     <article className="fluo-card speculearn-card fluo-h-1" data-hue={1}>
       {/* WHAT SITS ABOVE THE OPTIONS is the one place the three sources
           differ, so it is the one branch on this card. */}
@@ -471,11 +481,24 @@ function ItemCard({
         {choices.map((c) => {
           const isPicked = submitted?.picked === c;
           const isAnswer = c === item.answer;
-          let cls = "border-slate-200 bg-white text-slate-900 hover:border-slate-400";
+          /* 3D, LIKE EVERY OTHER KEY IN THE APP (Dan, 2026-09-13, over a
+             screenshot of these four: *"and why are the buttons in the
+             question not 3D??"*). They were flat because this card predates
+             the neo-key system and nobody came back for it — a border and a
+             white fill, while the ☰, the goal picker and Home's own keys
+             stand out of the paper.
+
+             THE STATE COLOUR RIDES `--key-bg`, not a Tailwind `bg-` class:
+             `.neo-key` sets `background` itself and globals.css is imported
+             last, so a utility of equal specificity loses and the green would
+             never appear. The text colour is a class, since `.neo-key` sets
+             none. */
+          let cls = "text-slate-900";
+          let keyBg: string | undefined;
           if (submitted) {
-            if (isAnswer) cls = "border-emerald-500 bg-emerald-50 text-emerald-900";
-            else if (isPicked) cls = "border-rose-500 bg-rose-50 text-rose-900";
-            else cls = "border-slate-200 bg-white text-slate-400";
+            if (isAnswer) { cls = "text-emerald-900"; keyBg = "var(--dopa-flow-wash)"; }
+            else if (isPicked) { cls = "text-rose-900"; keyBg = "var(--dopa-miss-wash)"; }
+            else cls = "text-slate-400";
           }
           return (
             <button
@@ -487,7 +510,8 @@ function ItemCard({
               lang="fr"
               // No size class: the grid's clamp is the size (globals.css,
               // .speculearn-options), and a `text-base` here would beat it.
-              className={`rounded-xl border-2 px-4 py-3 text-center font-bold transition ${cls}`}
+              className={`neo-key rounded-xl px-4 py-3 text-center font-bold ${cls}`}
+              style={keyBg ? ({ "--key-bg": keyBg } as CSSProperties) : undefined}
             >
               {c}
               {submitted && isAnswer && <span className="ml-2" aria-hidden>✓</span>}
@@ -507,16 +531,37 @@ function ItemCard({
         </details>
       )}
 
-      {/* THE WAY ON IS THE GESTURE, so what marks it is a glyph and not a
-          button (Dan: *"scroll down = swipe up"*). A « Next → » here would be a
-          second answer to the question the swipe already answers, and the one
-          a learner cannot find by feel. The number keys are gone with it: they
-          picked an option and then advanced, and advancing is not this card's
-          any more. */}
-      {submitted && (
-        <p className="mt-4 text-center text-xl leading-none text-[color:var(--fluo-ink-soft)]" aria-hidden>⌄</p>
-      )}
+      {/* « NEXT QUESTION », WHICH REPLACES A BARE « ⌄ » (Dan, 2026-09-13, with
+          a mock-up: *"After each question in speculearn, have a button with
+          blinking arrows appear below the box which reads NEXT QUESTION"*).
+
+          IT SUPERSEDES A DELIBERATE DECISION, recorded here so the next
+          session does not restore the chevron from the old reasoning: *"THE
+          WAY ON IS THE GESTURE … a « Next → » here would be a second answer to
+          the question the swipe already answers, and the one a learner cannot
+          find by feel."* The swipe is untouched and still works; what changed
+          is Dan looking at a graded card and finding that a lone chevron does
+          not read as a control. A second door to the same move.
+
+          IT CALLS THE SAME `onNext` THE KEYBOARD ALREADY HAD — ↵ has scrolled
+          to the next row since the day the chevron went in, so this button is
+          a handle on machinery that was already there, not a new path. */}
     </article>
+    {/* BELOW THE BOX, exactly as Dan drew it — outside the <article>, not the
+        last thing inside it. On his mock the orange button sits on the paper
+        under the card, which is what makes it read as "the way out of this
+        card" rather than as one more of the card's own controls. */}
+    {submitted && (
+      <div className="mt-3 flex flex-col items-center">
+        <button type="button" className="neo-key fluo-nextq" onClick={onNext}>
+          NEXT QUESTION
+        </button>
+        <div className="fluo-nextq-arrows" aria-hidden>
+          <span>↓</span><span>↓</span><span>↓</span>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
@@ -526,12 +571,14 @@ function Recap({
   answered,
   total,
   onRestart,
+  usher,
 }: {
   pretest: Pretest | null;
   score: number;
   answered: number;
   total: number;
   onRestart: () => void;
+  usher: Usher | null;
 }) {
   const pct = total ? Math.round((score / total) * 100) : 0;
   // A feed lets a learner reach the end without answering everything, which
@@ -598,10 +645,18 @@ function Recap({
           — and a wrapped row is a stack of two full-width buttons, which is
           the shape the rule forbids, arrived at by accident at the one width
           that matters. A grid cannot wrap. */}
-      <div className="mx-auto mt-6 grid max-w-sm grid-cols-2 gap-2">
-        <button type="button" onClick={onRestart} className="fluo-btn">↻ Retry</button>
-        <Link href="/practice/speculearn" className="fluo-btn fluo-btn-ghost text-center">← SpecuLearn</Link>
-      </div>
+      {/* THE USHERING NAVIGATORS (Dan, 2026-09-13, over a photograph of THIS
+          card: *"We are missing the ushering navigators… for all the stops
+          there should be something like this at the end"*). His five: back one
+          activity in the stop's chain, forward one, the 🎯 page, redo, and the
+          same activity at the next stop that can play it. `usherFor` decides
+          which of them exist for this stop; « Redo » is `onRestart`.
+
+          IT REPLACES THE OLD TWO-BUTTON GRID, which offered ↻ Retry and a link
+          to SpecuLearn's own front door — the one door of the five that leads
+          AWAY from the stop the learner is standing on, and the reason this
+          card sent people back to a picker to find their place again. */}
+      <ActivityUsher usher={usher} onRedo={onRestart} />
     </article>
   );
 }

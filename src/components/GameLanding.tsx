@@ -24,12 +24,15 @@
  * pre-start choice is HOW, or simply "ready?".
  */
 import CahierShell from "@/components/CahierShell";
+import { sioHref } from "@/lib/routes";
+import { goalNumber, stopForDeck } from "@/lib/stopTag";
 import { activity } from "@/content/activities";
 
 export default function GameLanding({
   activityKey,
   title,
   bleed,
+  deck,
   children,
 }: {
   /** Registry key — also CahierShell's `active`, which is what makes the
@@ -51,12 +54,30 @@ export default function GameLanding({
    * reads. A settings step still wants the reading width, so this is opt-in.
    */
   bleed?: boolean;
+  /** The deck this game was opened for, when it was opened for one.
+   *
+   *  THE ✕ GOES BACK TO THE STOP, NOT THE MAP (Dan, 2026-09-13: *"when one
+   *  chooses to close any activity, it must take the learner back to that 🎯
+   *  page, NOT to the map"*, because *"with the latter they would have to
+   *  select the stop that they have not completed again, it is a hassle"*).
+   *  The drills get this from `drillExitHref`; a game has no DrillShell, so
+   *  the deck comes in here and the same rule is applied in one place rather
+   *  than in each of the seven callers.
+   *
+   *  Optional because two games are not opened for a deck at all: NumBus and
+   *  NumBourse are pure number games with no stop behind them, and for those
+   *  the map remains the honest way out. */
+  deck?: string;
   children: React.ReactNode;
 }) {
   const a = activity(activityKey);
   const name = title ?? a?.name;
+  const stop = deck ? stopForDeck(deck) : null;
+  const band = name || stop
+    ? { ...(name ? { title: name } : {}), ...(stop ? { exitHref: sioHref(stop.id), goal: goalNumber(stop) } : {}) }
+    : undefined;
   return (
-    <CahierShell active={activityKey} band={name ? { title: name } : undefined}>
+    <CahierShell active={activityKey} band={band}>
       <div className={`mx-auto w-full ${bleed ? "max-w-5xl px-0 pb-8 pt-2 sm:px-4" : "max-w-3xl px-4 pb-24 pt-4"}`}>
         {/* A PLAYING GAME HAS NO HEADER — the litmus test, measured. The
             heading band sits directly above this, already reading

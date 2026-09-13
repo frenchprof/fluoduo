@@ -51,14 +51,34 @@ const check = async (name, expect, fn) => {
   results.push({ name, expect, ok });
 };
 
-// The EXACT payload publishLeaderboard() sends (progressSync.ts).
-const payload = (xp) => ({ name: "New Learner", xp, level: 3, gems: 10, streak: 2,
+/* The EXACT payload publishLeaderboard() sends (progressSync.ts).
+ *
+ * `level` DEFAULTS TO 0, AND THAT LITERAL IS THE POINT (2026-09-13). It used
+ * to be a hard-coded 3, which no learner in any of the three cases below
+ * actually has: `levelForXp` in src/lib/economy.ts starts at 0 and
+ * LEVEL_SPANS[0] is 2000, so 120 XP, 600 XP and 0 XP are all level 0.
+ *
+ * The made-up 3 is why this suite reported PASS on the whole of 12 Sep while
+ * the live board was erasing every beginner: the rule demanded `level >= 1`,
+ * a real newbie sent 0 and was DENIED, and the client reads a denied write as
+ * "teacher or opted out" and DELETES the row. Dan proved it by hand — signing
+ * in on a non-admin account, earning XP, and watching nothing appear — which
+ * a fixture at level 3 could never have shown him.
+ *
+ * So: pass a level only where the case is ABOUT a higher one. The default is
+ * the value a learner in week one really carries. */
+const payload = (xp, level = 0) => ({ name: "New Learner", xp, level, gems: 10, streak: 2,
   weekXp: 50, weekKey: "2026-W37", term: "T2", updatedAt: Date.now() });
 
 const NEWBIE = FRESH("newbie");
 const fresh = env.authenticatedContext(NEWBIE, { email: `${NEWBIE}@x.com`, email_verified: true }).firestore();
-await check("BRAND-NEW learner creates their first board row", "allow", () =>
+await check("BRAND-NEW learner creates their first board row (level 0)", "allow", () =>
   setDoc(doc(fresh, `leaderboard/${NEWBIE}`), payload(120), { merge: true }));
+
+// …and keeps it on their second session, because `update` re-runs the same
+// validLeaderboardRow() and would have denied level 0 there too.
+await check("that learner's SECOND publish, still level 0", "allow", () =>
+  setDoc(doc(fresh, `leaderboard/${NEWBIE}`), payload(340), { merge: true }));
 
 // A legacy laf1201 row: no `xp`, no `term` — only totalXP.
 await env.withSecurityRulesDisabled(async (c) =>

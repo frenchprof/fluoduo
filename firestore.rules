@@ -15,7 +15,7 @@ rules_version = '2';
 //   collections/{id}                 user-created decks               (owner write, public/unlisted read)
 //   oralST2_2026/{uid}               ST2 oral-test bookings           (owner+admin write, shape-checked, signed-in read)
 //   oralST2_2026_invites/{email}     teammate invites by email        (leader create, leader/invitee/admin delete)
-//   mail/{id}                        Trigger Email extension outbox   (signed-in create, shape-checked)
+//   mail/{id}                        Trigger Email extension outbox   (CLOSED — denies everything)
 //   siteVisits/{site}_{uid}          cross-site Google-login attendance (owner create/update, admin read/delete)
 //
 // ═══ HARDENING PASS, 2026-09-12 ═══════════════════════════════════════════
@@ -62,6 +62,25 @@ rules_version = '2';
 //     and cannot be seen from here), so any signed-in account can store
 //     arbitrary documents there. Left alone on purpose; tightening it blind is
 //     how a silent telemetry break starts.
+// ══════════════════════════════════════════════════════════════════════════
+//
+// ═══ 2026-09-13 · THIS FILE HAD DRIFTED FROM WHAT IS LIVE ═════════════════
+// Two changes, and they had been sitting on OPPOSITE sides of the console.
+//
+//   mail/{id}    LIVE was ahead. Dan closed the letterbox in the console on
+//                12 Sep (*"i am never going to be using this to do oral exam
+//                ever again"*) and the closure never came back into git, so
+//                this file still carried the weaker "tied to an invite"
+//                create rule. Anyone deploying the repo copy would have
+//                RE-OPENED it. Now merged in.
+//   level >= 1   GIT was ahead, and only because of the fix below — it is
+//                still `>= 1` in the console until the file is pasted in.
+//
+// SO THE RULE, PLAINLY: this file is not the source of truth and cannot be.
+// Nothing here deploys itself — the console does, by hand. Before changing
+// it, ask Dan for the live copy and diff, or a correct-looking edit will
+// silently roll a live fix backwards. `verify580-rule-bounds.py` says the
+// same thing in its own docstring and cannot close the gap either.
 // ══════════════════════════════════════════════════════════════════════════
 //
 // APP CHECK — the only real defence for the two anonymous-write collections.
@@ -116,7 +135,18 @@ service cloud.firestore {
         && request.resource.data.xp >= 0
         && request.resource.data.xp <= 10000000
         && request.resource.data.level is int
-        && request.resource.data.level >= 1
+        // LEVEL 0 IS A REAL LEVEL, AND `>= 1` KEPT EVERY BEGINNER OFF THE
+        // BOARD (2026-09-13). `levelForXp` in src/lib/economy.ts starts at 0
+        // and LEVEL_SPANS[0] is 2000, so a learner is level 0 until 2000 XP —
+        // which is every new learner, and the whole cohort at the start of a
+        // term. Their row was DENIED, and the client reads a denied write as
+        // "this account is a teacher or has opted out" and DELETES the row it
+        // just tried to write. So the board did not merely miss them: it
+        // erased them, silently, and read « Nobody yet — be the first 💎! ».
+        //
+        // Dan proved it by signing in on a non-admin account, earning XP and
+        // watching nothing appear. The rule, not the policy, was the reason.
+        && request.resource.data.level >= 0
         && request.resource.data.level <= 1000
         && request.resource.data.gems is int
         && request.resource.data.gems >= 0
@@ -150,7 +180,15 @@ service cloud.firestore {
         && request.resource.data.xp >= 0
         && request.resource.data.xp <= 10000000
         && request.resource.data.level is int
-        && request.resource.data.level >= 1
+        // THE SAME `>= 1`, AND THE SAME REASON IT IS WRONG — see the
+        // leaderboard block above. PRECAUTIONARY, NOT PROVEN: this collection's
+        // writer is in the legacy laf1201 suite and cannot be seen from this
+        // repo, so whether it publishes a level at all is unknown here.
+        // Loosening a lower bound can only ever ALLOW a write that was denied,
+        // never deny one that passed, which is why it is safe to make without
+        // sight of the writer — unlike tightening, which this file warns
+        // against doing blind.
+        && request.resource.data.level >= 0
         && request.resource.data.level <= 1000
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0
@@ -540,21 +578,25 @@ service cloud.firestore {
     // the client, or drop the `.data.by ==` line and keep only `exists(...)`,
     // which still blocks arbitrary recipients.
     match /mail/{id} {
-      allow create: if isSignedIn()
-        && request.resource.data.to.size() == 1
-        && (isAdmin() || (
-             exists(/databases/$(database)/documents/oralST2_2026_invites/$(request.resource.data.to[0]))
-             && get(/databases/$(database)/documents/oralST2_2026_invites/$(request.resource.data.to[0])).data.by == request.auth.uid))
-        && request.resource.data.keys().hasOnly(['to', 'message'])
-        && request.resource.data.to is list
-        && request.resource.data.to.size() == 1
-        && request.resource.data.message is map
-        && request.resource.data.message.keys().hasOnly(['subject', 'text'])
-        && request.resource.data.message.subject is string
-        && request.resource.data.message.subject.size() <= 200
-        && request.resource.data.message.text is string
-        && request.resource.data.message.text.size() <= 4000;
-      allow read, update, delete: if false;
+      // CLOSED (Dan, 2026-09-12: *"i am never going to be using this to do
+      // oral exam ever again"*). This box existed for ONE feature — the
+      // oral-test teammate invitation email — and that feature is retired.
+      //
+      // A letterbox with no legitimate sender is still a letterbox anyone can
+      // post through: the Trigger Email extension SENDS whatever lands here,
+      // from the project's own sending account, so any signed-in student
+      // could mail any address with any subject and body. Shaping the letter
+      // (the old rule) never checked who it was going to or who sent it.
+      //
+      // Nothing writes here any more — verified by reading the shipped code of
+      // every site on this project: oraltest has the only writer, fluoduo and
+      // laf2201 have none. So this denies everything rather than trying to
+      // tell a good letter from a bad one.
+      //
+      // BELT AND BRACES: also remove the Trigger Email extension in the
+      // Firebase console. A rule stops the writing; removing the extension
+      // stops the sending, and the two failures are independent.
+      allow read, create, update, delete: if false;
     }
     // SITE-WIDE VISIT ATTENDANCE (shared across every withdrchan.com site on
     // this project — oraltest, laf2201/French 2, and future sites). Doc id is

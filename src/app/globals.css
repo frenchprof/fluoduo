@@ -2870,7 +2870,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
 }
 
 .neo-key {
-  background: var(--cahier-paper-raised);
+  /* `--key-bg` LETS A KEY CARRY A STATE WITHOUT LEAVING THE SYSTEM
+     (2026-09-13). SpecuLearn's answer options are `.neo-key` now — Dan, over a
+     screenshot of the flat ones: *"why are the buttons in the question not
+     3D??"* — and a graded option has to go green or red. Setting `background`
+     from a Tailwind utility does not work: both are one class of specificity
+     and this stylesheet is imported last, so `.neo-key` wins and the state is
+     silently lost. A token the caller sets inline always wins, and every
+     existing key is untouched because the fallback is what the line said. */
+  background: var(--key-bg, var(--cahier-paper-raised));
   /* DEEPER, NOT BIGGER (Dan, 1 Sep: "no difference to the x and y axis, but
      the z axis should show the buttons with more protrusion"). Every value
      below is a shadow or an inset — none of them is width, height or padding —
@@ -4449,4 +4457,104 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   :where(button, [role="button"], summary, select, label[for], input, a[href]) { transition: none; }
   .heat-cell, .heat-cell:hover, .heat-cell:active,
   .cahier-switch:hover, .cahier-switch:active { transform: none; }
+}
+
+/* ══ « NEXT QUESTION » — the way on, drawn (2026-09-13) ═══════════════════
+   Dan, with a mock-up: *"After each question in speculearn, have a button with
+   blinking arrows appear below the box which reads NEXT QUESTION."*
+
+   THIS SUPERSEDES A DELIBERATE DECISION, and the old one's reasoning is worth
+   keeping because it was not silly. PretestFeed carried a bare « ⌄ » glyph and
+   a comment explaining it: *"THE WAY ON IS THE GESTURE, so what marks it is a
+   glyph and not a button (Dan: 'scroll down = swipe up'). A « Next → » here
+   would be a second answer to the question the swipe already answers, and the
+   one a learner cannot find by feel."* True of the gesture, and it assumed a
+   learner would try the gesture. Dan answered his own question by looking at
+   the screen: a lone chevron below a graded card does not read as a control.
+   The swipe still works and is unchanged — this is a second door to it, which
+   is exactly what the old comment argued against and what he now wants.
+
+   THE BUTTON IS A `.neo-key`, so it presses like every other key in the app,
+   and it is CONTENT-SIZED — no control spans the whole width (rule, 5 Sep).
+   Sizes ride the ramp; nothing here is nailed to a pixel. */
+.fluo-nextq {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(0.4rem + var(--fs-step) * 0.4) calc(1.1rem + var(--fs-step) * 1.1);
+  border-radius: calc(0.5rem + var(--fs-step) * 0.5);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.25rem + var(--fs-step) * 1.25);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  /* Dan's own two colours, off his mock: an orange band with the text in
+     blue. Both are house tokens rather than new hex, so the ratchet counts
+     nothing new — the orange is the Tools family's pen and the blue is
+     Practice's darkest rung, which is the palette's own blue and the one that
+     clears AA against that orange. */
+  --key-bg: var(--fam-tools);
+  color: var(--fam-practice-ink);
+}
+/* THE ARROWS BLINK, THEY DO NOT SPIN OR SLIDE. Dan drew three of them under
+   the button pointing down, which is the direction the feed moves — so the
+   animation is opacity only: a slide would make three arrows race the scroll
+   they are advertising. They are decoration, so `aria-hidden` in the markup
+   and no part of the button's name. */
+.fluo-nextq-arrows {
+  display: flex;
+  justify-content: center;
+  gap: calc(0.7rem + var(--fs-step) * 0.7);
+  margin-top: calc(0.15rem + var(--fs-step) * 0.15);
+  font-size: calc(1.4rem + var(--fs-step) * 1.4);
+  line-height: 1;
+  color: var(--fam-tools);
+}
+.fluo-nextq-arrows > span { animation: fluo-nextq-blink 1.25s ease-in-out infinite; }
+/* Staggered, so the three read as one movement downwards rather than a pulse. */
+.fluo-nextq-arrows > span:nth-child(2) { animation-delay: .16s; }
+.fluo-nextq-arrows > span:nth-child(3) { animation-delay: .32s; }
+@keyframes fluo-nextq-blink {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Someone who asked for less motion still needs to see the arrows — they
+     stop blinking, they do not disappear. */
+  .fluo-nextq-arrows > span { animation: none; opacity: 1; }
+}
+
+/* ══ THE USHERING NAVIGATORS — the end of every activity (2026-09-13) ══════
+   Dan: *"We are missing the ushering navigators… for all the stops there
+   should be something like this at the end."* The row and its keys; which
+   doors appear is `lib/usher.ts`'s answer, not this file's.
+
+   A WRAPPING ROW, NOT A STACK. Five keys will not sit on one line at 390px,
+   and five full-width bars would break the no-control-spans-the-width rule
+   five times over. They wrap and centre, so a phone gets two or three rows of
+   content-sized keys and a desktop gets one. */
+.fluo-usher {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.9rem + var(--fs-step) * 0.9);
+}
+.fluo-usher-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  /* The finger floor, which is not a hard-coded size — 44px is the smallest a
+     finger reliably hits and it does not grow on a desktop (verify270). */
+  min-height: 44px;
+  padding: calc(0.35rem + var(--fs-step) * 0.35) calc(0.8rem + var(--fs-step) * 0.8);
+  border-radius: calc(0.55rem + var(--fs-step) * 0.55);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1rem + var(--fs-step) * 1);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--cahier-ink);
+  text-align: center;
+  text-decoration: none;
 }

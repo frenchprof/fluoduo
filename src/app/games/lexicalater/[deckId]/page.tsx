@@ -101,7 +101,7 @@ export default async function ConveyorPage({
       {/* The game sits IN a page (Dan, 7 Sep: "can we have them embedded like
           the map, (with option to go full screen)") — the band names the
           activity above the board, and ⛶ on the game bar takes it full. */}
-      <GameLanding activityKey="lexicalator" bleed>
+      <GameLanding activityKey="lexicalator" bleed deck={deckId}>
         <Lexicalator title={collection.title} subtitle={collection.subtitle} entries={phrases.length ? phrases : entries} decoys={decoys} deckId={collection.id} />
       </GameLanding>
     </AuthGate>

@@ -915,6 +915,7 @@ export default function LetrisGame({
 
       {gameOver && (
         <GameOver
+          activityKey="vocabularain"
           emoji="🌧️"
           title="Game Over"
           score={score}

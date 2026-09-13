@@ -58,8 +58,18 @@ await env.withSecurityRulesDisabled(async (ctx) => {
 await check("mail to an arbitrary address", "deny", () =>
   addDoc(collection(attacker, "mail"), { to: ["victim@anywhere.com"], message: { subject: "hi", text: "x" } }));
 
-// 2 · MAIL: the legitimate nudge (student1 owns victim@x.com's invite)
-await check("mail to own invitee", "allow", () =>
+/* 2 · MAIL: the letterbox is CLOSED, so even the nudge it was built for is
+ * refused. This case USED TO EXPECT "allow" — the 12 Sep rule let a leader
+ * mail an address they themselves had invited — and Dan retired the whole
+ * feature the same day: *"i am never going to be using this to do oral exam
+ * ever again"*. With no legitimate sender left, the rule denies everything
+ * rather than trying to tell a good letter from a bad one, because the
+ * Trigger Email extension sends whatever lands here from the school's own
+ * account.
+ *
+ * KEPT RATHER THAN DELETED, with its expectation flipped: a suite that simply
+ * dropped the case would go green again if someone re-opened /mail. */
+await check("mail to own invitee — the box is closed", "deny", () =>
   addDoc(collection(student, "mail"), { to: ["victim@x.com"], message: { subject: "hi", text: "x" } }));
 
 // 3 · INVITES: squatting a classmate's address with no booking of your own

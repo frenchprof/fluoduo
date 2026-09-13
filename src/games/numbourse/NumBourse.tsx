@@ -595,6 +595,7 @@ export default function NumBourse() {
       {/* Closing bell / margin call — the post-mortem (patch 23). */}
       {(over || won) && (
         <GameOver
+          activityKey="numbourse"
           emoji={won ? "🔔" : "📉"}
           title={won ? "Market closed!" : "Appel de marge !"}
           score={<>{score} · level {level}</>}
