@@ -325,9 +325,16 @@ export default function VoixLaPanel({
 
           Same three lines as the hint card, in the same order — this replaces
           it rather than repeating it (see `tts` in content/hints.ts, now
-          `on: "none"`). It is REFERENCE, so it is small and quiet; the French
-          the learner types is the target and stays the biggest thing here. */}
-      <p className="mb-2 text-[13px] leading-snug text-[color:var(--cahier-ink-soft)]">
+          `on: "none"`). It is REFERENCE, so it stays smaller than the French
+          the learner types — but not quieter than legible.
+
+          BOLD, AND ON THE FULL INK (Dan, 2026-09-13: *"The text on lined paper
+          ought to be bold to be legible"*). Taking the panel away put this
+          text on the RULED SHEET, and a soft grey that read fine on the
+          panel's flat gradient now has horizontal lines running through every
+          word. Weight is what survives that; a lighter colour on a ruled
+          ground is the one place `--cahier-ink-soft` should not be used. */}
+      <p className="mb-2 text-[14px] font-bold leading-snug text-[color:var(--cahier-ink)]">
         Type any French — a word, an expression, a whole text. ▶ reads it back;
         👩 and ×1.0 change voice and speed. ✏️ checks and corrects what you wrote.
       </p>

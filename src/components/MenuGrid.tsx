@@ -393,7 +393,7 @@ export default function MenuGrid({
                       type="button"
                       aria-label="Previous goal"
                       onClick={() => nudge(-1)}
-                      className="flex min-h-[44px] min-w-[24px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+                      className="flex min-h-[44px] shrink-0 items-center justify-center px-[0.25em] font-black leading-none text-[color:var(--cahier-ink)]"
                     >
                       <span aria-hidden className={STEP}>−</span>
                     </button>
@@ -413,7 +413,7 @@ export default function MenuGrid({
                       type="button"
                       aria-label="Next goal"
                       onClick={() => nudge(1)}
-                      className="flex min-h-[44px] min-w-[24px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+                      className="flex min-h-[44px] shrink-0 items-center justify-center px-[0.25em] font-black leading-none text-[color:var(--cahier-ink)]"
                     >
                       <span aria-hidden className={STEP}>+</span>
                     </button>
