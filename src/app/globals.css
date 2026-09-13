@@ -1630,41 +1630,45 @@ input[type="number"].fluo-stepper::-webkit-inner-spin-button {
 
 /* Reviewed / To-Review — a single sliding switch (green ✓ = reviewed,
  * red ↺ = to review). Exactly one state, always. */
+/* A ROUND BUTTON, NOT A SLIDING PILL (Dan, 2026-09-13, over a column of six
+   of them: *"this can be reduced to just a tiny button"*).
+
+   It was a 54px track with a 22px knob that slid between two ends. On a
+   desktop that is a fine switch; in the deck table's Reviewed column on a
+   390px phone it was the single widest thing in the row, and the column it
+   forced was taking room from French — which is what cut « professeur » to
+   « professe ». Half the 54px was empty track whose only job was to give the
+   knob somewhere to slide.
+
+   The state now reads off the face: red ↺ still to review, green ✓ done, the
+   same two colours and the same two glyphs as before. Nothing is lost but the
+   travel. Size rides the ramp (28px on a phone, ~33px at desktop) rather than
+   being nailed to a pixel. */
 .cahier-switch {
   position: relative;
   display: inline-flex;
   align-items: center;
-  width: 54px;
-  height: 28px;
+  justify-content: center;
+  width: calc(1.75rem + var(--fs-step) * 1.75);
+  height: calc(1.75rem + var(--fs-step) * 1.75);
   flex-shrink: 0;
   padding: 0;
   border: 2px solid rgba(0, 0, 0, 0.16);
-  border-radius: 999px;
+  border-radius: 50%;
   background: var(--cahier-la);          /* red = to review */
   cursor: pointer;
   transition: background 0.2s;
 }
 .cahier-switch[data-on="true"] { background: #3fbf5b; }  /* green = reviewed */
 .cahier-switch-knob {
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  color: var(--cahier-la);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  transition: left 0.2s, color 0.2s;
-}
-.cahier-switch[data-on="true"] .cahier-switch-knob {
-  left: 29px;
-  color: #2f9a43;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 }
 
 /* Two-state Reviewed / To-Review toggle — exactly one half lit. */
