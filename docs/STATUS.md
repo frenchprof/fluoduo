@@ -6,6 +6,111 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — three more PRs land, and a control that was "done" and invisible (integration lane)
+
+Sole editor of STATUS.md in this commit: fluoduo-main (integration).
+
+    MERGED   #342 map/Home rework   #343 favourites naming   #341 ComposeIt
+    DEPLOYS  run 73/74 -> 8281f1b, confirmed by CONTENT HASH (below)
+    OPEN     #347 (this branch): the menu, VoixLà and the Guide
+
+### A NATIVE CONTROL YOU CANNOT SEE IS NOT A CONTROL
+
+Dan: *"The top-of-grid-menu field was supposed to have +- controls at the
+side"* — said about a build where they HAD been implemented, as
+`appearance: auto` on the number input. Desktop Chrome and Safari draw that
+spinner. **Mobile Chrome and mobile Safari draw nothing at all**, by design,
+because a spinner arrow is a 10px target. So on a phone the field had no
+controls and never had.
+
+**It was verified by reading the computed style — `appearance: auto`, which was
+correct — instead of by opening a phone.** That is the whole lesson, and it is
+the show-don't-describe rule's sharp edge: a true measurement of the wrong
+thing. Dan's *"a lot of these things we agreed to do and now they are not
+there"* is what this feels like from his side, and at least one of those items
+was never missing from the repo — only from the screen.
+
+### THE DOUBLE POP-UP, AND WHY THE OBVIOUS FIX WAS WRONG BOTH WAYS
+
+Dan: *"VoixLà starts with a double tour"*. Every station runs in an iframe and
+`CahierShell` renders the first-run card, so where host and frame both name the
+activity it mounted twice, the second offset by the frame's origin.
+`html[data-embed]` was never going to catch it: that hides FURNITURE — bar,
+band, coils — and the card is portalled to `body`.
+
+    /tts          host:1  FRAME:1     two cards
+    /reviser      host:1  FRAME:1     two cards
+    /conjugaison          FRAME:1     one, and it lives in the FRAME
+    /speculearn   host:1              one, and it lives in the HOST
+
+**"Do not open inside a frame" deletes ConjugaZone's only hint; the mirror fix
+deletes SpecuLearn's.** So the first card to mount for a key claims it on the
+TOP document and the rest stay shut. The table is the fix's justification, not
+decoration: without measuring per-frame, either one-line guard looks right.
+
+### A PR THAT STOPS GETTING CI RUNS IS A CONFLICT UNTIL PROVEN OTHERWISE
+
+**From the Peers lane, who lost about four hours to it** — recorded here
+because it is the quiet twin of the trap below and they asked for it to be
+inherited.
+
+Four pushes on #342 produced a Cloudflare build and **no verify run at all**,
+while other branches ran normally. It reads exactly like an Actions queue
+stall, and was reported as one. It was not. The workflow runs on
+`pull_request`, so GitHub checks out `refs/pull/<n>/merge` — and a branch in
+conflict HAS no merge ref, so no run is ever created and **nothing says why**.
+`mergeable_state` had gone `dirty`; `pull_request_read` reports it in one
+field. Runs resumed the instant the merge landed.
+
+    steps: [] + runner_name: ""   ->  no runner was assigned (12 Sep entry)
+    NO RUN CREATED AT ALL         ->  the branch is in conflict
+
+The second is harder because there is no failed run to open.
+
+### THE MARKER THAT LIED THREE TIMES
+
+Confirming a deploy by grepping production for a string keeps failing, and the
+reason is always the same: the string predates the change.
+
+    186px            still in the new build twice, for unrelated reasons
+    58px             six occurrences elsewhere
+    "C'est quel pays"  already in quel-prefere.tsx, unit1.ts and sios.json
+    /map/standalone  a route that existed before #342 renamed map/embed
+
+The last two were nearly reported to Dan as "already deployed". **The answer is
+CONTENT-HASHED CHUNK NAMES**: Next names each chunk by its own content, so
+production either serves the same set as the local build or it does not. Run 74
+was confirmed as 13/19 matching at 20s and 19/19 at 40s — a rollout visible in
+progress, and immune to any substring coincidence.
+
+### DAN'S RULINGS THIS SESSION
+
+- ***"maps has been taken out because there are already doors to the maps
+  elsewhere"*** — Favourites takes Map's slot in the yellow row.
+- ***"It might be better off to have the menu without the pink and just in
+  yellow over the pink and without the top row"***, then ***"the target icon
+  serves as the OK button"*** — the GO TO strip is gone; the cell is a ring and
+  a 🎯 that commits.
+- ***"each of these white spaced tiles is to be a protruded button with
+  mouseover effects"*** — `.fluo-tile-key`, which is `.neo-key`'s shadow
+  WITHOUT its `border: 0`, because the family pen IS how a learner tells
+  Practice from Games and .neo-key would have stripped it off nineteen doors.
+- ***"Voixlà's pop up instructions are to be transferred to the space above the
+  field"***, then ***"way too many nested boxes... texts on the lined paper
+  itself"***, then ***"ought to be bold to be legible"*** — the three are one
+  change: taking the panel away put the text on RULED paper, where a soft grey
+  stops working and weight is what survives.
+- ***"They can share the same steps 3,4,5. Just Step 2 can be split"*** — the
+  Guide forks once, at the step where WHEN you arrive changes what you do.
+
+### STILL OPEN
+
+- **The Guide scrolls 282px on an 844px phone**, against the one-screen rule.
+  Padding and a lead line were already cut. Collapsing steps 3-5 would fit it
+  and would hide two thirds of a manual; that trade is Dan's, not this lane's.
+- **The Guide's scale is unsettled** — Dan's mock has a larger title than the
+  rendered 19.5px and a roomier card. Measured, not guessed at, before changing.
+
 ## 12 Sep — three ComposeIt scenes rebuilt around the goal they hang off (this session, branch, NOT merged)
 
 **Dan: *"do the three strict-SIO redesigns now"***, following his earlier
@@ -473,6 +578,26 @@ hero, so every gesture was moving nothing and passing.
 ## 12 Sep — the queue emptied: five merged, five closed, three deploys, and the email box shut (integration lane, MERGED)
 
 Sole editor of STATUS.md in this commit: fluoduo-main (integration).
+
+> ⚠️ **CORRECTION, 13 Sep, by the lane that wrote this.** The sentence below —
+> *"there are no open pull requests"* — **was false when it was written.** #342
+> (peers, map/Home) and #343 (favourites naming) were both open, green and
+> mergeable at that moment, and #341 (ComposeIt) followed. All three have since
+> been QC'd and merged; production is at `8281f1b`, not `2221f9d`. See the
+> 13 Sep entry at the top of this file.
+>
+> **HOW IT HAPPENED, because the mechanism is the reusable part.** The PR list
+> was pulled ONCE, at 14:50, and then treated as still true for the rest of the
+> session. #343 was created at 16:58. Every merge after that was tracked from
+> memory against a snapshot, and the snapshot silently aged. It was the Peers
+> lane that caught it, not this one.
+>
+> **A COUNT OF OPEN WORK IS A MEASUREMENT, NOT A MEMORY: re-query it in the
+> same breath as the claim.** This is the same fault as the two already written
+> up below — a marker validated once, a check that passes by finding nothing —
+> and it is the worst of the three, because STATUS.md is the file whose entire
+> job is being true, and a later session reads it as the record rather than as
+> one lane's recollection.
 
 **Dan: *"pls merge all and deploy all and sync stage and prod"*.** At the end of
 it there are **no open pull requests**. Production is live at `2221f9d`.

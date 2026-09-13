@@ -72,7 +72,7 @@ const STEPS: Step[] = [
     title: "Select your goal.",
     ways: [
       <>via the <b>map</b> (home page), in <b>3D</b> or <b>2D</b> view</>,
-      <>via the <b>☰ menu</b>: type the number, then tap <b>🎯</b></>,
+      <>via the <b>☰</b> : type the number, then tap <b>🎯</b></>,
     ],
   },
   {
@@ -116,11 +116,11 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
           each one sentence or two, the title run into the line rather than
           set above it — the first cut stacked title and text and ran to
           1,350px on a phone; this one is measured to fit 844. */}
-      <ol className="mt-1 flex flex-col gap-1.5">
+      <ol className="mt-1 flex flex-col gap-1">
         {STEPS.map((s, i) => (
           <li
             key={i}
-            className={`fluo-h-${s.hue} flex items-start gap-2 rounded-xl border-2 px-2.5 py-1.5`}
+            className={`fluo-h-${s.hue} flex items-start gap-2 rounded-xl border-2 px-2.5 py-1`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
             <span
@@ -160,9 +160,30 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                   gutter, and the padding goes to zero — so a bullet begins on
                   the same vertical line as the title above it. */}
               {s.ways && (
-                <ul className="cahier-hand mt-1 flex list-inside list-disc flex-col gap-0.5 pl-0 text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">
+                <ul className="mt-0.5 flex flex-col pl-0">
                   {s.ways.map((w, j) => (
-                    <li key={j} className="marker:text-[color:var(--fluo-card-accent)]">{w}</li>
+                    <li key={j} className="flex gap-1">
+                      {/* THREE FAULTS, ONE SHAPE. Dan put his mock beside this
+                          render and the differences were: his bullets fit ONE
+                          line, his dot sits tight to the text, and nothing
+                          wraps back under the dot.
+
+                          THE SIZE WAS A BUG, NOT A TASTE. `.cahier-page li`
+                          sets `font-size: var(--fs-body)` at (0,1,1), which
+                          outranks a `text-[13px]` utility — so the list
+                          rendered at 16px however it was labelled, and every
+                          line wrapped. Measured, not guessed: computed 16px
+                          where 13 was asked for. Putting the words in a SPAN
+                          takes them out of that selector's reach.
+
+                          The flex row fixes the other two at the same time:
+                          the dot is its own column so a wrapped line hangs
+                          under the words rather than under the dot, and the
+                          gap is set here rather than by a list marker's
+                          built-in indent. */}
+                      <span aria-hidden className="cahier-hand text-[13px] leading-snug" style={{ color: "var(--fluo-card-accent)" }}>•</span>
+                      <span className="cahier-hand min-w-0 flex-1 text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">{w}</span>
+                    </li>
                   ))}
                 </ul>
               )}
@@ -170,11 +191,11 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                   they are short and the whole point is reading them against
                   each other, which a stack destroys. */}
               {s.split && (
-                <div className="mt-1 grid grid-cols-2 gap-1.5">
+                <div className="mt-0.5 grid grid-cols-2 gap-1">
                   {s.split.map((b, j) => (
                     <div
                       key={j}
-                      className="rounded-lg border px-1.5 py-1"
+                      className="rounded-lg border px-1.5 py-0.5"
                       style={{ borderColor: "var(--fluo-card-accent)", background: "var(--cahier-paper-raised)" }}
                     >
                       <span className="cahier-body block text-[11px] font-black uppercase tracking-[0.04em] leading-tight" style={{ color: "var(--fluo-card-accent)" }}>
