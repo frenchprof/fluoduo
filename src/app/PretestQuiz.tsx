@@ -17,7 +17,7 @@ import { useChoiceKeys } from "@/lib/useChoiceKeys";
 import { getPretest } from "@/content/pretests";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
-import { judgePretestAnswer, shuffle, ttsTextForItem } from "@/lib/pretests/runner";
+import { judgePretestAnswer, shuffle, ttsTextForItem, sentenceWith } from "@/lib/pretests/runner";
 import type { PretestItem } from "@/lib/pretests/schema";
 
 type Q = { item: PretestItem; choices: string[] };
@@ -194,7 +194,22 @@ function QuestionCard({
                 type="button"
                 // Answered → every option stays tappable purely for its sound
                 // (Dan, 2026-07-04), matching the Unit-0 quiz behaviour.
-                onClick={() => (showResult ? speak(c, "fr-FR") : onPick(c))}
+                //
+                // IN ITS SENTENCE, NEVER ALONE (Dan, 2026-09-13: *"never TTS
+                // just individual words when they can be TTS with another (e.g.
+                // a noun always with its article, or an entire sentence if that
+                // is what we are dealing with)"*, and *"once a blank is
+                // correctly filled it must read out the entire sentence — with
+                // possibility to repeat"*).
+                //
+                // This button was the one place a bare fragment still reached
+                // the voice: the CORRECT answer already reads the whole
+                // sentence through `ttsTextForItem`, but tapping an option to
+                // hear it read that option on its own — « m'appelle » instead
+                // of « Je m'appelle ». The option now goes back into the frame
+                // it came out of, so every tap is a whole sentence and the
+                // button doubles as the repeat.
+                onClick={() => (showResult ? speak(sentenceWith(item, c), "fr-FR") : onPick(c))}
                 lang="fr"
                 className={`rounded-full border-2 px-3 py-1.5 text-sm font-bold transition ${cls}`}
               >

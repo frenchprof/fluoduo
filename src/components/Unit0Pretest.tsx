@@ -408,7 +408,16 @@ function QuizQuestion({
   // the one already picked — speaks it (Dan, 2026-07-02: all letters
   // playable; a click reveals that letter's name).
   function tap(o: { v: string; ok: boolean }, done: boolean) {
-    if (done) { speak(o.v, "fr-FR"); return; }
+    // IN ITS SENTENCE, NEVER ALONE (Dan, 2026-09-13: *"once a blank is
+    // correctly filled (either via MCQ or whatever means) it must read out the
+    // entire sentence - with possibility to repeat"*).
+    //
+    // `ttsFor(q, v)` already puts a value back into `q.stem` — it is what the
+    // CORRECT answer reads. This tap had its own bare `speak(o.v)`, so the
+    // answer spoke a sentence and every replay after it spoke a fragment. One
+    // function for both now, so the two cannot drift: whatever is tapped is
+    // heard where it belongs, and the option doubles as the repeat button.
+    if (done) { speak(ttsFor(q, o.v), "fr-FR"); return; }
     if (q.multi) {
       setSel((prev) => (prev.includes(o.v) ? prev.filter((v) => v !== o.v) : [...prev, o.v]));
       return;
