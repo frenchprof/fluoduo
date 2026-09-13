@@ -63,6 +63,28 @@ check("activitiesIn(" not in guide_code and "FAMILIES.map" not in guide_code,
       "GuideBody draws no activity grid (Dan, 11 Sep: the activities are already on the menu)",
       "GuideBody draws an activity grid again — the ☰ menu already lists every activity from the registry")
 
+# TWO GUIDES, ONE DOOR (Dan, 2026-09-13: "Both should live under SOS HELP,
+# although one should be the abridged version essential to begin, while the
+# other has the details"). The five steps are the QuickStart; the full manual is
+# a standalone page in public/ that the QuickStart links to. Both halves have
+# to exist, or Help offers one guide and a dead link.
+check(os.path.isfile("public/manual.html"),
+      "the full manual ships (public/manual.html, served at /manual)",
+      "public/manual.html is missing — the QuickStart's « full guide » link "
+      "would 404")
+check('href="/manual"' in guide_code,
+      "the QuickStart links to the full manual",
+      "GuideBody no longer links to /manual — the detailed half becomes "
+      "unreachable from Help")
+_manual = read("public/manual.html")
+check("💎" in _manual and "20💎" in _manual,
+      "the manual states the welcome purse",
+      "the manual does not state what a learner starts with")
+check("no XP" not in _manual and "No XP" not in _manual,
+      "the manual claims no activity pays nothing (13 Sep economy)",
+      "the manual still says an activity pays no XP — every one of them pays "
+      "at least once now")
+
 # Registry sanity: every family that groups ACTIVITIES has at least one, so no
 # grouped surface can render an empty shelf.
 #
