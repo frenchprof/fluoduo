@@ -4233,6 +4233,55 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   flex-direction: column;
   gap: 0.35em;
 }
+/* THE SAME TRAY, OUT IN THE PANE — no box of its own to scroll inside.
+   Dan, 2026-09-13, looking at the chips clipped inside the card while a whole
+   empty column sat beside them: *"the phrase tray should not have to be
+   scrollable inside. Cant they be outside?"*
+
+   GameFrame's right pane is `overflow-y-auto` and full height, so the bank
+   simply lays out down it. The card's own 34%-and-scroll stays for the phone,
+   where that pane does not exist (`hidden … lg:flex`) — keyed on the pane
+   rather than on a modifier class, so exactly one of the two shapes can ever
+   apply and the phone copy cannot pick up the wrong one. */
+.game-record .msgr-tray {
+  max-height: none;
+  overflow: visible;
+  border-top: 0;
+  background: transparent;
+  padding: 0;
+  gap: 0.5em;
+}
+/* The chips are 320px of column here, not 660px of card: a phrase that fits
+   on one line across the tray does not fit across the pane, and `nowrap` +
+   `ellipsis` would silently truncate the French a learner has to read. */
+.game-record .msgr-chip { white-space: normal; text-overflow: clip; height: auto; padding: 0.3em 0.7em; }
+
+/* THE PANE IS WIDER WHERE IT HOLDS A PHRASE BANK, and this is arithmetic, not
+   taste. Measured on /games/compose/au-restaurant at 1280x950:
+
+     in the card, 20rem pane   tray 197px tall, 343px of chips hidden
+     in the pane, 20rem wide   tray 1111px in a 580px column
+     in the pane, ramped wide  tray  770px in a 580px column, 232px hidden
+
+   The short chips pair two to a row at this width, which is where the 1111 →
+   770 comes from. **IT STILL DOES NOT ALL FIT, and that is stated rather than
+   rounded away**: twenty-four chips at the 44px finger floor plus six category
+   labels need ~770px and the column has ~580px. Closing the last 232px means
+   trading away either the finger floor or the thread's height, and that is
+   Dan's call, not this file's. What HAS gone is the scroll box inside the
+   card, which is what he actually pointed at.
+
+   `:has()` rather than a new GameFrame prop on purpose: GameFrame is shared,
+   high-traffic and edited by other lanes, and this is one surface's need. The
+   board keeps ~780px at 1280px, which is wider than the messenger's own
+   max-w-3xl, so nothing on the left is squeezed by it.
+
+   NO MEDIA QUERY: GameFrame already hides the pane below its `lg` breakpoint
+   (`hidden … lg:flex`), so a width set here simply does not apply on a phone —
+   and the width itself rides the type ramp, because the chips inside it grow
+   with `--fs-step` and a column that did not would clip them. */
+.game-record:has(.msgr-tray) { width: calc(20rem + var(--fs-step) * 17); }
+
 .msgr-tray-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
 .msgr-tray-label {
   flex: 0 0 auto;
