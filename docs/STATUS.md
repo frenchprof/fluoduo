@@ -6,6 +6,66 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — ChaTutor and ComposeIt are one messenger (this session, branch, NOT merged)
+
+**Dan: *"the interface for all things chat-related ChaTutor and ComposeIt please
+adopt the UI UX of how modern messenger works !"***
+
+**THEY HAD EACH GROWN A CHAT BY HAND, AND HAD ALREADY DRIFTED.** Put side by
+side for the first time, the two disagreed in ways nobody had chosen:
+
+    ChaTutor    the 🤖 lived INSIDE the reply's text — it came along when a
+                learner copied the French out
+    ComposeIt   the persona emoji was a span of its own
+    ChaTutor    Enter sent the message
+    ComposeIt   Enter did nothing; you reached for a button
+    both        the input sat in the page flow, so on a long conversation the
+                place you type scrolled off the bottom
+
+None of that is a bug anyone would file, which is exactly why it needed a
+shared kit rather than two tidy-ups: `src/components/chat/{ChatThread,
+ChatComposer}` plus one `.msgr-*` block in globals.css. Both surfaces now get
+grouped runs (the face drawn once, only the last bubble of a run wearing a
+tail), a thread that owns the height and scrolls inside itself, three bobbing
+dots for waiting, a time under each run, auto-follow that **stops** when the
+reader has scrolled up (with a « ↓ Newest » pill), and Enter-to-send.
+
+**COMPOSEIT LOST ITS THIRD PLACE TO LOOK.** It had a chat column, then a
+separate "reply under construction" box with its own input, then the phrase
+bank below the fold. A tapped chip now lands **in the field**, like predictive
+text; the bank became a scrolling tray directly above the composer. The tray
+WRAPS rather than scrolling sideways or hiding behind category tabs — both are
+prettier, and both would put most of the chips behind a tap, which the collapse
+rule forbids for the options a learner needs to answer with.
+
+**THREE COLLISIONS, ALL PRE-EXISTING, ALL FOUND BY DRIVING IT:**
+- the floating 🛠️ tools key is fixed bottom-right, which is where a messenger
+  puts **send** — they were drawn on top of each other;
+- the accent bar (é è à…) is `fixed bottom-0`, so it landed on the very field
+  that summoned it. It publishes its height now, and the clearance is
+  **measured per surface**: inside the cahier's game frame the composer stops
+  64px above the bar and gets nothing, on /tutor it was covered by 43px and the
+  pill now clears by 6. A blanket padding spent 83 measured pixels of thread on
+  every exercise page to fix a collision those pages do not have;
+- **every framed station's iframe starts at page-x 19 while the coil strip runs
+  to page-x 57** — 38px of every embed is drawn under the rings. App-wide and
+  years old; it never showed because the stations put a padded card inside the
+  frame. A messenger has no card, so the autoSpeak key came out 18px under the
+  coils. `/tutor/embed` takes a 40px left inset; the wider geometry is left
+  alone.
+
+**`verify480-messenger.py`, 5 clauses, each proved to fail first.** The one
+that earns its keep: every `.msgr-*` class used anywhere in `src/` must exist
+in globals.css, and vice versa. A typo'd class does not throw, does not warn
+and does not fail a build — the element just renders unstyled, which on a
+bubble means a line of bare text that only a screenshot of that one surface
+would ever catch.
+
+**STILL A WORKSHEET, DELIBERATELY: ComposeIt's SOLO banks** (Présenter un pays,
+the e-carte, Les quatre repas). Their question-and-answer shape would convert
+cleanly, but they are a writing exercise with a prompt, not a conversation —
+and that is Dan's call, not one to make while shipping the two that are chats.
+
 ## 13 Sep — three more PRs land, and a control that was "done" and invisible (integration lane)
 
 Sole editor of STATUS.md in this commit: fluoduo-main (integration).

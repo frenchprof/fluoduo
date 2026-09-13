@@ -16,6 +16,8 @@
  * degrades to a friendly "not wired up yet" card instead of a broken chat.
  */
 import { useEffect, useRef, useState } from "react";
+import ChatThread, { type ChatMessage } from "@/components/chat/ChatThread";
+import ChatComposer from "@/components/chat/ChatComposer";
 import { pauseSpeech, resumeSpeech, isSpeechPaused, guessLang, type MixedPlayback } from "@/games/letris/speech";
 // Balloons read with the Google Neural2 cast (browser voices as automatic
 // fallback) so the tutor sounds identical on every device (Dan, 2026-07-18).
@@ -107,16 +109,14 @@ function renderBilingual(text: string): ReactNode[] {
   return out;
 }
 
-/** Grow the textarea to fit its content (up to a cap); the user can still drag
- *  it taller via the resize handle. */
-function autoGrow(el: HTMLTextAreaElement | null) {
-  if (!el) return;
-  el.style.height = "auto";
-  el.style.height = `${Math.min(el.scrollHeight, 320)}px`;
-}
+/* `autoGrow` and the scroll-to-bottom effect used to live here. Both moved
+   into components/chat — the composer grows itself in LINE BOXES rather than a
+   320px cap (so it follows the type ramp), and the thread decides when to
+   follow the newest message, which it now only does if the reader has not
+   scrolled up to re-read. */
 
 export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
-  const placeholder = "";
+  const placeholder = "Écris ici…";
   const [messages, setMessages] = useState<ChatMsg[]>([{ role: "assistant", content: GREETING }]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -133,8 +133,6 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const playerRef = useRef<MixedPlayback | null>(null);
-  const endRef = useRef<HTMLDivElement>(null);
-  const taRef = useRef<HTMLTextAreaElement>(null);
   // 🎤 speak-to-fill (Dan, 2026-07-13: "a STT engine that fills up the speech
   // balloons by talking instead of by typing"). Browser SpeechRecognition,
   // fr-FR: the pedagogical point is producing FRENCH speech. Hidden where
@@ -167,7 +165,7 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
       const heard = Array.from({ length: e.results.length }, (_, k) => e.results[k][0]?.transcript ?? "").join("");
       setInput(base ? `${base} ${heard}` : heard);
     };
-    rec.onend = () => { setRecording(null); recRef.current = null; taRef.current?.focus(); };
+    rec.onend = () => { setRecording(null); recRef.current = null; };
     rec.onerror = () => { setRecording(null); recRef.current = null; };
     recRef.current = rec;
     setRecording(lang);
@@ -243,15 +241,6 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
     setInput("");
   }
 
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, [messages, busy]);
-
-  // Reset the box back to one row once it's been cleared (after sending).
-  useEffect(() => {
-    if (input === "" && taRef.current) taRef.current.style.height = "auto";
-  }, [input]);
-
   async function send() {
     const text = input.trim();
     if (!text || busy) return;
@@ -311,20 +300,65 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
     }
   }
 
+  /* The panel is a messenger now (Dan, 2026-09-13). The bubble colourway is
+     declared ONCE here and read by the shared CSS, which is why the two
+     surfaces can no longer drift apart in the way they had: ChaTutor put the
+     🤖 inside the reply's text (so it came along when you copied the French),
+     ComposeIt put it in a span of its own, and neither had ever been looked at
+     beside the other. `*-foot` is the BOTTOM of each gradient — the tail is a
+     border-triangle and border-triangles cannot carry a gradient, so the one
+     colour it can wear is named rather than guessed. */
+  const skin = {
+    "--bub-them-bg": "linear-gradient(180deg,#ffffff,#f2f8ff)",
+    "--bub-them-foot": "#f2f8ff",
+    "--bub-them-edge": "#a8cdf0",
+    "--bub-me-bg": "linear-gradient(180deg,#fff8c4,#ffec80)",
+    "--bub-me-foot": "#ffec80",
+    "--bub-me-edge": "#e0b400",
+  } as React.CSSProperties;
+
+  /* Dan, 2026-07-13: save-and-end belongs to the LATEST tutor reply and must
+     vanish the moment a new question is sent. That rule is kept exactly — the
+     same condition, one line down — but the control moved from a wide labelled
+     button sitting in the message list to the header, where a messenger keeps
+     anything that acts on the whole conversation rather than on one message. */
+  const canSave = messages.length > 1 && messages[messages.length - 1].role === "assistant" && !busy;
+
   return (
-    <>
-        {context && (
-          /* The context chip — what this chat already knows. Yellow, like the
-             learner's own balloons: it stands in for what they'd have typed. */
-          <p className="inline-flex max-w-full items-center gap-1.5 self-start rounded-full border-2 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)] px-3 py-1 text-xs font-bold text-[color:var(--cahier-ink)]">
-            <span aria-hidden>🛠️</span>
-            <span className="truncate">
-              {context.title}
-              {context.item && <> · <span lang="fr">« {context.item} »</span></>}
-            </span>
+    <div className="msgr min-h-0 flex-1" style={skin}>
+      <div className="msgr-head">
+        <span className="msgr-avatar" aria-hidden>🤖</span>
+        <div className="min-w-0">
+          <p className="msgr-head-name">ChaTutor</p>
+          {/* The context chip became the header's status line — what this chat
+              already knows, in the place a messenger says who you are talking
+              to about what. Same text, one fewer floating element. */}
+          <p className="msgr-head-sub truncate">
+            {context ? (
+              <>
+                🛠️ {context.title}
+                {context.item && <> · <span lang="fr">« {context.item} »</span></>}
+              </>
+            ) : (
+              "Ton tuteur de français"
+            )}
           </p>
+        </div>
+        {canSave && (
+          <button
+            type="button"
+            onClick={savePdfAndEnd}
+            className="msgr-mini ml-auto"
+            title="Save as PDF & End Session"
+            aria-label="Save as PDF and end the session"
+          >
+            💾
+          </button>
         )}
-        {offline ? (
+      </div>
+
+      {offline ? (
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">
           <div className="rounded-2xl border-2 border-dashed border-[color:var(--cahier-ink)]/40 bg-white p-5">
             <p className="text-sm font-bold text-[color:var(--cahier-ink)]">
               The tutor isn&rsquo;t connected here yet. 🔌
@@ -334,119 +368,77 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
               <a href="https://laf1201.withdrchan.com" className="font-bold underline">laf1201.withdrchan.com</a>.
             </p>
           </div>
-        ) : (
-          <>
-            {/* The conversation scrolls INSIDE this box (intended: the input
-                stays reachable below) — but let it use the real viewport
-                height instead of a stingy 55vh (Dan, 2026-07-12). Inside the
-                🛠️ card the box shrinks so the input stays on the sheet. */}
-            <div
-              className={`flex flex-col gap-2.5 overflow-y-auto rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner ${
-                context ? "max-h-[30dvh] min-h-[9rem]" : "max-h-[calc(100dvh-16rem)] min-h-[16rem]"
-              }`}
-              style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
-            >
-              {messages.map((m, i) => (
-                <div key={i} className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}>
-                  {/* A DIV, not a button (Dan, 2026-07-27): buttons make their
-                      text unselectable — learners could not copy the French.
-                      Tap-to-listen moves to the 🔊 control in the row below. */}
-                  <div
-                    className={`max-w-[85%] cursor-text select-text whitespace-pre-wrap rounded-2xl border-2 px-4 py-2 text-left text-sm leading-relaxed shadow-sm ${
-                      m.role === "user"
-                        ? "rounded-br-sm border-[#e0b400] text-[color:var(--cahier-ink)]"
-                        : "rounded-bl-sm border-[#a8cdf0] text-[color:var(--cahier-ink)]"
-                    }`}
-                    style={m.role === "user"
-                      ? { background: "linear-gradient(180deg,#fff8c4,#ffec80)" }
-                      : { background: "linear-gradient(180deg,#ffffff,#f2f8ff)" }}
-                  >
-                    {m.role === "assistant" && <span className="mr-1.5" aria-hidden>🤖</span>}
-                    {renderBilingual(m.content)}
-                  </div>
-                  {/* Player row under the balloon: ▶ + 🐌 when idle; ⏸/▶, ⏹
-                      and a seek slider while THIS balloon is being read. */}
-                  <div className="mt-0.5 flex w-full max-w-[85%] items-center gap-1">
-                    {playingIdx === i ? (
-                      <>
-                        {/* Traffic-light player (Dan, 2026-07-13): resume ▶ green,
-                            pause ⏸ blue (yellow belongs to the snail), stop ⏹ red. */}
-                        <button type="button" onClick={togglePause}
-                          className={`rounded-lg border px-2 py-0.5 text-xs font-bold text-white ${paused ? "border-[#3f9c17] bg-[#58cc02]" : "border-[#1899d6] bg-[#1cb0f6]"}`}>
-                          {paused ? "▶" : "⏸"}
-                        </button>
-                        <button type="button" onClick={stopPlayback}
-                          className="rounded-lg border border-[#d33131] bg-[#ff4b4b] px-2 py-0.5 text-xs font-bold text-white">
-                          ⏹
-                        </button>
-                        <input
-                          type="range" min={0} max={1000} value={Math.round(progress * 1000)}
-                          onChange={(e) => { const f = Number(e.target.value) / 1000; setProgress(f); playerRef.current?.seek(f); }}
-                          aria-label="Position dans la lecture"
-                          className="h-1.5 min-w-0 flex-1 cursor-pointer accent-[#0b63c4]"
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <button type="button" onClick={() => playMsg(i, m.content)} title="Listen"
-                          className="rounded-lg border border-[#3f9c17] bg-[#58cc02] px-2 py-0.5 text-xs font-bold text-white">
-                          ▶
-                        </button>
-                        <button type="button" onClick={() => playMsg(i, m.content, 0.6)} title="Lecture lente"
-                          className="rounded-lg border border-[#e08600] bg-[#ffc800] px-2 py-0.5 text-xs font-bold text-[#5a3a08]">
-                          🐌
-                        </button>
-                      </>
-                    )}
-                    {/* Latest finished tutor reply only; vanishes the moment a
-                        new input is sent (the last message becomes the user's). */}
-                    {m.role === "assistant" && i === messages.length - 1 && i > 0 && !busy && (
-                      <button type="button" onClick={savePdfAndEnd}
-                        className="ml-auto rounded-lg border border-[color:var(--cahier-rule)] bg-white px-2 py-0.5 text-xs font-bold text-[color:var(--cahier-ink)]">
-                        💾 Save as PDF &amp; End Session
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {busy && (
-                <p className="animate-pulse text-sm text-[color:var(--cahier-ink-soft)]">🤖 …</p>
-              )}
-              <div ref={endRef} />
-            </div>
+        </div>
+      ) : (
+        <>
+          <ChatThread
+            avatar="🤖"
+            typing={busy}
+            messages={messages.map((m, i): ChatMessage => ({
+              key: `${i}`,
+              side: m.role === "user" ? "me" : "them",
+              body: renderBilingual(m.content),
+              actions:
+                playingIdx === i ? (
+                  <>
+                    {/* Traffic-light player (Dan, 2026-07-13): resume ▶ green,
+                        pause ⏸ blue (yellow belongs to the snail), stop ⏹ red. */}
+                    <button type="button" onClick={togglePause} className="msgr-mini" aria-label={paused ? "Resume" : "Pause"}>
+                      {paused ? "▶" : "⏸"}
+                    </button>
+                    <button type="button" onClick={stopPlayback} className="msgr-mini" aria-label="Stop">⏹</button>
+                    <input
+                      type="range" min={0} max={1000} value={Math.round(progress * 1000)}
+                      onChange={(e) => { const f = Number(e.target.value) / 1000; setProgress(f); playerRef.current?.seek(f); }}
+                      aria-label="Position dans la lecture"
+                      className="h-1.5 w-20 min-w-0 cursor-pointer accent-[#0b63c4]"
+                    />
+                  </>
+                ) : (
+                  <>
+                    <button type="button" onClick={() => playMsg(i, m.content)} className="msgr-mini" title="Listen" aria-label="Listen">▶</button>
+                    <button type="button" onClick={() => playMsg(i, m.content, 0.6)} className="msgr-mini" title="Lecture lente" aria-label="Listen slowly">🐌</button>
+                  </>
+                ),
+            }))}
+          />
 
-            {/* STACKED input (Dan, 2026-07-13: "way too small on mobile"):
-                the textarea gets the FULL width on its own line and auto-grows
-                as you type (drag-resize doesn't exist on touch); the buttons
-                live on their own row beneath. */}
-            <form
-              onSubmit={(e) => { e.preventDefault(); void send(); }}
-              className="flex flex-col gap-2"
-            >
-              <textarea
-                lang="fr"
-                ref={taRef}
-                value={input}
-                onChange={(e) => { setInput(e.target.value); autoGrow(e.target); }}
-                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void send(); } }}
-                placeholder={placeholder}
-                rows={2}
-                /* NB: not .cahier-answer — that pins height:30px!important, which
-                   would kill grow/resize. AccentBar still shows via lang="fr". */
-                className={`max-h-[20rem] w-full resize-y rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-[0.95rem] leading-snug text-[color:var(--cahier-ink)] outline-none focus:border-[color:var(--cahier-le)] ${
-                  context ? "min-h-[3rem]" : "min-h-[4.5rem]"
-                }`}
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-              />
-              <div className="flex items-center justify-end gap-1.5">
-              {sttAvailable && (
+          <ChatComposer
+            value={input}
+            onChange={setInput}
+            onSend={() => void send()}
+            placeholder={placeholder}
+            disabled={busy}
+            sendLabel="Send"
+            /* Auto-speak on/off (Dan, 2026-07-27) — 🔊 speaks each reply as it
+               arrives; 🔇 stays silent (the ▶ buttons still work). It sits
+               left of the pill, where a messenger keeps its standing toggle. */
+            before={
+              <button
+                type="button"
+                onClick={() => { const v = !autoSpeak; setAutoSpeak(v); try { localStorage.setItem("fl.tutor.autoSpeak", v ? "on" : "off"); } catch {}; if (!v) playerRef.current?.stop(); }}
+                title={autoSpeak ? "Replies speak automatically — tap to silence" : "Replies stay silent — tap to auto-speak"}
+                aria-pressed={autoSpeak}
+                className={`msgr-icon ${autoSpeak ? "is-on" : ""}`}
+              >
+                {autoSpeak ? "🔊" : "🔇"}
+              </button>
+            }
+            /* TWO MICS, STILL. Dan asked for *"separate STT buttons for English
+               and for French"* (2026-07-13) and that stands — a single mic
+               would have to guess the language of a half-spoken sentence. They
+               move INSIDE the pill, on the right, which is where a messenger
+               puts its mic and which keeps the composer down to one row of
+               controls on a 320px phone. */
+            inside={
+              sttAvailable ? (
                 <>
                   <button
                     type="button"
                     onClick={() => toggleMic("fr-FR")}
                     title={recording === "fr-FR" ? "Stop dictation" : "Dictate in French"}
                     aria-pressed={recording === "fr-FR"}
-                    className={`cahier-btn font-black ${recording === "fr-FR" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
+                    className={`msgr-mini ${recording === "fr-FR" ? "is-rec" : ""}`}
                   >
                     🎤🇫🇷
                   </button>
@@ -455,30 +447,16 @@ export default function ChaTutorPanel({ context }: { context?: TutorContext }) {
                     onClick={() => toggleMic("en-US")}
                     title={recording === "en-US" ? "Stop dictating" : "Dictate in English"}
                     aria-pressed={recording === "en-US"}
-                    className={`cahier-btn font-black ${recording === "en-US" ? "!border-[#d33131] !bg-[#ff4b4b] !text-white animate-pulse" : ""}`}
+                    className={`msgr-mini ${recording === "en-US" ? "is-rec" : ""}`}
                   >
                     🎤🇬🇧
                   </button>
-                  {/* Auto-speak on/off (Dan, 2026-07-27) — 🔊 speaks each reply
-                      as it arrives; 🔇 stays silent (play buttons still work). */}
-                  <button
-                    type="button"
-                    onClick={() => { const v = !autoSpeak; setAutoSpeak(v); try { localStorage.setItem("fl.tutor.autoSpeak", v ? "on" : "off"); } catch {}; if (!v) playerRef.current?.stop(); }}
-                    title={autoSpeak ? "Replies speak automatically — tap to silence" : "Replies stay silent — tap to auto-speak"}
-                    aria-pressed={autoSpeak}
-                    className={`cahier-btn font-black ${autoSpeak ? "" : "opacity-60"}`}
-                  >
-                    {autoSpeak ? "🔊" : "🔇"}
-                  </button>
                 </>
-              )}
-              <button type="submit" disabled={busy || !input.trim()} className="cahier-btn cahier-btn-accent font-black disabled:opacity-40">
-                Send
-              </button>
-              </div>
-            </form>
-          </>
-        )}
-    </>
+              ) : null
+            }
+          />
+        </>
+      )}
+    </div>
   );
 }

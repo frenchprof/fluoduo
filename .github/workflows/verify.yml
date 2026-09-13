@@ -603,3 +603,6 @@ jobs:
 
       - name: "ComposeIt speaks correct French, and its chips cover their pools (12 Sep)"
         run: python3 verify/verify440-compose-french.py
+
+      - name: "One messenger, two chat surfaces, and no class it names is missing (13 Sep)"
+        run: python3 verify/verify480-messenger.py

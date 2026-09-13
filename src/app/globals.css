@@ -3898,3 +3898,439 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
      6% a side, so text set tight to the edge would be bitten. */
   padding: 0.6rem 1.1rem 0.7rem;
 }
+
+
+/* ═══ THE MESSENGER ═══════════════════════════════════════════════════════
+   Dan, 2026-09-13: *"the interface for all things chat-related ChaTutor and
+   ComposeIt please adopt the UI UX of how modern messenger works !"*
+
+   ONE KIT, TWO SURFACES. ChaTutor and ComposeIt's dialogue mode had each grown
+   their own chat by hand — two sets of bubbles, two input rows, two ideas of
+   what a pending reply looks like — and they had already drifted: one put the
+   persona emoji INSIDE the bubble text, the other outside; one sent on Enter,
+   the other only on a button; neither pinned its input. Everything below is
+   shared, so the next change lands on both or on neither.
+
+   WHAT A MESSENGER ACTUALLY DOES, and what each rule here is for:
+   · the thread OWNS the height and scrolls by itself — the composer never
+     leaves the screen, which is the whole reason a messenger feels like one;
+   · consecutive messages from one side GROUP: the avatar is drawn once, the
+     gaps tighten, and only the LAST bubble of a run wears the tail;
+   · the person you are talking to has a face, in a column of its own, not a
+     glyph glued to the front of their words;
+   · waiting looks like three dots in a bubble, not the word "…";
+   · the time sits under the last bubble of a run, quietly;
+   · new messages pull the view down, unless you have scrolled up to read —
+     then a pill offers to take you back.
+
+   NOT A PIXEL IN IT. Every length is `em` (so it follows the bubble's own
+   font, which is on the --fs-step ramp) or a ramped `calc()`. The one `px`
+   is the 44px finger floor inside a `max()`, which is the exemption
+   verify270 names: a floor that shrank with the type would stop being one. */
+
+.msgr {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;            /* so the thread, not the page, does the scrolling */
+  flex: 1 1 auto;
+  /* Defaults; a surface overrides these four to wear its own colourway. */
+  --bub-them-bg: #ffffff;
+  --bub-them-foot: #f2f8ff;
+  --bub-them-edge: var(--cahier-rule);
+  --bub-me-bg: var(--cahier-hl, #ffec80);
+  --bub-me-foot: var(--cahier-hl, #ffec80);
+  --bub-me-edge: var(--cahier-hl-edge, #e0b400);
+  --bub-tail: 0.6em;
+}
+
+/* ── the thread ─────────────────────────────────────────────────────────── */
+.msgr-thread {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;   /* a flick at the end must not scroll the page */
+  scrollbar-gutter: stable;
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.75rem + var(--fs-step) * 0.6);
+  padding: calc(0.75rem + var(--fs-step) * 0.6) calc(0.5rem + var(--fs-step) * 0.4);
+}
+
+/* A run: every consecutive message from one side. The avatar column is part
+   of the run, not of each row, which is what makes the face appear once. */
+/* THE FACE ALIGNS WITH THE FIRST BUBBLE, NOT THE LAST. WhatsApp bottom-aligns
+   it, and that was the first cut — but a run here ends in a META ROW (listen,
+   listen slowly, the time), which is not a bubble, so bottom-aligning dropped
+   the avatar a row below the words and left it floating beside the buttons.
+   Top alignment is a real messenger shape too (Telegram desktop, Discord) and
+   it is the one that stays correct however many control rows a message grows. */
+.msgr-run { display: flex; align-items: flex-start; gap: 0.45em; }
+.msgr-run.is-me { flex-direction: row-reverse; }
+.msgr-stack { display: flex; flex-direction: column; gap: 0.18em; min-width: 0; max-width: 78%; }
+.msgr-run.is-me .msgr-stack { align-items: flex-end; }
+
+.msgr-avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: calc(1.75rem + var(--fs-step) * 1.5);
+  height: calc(1.75rem + var(--fs-step) * 1.5);
+  border-radius: 999px;
+  border: 2px solid var(--bub-them-edge);
+  background: var(--bub-them-bg);
+  font-size: calc(0.9rem + var(--fs-step) * 0.9);
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── the bubble ─────────────────────────────────────────────────────────── */
+.msgr-bubble {
+  position: relative;
+  max-width: 100%;
+  width: fit-content;
+  border: 2px solid var(--bub-them-edge);
+  background: var(--bub-them-bg);
+  color: var(--cahier-ink);
+  padding: 0.42em 0.72em;
+  line-height: 1.42;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  /* A DIV, NOT A BUTTON, and the selection rules say so out loud: Dan,
+     2026-07-27 — a button makes its own text unselectable and learners could
+     not copy the French back out. Listening lives in the meta row below. */
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+  /* Grouped radii. Fully round by default; the side that speaks squares off
+     only where the run continues, so a run reads as one shape. */
+  border-radius: 1.15em;
+}
+.msgr-run.is-them .msgr-bubble { border-top-left-radius: 0.35em; border-bottom-left-radius: 0.35em; }
+.msgr-run.is-them .msgr-bubble.is-first { border-top-left-radius: 1.15em; }
+.msgr-run.is-them .msgr-bubble.is-last  { border-bottom-left-radius: 0.35em; }
+.msgr-run.is-me .msgr-bubble {
+  border-color: var(--bub-me-edge);
+  background: var(--bub-me-bg);
+  border-top-right-radius: 0.35em; border-bottom-right-radius: 0.35em;
+}
+.msgr-run.is-me .msgr-bubble.is-first { border-top-right-radius: 1.15em; }
+
+/* THE TAIL, on the last bubble of a run only. Two triangles: the outer one is
+   the border colour, the inner one the bubble's foot colour (the BOTTOM of the
+   gradient, since that is where the tail meets it) inset by the border width.
+   Border-triangles cannot carry a gradient, which is why `--bub-*-foot` is a
+   token of its own rather than something guessed from the fill. */
+.msgr-bubble.is-last::before,
+.msgr-bubble.is-last::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  border-style: solid;
+  border-color: transparent;
+}
+.msgr-run.is-them .msgr-bubble.is-last::before {
+  left: calc(var(--bub-tail) * -1 + 0.12em);
+  border-width: 0 0 var(--bub-tail) var(--bub-tail);
+  border-bottom-color: var(--bub-them-edge);
+}
+.msgr-run.is-them .msgr-bubble.is-last::after {
+  left: calc(var(--bub-tail) * -1 + 0.34em);
+  bottom: 0;
+  border-width: 0 0 calc(var(--bub-tail) - 0.16em) calc(var(--bub-tail) - 0.16em);
+  border-bottom-color: var(--bub-them-foot);
+}
+.msgr-run.is-me .msgr-bubble.is-last::before {
+  right: calc(var(--bub-tail) * -1 + 0.12em);
+  border-width: 0 var(--bub-tail) var(--bub-tail) 0;
+  border-bottom-color: var(--bub-me-edge);
+}
+.msgr-run.is-me .msgr-bubble.is-last::after {
+  right: calc(var(--bub-tail) * -1 + 0.34em);
+  bottom: 0;
+  border-width: 0 calc(var(--bub-tail) - 0.16em) calc(var(--bub-tail) - 0.16em) 0;
+  border-bottom-color: var(--bub-me-foot);
+}
+
+/* The quiet row under a run: the time, and whatever controls that message
+   carries (listen, listen slowly). Muted and small so the words stay the loud
+   thing — the same instinct as Dan's litmus test, applied to furniture. */
+.msgr-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  margin-top: 0.15em;
+  font-size: calc(0.6875rem + var(--fs-step) * 0.69);
+  color: var(--cahier-ink-soft);
+}
+.msgr-run.is-me .msgr-meta { flex-direction: row-reverse; }
+.msgr-time { font-variant-numeric: tabular-nums; opacity: 0.75; white-space: nowrap; }
+
+/* ── waiting ───────────────────────────────────────────────────────────── */
+.msgr-typing { display: inline-flex; align-items: center; gap: 0.28em; padding: 0.62em 0.8em; }
+.msgr-typing i {
+  width: 0.42em; height: 0.42em; border-radius: 999px;
+  background: var(--cahier-ink-soft);
+  animation: msgr-bob 1.25s infinite ease-in-out;
+}
+.msgr-typing i:nth-child(2) { animation-delay: 0.16s; }
+.msgr-typing i:nth-child(3) { animation-delay: 0.32s; }
+@keyframes msgr-bob {
+  0%, 62%, 100% { transform: translateY(0); opacity: 0.45; }
+  28%           { transform: translateY(-0.28em); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .msgr-typing i { animation: none; opacity: 0.6; }
+  .msgr-thread { scroll-behavior: auto; }
+}
+
+/* ── jump to the newest ────────────────────────────────────────────────── */
+.msgr-jump {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0.6em;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  min-height: max(44px, calc(2.25rem + var(--fs-step) * 2));
+  padding: 0 0.9em;
+  border-radius: 999px;
+  border: 2px solid var(--cahier-rule);
+  background: var(--cahier-paper, #fff);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.18);
+  font-size: calc(0.75rem + var(--fs-step) * 0.75);
+  font-weight: 800;
+  color: var(--cahier-ink);
+}
+
+/* ── the composer ──────────────────────────────────────────────────────── */
+/* Pinned, because a composer that scrolls away is the single thing that makes
+   a chat not feel like a chat. `flex: 0 0 auto` inside `.msgr` is enough —
+   the THREAD takes the slack — so this needs no sticky, no fixed, and no
+   z-index war with the cahier's own furniture. */
+.msgr-composer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4em;
+  padding: calc(0.4rem + var(--fs-step) * 0.35) calc(0.5rem + var(--fs-step) * 0.4);
+  /* The accent-bar clearance is NOT added here. It is measured in
+     ChatComposer, because whether the bar covers this composer depends on
+     where the composer ends up: inside the cahier's game frame it stops ~58px
+     ABOVE the bar and needs no clearance at all, while on /tutor the frame
+     fills the viewport and the bar lands straight on the field. A blanket
+     `+ var(--accent-bar-h)` here spent 83 measured pixels of thread on every
+     exercise page to fix a collision that only one of them has. */
+  padding-bottom: calc(0.4rem + var(--fs-step) * 0.35 + env(safe-area-inset-bottom, 0px));
+  border-top: 2px solid var(--cahier-rule);
+  background: var(--cahier-paper-2, #fff);
+}
+.msgr-pill {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.3em;
+  min-width: 0;
+  border: 2px solid var(--cahier-rule);
+  border-radius: 1.3em;
+  background: #fff;
+  padding: 0.18em 0.3em 0.18em 0.7em;
+}
+.msgr-pill:focus-within { border-color: var(--cahier-le, var(--bub-me-edge)); }
+.msgr-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--cahier-ink);
+  font: inherit;
+  font-size: calc(0.95rem + var(--fs-step) * 0.95);
+  line-height: 1.4;
+  /* One line to start, five before it scrolls — the WhatsApp shape. Both are
+     multiples of the line box, so they follow the type instead of a pixel. */
+  min-height: calc(1.4em + 0.6em);
+  max-height: calc(1.4em * 5 + 0.6em);
+  padding: 0.3em 0;
+  overflow-y: auto;
+}
+.msgr-input::placeholder { color: var(--cahier-ink-soft); opacity: 0.8; }
+
+/* Round controls. `--msgr-key` is derived once so send and the icon buttons
+   can never be different sizes, and the finger floor is pinned inside it. */
+.msgr-send, .msgr-icon {
+  --msgr-key: max(44px, calc(2.5rem + var(--fs-step) * 2.2));
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: var(--msgr-key);
+  height: var(--msgr-key);
+  border-radius: 999px;
+  border: 2px solid var(--cahier-rule);
+  background: #fff;
+  font-size: calc(1rem + var(--fs-step));
+  line-height: 1;
+  transition: filter 0.12s, opacity 0.12s;
+}
+.msgr-send {
+  border-color: var(--bub-me-edge);
+  background: var(--bub-me-bg);
+  font-weight: 900;
+}
+.msgr-send:disabled, .msgr-icon:disabled { opacity: 0.4; }
+/* THE TOOLS KEY LANDS ON THE SEND KEY. ToolSummon's 🛠️ is fixed to the bottom
+   right of every exercise, which is exactly where a messenger puts send — on
+   the first build of this the two were drawn on top of each other. The
+   exercise surfaces opt in to the clearance; ChaTutor, which mounts no FAB,
+   does not, so its pill keeps the full width. */
+.msgr-composer.has-fab { padding-right: calc(max(44px, 2.875rem + var(--fs-step) * 2.5) + 0.9rem); }
+.msgr-send:not(:disabled):hover, .msgr-icon:not(:disabled):hover { filter: brightness(0.95); }
+.msgr-icon.is-on { border-color: var(--bub-me-edge); background: var(--bub-me-bg); }
+.msgr-icon.is-rec { border-color: #d33131; background: #ff4b4b; color: #fff; animation: msgr-bob 1s infinite; }
+
+/* THE TRAY — the phrase bank, where a messenger keeps its stickers: a
+   fixed-height, scrolling shelf directly above the composer, not a sheet of
+   tiles the page scrolls past.
+
+   IT WRAPS, IT DOES NOT HIDE. A single sideways-scrolling row is the prettier
+   messenger idiom, and a row of category tabs prettier still, but both put
+   most of the chips behind a tap — and the chips ARE the answer here. Dan's
+   collapse rule draws that line itself: *"Never collapse the only copy of
+   something a learner needs to answer the question in front of them.
+   Collapsing is for reference, never for the prompt, the options, or the
+   feedback."* So every chip stays on screen, reachable by scrolling the tray
+   exactly as the page used to be scrolled — and the composer stops scrolling
+   away, which was the point. */
+.msgr-tray {
+  flex: 0 0 auto;
+  /* A THIRD, NOT TWO FIFTHS. At 40% the thread came out about 150px inside the
+     cahier's frame on a 430px phone — two bubbles, and the learner's own line
+     already scrolled away by the time the reply landed. Measured, then moved. */
+  max-height: 34%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 2px solid var(--cahier-rule);
+  background: var(--cahier-paper-2, #fff);
+  padding: calc(0.35rem + var(--fs-step) * 0.3) calc(0.5rem + var(--fs-step) * 0.4)
+           calc(0.45rem + var(--fs-step) * 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+.msgr-tray-group { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
+.msgr-tray-label {
+  flex: 0 0 auto;
+  font-size: calc(0.625rem + var(--fs-step) * 0.62);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* No `color` here on purpose: the label wears its category's palette class
+     (categoryHeaderClass), and globals.css loads after Tailwind, so declaring
+     one would silently beat the six hues the bank is colour-coded with. */
+  padding-right: 0.2em;
+}
+.msgr-chip {
+  flex: 0 0 auto;
+  max-width: 100%;
+  min-height: max(44px, calc(2.25rem + var(--fs-step) * 2));
+  padding: 0 0.8em;
+  border-radius: 999px;
+  border: 2px solid;
+  font-size: calc(0.8125rem + var(--fs-step) * 0.81);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The header — who you are talking to, and what this conversation is. A
+   messenger names the person at the top; ComposeIt used to print the scene as
+   a loose bar in the page flow and ChaTutor named nobody at all. */
+.msgr-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: calc(0.4rem + var(--fs-step) * 0.35) calc(0.55rem + var(--fs-step) * 0.45);
+  border-bottom: 2px solid var(--cahier-rule);
+  background: var(--cahier-paper-2, #fff);
+}
+.msgr-head-name {
+  font-weight: 900;
+  font-size: calc(0.9375rem + var(--fs-step) * 0.94);
+  line-height: 1.2;
+  color: var(--cahier-ink);
+}
+.msgr-head-sub {
+  font-size: calc(0.75rem + var(--fs-step) * 0.75);
+  line-height: 1.3;
+  color: var(--cahier-ink-soft);
+}
+
+/* A refused turn — the rule engine's nudge, or a network wobble. Messenger
+   puts this under the last message in red, quietly; it is not a dialog. */
+.msgr-note {
+  flex: 0 0 auto;
+  padding: calc(0.3rem + var(--fs-step) * 0.25) calc(0.7rem + var(--fs-step) * 0.6);
+  font-size: calc(0.8125rem + var(--fs-step) * 0.81);
+  font-weight: 700;
+  color: #9f1239;
+  background: #fff1f2;
+  border-top: 2px solid #fecdd3;
+}
+
+/* Meta-row controls — listen, listen slowly, save. Small, round, quiet: a
+   messenger keeps this weight of control out of the bubble, and a language app
+   cannot hide it behind a long-press, so it sits in the meta row with the time
+   rather than inside the words. `--msgr-mini` is derived once, like the
+   composer's keys, so no two of them can end up different sizes. */
+.msgr-mini {
+  --msgr-mini: max(44px, calc(1.6rem + var(--fs-step) * 1.4));
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--msgr-mini);
+  min-height: var(--msgr-mini);
+  padding: 0 0.35em;
+  border-radius: 999px;
+  /* QUIET BY DEFAULT. The first build gave these a 2px border and a fill, so
+     every single message carried a row of what looked like two keys, and the
+     thread read as a control panel with some words in it. The FINGER still
+     gets its 44px — that is `--msgr-mini` above and it has not moved — but the
+     PAINT is gone until you touch it. Bordering a tap target and sizing a tap
+     target are different decisions, and only the second one is a floor. */
+  border: 2px solid transparent;
+  background: transparent;
+  font-size: calc(0.75rem + var(--fs-step) * 0.75);
+  font-weight: 800;
+  line-height: 1;
+  opacity: 0.75;
+  color: var(--cahier-ink);
+}
+.msgr-mini:hover, .msgr-mini:focus-visible {
+  border-color: var(--cahier-rule);
+  background: var(--cahier-paper-2, #fff);
+  opacity: 1;
+}
+.msgr-mini:disabled { opacity: 0.4; }
+.msgr-mini.is-rec { border-color: #d33131; background: #ff4b4b; color: #fff; animation: msgr-bob 1s infinite; }
+
+/* The head-of-thread note — what this conversation is. A messenger shows the
+   chat's description once, above the first message, centred and unattributed:
+   it is not something either side said. */
+.msgr-intro {
+  align-self: center;
+  max-width: 92%;
+  text-align: center;
+  border: 2px dashed var(--cahier-rule);
+  border-radius: 1em;
+  background: var(--cahier-paper-2, #fff);
+  padding: 0.5em 0.9em;
+  font-size: calc(0.75rem + var(--fs-step) * 0.75);
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--cahier-ink-soft);
+}
