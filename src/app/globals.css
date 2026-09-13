@@ -4384,8 +4384,14 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   :where(a[href]):hover {
     box-shadow: none;
     text-decoration-line: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 3px;
+    /* IN `em`, NOT IN PIXELS, because these two ARE type. An underline is part
+       of the word it sits under, so it has to grow with the ramp the same way
+       the word does — a 3px offset under « about » at 16px is a different mark
+       from a 3px offset under the same word at 21px on a desktop. The ring and
+       the shadow blur above stay in pixels: those are hairlines, the class this
+       stylesheet already draws at 1px and 2px regardless of type size. */
+    text-decoration-thickness: 0.12em;
+    text-underline-offset: 0.2em;
   }
   /* A TICK BOX IS 16px OF BROWSER CHROME. Brightness does nothing to it and a
      shadow disappears under its own border; the outline sits outside both.
