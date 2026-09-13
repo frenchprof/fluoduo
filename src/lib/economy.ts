@@ -41,6 +41,39 @@ export const XP_SIO_BASE = 300; // completing a SIO
 export const XP_SIO_MASTERY = 300; // + up to this, scaled by demonstrated mastery
 export const XP_CONVERSATION = 120; // finishing an AI role-play
 
+/* ── NO ACTIVITY PAYS NOTHING (Dan, 2026-09-13) ──────────────────────────────
+ *
+ * *"why are there activities without XP? … everything should earn XP at least
+ * once"*, then the reason, which is the whole design: *"basically if there
+ * were any activity that comes with 0 XP and 0 anything, then nobody will
+ * ever be motivated to touch them"*.
+ *
+ * Three activities paid nothing at all — SpecuLearn, VocabulaRain and the two
+ * Numbers games. Each had a good local reason (a cold guess must not reward
+ * guessing; an arcade game must not double-pay per tile) and together they
+ * added up to a bad one: three tiles a learner has no reason to open.
+ *
+ * AND FARMING IS ALLOWED, WHICH IS DAN'S SECOND CORRECTION: *"there is nothing
+ * wrong with letting someone farm an afternoon if they are successful in
+ * improving their scores each time (we will not reward worser scores)"*. So
+ * the rule is not "pay once", which would reward one token attempt and nothing
+ * after. It is:
+ *
+ *     FIRST finish of an activity at a goal   XP_ACTIVITY_FIRST
+ *     every run that BEATS your own best      XP_ACTIVITY_BEST
+ *     a run that does not beat it             nothing
+ *
+ * Play all afternoon: every genuine improvement pays, a worse run pays
+ * nothing. That is why the amounts are modest — they are paid repeatedly, by
+ * a learner who keeps getting better, which is the behaviour worth buying.
+ *
+ * SPECULEARN IS SCORED DIFFERENTLY, on purpose. It pays for FINISHING, never
+ * for the score: it is the guess BEFORE the lesson, and paying by score would
+ * make the profitable move "do the lesson first, then take the pre-test" —
+ * which destroys the one thing the activity is for. */
+export const XP_ACTIVITY_FIRST = 60; // first completion of an activity at a goal
+export const XP_ACTIVITY_BEST = 60;  // ...and again every time you beat your own best
+
 // THE LADDER, one place (Dan, 2026-09-07 — from the retention read: the old
 // ladder stopped at day 7, so day 40 paid exactly what day 7 paid and the
 // video's point about compounding was being left on the table). Day 30 agrees

@@ -52,6 +52,8 @@ import {
   XP_SIO_BASE,
   XP_SIO_MASTERY,
   XP_CONVERSATION,
+  XP_ACTIVITY_FIRST,
+  XP_ACTIVITY_BEST,
   FIND_BIG,
   luckyFind,
   LEVEL_UP_GEMS,
@@ -108,6 +110,11 @@ export type Progress = {
    *  spends itself silently when exactly one day is missed, and the chain
    *  holds. Never offered at the moment of loss (economy.ts, 7 Sep). */
   shields?: number;
+  /** Your best score so far per activity-at-a-goal, keyed `<activity>:<goal>`
+   *  (a goal-less game like NumBus keys `<activity>:-`). Written only when a
+   *  run BEATS the stored number, which is exactly when XP is paid — see
+   *  `awardActivityRun`. Absent key = never finished it. */
+  bests?: Record<string, number>;
   /** Expert-GAME unlock ids the learner has bought (EXPERT_UNLOCKS). Games
    *  only — the course spine never appears here. */
   unlocks?: string[];
@@ -170,7 +177,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [] };
+  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [], bests: {} };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -481,6 +488,48 @@ export function markSioDone(id: string, accuracy?: number): Progress {
 /** Award XP for finishing an AI role-play conversation (café, greetings, …). */
 export function awardConversationXp(): Progress {
   return finalize(addXp(bumpStreakToday(loadProgress()), XP_CONVERSATION));
+}
+
+/** NO ACTIVITY PAYS NOTHING, AND ONLY IMPROVEMENT PAYS TWICE (Dan, 13 Sep:
+ *  *"if there were any activity that comes with 0 XP and 0 anything, then
+ *  nobody will ever be motivated to touch them"*, and *"there is nothing wrong
+ *  with letting someone farm an afternoon if they are successful in improving
+ *  their scores each time (we will not reward worser scores)"*).
+ *
+ *  Call it when a run ENDS, with whatever that activity counts as a score —
+ *  words sorted, rounds won, cards right. It pays on the first finish and on
+ *  every personal best after it, and pays nothing for a worse run, so an
+ *  afternoon of play is worth exactly as much as it improves you.
+ *
+ *  `score` of null means "this activity is not scored" (SpecuLearn): the first
+ *  finish pays and later ones do not, because scoring a cold guess would make
+ *  the profitable move taking it AFTER the lesson.
+ *
+ *  Returns the XP paid, so a caller can show it; 0 means the run did not beat
+ *  the stored best. The streak bumps on any finish — showing up counts, which
+ *  is the rule everywhere else in this file. */
+export function awardActivityRun(activity: string, goal: string | null, score: number | null): number {
+  const key = `${activity}:${goal ?? "-"}`;
+  const p0 = loadProgress();
+  const bests = p0.bests ?? {};
+  const seen = Object.prototype.hasOwnProperty.call(bests, key);
+  const best = bests[key] ?? 0;
+
+  // First finish always pays. After that, only a strictly better score does —
+  // and an unscored activity has no "better", so it pays once and no more.
+  const first = !seen;
+  const beat = seen && score !== null && score > best;
+  if (!first && !beat) {
+    // Still a day of practice, even when it pays nothing.
+    finalize(bumpStreakToday(p0));
+    return 0;
+  }
+
+  const base = first ? XP_ACTIVITY_FIRST : XP_ACTIVITY_BEST;
+  const next = { ...p0, bests: { ...bests, [key]: Math.max(best, score ?? 0) } };
+  const before = next.xp;
+  const after = finalize(addXp(bumpStreakToday(next), base));
+  return after.xp - before;
 }
 
 /** Buy a cosmetic with gems and equip it (idempotent; no-op if owned already or
