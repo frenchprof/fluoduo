@@ -199,6 +199,7 @@ export default function MatchingGame({ set }: { set: MatchingSet }) {
     <div className="mx-auto h-full w-full max-w-5xl overflow-y-auto px-4 py-4 text-[color:var(--cahier-ink)]">
       {done ? (
         <GameOver
+          activityKey="matching"
           emoji="🎉"
           title="All matched!"
           score={<>{correct} / {attempts} · {accuracy}%</>}

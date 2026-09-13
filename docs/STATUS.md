@@ -111,8 +111,35 @@ compiled, matched no branch and returned null for all fifty stops, so the door
 was silently absent from SpecuLearn's own recap. It goes through `cellHref` now,
 the same table `chainOf` uses, so both halves of the compass read one source.
 
-**STILL TO WIRE**, each with its own before/after: `GameOver` (the six games),
-VoixLà's swapped-CTA end, MémoiRecall, GramMarathon, ÉcouTexte.
+**`GameOver` IS WIRED TOO — six games in one component.** Each names itself
+with an `activityKey` (matching · lexicalator · vocabularain · compose ×2 ·
+numbus · numbourse) because the card knew its deck and not which activity it
+was, and `usherFor` needs the key to find its place in the chain. Without one
+the row degrades honestly: the 🎯 door and « redo », no arrows — never arrows
+pointing at a guess.
+
+**`verify23` FAILED ON IT, CORRECTLY, and the rewrite is the interesting part.**
+It guaranteed « Play again » and « Back » BY THEIR LITERAL STRINGS. Both moved
+into the row (the replay is `onRedo={onReplay}`, the way out is the 🎯 door), so
+keeping the old assertion would have meant keeping two controls for one move —
+a card saying « Play again » AND « Redo ». The check tests the GUARANTEE now.
+
+**AND ITS SECOND CLAUSE IS A HOLE LINT FOUND.** Folding « ← Back » into the row
+left `exitHref` unused — which is only a warning until you notice WHY it
+matters: `usherFor` returns null for a game with neither a deck nor a fallback
+stop, the row then draws nothing, and such a card would have had no exit at
+all. The fallback link is restored for exactly that case and pinned. Both
+clauses break-tested.
+
+**STILL TO WIRE**: VoixLà's swapped-CTA end, MémoiRecall, GramMarathon,
+ÉcouTexte — those four end by swapping a CTA rather than drawing a finish card,
+so each needs its own look.
+
+**WHAT HAS BEEN SEEN ON SCREEN, said exactly.** SpecuLearn's recap: yes,
+430px and 1280px. `GameOver` and the two DrillShell finish states: NO — a
+brute-force driver could not clear a Match It board or reach either finish, so
+those are wired and building green but unseen. Do not upgrade that claim
+without a picture.
 
 **A NOTE ON THE SWEEP.** `verify79-jam-scan` failed once during this work and it
 was self-inflicted: a rebuild rewrote `out/` while the scan was reading it. Green

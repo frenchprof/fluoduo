@@ -36,6 +36,8 @@ import { nextStep, type NextStep } from "@/lib/nextStep";
 import { queueForReview } from "@/lib/progress";
 import { reviserHref } from "@/lib/reviser";
 import { HOME_HREF } from "@/lib/routes";
+import ActivityUsher from "@/components/ActivityUsher";
+import { usherFor } from "@/lib/usher";
 
 export type GameMiss = {
   /** Curated item id when the game knows it — enables the ReVue queue and the
@@ -83,6 +85,7 @@ export default function GameOver({
   exitHref,
   onExit,
   extra,
+  activityKey,
 }: {
   /** The game's own mark. A ReactNode, not a string: LexicaLater's is the
    * drawn chest (ChestArt), not a glyph — see components/ChestArt.tsx. */
@@ -97,6 +100,14 @@ export default function GameOver({
   fallbackSio?: string;
   /** The deck the game ran on — anchors « Next › » on that stop's chain. */
   deckId?: string;
+  /** This game's registry key, for the ushering row's ← and → and ↓.
+   *
+   *  OPTIONAL, AND THE ROW DEGRADES HONESTLY WITHOUT IT: `usherFor` needs the
+   *  key to find this activity's place in the stop's chain, so a caller that
+   *  passes none gets the 🎯 door and « redo » and no arrows — which is still
+   *  Dan's *"the return to the 🎯 page … should always be offered"*, rather
+   *  than arrows pointing at a guess. */
+  activityKey?: string;
   onReplay: () => void;
   exitHref: string;
   onExit?: () => void;
@@ -117,6 +128,11 @@ export default function GameOver({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setNext(nextStep(undefined, { collectionId: deckId, sioId: fallbackSio }));
   }, [deckId, fallbackSio]);
+
+  const usher = useMemo(
+    () => usherFor(activityKey, { collectionId: deckId, sioId: fallbackSio }),
+    [activityKey, deckId, fallbackSio],
+  );
 
   // Push every miss into the queue once per game-over, not once per render.
   const queued = useRef(false);
@@ -210,17 +226,36 @@ export default function GameOver({
               Next ›
             </button>
           </div>
-          <div className="text-center text-[13px] font-bold text-[color:var(--cahier-ink)]/55">
-            <button type="button" onClick={onReplay} className="underline decoration-dotted">
-              ▶ Play again
-            </button>
-            <span className="mx-2 opacity-60" aria-hidden>·</span>
-            {onExit ? (
-              <button type="button" onClick={onExit} className="underline decoration-dotted">← Back</button>
-            ) : (
-              <Link href={exitHref} className="underline decoration-dotted">← Back</Link>
-            )}
-          </div>
+          {/* THE USHERING NAVIGATORS (Dan, 2026-09-13) — the same row every
+              other finished activity ends on: back one step in this stop's
+              chain, forward one, the 🎯 page, redo, and this game at the next
+              stop that can play it. Six games share this card, so wiring it
+              here is six surfaces in one place.
+
+              « ▶ Play again » IS the row's redo, handed over rather than left
+              beside it as a second word for the same move. The quiet line
+              below keeps « ← Back » only where a game supplies its own
+              `onExit` (a full-screen board has to leave full screen before it
+              can navigate) — otherwise the 🎯 door on the row IS the way out
+              and a second one would be the HelpDot fault. */}
+          <ActivityUsher usher={usher} onRedo={onReplay} />
+          {/* THE WAY OUT WHEN THE ROW HAS NONE. `usherFor` returns null for a
+              game with neither a deck nor a fallback stop, and the row then
+              draws nothing — so dropping this line outright would have left
+              such a card with no exit at all. `exitHref` stays exactly for
+              that case (lint found it unused the moment the ← Back above was
+              folded into the row, which is how this got noticed), and a game
+              that must leave full-screen before navigating keeps its own
+              `onExit`. */}
+          {(onExit || !usher) && (
+            <div className="text-center text-[13px] font-bold text-[color:var(--cahier-ink)]/55">
+              {onExit ? (
+                <button type="button" onClick={onExit} className="underline decoration-dotted">← Back</button>
+              ) : (
+                <Link href={exitHref} className="underline decoration-dotted">← Back</Link>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

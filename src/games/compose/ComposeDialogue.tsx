@@ -435,6 +435,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
            deliberately NOT a speak button. */
         <div className="min-h-0 flex-1 overflow-y-auto p-4">
           <GameOver
+          activityKey="compose"
             emoji={personaEmoji}
             title={ordered.length > 0 ? "L\u2019addition" : "Merci, à bientôt !"}
             won

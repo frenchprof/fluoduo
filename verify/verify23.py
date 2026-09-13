@@ -154,7 +154,29 @@ check("${HOME_HREF}?unit=${sio.unit}#${sio.id}" in over,
       "is built from HOME_HREF — see src/lib/routes.ts and verify210.")
 check("given" in ov and "expected" in ov and "prompt" in ov,
       "a miss has item · what you did instead · what was expected", "GameMiss lacks prompt/given/expected")
-check("Play again" in ov and ("Back" in ov), "secondary: play again / back", "GameOver lacks play again / back")
+# A FINISHED GAME OFFERS A REPLAY AND A WAY OUT — the guarantee, not its
+# wording. This asserted the literal strings « Play again » and « Back » until
+# 2026-09-13, when both moved into the ushering row Dan asked for: the replay is
+# the row's ↻ Redo (`onRedo={onReplay}`) and the way out is its 🎯 door. Keeping
+# the old assertion would have meant keeping two controls for one move — the
+# card would say « Play again » AND « Redo » — so the check follows the
+# guarantee instead of the label.
+#
+# THE `exitHref` CLAUSE IS THE ONE THAT MATTERS. `usherFor` returns null for a
+# game with neither a deck nor a fallback stop, and the row then draws nothing;
+# without that fallback such a card would have no exit at all. Lint noticed the
+# prop had gone unused, which is how the hole was found — so it is pinned here
+# rather than left to the next person to rediscover.
+check("ActivityUsher" in ov and "onRedo={onReplay}" in ov,
+      "a finished game can be replayed — the ushering row's ↻, wired to onReplay",
+      "GameOver no longer offers a replay: it renders no ActivityUsher with "
+      "`onRedo={onReplay}`, and the literal « Play again » button it used to "
+      "carry is gone too.")
+check("!usher" in ov and "exitHref" in ov,
+      "and it always has a way out, including when the ushering row is empty",
+      "GameOver's fallback exit is gone. `usherFor` returns null for a game with "
+      "no deck and no fallback stop — with no `exitHref` link behind that case, "
+      "such a card strands the learner with no way off it.")
 
 # ── 5 · the queue API is real ──────────────────────────────────────────────
 prog = strip_comments(read("src/lib/progress.ts"))

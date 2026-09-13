@@ -1009,6 +1009,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
 
       {stage === "terminus" && (
         <GameOver
+          activityKey="numbus"
           emoji={lives > 0 ? "🎉" : "🚏"}
           title="Terminus"
           score={score}
