@@ -48,7 +48,7 @@ export const partitifsLesson: NativeLesson = {
   // twice over — `de` + the definite article. That single reading explains the
   // whole table AND the negative, and it is nowhere in the Mémo.
   concept: {
-    subtitle: "Four forms, one word plus an article",
+    subtitle: "Why du, de la, de l’ and des all become de after a negative or a quantity",
     contrast: (
       <>
         English says <i>some</i>, or nothing at all &mdash; <i>I eat bread</i>. French makes you

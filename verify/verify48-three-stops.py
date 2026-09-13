@@ -226,7 +226,21 @@ if r.returncode == 0:
 langs_deck = json.load(open("src/content/collections/languages.json", encoding="utf-8"))
 known_langs = {i["fr"].replace("l'", "").replace("le ", "").replace("la ", "")
                for i in langs_deck["items"]}
-nat_deck = json.load(open("src/content/collections/nationalities.json", encoding="utf-8"))
+# COUNTRIES COME FROM THE COUNTRIES DECK (13 Sep). This read
+# `nationalities.json`, and that worked only because SIO-016's deck was a COPY
+# of SIO-015's: both listed country names, so "the countries the learner has
+# met" could be read out of either.
+#
+# The MASTER-v8 audit fixed that duplication — goal 16 is Nationalities, so its
+# cards are « français / française » now, not « France » (its change #47: "Goal
+# 16 was a copy of Goal 15 (country names). Replaced with the nationality,
+# m / f"). Left pointing here, this clause reported all twenty-two countries as
+# never taught, which reads as the lesson breaking when in fact a real content
+# bug was repaired.
+#
+# SIO-015 is where a learner meets a country, so its deck is what the claim was
+# always about.
+nat_deck = json.load(open("src/content/collections/countries-letris.json", encoding="utf-8"))
 known_countries = {i["fr"] for i in nat_deck["items"]}
 
 gen = read(GENS["langues-pays"])

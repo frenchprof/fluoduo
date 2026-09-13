@@ -127,7 +127,7 @@ export const demonstratifsLesson: NativeLesson = {
     </div>
   ),
   dice: {
-    instruction: "Choose the right demonstrative: « Qu'est-ce que tu fais … ? »",
+    instruction: "Choose the right demonstrative: ce, cet, cette or ces.",
     newQuestion() {
       const n = pick(NOUNS);
       return {

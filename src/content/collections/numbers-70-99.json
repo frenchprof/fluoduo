@@ -39,7 +39,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-dix"
+      "gap": "dix"
     },
     {
       "id": "num-71",
@@ -49,7 +49,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante et onze"
+      "gap": "et onze"
     },
     {
       "id": "num-72",
@@ -59,7 +59,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-douze"
+      "gap": "douze"
     },
     {
       "id": "num-73",
@@ -69,7 +69,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-treize"
+      "gap": "treize"
     },
     {
       "id": "num-74",
@@ -79,7 +79,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-quatorze"
+      "gap": "quatorze"
     },
     {
       "id": "num-75",
@@ -89,7 +89,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-quinze"
+      "gap": "quinze"
     },
     {
       "id": "num-76",
@@ -99,7 +99,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-seize"
+      "gap": "seize"
     },
     {
       "id": "num-77",
@@ -109,7 +109,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-dix-sept"
+      "gap": "dix-sept"
     },
     {
       "id": "num-78",
@@ -119,7 +119,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-dix-huit"
+      "gap": "dix-huit"
     },
     {
       "id": "num-79",
@@ -129,7 +129,7 @@
       "tags": [
         "col:band70"
       ],
-      "gap": "soixante-dix-neuf"
+      "gap": "dix-neuf"
     },
     {
       "id": "num-80",
@@ -139,7 +139,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingts"
+      "gap": "vingts"
     },
     {
       "id": "num-81",
@@ -149,7 +149,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-un"
+      "gap": "un"
     },
     {
       "id": "num-82",
@@ -159,7 +159,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-deux"
+      "gap": "deux"
     },
     {
       "id": "num-83",
@@ -169,7 +169,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-trois"
+      "gap": "trois"
     },
     {
       "id": "num-84",
@@ -179,7 +179,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-quatre"
+      "gap": "quatre"
     },
     {
       "id": "num-85",
@@ -189,7 +189,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-cinq"
+      "gap": "cinq"
     },
     {
       "id": "num-86",
@@ -199,7 +199,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-six"
+      "gap": "six"
     },
     {
       "id": "num-87",
@@ -209,7 +209,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-sept"
+      "gap": "sept"
     },
     {
       "id": "num-88",
@@ -219,7 +219,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-huit"
+      "gap": "huit"
     },
     {
       "id": "num-89",
@@ -229,7 +229,7 @@
       "tags": [
         "col:band80"
       ],
-      "gap": "quatre-vingt-neuf"
+      "gap": "neuf"
     },
     {
       "id": "num-90",
@@ -239,7 +239,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-dix"
+      "gap": "dix"
     },
     {
       "id": "num-91",
@@ -249,7 +249,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-onze"
+      "gap": "onze"
     },
     {
       "id": "num-92",
@@ -259,7 +259,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-douze"
+      "gap": "douze"
     },
     {
       "id": "num-93",
@@ -269,7 +269,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-treize"
+      "gap": "treize"
     },
     {
       "id": "num-94",
@@ -279,7 +279,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-quatorze"
+      "gap": "quatorze"
     },
     {
       "id": "num-95",
@@ -289,7 +289,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-quinze"
+      "gap": "quinze"
     },
     {
       "id": "num-96",
@@ -299,7 +299,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-seize"
+      "gap": "seize"
     },
     {
       "id": "num-97",
@@ -309,7 +309,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-dix-sept"
+      "gap": "dix-sept"
     },
     {
       "id": "num-98",
@@ -319,7 +319,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-dix-huit"
+      "gap": "dix-huit"
     },
     {
       "id": "num-99",
@@ -329,7 +329,7 @@
       "tags": [
         "col:band90"
       ],
-      "gap": "quatre-vingt-dix-neuf"
+      "gap": "dix-neuf"
     }
   ]
 }

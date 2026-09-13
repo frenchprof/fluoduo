@@ -132,14 +132,28 @@ ok(not guilty,
    + "; ".join(f'{d}: {s!r} gives away {f!r}' for d, s, f in guilty[:4]))
 
 # ── 3 · and it is not blanking things it should not ────────────────────────
-# 28 of the 31 decks sort bare words; if the blank starts appearing there,
-# something has become too eager.
-blanked = {r["deck"] for r in rows if "___" in r["shown"]}
-ok(blanked == {"partitifs", "transport", "negation-pas"},
-   f"only the three sentence decks are blanked: {sorted(blanked)}",
-   f"the blank now reaches {sorted(blanked)} — expected exactly partitifs, "
-   f"transport and negation-pas; a word deck losing its prompt is over-eager "
-   f"matching, not a fix")
+#
+# THIS WAS A LIST OF THREE DECK NAMES AND IS NOW THE RULE ITSELF (13 Sep).
+#
+# The list was right when written: 28 of the 31 decks sorted BARE WORDS, so a
+# blank appearing in one of them meant `hideAnswer` had become too eager. The
+# MASTER-v8 audit then deliberately turned several of those word lists into
+# sentences — « homme » became « C'est un homme. », « beau » became a clause —
+# because a bare noun cannot carry a real gap. Blanking is CORRECT on those
+# decks now, and the hardcoded three would have gone red on the improvement
+# while saying "over-eager matching".
+#
+# What the clause was actually protecting is the sentence in its own failure
+# text: *a word deck losing its prompt*. That is testable directly, and it does
+# not go stale every time a deck gains a frame — if blanking the answer leaves
+# nothing to read, the question is gone whatever the deck is called.
+emptied = [(r["deck"], r["shown"]) for r in rows
+           if "___" in r["shown"] and not re.sub(r"_{2,}|[\s\.\?!,;:«»…'’-]", "", r["shown"])]
+ok(not emptied,
+   f"every blanked prompt still has words around the gap ({len(blanked_decks := {r['deck'] for r in rows if '___' in r['shown']})} deck(s) blanked)",
+   "blanking emptied these prompts — the word WAS the question, so there is "
+   "nothing left to answer: "
+   + "; ".join(f"{d}: {s!r}" for d, s in emptied[:4]))
 
 print("\n".join("  ok    " + p for p in PASS))
 print("\n".join("  FAIL  " + f for f in FAIL))

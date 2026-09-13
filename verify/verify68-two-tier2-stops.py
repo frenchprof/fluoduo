@@ -41,7 +41,8 @@ WHAT SHIPPED, AND WHY EACH PART IS ASSERTED HERE RATHER THAN READ.
 
 RUN FROM THE REPO ROOT:  python3 verify/verify68-two-tier2-stops.py
 """
-import json, os, re, sys
+import json
+import os, re, sys
 
 OK, FAIL = [], []
 def check(c, good, bad): (OK if c else FAIL).append(good if c else bad)
@@ -122,7 +123,23 @@ check(len(nrows) == 18, "some nouns: 18 rows parsed",
       f"some nouns: parsed {len(nrows)} rows, not 18 — the regex has stopped matching and "
       "the gender assertions below prove nothing")
 
-deck_by_fr = {it["fr"]: it for it in nouns_deck["items"]}
+# INDEXED BY THE NOUN, WITH OR WITHOUT ITS ARTICLE (13 Sep). The MASTER-v8
+# audit moved the article INTO the French cell — « homme » became « un homme »
+# — so that the gap is a real, visible, countable choice rather than a word
+# with nothing hidden in it (its changes #6-23). The lesson still cites the
+# bare noun, which is right: the lesson is about the noun, and the article is
+# what it teaches you to choose.
+#
+# So the index carries both spellings. Matching only the exact cell would have
+# reported all eighteen nouns as "in the lesson and not in the deck" — a
+# failure that reads as content going missing when in fact nothing left.
+_ART = re.compile(r"^(?:un|une|des|le|la|les|du|de la|de l'|l')\s+|^l['’]", re.I)
+deck_by_fr = {}
+for it in nouns_deck["items"]:
+    deck_by_fr.setdefault(it["fr"], it)
+    bare = _ART.sub("", it["fr"]).strip()
+    if bare != it["fr"]:
+        deck_by_fr.setdefault(bare, it)
 wrong_gender, wrong_art, missing = [], [], []
 for fr, g, art, q in nrows:
     it = deck_by_fr.get(fr)

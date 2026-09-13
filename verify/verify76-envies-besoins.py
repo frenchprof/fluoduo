@@ -359,11 +359,33 @@ if r6.returncode == 0:
     ok(not p6["vowelGapsLeft"],
        "every vowel-initial gap word has a consonant-initial stand-in for when it is somebody else's mistake",
        f"these gap words start with a vowel and are not substituted: {p6['vowelGapsLeft']}")
-    want = [["aimerais", "r\u00eave"], ["envie", "besoin"], ["veux", "veut"], ["voudrais", "voudrait"]]
-    ok(p6["pairs"] == want,
-       "the stand-ins are the words Dan named — veut · voudrait (wrong on agreement), "
-       "besoin · r\u00eave (consonant-initial, and each wrong on its own frame's « de »)",
-       f"the stand-ins are {p6['pairs']}; Dan named {want}")
+    # COMPARED AS HEAD WORDS, NOT AS EXACT STRINGS (13 Sep). Dan's ruling is
+    # about WHICH WORDS are offered — *"i would put besoin and rêve instead of
+    # envie and aimerais (which start with vowels)"* — and this asserted the
+    # map's keys and values verbatim, which is a stricter thing than he said.
+    #
+    # The MASTER-v8 audit lengthened two gaps so the answer carries its own
+    # preposition (« envie » -> « envie d' » / « envie de », its #246-247), and
+    # `gapDecoys` is keyed on the gap STRING, so each needed its own row or the
+    # elision rule above stopped matching them. Verbatim comparison then failed
+    # on a deck that had just been made MORE correct, and the two clauses would
+    # have pulled in opposite directions for ever.
+    #
+    # So the pairing is checked on the head word: « envie d' » -> « besoin d' »
+    # is the same substitution Dan named, spelled for a longer gap. What is
+    # still pinned is exactly his sentence — these four words and no others,
+    # and each stand-in must keep its own head.
+    def _head(w): return w.split()[0] if w.split() else w
+    want = {"aimerais": "r\u00eave", "envie": "besoin", "veux": "veut", "voudrais": "voudrait"}
+    heads = sorted({(_head(a), _head(b)) for a, b in p6["pairs"]})
+    ok(heads == sorted(want.items()),
+       "the stand-ins are the words Dan named — veut \u00b7 voudrait (wrong on agreement), "
+       "besoin \u00b7 r\u00eave (consonant-initial, and each wrong on its own frame's \u00ab de \u00bb)",
+       f"the stand-ins reduce to {heads}; Dan named {sorted(want.items())}")
+    _mismatched = [(a, b) for a, b in p6["pairs"] if want.get(_head(a)) != _head(b)]
+    ok(not _mismatched,
+       "and every spelling of a gap points at the same stand-in as its head word",
+       f"these pairs disagree with Dan's mapping: {_mismatched}")
     ok(p6["answersIntact"],
        "every item's own `gap` still occurs verbatim in its `fr` — the map moved the "
        "wrong answers, never the right one",
