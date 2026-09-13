@@ -6,6 +6,41 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — a learner manual with real screenshots, and the Help line it caught (guide lane, branch `claude/intelligent-hawking-teore7`, PR open, NOT merged)
+
+**Dan: *"write the guide in very plain English … then present it in the colors
+and style of the website with relevant links … it needs to have screenshots if
+it is meant to be a serious user (help) manual"*.**
+
+Three files carry it. `docs/GUIDE.md` is the text — every number and every
+quoted button label grepped in `src/` before it went in, and the family names
+are the 13 Sep verbs (Start · Learn · Drill · Amuse · Speak · Write · Track).
+`docs/guide/index.html` is the same text rendered as a cahier page: coil
+binding, ruled paper, a family-coloured band per chapter, an « Open on
+fluolingo.com » chip on every activity heading, and 22 figures from 38
+screenshots of the OPEN build (390x844 at 2x, two at 1280). `scripts/
+guide-shots.mjs` → `guide-webp.mjs` → `build-guide.py` regenerate all of it.
+
+**THE SCREENSHOTS CORRECTED THE TEXT THREE TIMES**, which is the show-it rule
+working in the other direction: the stops are coloured coins, not shapes; the
+🏁 under the map is the Finale; the heat strip reads STRONG/MIXED/WEAK/NEW/DONE.
+
+**AND A SECOND GUIDE CAUGHT A FOURTH.** Dan sent a 7-page PDF guide to compare.
+About 80 of its ~90 claims match the code; eight do not (VocabulaRain has no
+lives and is on 33 goals not ~28; the board opens on This week; ConjugaZone's
+verbs never reach ErroReview; WHY is only after a wrong answer; the day rolls
+at 04:00). Its one correction stuck: **a done stop is pressed flat and paler,
+not « ✓ green »** — Map2DGrid dropped the tick on 6 Sep, and both guides had
+copied the old line from `GuideBody.tsx` step 5. That line now reads « a done
+stop is pressed flat and paler; ★ saves any page ». Before/after in the PR.
+
+Counted on the built goal page, for the guide and for anyone wondering why a
+tile is grey: GramMarathon 27 of 50 goals · VocabulaRain 33 · LexicaLocker 28 ·
+ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
+
+Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
+clean on the touched files.
+
 ## 13 Sep — the integration round: two lanes, one spreadsheet, five deploys (fluoduo-main, sole editor of this file in this commit)
 
 **Everything below is MERGED and LIVE.** Production, staging and
