@@ -17,7 +17,7 @@ export default function GuidePage() {
     // shell had nothing to put in the band and drew none. A page with a
     // family and no band is the one shape the 1 Sep chrome pass missed.
     <CahierShell tabs={tabsWithActive(siteTabs(), "guide")} active="guide" band={{ title: "Guide" }}>
-      <div className="mx-auto max-w-2xl px-3 py-5">
+      <div className="mx-auto max-w-2xl px-3 py-3">
         {/* NO « ❓ HELP! » HEADING AND NO SECOND HOME BUTTON (11 Sep rewrite).
             The band above already says GUIDE, and « Start here 🏠 » went to
             the same /home as the ▶ Continue inside GuideBody — two buttons,

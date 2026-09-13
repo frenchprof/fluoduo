@@ -116,7 +116,7 @@ export const BAND_NAME =
 export const TILE =
   "flex fluo-row-tall flex-col items-center justify-center gap-0.5 rounded-xl border-2 " +
   "bg-[color:var(--cahier-paper-raised)] px-1 py-1.5 text-center no-underline " +
-  "transition hover:-translate-y-0.5";
+  "fluo-tile-key";
 
 /** The glyph above the name. */
 export const TILE_EMOJI = "text-lg leading-none";
