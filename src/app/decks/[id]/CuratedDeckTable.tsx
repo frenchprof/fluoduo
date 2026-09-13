@@ -781,19 +781,37 @@ function AllCards({
 /* ─────────────────────────── Overview ─────────────────────────── */
 
 type ColKey = "pick" | "flag" | "eng" | "art" | "fr" | "ms" | "fs" | "mp" | "fp" | "deck" | "notes";
-type ColDef = { key: ColKey; label: string; w: number };
+/* `short` is the label a PHONE shows. Two columns are narrower than their own
+   name once the sheet is 303px: « emoji » needs 28px in a 31px column with
+   16px of padding, « Reviewed » 48px in 45px — and a header that does not fit
+   pushes the whole table sideways again, which is the fault being fixed. A
+   header is a label, so it may abbreviate; the full word stays in `title` and
+   in the sort button's tooltip. Desktop is untouched. */
+type ColDef = { key: ColKey; label: string; w: number; short?: string };
+
+/* Columns a phone drops so the words get the room. `pick` selects rows for a
+   bulk action and `notes` is empty until somebody types in it — neither is
+   needed to READ the deck, which is what a phone is for. Empty = keep all
+   seven at every width.
+
+   MEASURED, not guessed. With the Reviewed switch reduced to a round button
+   its column fell from 45px to 26px — and `notes` then became the WIDEST
+   column on the sheet at 96px, on a deck where every notes cell is empty.
+   English still had 60px and French 68px, so « professeur » still broke.
+   Dropping these two gives the two word columns 97px and 110px. */
+const NARROW_DROP: ColKey[] = ["pick", "notes"];
 
 const STD_COLS: ColDef[] = [
-  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 80 },
+  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 44, short: "" },
   { key: "eng", label: "English", w: 150 }, { key: "art", label: "art.", w: 72 },
-  { key: "fr", label: "French", w: 170 }, { key: "deck", label: "Reviewed", w: 120 },
+  { key: "fr", label: "French", w: 170 }, { key: "deck", label: "Reviewed", w: 64, short: "✓" },
   { key: "notes", label: "notes", w: 240 },
 ];
 const NAT_COLS: ColDef[] = [
-  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 80 },
+  { key: "pick", label: "pick", w: 42 }, { key: "flag", label: "emoji", w: 44, short: "" },
   { key: "fr", label: "country", w: 130 }, { key: "ms", label: "il est", w: 120 },
   { key: "fs", label: "elle est", w: 120 }, { key: "mp", label: "ils sont", w: 120 },
-  { key: "fp", label: "elles sont", w: 120 }, { key: "deck", label: "Reviewed", w: 120 },
+  { key: "fp", label: "elles sont", w: 120 }, { key: "deck", label: "Reviewed", w: 64, short: "✓" },
   { key: "notes", label: "notes", w: 220 },
 ];
 // The "art." column is populated by articleOf(), which reads the deck's Letris
@@ -851,9 +869,40 @@ function Overview({
   const redundantEn =
     rows.length > 0 &&
     rows.filter((r) => bareWord(r.item.en).toLowerCase() === r.fr.toLowerCase()).length >= rows.length * 0.8;
+  // ON A PHONE THE WORDS COME FIRST (Dan, 2026-09-13: *"can we not have the
+  // table on the paper rather having to scroll within that tiny space?!"*).
+  //
+  // Fitting the table to the sheet was only half the answer. SEVEN authored
+  // columns sum to 802px; shared proportionally across a 303px sheet, English
+  // gets 56px and French 63px — and the three that are not words take 242px of
+  // the 802, so on a phone the checkbox, the emoji and the Reviewed toggle
+  // claimed more room than English and French combined. « professeur » cannot
+  // fit 63px at any weight, so it was cut.
+  //
+  // The checkbox and the notes column are the two a learner reading the deck
+  // does not need: one selects rows for a bulk action, the other is empty on
+  // every row until somebody types in it. Dropping just those two below 640px
+  // returns ~110px to the words, which is the difference between « profes-
+  // seur » and « professeur ». Nothing is removed on a tablet or a desktop.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    // Read after mount on purpose: the viewport width is unknowable on the
+    // server, so seeding this during render would make SSR and the first
+    // client render disagree.
+    const sync = () => setNarrow(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
   const cols = (isNat || !redundantEn ? COLS : COLS.filter((c) => c.key !== "eng"))
     .filter((c) => !((hasLang || !hasArt) && c.key === "art")) // no article axis → no art column
-    .filter((c) => !(c.key === "flag" && !rows.some((r) => r.item.emoji || r.item.lang))); // no visuals → no flag column
+    .filter((c) => !(c.key === "flag" && !rows.some((r) => r.item.emoji || r.item.lang))) // no visuals → no flag column
+    .filter((c) => !(narrow && NARROW_DROP.includes(c.key))); // phone: the words get the room
+  // The header a learner sees: the language relabel first, then the phone's
+  // short form where the column has one.
+  const headLabel = (c: ColDef) =>
+    c.key === "flag" && hasLang ? "language" : narrow && c.short !== undefined ? c.short : c.label;
   const lastAnswerKey = answerCols[answerCols.length - 1]; // holds the single Check/Reveal
   // In Test: article column is narrow ("-"), the last answer column is wide (input + ✓ + 💡).
   const colW = (c: ColDef) => {
@@ -992,7 +1041,22 @@ function Overview({
               and the table now fits whatever room it is given: the same layout
               on a desktop, and on a phone the text wraps instead of hiding.
               Manual column resizing still works — `widthOf` is the numerator,
-              so dragging a handle changes the share. */}
+              so dragging a handle changes the share.
+
+              AND THAT ALONE TRADED ONE CLIPPING FOR ANOTHER, found by putting
+              the two builds side by side rather than by reading the diff. The
+              sideways scroll went, but every `<td>` carries `overflow-hidden`,
+              and under `table-layout: fixed` a WORD longer than its column is
+              cut rather than wrapped. « meilleur ami » came out « meilleu ami »,
+              « professeur » « professe », « Monsieur » « Monsieu » — 64 cells
+              on this deck. Dan's complaint was « your best fri »; a fix that
+              leaves « professe » has not answered it.
+
+              `break-words` (overflow-wrap: break-word) breaks a word ONLY when
+              it cannot fit, so desktop is untouched and the phone wraps instead
+              of cutting. The padding goes 12px -> 8px below `sm` for the same
+              reason: at six columns on a 303px sheet, 24px of padding was over
+              two fifths of the English column. */}
           <colgroup>{cols.map((c) => <col key={c.key} style={{ width: `${(widthOf(c) / totalW) * 100}%` }} />)}</colgroup>
           <thead className="bg-[var(--cahier-paper-2)] text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">
             <tr>{cols.map((c) => {
@@ -1015,11 +1079,17 @@ function Overview({
               return (
                 <th
                   key={c.key}
-                  className="relative px-3 py-2"
+                  className="relative break-words px-2 py-2 sm:px-3"
                   // Announce sort state to assistive tech (audit 2026-07-19).
                   aria-sort={active ? (sortDir === "asc" ? "ascending" : "descending") : undefined}
                 >
-                  <span className="inline-flex items-center gap-1">
+                  {/* WRAPS, because a header may be wider than its column.
+                      « Reviewed ⇅ » is 66px of unbreakable inline-flex; once
+                      the switch below it became a round button its column fell
+                      to 45px, and the header alone pushed 23px of sideways
+                      scroll back into a table that had just stopped scrolling.
+                      A header is a label, not a control — it may stack. */}
+                  <span className="inline-flex max-w-full flex-wrap items-center gap-1">
                     {sk ? (
                       // A real <button>, not a bare span (audit 2026-07-19):
                       // spans gave no keyboard access and, on touch, no
@@ -1028,16 +1098,16 @@ function Overview({
                       <button
                         type="button"
                         onClick={() => onSortCol(sk)}
-                        title="Sort by this column"
-                        className="inline-flex cursor-pointer select-none items-center gap-0.5 hover:text-[color:var(--cahier-ink)]"
+                        title={`Sort by ${c.key === "flag" && hasLang ? "language" : c.label}`}
+                        className="inline-flex max-w-full cursor-pointer select-none flex-wrap items-center gap-0.5 hover:text-[color:var(--cahier-ink)]"
                       >
-                        {c.key === "flag" && hasLang ? "language" : c.label}
+                        {headLabel(c)}
                         <span aria-hidden className={active ? "" : "opacity-40"}>
                           {active ? (sortDir === "asc" ? "▲" : "▼") : "⇅"}
                         </span>
                       </button>
                     ) : (
-                      <span>{c.key === "flag" && hasLang ? "language" : c.label}</span>
+                      <span>{headLabel(c)}</span>
                     )}
                     {coverable && !test && (
                       <button type="button" onClick={() => toggleCol(c.key)}
@@ -1079,7 +1149,7 @@ function Overview({
                           style={{ width: "1.1rem", height: "1.1rem", padding: 0, accentColor: "#2d5bff" }} />;
                       case "flag": return (
                         <span title={displayEn(row.item)}
-                          className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-2xl"}>
+                          className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-base sm:text-2xl"}>
                           {row.item.lang ? (
                             <>
                               <span lang="fr" className="text-base font-bold text-[color:var(--cahier-ink)]">{row.item.lang.greeting}</span>
@@ -1105,7 +1175,7 @@ function Overview({
                         const covered = isCovered(row, c.key);
                         const clickable = COVERABLE.includes(c.key) && hasContent(row, c.key) && !(c.key === "notes" && editNotes);
                         return (
-                          <td key={c.key} className="overflow-hidden px-3 py-2"
+                          <td key={c.key} className="overflow-hidden break-words px-2 py-2 sm:px-3"
                             onClick={clickable ? () => toggleCell(row, c.key) : undefined}
                             style={{ cursor: clickable ? "pointer" : undefined }}>
                             {covered ? (
@@ -1208,7 +1278,7 @@ function TestRow({
           // Mirror the browse-mode flag cell (hotfix 2026-07-20): language
           // decks carry greeting+autonym, not an emoji — the emoji-only
           // version rendered those cells blank in Test Yourself.
-          <span title={displayEn(row.item)} className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-2xl"}>
+          <span title={displayEn(row.item)} className={row.item.lang ? "inline-flex items-baseline gap-1.5 whitespace-nowrap" : "text-base sm:text-2xl"}>
             {row.item.lang ? (
               <>
                 <span lang="fr" className="text-base font-bold text-[color:var(--cahier-ink)]">{row.item.lang.greeting}</span>
@@ -1240,7 +1310,7 @@ function TestRow({
         }
         else if (c.key === "deck") content = <ReviewToggle value={status} onChange={(b) => onBucket(row.item.id, b)} />;
         else if (c.key === "notes") content = <NoteCell value={notes[row.item.id]?.text ?? ""} editable={editNotes} onChange={onNote} />;
-        return <td key={c.key} className="overflow-hidden px-3 py-2">{content}</td>;
+        return <td key={c.key} className="overflow-hidden break-words px-2 py-2 sm:px-3">{content}</td>;
       })}
     </tr>
   );
