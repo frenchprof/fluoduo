@@ -16,6 +16,7 @@ import { practiceItems } from "@/lib/collections/display";
 import { recordItemResult } from "@/lib/progress";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder, type HelpLadderApi } from "@/lib/help/useHelpLadder";
+import { articleOf, frFull } from "@/app/practice/flip-it/shared";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { reviserHref } from "@/lib/reviser";
 import type { Collection, Item } from "@/lib/collections/schema";
@@ -26,17 +27,12 @@ import HowManyQuestions from "@/components/HowManyQuestions";
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
 
-function articleOf(deck: Collection, item: Item): string {
-  const cols = deck.gameConfig?.letris?.columns ?? [];
-  const tag = item.tags?.find((t) => t.startsWith("col:"));
-  if (!tag) return "";
-  const raw = cols.find((c: { key: string }) => c.key === tag.slice(4))?.prefix ?? "";
-  return raw ? (raw.charAt(0).toLowerCase() + raw.slice(1)).trim() : "";
-}
-function frFull(article: string, fr: string): string {
-  if (!article) return fr;
-  return article.endsWith("'") ? `${article}${fr}` : `${article} ${fr}`;
-}
+// THE FRAME PAIR IS IMPORTED, NOT COPIED (2026-09-13). Both functions were
+// byte-clones of the ones in flip-it/shared.tsx, and when the double-frame bug
+// was fixed there — « il fait Il fait beau. » — this copy went on asking the
+// learner to SAY the doubled sentence and grading their speech against it.
+// That is the same fault the note below records for normalize/deaccent, on the
+// same file, so it takes the same cure: one definition, imported.
 
 
 // The private normalize/deaccent (byte-clones of cloze.ts) died in the

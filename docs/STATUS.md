@@ -6,6 +6,55 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, branch `claude/peers-vd2h6h`, NOT merged, NOT handed over)
+
+**MY HALF OF THE SPREADSHEET SPLIT.** fluoduo-main took the other half; this
+lane owns salutations · avoir-etats · objets-articles · possessives ·
+aimer-activites · weather-letris. Twenty-two rows from the Changes tab, applied
+as text splices pinned on the French the audit quoted — so a re-run is a no-op
+and a deck someone else has edited is refused rather than overwritten:
+
+    19 added    3 age sentences (avoir-etats) · 4 c'est un / ce sont des
+                (objets-articles) · 6 ton/ta/tes + son/sa/ses (possessives) ·
+                6 conjugated aimer/adorer/détester (aimer-activites)
+     2 deleted  salutations « Salut ! » (Bye) — a duplicate of row 4, and the
+                same string in two Letris columns · weather « vente »
+     1 moved    weather's three fragments come up out of the sentence block
+
+**THE POSSESSIVES ADDITION IS THE ONE WORTH READING.** `verify35` already
+asserted that all fifteen forms — mon…leurs — are in the lesson's paradigm
+table, because SIO-022 asks for all six persons. The DECK held only mon/ma/mes:
+every one of its ten sentence rows was first-person. So the lesson taught six
+persons and the deck drilled one, and nothing noticed, because verify35's two
+census numbers (10 sentences, 136 questions) were snapshots of that state. They
+are 16 and 142 now, and six new clauses name ton/ta/tes/son/sa/ses so the deck
+cannot quietly go back while still passing a count.
+
+**AND THE BUG THAT CAME OUT OF DOING IT.** Goal 31 asked for weather's three
+fragments to be moved up « with their frame ». Before adding a frame I checked
+what the app does with the frame it already has, by driving the built app at
+430px — and MémoiRecall was dealing **« il fait Il fait beau. »** and **« un un
+sac »**, while **VoixLà was asking the learner to SAY that and grading their
+speech against it.**
+
+A Letris column carries a `prefix` so a deck may store the bare fragment and
+let the board supply the frame. Three decks do the opposite — they store the
+whole sentence and keep the col: tag only so the board can sort it — and
+`frFull()` pasted the frame on either way: weather-letris 23 rows,
+objets-articles 20, en-au-aux-a 17. Neither shape is wrong; the join was.
+
+**IT SURVIVED BECAUSE VoixLà HELD A BYTE-CLONE OF THE FUNCTION**, so mending the
+flip cards alone would have left the spoken drill broken and silent — the same
+fault that file's own comment records for normalize/deaccent, and it takes the
+same cure: one definition, imported. `verify520-frame-once.py` holds both
+halves (one definition app-wide; the join tests the frame PLUS its space, since
+« ma » is a prefix of « maison »), plus a census of the three decks that depend
+on it, so the guard cannot end up guarding nothing.
+
+Gate: `tsc` clean, build green, 137/137 verify checks pass, both new clauses
+break-tested. Dan dropped the open question about MémoiRecall's two coloured
+strips, so nothing changed there.
+
 ## 13 Sep — ChaTutor and ComposeIt are one messenger (this session, branch, NOT merged)
 
 **Dan: *"the interface for all things chat-related ChaTutor and ComposeIt please

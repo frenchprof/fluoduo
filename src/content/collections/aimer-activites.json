@@ -252,6 +252,48 @@
    "example": "Je déteste les lundis.",
    "exampleEn": "I hate Mondays.",
    "tags": []
+  },
+  {
+   "id": "aimer-activites-20",
+   "fr": "J'aime le sport.",
+   "en": "I like sport.",
+   "tags": [],
+   "gap": "le"
+  },
+  {
+   "id": "aimer-activites-21",
+   "fr": "Tu aimes la musique ?",
+   "en": "Do you like music?",
+   "tags": [],
+   "gap": "la"
+  },
+  {
+   "id": "aimer-activites-22",
+   "fr": "Il adore les jeux vidéo.",
+   "en": "He loves video games.",
+   "tags": [],
+   "gap": "les"
+  },
+  {
+   "id": "aimer-activites-23",
+   "fr": "Je n'aime pas le cinéma.",
+   "en": "I don't like the cinema.",
+   "tags": [],
+   "gap": "le"
+  },
+  {
+   "id": "aimer-activites-24",
+   "fr": "Nous aimons voyager.",
+   "en": "We like travelling.",
+   "tags": [],
+   "gap": "voyager"
+  },
+  {
+   "id": "aimer-activites-25",
+   "fr": "Elle déteste cuisiner.",
+   "en": "She hates cooking.",
+   "tags": [],
+   "gap": "cuisiner"
   }
  ],
  "gameConfig": {

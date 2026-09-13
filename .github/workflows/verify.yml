@@ -606,3 +606,6 @@ jobs:
 
       - name: "One messenger, two chat surfaces, and no class it names is missing (13 Sep)"
         run: python3 verify/verify480-messenger.py
+
+      - name: "A card prints its Letris frame once, not twice (13 Sep)"
+        run: python3 verify/verify520-frame-once.py

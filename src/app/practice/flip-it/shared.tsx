@@ -25,9 +25,25 @@ export function articleOf(collection: Collection, item: Item): string {
   return raw ? (raw.charAt(0).toLowerCase() + raw.slice(1)).trim() : "";
 }
 
+/** The column's frame in front of the item's French — ONCE.
+ *
+ *  A Letris column carries a prefix so a deck can hold bare fragments and let
+ *  the board supply the frame: « du vent » under IL Y A. Four decks do not do
+ *  that. They store the whole sentence in `fr` and keep the col: tag for the
+ *  board, and until now this function pasted the frame on anyway, so
+ *  MémoiRecall dealt « il fait Il fait beau. » and « un un sac », and VoixLà
+ *  ASKED THE LEARNER TO SAY THAT and graded against it. Measured on the built
+ *  app at 430px, 2026-09-13: 60 rows across weather-letris (23),
+ *  objets-articles (20) and en-au-aux-a (17).
+ *
+ *  So: if the French already opens with the frame, it IS the full form. The
+ *  test is on the joined head (« un » + a space), never the bare word — « ma »
+ *  is a prefix of « maison », and stripping the space would swallow the frame
+ *  on the one possessives row that starts with those two letters. */
 export function frFull(article: string, fr: string): string {
   if (!article) return fr;
-  return article.endsWith("'") ? `${article}${fr}` : `${article} ${fr}`;
+  const head = article.endsWith("'") ? article : `${article} `;
+  return fr.toLowerCase().startsWith(head.toLowerCase()) ? fr : `${head}${fr}`;
 }
 
 export function rowsOf(collection: Collection, items: Item[]): Row[] {

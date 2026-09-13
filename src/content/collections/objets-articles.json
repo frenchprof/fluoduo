@@ -363,6 +363,33 @@
    "example": "C'est une souris.",
    "exampleEn": "It's a mouse.",
    "gap": "une"
+  },
+  {
+   "id": "objets-articles-21",
+   "fr": "C'est un sac.",
+   "en": "It's a bag.",
+   "tags": [],
+   "gap": "un"
+  },
+  {
+   "id": "objets-articles-22",
+   "fr": "C'est une clé.",
+   "en": "It's a key.",
+   "tags": [],
+   "gap": "une"
+  },
+  {
+   "id": "objets-articles-23",
+   "fr": "Ce sont des ciseaux.",
+   "en": "These are scissors.",
+   "tags": [],
+   "gap": "des"
+  },
+  {
+   "id": "objets-articles-24",
+   "fr": "Qu'est-ce que c'est ?",
+   "en": "What is it?",
+   "tags": []
   }
  ]
 }
