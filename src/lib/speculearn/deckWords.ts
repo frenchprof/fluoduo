@@ -26,6 +26,43 @@ import {
 /** One playable word: what to say, and the picture that cues it. */
 export type DeckItem = {
   w: string;
+  /** THE WHOLE SENTENCE THIS ITEM LIVES IN, when the deck authored one.
+   *
+   *  Dan, 2026-09-13: *"SpecuLearn, I am still hearing TTS for individual
+   *  parts words WHEN I SHOULD BE HEARING FULL SENTENCES!"* — his rule from
+   *  12 Sep, in his own words: *"never TTS just individual words when they
+   *  can be TTS with another (e.g. a noun always with its article, or an
+   *  entire sentence if that is what we are dealing with)"*.
+   *
+   *  The 12 Sep pass read that rule as being about the ARTICLE and recorded
+   *  SpecuLearn as already correct — « le sport », never « sport ». That is
+   *  true and it is not the whole rule. Measured over all nine playable decks:
+   *  eight of them speak either a noun with its article or a complete
+   *  utterance («  Écoutez ! », « Ça fait combien ? »), and TRANSPORT speaks a
+   *  fragment on every single card —
+   *
+   *      says « en train »          example « J'y vais en train. »
+   *      says « à pied »            example « J'y vais à pied. »
+   *      says « prendre le métro »  example « Je prends le métro. »
+   *
+   *  — twelve of twelve, each with the sentence sitting in the deck, unused.
+   *
+   *  IT MUST BE A SENTENCE, AND `example` IS NOT ALWAYS ONE. Taking every
+   *  `example` broke `colors`, whose examples are things that ARE the colour:
+   *
+   *      item « le rouge »   example « le feu rouge »     the traffic light
+   *      item « le blanc »   example « le lait blanc »    the milk
+   *
+   *  A learner shown a red swatch must say « rouge ». Reading « le feu rouge »
+   *  at them teaches a different word, so the test is terminal punctuation —
+   *  a full stop, a question mark or an exclamation. « J'y vais en train. »
+   *  passes, « le feu rouge » does not, and the colours keep their word.
+   *
+   *  NO CONTAINMENT TEST, THOUGH. It is tempting to also require the example
+   *  to contain the word. That net would drop exactly the three verbs above:
+   *  « prendre le métro » does not appear in « Je prends le métro. » because
+   *  the sentence conjugates it — losing the items that need this most. */
+  say?: string;
   tag: string | null;
   color: string;
   img?: string;
@@ -33,6 +70,22 @@ export type DeckItem = {
   endonym?: string;
   s?: number;
 };
+
+/** What TTS reads for an item: its sentence when the deck wrote one, else the
+ *  word with its article. ONE definition, because SpecuLearn speaks from seven
+ *  call sites — the say-it prompt, the reveal, the 🔊 key and four replay
+ *  buttons in the review — and a fix applied to six of them is the shape of
+ *  bug this is. */
+export function spokenFor(it: DeckItem): string {
+  return it.say ?? it.w;
+}
+
+/** Is this example a whole utterance, or a noun phrase? Terminal punctuation
+ *  is the whole test — see the `say` note above for why `colors` made it
+ *  necessary. Trailing space tolerated; « … » and « ! » both count. */
+function isSentence(s: string | undefined): s is string {
+  return !!s && /[.!?…]$/.test(s.trim());
+}
 
 const MASC = "#0b63c4";
 const FEM = "#e0567f";
@@ -53,8 +106,23 @@ const COL_ARTICLE: Record<string, string> = {
   "col:le": "le ", "col:la": "la ", "col:l_apos": "l'", "col:les": "les ",
   "col:un": "un ", "col:une": "une ", "col:des": "des ",
 };
+/** Does this French already carry its own article? — asked so the column's
+ *  article is not pasted in front of one.
+ *
+ *  IT MISSED THE CONTRACTED FORMS, AND lieux-letris IS ENTIRELY CONTRACTED
+ *  (found 2026-09-13, beside the TTS fault). That deck stores « au café »,
+ *  « à la banque », « à l'hôpital » and sorts them into col:le / col:la
+ *  columns — so the guard below did not fire and every one of its 23 items
+ *  came out as **« le au café »**, « la à la banque », « l'à l'hôpital ».
+ *  Not French, and printed on the card as the answer, not merely spoken.
+ *
+ *  `au`/`aux` are à + le/les and `du`/`des` are de + le/les, so a string
+ *  opening with one already has its article inside it. `en` and a bare `à`
+ *  are here for transport (« en train », « à pied »), which takes no article
+ *  at all and was getting none only because its tags name no column. */
+const HAS_ARTICLE = /^(le |la |les |l'|un |une |des |du |de la |de l'|au |aux |à la |à l'|à |en )/i;
 function withArticle(fr: string, tags: string[] | undefined): string {
-  if (/^(le |la |les |l'|un |une |des |du )/i.test(fr)) return fr;
+  if (HAS_ARTICLE.test(fr)) return fr;
   const col = (tags ?? []).find((t) => t in COL_ARTICLE);
   return col ? COL_ARTICLE[col] + fr : fr;
 }
@@ -94,6 +162,7 @@ export function buildItems(collectionId: string): { items: DeckItem[]; subtitle:
       const endonym = SPECULEARN_ENDONYMS[it.id];
       return {
         w,
+        say: isSentence(it.example) ? it.example : undefined,
         ...tagFromArticle(w),
         emoji: img || endonym ? undefined : (it.emoji as string),
         img: endonym ? undefined : img,

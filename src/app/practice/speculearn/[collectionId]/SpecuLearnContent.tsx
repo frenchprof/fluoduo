@@ -35,7 +35,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { SPECULEARN_PROMPT_FRAME } from "@/lib/collections/speculearnReady";
 import { deaccent, normalize } from "@/lib/practice/cloze";
 import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
-import { buildItems, type DeckItem } from "@/lib/speculearn/deckWords";
+import { buildItems, spokenFor, type DeckItem } from "@/lib/speculearn/deckWords";
 import { shuffle } from "@/lib/shuffle";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
 import { stopForDeck } from "@/lib/stopTag";
@@ -209,7 +209,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     setRetry(false); setStruck([]);
     if (t.dir === "wi" || t.dir === "iw") setOpts(shuffle([t.it, ...distractors(t.it)]));
     else setOpts([]);
-    if (t.dir === "say-t") speak(t.it.w, "fr-FR");
+    if (t.dir === "say-t") speak(spokenFor(t.it), "fr-FR");
   };
 
   const start = (mode: Mode) => {
@@ -285,7 +285,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     if (r.effect === "done" || r.effect === "reveal") {
       setVerdictGood(good);
       setLocked(true);
-      speak(it.w, "fr-FR");
+      speak(spokenFor(it), "fr-FR");
     } else {
       // Not final: strike the pick (mcq) / keep the mic open (say), retry.
       // `chosen` over `selected`: a tap grades in the same event that sets
@@ -358,7 +358,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     // DrillShell's own Enter/Space binding fires the tray's Continue.
     onNext: undefined,
     // In « Devine et dis » the word must not be heard before answering.
-    onSpeak: () => { if (t && (t.dir !== "say-s" || locked)) speak(t.it.w, "fr-FR"); },
+    onSpeak: () => { if (t && (t.dir !== "say-s" || locked)) speak(spokenFor(t.it), "fr-FR"); },
   });
   const card = "rounded-2xl border-2 border-[color:var(--cahier-ink)]/25 bg-white p-3";
 
@@ -430,7 +430,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               body: (
                 <>
                   {v.verdictGood ? "Bravo !" : "Not quite…"}
-                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="ml-2 font-black" style={{ color: v.t.it.color }}>
+                  <button type="button" onClick={() => speak(spokenFor(v.t.it), "fr-FR")} className="ml-2 font-black" style={{ color: v.t.it.color }}>
                     {v.t.it.w} 🔊
                   </button>
                   {v.t.it.tag && <span className="ml-2 text-xs font-medium italic opacity-80">{v.t.it.tag}</span>}
@@ -471,13 +471,13 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
                   </p>
                   <Visual it={v.t.it} className="mx-auto mt-3 h-40 w-40 rounded-xl border-2 border-[color:var(--cahier-ink)]/20" />
                   {v.t.dir === "say-t" && (
-                    <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-2 text-xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                    <button type="button" onClick={() => speak(spokenFor(v.t.it), "fr-FR")} className="mt-2 text-xl font-black" style={{ color: v.t.it.color }} title="🔊">
                       {v.t.it.w} 🔊
                     </button>
                   )}
                   <div className="mt-3 flex items-center justify-center gap-2">
                     {v.t.dir === "say-t" && (
-                      <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
+                      <button type="button" onClick={() => speak(spokenFor(v.t.it), "fr-FR")} className="fluo-btn fluo-btn-sm">🔊 Listen again</button>
                     )}
                     <button
                       type="button"
@@ -493,7 +493,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
               ) : v.t.dir === "wi" ? (
                 <>
                   <p className="text-sm font-bold text-[color:var(--cahier-ink-soft)]">Pick the right picture.</p>
-                  <button type="button" onClick={() => speak(v.t.it.w, "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: v.t.it.color }} title="🔊">
+                  <button type="button" onClick={() => speak(spokenFor(v.t.it), "fr-FR")} className="mt-1 text-2xl font-black" style={{ color: v.t.it.color }} title="🔊">
                     {v.t.it.w} 🔊
                   </button>
                   {/* The picture choices had the same hard two columns, and

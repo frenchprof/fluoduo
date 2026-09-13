@@ -41,6 +41,59 @@ ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
 Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
 clean on the touched files.
 
+## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+
+**Dan: *"SpecuLearn, I am still hearing TTS for individual parts words WHEN I
+SHOULD BE HEARING FULL SENTENCES !"*** — « still », because the 12 Sep pass had
+recorded SpecuLearn as already correct.
+
+**WHY THAT PASS WAS HONESTLY WRONG.** His rule of 12 Sep has two halves —
+*"a noun always with its article, OR an entire sentence if that is what we are
+dealing with"*. SpecuLearn does say « le sport » and never « sport »; the
+second half was never applied here. `transport` is twelve cards of twelve:
+
+    said « en train »          example « J'y vais en train. »
+    said « prendre le métro »  example « Je prends le métro. »
+
+**55 of 190 spoken strings change**, across transport (12), lieux-letris (23)
+and objets-articles (20). One `spokenFor()`, used at all SEVEN speak() call
+sites on that screen — the say-it prompt, the reveal, the 🔊 key and four
+replay buttons.
+
+**TWO THINGS CAUGHT BY MEASURING THE FIX, both worse than the bug:**
+
+  colors        its examples are things that ARE the colour — « le feu rouge »
+                for « le rouge ». Reading that at a learner who must say
+                « rouge » teaches another word. The rule is terminal
+                punctuation, so the colours keep their word.
+  lieux-letris  was PRINTING « le au café » — the column's article pasted onto
+                French that already had a contracted one (au = à + le), all 23
+                items, on the card as the answer, not merely spoken.
+
+**AND THE CHECK'S OWN FIRST DRAFT FAILED THE SAME WAY THE CODE DID.** It
+carried a Python copy of both rules, so it measured the decks against a policy
+it had invented: reverting `withArticle` AND dropping the sentence test both
+left it green. It reads the module's own regexes now — and strips comments
+first, because the clause looking for « au » in the source found it in the
+PROSE explaining why « au » matters. `verify560-speculearn-says.py`, 13 clauses,
+all three regressions break-tested.
+
+**THE SAME SCREEN, TWO MORE ASKS.** Dan, over a screenshot of the four answer
+options: *"and why are the buttons in the question not 3D??"* — because that
+card predates the neo-key system and nobody came back for it. They are
+`.neo-key` now; the green/red state rides a new `--key-bg` token because
+`.neo-key` sets `background` itself and this stylesheet loads last, so a
+Tailwind `bg-` class of equal specificity loses silently.
+
+And, with a mock-up: *"After each question in speculearn, have a button with
+blinking arrows appear below the box which reads NEXT QUESTION"*. **This
+SUPERSEDES the 7 Sep decision** that the way on is the gesture and its marker a
+bare « ⌄ » (*"a « Next → » would be a second answer to the question the swipe
+already answers"*). The swipe is untouched; the chevron was not reading as a
+control. It calls the same `onNext` ↵ has always called.
+
+Gate: tsc clean, build green, eslint clean on the three touched files.
+
 ## 13 Sep — every control answers the pointer (peers lane, MERGED as 15e4525, #356)
 
 **Dan: *"The mouseover effects are not everywhere. are they. they should be"*.**
