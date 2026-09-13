@@ -111,7 +111,20 @@ ok(not unused,
 # where a measurement came from. A check that flags its own reasoning teaches
 # the next person to write thinner comments, which is the opposite of what this
 # repo wants.
-block = CSS[CSS.index("═══ THE MESSENGER"):]
+#
+# AND THE WINDOW IS BOUNDED NOW (2026-09-13). It read from the messenger's
+# heading to the END OF THE FILE, so it was not scanning the messenger — it was
+# scanning the messenger and everything anyone appended after it. The hover
+# floor was the first block to land there and it failed this check on three
+# hairlines of its own (`text-underline-offset`, a shadow blur, a ring width) —
+# none of them a messenger size, none of them a font or a button size, and the
+# check itself already exempts 2px borders of exactly that kind. A check that
+# fires on a neighbour's code teaches the next person to move their code, not
+# to fix it. The block now ends at the next top-level `/* ══` heading, which is
+# how every other section of this stylesheet is delimited.
+_start = CSS.index("═══ THE MESSENGER")
+_next = re.search(r"\n/\* ═", CSS[_start:])
+block = CSS[_start : _start + _next.start()] if _next else CSS[_start:]
 block = re.sub(r"/\*.*?\*/", "", block, flags=re.S)
 pixels = []
 for line in block.splitlines():

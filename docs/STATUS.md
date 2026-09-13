@@ -6,6 +6,57 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — every control answers the pointer (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+
+**Dan: *"The mouseover effects are not everywhere. are they. they should be"*.**
+The third time — after *"those hero buttons have a mouseover behaviours though
+that we want to replicate throughout the site"* and *"even for depressed spaces
+… there needs to be some mouseover effect and activating effect"* the day
+before.
+
+**A GREP SAID THE APP WAS COVERED. THE APP SAID OTHERWISE.** globals.css holds
+thirty-two `:hover` rules. Driving the built app at 1280px across sixteen
+routes, **122 of 264 controls changed nothing at all** under the pointer:
+
+    50  a.heat-cell        the profile's fifty activity cells
+    18  <input checkbox>   the deck table's row ticks, and Select all
+    13  .cahier-switch     the Reviewed switch
+    12  a text link        « about », in every footer
+    10  the wordmark       FluOLinGo on the site bar, every page
+    19  MAP · EXPORT · <summary> · REVEAL · TYPE IT · « Show rows »
+
+Not one matched any of the thirty-two rules. Reading CSS cannot say which rule
+WINS on an element, nor see a control built out of Tailwind utilities that
+matches nothing.
+
+**THE FIX IS A FLOOR, NOT A SWEEP** — a block at the foot of globals.css written
+entirely in `:where()`, which carries zero specificity, so every designed hover
+already there wins outright and none was touched. Brightness AND a soft ring,
+because brightness alone does nothing to white paper; a link takes its underline
+instead of a ring; a tick box takes an outline **in the ink, not in
+`--dopa-focus`** — the first draft used the focus blue, which would have made
+"the mouse is here" and "the keyboard is here" identical while tabbing the deck
+table. `:active` sits OUTSIDE the hover query, because a finger never hovers.
+
+**THE MEASUREMENT WAS WRONG TWICE BEFORE IT WAS RIGHT**, and all three
+corrections are in `scripts/hover-scan.mjs`:
+
+  1  A real mouse said **377 of 541** dead — nearly three times the truth.
+     Hovering the centre of a control that sits under something else lands on
+     the cover. It forces `:hover` through CDP `CSS.forcePseudoState` now.
+  2  Reading only the control called the 3D map's stops dead: their hover lifts
+     a CHILD (`.home-map3d-node:hover .home-map3d-cap`). It reads the subtree.
+  3  `.fluo-edge-beat` pulses on a 4s loop, so two reads differ by themselves
+     and the probe scored the pointer for the animation. Elements already in
+     motion are counted separately as inconclusive, never as covered.
+
+`verify540-hover-floor.py` pins **zero** dead controls — not a ratchet, which
+would wave the next one through — and fails if the scan finds fewer than 150
+controls at all, so a wall build cannot report "all clear" over an empty page.
+Break-tested: floor removed, rebuilt, check exits 1 and names all 122.
+
+Gate: tsc clean, build green, the scan green in a browser.
+
 ## 13 Sep — the integration round: two lanes, one spreadsheet, five deploys (fluoduo-main, sole editor of this file in this commit)
 
 **Everything below is MERGED and LIVE.** Production, staging and
@@ -122,7 +173,7 @@ rather than from the screen is a check that does not run.**
 
 Gate: tsc clean, build green, eslint clean, verify230 green in a browser.
 
-## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, branch `claude/peers-vd2h6h`, NOT merged, NOT handed over)
+## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, MERGED as 6775bcb, #353)
 
 **MY HALF OF THE SPREADSHEET SPLIT.** fluoduo-main took the other half; this
 lane owns salutations · avoir-etats · objets-articles · possessives ·
