@@ -140,14 +140,12 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
   - 💡 **Idée** — the one idea: the English logic vs the French logic, one question, one answer, one thing to remember. Traps and a mini-check are folded under it.
   - 📐 **Formes** — the rule tables and the word list (folded).
   - 🏋️ **Exercice** — pick a level, then the cards take the whole screen:
-
   | Level | Cards | What you do |
   |---|---|---|
   | ★ Facile | 4 pick + 8 put-in-order | recognise |
   | ★★ Moyen | 12 | fill **one** missing piece |
   | ★★★ Difficile | 12 | fill **two** missing pieces |
   | 🎁 Bonus | 12 | translate the whole sentence from English |
-
   Always 12 cards. A harder level is harder, never shorter. Wrong cards come back **once** at the end.
 - **Ends:** 🎉 with points, accuracy, time, and the items you missed. Finishing the run counts the goal as done and pays the goal bonus.
 - **Note:** needs sign-in. A half-finished run can be resumed.
