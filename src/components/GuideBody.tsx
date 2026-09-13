@@ -15,7 +15,7 @@
  *   2  Guess first           SpecuLearn, BEFORE the lesson; wrong costs nothing.
  *   3  Learn it              the goal's lesson, read and heard.
  *   4  Practise and play     after class; the ☰ menu top-left holds every door.
- *   5  Come back             ErroReview keeps what you got wrong; ✓ turns green.
+ *   5  Come back             ErroReview keeps what you got wrong; a done stop sits flat and pale.
  *
  * Each step names the real button or door a learner will see (▶ Continue,
  * ☰, SpecuLearn, ErroReview), because a guide that describes the app in its
@@ -136,7 +136,11 @@ const STEPS: Step[] = [
     title: "Come back to what you missed.",
     ways: [
       <><b>❌ ErroReview</b> brings back what you got wrong</>,
-      <>a stop turns <b>✓ green</b> when done; <b>★</b> saves any page</>,
+      // "pressed flat and paler", NOT "✓ green" (13 Sep). The map dropped the tick
+      // on 6 Sep (Map2DGrid.tsx: "there is no ✓ at all now — the fill says it");
+      // a done stop is the pressed-down coin in its kind's wash, number kept.
+      // Two learner guides copied the old line from here before it was noticed.
+      <>a done stop is <b>pressed flat</b> and paler; <b>★</b> saves any page</>,
     ],
   },
 ];
