@@ -125,8 +125,8 @@ const STEPS: Step[] = [
     // they sit in, using the row names as renamed the same day.
     title: "Practise it.",
     ways: [
-      <><b>Practice</b>: 🔤 ConjugaZone · 🏃 GramMarathon · ❌ ErroReview</>,
-      <><b>Play</b>: 🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</>,
+      <><b>Drill</b>: 🔤 ConjugaZone · 🏃 GramMarathon · ❌ ErroReview</>,
+      <><b>I-Play</b>: 🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</>,
       <><b>Speak</b>: 🔊 VoixLà · 🎙️ WorDrill · 🎧 ÉcouTexte</>,
       <>a <b>greyed</b> tile has nothing at that stop</>,
     ],
