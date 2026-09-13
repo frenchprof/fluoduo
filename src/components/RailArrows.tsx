@@ -169,8 +169,34 @@ function Arrow({ side, move }: { side: Side; move: NonNullable<RailMove> }) {
           part that is dropped when the screen gets small. */}
       {/* The app's own micro step, not a pinned pixel — it is fluid with the
           rest of the type scale (globals.css --fs-*). */}
+      {/* THE GLYPH, NOT THE WORD (Dan, 2026-09-13: *"SIMPLY REPLACE WITH THE
+          RELEVANT EMOJI"*, retracting his own suggestion of setting the words
+          sideways along the screen edge).
+
+          WHY THIS IS NOT A LOSS OF THE THING HE ASKED FOR ON 12 SEP. The name
+          was printed at every width because a bare chevron *"did not read as an
+          indication of anything"* — true, and the fix then was the name. A
+          glyph is the other answer to the same complaint: 📚 says MneMemo in
+          one character where the word needed eight, on the edge of a phone
+          screen that has none to spare. The full name stays in `aria-label` and
+          `title`, so a screen reader and a hover still get the destination in
+          words — nothing is lost that a learner could not already see.
+
+          AND THE BASE CARRIES THE GOAL NUMBER (Dan, same message: *"at the base
+          we should also see the bullseye emoji and the number for swiping"*).
+          That arrow moves between GOALS with the activity unchanged, so the
+          number is the only part that differs and the 🎯 says which axis it is.
+
+          The emoji comes from the registry via the station's key — one glyph
+          per activity, decided once. A name with no glyph (none today) still
+          prints its word rather than an empty pill. */}
       <span className="whitespace-nowrap text-[length:var(--fs-micro)] font-black leading-none">
-        {printed(side, move.name)}
+        {move.emoji
+          ? <>
+              <span aria-hidden className="text-[1.35em] leading-none">{move.emoji}</span>
+              {move.num !== undefined && <span className="ml-0.5 tabular-nums">{move.num}</span>}
+            </>
+          : printed(side, move.name)}
       </span>
       {(side === "right" || side === "down") && (
         <svg width="14" height="14" viewBox="0 0 18 18" aria-hidden focusable="false" className="shrink-0">

@@ -70,8 +70,23 @@ export const tuVousLesson: NativeLesson = {
   // TIER 1 · stop 2. The Mémo lists three uses of two words. The claim is that
   // ONE of them does two jobs, which is why `vous parlez` cannot tell you how
   // many people are being addressed — and why nobody minds.
+  //
+  // THE SUBTITLE USED TO SAY "Why vous is two different words" AND CONTRADICTED
+  // ITS OWN BODY (Dan, 2026-09-13: *"MneMemo has a huge mistake — it is 'you'
+  // that has two different words in French, rather than vous"*).
+  //
+  // The contrast line two lines below has always been right — "English has one
+  // you for everybody. French has two" — and so are the pitfall headings, "one
+  // English you" / "two French ones". Only the heading over them was inverted,
+  // which is the worst place for it: it is the line a learner reads first and
+  // carries away.
+  //
+  // The doubling Dan allows is a DIFFERENT claim, and it is about the word
+  // appearing twice rather than meaning two things: « vous vous appelez » —
+  // subject `vous`, reflexive `vous`, verb — is THREE words, not two. That is
+  // not what this heading was saying, so it is corrected rather than reworded.
   concept: {
-    subtitle: "Why vous is two different words",
+    subtitle: "Why English you is two words in French",
     contrast: (
       <>
         English has one <i>you</i> for everybody. French has two, and the second one is

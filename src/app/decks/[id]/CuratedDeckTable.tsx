@@ -56,19 +56,60 @@ import { HOME_HREF } from "@/lib/routes";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
-function Step({ n, label, children }: { n: number; label: string; children: React.ReactNode }) {
-  // Number in a fixed left gutter; label + content share an indented right
-  // column so the numbers stay a clean column and content never sits under
-  // them (Dan, 2026-07-05: "the column of numbers should be kept clear of
-  // content, which should be indented to the right").
+function Step({ n, label, wide, children }: { n: number; label: string; wide?: boolean; children: React.ReactNode }) {
+  // Number in a fixed left gutter; the LABEL keeps its indent so the numbers
+  // read as a column.
+  //
+  // ⚠️ THE ATTRIBUTION THAT USED TO BE ON THIS LINE IS DISPUTED. It read:
+  // «Dan, 2026-07-05: "the column of numbers should be kept clear of content,
+  // which should be indented to the right"». Dan, 2026-09-13: ***"THIS IS
+  // UNTRUE! I NEVER MADE SUCH A RULING"***.
+  //
+  // It was already in this file and this session repeated it as established
+  // fact while adding `wide` below — which is how a quotation nobody can source
+  // becomes load-bearing. The INDENT ITSELF is kept because it reads well and
+  // nothing depends on the quote; what is removed is the claim that it answers
+  // a ruling. If the layout is ever questioned, it is a design choice to argue
+  // with, not a decision already made.
+  //
+  // `wide` DROPS THE INDENT FOR THE CONTENT ONLY (Dan, 2026-09-13, on
+  // MémoiRecall: *"Under the numbers there is plenty of space. Please use the
+  // space wisely. And can we not have the table on the paper rather having to
+  // scroll within that tiny space?!"*).
+  //
+  // Below the label there is no number to sit beside — the gutter is empty
+  // paper — so a table indented there pays 42px of width for nothing and then
+  // scrolls sideways to make it up. That is how « your best friend » came out
+  // as « your best fri ».
+  //
+  // Applied only to the step that holds the table. The narrow steps keep the
+  // indent, because a row of small controls under a wide label reads as part of
+  // that label and losing the alignment would make it read as a new section.
+  const head = (
+    <div className="mb-2 flex items-center gap-2.5">
+      <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
+      <div className="h-[0.125rem] flex-1 bg-[color:var(--cahier-ink)]/25" />
+    </div>
+  );
+  const badge = (
+    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
+  );
+  if (wide) {
+    return (
+      <div className="mb-4">
+        <div className="flex gap-2.5">
+          {badge}
+          <div className="min-w-0 flex-1">{head}</div>
+        </div>
+        {children}
+      </div>
+    );
+  }
   return (
     <div className="mb-4 flex gap-2.5">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[color:var(--cahier-ink)] text-base font-black text-white shadow-[2px_2px_0_var(--cahier-hl,#ffe000)]">{n}</span>
+      {badge}
       <div className="min-w-0 flex-1">
-        <div className="mb-2 flex items-center gap-2.5">
-          <span className="cahier-hl rounded-sm px-1.5 text-base font-black text-[color:var(--cahier-ink)]">{label}</span>
-          <div className="h-[0.125rem] flex-1 bg-[color:var(--cahier-ink)]/25" />
-        </div>
+        {head}
         {children}
       </div>
     </div>
@@ -488,7 +529,7 @@ function DeckTable({ collection, items }: { collection: Collection; items: Item[
       })()}
 
       </Step>
-      <Step n={3} label="Study / Self-test">
+      <Step n={3} label="Study / Self-test" wide>
       {rows.length === 0 ? (
         <p className="rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] p-6 text-center text-[color:var(--cahier-ink-soft)]">
           No rows shown.{" "}
@@ -921,8 +962,38 @@ function Overview({
           appears only when something is covered. */}
 
       <div className="overflow-x-auto rounded-xl border-2 border-[color:var(--cahier-ink)]/15 bg-white">
-        <table className="text-left text-sm" style={{ tableLayout: "fixed", width: totalW, minWidth: "100%" }}>
-          <colgroup>{cols.map((c) => <col key={c.key} style={{ width: widthOf(c) }} />)}</colgroup>
+        {/* THE TABLE FITS THE PAPER (Dan, 2026-09-13: *"can we not have the table on
+            the paper rather having to scroll within that tiny space?!"*).
+
+            `width: totalW` is the SUM of the per-column pixel widths — 802px on
+            the tu-vous deck — so on a 390px phone the table was always wider
+            than its box and always scrolled sideways. That is what clipped
+            « your best friend » to « your best fri ».
+
+            `min(totalW, 100%)` changes nothing where there is room: on a
+            desktop 802px is under the available width, so the columns keep
+            their authored sizes. Where there is not, `table-layout: fixed`
+            shares the width between the same columns in the same proportions
+            and the text wraps instead of hiding. `minWidth` goes with it — it
+            was the floor that made the overflow inevitable. */}
+          <table className="text-left text-sm" style={{ tableLayout: "fixed", width: `min(${totalW}px, 100%)` }}>
+          {/* PROPORTIONAL, NOT PIXEL (Dan, 2026-09-13: *"can we not have the
+              table on the paper rather having to scroll within that tiny
+              space?!"*).
+
+              Capping the TABLE at `min(totalW, 100%)` was not enough and the
+              measurement said why: with `table-layout: fixed` the `<col>`
+              widths are authoritative, so a colgroup summing to 802px pulled
+              the table back out to 802px inside a 303px box — style said
+              `min(802px, 100%)` and the rendered width was 802 regardless.
+
+              As PERCENTAGES of that same total the columns keep their authored
+              proportions exactly (42/80/150/170/120/240 → 5.2%/10%/18.7%/…)
+              and the table now fits whatever room it is given: the same layout
+              on a desktop, and on a phone the text wraps instead of hiding.
+              Manual column resizing still works — `widthOf` is the numerator,
+              so dragging a handle changes the share. */}
+          <colgroup>{cols.map((c) => <col key={c.key} style={{ width: `${(widthOf(c) / totalW) * 100}%` }} />)}</colgroup>
           <thead className="bg-[var(--cahier-paper-2)] text-[0.7rem] font-bold text-[color:var(--cahier-ink-soft)]">
             <tr>{cols.map((c) => {
               const sk = SORT_OF[c.key];
