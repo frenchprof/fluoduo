@@ -108,13 +108,26 @@ const STEPS: Step[] = [
   {
     hue: 2,
     title: "Learn it.",
-    ways: [<><b>📚 MneMemo</b> — the rule, then practice. It opens from the goal you picked.</>],
+    // MneMemo IS USED WITH MémoiRecall (Dan, 2026-09-13: *"MneMemo is meant to
+    // be used with the flashcards in MemoiRecall! *spaced repetition"*). The
+    // rule is read once; the cards bring it back on a schedule, which is the
+    // half that makes it stick. Naming only MneMemo taught half the method.
+    ways: [
+      <><b>📚 MneMemo</b> — the rule, then practice. It opens from the goal you picked.</>,
+      <>then <b>🃏 MémoiRecall</b> — its flashcards bring the rule back, spaced out</>,
+    ],
   },
   {
     hue: 4,
+    // EACH ACTIVITY BY NAME (Dan, 2026-09-13: *"Practice It: cite each of the
+    // activity"*). "Every activity for the goal" told a learner nothing they
+    // could act on — it named a menu, not the things in it. Grouped by the row
+    // they sit in, using the row names as renamed the same day.
     title: "Practise it.",
     ways: [
-      <>the <b>☰ menu</b> shows every activity for the goal you picked</>,
+      <><b>Practice</b>: 🔤 ConjugaZone · 🏃 GramMarathon · ❌ ErroReview</>,
+      <><b>Play</b>: 🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</>,
+      <><b>Speak</b>: 🔊 VoixLà · 🎙️ WorDrill · 🎧 ÉcouTexte</>,
       <>a <b>greyed</b> tile has nothing at that stop</>,
     ],
   },
