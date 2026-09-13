@@ -116,7 +116,18 @@ service cloud.firestore {
         && request.resource.data.xp >= 0
         && request.resource.data.xp <= 10000000
         && request.resource.data.level is int
-        && request.resource.data.level >= 1
+        // LEVEL 0 IS A REAL LEVEL, AND `>= 1` KEPT EVERY BEGINNER OFF THE
+        // BOARD (2026-09-13). `levelForXp` in src/lib/economy.ts starts at 0
+        // and LEVEL_SPANS[0] is 2000, so a learner is level 0 until 2000 XP —
+        // which is every new learner, and the whole cohort at the start of a
+        // term. Their row was DENIED, and the client reads a denied write as
+        // "this account is a teacher or has opted out" and DELETES the row it
+        // just tried to write. So the board did not merely miss them: it
+        // erased them, silently, and read « Nobody yet — be the first 💎! ».
+        //
+        // Dan proved it by signing in on a non-admin account, earning XP and
+        // watching nothing appear. The rule, not the policy, was the reason.
+        && request.resource.data.level >= 0
         && request.resource.data.level <= 1000
         && request.resource.data.gems is int
         && request.resource.data.gems >= 0
@@ -150,7 +161,15 @@ service cloud.firestore {
         && request.resource.data.xp >= 0
         && request.resource.data.xp <= 10000000
         && request.resource.data.level is int
-        && request.resource.data.level >= 1
+        // THE SAME `>= 1`, AND THE SAME REASON IT IS WRONG — see the
+        // leaderboard block above. PRECAUTIONARY, NOT PROVEN: this collection's
+        // writer is in the legacy laf1201 suite and cannot be seen from this
+        // repo, so whether it publishes a level at all is unknown here.
+        // Loosening a lower bound can only ever ALLOW a write that was denied,
+        // never deny one that passed, which is why it is safe to make without
+        // sight of the writer — unlike tightening, which this file warns
+        // against doing blind.
+        && request.resource.data.level >= 0
         && request.resource.data.level <= 1000
         && request.resource.data.streak is int
         && request.resource.data.streak >= 0

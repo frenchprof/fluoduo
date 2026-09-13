@@ -41,6 +41,57 @@ ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
 Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
 clean on the touched files.
 
+## 13 Sep — the leaderboard erased every beginner, and a rule bound was why (peers lane, branch `claude/peers-vd2h6h`, NOT merged — ⚠️ THE RULES MUST BE DEPLOYED BY HAND)
+
+**Dan: *"the leaderboard is not happening yet? why?"*, and when given an
+answer: *"i already proved it, the leader board did not register anything at
+all"*.**
+
+**THE FIRST ANSWER HE WAS GIVEN WAS WRONG, and the way it was wrong is worth
+keeping.** He was told the board looked empty because HIS account is on the
+admin allowlist and teachers are excluded from the student board (his own
+ruling, 5 Jul). That is TRUE of his row and it was NOT the reason. He settled
+it the only way it could be settled — signed in on a non-admin account, earned
+XP, and watched nothing appear.
+
+    app     publishLeaderboard writes { level: levelForXp(xp).level, … }
+    code    levelForXp starts at 0; LEVEL_SPANS[0] is 2000
+            → every learner is level 0 until 2000 XP
+    rule    request.resource.data.level >= 1
+            → DENIED for every beginner — i.e. a whole cohort in week one
+    client  a denied write is read as "teacher / opted out" and DELETES the row
+
+So the board did not merely fail to list new learners. **It erased them**, and
+then printed « Nobody yet — be the first 💎! », which reads as a term that has
+not started rather than a write that cannot land.
+
+The clause arrived 7 Sep (bc30fdc). Nothing in `verify/` had ever read
+`firestore.rules` — they are not TypeScript and the build does not exercise
+them — and neither side is wrong alone: level 0 is a correct level, and a lower
+bound on a public write is correct caution. The fault lives only in the
+relationship between the two files.
+
+**FIXED IN BOTH PLACES.** The leaderboard block is the proven one. The
+`sessions` block carries the identical `level >= 1`, and that fix is
+PRECAUTIONARY, not proven: its writer is in the legacy laf1201 suite and cannot
+be seen from this repo. Loosening a lower bound can only ever ALLOW a write
+that was denied, never deny one that passed — which is why it is safe without
+sight of the writer, unlike tightening, which that file warns against doing
+blind.
+
+`verify580-rule-bounds.py` reads the app's own floor out of `economy.ts` and
+every `>= N` bound out of the rules, and fails when a rule cannot admit what
+the app writes. Also `xp`, `gems`, `streak` — all counters that start at zero.
+Break-tested by restoring the bug.
+
+> ⚠️ **THE FIX IS INERT UNTIL THE RULES ARE DEPLOYED.** `firestore.rules` is a
+> file in this repo; the live rules live in the Firebase console and are pushed
+> by hand (`firebase deploy --only firestore:rules`, or Console → Firestore →
+> Rules). Merging this branch does NOT fix the live board. A green
+> `verify580` means the FILE is right and says nothing about what is live —
+> the check says so in its own docstring because that gap cannot be closed
+> from here.
+
 ## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, branch `claude/peers-vd2h6h`, NOT merged; the usher row is HALF DONE)
 
 **Dan: *"when one chooses to close any activity, it must take the learner back

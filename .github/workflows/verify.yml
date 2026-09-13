@@ -615,3 +615,6 @@ jobs:
 
       - name: "SpecuLearn reads the sentence, and its article once (13 Sep)"
         run: python3 verify/verify560-speculearn-says.py
+
+      - name: "A rule's bounds admit what the app writes (13 Sep)"
+        run: python3 verify/verify580-rule-bounds.py
