@@ -10,7 +10,8 @@
  */
 import { useEffect, useState } from "react";
 import { signInWithGoogle, useAuthUser } from "@/lib/firebase/auth";
-import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName } from "@/lib/accountAliases";
+import { ALIAS_BOARD_NAMES, ALIAS_CANON_NAMES, EXCLUDED_BOARD_UIDS, boardName, isHiddenRosterName } from "@/lib/accountAliases";
+import { LEGACY_TERM } from "@/lib/term";
 import { weekKey } from "@/lib/dayKey";
 import { loadProgress, weekPair, type Progress } from "@/lib/progress";
 import SectionBand from "@/components/SectionBand";
@@ -40,6 +41,11 @@ const rowXp = (r: BoardRow) => r.xp ?? r.totalXP ?? 0;
  *  letting last week's effort win a race it is not in. */
 const rowWeekXp = (r: BoardRow, wk: string) => (r.weekKey === wk ? (r.weekXp ?? 0) : 0);
 const rowName = (r: BoardRow) => r.name ?? r.displayName ?? "Anonymous"; // same fallback word as boardName
+/** A row from before the 2026-08-11 cohort reset — stamped `legacy`, or with no
+ *  stamp at all because the old laf1201 suite wrote it before the field
+ *  existed. NOT the same test as "is not the current term": a future cohort
+ *  carries a term of its own and belongs on the board (Dan, 5 Sep). */
+const isLegacyRow = (r: BoardRow) => !r.term || r.term === LEGACY_TERM;
 
 
 
@@ -87,14 +93,41 @@ export default function LeaderboardList() {
           let list = snap.docs
             .map((d) => ({ uid: d.id, ...(d.data() as Omit<BoardRow, "uid">) }))
             .filter((r) => !EXCLUDED_BOARD_UIDS.has(r.uid))
-            // NO TERM FILTER (Dan, 2026-09-05: "there won't be 'classes' of
-            // students. participants will be coming from all over, including
-            // overseas international ones"). The cohort filter of 11 Aug
-            // assumed one synchronized class; under rolling worldwide
-            // enrollment every participant belongs on the board, whenever
-            // they joined. The term field stays WRITTEN (the research
-            // pipeline still segments by it) — it just no longer hides rows.
-            ;
+            // NO COHORT FILTER, BUT LEGACY ROWS ARE GONE (Dan, 2026-09-13:
+            // "all the 18 names under 'ALL TERM' must now be hidden. THis is
+            // a brand new generational cohort of language warriors").
+            //
+            // These two rulings are not in tension, and the difference is the
+            // whole reason this is a legacy test and not `isCurrentTerm`:
+            //
+            //   isCurrentTerm(r.term)   shows AY2627S1 and hides everything
+            //                           else — including a cohort that starts
+            //                           next term, which is the class-list
+            //                           model Dan retired on 5 Sep ("there
+            //                           won't be 'classes' of students.
+            //                           participants will be coming from all
+            //                           over, including overseas international
+            //                           ones")
+            //   isLegacyRow(r)          hides only what predates the 11 Aug
+            //                           reset. Whoever joins from now on, in
+            //                           whatever term, stays on the board for
+            //                           good — and nobody has to maintain a
+            //                           list of names as people arrive
+            //
+            // Legacy is two shapes, because the old laf1201 suite wrote rows
+            // before the field existed: `term: "legacy"` (stamped at the first
+            // sign-in after the reset) and NO `term` at all (never signed in
+            // since). Both are pre-reset by definition — every current learner
+            // publishes a term on every push (progressSync.publishLeaderboard).
+            //
+            // The rows themselves are untouched, as ever: a filter, not a
+            // deletion. The research pipeline still reads every one of them.
+            .filter((r) => !isLegacyRow(r))
+            // Dan's own sign-ins and the retired test accounts. The teacher
+            // roster has filtered these by name since 16 Jul; the public
+            // board never did, so « Cagey Chan » ranked among the students it
+            // was built to measure. One list, both surfaces.
+            .filter((r) => !isHiddenRosterName(rowName(r)));
           // One student, two accounts (Dan, 2026-07-16): fold alias rows into
           // the canonical row — XP and gems ADD (both are her effort), streak
           // takes the max. Rows carry no email, so the match is by the known

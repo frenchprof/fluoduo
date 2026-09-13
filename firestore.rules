@@ -124,7 +124,13 @@ service cloud.firestore {
         "mielanjames@gmail.com", "chee.advanced@gmail.com", "lohkelsey@gmail.com",
         "adamelistewart@gmail.com", "danielbordeaux89@gmail.com", "e1088156@u.nus.edu",
         "2964836865@qq.com", "wyanfong@gmail.com", "tcyy.10204@gmail.com",
-        "azhari619@gmail.com", "clariceteoworking@gmail.com"
+        "azhari619@gmail.com", "clariceteoworking@gmail.com",
+        // Dan's alter-ego test learners (2026-09-13). Here and not in
+        // isAdmin(): they must stay off the board, but they get no admin read
+        // of anyone else's data. Mirrored by TEST_ACCOUNT_EMAILS in
+        // src/lib/staffAccounts.ts — the client refuses the write too, because
+        // this file is deployed by hand and that one ships with every build.
+        "docteur.daniel.chan@gmail.com", "u12@i12.work"
       ];
     }
     function validLeaderboardRow() {

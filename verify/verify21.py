@@ -17,10 +17,12 @@ admin sign-in so a screenshot cannot cover it at all):
      firestore.rules create allowlist includes 'term' — without the rules
      half, every NEW student's first publish is denied and the client's
      excluded-user fallback deletes their row.
-  5  The readers default to the current cohort: LeaderboardList filters by
-     isCurrentTerm; the teacher page filters !hidden && currentTerm with an
-     "all cohorts" toggle; buildRoster computes currentTerm from the board
-     term or a post-reset firstSeen.
+  5  The readers hide the PRE-RESET rows and nothing else: LeaderboardList
+     filters legacy rows (and hidden test/staff names) but never by
+     isCurrentTerm, so a cohort starting next term still appears; the teacher
+     page filters !hidden && currentTerm with an "all cohorts" toggle;
+     buildRoster computes currentTerm from the board term or a post-reset
+     firstSeen.
   6  NOTHING deletes prior data: no deleteDoc/delete call was added to any
      of the touched files beyond the two that existed before the reset
      (publishLeaderboard's excluded-user cleanup, teacher onDelete for
@@ -106,9 +108,21 @@ board_list = strip_comments(read("src/components/LeaderboardList.tsx"))
 # international ones") — the board shows EVERY participant now. The claim
 # flips: the term must no longer hide rows; it stays written for research.
 check("isCurrentTerm(r.term)" not in board_list,
-      "the learner leaderboard shows every participant — no term filter",
+      "the learner leaderboard shows every participant — no cohort filter",
       "the term filter is back on the board; the 11 Aug cohort model was "
       "retired by Dan's 5 Sep no-classes ruling")
+# REFINED 13 Sep (Dan: "all the 18 names under 'ALL TERM' must now be hidden.
+# THis is a brand new generational cohort of language warriors"). The board
+# hides what PREDATES the reset — not everything outside one term. The two
+# tests differ on a cohort that has not started yet: isCurrentTerm would hide
+# it (the retired class-list model), isLegacyRow keeps it.
+check("!isLegacyRow(r)" in board_list and "=== LEGACY_TERM" in board_list,
+      "pre-reset rows are off the board, by a legacy test and not a cohort one",
+      "the board still shows legacy rows — the 18 pre-reset names are back")
+check("isHiddenRosterName(rowName(r))" in board_list,
+      "the board hides the same test/staff accounts the roster hides",
+      "the public board does not filter hidden accounts — a teacher test "
+      "sign-in ranks among the students")
 
 data = strip_comments(read("src/app/teacher/data.ts"))
 check("currentTerm" in data and "TERM_START_MS" in data and "isCurrentTerm(l.board?.term)" in data,

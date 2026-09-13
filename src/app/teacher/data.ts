@@ -11,6 +11,7 @@
  */
 
 import { EXCLUDED_BOARD_UIDS, HIDDEN_ROSTER_UID_PREFIXES, isHiddenRosterName } from "@/lib/accountAliases";
+import { STAFF_EMAILS } from "@/lib/staffAccounts";
 
 /**
  * Screenshot/check fixture (patch 26). The teacher page cannot render without
@@ -80,14 +81,11 @@ export const REVIEWER_EMAILS = [
   "wanghaoshu2016@gmail.com",
 ];
 
-export const ADMIN_EMAILS = [
-  "drneilchan@gmail.com",
-  "monsieur.chan@gmail.com",
-  "dan@chank.wang",
-  "kaygeedan@gmail.com",
-  "daniel.chan@nus.edu.sg",
-  "kwangguan@gmail.com",
-];
+// ONE list, in src/lib/staffAccounts.ts (2026-09-13) — the same six addresses
+// also decide who never appears on the public leaderboard, and two copies of a
+// list of Dan's own accounts is how the board ended up showing one of them.
+// The name stays ADMIN_EMAILS: it is what this page and VoixLaPanel call it.
+export const ADMIN_EMAILS = STAFF_EMAILS;
 
 export type Ev = {
   uid: string;

@@ -19,8 +19,9 @@ import {
 } from "@/lib/progress";
 import { levelForXp } from "@/lib/economy";
 import { mergeProgress } from "@/lib/progressMerge";
-import { boardName } from "@/lib/accountAliases";
+import { boardName, isHiddenRosterName } from "@/lib/accountAliases";
 import { CURRENT_TERM, LEGACY_TERM } from "@/lib/term";
+import { isOffBoardAccount } from "@/lib/staffAccounts";
 import { logEvent } from "./usage";
 
 const DOC_PATH = ["app", "progress"] as const;
@@ -118,20 +119,47 @@ async function publishLeaderboard(p: Progress): Promise<void> {
   // look up their own. ONE identity function (boardName), shared with the
   // board's reader; never an email or its local part.
   const name = boardName(u.uid, u.displayName);
-  try {
-    // Rank by XP now (the lifetime score); keep gems for continuity and publish
-    // the level so the board can show each learner's rank name. `term` scopes
-    // the board to the current cohort (term.ts) — the create rule's allowlist
-    // in firestore.rules MUST include it (deployed 2026-08-11).
-    await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak,
-      // The weekly race (DOPAMINE_REVIEW §9). Published alongside the
-      // lifetime figure, never instead of it — the board keeps both views,
-      // and `weekKey` is what lets a reader tell a live total from a stale
-      // one without trusting the writer's clock.
-      weekXp: p.weekXp ?? 0, weekKey: p.weekKey ?? null,
-      term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
-  } catch {
-    // Write denied → excluded (admin / opt-out). Remove any stale entry.
+  // A STAFF SIGN-IN IS NOT A LEARNER (Dan, 2026-09-13: "i need to hide both
+  // legacy roles and my own test accountrs ... like the one i tested with
+  // today"). firestore.rules has denied these six addresses since 5 Jul, and
+  // the fallback below has deleted the row when a write is denied — so on
+  // paper this was already handled. It was not, and the reason is the gap
+  // between the two halves: **the rules are not deployed by anything in this
+  // repo** (no rules deploy path — docs/STATUS.md), so the file's allowlist
+  // and the live project's can differ by however long it has been since
+  // someone opened the Firebase console, and a test account the live rules do
+  // not know about publishes a row exactly like a student's. The client half
+  // ships with every build. So refuse here FIRST and let the same cleanup
+  // remove the row — Dan's next sign-in on that account takes it off the
+  // public board for everyone, with no console visit and no rules deploy.
+  // TWO TESTS, because the board knows a name and the rules know an address.
+  // The email catches the teacher's own six and his two alter-ego learners; the
+  // NAME catches an account whose address we got wrong or never had — one of
+  // the two arrived pasted with the name run into the address, so the name is
+  // the half that is certain. Either one refuses, and the refusal deletes.
+  let published = false;
+  if (!isOffBoardAccount(u.email) && !isHiddenRosterName(name)) {
+    try {
+      // Rank by XP now (the lifetime score); keep gems for continuity and publish
+      // the level so the board can show each learner's rank name. `term` scopes
+      // the board to the current cohort (term.ts) — the create rule's allowlist
+      // in firestore.rules MUST include it (deployed 2026-08-11).
+      await setDoc(ref, { name, xp: p.xp, level: levelForXp(p.xp).level, gems: p.gems, streak: p.streak,
+        // The weekly race (DOPAMINE_REVIEW §9). Published alongside the
+        // lifetime figure, never instead of it — the board keeps both views,
+        // and `weekKey` is what lets a reader tell a live total from a stale
+        // one without trusting the writer's clock.
+        weekXp: p.weekXp ?? 0, weekKey: p.weekKey ?? null,
+        term: p.term ?? CURRENT_TERM, updatedAt: Date.now() }, { merge: true });
+      published = true;
+    } catch {
+      /* denied (rules-side exclusion) or offline — cleaned up below */
+    }
+  }
+  if (!published) {
+    // Excluded (staff / opt-out) → remove any stale entry. The delete rule
+    // always allows the owner, so this is the one door a teacher or an
+    // opted-out learner has to take their own row off the board.
     try { await deleteDoc(ref); } catch {}
   }
 }

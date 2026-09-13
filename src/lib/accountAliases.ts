@@ -33,12 +33,23 @@ export const HIDDEN_ROSTER_NAMES = new Set([
   // Retired 2026-07-28 (Dan: "we can retire Cagey Chan and Georgina from the
   // learner analytics") — one of Dan's own sign-ins, not a learner.
   "Cagey Chan",
+  // Dan's alter-ego test learners (2026-09-13: "these two are my alter ego
+  // test identites pls gelp yo delete them"). Both practised on 14 Sept and
+  // ranked on the public board among the students. The NAME is what the board
+  // carries — a board row holds no address — so the name is what hides it, on
+  // the board and on the roster alike, and what stops the account publishing
+  // again (progressSync.publishLeaderboard).
+  "Daniel Chan",
+  "Shi'Er You",
 ]);
 
 /** Retired accounts known by first name only — matched case-insensitively on
  *  the whole name or its first word, since the display name may carry a
  *  surname we have never seen. */
-export const HIDDEN_ROSTER_NAME_PREFIXES = ["georgina"];
+// "shi'er" (2026-09-13) because that row arrived pasted with the display name
+// run into the email address with no space between them, so the SURNAME is a
+// best reading and the first word is not. The prefix holds either way.
+export const HIDDEN_ROSTER_NAME_PREFIXES = ["georgina", "shi'er"];
 
 /** Does this display name belong to an account retired from the roster? */
 export function isHiddenRosterName(name: string | null | undefined): boolean {
