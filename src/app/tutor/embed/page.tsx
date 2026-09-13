@@ -50,8 +50,22 @@ import ChaTutorPanel from "@/components/tools/ChaTutorPanel";
 
 export default function TutorEmbedPage() {
   return (
-    <div className="touch-pan-y min-h-dvh px-3 py-5">
-      <div className="mx-auto flex max-w-2xl flex-col gap-3 pb-5 pt-2">
+    /* FULL HEIGHT, NOT MIN-HEIGHT. The panel is a messenger now (2026-09-13)
+       and a messenger's thread scrolls inside itself so the composer stays put
+       — which only works if something above it has a height to give. `min-h`
+       gives a floor and no ceiling, so the panel would have grown with the
+       conversation and pushed the composer off the bottom exactly as before. */
+    /* THE LEFT INSET CLEARS THE COILS, AND IT IS MEASURED. Every framed
+       station's iframe starts at page-x 19 while the cahier's coil strip runs
+       to page-x 57 — so 38px of every embed is drawn UNDER the rings. That is
+       app-wide and predates this file; it never showed because the stations put
+       a bordered, padded card inside the frame and the card's own inset
+       absorbed it. A messenger has no card: bubbles, avatars and the composer's
+       first key all sit on the frame's edge, and at px-3 the autoSpeak key came
+       out 18px under the rings — a control you cannot fully press. `pl-10` is
+       40px, which is the 38 plus a hair. */
+    <div className="touch-pan-y flex h-dvh flex-col py-5 pl-10 pr-3">
+      <div className="mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col gap-3 pb-5 pt-2">
         {/* The h1 + tagline live in the shell's heading band (variant A,
             2026-08-23) — the tagline fell to the litmus rule. That band is the
             PAGE's, out here, and always was in a frame. */}

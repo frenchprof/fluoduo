@@ -77,6 +77,28 @@ export default function AccentBar() {
     };
   }, []);
 
+  /* PUBLISH THE BAR'S HEIGHT so whatever is pinned to the bottom can clear it.
+     The bar is `fixed inset-x-0 bottom-0`, and since the chat surfaces became
+     messengers (2026-09-13) the thing at the bottom of the frame is the
+     composer — so without this the bar lands on the very field that summoned
+     it. It was already covering ChaTutor's Send button before that, on the row
+     below its textarea; nobody had looked, because the bar only appears once a
+     French field has focus and a screenshot of an unfocused page never shows
+     it. Measured rather than guessed: the key rows wrap differently at 320px
+     and a hard-coded clearance would be wrong on one of them. */
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!visible) { root.style.removeProperty("--accent-bar-h"); return; }
+    const set = () => {
+      const h = barRef.current?.offsetHeight ?? 0;
+      root.style.setProperty("--accent-bar-h", `${h}px`);
+    };
+    set();
+    const ro = new ResizeObserver(set);
+    if (barRef.current) ro.observe(barRef.current);
+    return () => { ro.disconnect(); root.style.removeProperty("--accent-bar-h"); };
+  }, [visible, shift]);
+
   if (!visible) return null;
   const keys = shift ? UPPER : LOWER;
   // pointerdown + preventDefault keeps focus in the field so the insert lands.
