@@ -6,6 +6,46 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — the deck table's coils never got the 11 Sep fix (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+
+**Dan, sending a photograph of a top-left corner: *"I hope this bug is not
+coming back to the website after tough time chasing it away"*.** It was not
+coming back. It had never been fixed there.
+
+The 11 Sep ruling — *the coils start at the band, not below it* — changed
+`CahierShell`, which draws sixteen of the seventeen stations. The deck table
+has its OWN frame, `src/app/practice/flip-it/CahierFrame.tsx`, and that file
+was not touched. It kept the 6 Sep shape, with `{topBar}` rendered OUTSIDE the
+coil region, so on `/decks/<id>` the binding opened at y=125 while the band
+opened at y=59: **67px of bare margin beside the MémoiRecall strip, the desk
+showing through where every other station has rings.**
+
+**AND THE CHECK EXCUSED IT, BY DESIGN, ON A FALSE PREMISE.** `sheet-scan.mjs`
+measured only a band that is the binding's SIBLING, quoting this file's own
+note that the deck's band is *"inside a content well … already clear of the
+coils"*. Measured on the built app, that band is not in a well: it spans the
+paper, x=13 to x=417. So `/decks/salutations` printed « (no shell band — its
+heading is inside the well) » and passed without being looked at — a route
+listed in `CORNER`, scanned on every CI run, and untested for two days.
+
+Three things changed, not one:
+
+  the page    CahierFrame renders {topBar} inside the binding's region, after
+              the binding, exactly as CahierShell does. The 3rem clearance rule
+              (`.cahier-binding ~ .page-band`) now matches it, so the ✕ steps
+              right and the rings do not cross it.
+  the check   a page with coils and a band that is NOT the binding's sibling
+              now FAILS and names the fix, instead of quietly exempting itself.
+              Break-tested: the old markup restored, rebuilt, and the scan
+              printed the fault before the fix went back.
+  the note    the wrong sentence in AGENTS.md is replaced by what actually
+              happened, so the next session does not rebuild the exemption.
+
+The lesson is the older one restated: **an exemption written from the markup
+rather than from the screen is a check that does not run.**
+
+Gate: tsc clean, build green, eslint clean, verify230 green in a browser.
+
 ## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, branch `claude/peers-vd2h6h`, NOT merged, NOT handed over)
 
 **MY HALF OF THE SPREADSHEET SPLIT.** fluoduo-main took the other half; this
