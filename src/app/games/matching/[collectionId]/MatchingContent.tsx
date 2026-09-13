@@ -27,7 +27,7 @@ export default function MatchingContent({ collectionId }: { collectionId: string
           LexicaLater were wrapped that day; Match It and ComposeIt were the two
           that got missed, and both opened on a bare white game bar with nothing
           naming them. ⛶ on that bar still takes the board full-screen. */}
-      <GameLanding activityKey="matching" title="Match It" bleed>
+      <GameLanding activityKey="matching" title="Match It" bleed deck={collectionId}>
         <MatchingGame set={set} />
       </GameLanding>
     </AuthGate>

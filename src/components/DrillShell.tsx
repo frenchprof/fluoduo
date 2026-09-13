@@ -48,7 +48,9 @@ import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
-import { HOME_HREF } from "@/lib/routes";
+import { HOME_HREF, sioHref } from "@/lib/routes";
+import ActivityUsher from "@/components/ActivityUsher";
+import { usherFor } from "@/lib/usher";
 
 export type DrillCta = {
   label: string;
@@ -94,13 +96,22 @@ export function drillExitHref(collectionId: string): string {
   // Through lib/stopTag.ts, which is now the one place a deck id is turned
   // into its stop — this was the second hand-written copy of that `find`.
   const sio = stopForDeck(collectionId);
-  // BOTH ADDRESSES FORWARDED TO THE SAME PAGE (12 Sep). `/unit/N` has been a
-  // `location.replace` to the map since August, and `/map` became one when the
-  // map moved onto Home — so the ✕ on every drill cost two page loads and a
-  // flash to reach a page that was one click away. Same destinations, named
-  // directly: `MapBody` reads `?unit=` itself, which is what `/unit/N` was
-  // rewriting the address to anyway.
-  return sio ? `${HOME_HREF}?unit=${sio.unit}` : HOME_HREF;
+  // THE STOP'S OWN PAGE, NOT THE MAP (Dan, 2026-09-13: *"when one chooses to
+  // close any activity, it must take the learner back to that 🎯 page, NOT to
+  // the map"*). His reason is the one that matters: *"with the latter they
+  // would have to select the stop that they have not completed again, it is a
+  // hassle"* — the map drops a learner two clicks from where they just were,
+  // and the 🎯 page is where the rest of that stop's practice chain lives.
+  //
+  // WHAT THIS REPLACES, so the old reasoning is not restored from the note it
+  // left behind: until today this returned `${HOME_HREF}?unit=N`, and that
+  // line was itself a fix (12 Sep) for a ✕ that cost two page loads by going
+  // through `/unit/N`. Fewer loads, still the wrong page.
+  //
+  // The map is NOT lost and was never the thing to fix — the chartreuse
+  // FluOLinGo in the site bar is on every one of these screens, which Dan
+  // named himself: *"the return to the map is already available at the top"*.
+  return sio ? sioHref(sio.id) : HOME_HREF;
 }
 
 /** A finished run's footer (the approved flow, 2026-08-24): ONE primary
@@ -240,6 +251,19 @@ export default function DrillShell({
     [finish, activity, deck],
   );
   const goNext = () => router.push(next?.href ?? HOME_HREF);
+  /* THE BACK LINK SAYS WHERE IT GOES. `exitHref` is `drillExitHref`'s answer,
+     which is the stop's own 🎯 page whenever the deck HAS a stop and the map
+     otherwise (a deck off the study path). The label is read back off the
+     address rather than passed in, so the two cannot disagree — the old one
+     said « Back to the map » and, after today, would have been pointing at the
+     goal page while still saying map. */
+  const usher = useMemo(
+    () => (finish ? usherFor(activity, { collectionId: deck }) : null),
+    [finish, activity, deck],
+  );
+  const backLabel = exitHref.startsWith("/sio/")
+    ? `Back to 🎯 ${goalNumberForDeck(deck) ?? ""}`.trim()
+    : "Back to the map";
   // WHY is closed whenever a new verdict lands — an explanation is asked
   // for, never carried over from the last question. (State adjusted during
   // render on the prop change, not in an effect.)
@@ -693,6 +717,16 @@ export default function DrillShell({
       >
         {finish ? (
           <div className="mx-auto w-full fluo-measure px-4 py-3">
+            {/* THE FIVE DOORS (Dan, 2026-09-13) — one step back in the stop's
+                chain, forward to the next, the 🎯 page, redo, and the same
+                activity at the next stop that has it. `usherFor` decides which
+                of them exist; « Redo » is this shell's own `finish.repeat`,
+                the one move that is an action rather than an address.
+
+                ABOVE the « Next › » row, not instead of it: that row is the
+                approved single-primary flow (24 Aug) and still carries the
+                recommendation. The compass is the alternatives to it. */}
+            <ActivityUsher usher={usher} onRedo={finish.repeat} className="mb-3" />
             <div className="flex min-w-0 items-center gap-2.5">
               <span className="shrink-0 text-lg font-black text-[color:var(--drill-ok-ink)]" aria-hidden>✓</span>
               {next && <NextChip step={next} />}
@@ -726,8 +760,13 @@ export default function DrillShell({
                   <span className="mx-2 opacity-60" aria-hidden>·</span>
                 </>
               )}
+              {/* BACK TO THE STOP, NOT THE MAP — the same destination the ✕
+                  above it now has, so one screen no longer offers two exits
+                  that land in different places (Dan, 2026-09-13). The label
+                  follows the address: saying « map » while going to the goal
+                  page is the kind of small lie that costs a bug report. */}
               <Link href={exitHref} className="underline decoration-dotted">
-                Back to the map
+                {backLabel}
               </Link>
             </div>
           </div>

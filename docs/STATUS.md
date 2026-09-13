@@ -41,6 +41,62 @@ ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
 Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
 clean on the touched files.
 
+## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, branch `claude/peers-vd2h6h`, NOT merged; the usher row is HALF DONE)
+
+**Dan: *"when one chooses to close any activity, it must take the learner back
+to that 🎯 page, NOT to the map"*, and the reason: *"with the latter they would
+have to select the stop that they have not completed again, it is a hassle"*.**
+
+MEASURED IN THE BUILT APP, BEFORE AND AFTER:
+
+    MémoiRecall     /home?unit=0  ->  /sio/SIO-009
+    SpecuLearn      /home?unit=3  ->  /sio/SIO-038
+    MneMemo         /home?unit=0  ->  /sio/SIO-009
+    GramMarathon    /home?unit=0  ->  /sio/SIO-023
+    VoixLà          /home?unit=0  ->  /sio/SIO-023
+    the deck table  /home?unit=0  ->  /sio/SIO-009
+
+One function, `drillExitHref`, is six of those. The finish footer's back link
+goes to the same place now and says « Back to 🎯 N » — the label is read off
+the address so the two cannot disagree; it used to say « Back to the map » and
+would have been pointing at the goal page while still saying map. `GameLanding`
+takes a `deck` so Match It and LexicaLocker follow the same rule; NumBus and
+NumBourse have no stop behind them and keep the map. ÉcouTexte's topic-picker
+route keeps it too — no stop has been chosen there yet.
+
+**THE MAP IS NOT LOST, and that half was already solved** — Dan's own note:
+*"(The return to the map is already available at the top via the FluOLinGo
+chartreuse)"*.
+
+**AND A CORRECTION I OWE THE RECORD.** Asked where the ✕ went, I answered in a
+way Dan read as contradicting him — *"why are you contradicting me"*. I was
+agreeing that it went to the map and needed changing, but the sentence did not
+say so. The table above is what settled it, and driving the app rather than
+arguing is what should have happened first.
+
+## THE USHERING NAVIGATORS ARE HALF DONE — read this before continuing them
+
+Dan's five, in his words: *"one step back to the previous activity of that
+goal, or forward to the next activity for that goal, or return to the 🎯 page
+(SIO) to select another activity. or to redo, or to go down towards the same
+activity for the next available stop (Not all stops have all activities)"*.
+
+BUILT: `src/lib/usher.ts` (the compass — four addresses; « redo » is an action
+the caller supplies) and `src/components/ActivityUsher.tsx` with its
+`.fluo-usher` block. Wired into `DrillShell`'s finish row.
+
+**NOT DONE, AND THE REASON MATTERS: only TWO surfaces use that finish row** —
+LessonPager (MneMemo) and ConjugaZone. Measured by grepping `finish=`:
+MémoiRecall, VoixLà, GramMarathon, SpecuLearn and the six games each end on
+their OWN screen — `GameOver`, SpecuLearn's `Recap`, or merely a swapped
+« Restart » CTA. So *"for all the stops there should be something like this at
+the end"* is about six more wirings, not one component.
+
+**AND THE ROW HAS NOT BEEN SEEN ON SCREEN YET.** A click-through driver could
+not reach either finish state, so there is no before/after picture. Do not
+claim it renders until there is one — the whole point of the show-don't-
+describe rule.
+
 ## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
 
 **Dan: *"SpecuLearn, I am still hearing TTS for individual parts words WHEN I

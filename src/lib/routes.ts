@@ -29,3 +29,17 @@
 
 /** Home — the learner's own page, behind the ENTER coin. */
 export const HOME_HREF = "/home";
+
+/** A stop's own 🎯 page — the goal, its lesson and its practice chain.
+ *
+ *  THE WAY OUT OF EVERY ACTIVITY (Dan, 2026-09-13: *"when one chooses to
+ *  close any activity, it must take the learner back to that 🎯 page, NOT to
+ *  the map"*, and on why: *"with the latter they would have to select the
+ *  stop that they have not completed again, it is a hassle"*).
+ *
+ *  Named here rather than typed at each call site because it is now the
+ *  destination of the ✕ on every drill, of each finish footer's back link and
+ *  of a game-over card's ← Back: six places that must not drift apart. The map
+ *  is still one tap away — the chartreuse FluOLinGo in the site bar — which is
+ *  the half of this Dan pointed out was already solved. */
+export const sioHref = (sioId: string): string => `/sio/${sioId}`;

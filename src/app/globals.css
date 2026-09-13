@@ -4523,3 +4523,38 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
      stop blinking, they do not disappear. */
   .fluo-nextq-arrows > span { animation: none; opacity: 1; }
 }
+
+/* ══ THE USHERING NAVIGATORS — the end of every activity (2026-09-13) ══════
+   Dan: *"We are missing the ushering navigators… for all the stops there
+   should be something like this at the end."* The row and its keys; which
+   doors appear is `lib/usher.ts`'s answer, not this file's.
+
+   A WRAPPING ROW, NOT A STACK. Five keys will not sit on one line at 390px,
+   and five full-width bars would break the no-control-spans-the-width rule
+   five times over. They wrap and centre, so a phone gets two or three rows of
+   content-sized keys and a desktop gets one. */
+.fluo-usher {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.9rem + var(--fs-step) * 0.9);
+}
+.fluo-usher-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  /* The finger floor, which is not a hard-coded size — 44px is the smallest a
+     finger reliably hits and it does not grow on a desktop (verify270). */
+  min-height: 44px;
+  padding: calc(0.35rem + var(--fs-step) * 0.35) calc(0.8rem + var(--fs-step) * 0.8);
+  border-radius: calc(0.55rem + var(--fs-step) * 0.55);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1rem + var(--fs-step) * 1);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--cahier-ink);
+  text-align: center;
+  text-decoration: none;
+}

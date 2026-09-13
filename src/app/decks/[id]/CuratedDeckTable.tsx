@@ -52,7 +52,7 @@ import {
   type Row,
 } from "@/app/practice/flip-it/shared";
 import { shuffle as shuffleArr } from "@/lib/shuffle";
-import { HOME_HREF } from "@/lib/routes";
+import { HOME_HREF, sioHref } from "@/lib/routes";
 
 /* ─────────────────────────── step labels ─────────────────────────── */
 
@@ -233,7 +233,11 @@ function TopBar({ collectionId }: { collectionId: string }) {
       /* The ← became the band's ✕ (Dan, 1 Sep: "all strips … with a X"). One
          control on every strip, spelt once in PageBand, rather than a back
          arrow here and a close there. */
-      exitHref={`${HOME_HREF}?unit=${stopForDeck(collectionId)?.unit ?? 0}`}
+      /* THE STOP'S 🎯 PAGE, NOT THE MAP (Dan, 2026-09-13) — the same move
+         `drillExitHref` makes for every drill, spelt here because this band is
+         the page's own rather than the shell's. A deck off the study path has
+         no stop, and only then does the map remain the way out. */
+      exitHref={(() => { const s = stopForDeck(collectionId); return s ? sioHref(s.id) : HOME_HREF; })()}
       /* 🔊 left this row on 2026-08-31 because SiteTopBar sits directly above
          it and carries the same control. THE (?) LEFT ON 2026-09-02 for the
          identical reason, which the note here had got wrong: it claimed to be
