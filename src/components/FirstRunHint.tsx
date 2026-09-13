@@ -41,6 +41,60 @@ import GuidedSteps from "@/components/GuidedSteps";
 /** One key per activity, so dismissing one says nothing about the others. */
 const keyFor = (k: string) => `fluolingo:hint.${k}`;
 
+/**
+ * ONE HINT PER KEY ON THE WHOLE SCREEN, HOST AND FRAME TOGETHER (Dan, 13 Sep,
+ * sending VoixLà: *"VoixLà starts with a double tour"*).
+ *
+ * Every station runs in the cahier in an iframe (7 Sep), and `CahierShell`
+ * renders this component — so on a station where the HOST and the FRAMED page
+ * both name the same activity, it mounted twice and a learner saw two cards
+ * stacked, the second offset by the frame's own origin. Measured on the built
+ * app at 1440x900:
+ *
+ *     /tts          host:1  FRAME:1     <- two cards
+ *     /reviser      host:1  FRAME:1     <- two cards
+ *     /conjugaison          FRAME:1     one, and it lives in the FRAME
+ *     /speculearn   host:1              one, and it lives in the HOST
+ *     /tutor        host:1
+ *
+ * `html[data-embed]` was not the answer. It hides the shell's FURNITURE inside
+ * a frame — site bar, band, coils — and this card is portalled to `body`, so
+ * it was never in that net. And the obvious fix, "do not open inside a frame",
+ * is WRONG IN BOTH DIRECTIONS: it would delete ConjugaZone's only hint, which
+ * lives in the frame, and the mirror fix would delete SpecuLearn's and
+ * ChaTutor's, which live in the host. The two-column table above is the whole
+ * reason this is a claim and not a one-line guard.
+ *
+ * So the FIRST card to mount for a key wins and the rest stay shut. The claim
+ * lives on the TOP document because that is the one thing a host and its
+ * same-origin frames share; it is released on close and on unmount, so a
+ * learner who leaves and comes back is offered it again exactly as before.
+ * Cross-origin access throws, and the catch opens the card — the old
+ * behaviour, because a duplicated instruction beats a missing one.
+ */
+const CLAIM = "fluolingoHintClaim";
+function claimHint(key: string): boolean {
+  try {
+    const top = window.top?.document?.documentElement;
+    if (!top) return true;
+    const held = top.dataset[CLAIM];
+    if (held && held !== key) return true;      // another activity's card: not ours to judge
+    if (held === key) return false;             // someone already shows this one
+    top.dataset[CLAIM] = key;
+    return true;
+  } catch {
+    return true;
+  }
+}
+function releaseHint(key: string): void {
+  try {
+    const top = window.top?.document?.documentElement;
+    if (top && top.dataset[CLAIM] === key) delete top.dataset[CLAIM];
+  } catch {
+    /* cross-origin: nothing was claimed, so nothing to release */
+  }
+}
+
 export default function FirstRunHint({
   hintKey,
   title,
@@ -78,14 +132,22 @@ export default function FirstRunHint({
     // which one that is differs between local and CI eslint, which is how
     // FirstTour's two effects came to carry the same block form.
     /* eslint-disable react-hooks/set-state-in-effect */
+    let claimed = false;
     try {
-      if (window.localStorage.getItem(keyFor(hintKey)) !== "1") setOpen(true);
+      if (window.localStorage.getItem(keyFor(hintKey)) !== "1") {
+        claimed = claimHint(hintKey);
+        if (claimed) setOpen(true);
+      }
     } catch {
       // A browser with storage blocked gets the hint every visit, which is the
       // safe side of this failure: an instruction repeated beats one lost.
-      setOpen(true);
+      claimed = claimHint(hintKey);
+      if (claimed) setOpen(true);
     }
     /* eslint-enable react-hooks/set-state-in-effect */
+    // Release on unmount so leaving and returning offers it again, and so the
+    // copy that lost the race can win it next time rather than being dead.
+    return () => { if (claimed) releaseHint(hintKey); };
   }, [hintKey]);
 
   // Focus lands on the way out, so the keyboard can dismiss it with Enter

@@ -305,6 +305,23 @@ export default function VoixLaPanel({
       className="rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner"
       style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
     >
+      {/* THE INSTRUCTIONS LIVE HERE, NOT IN A POP-UP (Dan, 2026-09-13:
+          *"Voixlà's pop up instructions are to be transferred to the space
+          above the field"*).
+
+          A card you must dismiss before you can touch the field is a door in
+          front of the room: it costs a tap, it covers the thing it describes,
+          and it is gone exactly when a learner would want to re-read it. Above
+          the field it is there the whole time and costs nothing.
+
+          Same three lines as the hint card, in the same order — this replaces
+          it rather than repeating it (see `tts` in content/hints.ts, now
+          `on: "none"`). It is REFERENCE, so it is small and quiet; the French
+          the learner types is the target and stays the biggest thing here. */}
+      <p className="mb-2 text-[13px] leading-snug text-[color:var(--cahier-ink-soft)]">
+        Type any French — a word, an expression, a whole text. ▶ reads it back;
+        👩 and ×1.0 change voice and speed. ✏️ checks and corrects what you wrote.
+      </p>
       <textarea
         ref={taRef}
         lang="fr"

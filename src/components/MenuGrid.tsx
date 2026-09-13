@@ -48,6 +48,11 @@ import { HOME_HREF } from "@/lib/routes";
 // catch, and it very nearly reintroduced it: use the token, not the value.
 const TILE = SHARED_TILE;
 const NAME = SHARED_TILE_NAME;
+/** The − and + on the GO TO field. `text-[30px]` is already a ramp size in
+ *  globals.css (calc(1.875rem + var(--fs-step) * 1.88)), so these grow with
+ *  the rest of the app rather than adding a step to the ladder for one glyph —
+ *  and it is the same size the 🎯 beside them wears. */
+const STEP = "text-[30px]";
 
 const PEN = {
   goals: "var(--fam-goals)",
@@ -388,21 +393,50 @@ export default function MenuGrid({
           style={{ borderColor: "var(--cahier-ink)" }}
         >
           <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
-          {/* A real number input with its native arrows — Dan asked for "the
-              up-down by the side of the field". globals.css strips spinners
-              app-wide; `.fluo-stepper` is the one opt-in, and it has to be
-              written `input[type="number"].fluo-stepper` to outrank that rule —
-              and its SIZE lives in that same rule for the same reason: the
-              cahier's form skin sets 0.95rem at a specificity no utility class
-              here can beat, so `text-[22px]` on this element rendered at 15px. */}
+          {/* REAL BUTTONS, NOT THE INPUT'S NATIVE ARROWS (Dan, 2026-09-13:
+              *"The top-of-grid-menu field was supposed to have +- controls at
+              the side"* — said about a build where they were already
+              "implemented").
+
+              THEY WERE, AND THEY WERE INVISIBLE WHERE HE LOOKS. The first
+              answer to *"the up-down by the side of the field"* was
+              `appearance: auto` on `input[type="number"]`, which un-strips the
+              browser's own spinner. Chrome and Safari on a DESKTOP draw those.
+              **Mobile Chrome and mobile Safari draw nothing at all** — the
+              spinner does not exist on touch, by design, because it is a 10px
+              target. So on a phone the field had no controls and never had,
+              and the work was verified by reading the computed style
+              (`appearance: auto` — correct!) instead of by opening a phone.
+
+              A native control you cannot see is not a control. These are two
+              ordinary buttons: they render everywhere, they take the 44px
+              touch floor a spinner could never meet, and they are on the ramp
+              rather than nailed to a pixel. The input keeps its type so a
+              hardware keyboard's arrows and a numeric keypad still work. */}
+          <button
+            type="button"
+            aria-label="Previous goal"
+            onClick={() => setDraft((d) => String(Math.max(1, (parseInt(d, 10) || 1) - 1)))}
+            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+          >
+            <span aria-hidden className={STEP}>−</span>
+          </button>
           <input
             type="number"
             min={1}
             max={SIOS.length}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            className="fluo-stepper w-full bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+            className="fluo-stepper w-full min-w-0 bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
           />
+          <button
+            type="button"
+            aria-label="Next goal"
+            onClick={() => setDraft((d) => String(Math.min(SIOS.length, (parseInt(d, 10) || 1) + 1)))}
+            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+          >
+            <span aria-hidden className={STEP}>+</span>
+          </button>
         </label>
         <span className="flex items-center justify-center">
           {/* SMALLER than a door, deliberately: it confirms a number, it does
