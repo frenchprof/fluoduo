@@ -236,45 +236,6 @@
    ]
   },
   {
-   "id": "commerces-12",
-   "fr": "magasins",
-   "en": "shops",
-   "emoji": "🏬",
-   "syllables": [
-    "ma",
-    "ga",
-    "sins"
-   ],
-   "tags": [
-    "col:des"
-   ]
-  },
-  {
-   "id": "commerces-13",
-   "fr": "boutiques",
-   "en": "boutiques",
-   "syllables": [
-    "bou",
-    "tiques"
-   ],
-   "tags": [
-    "col:des"
-   ]
-  },
-  {
-   "id": "commerces-14",
-   "fr": "commerces",
-   "en": "shops / businesses",
-   "emoji": "🏪",
-   "syllables": [
-    "com",
-    "merces"
-   ],
-   "tags": [
-    "col:des"
-   ]
-  },
-  {
    "id": "commerces-15",
    "fr": "Je voudrais deux kilos de pommes.",
    "en": "I'd like two kilos of apples.",
@@ -380,85 +341,6 @@
    "emoji": "🤲",
    "tags": [
     "col:marchand"
-   ]
-  },
-  {
-   "id": "commerces-27",
-   "fr": "euros",
-   "en": "euros",
-   "emoji": "💶",
-   "tags": [
-    "col:des"
-   ],
-   "syllables": [
-    "eu",
-    "ros"
-   ]
-  },
-  {
-   "id": "commerces-28",
-   "fr": "monnaie",
-   "en": "change (money)",
-   "emoji": "🪙",
-   "tags": [
-    "col:la"
-   ],
-   "syllables": [
-    "mon",
-    "naie"
-   ]
-  },
-  {
-   "id": "commerces-29",
-   "fr": "voudrais",
-   "en": "would like",
-   "tags": [],
-   "syllables": [
-    "vou",
-    "drais"
-   ]
-  },
-  {
-   "id": "commerces-30",
-   "fr": "désirez",
-   "en": "would like (formal, vous)",
-   "tags": [],
-   "syllables": [
-    "dé",
-    "si",
-    "rez"
-   ]
-  },
-  {
-   "id": "commerces-31",
-   "fr": "ceci",
-   "en": "this / this here",
-   "tags": [],
-   "syllables": [
-    "ce",
-    "ci"
-   ]
-  },
-  {
-   "id": "commerces-32",
-   "fr": "voilà",
-   "en": "here you are",
-   "tags": [],
-   "syllables": [
-    "voi",
-    "là"
-   ]
-  },
-  {
-   "id": "commerces-33",
-   "fr": "prix",
-   "en": "price",
-   "emoji": "🏷️",
-   "tags": [
-    "col:le"
-   ],
-   "syllables": [
-    "prix"
    ]
   }
  ]

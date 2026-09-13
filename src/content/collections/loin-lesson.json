@@ -163,6 +163,63 @@
       ]
     },
     {
+      "id": "loin-lesson-a-cote-du",
+      "fr": "à côté du",
+      "en": "next to the… (de + le)",
+      "emoji": "🤝",
+      "tags": [
+        "col:avec_de"
+      ],
+      "syllables": [
+        "à",
+        "cô",
+        "té",
+        "du"
+      ]
+    },
+    {
+      "id": "loin-lesson-en-face-de-la",
+      "fr": "en face de la",
+      "en": "opposite the… (de + la)",
+      "emoji": "🪞",
+      "tags": [
+        "col:avec_de"
+      ],
+      "syllables": [
+        "en",
+        "face",
+        "de",
+        "la"
+      ]
+    },
+    {
+      "id": "loin-lesson-pres-de-l",
+      "fr": "près de l'",
+      "en": "near the… (de + l')",
+      "emoji": "📏",
+      "tags": [
+        "col:avec_de"
+      ],
+      "syllables": [
+        "près",
+        "de",
+        "l'"
+      ]
+    },
+    {
+      "id": "loin-lesson-loin-des",
+      "fr": "loin des",
+      "en": "far from the… (de + les)",
+      "emoji": "🛣️",
+      "tags": [
+        "col:avec_de"
+      ],
+      "syllables": [
+        "loin",
+        "des"
+      ]
+    },
+    {
       "id": "loin-lesson-ici",
       "fr": "ici",
       "en": "here",

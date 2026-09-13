@@ -254,6 +254,181 @@
       ]
     },
     {
+      "id": "faire-activites-25",
+      "fr": "football",
+      "en": "football / soccer",
+      "syllables": [
+        "foot",
+        "ball"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-26",
+      "fr": "basket",
+      "en": "basketball",
+      "syllables": [
+        "bas",
+        "ket"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-27",
+      "fr": "ski",
+      "en": "skiing",
+      "syllables": [
+        "ski"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-28",
+      "fr": "karaté",
+      "en": "karate",
+      "syllables": [
+        "ka",
+        "ra",
+        "té"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-29",
+      "fr": "yoga",
+      "en": "yoga",
+      "syllables": [
+        "yo",
+        "ga"
+      ],
+      "tags": [
+        "col:du"
+      ]
+    },
+    {
+      "id": "faire-activites-30",
+      "fr": "boxe",
+      "en": "boxing",
+      "syllables": [
+        "boxe"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-31",
+      "fr": "peinture",
+      "en": "painting",
+      "syllables": [
+        "pein",
+        "ture"
+      ],
+      "tags": [
+        "col:de_la"
+      ]
+    },
+    {
+      "id": "faire-activites-32",
+      "fr": "escrime",
+      "en": "fencing",
+      "syllables": [
+        "es",
+        "crime"
+      ],
+      "tags": [
+        "col:de_l"
+      ]
+    },
+    {
+      "id": "faire-activites-33",
+      "fr": "Je fais du sport.",
+      "en": "I do sport.",
+      "gap": "du",
+      "syllables": [
+        "Je",
+        "fais",
+        "du",
+        "sport."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-34",
+      "fr": "Tu fais de la natation.",
+      "en": "You swim.",
+      "gap": "de la",
+      "syllables": [
+        "Tu",
+        "fais",
+        "de",
+        "la",
+        "natation."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-35",
+      "fr": "Il fait de l'équitation.",
+      "en": "He does horse riding.",
+      "gap": "de l'",
+      "syllables": [
+        "Il",
+        "fait",
+        "de",
+        "l'équitation."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-36",
+      "fr": "Nous faisons des randonnées.",
+      "en": "We go hiking.",
+      "gap": "des",
+      "syllables": [
+        "Nous",
+        "faisons",
+        "des",
+        "randonnées."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-37",
+      "fr": "Elle fait du piano.",
+      "en": "She plays the piano.",
+      "gap": "du",
+      "syllables": [
+        "Elle",
+        "fait",
+        "du",
+        "piano."
+      ],
+      "tags": []
+    },
+    {
+      "id": "faire-activites-38",
+      "fr": "Vous faites de la danse.",
+      "en": "You (pl) dance.",
+      "gap": "de la",
+      "syllables": [
+        "Vous",
+        "faites",
+        "de",
+        "la",
+        "danse."
+      ],
+      "tags": []
+    },
+    {
       "id": "faire-activites-17",
       "fr": "Je ne fais pas de sport.",
       "en": "I don't do sport.",
@@ -380,101 +555,6 @@
         "danse."
       ],
       "tags": []
-    },
-    {
-      "id": "faire-activites-25",
-      "fr": "football",
-      "en": "football / soccer",
-      "syllables": [
-        "foot",
-        "ball"
-      ],
-      "tags": [
-        "col:du"
-      ]
-    },
-    {
-      "id": "faire-activites-26",
-      "fr": "basket",
-      "en": "basketball",
-      "syllables": [
-        "bas",
-        "ket"
-      ],
-      "tags": [
-        "col:du"
-      ]
-    },
-    {
-      "id": "faire-activites-27",
-      "fr": "ski",
-      "en": "skiing",
-      "syllables": [
-        "ski"
-      ],
-      "tags": [
-        "col:du"
-      ]
-    },
-    {
-      "id": "faire-activites-28",
-      "fr": "karaté",
-      "en": "karate",
-      "syllables": [
-        "ka",
-        "ra",
-        "té"
-      ],
-      "tags": [
-        "col:du"
-      ]
-    },
-    {
-      "id": "faire-activites-29",
-      "fr": "yoga",
-      "en": "yoga",
-      "syllables": [
-        "yo",
-        "ga"
-      ],
-      "tags": [
-        "col:du"
-      ]
-    },
-    {
-      "id": "faire-activites-30",
-      "fr": "boxe",
-      "en": "boxing",
-      "syllables": [
-        "boxe"
-      ],
-      "tags": [
-        "col:de_la"
-      ]
-    },
-    {
-      "id": "faire-activites-31",
-      "fr": "peinture",
-      "en": "painting",
-      "syllables": [
-        "pein",
-        "ture"
-      ],
-      "tags": [
-        "col:de_la"
-      ]
-    },
-    {
-      "id": "faire-activites-32",
-      "fr": "escrime",
-      "en": "fencing",
-      "syllables": [
-        "es",
-        "crime"
-      ],
-      "tags": [
-        "col:de_l"
-      ]
     }
   ]
 }
