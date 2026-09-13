@@ -70,6 +70,51 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
  * yellow instead of green." See globals.css for the 28 pinned values and
  * verify96 for the contrast floor.
  */
+
+// ═══ THE ROWS ARE RENAMED, 2026-09-13 ═══════════════════════════════════════
+// Dan: *"We need to relabel: PRACTICE in the grid menu should be LEARN ·
+// REVISE becomes PRACTICE · GAMES becomes PLAY · ORAL becomes SPEAK"*, then
+// *"WRITE and TRACK"* for the last two, then *"and the topmost will be START"*.
+//
+// SEVEN VERBS, IN THE ORDER A LEARNER DOES THEM:
+//
+//     START · LEARN · DRILL · AMUSE · SPEAK · WRITE · TRACK
+//
+// ALL FIVE LETTERS, WHICH IS THE POINT (Dan, 2026-09-13: *"all five letter
+// words"*). The sideways label down each row is set in one column of type, so
+// equal-length words make a straight edge instead of a ragged one — the labels
+// stop being seven different shapes and become one repeated shape. "Practice"
+// (8) became DRILL and "Play" (4) became AMUSE to reach it. I-PLAY was tried
+// first and dropped the same hour: it needed a hyphen to reach five, and a
+// label that has to be punctuated into shape is a label fighting the rule.
+// AMUSE is five on its own.
+//
+// which is why this is a better set than the one it replaces and not merely a
+// different one: every row now names an ACTION rather than a category, and read
+// down the menu they spell the course's own sequence. "Lesson", "Games",
+// "Oral", "Tools" and "User" named what a thing WAS; these name what you do.
+//
+//     key         was         is now
+//     practice    Practice    Learn
+//     review      Revise      Drill
+//     svplay      Games       Amuse
+//     oral        Oral        Speak
+//     tools       Tools       Write
+//     user        User        Track
+//     goals       Lesson      Start
+//
+// KEYS AND ROUTES DO NOT MOVE — the Memo-rename precedent, and the reason the
+// shuffle is safe: `review` still opens /reviser, `svplay` still opens the
+// games, and every check keyed on a KEY is untouched. Only `name` changes, and
+// `familyShort()` strips "FluOLin " so the ☰ menu, the bottom bar and every
+// page band all follow from this one line each.
+//
+// THIS SUPERSEDES the 9 Sep seven-family naming wherever the two disagree. That
+// ruling's SHAPE still holds — one fixed name and one fixed icon per family,
+// living once here — and only the words changed. Note the trap in the middle of
+// this table: "Practice" now means a DIFFERENT family from the one it meant
+// yesterday, so a session reading an older entry will mis-resolve it. Go by the
+// key, never by the word.
 export const FAMILIES: Family[] = [
   // 🧑‍🏫, not 🎯 (Dan, 2026-09-09) — the family now holds Map, the goal
   // itself and Help together, so it wears a teacher rather than a target.
@@ -84,32 +129,32 @@ export const FAMILIES: Family[] = [
   // imports it from a bare node script where the `@/` alias does not resolve.
   // Both went red on the constant. Components import HOME_HREF; the registry
   // spells the address out.
-  { key: "goals", name: "FluOLin Lesson", emoji: "🧑‍🏫", href: "/home" },
+  { key: "goals", name: "FluOLin Start", emoji: "🧑‍🏫", href: "/home" },
   // 📝 (Dan, 2026-09-09), retiring 🏋️. href points straight at SpecuLearn
   // now — Practice's hub page retired the same day (DELIBERATE_DOOR below);
   // /practice itself still exists as a redirect for old links/bookmarks.
-  { key: "practice", name: "FluOLin Practice", emoji: "📝", href: "/practice/speculearn" },
+  { key: "practice", name: "FluOLin Learn", emoji: "📝", href: "/practice/speculearn" },
   // Name unchanged from 31 Aug ("Revise") — a "Review" rename was tried
   // and reverted the same day (9 Sep) DéjàRevu became ErroReview. 🔄 unchanged.
-  { key: "review", name: "FluOLin Revise", emoji: "🔄", href: "/reviser" },
+  { key: "review", name: "FluOLin Drill", emoji: "🔄", href: "/reviser" },
   // Games — unchanged name and emoji; colour moved (was pink, now Skills'
   // old violet). href points straight at VocabulaRain now — Games' hub
   // retired 2026-09-09 ("retire /games"), the last of the three (Dan
   // hedged on it first as "nearly all" the hubs, then confirmed it too).
   // /games itself still exists as a redirect for old links/bookmarks.
-  { key: "svplay", name: "FluOLin Games", emoji: "🎮", href: "/games/vocabularain" },
+  { key: "svplay", name: "FluOLin Amuse", emoji: "🎮", href: "/games/vocabularain" },
   // ORAL (NEW, 2026-09-09) — half of retired Skills: VoixLà, WorDrill,
   // ÉcouTexte, the three activities that put French in your mouth or ear.
   // href is a DELIBERATE DOOR to VoixLà (see DELIBERATE_DOOR below) — Oral
   // has no hub page of its own, on purpose: the old /skills hub is exactly
   // the kind of page this grid menu retires.
-  { key: "oral", name: "FluOLin Oral", emoji: "💬", href: "/tts" },
+  { key: "oral", name: "FluOLin Speak", emoji: "💬", href: "/tts" },
   // TOOLS (NEW, 2026-09-09) — the other half of retired Skills: ChaTutor and
   // ComposeIt, the two summonable helpers (see ToolSummon.tsx's own 🛠️).
   // Deliberate door to ChaTutor, same reasoning as Oral.
-  { key: "tools", name: "FluOLin Tools", emoji: "🛠️", href: "/tutor" },
+  { key: "tools", name: "FluOLin Write", emoji: "🛠️", href: "/tutor" },
   // User — unchanged route; grey now, was orange (Tools took the orange).
-  { key: "user", name: "FluOLin User", emoji: "👤", href: "/profil" },
+  { key: "user", name: "FluOLin Track", emoji: "👤", href: "/profil" },
 ];
 
 export type Activity = {

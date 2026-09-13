@@ -36,8 +36,13 @@
  */
 
 import { ACTIVITIES, activity } from "@/content/activities";
+import { LESSONS } from "@/content/lessons";
 import { SIOS } from "@/content/sios";
 import { stopForDeck } from "@/lib/stopTag";
+
+/** The root layout's title. A page that sets none inherits it, and a row
+ *  wearing it names the site rather than the page. */
+const SITE_NAME = "FluOLinGo";
 
 export type HereEntry = {
   href: string;
@@ -103,6 +108,21 @@ export function describeHere(
   const path = href.split("?")[0];
   const where = whereFor(path);
 
+  // A LESSON IS CALLED WHAT IT CALLS ITSELF. Dan, shown what the rows would
+  // otherwise say: *"what should they be called then?"* — and the answer was
+  // already in the repo. All 59 rows of `LESSONS` carry a real French title
+  // (« Comment ça s'écrit ? », « Moi aussi, moi non plus »), and nothing was
+  // reading them here, so a starred lesson fell all the way through to the
+  // registry's prefix match and came out « MneMemo » — the same name for every
+  // lesson in the course — or, before that, « FluOLinGo ».
+  //
+  // THIS RUNS BEFORE THE KEY, and that is the whole point. `activeKey` is the
+  // ACTIVITY (« MneMemo », the reader), which is right for a deck route and
+  // wrong here: fifty lessons share one reader, so the activity cannot tell
+  // two of them apart. The lesson's own title can.
+  const lesson = path.startsWith("/lessons/") ? LESSONS[path.split("/")[2]] : undefined;
+  if (lesson) return { href, auto: lesson.title, emoji: "📖", where };
+
   const byKey = activeKey ? activity(activeKey) : undefined;
   if (byKey) return { href, auto: byKey.name, emoji: byKey.emoji, where };
 
@@ -118,5 +138,24 @@ export function describeHere(
   // site, then the site again. A learner wants the first part. Everything
   // from the first dash on is the trail, so it goes.
   const clean = title.split(/\s[—–]\s/)[0].replace(/\s*·.*$/, "").trim();
-  return { href, auto: clean || path, emoji: "📄", where };
+
+  // ...AND SOMETIMES THE TRAIL IS ALL THERE IS. Found by starring nine real
+  // pages and looking at the list: every one of the ~50 `/lessons/*` routes
+  // and `/guide` set no title of their own, so they inherit the root layout's
+  // and the row reads « FluOLinGo ». Star five lessons and you get five
+  // identical rows — precisely the list-nobody-uses this file exists to
+  // prevent, and invisible until the page has something in it.
+  //
+  // The ADDRESS is the honest fallback: it is the page's own name, not an
+  // invention, and it is never the site's. « /lessons/atelier-avis-resto »
+  // reads « Atelier avis resto ».
+  if (!clean || clean === SITE_NAME) {
+    const last = path.split("/").filter(Boolean).pop();
+    const fromPath = last
+      ? last.replace(/[-_]+/g, " ").replace(/^./, (c) => c.toUpperCase())
+      : "";
+    return { href, auto: fromPath || path, emoji: "📄", where };
+  }
+
+  return { href, auto: clean, emoji: "📄", where };
 }

@@ -301,10 +301,43 @@ export default function VoixLaPanel({
     fix.replace(/\s+/g, " ").trim().toLowerCase() === text.replace(/\s+/g, " ").trim().toLowerCase();
 
   return (
-    <div
-      className="rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner"
-      style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
-    >
+    /* NO CARD ROUND THE CARD (Dan, 2026-09-13: *"For VoixLà that is way too
+       many nested boxes. Can we have texts on the lined paper itself?"*).
+
+       There were three frames round one textarea: the cahier's sheet, then a
+       blue-bordered gradient panel, then the field's own border. The middle one
+       drew a box on paper that is already a box, and its gradient painted over
+       the ruled lines — so the page stopped looking like the notebook every
+       other station is.
+
+       The panel is now a plain block: no border, no ground, no shadow. The
+       instructions sit ON the ruling, and the ONE box left is the field, which
+       earns it by being the thing you type into. */
+    <div>
+      {/* THE INSTRUCTIONS LIVE HERE, NOT IN A POP-UP (Dan, 2026-09-13:
+          *"Voixlà's pop up instructions are to be transferred to the space
+          above the field"*).
+
+          A card you must dismiss before you can touch the field is a door in
+          front of the room: it costs a tap, it covers the thing it describes,
+          and it is gone exactly when a learner would want to re-read it. Above
+          the field it is there the whole time and costs nothing.
+
+          Same three lines as the hint card, in the same order — this replaces
+          it rather than repeating it (see `tts` in content/hints.ts, now
+          `on: "none"`). It is REFERENCE, so it stays smaller than the French
+          the learner types — but not quieter than legible.
+
+          BOLD, AND ON THE FULL INK (Dan, 2026-09-13: *"The text on lined paper
+          ought to be bold to be legible"*). Taking the panel away put this
+          text on the RULED SHEET, and a soft grey that read fine on the
+          panel's flat gradient now has horizontal lines running through every
+          word. Weight is what survives that; a lighter colour on a ruled
+          ground is the one place `--cahier-ink-soft` should not be used. */}
+      <p className="mb-2 text-[14px] font-bold leading-snug text-[color:var(--cahier-ink)]">
+        Type any French — a word, an expression, a whole text. ▶ reads it back;
+        👩 and ×1.0 change voice and speed. ✏️ checks and corrects what you wrote.
+      </p>
       <textarea
         ref={taRef}
         lang="fr"

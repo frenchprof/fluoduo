@@ -253,15 +253,22 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
   // `active="tts"`), which is the double pop-up Dan reported the same day.
   // Settle that first; adding a guide on top of it would be building on the
   // bug. Plain text until then — which is exactly what it was before.
-  tts: {
-    on: "page",
-    title: "Type, then listen",
-    steps: [
-      "Type any French — a word, an expression, a whole text.",
-      "▶ reads it back; 👩 and ×1.0 change voice and speed.",
-      "✏️ checks and corrects what you wrote.",
-    ],
-  },
+  //
+  // VoixLà HAS NO ENTRY ANY MORE (Dan, 2026-09-13: *"Voixlà's pop up
+  // instructions are to be transferred to the space above the field"*). The
+  // three lines that were here are now a paragraph above the textarea in
+  // `components/tools/VoixLaPanel.tsx` — permanently readable instead of
+  // dismissed once, and not covering the field they describe.
+  //
+  // Deleted rather than flagged off, because the type is `"drill" | "page"`
+  // and `ActivityFirstRun` already returns null when a key has no entry. An
+  // entry nothing can match would be a card that exists and never opens, which
+  // is the harder thing for the next session to reason about.
+  //
+  // The double-mount noted above IS settled now, separately: FirstRunHint
+  // claims its key on the top document, so the first card to mount for a key
+  // wins and the duplicate stays shut. That fix is what makes /reviser right;
+  // VoixLà simply no longer has a card to duplicate.
   tutor: {
     on: "page",
     title: "Ask anything",

@@ -153,7 +153,7 @@ for path, glyph, what in CHROME:
 # pick, made knowing the tray existed, because the two are the same idea
 # (summonable help) even though their member lists don't quite match. Named
 # here, one pair, rather than widening the destination rule generally.
-ALLOWED_SHARED = {("FluOLin Tools (family)", "the floating Outils tray (VoixLà · ChaTutor)")}
+ALLOWED_SHARED = {("FluOLin Write (family)", "the floating Outils tray (VoixLà · ChaTutor)")}
 
 owners = {}
 for name, glyph, href in families:
@@ -195,14 +195,14 @@ check(not clashes,
 # within the hour it became true. What still matters from the original fix:
 # 💬 is free to mean Oral now (Skills, its old owner, is gone), and Tools'
 # 🛠️ is the ONE deliberate exception check 2 names above.
-oral = {n: g for n, g, _ in families}.get("FluOLin Oral", "")
+oral = {n: g for n, g, _ in families}.get("FluOLin Speak", "")
 check(fold(oral) == fold("💬"),
-      "FluOLin Oral wears 💬 (Dan, 2026-09-09, after Skills retired)",
-      f"FluOLin Oral wears {oral or '(nothing)'}, not 💬")
-tools = {n: g for n, g, _ in families}.get("FluOLin Tools", "")
+      "FluOLin Speak wears 💬 (Dan, 2026-09-09, after Skills retired)",
+      f"FluOLin Speak wears {oral or '(nothing)'}, not 💬")
+tools = {n: g for n, g, _ in families}.get("FluOLin Write", "")
 check(fold(tools) == fold("🛠️"),
-      "FluOLin Tools wears 🛠️ (Dan, 2026-09-09 — the one deliberate share, see check 2)",
-      f"FluOLin Tools wears {tools or '(nothing)'}, not 🛠️")
+      "FluOLin Write wears 🛠️ (Dan, 2026-09-09 — the one deliberate share, see check 2)",
+      f"FluOLin Write wears {tools or '(nothing)'}, not 🛠️")
 locker = {n: g for n, g, _ in activities}.get("LexicaLocker", "")
 check(fold(locker) == fold("🔐"),
       "LexicaLocker wears 🔐, and is spelled LexicaLocker",

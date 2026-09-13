@@ -2892,6 +2892,44 @@ h3.cahier-display { font-size: var(--fs-h3); }
      so outside the guard there is nothing for it to cancel. */
   .neo-key:hover { transform: translateY(-3px); }
 }
+/*  A DOOR THAT STANDS OUT OF THE PAPER (Dan, 2026-09-13, on the ☰ menu:
+    *"each of these white spaced tiles is to be a protruded button with
+    mouseover effects pls"*).
+
+    THIS IS `.neo-key`'S SHADOW WITHOUT `.neo-key`'S `border: 0`, and that one
+    line is the whole reason it is a separate class rather than a second class
+    on the tile. The colour law since 7 Sep is that the FAMILY PEN borders the
+    tile — the border IS how a learner tells Practice from Games — so a style
+    that zeroes it would take the family off nineteen doors at once, which no
+    screenshot of a single tile would reveal.
+
+    Every value here is a shadow or an inset: none is width, height or padding,
+    so the seven rows keep the identical height they were just measured at
+    (80.8px at 430px, 95.6px at 1440px, spread 0.0px) and only the apparent
+    depth changes. The lift is 3px, inside `hover: hover` so a finger never
+    triggers it, and the press is the same inset the app's other keys use.  */
+.fluo-tile-key {
+  box-shadow:
+    -5px -5px 10px color-mix(in oklab, white 92%, transparent),
+    7px 12px 20px color-mix(in oklab, var(--cahier-ink) 32%, transparent),
+    inset 1px 3px 0 color-mix(in oklab, white 62%, transparent),
+    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+@media (hover: hover) {
+  .fluo-tile-key:hover { transform: translateY(-3px); }
+}
+.fluo-tile-key:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 62%, transparent),
+    inset 4px 5px 9px color-mix(in oklab, black 28%, transparent),
+    inset -3px -3px 7px color-mix(in oklab, white 35%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .fluo-tile-key, .fluo-tile-key:hover, .fluo-tile-key:active { transform: none; }
+}
+
 .neo-key:active {
   transform: translateY(4px);
   box-shadow:
