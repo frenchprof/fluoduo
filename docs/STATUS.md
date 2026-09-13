@@ -6,6 +6,80 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — the board is for learners, no activity pays nothing, and everyone opens with 20 gems (fluoduo-main, MERGED as #359 and #360)
+
+**Dan, in one evening: *"all the 18 names under 'ALL TERM' must now be hidden.
+THis is a brand new generational cohort of language warriors"*, then *"i need to
+hide both legacy roles and my own test accountrs ... like the one i tested with
+today"*, then two by name; then *"why are there activities without XP? i meam
+SpecuLearm, Vocabularain, Numbers, everything should earn XP at least once"*,
+*"there is nothing wrong with letting someone farm an afternoon if they are
+successful in improving their scores each time"*, and *"how much free gems can
+each learner begin with?"*.**
+
+**THE BOARD.** Legacy rows come off by an `isLegacyRow` test and deliberately
+NOT `isCurrentTerm` — the cohort test would also hide a cohort starting next
+term, which is the class-list model retired on 5 Sep. Legacy is `term:
+"legacy"` or no term at all (the old laf1201 suite wrote rows before the field
+existed).
+
+**THE TEACHER'S OWN SIGN-INS.** `firestore.rules` has denied the six admin
+addresses since 5 Jul and the client deletes a row whose write is denied — so
+on paper this was handled. **The gap is that nothing in this repo deploys the
+rules**, so the live allowlist can lag the file by however long it has been
+since someone opened the console, and an account the LIVE rules do not know
+about publishes a row exactly like a student's. `publishLeaderboard` refuses
+first now and falls into the same cleanup: signing in on a test account takes
+its row off the board for everyone, no console visit. The reader also filters
+the names the teacher roster has hidden since 16 Jul — the public board never
+did, which is how « Cagey Chan » ranked among the students.
+
+Dan's two alter-ego learners (Daniel Chan, Shi'Er You) are an EXCLUSION, never
+an admin grant: `isExcludedFromLeaderboard()`, not `isAdmin()`. Their addresses
+arrived pasted with the display name run into them, so one local part is a best
+reading — survivable because the writer refuses on the display NAME too.
+
+**ONE LIST**, `src/lib/staffAccounts.ts`. `ADMIN_EMAILS` is that list rather
+than a second copy; `verify600-staff-off-board.py` fails if it and
+firestore.rules disagree.
+
+**NO ACTIVITY PAYS NOTHING.** Four paid zero — SpecuLearn, VocabulaRain, NumBus,
+NumBourse — each for a good local reason that added up to a bad one. The RUN
+pays now: 60 XP for the first finish of an activity at a goal, 60 again for every
+run that beats your own best, nothing for a run that does not (and it SAYS
+nothing — a "+0 XP" would turn the one gain-framed number into a notice of
+failure). Bests are per activity-at-a-goal. **SpecuLearn passes no score on
+purpose**: it is the guess BEFORE the lesson, and paying by score would make
+"do the lesson first, then take the pre-test" the profitable move.
+
+`GameOver` is the one payout point for six games, **opt-in per game** —
+LexicaLocker, MémoiRecall and ComposeIt do NOT opt in (they pay per answer
+already), and verify32 fails if any of them starts paying twice.
+
+**THE WELCOME PURSE IS 20 GEMS.** The same as a level-up and as the cheapest
+colour, ~three exercises' worth of lucky finds, against ~1,450 gems for a full
+pass and 205 for the whole shop. It matters only in the first five minutes,
+which is the point once gems gate the AI-backed items. Paid once — and
+`welcomed` and `bests` had to be named in `mergeProgress`, which rebuilds
+Progress from a fixed key list, or normalize() would re-pay the purse on every
+read, on every device.
+
+**TWO GUIDES, ONE DOOR** (#360). `/guide` stays the five steps (the QuickStart);
+the full manual is `public/manual.html` at **`/manual`**, linked by one line
+under step 5 — a line and not a tile, because Help was ruled on 9 Sep to open
+onto a manual and not another grid. Its economy section is rewritten to what
+ships; it used to say « SpecuLearn · VocabulaRain · Numbers → 0 XP ».
+
+**STILL OPEN, AND ONLY DAN CAN CLOSE IT: `level >= 1` IS STILL LIVE.** The peers
+entry below explains it — every learner under 2,000 XP is level 0, the live rule
+denies their row, and the client reads a denied write as "excluded" and DELETES
+it. The repo copy is fixed; **the console copy is not**, and nothing here can
+deploy it. Until it is pasted in, the board keeps erasing beginners whatever
+else lands.
+
+Gate on both: tsc clean, `NEXT_PUBLIC_OPEN_APP=1` build clean, every
+`verify/*.py` passing, eslint clean on touched files.
+
 ## 13 Sep — a learner manual with real screenshots, and the Help line it caught (guide lane, MERGED as #357)
 
 **Dan: *"write the guide in very plain English … then present it in the colors
