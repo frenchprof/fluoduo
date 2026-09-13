@@ -48,20 +48,24 @@
 ## 2. Finding your way
 
 ### 2.1 The front door (`/`)
+<!-- fig: door | The front door. The road, stop 1, and the ENTER coin. Tapping anywhere enters. -->
 - A full-screen picture of the road at the time of day it really is.
 - One orange **ENTER** coin. Tapping anywhere on the page enters too.
 
 ### 2.2 Home = the map (`/home`)
+<!-- fig: home-3d, home-2d | Home in 3D and in 2D. Same 50 stops, same controls above the map: the 2D/3D switch, the 🧑‍🎓 stop number, the zoom. -->
 - A **2D / 3D** switch, a **zoom** (− / +, 30 to 200 %), and a **🧑‍🎓 number** = your current stop.
 - The 🧑‍🎓 number is editable. Type a stop number to bookmark it as "where I am".
 - **5 units**, 10 stops each: Unité 0 « Bienvenue en classe », 1 « Qui suis-je ? », 2 « Ma vie, mes envies », 3 « En ville », 4 « À table ! ».
-- **Stop shapes** = what the goal is about: ● vocabulary · ■ grammar · 💬 expressions · ◆ communication.
+- **Stop colours** = what the goal is about: 🔵 blue vocabulary · 🩷 pink grammar · 🟠 orange expressions · 🟢 green communication.
 - A **🚩 flag** marks where the class currently is. The road is paved up to it and dotted beyond.
 - A done stop wears a **✓ green** tick.
 - **Tap a stop** → its goal page.
+- The **🏁 button** under the map opens the GramMarathon Finale (one long gap-fill across all 50 goals).
 - Keyboard shortcut anywhere: type a two-digit number (e.g. `31`) to jump the map to that stop.
 
 ### 2.3 The goal page (`/sio/SIO-0NN`)
+<!-- fig: goal | Goal 5. The tags, the one sentence, the tiles. Grey tiles have nothing at this goal. The pills at the edges show where a swipe goes: ‹ Map, 💡 ›, and 🎯 6 ⌄ below. -->
 - Shows: the stop number, its unit, its type tag(s), and **one sentence** = what you will be able to do.
 - Under it, up to **8 tiles**: 💡 SpecuLearn · 📚 MneMemo · 🃏 MémoiRecall · 🏃 GramMarathon · 🌧️ VocabulaRain · 🔐 LexicaLocker · 🧩 ComposeIt · 🎙️ WorDrill.
 - A **greyed tile** = this goal has nothing for that activity.
@@ -71,6 +75,7 @@
 - **☰** the menu · **FluOLinGo** wordmark = back to Home · **🔇 / volume** one mute for all sound · **⌛** your answer history · **🎯 NN** your current stop, editable (on Home the map's 🧑‍🎓 number does this job) · **★** star this page · **account** sign in / out.
 
 ### 2.5 The ☰ menu — 7 rows, read top to bottom in the order you do them
+<!-- fig: menu, menu-desktop | The ☰ menu on a phone and on a desktop. The GO TO ring reads 1; tiles greyed out have nothing at goal 1. -->
 
 | Row | Tiles |
 |---|---|
@@ -90,6 +95,7 @@
 - **Off by default.** Turn rows on in ⚙️ Settings → « Bottom bar ».
 
 ### 2.7 Three floating buttons you may see
+<!-- fig: composeit | ComposeIt with both floating buttons: 🐞 report a bug and 🛠️ tools. -->
 - **🛠️ tools** (in WorDrill, ComposeIt, ÉcouTexte): opens a card **over** the exercise with 🔊 VoixLà and/or 🤖 ChaTutor. The exercise stays where it is. ÉcouTexte offers ChaTutor only, so nothing can read you the answer.
 - **🐞 report a bug**: tick what went wrong (page won't load, audio didn't play, answer marked wrong, French incorrect, activity stuck, layout broken, other), add a screenshot if you like. Works signed in or out.
 - **✨ tour** (bottom left on Home, unit and lesson pages): replays the short guided tour of that page.
@@ -107,6 +113,7 @@
 ---
 
 ## 3. One goal, step by step (the intended path)
+<!-- fig: help | The same path as the app's own Help page (☰ → Start → Help). -->
 
 1. **Select the goal.** Tap it on the map, or ☰ → GO TO → number → 🎯.
 2. **Guess first: 💡 SpecuLearn.** You are not meant to know it yet. Wrong costs nothing.
@@ -128,12 +135,14 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ### 📝 LEARN
 
 #### 💡 SpecuLearn — guess before you are taught
+<!-- fig: speculearn-answered, speculearn-landing | Left: one question, answered. « 1 / 23 · Score 1/23 », Skip pretest, the 🔊 toggle, the ⌄ to go on. Right: the SpecuLearn landing, all 50 goals by unit. -->
 - **What:** multiple choice, one question per screen, about the goal you picked.
 - **How:** a French sentence with a gap, a bare word, or a picture; four options. Tap one. 🔊 hears the full sentence. Swipe down (⌄) for the next. « Skip pretest » jumps to the end.
 - **Ends:** score out of total, a folded recap of the forms (when the goal has one), **↻ Retry**.
 - **Note:** earns **no points**, records no mistakes for ErroReview, and needs **no sign-in**. It is the same activity whether you use it before the lesson or before a test.
 
 #### 📚 MneMemo — the lesson
+<!-- fig: mnemo | MneMemo for goal 5, on the Idée tab. The four tabs above; the idea's own chips (The idea, Q & A, Traps 3, Steps 2, Check 2, Sum up) below. -->
 - **What:** the rule, then 12 practice cards. Opens only from a goal (map tile, goal page, or ☰ GO TO).
 - **How:** four tabs first:
   - 🎯 **Goal** — back to the goal card.
@@ -151,6 +160,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **Note:** needs sign-in. A half-finished run can be resumed.
 
 #### 🃏 MémoiRecall — flashcards
+<!-- fig: flip | MémoiRecall in « One » view, Étudier mode. Tap the card to flip it. -->
 - **What:** English on the front, French on the back.
 - **How:** choose how many. Three views: **🂠 One** (the drill), **▤ All** (every card in a grid), **▦ List** (the deck as a table). In « One », two modes:
   - 📖 **Étudier** — tap the card to flip it. Then **✓ I know it** or **↺ To review**.
@@ -162,18 +172,21 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ### 🔄 DRILL
 
 #### 🏃 GramMarathon — type the missing word
+<!-- fig: grammarathon | GramMarathon. The gap sits in the sentence, the English below, word tiles on a phone, ? for hints. -->
 - **What:** a sentence with a gap. No options. You type the missing word, for a whole deck.
 - **How:** the gap sits inside the sentence, English meaning below. A wrong try lets you retry. « Bien ! (accent differs) » still counts as right. **?** gives the base word, the first letter, the skeleton.
 - **Ends:** ✓ score, **↻ Again**.
 - **Note:** a **Finale** exists too: one long bank across all 50 goals, always open.
 
 #### 🔤 ConjugaZone — verb endings
+<!-- fig: conjugazone | ConjugaZone opens on a blanked table. REVEAL / TYPE IT switch, SHOW CONJUGATIONS, one 🔊 per form. -->
 - **What:** learn a conjugation table, then type each form.
 - **How:** pick verbs (default: être, avoir, aller). The table opens **blanked**. **REVEAL** mode: tap a cell to see it. **TYPE IT** mode: every cell is a box. 🎲 adds a full phrase under every person. **Questions →** starts the drill: one person + verb, you type the form. On a phone, the word tiles are the same verb's other forms, so you must really choose.
 - **Ends:** back to the table with 🎉 ✓ score.
 - **Note:** opened from a goal, it loads that goal's verbs.
 
 #### ❌ ErroReview — what you got wrong comes back
+<!-- fig: erroreview | ErroReview with nothing due yet. Practise any deck and its words come back here on schedule. -->
 - **What:** the words that are **due** today. Read or hear the French, pick the English among four.
 - **How:** 20 cards per batch. A right answer is spoken back. When a game sent you here, its misses come first.
 - **Ends:** « Review done · ✓ score », **▶ Next 20 (N left)** if more are due, and **WHERE YOUR GAPS ARE**: one row per deck with weak / due / seen counts, each linking to that deck's MémoiRecall.
@@ -182,17 +195,20 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ### 🎮 AMUSE (the three arcade games — these have lives)
 
 #### 🌧️ VocabulaRain — words fall, sort them
+<!-- fig: vocabularain-study, vocabularain | Left: the study card before the game, with « Let's go! ». Right: the rain. « le matin » is falling; steer it into MOMENT. -->
 - **What:** words fall from the sky. Steer each into its correct column (category).
 - **How:** a study table shows the exact words that will fall (« Jump to game » to skip). Speed rises every 6 words. Sort every word right and the day turns to **night** (slower, some letters hidden), then **storm**, then **dawn**. 3 misses in the storm drops you back to night.
 - **Ends:** when a column stacks to the top. Post-mortem of misses.
 - **Note:** has its own in-game score. Pays no XP. One expert set costs gems.
 
 #### 🔢 Numbers — NumBus and NumBourse
+<!-- fig: numbus, numbus-game, numbourse | NumBus setup (tick what to practise), NumBus in play (hear the number, type it on the keypad), and the NumBourse landing with its eight levels. -->
 - **🚌 NumBus:** tick what to practise: numbers 0–99, times, prices, phone numbers (FR or SG style), each with its own range. Hear a French number, type the digits on the board before the bus leaves. 10 rounds, 3 lives, 🐌 replays slower.
 - **📈 NumBourse:** you are a floor trader. Hear a shouted price, type the digits, lock the trade before the ticket expires. 8 levels from 0–9 up to 999 999. 6 trades per level, 3 lives. The number is repeated every 3 seconds.
 - **Note:** both count towards your daily streak. Neither pays XP.
 
 #### 🔐 LexicaLocker — rebuild the word
+<!-- fig: lexicalocker | LexicaLocker, level 1. Three chests on the lane, three lives, the keys arrive on the belt below. -->
 - **What:** a locked chest shows the English. Build the French from syllable keys moving on a belt.
 - **How:** put the right key in the right slot. A wrong key rattles back and costs a life. 3 lives, 6 words per level. Level 1 = whole word, levels 2–3 = syllables, level 4+ = random letter chunks. Hard mode hides how many pieces.
 - **Ends:** post-mortem of misses.
@@ -201,18 +217,21 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ### 💬 SPEAK
 
 #### 🎙️ WorDrill — say it, the mic grades you
+<!-- fig: wordrill, wordrill-card | Left: pick your ground, 🌍 Tout or one unit, with word counts. Right: a card. Tap the mic and say « jaune ». -->
 - **What:** say the French out loud.
 - **How:** choose a scope (🌍 Tout = every deck, or one unit), then how many. Prompt in English (recall) or French (read aloud). The mic always grades **French**. Verdicts: ✅ Parfait · ✅ Bien (accent differs) · ✅ same pronunciation · 🟡 Presque (most words hit) · ❌ Not quite. **?** hints: how it starts, its skeleton, then the written form. Two misses climb the hints for you.
 - **Ends:** ✓ score and a dot map of the run.
 - **Note:** « parler » and « parlez » sound the same, so both pass. Misses go to ErroReview. 🛠️ tools available.
 
 #### 🎧 ÉcouTexte — hear a short text, write the words
+<!-- fig: ecoutexte | ÉcouTexte before Start: topic, ⏯, 🐇🐌 speed, ♀♂ voice, blank sizing. -->
 - **What:** dictation. Pick a unit and topic. A short text plays. One box per word. Type what you hear.
 - **How:** controls: ⏯ play/pause · 🐇🐌 speed · ♀♂ voice · blank sizing · number of sentences. Tap any sentence to work on it. A right sentence confirms itself. A wrong one waits until you press **Check** or **Show the sentence**. A box you leave empty is never marked wrong.
 - **Ends:** when every sentence is done. Each text is used once; when a topic is used up the page says so.
 - **Note:** a sentence you « Show » is recorded as copied and its words go to ErroReview. 🛠️ offers ChaTutor only.
 
 #### 🔊 VoixLà — type French, hear it, get it checked
+<!-- fig: voixla | VoixLà. Type, then 👩 voice, ×1.0 speed, ▶ speak, 🎧 MP3, ✏️ check. -->
 - **What:** a French voice for anything you type.
 - **How:** type, **▶** speaks it (👩/👨 voice, 5 speeds), **✏️** checks it and shows corrections as tracked changes, **🎧** makes an MP3.
 - **Note:** needs sign-in. Inside a 🛠️ card it corrects first and only ever speaks the corrected French.
@@ -220,24 +239,28 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ### 🛠️ WRITE
 
 #### 🤖 ChaTutor — ask anything
+<!-- fig: chatutor | ChaTutor. A messenger: type or dictate (🎤🇫🇷 / 🎤🇬🇧), French replies in blue with ▶ and 🐌 to hear them. -->
 - **What:** a chat tutor, in French or English.
 - **How:** works like a messenger. Enter sends. French replies are in blue and can be spoken. You can dictate with the mic. Opened from a 🛠️ card, it already knows which exercise and item you were on.
 - **Note:** needs sign-in and the live server. Without it, it says so politely.
 
 #### 🧩 ComposeIt — play a scene, your writing gets corrected
+<!-- fig: composeit | ComposeIt, « Au café ». The waiter speaks first; you build your line from the chips below. -->
 - **What:** a role-play (café, directions, shopping…). You write your lines.
 - **How:** build each line from phrase chips, **✔** sends it. The other character replies out loud and moves the scene on (greet → order → drink → bill → goodbye). Some scenes have **check my work**, where the other character reads your whole text and reacts.
 - **Ends:** post-mortem. Finishing a scene pays 120 XP.
 - **Note:** the chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
 
 ### 👤 TRACK (one page, four tabs)
+<!-- fig: profile, leaderboard, settings | The Track page: Profile (heat strip of the 50 stops), Leaderboard (sign in to see it), Settings (icon labels, map wheel, bottom bar, Gems). -->
 
-- **Profile:** 🔥 streak · ⭐ XP · 💎 gems · 🎖️ badges · 🎚️ level; a « DO THIS NEXT » card; your weakest stops; a **heat strip** of all 50 stops (red < 50 %, amber < 75 %, green ≥ 75 %, outlined when done).
+- **Profile:** 🔥 streak · ⭐ XP · 💎 gems · 🎖️ badges · 🎚️ level (on the account chip); a « DO THIS NEXT » card; **RE-DRILLS** = your weakest stops and a **heat strip** of all 50 stops (STRONG ≥ 75 %, MIXED ≥ 50 %, WEAK below, NEW never tried, DONE outlined); **THRILLS** = badges earned.
 - **Leaderboard:** ranked by XP. **This week** (resets Monday, everyone starts level) or **All term**. « AROUND YOU » shows your neighbours and how many exercises to catch up. Sign-in needed.
 - **History ⌛:** every answer you ever gave. Sign-in needed.
 - **Settings ⚙️:** icon labels on/off · mouse wheel direction on the map · which rows the bottom bar shows · the **Gems** shelf (colours, Streak-Freezer).
 
 ### Also
+<!-- fig: favourites | Favourites, empty. Tap ☆ at the top right of any page to star it. -->
 - **★ Favourites:** star any page from the top bar. Organise into folders. Drag with a mouse, or press-and-hold on a phone.
 - **Help:** the five-step guide inside the app (☰ → Start → Help).
 
