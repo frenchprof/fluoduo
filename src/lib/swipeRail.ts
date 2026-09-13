@@ -43,6 +43,7 @@
  * of the goal you left, not to a picker.
  */
 import { SIOS } from "@/content/sios";
+import { activity } from "@/content/activities";
 import { lessonsForDeck } from "@/content/lessons";
 import { isSpecuLearnReady } from "@/lib/collections/speculearnReady";
 import { pretestHrefForDeck } from "@/lib/pretests/routes";
@@ -358,7 +359,17 @@ export function syncScrollUrl(href: string): void {
   } catch {}
 }
 
-export type RailMove = { href: string; name: string } | null;
+/** THE ARROWS SHOW A GLYPH, NOT A WORD (Dan, 2026-09-13: *"SIMPLY REPLACE WITH
+ *  THE RELEVANT EMOJI"*, retracting his own earlier idea of turning the words
+ *  sideways along the screen edge).
+ *
+ *  `emoji` comes from the ACTIVITY REGISTRY via the station's `key`, never from
+ *  a second table here: one glyph per activity, decided once in
+ *  content/activities.ts, is the 31 Aug ruling that stopped ConjugaZone wearing
+ *  🧮 on one screen and 🔤 on another. `num` rides along for the up/down pair,
+ *  which moves between GOALS rather than activities — Dan: *"at the base we
+ *  should also see the bullseye emoji and the number for swiping"*. */
+export type RailMove = { href: string; name: string; emoji?: string; num?: number } | null;
 
 /** Where a sideways drag goes from here. `back` is rightwards, `forward` is
  *  leftwards. Either is null at the end of the rail, or off it. */
@@ -415,7 +426,9 @@ export function sioNeighbours(path: string, deck: string | null): { up: RailMove
       if (station.has && !station.has(d)) continue;
       const href = station.key === "goals" ? `/sio/${s.id}` : station.href(d);
       if (normalise(href) === here) continue;
-      return { href, name: `${station.name} · goal ${s.num}` };
+      // 🎯 AND THE NUMBER, not the station's name — this axis changes the GOAL
+      // and keeps the activity, so the goal is the only part worth showing.
+      return { href, name: `${station.name} · goal ${s.num}`, emoji: "🎯", num: s.num };
     }
     return null;
   };
@@ -435,7 +448,11 @@ export function railNeighbours(path: string, deck: string | null): { back: RailM
       const href = s.href(deck);
       // A station that can only offer the page you are already on is not a move.
       if (normalise(href) === here) continue;
-      return { href, name: s.name };
+      // THE GOAL CARD IS A FAMILY, NOT AN ACTIVITY, so `activity()` finds
+      // nothing for it and the pill fell back to the word « Goal ». It is the
+      // same 🎯 the up/down pair wears, and for the same reason: that pill goes
+      // to the goal. Everything else resolves from the registry.
+      return { href, name: s.name, emoji: s.key === "goals" ? "🎯" : activity(s.key)?.emoji };
     }
     return null;
   };
@@ -444,6 +461,13 @@ export function railNeighbours(path: string, deck: string | null): { back: RailM
      page, not a row of stations, and the way out of a door is back through it.
      Forward still leaves the column, so the chain never dead-ends. */
   const hub = RAIL[i].hub;
-  const back = hub && normalise(hub) !== here ? { href: hub, name: RAIL[i].name } : move(-1);
+  // THE HUB RETURN NEEDED THE GLYPH TOO. `move()` resolves an emoji from the
+  // registry; this branch built its move by hand and so came out bare — which
+  // is why « Back to MneMemo » showed nothing while « On to MneMemo » showed
+  // 📚 on the very next station. Same station, two code paths, one of them
+  // patched: the shape of bug that reads as "the emoji works sometimes".
+  const back = hub && normalise(hub) !== here
+    ? { href: hub, name: RAIL[i].name, emoji: RAIL[i].key === "goals" ? "🎯" : activity(RAIL[i].key)?.emoji }
+    : move(-1);
   return { back, forward: move(1) };
 }

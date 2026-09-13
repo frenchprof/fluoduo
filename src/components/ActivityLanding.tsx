@@ -196,13 +196,27 @@ function Row({
           <span className="font-black tabular-nums">{sio.num}.</span> {sio.fr}
         </span>
         <span className="block break-words text-[0.7rem] leading-tight text-[color:var(--fluo-ink-soft)]">{sio.short}</span>
+        {/* THE BADGE SITS UNDER THE TITLE, NOT BESIDE IT (Dan, 2026-09-13,
+            sending SpecuLearn's unit list: *"what is this??"* over a tile whose
+            title was spelling « J-e-m-'-a-p-p-e-l-l-e » one letter per line).
+
+            IT WAS `shrink-0`, ON A FLEX SIBLING OF THE TITLE. "your last
+            pre-test" is eighteen characters that cannot wrap, and each tile is
+            about half a phone's width — so the badge claimed nearly the whole
+            row and left the title roughly one character to wrap in. Only the
+            marked stop broke, because only it carries the badge, which is why
+            it reads as one tile being corrupt rather than as a layout rule.
+
+            Inside the `min-w-0` column it can never compete with the title for
+            width again: it is a MARKER on the stop, not a second column. It
+            keeps its own pill shape with `inline-block` and wraps if it must. */}
+        {isLast && (
+          <span className="fluo-label mt-1 inline-block rounded-full border-2 px-2 py-0.5 text-[0.55rem] leading-tight"
+                style={{ borderColor: "var(--fluo-card-accent)", color: "var(--fluo-card-accent)" }}>
+            your last pre-test
+          </span>
+        )}
       </span>
-      {isLast && (
-        <span className="fluo-label shrink-0 rounded-full border-2 px-2 py-0.5 text-[0.55rem]"
-              style={{ borderColor: "var(--fluo-card-accent)", color: "var(--fluo-card-accent)" }}>
-          your last pre-test
-        </span>
-      )}
     </span>
   );
 

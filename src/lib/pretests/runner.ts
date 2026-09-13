@@ -28,6 +28,28 @@ import { unit0QuestionId, type Unit0Question } from "@/content/sios/unit0-questi
 
 export { shuffle } from "@/lib/shuffle";
 /** Speak the FULL sentence, never the lonely answer word. */
+/**
+ * THE SAME SENTENCE, WITH A CHOSEN OPTION IN THE BLANK (Dan, 2026-09-13:
+ * *"once a blank is correctly filled (either via MCQ or whatever means) it must
+ * read out the entire sentence - with possibility to repeat"*, and *"never TTS
+ * just individual words... verbs, e.g. Je m'appelle (never just m'appelle)"*).
+ *
+ * `ttsTextForItem` reads the sentence with the RIGHT answer in it, which is
+ * what a correct fill should say. This is its sibling for the other tap: once a
+ * question is answered every option stays playable, and playing one used to
+ * read that option ALONE. A learner tapping « m'appelle » heard « m'appelle ».
+ *
+ * `fullSentence` is deliberately NOT used here even when the item has one: it
+ * is the sentence with the correct answer baked in, so it would read the right
+ * answer whichever option was tapped — silently wrong, and wrong in the most
+ * confusing direction. Before + choice + after always speaks what was touched.
+ */
+export function sentenceWith(item: PretestItem, choice: string): string {
+  return `${item.sentenceBefore} ${choice} ${item.sentenceAfter}`
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function ttsTextForItem(item: PretestItem): string {
   if (item.fullSentence && item.fullSentence.trim()) return item.fullSentence;
   return `${item.sentenceBefore} ${item.answer} ${item.sentenceAfter}`
