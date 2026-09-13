@@ -54,6 +54,7 @@ import {
   XP_CONVERSATION,
   XP_ACTIVITY_FIRST,
   XP_ACTIVITY_BEST,
+  WELCOME_GEMS,
   FIND_BIG,
   luckyFind,
   LEVEL_UP_GEMS,
@@ -115,6 +116,11 @@ export type Progress = {
    *  run BEATS the stored number, which is exactly when XP is paid — see
    *  `awardActivityRun`. Absent key = never finished it. */
   bests?: Record<string, number>;
+  /** Has this account been paid the WELCOME_GEMS purse? A one-time flag, never
+   *  cleared — it is what stops a sign-in, a second device or a cleared cache
+   *  from paying the grant again. Absent on every blob written before
+   *  2026-09-13, which is precisely how those learners get theirs. */
+  welcomed?: boolean;
   /** Expert-GAME unlock ids the learner has bought (EXPERT_UNLOCKS). Games
    *  only — the course spine never appears here. */
   unlocks?: string[];
@@ -177,7 +183,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [], bests: {} };
+  return { doneSios: [], gems: WELCOME_GEMS, welcomed: true, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [], bests: {} };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -187,6 +193,18 @@ export function defaultProgress(): Progress {
 function normalize(raw: Partial<Progress>): Progress {
   const p = { ...defaultProgress(), ...raw };
   if (raw.xp == null && typeof raw.gems === "number") p.xp = raw.gems;
+  // THE WELCOME PURSE, paid once (economy.ts WELCOME_GEMS, 2026-09-13). Every
+  // blob written before today lacks the flag, so each existing learner is paid
+  // exactly once, here, on their next read — and a learner who has spent the
+  // grant is not paid again, because the flag survives the spending.
+  //
+  // ADDED to the balance rather than assigned: `{...defaultProgress(), ...raw}`
+  // has already restored this learner's own gems, and a bare assignment would
+  // hand a learner with 300 gems a purse of 20.
+  if (raw.welcomed !== true) {
+    p.gems = Math.max(0, Number.isFinite(p.gems) ? p.gems : 0) + WELCOME_GEMS;
+    p.welcomed = true;
+  }
   p.badges = Array.isArray(raw.badges) ? raw.badges : [];
   p.cosmetics = {
     owned: Array.isArray(raw.cosmetics?.owned) ? raw.cosmetics!.owned : [],

@@ -38,6 +38,7 @@ import { useChoiceKeys, CHOICE_KEYS_HINT } from "@/lib/useChoiceKeys";
 import { buildItems, spokenFor, type DeckItem } from "@/lib/speculearn/deckWords";
 import { shuffle } from "@/lib/shuffle";
 import { recordPretestAnswer } from "@/lib/pretestRecord";
+import { awardActivityRun } from "@/lib/progress";
 import { stopForDeck } from "@/lib/stopTag";
 import { optionGridClass } from "@/lib/optionGrid";
 
@@ -155,6 +156,7 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
   const [queue, setQueue] = useState<Trial[]>([]);
   const [idx, setIdx] = useState(0);
   const [score, setScore] = useState(0);
+  const [runXp, setRunXp] = useState(0);
   const [wrong, setWrong] = useState<DevItem[]>([]);
   const [locked, setLocked] = useState(false);
   const [picked, setPicked] = useState<DevItem | null>(null);
@@ -338,6 +340,19 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
     ladder.skip();
     if (idx + 1 >= queue.length) {
       void logEvent("game.end", { game: "speculearn", collectionId, score });
+      // PAY THE FINISH, NEVER THE SCORE (Dan, 2026-09-13: "everything should
+      // earn XP at least once"). SpecuLearn wrote no XP at all — deliberately,
+      // because a cold guess must not reward guessing — and the cost was a tile
+      // worth nothing, which is the one thing Dan ruled out: "if there were any
+      // activity that comes with 0 XP and 0 anything, then nobody will ever be
+      // motivated to touch them".
+      //
+      // The score is passed as null ON PURPOSE, unlike every game. This is the
+      // guess BEFORE the lesson: pay by score and the profitable move becomes
+      // "do the lesson first, then take the pre-test", which destroys the one
+      // thing the activity measures. So the first finish per deck pays, and a
+      // replay pays nothing however well it goes.
+      setRunXp(awardActivityRun("speculearn", collectionId, null));
       setScreen("end");
       return;
     }
@@ -581,6 +596,13 @@ export default function SpecuLearnContent({ collectionId }: { collectionId: stri
         {screen === "end" && (
           <div className={`${card} text-center`}>
             <p className="text-3xl font-black text-[color:var(--cahier-ink)]">{score} / {queue.length}</p>
+            {/* Only when there is something to receipt — a replay pays nothing
+                and says nothing rather than printing "+0 XP" at a learner. */}
+            {runXp > 0 && (
+              <p className="cahier-mono mt-0.5 text-base font-black" style={{ color: "var(--dopa-win)" }}>
+                +{runXp.toLocaleString()} XP
+              </p>
+            )}
             <p className="mt-1 text-sm text-[color:var(--cahier-ink-soft)]">
               {score === queue.length
                 ? "Parfait ! You know all these words."

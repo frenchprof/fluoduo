@@ -596,6 +596,8 @@ export default function NumBourse() {
       {(over || won) && (
         <GameOver
           activityKey="numbourse"
+          // Same as NumBus: generated numbers, one best per activity.
+          runXp={{ id: "numbourse", runScore: score }}
           emoji={won ? "🔔" : "📉"}
           title={won ? "Market closed!" : "Appel de marge !"}
           score={<>{score} · level {level}</>}

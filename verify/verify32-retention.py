@@ -178,6 +178,60 @@ banned = [w for w in ["don't lose", "you'll lose", "losing your streak", "streak
 ok(not banned, "nothing in the build is loss-framed",
    f"loss-framing found ({', '.join(banned)}) — the ethics constraint forbids it")
 
+# ── NO ACTIVITY PAYS NOTHING, and the welcome purse (2026-09-13) ──────────
+# Dan: "why are there activities without XP? i meam SpecuLearm, Vocabularain,
+# Numbers, everything should earn XP at least once", and the reason — "if there
+# were any activity that comes with 0 XP and 0 anything, then nobody will ever
+# be motivated to touch them". Then the farming ruling: "there is nothing wrong
+# with letting someone farm an afternoon if they are successful in improving
+# their scores each time (we will not reward worser scores)".
+econ = read("src/lib/economy.ts")
+for sym in ("XP_ACTIVITY_FIRST", "XP_ACTIVITY_BEST", "WELCOME_GEMS"):
+    ok(f"export const {sym}" in econ, f"economy.ts defines {sym}",
+       f"economy.ts no longer defines {sym}")
+ok("export function awardActivityRun" in prog,
+   "progress.ts pays a run: first finish, then every personal best",
+   "awardActivityRun is gone — the four zero-XP activities pay nothing again")
+# The FOUR that paid nothing must each ask to be paid. The others must NOT:
+# they pay per answer through recordItemResult, and a run payout on top would
+# pay the same work twice.
+PAYS_THE_RUN = {
+    "src/games/letris/LetrisGame.tsx": "vocabularain",
+    "src/games/numbus/NumBus.tsx": "numbus",
+    "src/games/numbourse/NumBourse.tsx": "numbourse",
+}
+for path, activity in PAYS_THE_RUN.items():
+    src = read(path)
+    ok(f'runXp={{{{ id: "{activity}"' in src,
+       f"{os.path.basename(path)} pays its run ({activity})",
+       f"{path} no longer pays the run — the activity is back to 0 XP")
+spec = read("src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx")
+ok('awardActivityRun("speculearn", collectionId, null)' in spec,
+   "SpecuLearn pays the FINISH and passes no score (paying by score would "
+   "reward taking the pre-test after the lesson)",
+   "SpecuLearn either pays nothing or pays by score — both break the pre-test")
+for path in ("src/games/lexicalator/Lexicalator.tsx", "src/games/matching/MatchingGame.tsx",
+             "src/games/compose/ComposeSolo.tsx", "src/games/compose/ComposeDialogue.tsx"):
+    ok("runXp={{" not in read(path),
+       f"{os.path.basename(path)} does not double-pay (it pays per answer already)",
+       f"{path} pays BOTH per answer and per run — the same work twice")
+ok("awardActivityRun" in read("src/components/GameOver.tsx"),
+   "one payout point for six games — GameOver",
+   "GameOver no longer pays the run")
+# The purse is paid once. The flag has to survive the sign-in merge, which
+# rebuilds Progress from a fixed key list — a dropped flag re-pays it forever.
+merge = read("src/lib/progressMerge.ts")
+ok("welcomed:" in merge,
+   "mergeProgress carries the welcomed flag through sign-in",
+   "mergeProgress DROPS welcomed — normalize would re-pay the purse on every "
+   "read, on every device")
+ok("bests:" in merge,
+   "mergeProgress carries the personal bests through sign-in",
+   "mergeProgress drops bests — a second device could re-collect first-finish XP")
+ok("welcomed: true" in prog and "WELCOME_GEMS" in prog,
+   "a new learner opens with the purse, and an existing blob is paid once",
+   "progress.ts does not pay the welcome purse")
+
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL: print("\n".join("  FAIL  " + m for m in FAIL))
 print("-" * 70)
