@@ -205,11 +205,30 @@ for path, activity in PAYS_THE_RUN.items():
     ok(f'runXp={{{{ id: "{activity}"' in src,
        f"{os.path.basename(path)} pays its run ({activity})",
        f"{path} no longer pays the run — the activity is back to 0 XP")
+# SPECULEARN HAS TWO RUNNERS AND ONLY ONE IS REACHED. Every deck with a goal
+# forwards to the goal FEED (PretestFeed); [collectionId]/SpecuLearnContent is
+# the old door, kept for a deck with no goal. A payout wired only to the old one
+# fires for almost nobody — which is exactly what shipped for an hour on 13 Sep
+# and was found by driving a finished run in the built app, not by a check. So
+# BOTH are pinned, and the feed is named first because it is the live path.
+feed = read("src/app/practice/speculearn/pretest/[id]/PretestFeed.tsx")
+ok('awardActivityRun("speculearn", sioId, null)' in feed,
+   "the SpecuLearn FEED (the door every goal forwards to) pays the finish",
+   "PretestFeed does not pay — the path every learner takes earns nothing")
+ok("answered < total" in feed,
+   "…and only when every question is answered (a feed can reach its recap "
+   "unfinished; skipping is not finishing)",
+   "PretestFeed pays before the run is finished — scrolling to the recap "
+   "would earn 60 XP")
 spec = read("src/app/practice/speculearn/[collectionId]/SpecuLearnContent.tsx")
 ok('awardActivityRun("speculearn", collectionId, null)' in spec,
-   "SpecuLearn pays the FINISH and passes no score (paying by score would "
-   "reward taking the pre-test after the lesson)",
-   "SpecuLearn either pays nothing or pays by score — both break the pre-test")
+   "the old deck runner pays it too (a deck with no goal still reaches it)",
+   "SpecuLearnContent stopped paying — a goal-less deck would earn nothing")
+for _p in (feed, spec):
+    ok("null)" in _p,
+       "SpecuLearn passes NO score (paying by score would reward taking the "
+       "pre-test after the lesson)",
+       "SpecuLearn pays by score — the pre-test stops measuring anything")
 for path in ("src/games/lexicalator/Lexicalator.tsx", "src/games/matching/MatchingGame.tsx",
              "src/games/compose/ComposeSolo.tsx", "src/games/compose/ComposeDialogue.tsx"):
     ok("runXp={{" not in read(path),
