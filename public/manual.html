@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en-SG">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FluOLinGo — Learner Wiki</title>
+<meta name="description" content="FluOLinGo learner wiki: map, activities, XP, streaks, and how to study."/>
+<style>
+  :root {
+    --ink: #312620;
+    --ink-soft: #655c55;
+    --ink-faint: #867f78;
+    --paper: #faf6ee;
+    --paper-2: #f5f0e4;
+    --paper-raised: #fefbf7;
+    --line: #e3ddd1;
+    --line-strong: #cabfaf;
+    --hl: #d4f24c;
+    --hl-edge: #a6c130;
+    --gold: #fcdf00;
+    --vocab: #1ca6ff;
+    --grammar: #ff4eb2;
+    --phrases: #ff9037;
+    --comms: #00dd3e;
+    --desk: #e3ddd4;
+    --spiral: #b9bcc4;
+    --sidebar-w: 280px;
+    --radius: 14px;
+    --shadow: 4px 4px 0 rgba(49,38,32,.12);
+    --font: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--ink);
+    background:
+      repeating-linear-gradient(transparent, transparent 27px, rgba(227,221,209,.55) 28px),
+      var(--paper);
+    line-height: 1.45;
+  }
+  a { color: #015c93; }
+  a:hover { color: #004069; }
+
+  /* Top bar */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; gap: .6rem;
+    padding: .55rem .75rem;
+    background: var(--gold);
+    border-bottom: 3px solid var(--ink);
+  }
+  .brand {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: var(--hl); border: 2.5px solid var(--ink);
+    border-radius: 999px; padding: .2rem .7rem .25rem;
+    font-weight: 900; letter-spacing: -.02em; text-decoration: none; color: var(--ink);
+  }
+  .brand span { color: #3a5a00; }
+  .topbar .tag {
+    margin-left: .2rem; font-size: .78rem; color: var(--ink-soft); font-weight: 600;
+  }
+  .burger {
+    display: none; width: 40px; height: 40px; border-radius: 10px;
+    border: 2.5px solid var(--ink); background: var(--paper-raised);
+    font-size: 1.2rem; cursor: pointer;
+  }
+  .search-wrap { margin-left: auto; display: flex; gap: .4rem; align-items: center; flex: 1; max-width: 420px; justify-content: flex-end; }
+  #q {
+    width: 100%; max-width: 280px; padding: .45rem .7rem;
+    border: 2.5px solid var(--ink); border-radius: 999px;
+    background: var(--paper-raised); font: inherit; color: var(--ink);
+  }
+  #q:focus { outline: 3px solid var(--hl); outline-offset: 1px; }
+  .search-meta { font-size: .72rem; color: var(--ink-soft); white-space: nowrap; min-width: 4.5rem; }
+
+  .layout { display: flex; min-height: calc(100vh - 54px); }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w); flex-shrink: 0;
+    position: sticky; top: 54px; align-self: flex-start;
+    height: calc(100vh - 54px); overflow: auto;
+    background: color-mix(in oklab, var(--paper-raised) 88%, white);
+    border-right: 3px solid var(--ink);
+    padding: .85rem .75rem 2rem;
+  }
+  .sidebar h2 {
+    margin: 0 0 .5rem; font-size: .72rem; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--ink-faint);
+  }
+  .nav a {
+    display: block; text-decoration: none; color: var(--ink);
+    padding: .38rem .55rem; margin: .15rem 0; border-radius: 10px;
+    border: 2px solid transparent; font-size: .9rem; font-weight: 650;
+  }
+  .nav a:hover, .nav a.active {
+    background: var(--hl); border-color: var(--ink); box-shadow: var(--shadow);
+  }
+  .nav .sub {
+    margin-left: .55rem; font-size: .8rem; font-weight: 550; color: var(--ink-soft);
+  }
+  .keywords { margin-top: 1.1rem; }
+  .keywords h2 { margin-bottom: .45rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .chip {
+    border: 2px solid var(--ink); border-radius: 999px; background: var(--paper);
+    padding: .22rem .55rem; font-size: .72rem; font-weight: 700; cursor: pointer;
+  }
+  .chip:hover, .chip.on { background: var(--hl); }
+  .chip[data-kw="vocabulary"] { border-color: var(--vocab); }
+  .chip[data-kw="grammar"] { border-color: var(--grammar); }
+  .chip[data-kw="XP"] { border-color: #c9a000; }
+  .chip[data-kw="SpecuLearn"] { border-color: #8a5fd4; }
+
+  /* Main */
+  .main { flex: 1; min-width: 0; padding: 1.1rem 1.25rem 3.5rem; max-width: 860px; }
+  .hero {
+    background: var(--paper-raised); border: 3px solid var(--ink); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 1rem 1.1rem; margin-bottom: 1rem;
+  }
+  .hero h1 { margin: 0 0 .35rem; font-size: 1.65rem; letter-spacing: -.02em; }
+  .hero p { margin: .25rem 0; color: var(--ink-soft); }
+  .callout {
+    background: color-mix(in oklab, var(--hl) 55%, white);
+    border: 2.5px solid var(--ink); border-radius: 12px; padding: .7rem .85rem; margin: .8rem 0;
+  }
+  .note {
+    background: #fff8e6; border-left: 4px solid var(--phrases);
+    padding: .55rem .7rem; margin: .7rem 0; font-size: .9rem;
+  }
+  section {
+    background: var(--paper-raised); border: 2.5px solid var(--ink);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: .9rem 1rem 1.05rem; margin: 0 0 1rem;
+  }
+  section.dimmed { opacity: .28; }
+  section h2 {
+    margin: 0 0 .55rem; font-size: 1.2rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  section h2 .num {
+    display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem;
+    border-radius: 999px; background: var(--gold); border: 2px solid var(--ink);
+    font-size: .85rem;
+  }
+  h3 { margin: 1rem 0 .35rem; font-size: 1.02rem; }
+  h4 { margin: .75rem 0 .25rem; font-size: .95rem; }
+  ul, ol { margin: .3rem 0 .55rem; padding-left: 1.2rem; }
+  li { margin: .18rem 0; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: .88rem; margin: .45rem 0 .7rem;
+  }
+  th, td { border: 1.5px solid var(--line-strong); padding: .35rem .45rem; text-align: left; vertical-align: top; }
+  th { background: var(--paper-2); }
+  .flow {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .78rem; background: #f0f4f8; border: 2px solid var(--ink);
+    border-radius: 12px; padding: .7rem .8rem; overflow-x: auto; white-space: pre; line-height: 1.35;
+  }
+  .tagrow { display: flex; flex-wrap: wrap; gap: .3rem; margin: .35rem 0 .5rem; }
+  .pill {
+    display: inline-block; border: 2px solid var(--ink); border-radius: 999px;
+    padding: .12rem .45rem; font-size: .7rem; font-weight: 800; background: white;
+  }
+  .pill.v { background: color-mix(in oklab, var(--vocab) 22%, white); }
+  .pill.g { background: color-mix(in oklab, var(--grammar) 22%, white); }
+  .pill.p { background: color-mix(in oklab, var(--phrases) 22%, white); }
+  .pill.c { background: color-mix(in oklab, var(--comms) 22%, white); }
+  .cardgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: .55rem; }
+  .card {
+    border: 2.5px solid var(--ink); border-radius: 12px; padding: .55rem .65rem;
+    background: white; box-shadow: 2px 2px 0 rgba(49,38,32,.1);
+  }
+  .card strong { display: block; margin-bottom: .2rem; }
+  mark.hit { background: var(--hl); color: var(--ink); padding: 0 .1em; border-radius: 3px; }
+  .backdrop {
+    display: none; position: fixed; inset: 0; background: rgba(49,38,32,.35); z-index: 30;
+  }
+  .backdrop.on { display: block; }
+
+  /* Accordion sections */
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 .85rem;
+  }
+  .toolbar button {
+    border: 2.5px solid var(--ink); border-radius: 999px; background: var(--paper-raised);
+    padding: .35rem .7rem; font: inherit; font-size: .8rem; font-weight: 750; cursor: pointer;
+  }
+  .toolbar button:hover { background: var(--hl); }
+  details.topic {
+    background: var(--paper-raised); border: 2.5px solid var(--ink);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 0; margin: 0 0 .75rem; overflow: hidden;
+  }
+  details.topic.dimmed { opacity: .28; }
+  details.topic > summary {
+    list-style: none; cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: .55rem;
+    padding: .75rem .9rem; font-size: 1.05rem; font-weight: 800;
+    background: color-mix(in oklab, var(--gold) 55%, white);
+    border-bottom: 2.5px solid transparent;
+  }
+  details.topic[open] > summary {
+    border-bottom-color: var(--ink);
+    background: var(--gold);
+  }
+  details.topic > summary::-webkit-details-marker { display: none; }
+  details.topic > summary .chev {
+    width: 1.35rem; height: 1.35rem; border-radius: 8px;
+    border: 2px solid var(--ink); background: var(--paper-raised);
+    display: inline-grid; place-items: center; font-size: .75rem; flex-shrink: 0;
+  }
+  details.topic[open] > summary .chev { background: var(--hl); transform: none; }
+  details.topic[open] > summary .chev::before { content: "▾"; }
+  details.topic:not([open]) > summary .chev::before { content: "▸"; }
+  details.topic .body { padding: .85rem 1rem 1.05rem; }
+  details.topic .body > h2, details.topic .body > .num-title { display: none; }
+  section { /* legacy unused */ }
+
+  footer.page {
+    margin-top: 1.2rem; font-size: .78rem; color: var(--ink-faint);
+    border-top: 2px solid var(--line); padding-top: .7rem;
+  }
+
+  @media (max-width: 860px) {
+    .burger { display: inline-grid; place-items: center; }
+    .sidebar {
+      position: fixed; left: 0; top: 54px; z-index: 35;
+      transform: translateX(-105%); transition: transform .2s ease;
+      box-shadow: 8px 0 24px rgba(0,0,0,.18);
+    }
+    .sidebar.open { transform: translateX(0); }
+    .topbar .tag { display: none; }
+    .main { padding: .9rem .75rem 3rem; }
+    #q { max-width: none; }
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <button class="burger" id="burger" aria-label="Open index">☰</button>
+    <a class="brand" href="#top">Flu<span>O</span>Lin<span>Go</span></a>
+    <span class="tag">Learner wiki · French 1 (A1)</span>
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="Search the wiki…" autocomplete="off"/>
+      <span class="search-meta" id="searchMeta"></span>
+    </div>
+  </header>
+  <div class="backdrop" id="backdrop"></div>
+
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <h2>Index</h2>
+      <nav class="nav" id="toc">
+        <a href="#breath">0 · In one breath</a>
+        <a href="#big">1 · Big picture</a>
+        <a href="#way">2 · Finding your way</a>
+        <a class="sub" href="#door">Front door</a>
+        <a class="sub" href="#map">Map</a>
+        <a class="sub" href="#goal">Goal page</a>
+        <a class="sub" href="#menu">☰ Menu</a>
+        <a href="#path">3 · One goal path</a>
+        <a href="#activities">4 · Activities</a>
+        <a class="sub" href="#learn">Learn</a>
+        <a class="sub" href="#drill">Drill</a>
+        <a class="sub" href="#amuse">Amuse</a>
+        <a class="sub" href="#speak">Speak</a>
+        <a class="sub" href="#write">Write</a>
+        <a class="sub" href="#track">Track</a>
+        <a href="#connect">5 · Connections</a>
+        <a href="#economy">6 · XP · streak · gems</a>
+        <a href="#signin">7 · Sign-in</a>
+        <a href="#know">8 · Good to know</a>
+        <a href="#goals50">9 · 50 goals</a>
+        <a href="#week">Study plan (all units)</a>
+        <a href="#cheat">10 · Cheat sheet</a>
+      </nav>
+      <div class="keywords">
+        <h2>Keywords</h2>
+        <div class="chips" id="chips">
+          <button type="button" class="chip" data-kw="SpecuLearn">SpecuLearn</button>
+          <button type="button" class="chip" data-kw="MneMemo">MneMemo</button>
+          <button type="button" class="chip" data-kw="MémoiRecall">MémoiRecall</button>
+          <button type="button" class="chip" data-kw="ErroReview">ErroReview</button>
+          <button type="button" class="chip" data-kw="swipe">swipe</button>
+          <button type="button" class="chip" data-kw="XP">XP</button>
+          <button type="button" class="chip" data-kw="streak">streak</button>
+          <button type="button" class="chip" data-kw="gems">gems</button>
+          <button type="button" class="chip" data-kw="before class">before class</button>
+          <button type="button" class="chip" data-kw="sign-in">sign-in</button>
+          <button type="button" class="chip" data-kw="WorDrill">WorDrill</button>
+          <button type="button" class="chip" data-kw="ComposeIt">ComposeIt</button>
+          <button type="button" class="chip" data-kw="vocabulary">vocabulary</button>
+          <button type="button" class="chip" data-kw="grammar">grammar</button>
+          <button type="button" class="chip" data-kw="Finale">Finale</button>
+          <button type="button" class="chip" data-kw="done">done</button>
+          <button type="button" class="chip" data-kw="study plan">study plan</button>
+          <button type="button" class="chip" data-kw="Unité">Unité</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main" id="top">
+      <div class="hero">
+        <h1>FluOLinGo — Learner Wiki</h1>
+        <p><strong>Fluency On Linguistic Goals</strong> · homework helper for French A1 (NUS LAF1201) · not a replacement for class.</p>
+        <p>Use the <strong>index</strong>, <strong>search</strong>, or <strong>keywords</strong> to jump. Short sentences. Point form.</p>
+        <p>In a hurry? The <a href="/guide"><strong>QuickStart</strong></a> is the five steps you need to begin. This page is the same course in full. <a href="/home">← Back to FluOLinGo</a></p>
+      </div>
+
+      
+      <div class="toolbar">
+        <button type="button" id="expandAll">Expand all topics</button>
+        <button type="button" id="collapseAll">Collapse all</button>
+        <button type="button" id="expandMatch" title="After search">Expand matches only</button>
+      </div>
+
+      <div class="callout" data-search="habit guess learn practise come back">
+        <strong>The one habit:</strong> guess first → learn it → practise it → come back before you forget.
+      </div>
+
+      <details class="topic" id="breath" data-search="homework helper companion 50 stops wrong answers nothing locked" open>
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">0</span> In one breath</span></summary>
+        <div class="body">
+<ul>
+          <li><strong>What this is:</strong> a homework helper for your French class.</li>
+          <li><strong>What it is not:</strong> a course that replaces the class.</li>
+          <li>The course is a <strong>road with 50 stops</strong>. Each stop is one <strong>goal</strong>.</li>
+          <li>At each stop: <strong>guess → learn → practise → come back</strong> to what you missed.</li>
+          <li><strong>Nothing is locked.</strong> Tap any stop any time.</li>
+          <li>Wrong answers never punish you. Effort still earns XP. Mistakes come back later to fix.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="big" data-search="grid swipe map goal SpecuLearn MneMemo MémoiRecall WorDrill ÉcouTexte ConjugaZone">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">1</span> Big picture</span></summary>
+        <div class="body">
+<p>Think of a <strong>grid</strong>. Rows = the 50 goals. Columns = activities.</p>
+        <ul>
+          <li><strong>Across →</strong> = same goal, next activity. On screen: <strong>swipe LEFT</strong> moves you this way.</li>
+          <li><strong>Back ←</strong> = previous activity. On screen: <strong>swipe RIGHT</strong>.</li>
+          <li><strong>Down ↓ / up ↑</strong> = same activity, next / previous goal (or scroll past the bottom).</li>
+          <li>Edge arrows show where a swipe goes.</li>
+        </ul>
+        <div class="flow">Arrows below match the path you travel.
+Swipe LEFT advances → on this diagram. Swipe RIGHT goes ←.
+
+OPEN (only this part stacks)
+  FRONT DOOR ──Enter──▶ MAP ──tap a stop──▶ GOAL PAGE
+
+THEN MOVE ACROSS (same goal) — not down
+  GOAL ──▶ SpecuLearn ──▶ MneMemo ──▶ MémoiRecall ──▶ WorDrill ──▶ ÉcouTexte ──▶ ConjugaZone
+           guess           learn         flashcards        speak           listen          verbs
+  ◀ back (swipe RIGHT)                              next activity (swipe LEFT) →
+
+OR MOVE DOWN/UP (same activity, other goal)
+         ↑ Goal 4 SpecuLearn
+  Goal 5 SpecuLearn
+         ↓ Goal 6 SpecuLearn
+
+☰ off this grid: games · ErroReview · VoixLà · ChaTutor · ComposeIt · Profile · Leaderboard · Settings</div>
+        </div>
+      </details>
+
+      <details class="topic" id="way" data-search="finding your way navigation">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">2</span> Finding your way</span></summary>
+        <div class="body">
+<h3 id="door">2.1 Front door <code>/</code></h3>
+        <ul>
+          <li>Full-screen road (time of day matches real time).</li>
+          <li>Orange <strong>ENTER</strong> coin. Tap anywhere to enter.</li>
+        </ul>
+
+        <h3 id="map">2.2 Home = the map <code>/home</code></h3>
+        <ul>
+          <li><strong>2D / 3D</strong> switch · zoom 30–200% · editable <strong>🧑‍🎓</strong> stop number (“where I am”).</li>
+          <li>5 units × 10 stops. French titles: Bienvenue en classe · Qui suis-je ? · Ma vie, mes envies · En ville · À table !</li>
+          <li>Stop colours:
+            <span class="tagrow">
+              <span class="pill v">🔵 vocabulary</span>
+              <span class="pill g">🩷 grammar</span>
+              <span class="pill p">🟠 expressions</span>
+              <span class="pill c">🟢 communication</span>
+            </span>
+          </li>
+          <li><strong>🚩</strong> = where the class is. Road paved up to it, dotted beyond.</li>
+          <li><strong>Done stop</strong> = pressed flat and paler, keeps its number. <strong>No tick.</strong></li>
+          <li><strong>🏁</strong> under the map = GramMarathon <strong>Finale</strong>.</li>
+          <li>Keyboard: type two digits (e.g. <code>31</code>) to jump to that stop.</li>
+        </ul>
+
+        <h3 id="goal">2.3 Goal page</h3>
+        <ul>
+          <li>One can-do sentence + up to 8 tiles (SpecuLearn, MneMemo, MémoiRecall, GramMarathon, VocabulaRain, LexicaLocker, ComposeIt, WorDrill).</li>
+          <li><strong>Grey tile</strong> = nothing at this stop (not broken, not locked).</li>
+          <li>Swipe ↑↓ for other goals. Counter shows <strong>n / 50</strong>.</li>
+        </ul>
+
+        <h3 id="menu">2.4 Top bar &amp; ☰ menu</h3>
+        <ul>
+          <li>Top bar: ☰ · wordmark (= Home) · sound · ⌛ history · 🎯 stop · ★ favourite · account.</li>
+          <li>Sound = one mute for voice + music + effects (top bar).</li>
+        </ul>
+        <table>
+          <thead><tr><th>Row</th><th>Tiles</th></tr></thead>
+          <tbody>
+            <tr><td>🧑‍🏫 <strong>Start</strong></td><td>Help · <strong>GO TO</strong> (number + 🎯) · ★ Favourites</td></tr>
+            <tr><td>📝 <strong>Learn</strong></td><td>💡 SpecuLearn · 📚 MneMemo · 🃏 MémoiRecall</td></tr>
+            <tr><td>🔄 <strong>Drill</strong></td><td>🔤 ConjugaZone · ❌ ErroReview · 🏃 GramMarathon</td></tr>
+            <tr><td>🎮 <strong>Amuse</strong></td><td>🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</td></tr>
+            <tr><td>💬 <strong>Speak</strong></td><td>🔊 VoixLà · 🎙️ WorDrill · 🎧 ÉcouTexte</td></tr>
+            <tr><td>🛠️ <strong>Write</strong></td><td>🤖 ChaTutor · 🧩 ComposeIt</td></tr>
+            <tr><td>👤 <strong>Track</strong></td><td>👤 Profile · 🏆 Leaderboard · ⚙️ Settings</td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li><strong>GO TO</strong> opens that goal and aims goal-based tiles at it.</li>
+          <li>Bottom bar (phone): <strong>off by default</strong> — turn on in Settings.</li>
+        </ul>
+
+        <h3>Floating buttons</h3>
+        <ul>
+          <li><strong>🛠️</strong> on some exercises → VoixLà and/or ChaTutor over the card. ÉcouTexte offers ChaTutor only (won’t read you the answer).</li>
+          <li><strong>🐞</strong> report a bug (works signed out).</li>
+          <li><strong>✨</strong> replay the short page tour.</li>
+        </ul>
+
+        <h3>Every drill shares</h3>
+        <ul>
+          <li>Length chooser on long decks: 10 · 25 · all.</li>
+          <li><strong>?</strong> = hint ladder. Last step shows the answer → item goes to ErroReview · no first-try XP.</li>
+          <li><strong>WHY</strong> only after a wrong answer, only if you tap it.</li>
+          <li>Enter fires the visible button. Number keys pick options.</li>
+          <li>End screen → <strong>Next ›</strong> (next useful step for this goal).</li>
+          <li>Games end with a post-mortem + <strong>CORRIGER MAINTENANT</strong> → ErroReview.</li>
+          <li>No hearts / lockouts in drills. Only arcade games have lives.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="path" data-search="before class before a test SpecuLearn MneMemo path routine">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">3</span> One goal, step by step</span></summary>
+        <div class="body">
+<ol>
+          <li><strong>Select the goal</strong> — map, or ☰ → GO TO → number → 🎯.</li>
+          <li><strong>Guess first:</strong> 💡 SpecuLearn. You are not meant to know it yet.</li>
+          <li><strong>Learn it:</strong> 📚 MneMemo (Idée → Formes → Exercice).</li>
+          <li><strong>Make it stick:</strong> 🃏 MémoiRecall.</li>
+          <li><strong>Practise:</strong> GramMarathon · ConjugaZone · WorDrill · ÉcouTexte · games.</li>
+          <li><strong>Come back:</strong> ❌ ErroReview.</li>
+          <li>Stop is <strong>done</strong> when every learning activity it offers has been tried (games do not count).</li>
+        </ol>
+        <div class="cardgrid">
+          <div class="card"><strong>Before the lesson</strong>Do SpecuLearn first, then come to class.</div>
+          <div class="card"><strong>Before a test</strong>Same SpecuLearn to find holes, then practise + ErroReview. Finale helps for whole-course revision.</div>
+        </div>
+        </div>
+      </details>
+
+      <details class="topic" id="activities" data-search="activities catalogue">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">4</span> The activities</span></summary>
+        <div class="body">
+<h3 id="learn">📝 Learn</h3>
+        <h4>💡 SpecuLearn</h4>
+        <ul>
+          <li>Multiple choice about the goal you picked. Guessing is the job.</li>
+          <li><strong>60 XP for finishing it</strong>, once per deck — never for the score, because it is a guess, not a test. No streak clock. No ErroReview. Wrong costs nothing.</li>
+          <li>Keys 1–4. Accents forgiven. Skip pretest jumps to the end.</li>
+          <li>Map, goals, Help, Favourites, and bug report work without sign-in. If SpecuLearn asks you to sign in on your build, do that — live auth can require it.</li>
+        </ul>
+        <h4>📚 MneMemo</h4>
+        <ul>
+          <li>Tabs: 🎯 Goal · 💡 Idée · 📐 Formes · 🏋️ Exercice.</li>
+          <li>Exercice levels (always 12 cards; harder ≠ shorter):</li>
+        </ul>
+        <table>
+          <thead><tr><th>Level</th><th>What you do</th></tr></thead>
+          <tbody>
+            <tr><td>★ Facile</td><td>Recognise — pick / put words in order</td></tr>
+            <tr><td>★★ Moyen</td><td>Fill <strong>one</strong> gap</td></tr>
+            <tr><td>★★★ Difficile</td><td>Fill <strong>two</strong> gaps</td></tr>
+            <tr><td>🎁 Bonus</td><td>Translate the whole sentence from English</td></tr>
+          </tbody>
+        </table>
+        <ul>
+          <li>Wrong cards come back once. Needs sign-in. A half-finished run can be resumed.</li>
+        </ul>
+        <h4>🃏 MémoiRecall</h4>
+        <ul>
+          <li>English front → French back. Views: One · All · List.</li>
+          <li>Étudier (flip · ✓ / ↺) or Me tester (type the French).</li>
+          <li>First try: <strong>60 XP</strong> right / <strong>20 XP</strong> wrong (× fire). Feeds the memory clock.</li>
+        </ul>
+
+        <h3 id="drill">🔄 Drill</h3>
+        <h4>🏃 GramMarathon</h4>
+        <ul>
+          <li>Type the missing bit. No options. Accents can still count as right.</li>
+          <li>About <strong>27 / 50</strong> goals have gaps (else grey).</li>
+          <li><strong>Finale</strong> (🏁): ~50 questions/day, at least one per goal, weighted to your weak spots.</li>
+        </ul>
+        <h4>🔤 ConjugaZone</h4>
+        <ul>
+          <li>Verb endings. REVEAL mode or TYPE IT mode.</li>
+          <li>On the swipe chain for goals that have verbs (~40 / 50).</li>
+          <li><strong>Does not feed ErroReview</strong> (verb forms are separate from deck words).</li>
+        </ul>
+        <h4>❌ ErroReview</h4>
+        <ul>
+          <li>Words due today. Hear or read the French → pick the English.</li>
+          <li>20 per batch. Badge = words due (not goals).</li>
+          <li>Right → 1 → 3 → 7 → 14 days. Wrong → due now.</li>
+          <li>Empty if you have never practised — normal for brand-new accounts.</li>
+        </ul>
+
+        <h3 id="amuse">🎮 Amuse (arcade — dessert)</h3>
+        <ul>
+          <li>Games do <strong>not</strong> finish a goal.</li>
+        </ul>
+        <h4>🌧️ VocabulaRain</h4>
+        <ul>
+          <li>Study table, then falling words into columns. Day → night → storm.</li>
+          <li>Ends when a column stacks to the top. Own score, and <strong>60 XP</strong> the first time you finish it at a goal — then <strong>60</strong> again every time you beat that score.</li>
+          <li>Available on many stops (roughly 28–33 / 50). Expert countries pack costs <strong>30💎</strong>.</li>
+        </ul>
+        <h4>🔢 Numbers — NumBus / NumBourse</h4>
+        <ul>
+          <li>Hear French numbers → type digits. Lives. Slow replay.</li>
+          <li>Counts for streak, and pays <strong>60 XP</strong> the first time you finish — then <strong>60</strong> again on any run that beats your best.</li>
+        </ul>
+        <h4>🔐 LexicaLocker</h4>
+        <ul>
+          <li>Build French from syllable keys. ~28 / 50 goals. Misses can go to ErroReview.</li>
+        </ul>
+
+        <h3 id="speak">💬 Speak</h3>
+        <h4>🎙️ WorDrill</h4>
+        <ul>
+          <li>Mic grades you: Parfait · Bien · same pronunciation · Presque · Not quite.</li>
+          <li><strong>Fair to the mouth</strong> (sound-alikes can pass). Typing elsewhere is <strong>strict to the hand</strong>.</li>
+        </ul>
+        <h4>🎧 ÉcouTexte</h4>
+        <ul>
+          <li>Hear a mini-text · fill blanks · speed / voice controls.</li>
+          <li>“Show the sentence” can send words to ErroReview.</li>
+        </ul>
+        <h4>🔊 VoixLà</h4>
+        <ul>
+          <li>Type French → hear it → check corrections → optional MP3.</li>
+          <li>Needs sign-in (protects the cloud voice bill).</li>
+          <li><strong>Does not spend your gems or XP.</strong></li>
+        </ul>
+
+        <h3 id="write">🛠️ Write</h3>
+        <h4>🤖 ChaTutor</h4>
+        <ul>
+          <li>Ask anything in French or English. Needs sign-in + live server.</li>
+          <li>Not a drill. Does not write the memory clock.</li>
+          <li>Tip: ask why an answer is right — then close it and answer yourself.</li>
+        </ul>
+        <h4>🧩 ComposeIt</h4>
+        <ul>
+          <li>Role-play scenes with phrase chips. Finish → <strong>120 XP</strong>.</li>
+          <li>Available on a set of scene goals (includes communication ateliers 10, 20, 30, 40, 49, 50).</li>
+        </ul>
+
+        <h3 id="track">👤 Track</h3>
+        <ul>
+          <li><strong>Profile:</strong> streak, XP, gems, badges, “do this next”, heat strip of 50 stops.</li>
+          <li><strong>Leaderboard:</strong> default <strong>This week</strong> (resets Monday) · <strong>All term</strong> = lifetime XP. Gems do not rank you.</li>
+          <li><strong>Settings:</strong> icon labels · map wheel · bottom bar · gem shop.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="connect" data-search="ErroReview feed connections Next deck">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">5</span> How activities connect</span></summary>
+        <div class="body">
+<ul>
+          <li><strong>One deck of words per goal</strong> — many doors into the same list.</li>
+          <li><strong>SpecuLearn is outside the loop</strong> — records nothing on purpose.</li>
+          <li><strong>Feeds ErroReview:</strong> MneMemo exercise, MémoiRecall (test), GramMarathon, WorDrill, ÉcouTexte, LexicaLocker, some game misses.</li>
+          <li><strong>Does not:</strong> SpecuLearn, VoixLà, ChaTutor, ConjugaZone, NumBus, NumBourse.</li>
+          <li>Finish screens point to <strong>Next ›</strong> — first useful undone step at this stop.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="economy" data-search="XP streak gems badges Bouclier fire level lucky find done welcome purse personal best farming">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">6</span> XP · streak · gems · done</span></summary>
+        <div class="body">
+<p><strong>Nothing you can open here pays nothing.</strong> Every activity is worth XP at least once, and the ones that are not marked per answer pay for the <em>run</em> instead.</p>
+<table>
+          <thead><tr><th>You do</th><th>You get</th></tr></thead>
+          <tbody>
+            <tr><td>Right, first try</td><td><strong>60</strong> × fire</td></tr>
+            <tr><td>Wrong, first try</td><td><strong>20</strong> × fire</td></tr>
+            <tr><td>Same item again in that run</td><td>0 more XP</td></tr>
+            <tr><td>Wrong then right in one run</td><td>20 total (not 20+60)</td></tr>
+            <tr><td>Goal newly done</td><td>300 + up to 300 mastery</td></tr>
+            <tr><td>ComposeIt scene finished</td><td>120</td></tr>
+            <tr><td>SpecuLearn · VocabulaRain · NumBus · NumBourse — <strong>first finish</strong></td><td><strong>60</strong></td></tr>
+            <tr><td>… and again every run that <strong>beats your own best</strong></td><td><strong>60</strong></td></tr>
+            <tr><td>A run that does not beat your best</td><td>0 — and nothing is taken away</td></tr>
+          </tbody>
+        </table>
+        <h3>🏆 Beating your own best</h3>
+        <ul>
+          <li>Play a game all afternoon if you like: <strong>every genuine improvement pays again</strong>. A worse run simply pays nothing.</li>
+          <li>Your best is kept <strong>per game, per goal</strong> — a record on the Unit 0 deck is not a record on Unit 3.</li>
+          <li><strong>SpecuLearn is the exception</strong>: it pays for <em>finishing</em>, once per deck, never for the score. It is the guess <em>before</em> the lesson — if the score paid, the clever move would be to do the lesson first, and the activity would stop measuring anything.</li>
+        </ul>
+        <h3>🔥 Streak / fire</h3>
+        <ul>
+          <li>Any graded answer that day (right or wrong). Numbers games count.</li>
+          <li>Day rolls at <strong>4 am</strong> local time.</li>
+          <li>Multipliers: 3d ×1.5 · 7d ×2 · 14d ×2.5 · 30d ×3.</li>
+          <li>Wrong answers never break the streak. Missing a calendar day can.</li>
+          <li>❄️ Streak-Freezer: <strong>25💎</strong>, hold max <strong>2</strong>, buy <strong>before</strong> you miss.</li>
+        </ul>
+        <h3>🎚️ Levels</h3>
+        <ul><li>1 @ 2 000 · 2 @ 6 000 · 3 @ 14 000 · 4 @ 30 000 XP.</li></ul>
+        <h3>💎 Gems — what you start with</h3>
+        <ul>
+          <li><strong>You begin with 20💎, free, once.</strong> That is the same as one level-up, and the same as the cheapest colour in the shop — so you can read your purse against a price you can see. It is roughly three exercises’ worth of lucky finds: enough that your first session never runs into a price you cannot pay.</li>
+          <li>After that they are earned, and they come in faster than the purse: a twenty-item exercise finds about <strong>6💎</strong>.</li>
+        </ul>
+        <h3>💎 Gems — where the rest come from</h3>
+        <ul>
+          <li><strong>Lucky finds</strong> — about <strong>1 answer in 8</strong> pays <strong>2💎</strong> (rarely <strong>10💎</strong>), guaranteed by the 12th find-less answer, capped at <strong>40💎 a day</strong>. A find can only ever <em>give</em>: there is no bad outcome and nothing is ever taken away.</li>
+          <li><strong>Badges</strong> — <strong>5–50💎</strong> each, paid the first time you earn one (goals: 5·10·20·50 · streaks: 5·10·30 · words mastered: 15·30).</li>
+          <li><strong>Level-up</strong> — <strong>+20💎</strong> each, four times over French 1.</li>
+          <li>Over all fifty goals a thorough learner earns roughly <strong>1 450💎</strong>. The entire shop costs <strong>205💎</strong>, so gems are never the thing standing between you and the course.</li>
+        </ul>
+        <h3>💎 Gems — what they buy</h3>
+        <ul>
+          <li>Colours (20–50💎) · Streak-Freezer (25💎) · Expert countries pack (30💎).</li>
+          <li><strong>Never a lesson, a drill or a revision.</strong> Nothing you need in order to pass has a price on it.</li>
+        </ul>
+        <h3>✓ When a stop is done</h3>
+        <ul>
+          <li>Tried every <strong>learning</strong> door it offers (right or wrong).</li>
+          <li>Games are extras — not required.</li>
+          <li>Looks pressed flat and paler. No green tick. Stays done forever.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="signin" data-search="Google sign-in sync PWA install wipe">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">7</span> Sign-in · saving · devices</span></summary>
+        <div class="body">
+<ul>
+          <li>Sign in with <strong>Google</strong> for lessons, drills, games, ErroReview, VoixLà, ChaTutor, leaderboard, history.</li>
+          <li>Without sign-in you can still browse the map, goal pages, Help, Favourites, and report bugs.</li>
+          <li>Signed in → cloud save across devices.</li>
+          <li>Signing out clears learning data on <strong>that device</strong> (cloud copy kept).</li>
+          <li>Install as an app (PWA) after a few visits.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="know" data-search="fair mouth strict hand English interface teacher no hearts">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">8</span> Good to know</span></summary>
+        <div class="body">
+<ul>
+          <li>Chrome/UI is English on purpose; French is the learning content.</li>
+          <li>Spoken = gentle (fair to the mouth). Typed = strict (letters/accents).</li>
+          <li>Teacher dashboard exists but is not linked for students.</li>
+        </ul>
+        <h3>You will NOT find (on purpose)</h3>
+        <ul>
+          <li>No hearts / lockouts in drills.</li>
+          <li>No locked lessons. Gems buy decoration only.</li>
+          <li>No “mark as done” button.</li>
+          <li>No scoring economy inside SpecuLearn.</li>
+        </ul>
+        </div>
+      </details>
+
+      <details class="topic" id="goals50" data-search="Unité goals vocabulary grammar expressions communication atelier">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">9</span> The 50 goals</span></summary>
+        <div class="body">
+<p>Communication ateliers: <strong>10, 20, 30, 40, 49, 50</strong>. Tu/vous is Goal 2 (no Settings switch).</p>
+        <table>
+          <thead><tr><th>Unit</th><th>Stops</th><th>About</th></tr></thead>
+          <tbody>
+            <tr><td>0 Bienvenue en classe</td><td>1–10</td><td>Intros, tu/vous, alphabet, days, colours, nouns, 0–20, class talk, greetings, first meeting</td></tr>
+            <tr><td>1 Qui suis-je ?</td><td>11–20</td><td>moi/toi, jobs, subjects, être, countries, nationalities, languages, 20–69, age, write a country</td></tr>
+            <tr><td>2 Ma vie, mes envies</td><td>21–30</td><td>objects, possessives, likes, faire, pourquoi, aller, time, négation, invitations, email</td></tr>
+            <tr><td>3 En ville</td><td>31–40</td><td>weather, en/au/aux, town, questions, location, directions, pouvoir, transport, wants, itinerary</td></tr>
+            <tr><td>4 À table !</td><td>41–50</td><td>meals, partitives, frequency, shops, 70–99, demonstratives, plans, advice, restaurant</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </details>
+
+      <details class="topic" id="week" data-search="first week plan starter full course all units semester study rhythm Unité">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label">Study plan — whole course</span></summary>
+        <div class="body">
+<p>Same loop for <strong>every</strong> goal. The course is 50 goals in 5 units. Work along the road; do not skip the loop.</p>
+
+        <h3>The loop (use on every goal)</h3>
+        <ol>
+          <li><strong>Before class for that goal:</strong> 💡 SpecuLearn.</li>
+          <li><strong>Learn:</strong> 📚 MneMemo → 🃏 MémoiRecall.</li>
+          <li><strong>After class:</strong> one Drill and/or Speak item that is lit up.</li>
+          <li><strong>Optional:</strong> one Amuse game · ComposeIt if the tile is lit.</li>
+          <li><strong>Ongoing:</strong> ❌ ErroReview whenever the badge shows due words.</li>
+          <li><strong>Before tests:</strong> SpecuLearn again · ErroReview empty · 🏁 Finale for whole-course revision.</li>
+        </ol>
+
+        <h3>Week 1 — get the habit (Unité 0, start)</h3>
+        <ul>
+          <li><strong>Day 1</strong> — Map · Goal 1 · SpecuLearn.</li>
+          <li><strong>Day 2</strong> — MneMemo · MémoiRecall.</li>
+          <li><strong>Day 3</strong> — One drill + one game.</li>
+          <li><strong>Day 4</strong> — WorDrill · try VoixLà.</li>
+          <li><strong>Day 5</strong> — First ErroReview.</li>
+          <li><strong>Day 6</strong> — ComposeIt if available (e.g. greetings / meeting).</li>
+          <li><strong>Day 7</strong> — Profile · continue Goals 2–3 with the same loop.</li>
+        </ul>
+
+        <h3>Unité 0 · Goals 1–10 · « Bienvenue en classe »</h3>
+        <ul>
+          <li>Do Goals <strong>1 → 9</strong> with the loop above (about 1–2 goals per study day).</li>
+          <li>Goal <strong>10</strong> is the first communication atelier — use ComposeIt / role-play when lit.</li>
+          <li>Clear ErroReview before you leave the unit.</li>
+        </ul>
+
+        <h3>Unité 1 · Goals 11–20 · « Qui suis-je ? »</h3>
+        <ul>
+          <li>Same loop. Expect more grammar tiles (être, avoir, nationalities…).</li>
+          <li>Use 🔤 ConjugaZone when verbs appear.</li>
+          <li>Goal <strong>20</strong> = short writing (country). Prepare, then ComposeIt / write practice if offered.</li>
+        </ul>
+
+        <h3>Unité 2 · Goals 21–30 · « Ma vie, mes envies »</h3>
+        <ul>
+          <li>Same loop. Likes, places, time, negation, invitations.</li>
+          <li>Goal <strong>30</strong> = short email / wishes — writing focus.</li>
+          <li>Keep ErroReview short and frequent (many forms pile up here).</li>
+        </ul>
+
+        <h3>Unité 3 · Goals 31–40 · « En ville »</h3>
+        <ul>
+          <li>Same loop. Weather, town, questions, directions, transport.</li>
+          <li>Goal <strong>40</strong> = itinerary — produce connected steps.</li>
+          <li>WorDrill + ÉcouTexte help a lot for directions language.</li>
+        </ul>
+
+        <h3>Unité 4 · Goals 41–50 · « À table ! »</h3>
+        <ul>
+          <li>Same loop. Food, shops, plans, advice, restaurant.</li>
+          <li>Goals <strong>49–50</strong> = review + restaurant role-play — end-of-course production.</li>
+          <li>Before the final test: ErroReview empty · 🏁 Finale · SpecuLearn on weak goals.</li>
+        </ul>
+
+        <h3>Weekly rhythm (any week of the semester)</h3>
+        <table>
+          <thead><tr><th>When</th><th>Do this</th></tr></thead>
+          <tbody>
+            <tr><td>Before each class</td><td>SpecuLearn for the next goal(s)</td></tr>
+            <tr><td>After each class</td><td>MneMemo (if not done) · MémoiRecall · one drill/speak</td></tr>
+            <tr><td>2–3 times a week</td><td>ErroReview until the badge is clear</td></tr>
+            <tr><td>Once a week</td><td>One game · check Profile heat strip for WEAK stops</td></tr>
+            <tr><td>Before a test</td><td>SpecuLearn on test goals · ErroReview · Finale</td></tr>
+            <tr><td>Every day (optional)</td><td>One graded answer to keep the 🔥 (before 4 am)</td></tr>
+          </tbody>
+        </table>
+
+        <p class="note">Missed days? Nothing breaks. Map keeps your place. ErroReview keeps your misses. A freezer (if bought) keeps your fire. Pick up the same loop on the next glowing stop.</p>
+        </div>
+      </details>
+
+      <details class="topic" id="cheat" data-search="cheat sheet thirty second">
+        <summary><span class="chev" aria-hidden="true"></span><span class="sum-label"><span class="num">10</span> Thirty-second cheat sheet</span></summary>
+        <div class="body">
+<div class="flow">Where am I?       🎯 in the top bar · 🧑‍🎓 on the map
+Go to goal 23     ☰ → GO TO → 23 → 🎯   or type 2 3
+Next activity →   swipe LEFT            back ← : swipe RIGHT
+Next goal ↓       swipe / scroll DOWN   previous ↑ : swipe / scroll UP
+Before class      💡 SpecuLearn         Before a test: same
+Learn             📚 MneMemo → 🃏 MémoiRecall
+Fix mistakes      ❌ ErroReview
+Stuck             ? hints · WHY · 🛠️ helpers
+Keep the 🔥       one graded answer a day (before 4 am)
+Something broke   🐞</div>
+        </div>
+      </details>
+
+      <footer class="page">
+        FluOLinGo Learner Wiki · spine from the plain guide (Sep 2026) · merged with verified XP / leaderboard / VoixLà / done-stop facts · LAF1201 companion
+      </footer>
+    </main>
+  </div>
+
+<script>
+(function () {
+  const q = document.getElementById('q');
+  const meta = document.getElementById('searchMeta');
+  const sections = [...document.querySelectorAll('main details.topic, main .callout, main .hero')];
+  const burger = document.getElementById('burger');
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('backdrop');
+  const tocLinks = [...document.querySelectorAll('#toc a')];
+
+  function closeNav() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('on');
+  }
+  burger.addEventListener('click', () => {
+    const open = sidebar.classList.toggle('open');
+    backdrop.classList.toggle('on', open);
+  });
+  backdrop.addEventListener('click', closeNav);
+  tocLinks.forEach(a => a.addEventListener('click', () => {
+    if (window.matchMedia('(max-width: 860px)').matches) closeNav();
+  }));
+
+  function clearMarks(root) {
+    root.querySelectorAll('mark.hit').forEach(m => {
+      const t = document.createTextNode(m.textContent);
+      m.replaceWith(t);
+    });
+  }
+
+  function highlight(el, term) {
+    if (!term) return;
+    const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while (walk.nextNode()) nodes.push(walk.currentNode);
+    const re = new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig');
+    nodes.forEach(node => {
+      if (!node.parentElement || ['SCRIPT','STYLE'].includes(node.parentElement.tagName)) return;
+      if (!re.test(node.nodeValue)) return;
+      const span = document.createElement('span');
+      span.innerHTML = node.nodeValue.replace(re, m => '<mark class="hit">' + m + '</mark>');
+      node.replaceWith(...span.childNodes);
+    });
+  }
+
+  function runSearch(term) {
+    const t = (term || '').trim().toLowerCase();
+    let shown = 0;
+    sections.forEach(sec => {
+      clearMarks(sec);
+      const blob = ((sec.getAttribute('data-search') || '') + ' ' + sec.innerText).toLowerCase();
+      const ok = !t || blob.includes(t);
+      sec.classList.toggle('dimmed', !ok);
+      if (ok) {
+        shown++;
+        if (t) highlight(sec, t);
+      }
+    });
+    meta.textContent = t ? (shown + ' match' + (shown === 1 ? '' : 'es')) : '';
+    if (t) {
+      document.querySelectorAll('details.topic').forEach(d => {
+        if (!d.classList.contains('dimmed')) d.open = true;
+      });
+    }
+  }
+
+  q.addEventListener('input', () => runSearch(q.value));
+
+  document.getElementById('chips').addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+    btn.classList.add('on');
+    q.value = btn.dataset.kw;
+    runSearch(q.value);
+    const first = sections.find(s => !s.classList.contains('dimmed') && s.id);
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Active TOC
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const id = en.target.id;
+      if (!id) return;
+      tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0.01 });
+  document.querySelectorAll('main details.topic[id]').forEach(s => io.observe(s));
+
+  document.getElementById('expandAll')?.addEventListener('click', () => {
+    document.querySelectorAll('details.topic').forEach(d => d.open = true);
+  });
+  document.getElementById('collapseAll')?.addEventListener('click', () => {
+    document.querySelectorAll('details.topic').forEach(d => d.open = false);
+  });
+  document.getElementById('expandMatch')?.addEventListener('click', () => {
+    document.querySelectorAll('details.topic').forEach(d => {
+      d.open = !d.classList.contains('dimmed');
+    });
+  });
+  // Opening a TOC link expands that topic
+  tocLinks.forEach(a => a.addEventListener('click', () => {
+    const id = (a.getAttribute('href') || '').slice(1);
+    const d = document.getElementById(id);
+    if (d && d.tagName === 'DETAILS') d.open = true;
+    // parent topic if sub-link points to inner id
+    const parent = d && d.closest && d.closest('details.topic');
+    if (parent) parent.open = true;
+  }));
+
+})();
+</script>
+</body>
+</html>
