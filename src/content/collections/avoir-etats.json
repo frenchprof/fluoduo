@@ -313,6 +313,30 @@
       "lemma": "être",
       "tags": [],
       "gap": "sont"
+    },
+    {
+      "id": "avoir-etats-27",
+      "fr": "J'ai vingt ans.",
+      "en": "I am twenty.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "ai"
+    },
+    {
+      "id": "avoir-etats-28",
+      "fr": "Tu as quel âge ?",
+      "en": "How old are you?",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "as"
+    },
+    {
+      "id": "avoir-etats-29",
+      "fr": "Il a trente ans.",
+      "en": "He is thirty.",
+      "lemma": "avoir",
+      "tags": [],
+      "gap": "a"
     }
   ]
 }

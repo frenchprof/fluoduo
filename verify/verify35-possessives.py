@@ -183,16 +183,36 @@ expected = len(nouns) * 6 + len(sentences)
 check(len(nouns) == 21,
       f"{len(nouns)} nouns carry an agreement class",
       f"{len(nouns)} nouns carry a col: tag (expected 21)")
-check(len(sentences) == 10,
+check(len(sentences) == 16,
       f"{len(sentences)} full-sentence items stay 1:1 (they never showed the answer)",
-      f"{len(sentences)} untagged items (expected 10)")
-# The 136 is kept as the CENSUS OF THE MATERIAL, not of a run: 21 classed nouns
-# across six persons plus 10 sentence items is the size of the exercise that has
-# no home today, and the number Dan needs when he decides whether to re-home it.
-check(expected == 136,
+      f"{len(sentences)} untagged items (expected 16)")
+# The census is kept as the CENSUS OF THE MATERIAL, not of a run: 21 classed
+# nouns across six persons plus the sentence items is the size of the exercise
+# that has no home today, and the number Dan needs when he decides whether to
+# re-home it.
+#
+# IT WENT 10 → 16, AND 136 → 142, ON 2026-09-13, and the reason matters more
+# than the arithmetic. This file's own clause above asserts that all fifteen
+# forms — mon…leurs — are in the lesson's paradigm table, because SIO-022 asks
+# for all six persons. The DECK only ever held mon / ma / mes: every one of its
+# ten sentence rows was a first-person one. So the lesson taught six persons
+# and the deck drilled one, and nothing here noticed, because both numbers were
+# snapshots of that state. The MASTER-v8 audit caught it from the other side
+# ("Description says 'me and others' and Memo is about son, but only mon / ma /
+# mes appeared") and added six rows — ton / ta / tes and son / sa / ses. The
+# census follows the material; it is not a cap on it.
+check(expected == 142,
       f"the material is {len(nouns)}x6 + {len(sentences)} = {expected} questions "
       "(no surface asks for them today — see the header)",
-      f"the census came to {expected}, not 136")
+      f"the census came to {expected}, not 142")
+# And the second-person and third-person rows are named, so a later pass cannot
+# quietly take the deck back to first-person-only and still pass the count.
+frs = " · ".join(str(i.get("fr", "")) for i in sentences)
+for form in ("ton", "ta ", "tes", "son", "sa ", "ses"):
+    check(form in frs.lower(),
+          f"a sentence row drills « {form.strip()} »",
+          f"no sentence row drills « {form.strip()} » — the deck is back to mon/ma/mes "
+          "while the lesson still teaches all six persons")
 
 print("\npossessives check (SIO-022 — the full paradigm)\n" + "-" * 66)
 for x in OK:   print("  ok    " + x)

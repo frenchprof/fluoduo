@@ -174,17 +174,6 @@
       "tags": [
         "col:partir_fam"
       ]
-    },
-    {
-      "id": "salutations-14",
-      "fr": "Salut !",
-      "syllables": ["Sa", "lut!"],
-      "en": "Bye!",
-      "note": "(leaving)",
-      "emoji": "🚪",
-      "tags": [
-        "col:partir_fam"
-      ]
     }
   ]
 }

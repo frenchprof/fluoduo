@@ -275,18 +275,6 @@
    ]
   },
   {
-   "id": "weather-letris-21-vente",
-   "fr": "vente",
-   "en": "The wind is blowing.",
-   "emoji": "💨",
-   "tags": [
-    "col:il"
-   ],
-   "syllables": [
-    "vente"
-   ]
-  },
-  {
    "id": "weather-letris-22-tonne",
    "fr": "Il tonne.",
    "en": "It is thundering.",
@@ -322,6 +310,48 @@
     "du",
     "brouil",
     "lard"
+   ]
+  },
+  {
+   "id": "weather-letris-45-des-nuages",
+   "fr": "Il y a des nuages.",
+   "en": "There are clouds.",
+   "emoji": "☁️",
+   "tags": [
+    "col:il_y_a"
+   ],
+   "syllables": [
+    "des",
+    "nua",
+    "ges"
+   ]
+  },
+  {
+   "id": "weather-letris-46-nuageux",
+   "fr": "C'est nuageux.",
+   "en": "It is cloudy.",
+   "emoji": "🌥️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "nua",
+    "geux"
+   ]
+  },
+  {
+   "id": "weather-letris-47-ensoleille",
+   "fr": "C'est ensoleillé.",
+   "en": "It is sunny.",
+   "emoji": "☀️",
+   "tags": [
+    "col:c_est"
+   ],
+   "syllables": [
+    "en",
+    "so",
+    "leil",
+    "lé"
    ]
   },
   {
@@ -514,48 +544,6 @@
    "en": "It often rains in spring.",
    "tags": [],
    "gap": "Il pleut"
-  },
-  {
-   "id": "weather-letris-45-des-nuages",
-   "fr": "des nuages",
-   "en": "There are clouds.",
-   "emoji": "☁️",
-   "tags": [
-    "col:il_y_a"
-   ],
-   "syllables": [
-    "des",
-    "nua",
-    "ges"
-   ]
-  },
-  {
-   "id": "weather-letris-46-nuageux",
-   "fr": "nuageux",
-   "en": "It is cloudy.",
-   "emoji": "🌥️",
-   "tags": [
-    "col:c_est"
-   ],
-   "syllables": [
-    "nua",
-    "geux"
-   ]
-  },
-  {
-   "id": "weather-letris-47-ensoleille",
-   "fr": "ensoleillé",
-   "en": "It is sunny.",
-   "emoji": "☀️",
-   "tags": [
-    "col:c_est"
-   ],
-   "syllables": [
-    "en",
-    "so",
-    "leil",
-    "lé"
-   ]
   }
  ],
  "gameConfig": {

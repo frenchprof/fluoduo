@@ -370,6 +370,54 @@
       "example": "C'est mon grand-père.",
       "tags": [],
       "gap": "mes"
+    },
+    {
+      "id": "possessives-32",
+      "fr": "C'est ton livre ?",
+      "en": "Is it your book?",
+      "example": "C'est ta clé ?",
+      "tags": [],
+      "gap": "ton"
+    },
+    {
+      "id": "possessives-33",
+      "fr": "Voici ta mère.",
+      "en": "Here's your mother.",
+      "example": "Voici ton père.",
+      "tags": [],
+      "gap": "ta"
+    },
+    {
+      "id": "possessives-34",
+      "fr": "Ce sont tes enfants ?",
+      "en": "Are these your children?",
+      "example": "Voici tes parents.",
+      "tags": [],
+      "gap": "tes"
+    },
+    {
+      "id": "possessives-35",
+      "fr": "C'est son frère.",
+      "en": "It's his / her brother.",
+      "example": "C'est sa sœur.",
+      "tags": [],
+      "gap": "son"
+    },
+    {
+      "id": "possessives-36",
+      "fr": "Voici sa tante.",
+      "en": "Here's his / her aunt.",
+      "example": "Voici son oncle.",
+      "tags": [],
+      "gap": "sa"
+    },
+    {
+      "id": "possessives-37",
+      "fr": "Ce sont ses clés.",
+      "en": "These are his / her keys.",
+      "example": "Ce sont ses livres.",
+      "tags": [],
+      "gap": "ses"
     }
   ]
 }
