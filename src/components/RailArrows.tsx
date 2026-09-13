@@ -125,9 +125,22 @@ function Arrow({ side, move }: { side: Side; move: NonNullable<RailMove> }) {
      sheet rather than as the way off it. z-30 sits over the paper and under the
      ⋯ sheets and popups (z-40+). The bottom one clears the bottom bar's floor
      using the var the bar itself publishes. */
+  /* THE MIDDLE IS A NO-GO ZONE (Dan, 2026-09-13: *"Can we have a no-go zone in
+     the middle of those activities like MémoiRecall, where the left right
+     swiping indicators are blocking the essential part of the exercise"*).
+
+     The two side pills were `top-1/2`, which on a 390x844 phone put them at
+     y 400-444 — the exact middle of the screen, and measured on Flip It that
+     is on top of the card: the word a learner is reading. Measured before:
+     all three pills overlapped the main panel.
+
+     They sit at 76% now, below the centre band and above the bottom pill, so
+     the middle 40% of the viewport carries no navigation at all. A percentage,
+     not a pixel, so the band scales with the screen rather than drifting up it
+     on a tall one. */
   const place: Record<Side, string> = {
-    left: "left-0.5 top-1/2 -translate-y-1/2",
-    right: "right-0.5 top-1/2 -translate-y-1/2",
+    left: "left-0.5 top-[76%] -translate-y-1/2",
+    right: "right-0.5 top-[76%] -translate-y-1/2",
     down: "left-1/2 -translate-x-1/2",
   };
 

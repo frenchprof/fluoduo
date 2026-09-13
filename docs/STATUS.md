@@ -57,7 +57,83 @@ Break-tested: floor removed, rebuilt, check exits 1 and names all 122.
 
 Gate: tsc clean, build green, the scan green in a browser.
 
-## 13 Sep — the deck table's coils never got the 11 Sep fix (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+## 13 Sep — the integration round: two lanes, one spreadsheet, five deploys (fluoduo-main, sole editor of this file in this commit)
+
+**Everything below is MERGED and LIVE.** Production, staging and
+`fluolingo.com` all serve main's tip, verified chunk-for-chunk against a
+build made the way each host builds.
+
+    #348  the deck table fits the paper · rail glyphs · TTS speaks sentences
+    #349  ChaTutor and ComposeIt become one messenger
+    #350  the Reviewed switch becomes a button, the image shrinks
+    #352  BOTH halves of the MASTER-v8 audit + the peers lane's four bug fixes
+    #353  the peers half's structural rows + the frame-twice bug
+    #354  the deck table's coils, and the check that excused them
+
+**THE SPREADSHEET WAS SPLIT BY DECK AND COLLIDED ANYWAY.** The two lanes agreed
+a split so neither could touch one file. Both edited `loin-lesson.json`,
+because Dan gave the « à gauche DE » correction to THIS lane directly while
+that deck sat in the peers half. Each lane found the same six items and made
+the same six edits. Git auto-merged — the case most worth distrusting, since
+two sides making the SAME edit can leave « à côté de de ». Checked, not
+assumed: 20 items, six carrying `de`, four contraction rows, no doubled
+particle, and this lane's `syllables` survived beside their `fr`.
+
+**THE PEERS LANE WENT UNRESPONSIVE MID-ROUND** (Dan: *"Peers is unwell. He
+keeps looping infinitely"*), so this lane took its branch over and landed it.
+It recovered afterwards and shipped #353 and #354 itself. Nothing was lost, but
+the takeover means its first two commits reached main squashed inside #352
+before its own PR existed — read #353's diff with that in mind.
+
+**A DEPLOY-VERIFICATION TRAP, HIT TWICE, WRITTEN DOWN SO IT IS NOT HIT AGAIN.**
+This lane twice reported production as "a release behind". It was not. The
+marker chunks were taken from a build made with `NEXT_PUBLIC_OPEN_APP=1`;
+production builds WITHOUT it, so its bundle legitimately differs and an
+anonymous fetch of a deck page returns a 26KB gated page with no French in it
+(staging returns 58KB with the deck inline). Comparing a gated page against an
+open one reads exactly like a stale deploy.
+
+    the rule: build the way the HOST builds, then compare chunk sets.
+    fluoduo.pages.dev  -> the open build      fluoguo / fluolingo -> the closed one
+
+**Still open, and none of it is code this lane can finish alone:**
+
+- **~27 spreadsheet rows are unaccounted for.** By the peers lane's own
+  arithmetic the Changes tab holds 303 edits; 224 field + 23 goal rows + this
+  lane's 29 = 276. Nobody has the sheet in this session to reconcile it.
+- **transport #241-243** — two of the three strings already exist in the deck,
+  one verbatim as item 01's `example`. Needs the sheet's actual Now cells.
+- **« Bonne année » / « Bonne fête »** — #162 moves five wishes to Goal 30,
+  whose deck is GENERATED from the model e-mail. Three are already in that
+  e-mail (moving = deleting); these two exist nowhere else (moving = losing).
+- **The « vous vous appelez » gap** — the peers lane's one deliberate departure
+  from the sheet, flagged for Dan and still unanswered.
+- **`verify56` has a blind spot.** It evaluates `hideAnswer` against the correct
+  column's LABEL, so where a label is a pattern (« ___ + de + (art) Noun »)
+  rather than a form, nothing is blanked and a card may print its own answer.
+  That is how loin-lesson's six de-prepositions pass while giving themselves
+  away — a cost Dan chose knowingly, but the hole is general.
+- **Nothing pins the rail's geometry.** The no-go zone below is one line and
+  no check would notice it drifting back to centre.
+
+## 13 Sep — the middle of the screen is a no-go zone for the swipe pills (fluoduo-main)
+
+**Dan: *"Can we have a no-go zone in the middle of those activities like
+MémoiRecall, where the left right swiping indicators are blocking the essential
+part of the exercise"*.** Measured on the built app at 390x844, Flip It:
+
+    before   side pills y 400-444   the exact middle of the screen
+    after    side pills y 619-663   the middle 40% carries nothing
+
+**THE COMPLAINT NAMED THE WRONG PILL,** which matters because it would send the
+next session to the wrong file. On MémoiRecall — the deck TABLE — the side
+pills cover ZERO rows; the thing sitting on « Madame Martin » is the DOWN pill
+at the foot. The side pills really do block the middle, but on the CARD
+activities. The down pill still overlaps the last row or two of a long table:
+left alone deliberately, since it must sit at the bottom — that is the
+direction it means — and moving it is Dan's call.
+
+## 13 Sep — the deck table's coils never got the 11 Sep fix (peers lane, MERGED as 8c4d3da, #354)
 
 **Dan, sending a photograph of a top-left corner: *"I hope this bug is not
 coming back to the website after tough time chasing it away"*.** It was not
@@ -97,7 +173,7 @@ rather than from the screen is a check that does not run.**
 
 Gate: tsc clean, build green, eslint clean, verify230 green in a browser.
 
-## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, branch `claude/peers-vd2h6h`, NOT merged, NOT handed over)
+## 13 Sep — the MASTER-v8 audit lands on six decks, and a card stops saying its frame twice (peers lane, MERGED as 6775bcb, #353)
 
 **MY HALF OF THE SPREADSHEET SPLIT.** fluoduo-main took the other half; this
 lane owns salutations · avoir-etats · objets-articles · possessives ·
