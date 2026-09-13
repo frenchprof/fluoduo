@@ -301,10 +301,19 @@ export default function VoixLaPanel({
     fix.replace(/\s+/g, " ").trim().toLowerCase() === text.replace(/\s+/g, " ").trim().toLowerCase();
 
   return (
-    <div
-      className="rounded-2xl border-2 border-[#a8cdf0] p-4 shadow-inner"
-      style={{ background: "linear-gradient(180deg,#eef7ff 0%,#fdf9f0 100%)" }}
-    >
+    /* NO CARD ROUND THE CARD (Dan, 2026-09-13: *"For VoixLà that is way too
+       many nested boxes. Can we have texts on the lined paper itself?"*).
+
+       There were three frames round one textarea: the cahier's sheet, then a
+       blue-bordered gradient panel, then the field's own border. The middle one
+       drew a box on paper that is already a box, and its gradient painted over
+       the ruled lines — so the page stopped looking like the notebook every
+       other station is.
+
+       The panel is now a plain block: no border, no ground, no shadow. The
+       instructions sit ON the ruling, and the ONE box left is the field, which
+       earns it by being the thing you type into. */
+    <div>
       {/* THE INSTRUCTIONS LIVE HERE, NOT IN A POP-UP (Dan, 2026-09-13:
           *"Voixlà's pop up instructions are to be transferred to the space
           above the field"*).

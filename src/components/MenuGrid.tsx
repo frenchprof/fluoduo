@@ -106,6 +106,10 @@ type Cell =
      nothing read. The pop-up is still gone; what replaced it is the row. */
   | { kind: "picker"; emoji: string; name: string; sioKey: StopActivityKey }
   | { kind: "help" }
+  /* GO TO — the goal picker, a CELL now rather than a strip of its own (Dan,
+     2026-09-13). It is the only cell that is a control instead of a door, so
+     it is the only one that is not a link. */
+  | { kind: "goto" }
   | { kind: "blank" };
 
 // NO TILE INTERCEPTS A CLICK ANY MORE (Dan, 2026-09-12: *"replace all the pop
@@ -171,10 +175,19 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // question — the same slider every other per-stop tile opens. See
   // `stopHref`'s `sio` case, the one entry that cannot fail: its addresses are
   // built from the same array the slider counts.
+  // THE PINK STRIP IS GONE AND GO TO LIVES IN THE YELLOW ROW (Dan, 2026-09-13,
+  // sending a mock-up: *"It might be better off to have the menu without the
+  // pink and just in yellow over the pink and without the top row"*). It had
+  // been a row of its own above LESSON, in the map's grammar pen — a fourth
+  // band on a menu that already has seven, for one field. Selecting a goal IS
+  // the Lesson family's business, so it takes the middle cell and the row
+  // count goes back to what Dan drew on 9 Sep.
+  //
+  // Order is his mock's, left to right: Help · GO TO · Favourites.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
-    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
-    { kind: "picker", emoji: "🎯", name: "Goals", sioKey: "sio" },
     { kind: "help" },
+    { kind: "goto" },
+    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
   ]},
   { band: PEN.practice, ink: INK.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },
@@ -325,131 +338,17 @@ export default function MenuGrid({
   // hold; max-w-[90vw] still caps a narrow phone.
   return (
     <div className="w-[calc(20.6rem+var(--fs-step)*21)] max-w-[90vw] overflow-hidden rounded-lg">
-      {/* GO TO — THE STOP IS CHOSEN ONCE, HERE (Dan, 2026-09-12: *"it would
-          make sense to add a row above LESSON for selection of SIO perhaps in
-          pink: so that the activities can grey as necessary: just a field
-          after GO TO 🎯 [ ] --> OK button"*).
+      {/* THE GO TO STRIP THAT USED TO SIT HERE IS GONE (Dan, 2026-09-13:
+          *"better off to have the menu without the pink and just in yellow
+          over the pink and without the top row"*). It was a fourth band, in
+          the map's grammar pen, above a menu that already has seven — for one
+          field. The control moved into the LESSON row's middle cell, where it
+          belongs: choosing a goal is that family's business, and the pink is
+          not a colour this menu needs. See the `goto` cell below.
 
-          THIS IS WHAT REPLACES THE SEVEN POP-UPS, and it is a better shape for
-          the same job. Each of those tiles used to open a 1-to-50 slider of its
-          own: the learner answered "which goal?" again for every activity, in a
-          modal in front of the page, and a tile with nothing at that stop said
-          so only after they had committed. One row answers it once for all of
-          them, in the menu, before anything is chosen — and the greying below
-          is the answer made visible rather than reported.
-
-          PINK IS DAN'S PICK and it is the map's grammar pen (--sio-grammar),
-          not a new colour: the row names a STOP, and stops are drawn in the
-          map's four pens. Nothing new for verify19b's ratchet to count.
-
-          It opens on the learner's own stop, so the common case needs no
-          typing at all. */}
-      <form
-        /* NO SIDEWAYS LABEL, AND THREE EQUAL THIRDS (Dan, 2026-09-12: *"there
-           is no need for the category label on the left. Just have the text in
-           the first third on the left 'GO TO 🎯'"*, then *"the field occupying
-           the second third"*).
-
-           So this row does NOT use the shared band grid. Every row below has a
-           label column plus three tiles; this one has no family to name — «Go
-           to» is an instruction, not a category — so it drops the column and
-           takes the full width in thirds: the words, the field, the button. */
-        className="grid grid-cols-3 items-center gap-1.5 p-1.5"
-        style={{ background: "var(--sio-grammar)" }}
-        onSubmit={(e) => {
-          e.preventDefault();
-          const n = parseInt(draft, 10);
-          if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
-        }}
-      >
-        <span className="flex items-center justify-center gap-[0.1em] font-black uppercase text-[color:var(--cahier-ink)]">
-          {/* TIGHT TO THE GLYPH, AND THE GLYPH IS THE BIG THING (Dan,
-              2026-09-12: *"GO TO Uppercase is correct but is too far from the
-              emoji. -- Make it bigger like in mine"*). The gap was 0.35em with
-              0.2em of padding before it; the two now read as one mark. Both
-              sizes are RAMP sizes rather than em multipliers, so they can be
-              set against each other and measured — 30px beside the number's
-              22px, which is what *"closer to my number size"* asks for. */}
-          <span className={NAME}>Go to</span>
-          <span aria-hidden className="text-[30px] leading-none">🎯</span>
-        </span>
-        {/* NOT A TILE. Dan, same message: *"reduce the height of the pink
-            strip. There is no need for a single number to occupy such a big
-            space"*. It was wearing `TILE`, whose `.fluo-row-tall` floor is
-            what makes a DOOR tall enough to hold an emoji over a name — two
-            lines of content this cell does not have. It keeps `.fluo-tap`,
-            the 44px touch floor, because a finger still has to hit it: that
-            is the smallest this may ever be.
-
-            AND IT IS `min-h-[44px]`, THE BARE FLOOR, NOT `.fluo-tap`. That
-            class reads `max(44px, calc(2.75rem + var(--fs-step) * 2.4))`, so
-            it GROWS to about 58px on a desktop — which is what was making this
-            strip tall, not the number in it. A touch floor is about the
-            finger, and a finger does not get bigger on a larger screen: 44 is
-            the number, at every width. verify270 exempts exactly this spelling
-            for exactly this reason. */}
-        <label
-          className="flex min-h-[44px] items-center justify-center rounded-xl border-2 bg-[color:var(--cahier-paper-raised)] px-1"
-          style={{ borderColor: "var(--cahier-ink)" }}
-        >
-          <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
-          {/* REAL BUTTONS, NOT THE INPUT'S NATIVE ARROWS (Dan, 2026-09-13:
-              *"The top-of-grid-menu field was supposed to have +- controls at
-              the side"* — said about a build where they were already
-              "implemented").
-
-              THEY WERE, AND THEY WERE INVISIBLE WHERE HE LOOKS. The first
-              answer to *"the up-down by the side of the field"* was
-              `appearance: auto` on `input[type="number"]`, which un-strips the
-              browser's own spinner. Chrome and Safari on a DESKTOP draw those.
-              **Mobile Chrome and mobile Safari draw nothing at all** — the
-              spinner does not exist on touch, by design, because it is a 10px
-              target. So on a phone the field had no controls and never had,
-              and the work was verified by reading the computed style
-              (`appearance: auto` — correct!) instead of by opening a phone.
-
-              A native control you cannot see is not a control. These are two
-              ordinary buttons: they render everywhere, they take the 44px
-              touch floor a spinner could never meet, and they are on the ramp
-              rather than nailed to a pixel. The input keeps its type so a
-              hardware keyboard's arrows and a numeric keypad still work. */}
-          <button
-            type="button"
-            aria-label="Previous goal"
-            onClick={() => setDraft((d) => String(Math.max(1, (parseInt(d, 10) || 1) - 1)))}
-            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
-          >
-            <span aria-hidden className={STEP}>−</span>
-          </button>
-          <input
-            type="number"
-            min={1}
-            max={SIOS.length}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            className="fluo-stepper w-full min-w-0 bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
-          />
-          <button
-            type="button"
-            aria-label="Next goal"
-            onClick={() => setDraft((d) => String(Math.min(SIOS.length, (parseInt(d, 10) || 1) + 1)))}
-            className="flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
-          >
-            <span aria-hidden className={STEP}>+</span>
-          </button>
-        </label>
-        <span className="flex items-center justify-center">
-          {/* SMALLER than a door, deliberately: it confirms a number, it does
-              not open an activity. Still on the touch floor. */}
-          <button
-            type="submit"
-            className="min-h-[44px] rounded-xl border-2 px-[0.9em] font-black text-[color:var(--cahier-ink)]"
-            style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
-          >
-            <span className={NAME}>OK</span>
-          </button>
-        </span>
-      </form>
+          What it does has NOT changed, and that is the part worth keeping:
+          the stop is chosen ONCE here and every tile below reacts, instead of
+          seven activities each opening a 1-to-50 slider of their own. */}
       {ROWS.map((row, r) => (
         <div
           key={r}
@@ -469,6 +368,66 @@ export default function MenuGrid({
               // so the eye reads "nothing lives here" rather than "a door
               // I cannot see" (Dan's own grid drew it as [Blank]).
               return <div key={key} aria-hidden />;
+            }
+            if (cell.kind === "goto") {
+              // A TILE, NOT A STRIP (Dan, 2026-09-13). It wears the same
+              // outline and paper ground as the doors either side, so the row
+              // reads as one row; what marks it out is that it holds controls
+              // rather than a name. Two lines, because a third of the width
+              // cannot hold a label, a field, two steppers and OK abreast and
+              // still give each a finger-sized target.
+              const commit = () => {
+                const n = parseInt(draft, 10);
+                if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
+              };
+              const nudge = (by: number) =>
+                setDraft((d) => String(Math.min(SIOS.length, Math.max(1, (parseInt(d, 10) || 1) + by))));
+              return (
+                <div key={key} className={`${TILE} gap-0.5`} style={{ borderColor: row.ink }}>
+                  <span className="flex items-center gap-[0.1em] font-black uppercase leading-none text-[color:var(--cahier-ink)]">
+                    <span className={NAME}>Go to</span>
+                    <span aria-hidden className="text-[22px] leading-none">🎯</span>
+                  </span>
+                  <span className="flex w-full items-center justify-center gap-0.5">
+                    <button
+                      type="button"
+                      aria-label="Previous goal"
+                      onClick={() => nudge(-1)}
+                      className="flex min-h-[44px] min-w-[24px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+                    >
+                      <span aria-hidden className={STEP}>−</span>
+                    </button>
+                    <label className="flex min-w-0 flex-1 items-center justify-center">
+                      <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={SIOS.length}
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } }}
+                        className="fluo-stepper w-full min-w-0 bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      aria-label="Next goal"
+                      onClick={() => nudge(1)}
+                      className="flex min-h-[44px] min-w-[24px] shrink-0 items-center justify-center font-black leading-none text-[color:var(--cahier-ink)]"
+                    >
+                      <span aria-hidden className={STEP}>+</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={commit}
+                      className="min-h-[44px] shrink-0 rounded-lg border-2 px-[0.45em] font-black text-[color:var(--cahier-ink)]"
+                      style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
+                    >
+                      <span className={NAME}>OK</span>
+                    </button>
+                  </span>
+                </div>
+              );
             }
             if (cell.kind === "help") {
               // HELP OPENS THE MANUAL, NOT A SECOND GRID (Dan, 2026-09-09:

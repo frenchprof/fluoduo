@@ -34,11 +34,31 @@
  */
 import Link from "next/link";
 
-const STEPS: { hue: number; title: string; what: React.ReactNode }[] = [
-  { hue: 1, title: "Find your stop.", what: <>Home shows the road; each numbered stop is a goal. Tap yours, or press <b>▶ Continue</b>.</> },
+/**
+ * STEP 1 IS DAN'S OWN WORDING (2026-09-13), INCLUDING ITS TWO ROUTES:
+ *
+ *     Step 1. Select your goal.
+ *       · via the map (home page) in 3D or 2D view
+ *       · via the menu: enter it at the top. then OK
+ *
+ * It replaces "Find your stop", which named only the map — the ☰ menu's GO TO
+ * field had no mention anywhere in the app that teaches the app. A `ways` list
+ * exists for exactly this: a step with two doors says both, and a step with one
+ * says none rather than padding itself out.
+ */
+const STEPS: { hue: number; title: string; what: React.ReactNode; ways?: React.ReactNode[] }[] = [
+  {
+    hue: 1,
+    title: "Select your goal.",
+    what: <>Every goal is one numbered stop, 1 to 50. Two ways in:</>,
+    ways: [
+      <>via the <b>map</b> (home page), in <b>3D</b> or <b>2D</b> view</>,
+      <>via the <b>☰ menu</b>: type it in <b>GO TO 🎯</b> at the top, then <b>OK</b></>,
+    ],
+  },
   { hue: 3, title: "Guess first.", what: <>Open <b>💡 SpecuLearn</b> and answer <b className="cahier-hl px-0.5">before</b> the lesson. Wrong costs nothing.</> },
   { hue: 2, title: "Learn it.", what: <>Read the goal’s lesson; hear it with <b>🔊 VoixLà</b>.</> },
-  { hue: 4, title: "Practise and play.", what: <>After class, drill it with a game or a deck. Every door is in the <b>☰ menu</b>, top left.</> },
+  { hue: 4, title: "Practise and play.", what: <>The <b>☰ menu</b> shows every activity for the goal you picked. A <b>greyed</b> tile has nothing at that stop.</> },
   { hue: 5, title: "Come back.", what: <><b>❌ ErroReview</b> brings back what you got wrong. A stop goes <b>✓ green</b> when done.</> },
 ];
 
