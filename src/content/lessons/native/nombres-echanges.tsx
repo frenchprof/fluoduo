@@ -16,7 +16,7 @@ export const nombresEchangesLesson: NativeLesson = {
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.
   concept: {
-    subtitle: "Why in French you HAVE your age",
+    subtitle: "Why 21, 31 and 41 take « et » but 22 does not",
     contrast: (
       <>
         English <b>is</b> an age — <i>I am twenty-five</i>. French <b>has</b> one:{" "}

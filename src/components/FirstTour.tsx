@@ -492,8 +492,26 @@ export default function FirstTour() {
   // The finish card (home tour): its big button IS Play — the same current
   // stop the hero pill computes. Tapping it marks the tour seen and goes.
   if (s.kind === "play") {
+    // PLAY OPENS THE GOAL'S OWN PAGE (Dan, 2026-09-13: *"i clicked on Start
+    // Here play at the end of the home page tour and i got a pop up SIO !
+    // (Illegal)"*).
+    //
+    // It read ``/unit/${sio.unit}#${sio.id}``, and both halves of that are
+    // wrong now. `/unit/N` is a redirect stub, so it forwarded to
+    // `/home?unit=N#SIO-xxx` — and arriving on Home with a `#SIO-` hash is
+    // exactly what makes `MapBody` open StopPopup, the pop-up Dan retired on
+    // 7 Sep (*"WE ARE STILL SEEING THE POPUPS FROM CLICKING THE MAP, WHERE ARE
+    // THE FULL PAGED SIOS"*). So the last thing the first-run tour did was
+    // demonstrate the one interaction he had removed.
+    //
+    // `/sio/<id>` is the full goal page, and it is what the map's own stops
+    // have opened since 7 Sep — the tour now ends where tapping a stop ends.
+    //
+    // AND THE FALLBACK WAS THE WELCOME PAGE. A bare "/" stopped meaning Home
+    // on 9 Sep (src/lib/routes.ts). With no computable stop this sent a
+    // first-run learner back out to the front door at the end of their tour.
     const sio = SIOS.find((x) => x.id === continueSioId(loadProgress()));
-    const href = sio ? `/unit/${sio.unit}#${sio.id}` : "/";
+    const href = sio ? `/sio/${sio.id}` : HOME_HREF;
     return createPortal(
       <div className="fixed inset-0 z-[100]">
         <div className="absolute inset-0" style={{ background: dim }} onClick={finish} />

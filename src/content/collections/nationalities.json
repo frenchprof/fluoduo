@@ -13,8 +13,8 @@
   "items": [
     {
       "id": "nat-01-france",
-      "fr": "France",
-      "en": "France",
+      "fr": "français / française",
+      "en": "French (m / f)",
       "emoji": "🇫🇷",
       "tags": [
         "col:la"
@@ -28,8 +28,8 @@
     },
     {
       "id": "nat-02-portugal",
-      "fr": "Portugal",
-      "en": "Portugal",
+      "fr": "portugais / portugaise",
+      "en": "Portuguese (m / f)",
       "emoji": "🇵🇹",
       "tags": [
         "col:le"
@@ -43,8 +43,8 @@
     },
     {
       "id": "nat-03-chine",
-      "fr": "Chine",
-      "en": "China",
+      "fr": "chinois / chinoise",
+      "en": "Chinese (m / f)",
       "emoji": "🇨🇳",
       "tags": [
         "col:la"
@@ -58,8 +58,8 @@
     },
     {
       "id": "nat-04-indonesie",
-      "fr": "Indonésie",
-      "en": "Indonesia",
+      "fr": "indonésien / indonésienne",
+      "en": "Indonesian (m / f)",
       "emoji": "🇮🇩",
       "tags": [
         "col:l_apos"
@@ -73,8 +73,8 @@
     },
     {
       "id": "nat-05-coree",
-      "fr": "Corée",
-      "en": "Korea",
+      "fr": "coréen / coréenne",
+      "en": "Korean (m / f)",
       "emoji": "🇰🇷",
       "tags": [
         "col:la"
@@ -88,8 +88,8 @@
     },
     {
       "id": "nat-06-etats-unis",
-      "fr": "États-Unis",
-      "en": "United States",
+      "fr": "américain / américaine",
+      "en": "American (m / f)",
       "emoji": "🇺🇸",
       "tags": [
         "col:les"
@@ -103,8 +103,8 @@
     },
     {
       "id": "nat-07-mexique",
-      "fr": "Mexique",
-      "en": "Mexico",
+      "fr": "mexicain / mexicaine",
+      "en": "Mexican (m / f)",
       "emoji": "🇲🇽",
       "tags": [
         "col:le"
@@ -118,8 +118,8 @@
     },
     {
       "id": "nat-08-cuba",
-      "fr": "Cuba",
-      "en": "Cuba",
+      "fr": "cubain / cubaine",
+      "en": "Cuban (m / f)",
       "emoji": "🇨🇺",
       "tags": [
         "col:no_article"
@@ -133,8 +133,8 @@
     },
     {
       "id": "nat-09-philippines",
-      "fr": "Philippines",
-      "en": "Philippines",
+      "fr": "philippin / philippine",
+      "en": "Filipino (m / f)",
       "emoji": "🇵🇭",
       "tags": [
         "col:les"
@@ -148,8 +148,8 @@
     },
     {
       "id": "nat-10-argentine",
-      "fr": "Argentine",
-      "en": "Argentina",
+      "fr": "argentin / argentine",
+      "en": "Argentinian (m / f)",
       "emoji": "🇦🇷",
       "tags": [
         "col:l_apos"
@@ -163,8 +163,8 @@
     },
     {
       "id": "nat-11-russie",
-      "fr": "Russie",
-      "en": "Russia",
+      "fr": "russe / russe",
+      "en": "Russian (m / f)",
       "emoji": "🇷🇺",
       "tags": [
         "col:la"
@@ -178,8 +178,8 @@
     },
     {
       "id": "nat-12-suisse",
-      "fr": "Suisse",
-      "en": "Switzerland",
+      "fr": "suisse / suisse",
+      "en": "Swiss (m / f)",
       "emoji": "🇨🇭",
       "tags": [
         "col:la"
@@ -193,8 +193,8 @@
     },
     {
       "id": "nat-13-belgique",
-      "fr": "Belgique",
-      "en": "Belgium",
+      "fr": "belge / belge",
+      "en": "Belgian (m / f)",
       "emoji": "🇧🇪",
       "tags": [
         "col:la"
@@ -208,8 +208,8 @@
     },
     {
       "id": "nat-14-grece",
-      "fr": "Grèce",
-      "en": "Greece",
+      "fr": "grec / grecque",
+      "en": "Greek (m / f)",
       "emoji": "🇬🇷",
       "tags": [
         "col:la"
@@ -223,8 +223,8 @@
     },
     {
       "id": "nat-15-turquie",
-      "fr": "Turquie",
-      "en": "Turkey",
+      "fr": "turc / turque",
+      "en": "Turkish (m / f)",
       "emoji": "🇹🇷",
       "tags": [
         "col:la"
@@ -238,8 +238,8 @@
     },
     {
       "id": "nat-16-allemagne",
-      "fr": "Allemagne",
-      "en": "Germany",
+      "fr": "allemand / allemande",
+      "en": "German (m / f)",
       "emoji": "🇩🇪",
       "tags": [
         "col:l_apos"
@@ -253,8 +253,8 @@
     },
     {
       "id": "nat-17-cambodge",
-      "fr": "Cambodge",
-      "en": "Cambodia",
+      "fr": "cambodgien / cambodgienne",
+      "en": "Cambodian (m / f)",
       "emoji": "🇰🇭",
       "tags": [
         "col:le"
@@ -268,8 +268,8 @@
     },
     {
       "id": "nat-18-singapour",
-      "fr": "Singapour",
-      "en": "Singapore",
+      "fr": "singapourien / singapourienne",
+      "en": "Singaporean (m / f)",
       "emoji": "🇸🇬",
       "tags": [
         "col:no_article"
@@ -283,8 +283,8 @@
     },
     {
       "id": "nat-19-malaisie",
-      "fr": "Malaisie",
-      "en": "Malaysia",
+      "fr": "malaisien / malaisienne",
+      "en": "Malaysian (m / f)",
       "emoji": "🇲🇾",
       "tags": [
         "col:la"
@@ -298,8 +298,8 @@
     },
     {
       "id": "nat-20-thailande",
-      "fr": "Thaïlande",
-      "en": "Thailand",
+      "fr": "thaïlandais / thaïlandaise",
+      "en": "Thai (m / f)",
       "emoji": "🇹🇭",
       "tags": [
         "col:la"
@@ -313,8 +313,8 @@
     },
     {
       "id": "nat-21-angleterre",
-      "fr": "Angleterre",
-      "en": "England",
+      "fr": "anglais / anglaise",
+      "en": "English (m / f)",
       "emoji": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",
       "tags": [
         "col:l_apos"
@@ -328,8 +328,8 @@
     },
     {
       "id": "nat-22-grande-bretagne",
-      "fr": "Grande-Bretagne",
-      "en": "Great Britain",
+      "fr": "britannique / britannique",
+      "en": "British (m / f)",
       "emoji": "🇬🇧",
       "tags": [
         "col:la"
@@ -343,8 +343,8 @@
     },
     {
       "id": "nat-23-tunisie",
-      "fr": "Tunisie",
-      "en": "Tunisia",
+      "fr": "tunisien / tunisienne",
+      "en": "Tunisian (m / f)",
       "emoji": "🇹🇳",
       "tags": [
         "col:la"
@@ -358,8 +358,8 @@
     },
     {
       "id": "nat-24-maroc",
-      "fr": "Maroc",
-      "en": "Morocco",
+      "fr": "marocain / marocaine",
+      "en": "Moroccan (m / f)",
       "emoji": "🇲🇦",
       "tags": [
         "col:le"
@@ -373,8 +373,8 @@
     },
     {
       "id": "nat-25-algerie",
-      "fr": "Algérie",
-      "en": "Algeria",
+      "fr": "algérien / algérienne",
+      "en": "Algerian (m / f)",
       "emoji": "🇩🇿",
       "tags": [
         "col:l_apos"

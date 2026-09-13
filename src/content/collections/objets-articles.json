@@ -50,7 +50,7 @@
  "items": [
   {
    "id": "objets-articles-01",
-   "fr": "sac",
+   "fr": "un sac",
    "en": "bag",
    "emoji": "🎒",
    "syllables": [
@@ -65,7 +65,7 @@
   },
   {
    "id": "objets-articles-02",
-   "fr": "livre",
+   "fr": "un livre",
    "en": "book",
    "emoji": "📖",
    "syllables": [
@@ -80,7 +80,7 @@
   },
   {
    "id": "objets-articles-03",
-   "fr": "cahier",
+   "fr": "un cahier",
    "en": "exercise book",
    "emoji": "📓",
    "syllables": [
@@ -96,7 +96,7 @@
   },
   {
    "id": "objets-articles-04",
-   "fr": "téléphone",
+   "fr": "un téléphone",
    "en": "phone",
    "emoji": "📱",
    "syllables": [
@@ -113,7 +113,7 @@
   },
   {
    "id": "objets-articles-05",
-   "fr": "stylo",
+   "fr": "un stylo",
    "en": "pen",
    "emoji": "🖊️",
    "syllables": [
@@ -129,7 +129,7 @@
   },
   {
    "id": "objets-articles-06",
-   "fr": "crayon",
+   "fr": "un crayon",
    "en": "pencil",
    "emoji": "✏️",
    "syllables": [
@@ -145,7 +145,7 @@
   },
   {
    "id": "objets-articles-07",
-   "fr": "passeport",
+   "fr": "un passeport",
    "en": "passport",
    "syllables": [
     "passe",
@@ -160,7 +160,7 @@
   },
   {
    "id": "objets-articles-08",
-   "fr": "carte d'identité",
+   "fr": "une carte d'identité",
    "en": "ID card",
    "emoji": "🪪",
    "syllables": [
@@ -179,7 +179,7 @@
   },
   {
    "id": "objets-articles-09",
-   "fr": "trousse",
+   "fr": "une trousse",
    "en": "pencil case",
    "syllables": [
     "trousse"
@@ -193,7 +193,7 @@
   },
   {
    "id": "objets-articles-10",
-   "fr": "ciseaux",
+   "fr": "des ciseaux",
    "en": "scissors",
    "emoji": "✂️",
    "syllables": [
@@ -209,7 +209,7 @@
   },
   {
    "id": "objets-articles-11",
-   "fr": "gomme",
+   "fr": "une gomme",
    "en": "eraser",
    "syllables": [
     "gomme"
@@ -223,7 +223,7 @@
   },
   {
    "id": "objets-articles-12",
-   "fr": "portefeuille",
+   "fr": "un portefeuille",
    "en": "wallet",
    "syllables": [
     "porte",
@@ -238,7 +238,7 @@
   },
   {
    "id": "objets-articles-13",
-   "fr": "lunettes",
+   "fr": "des lunettes",
    "en": "glasses",
    "emoji": "👓",
    "syllables": [
@@ -254,7 +254,7 @@
   },
   {
    "id": "objets-articles-14",
-   "fr": "clé",
+   "fr": "une clé",
    "en": "key",
    "emoji": "🔑",
    "syllables": [
@@ -269,7 +269,7 @@
   },
   {
    "id": "objets-articles-15",
-   "fr": "règle",
+   "fr": "une règle",
    "en": "ruler",
    "emoji": "📏",
    "syllables": [
@@ -284,7 +284,7 @@
   },
   {
    "id": "objets-articles-16",
-   "fr": "écouteurs",
+   "fr": "des écouteurs",
    "en": "headphones",
    "emoji": "🎧",
    "syllables": [
@@ -301,7 +301,7 @@
   },
   {
    "id": "objets-articles-17",
-   "fr": "mouchoirs",
+   "fr": "des mouchoirs",
    "en": "tissues",
    "syllables": [
     "mou",
@@ -316,7 +316,7 @@
   },
   {
    "id": "objets-articles-18",
-   "fr": "ordinateur",
+   "fr": "un ordinateur",
    "en": "computer",
    "emoji": "💻",
    "syllables": [
@@ -334,7 +334,7 @@
   },
   {
    "id": "objets-articles-19",
-   "fr": "agrafeuse",
+   "fr": "une agrafeuse",
    "en": "stapler",
    "syllables": [
     "a",
@@ -350,7 +350,7 @@
   },
   {
    "id": "objets-articles-20",
-   "fr": "souris",
+   "fr": "une souris",
    "en": "mouse",
    "emoji": "🖱️",
    "syllables": [

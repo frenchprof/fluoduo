@@ -36,7 +36,7 @@ export const onFaitQuoiLesson: NativeLesson = {
   // one line without drawing the conclusion: eight instructions in, two lines
   // out. What a learner owes each side is different.
   concept: {
-    subtitle: "Why eight in and only two out",
+    subtitle: "Why every classroom instruction ends in -ez",
     contrast: (
       <>
         Most of a lesson asks you to <b>produce</b>{" "} French. Classroom language does not: the

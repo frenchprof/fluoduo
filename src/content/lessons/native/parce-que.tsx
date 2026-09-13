@@ -80,7 +80,7 @@ export const parceQueLesson: NativeLesson = {
   // pasted in unchanged once this file landed. Every French line is a deck
   // card.
   concept: {
-    subtitle: "Why « parce que » opens a sentence, not a word",
+    subtitle: "Why « parce que » introduces a whole clause",
     contrast: (
       <>
         English answers a <i>why</i> with a fragment all the time &mdash;{" "}

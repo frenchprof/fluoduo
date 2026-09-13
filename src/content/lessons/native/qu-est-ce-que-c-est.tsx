@@ -70,7 +70,7 @@ export const quEstCeLesson: NativeLesson = {
   // agreement, and the pair hands over to il/elle once the thing is named. The
   // Mémo shows both in a table without saying they are one move.
   concept: {
-    subtitle: "Why c’est becomes il est",
+    subtitle: "Why c’est becomes ce sont in the plural",
     contrast: (
       <>
         English says <i>it is</i> twice &mdash; <i>it is a pen</i>, <i>it is over there</i>.

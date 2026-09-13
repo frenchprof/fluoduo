@@ -16,7 +16,7 @@
       "fr": "Je suis étudiant.",
       "en": "I am a student (m)",
       "tags": [],
-      "gap": "suis étudiant",
+      "gap": "suis",
       "lemma": "être"
     },
     {
@@ -24,7 +24,7 @@
       "fr": "Je suis étudiante.",
       "en": "I am a student (f)",
       "tags": [],
-      "gap": "suis étudiante",
+      "gap": "suis",
       "lemma": "être"
     },
     {
@@ -32,7 +32,7 @@
       "fr": "Tu es étudiant.",
       "en": "You are a student (m, informal)",
       "tags": [],
-      "gap": "es étudiant",
+      "gap": "es",
       "lemma": "être"
     },
     {
@@ -40,7 +40,7 @@
       "fr": "Tu es étudiante.",
       "en": "You are a student (f, informal)",
       "tags": [],
-      "gap": "es étudiante",
+      "gap": "es",
       "lemma": "être"
     },
     {
@@ -48,7 +48,7 @@
       "fr": "Il est étudiant.",
       "en": "He is a student",
       "tags": [],
-      "gap": "est étudiant",
+      "gap": "est",
       "lemma": "être"
     },
     {
@@ -56,7 +56,7 @@
       "fr": "Elle est étudiante.",
       "en": "She is a student",
       "tags": [],
-      "gap": "est étudiante",
+      "gap": "est",
       "lemma": "être"
     },
     {
@@ -64,7 +64,7 @@
       "fr": "Nous sommes étudiants.",
       "en": "We are students (m)",
       "tags": [],
-      "gap": "sommes étudiants",
+      "gap": "sommes",
       "lemma": "être"
     },
     {
@@ -72,7 +72,7 @@
       "fr": "Nous sommes étudiantes.",
       "en": "We are students (f)",
       "tags": [],
-      "gap": "sommes étudiantes",
+      "gap": "sommes",
       "lemma": "être"
     },
     {
@@ -80,7 +80,7 @@
       "fr": "Vous êtes étudiant.",
       "en": "You are a student (m, formal)",
       "tags": [],
-      "gap": "êtes étudiant",
+      "gap": "êtes",
       "lemma": "être"
     },
     {
@@ -88,7 +88,7 @@
       "fr": "Vous êtes étudiante.",
       "en": "You are a student (f, formal)",
       "tags": [],
-      "gap": "êtes étudiante",
+      "gap": "êtes",
       "lemma": "être"
     },
     {
@@ -96,7 +96,7 @@
       "fr": "Vous êtes étudiants.",
       "en": "You are students (m)",
       "tags": [],
-      "gap": "êtes étudiants",
+      "gap": "êtes",
       "lemma": "être"
     },
     {
@@ -104,7 +104,7 @@
       "fr": "Vous êtes étudiantes.",
       "en": "You are students (f)",
       "tags": [],
-      "gap": "êtes étudiantes",
+      "gap": "êtes",
       "lemma": "être"
     },
     {
@@ -112,7 +112,7 @@
       "fr": "Ils sont étudiants.",
       "en": "They are students (m)",
       "tags": [],
-      "gap": "sont étudiants",
+      "gap": "sont",
       "lemma": "être"
     },
     {
@@ -120,7 +120,7 @@
       "fr": "Elles sont étudiantes.",
       "en": "They are students (f)",
       "tags": [],
-      "gap": "sont étudiantes",
+      "gap": "sont",
       "lemma": "être"
     }
   ]

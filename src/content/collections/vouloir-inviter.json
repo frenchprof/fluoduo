@@ -14,55 +14,55 @@
     {
       "id": "vouloir-inviter-01",
       "fr": "Tu veux venir au cinéma ?",
-      "en": "Invite a friend to the cinema",
+      "en": "Do you want to come to the cinema? (invite)",
       "tags": [],
       "gap": "veux"
     },
     {
       "id": "vouloir-inviter-02",
       "fr": "Vous voulez manger avec nous ?",
-      "en": "Invite a group to eat together",
+      "en": "Do you want to eat with us? (invite a group)",
       "tags": [],
       "gap": "voulez"
     },
     {
       "id": "vouloir-inviter-03",
       "fr": "Je veux bien !",
-      "en": "Accept enthusiastically",
+      "en": "I'd love to! (accept)",
       "tags": [],
       "gap": "veux"
     },
     {
       "id": "vouloir-inviter-04",
       "fr": "Oui, bonne idée !",
-      "en": "Accept — good idea",
+      "en": "Yes, good idea! (accept)",
       "tags": []
     },
     {
       "id": "vouloir-inviter-05",
       "fr": "Désolé(e), je ne peux pas.",
-      "en": "Decline politely",
+      "en": "Sorry, I can't. (decline)",
       "tags": [],
       "gap": "peux"
     },
     {
       "id": "vouloir-inviter-06",
       "fr": "Merci, mais je ne suis pas libre.",
-      "en": "Decline — not free",
+      "en": "Thanks, but I'm not free. (decline)",
       "tags": [],
       "gap": "suis"
     },
     {
       "id": "vouloir-inviter-07",
       "fr": "On peut se voir samedi ?",
-      "en": "Can we see each other on Saturday?",
+      "en": "Can we meet on Saturday? (propose)",
       "tags": [],
       "gap": "peut"
     },
     {
       "id": "vouloir-inviter-08",
       "fr": "Tu es libre dimanche ?",
-      "en": "Ask if they're free another day",
+      "en": "Are you free on Sunday? (reschedule)",
       "tags": [],
       "gap": "es"
     },

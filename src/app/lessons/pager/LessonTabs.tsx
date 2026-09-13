@@ -615,7 +615,7 @@ export default function LessonTabs({
   memo,
   exercise,
   lexique,
-  open = "exercice",
+  open = "concept",
 }: {
   sio?: Sio;
   deck?: Collection;
@@ -628,7 +628,7 @@ export default function LessonTabs({
    *  decks route's imports. */
   lexique?: ReactNode;
   /**
-   * Which tab is open on arrival. Default "exercice" — see below.
+   * Which tab is open on arrival. Default "concept" (« Idée ») — see below.
    *
    * The ateliers pass "formes" (Dan, 2026-08-31: *"Atelier's Memo is to open
    * on the range of sentences and vocabulary one is expected to use or
@@ -639,9 +639,18 @@ export default function LessonTabs({
    */
   open?: TabKey;
 }) {
-  // Opens on L'exercice, NOT on Le parcours. A learner returning to a lesson
-  // they know wants the exercise, and Dan's own path is a path, not a gate —
-  // his tab bar lets you start anywhere. Reading order is offered, not forced.
+  // OPENS ON « Idée » (Dan, 2026-09-13: *"MneMemo is still landing immediately
+  // on Exercice, it should land on Idee"*).
+  //
+  // It defaulted to « Exercice » on the reasoning that "a learner returning to
+  // a lesson they know wants the exercise". That reads the wrong learner: the
+  // door into MneMemo is the LESSON, and a lesson that opens on its own
+  // exercise has skipped itself — the rule is what the learner came for, and
+  // the drill is three taps away either way. The returning learner Dan's old
+  // note describes still has the tab bar, which is the point of a tab bar.
+  //
+  // The ateliers keep their own "formes" (below), which was always an explicit
+  // override rather than a consequence of this default.
   //
   // `open` is the initial value only, never a controlled prop: once a learner
   // taps a tab the choice is theirs, and a re-render must not pull them back.
