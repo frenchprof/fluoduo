@@ -143,9 +143,15 @@ export default function ToolSummon({
         onClose={closeCard}
         title={card === "voixla" ? "🔊 VoixLà" : "🤖 ChaTutor"}
       >
-        <div className="flex h-[52dvh] flex-col gap-3 overflow-y-auto">
+        {/* `overflow-hidden`, not `auto`: ChaTutor is a messenger now and does
+            its own scrolling, and two nested scrollers means the thread never
+            gets to the bottom. VoixLà still needs the scroll, so it keeps it
+            on itself rather than on the card. */}
+        <div className="flex h-[52dvh] min-h-0 flex-col gap-3 overflow-hidden">
           {card === "voixla" && (
-            <VoixLaPanel correctsFirst initialText={context.french ?? ""} />
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <VoixLaPanel correctsFirst initialText={context.french ?? ""} />
+            </div>
           )}
           {card === "chatutor" && (
             <ChaTutorPanel context={{ title: context.title, item: context.item }} />

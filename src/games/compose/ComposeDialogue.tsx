@@ -18,6 +18,8 @@ import { speakCloud as speak, speakSequenceCloud as speakSequence, stopCloudVoic
 import { awardConversationXp } from "@/lib/progress";
 import { recordResponse } from "@/lib/firebase/responses";
 import { CAFE_PRICES, categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
+import ChatThread, { type ChatMessage } from "@/components/chat/ChatThread";
+import ChatComposer from "@/components/chat/ChatComposer";
 import GameFrame from "@/components/GameFrame";
 import GameOver from "@/components/GameOver";
 import ToolSummon from "@/components/tools/ToolSummon";
@@ -61,6 +63,19 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     "--dlg-persona-bg": theme.personaBg,
     "--dlg-me-bg": theme.meBg,
     "--dlg-ink": theme.ink,
+    /* THE SIX PERSONA COLOURWAYS SURVIVE THE MOVE. Each scene has had its own
+       palette since the dialogue banks were written — the café warm brown, the
+       lost-property desk blue, Léa green — and the shared messenger reads
+       `--bub-*`, so the two are wired together here rather than the themes
+       being quietly dropped for one house colour. `*-foot` is the tail, which
+       is a border-triangle and so can only be a flat colour: these fills are
+       flat already, so it is the same value. */
+    "--bub-them-bg": theme.personaBg,
+    "--bub-them-foot": theme.personaBg,
+    "--bub-them-edge": theme.edge,
+    "--bub-me-bg": theme.meBg,
+    "--bub-me-foot": theme.meBg,
+    "--bub-me-edge": theme.strong,
   } as CSSProperties;
   const phrasesOf = (label: string) =>
     bank.categories.find((c) => c.label === label)?.phrases ?? [];
@@ -72,8 +87,14 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [stage, setStage] = useState<Stage>("order");
   const [ordered, setOrdered] = useState<string[]>([]); // priced items, with repeats
-  const [draft, setDraft] = useState<string[]>([]);
-  const [typed, setTyped] = useState(""); // free-text the learner adds to the chips
+  /* ONE COMPOSER, NOT TWO. The reply used to live in two places at once — an
+     array of tapped chips rendered in a box of its own, and a separate text
+     input beside it — which is why the screen had a "reply under construction"
+     panel that no messenger has. A tapped chip now lands IN the field, exactly
+     as a predictive-text suggestion does, and `undo` is a stack of the field's
+     previous values rather than a stack of chips (so it undoes typing too). */
+  const [typed, setTyped] = useState("");
+  const [undoStack, setUndoStack] = useState<string[]>([]);
   const [nudge, setNudge] = useState<string | null>(null);
   // AI mode (Dan, 2026-07-05: the rule engine still accepted nonsense). The
   // waiter is driven by /api/compose when it's live; on any host without the
@@ -99,7 +120,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     setMessages([{ who: "waiter", text: opening }]);
     setStage("order");
     setOrdered([]);
-    setDraft([]);
+    setUndoStack([]);
     setTyped("");
     setNudge(null);
     setAiDone(false);
@@ -156,8 +177,8 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
 
-  // The learner's reply = tapped chips + anything they typed.
-  const draftText = [joinChips(draft), typed.trim()].filter(Boolean).join(" ").trim();
+  // The learner's reply — chips and typing are the same string now.
+  const draftText = typed.trim();
   const total = ordered.reduce((sum, p) => sum + (CAFE_PRICES[p] ?? 0), 0);
 
   const itemsIn = (text: string): string[] =>
@@ -168,7 +189,7 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
   async function send() {
     const text = draftText;
     if (!text || done || busy) return;
-    setDraft([]);
+    setUndoStack([]);
     setTyped("");
     setNudge(null);
 
@@ -253,7 +274,8 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       ]);
       if (addItems.length > 0) setOrdered((o) => [...o, ...addItems]);
       setStage(next);
-      setDraft([]);
+      setUndoStack([]);
+      setTyped("");
       setNudge(null);
       // Accepted turn → ta-daa; the closing exchange (bonne soirée → recap)
       // gets the stage jingle instead — never both for one send. Nudges stay
@@ -364,175 +386,187 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       record={record}
       recordTitle="✎ Your lines"
     >
-    <div style={themeVars} className="mx-auto flex h-full w-full max-w-3xl flex-col gap-4 overflow-y-auto px-4 py-4 text-[color:var(--dlg-ink)]">
-      {/* Scenario reminder — who/where the learner is (Dan, 2026-07-19: "there
-          is a need to remind users that we are in the context of ___"). Kept
-          on the board by Dan's explicit ask; it is the task, not decoration. */}
-      {bank.scene?.contextEn && (
-        <p className="-mb-2 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white/60 px-3 py-1.5 text-xs font-bold text-[color:var(--dlg-ink)]/80">
-          {bank.emoji} {bank.scene.contextEn}
-        </p>
-      )}
-      {/* Chat column */}
-      <div className="flex flex-col gap-2 rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white/70 p-4">
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.who === "me" ? "justify-end" : "justify-start"}`}>
-            <button
-              type="button"
-              lang="fr"
-              onClick={() => speak(m.text, lang, { gender: m.who === "waiter" ? personaVoice : "f" })}
-              title="🔊"
-              className={`max-w-[85%] rounded-2xl border-2 px-4 py-2 text-left text-base leading-snug shadow-sm transition hover:brightness-95 ${
-                m.who === "waiter"
-                  ? "rounded-bl-sm border-[color:var(--dlg-edge)] bg-[var(--dlg-persona-bg)]"
-                  : "rounded-br-sm border-[color:var(--dlg-strong)] bg-[var(--dlg-me-bg)]"
-              }`}
-            >
-              {m.who === "waiter" && (
-                <span className="mr-1.5" aria-hidden>
-                  {personaEmoji}
-                </span>
-              )}
-              {m.text}
-            </button>
-          </div>
-        ))}
-        <div ref={endRef} />
+    <div
+      style={themeVars}
+      /* THE MESSENGER OWNS THE HEIGHT. This used to be `overflow-y-auto` with
+         the chat, the draft box and the whole phrase bank stacked inside it,
+         so on a long conversation the place you type scrolled off the bottom.
+         Now the frame does not scroll at all — the thread does, and the tray
+         does, and the composer stays put. (Dan, 2026-09-13: *"adopt the UI UX
+         of how modern messenger works"*.) */
+      className="msgr mx-auto h-full w-full max-w-3xl overflow-hidden text-[color:var(--dlg-ink)]"
+    >
+      {/* The header: who you are talking to, and what this conversation is.
+          Dan asked for the scene reminder to stay on the board (2026-07-19:
+          *"there is a need to remind users that we are in the context of ___"*)
+          — a messenger already has the place for it, under the name. */}
+      <div className="msgr-head">
+        <span className="msgr-avatar" aria-hidden>{personaEmoji}</span>
+        <div className="min-w-0">
+          <p className="msgr-head-name truncate">{bank.title}</p>
+          {/* The status line every messenger has, and it says something true:
+              it flips to « écrit… » while the reply is on its way. French,
+              which the 6 Sep rule allows — nobody is STUCK in front of a
+              status line, and it is the app's character. */}
+          <p className="msgr-head-sub">{busy ? "écrit…" : "en ligne"}</p>
+        </div>
       </div>
 
       {unavailable ? (
         /* aiOnly scene with no backend (local preview / key not set): degrade
            gracefully rather than accept nonsense. */
-        <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white p-5 text-center text-[color:var(--dlg-ink)]">
-          <p className="text-lg font-black">🔌 The assistant isn&rsquo;t available here</p>
-          <p className="mt-1 text-sm">This conversation needs a connection. Try again on the live site.</p>
-          <button
-            type="button"
-            onClick={() => { setUnavailable(false); start(); }}
-            className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
-          >
-            Retry
-          </button>
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white p-5 text-center text-[color:var(--dlg-ink)]">
+            <p className="text-lg font-black">🔌 The assistant isn&rsquo;t available here</p>
+            <p className="mt-1 text-sm">This conversation needs a connection. Try again on the live site.</p>
+            <button
+              type="button"
+              onClick={() => { setUnavailable(false); start(); }}
+              className="mt-4 rounded-xl border-2 border-[color:var(--dlg-strong)] bg-white px-4 py-2 font-black text-[color:var(--dlg-deep)] transition hover:bg-[var(--dlg-persona-bg)]"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       ) : done ? (
         /* The post-mortem (patch 23): the bill the rule engine tracked (the AI
            waiter gave the total in the chat), and le bilan du prof — the
            debrief the roleplay itself never gives. English + French mixed, so
            deliberately NOT a speak button. */
-        <GameOver
-          emoji={personaEmoji}
-          title={ordered.length > 0 ? "L’addition" : "Merci, à bientôt !"}
-          won
-          misses={[]}
-          onReplay={start}
-          exitHref={exitHref}
-          extra={
-            <div className="mt-3">
-              {ordered.length > 0 && (
-                <>
-                  <ul className="flex flex-col gap-1">
-                    {ordered.map((p, i) => (
-                      <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
-                        <span>{p}</span>
-                        <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[color:var(--cahier-line)] pt-2 font-black">
-                    <span>Total</span>
-                    <span>{total} €</span>
-                  </p>
-                </>
-              )}
-              {(debrief || debriefBusy) && (
-                <div className="mt-3 rounded-xl border-2 border-dashed border-[color:var(--cahier-gold)] bg-[color:var(--cahier-gold)]/10 p-3">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">✍️ Le bilan du prof</h3>
-                  {debriefBusy ? (
-                    <p className="mt-2 animate-pulse text-sm">Reviewing your conversation…</p>
-                  ) : (
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
-                  )}
-                </div>
-              )}
-              <button type="button" onClick={playAll} className="cahier-btn cahier-btn-sm mt-3">▶️ Listen to the dialogue</button>
-            </div>
-          }
-        />
+        <div className="min-h-0 flex-1 overflow-y-auto p-4">
+          <GameOver
+            emoji={personaEmoji}
+            title={ordered.length > 0 ? "L\u2019addition" : "Merci, à bientôt !"}
+            won
+            misses={[]}
+            onReplay={start}
+            exitHref={exitHref}
+            extra={
+              <div className="mt-3">
+                {ordered.length > 0 && (
+                  <>
+                    <ul className="flex flex-col gap-1">
+                      {ordered.map((p, i) => (
+                        <li key={`${i}-${p}`} lang="fr" className="flex justify-between text-sm">
+                          <span>{p}</span>
+                          <span className="font-bold">{CAFE_PRICES[p] ?? 0} €</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p lang="fr" className="mt-2 flex justify-between border-t-2 border-[color:var(--cahier-line)] pt-2 font-black">
+                      <span>Total</span>
+                      <span>{total} €</span>
+                    </p>
+                  </>
+                )}
+                {(debrief || debriefBusy) && (
+                  <div className="mt-3 rounded-xl border-2 border-dashed border-[color:var(--cahier-gold)] bg-[color:var(--cahier-gold)]/10 p-3">
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[color:var(--cahier-ink-soft)]">✍️ Le bilan du prof</h3>
+                    {debriefBusy ? (
+                      <p className="mt-2 animate-pulse text-sm">Reviewing your conversation…</p>
+                    ) : (
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{debrief}</p>
+                    )}
+                  </div>
+                )}
+                <button type="button" onClick={playAll} className="cahier-btn cahier-btn-sm mt-3">▶️ Listen to the dialogue</button>
+              </div>
+            }
+          />
+        </div>
       ) : (
         <>
-          {/* Reply under construction: tapped chips + free text (Dan,
-              2026-07-05: "a combination of fixed phrases and user input"). */}
-          <div className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-[var(--dlg-persona-bg)] p-4">
-            {draft.length === 0 && !typed ? (
-              <p className="italic text-[color:var(--dlg-ink)] opacity-60">Tap phrases below and / or type your reply…</p>
-            ) : (
-              <p lang="fr" className="text-lg leading-relaxed">
-                {draftText}
-                <span className="animate-pulse" aria-hidden>▏</span>
-              </p>
-            )}
-            {busy && <p className="mt-2 text-sm font-bold text-[color:var(--dlg-deep)]">{personaEmoji} …</p>}
-            {nudge && <p className="mt-2 text-sm font-bold text-rose-700">{nudge}</p>}
-            <form onSubmit={(e) => { e.preventDefault(); void send(); }} className="mt-3 flex flex-wrap items-center gap-2">
-              <input
-                lang="fr"
-                value={typed}
-                onChange={(e) => setTyped(e.target.value)}
-                placeholder="…or type here"
-                disabled={busy || done}
-                className="min-w-[8rem] flex-1 rounded-lg border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-base text-[color:var(--dlg-ink)] outline-none focus:border-[color:var(--dlg-strong)]"
-                autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-              />
-              <button
-                type="button"
-                onClick={() => { setDraft((d) => d.slice(0, -1)); setNudge(null); }}
-                disabled={draft.length === 0 || busy}
-                className="rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white px-3 py-1.5 text-sm font-bold text-[color:var(--dlg-ink)] transition hover:bg-[var(--dlg-persona-bg)] disabled:opacity-40"
-              >
-                ↶ Undo
-              </button>
-              <button
-                type="submit"
-                disabled={!draftText || busy}
-                className="rounded-xl border-b-4 border-[color:var(--dlg-deep)] bg-[var(--dlg-strong)] px-4 py-1.5 font-black text-white transition hover:brightness-105 disabled:opacity-40"
-              >
-                ✔ Reply
-              </button>
-            </form>
-          </div>
-
-          {/* Phrase bank */}
-          <div className="flex flex-col gap-4">
-            {bank.categories.map((cat, i) => (
-              <section
-                key={cat.label}
-                className="overflow-hidden rounded-xl border-2 border-[color:var(--dlg-edge)] bg-white"
-              >
-                <header
-                  className={`px-4 py-2.5 text-sm font-bold uppercase tracking-widest ${categoryHeaderClass(i)}`}
+          {/* THE THREAD. Every line still replays on demand — the 🔊 moved from
+              the bubble to the meta row under it, because a bubble that is a
+              <button> cannot have its French selected and copied (Dan,
+              2026-07-27), and because a messenger does not make the message
+              itself a control. */}
+          <ChatThread
+            avatar={personaEmoji}
+            typing={busy}
+            /* The scene reminder Dan asked to keep on the board (2026-07-19:
+               *"there is a need to remind users that we are in the context of
+               ___"*). It sat in the header for one build and ate four of the
+               frame's lines, leaving the thread about 170px on a phone —
+               measured. At the head of the thread it is complete, it is the
+               first thing read, and it gives the room back. */
+            intro={bank.scene?.contextEn ? <>{bank.emoji} {bank.scene.contextEn}</> : undefined}
+            messages={messages.map((m, i): ChatMessage => ({
+              key: `${i}`,
+              side: m.who === "waiter" ? "them" : "me",
+              body: m.text,
+              actions: (
+                <button
+                  type="button"
+                  className="msgr-mini"
+                  onClick={() => speak(m.text, lang, { gender: m.who === "waiter" ? personaVoice : "f" })}
+                  aria-label="Listen"
+                  title="🔊"
                 >
-                  {cat.label}
-                </header>
-                <div className="flex flex-wrap gap-2 p-3">
-                  {cat.phrases.map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      lang="fr"
-                      onClick={() => {
-                        setDraft((d) => [...d, p]);
-                        setNudge(null);
-                      }}
-                      className={`rounded-lg border-2 px-3 py-2 text-sm font-bold transition ${cat.chip}`}
-                      title={`Add ${p}`}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </section>
+                  🔊
+                </button>
+              ),
+            }))}
+          />
+
+          {/* A refused turn. The rule engine's nudges used to sit inside the
+              draft box; in a messenger a rejected message is called out just
+              above where you type, which is where the eye already is. */}
+          {nudge && <p className="msgr-note">{nudge}</p>}
+
+          {/* THE TRAY — every chip, still all on screen, now above the
+              composer instead of below the fold. Tapping one appends it to the
+              field rather than to a separate "reply under construction" box. */}
+          <div className="msgr-tray">
+            {bank.categories.map((cat, i) => (
+              <div key={cat.label} className="msgr-tray-group">
+                <span className={`msgr-tray-label ${categoryHeaderClass(i)} rounded-full px-2 py-0.5`}>{cat.label}</span>
+                {cat.phrases.map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    lang="fr"
+                    className={`msgr-chip ${cat.chip}`}
+                    onClick={() => {
+                      setUndoStack((u) => [...u, typed]);
+                      setTyped((t) => joinChips([t, p].filter(Boolean)));
+                      setNudge(null);
+                    }}
+                    title={`Add ${p}`}
+                  >
+                    {p === ", " ? ",  (comma)" : p}
+                  </button>
+                ))}
+              </div>
             ))}
           </div>
+
+          <ChatComposer
+            className="has-fab"
+            value={typed}
+            /* TYPING DOES NOT PUSH THE UNDO STACK — a per-keystroke stack
+               makes ↶ undo one letter at a time, which is not what the button
+               means here. It steps back one TAPPED PHRASE, the thing a finger
+               puts in by accident; the keyboard's own undo still handles
+               typing. */
+            onChange={(v) => { setTyped(v); setNudge(null); }}
+            onSend={() => void send()}
+            placeholder="Tap or type…"
+            disabled={busy}
+            sendLabel="Reply"
+            inside={
+              <button
+                type="button"
+                className="msgr-mini"
+                onClick={() => { setUndoStack((u) => u.slice(0, -1)); setTyped(undoStack[undoStack.length - 1] ?? ""); setNudge(null); }}
+                disabled={undoStack.length === 0 || busy}
+                aria-label="Undo"
+                title="↶ Undo"
+              >
+                ↶
+              </button>
+            }
+          />
         </>
       )}
 
