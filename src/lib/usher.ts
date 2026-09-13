@@ -28,7 +28,6 @@
 import { SIOS, type Sio } from "@/content/sios";
 import { activitiesIn, activity } from "@/content/activities";
 import { cellHref } from "@/lib/indexMatrix";
-import { stopHref, type StopActivityKey } from "@/lib/activityStops";
 import { sioHref } from "@/lib/routes";
 import { goalNumber, stopForDeck } from "@/lib/stopTag";
 
@@ -103,10 +102,20 @@ export function usherFor(
   // which picks the CLOSEST stop in either direction — that is right for a
   // picker opening on a learner's own position and wrong here, where Dan's word
   // is "down": forward, or nothing.
+  //
+  // THROUGH `cellHref`, NOT `stopHref`, AND THAT WAS A BUG FOR ONE BUILD.
+  // `stopHref` answers for the eight keys its `StopActivityKey` union names —
+  // the activities whose pop-up asks "which goal?" — and `speculearn` is not
+  // one of them. Casting the key into that union compiled, matched no branch,
+  // and returned null for every stop, so the ↓ door was simply absent from
+  // SpecuLearn's own recap: the very card Dan photographed asking for it.
+  // `cellHref` is the function `chainOf` above already uses and it knows every
+  // activity, so the two halves of this compass now read the same table.
   let onward: UsherMove | undefined;
   if (activityKey && n !== undefined) {
     for (let s = n + 1; s <= SIOS.length; s++) {
-      const href = stopHref(activityKey as StopActivityKey, s);
+      const sioAt = SIOS[s - 1];
+      const href = sioAt ? cellHref(activityKey, sioAt) : null;
       if (href) { onward = move(activityKey, href, s); break; }
     }
   }

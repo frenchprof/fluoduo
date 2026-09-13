@@ -74,7 +74,7 @@ agreeing that it went to the map and needed changing, but the sentence did not
 say so. The table above is what settled it, and driving the app rather than
 arguing is what should have happened first.
 
-## THE USHERING NAVIGATORS ARE HALF DONE — read this before continuing them
+## THE USHERING NAVIGATORS — LIVE ON SPECULEARN'S RECAP, six end-screens to go
 
 Dan's five, in his words: *"one step back to the previous activity of that
 goal, or forward to the next activity for that goal, or return to the 🎯 page
@@ -92,10 +92,32 @@ their OWN screen — `GameOver`, SpecuLearn's `Recap`, or merely a swapped
 « Restart » CTA. So *"for all the stops there should be something like this at
 the end"* is about six more wirings, not one component.
 
-**AND THE ROW HAS NOT BEEN SEEN ON SCREEN YET.** A click-through driver could
-not reach either finish state, so there is no before/after picture. Do not
-claim it renders until there is one — the whole point of the show-don't-
-describe rule.
+**IT IS NOW WIRED INTO SPECULEARN'S `Recap` — the card Dan photographed** —
+and screenshotted there at 430px and 1280px. Reached via that page's own « Skip
+pretest » button, which is the trick that made it drivable at all: the
+DrillShell finish states could not be reached by a blind clicker.
+
+    was   ↻ Retry  ·  ← SpecuLearn        the second one a PICKER, which is
+                                          the same hassle as the map
+    now   🎯 11  ·  ↻ Redo  ·  📚 MneMemo →  ·  ↓ 💡 SpecuLearn · 🎯 12
+
+The fifth door, ← previous, is absent there ON PURPOSE: SpecuLearn is first in
+that goal's chain. A door appears only where it leads somewhere.
+
+**AND THE ↓ DOOR WAS MISSING ON THE FIRST BUILD — the one Dan drew.** `usherFor`
+asked `stopHref`, whose `StopActivityKey` union names the eight activities whose
+pop-up asks "which goal?" — and `speculearn` is not one of them. The cast
+compiled, matched no branch and returned null for all fifty stops, so the door
+was silently absent from SpecuLearn's own recap. It goes through `cellHref` now,
+the same table `chainOf` uses, so both halves of the compass read one source.
+
+**STILL TO WIRE**, each with its own before/after: `GameOver` (the six games),
+VoixLà's swapped-CTA end, MémoiRecall, GramMarathon, ÉcouTexte.
+
+**A NOTE ON THE SWEEP.** `verify79-jam-scan` failed once during this work and it
+was self-inflicted: a rebuild rewrote `out/` while the scan was reading it. Green
+on a settled build. Do not chase it as a real failure — run the sweep when no
+build is in flight.
 
 ## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
 

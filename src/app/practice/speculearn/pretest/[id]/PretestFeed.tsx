@@ -51,7 +51,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 
+import ActivityUsher from "@/components/ActivityUsher";
 import CahierShell, { type ShellTab } from "@/components/CahierShell";
+import { usherFor, type Usher } from "@/lib/usher";
 import SnapFeed, { type SnapFeedHandle } from "@/components/SnapFeed";
 import { TAB_ICONS } from "@/content/activities";
 import { speak } from "@/games/letris/speech";
@@ -372,6 +374,9 @@ function Run({ pool, pretest, sioId, deck }: {
           answered={answered}
           total={total}
           onRestart={() => setRun((r) => r + 1)}
+          /* The compass is anchored on the GOAL, not the deck: a pre-test's
+             pool is the stop's, and `sioId` is what this runner is given. */
+          usher={usherFor("speculearn", { sioId })}
         />
       </SnapFeed>
     </div>
@@ -566,12 +571,14 @@ function Recap({
   answered,
   total,
   onRestart,
+  usher,
 }: {
   pretest: Pretest | null;
   score: number;
   answered: number;
   total: number;
   onRestart: () => void;
+  usher: Usher | null;
 }) {
   const pct = total ? Math.round((score / total) * 100) : 0;
   // A feed lets a learner reach the end without answering everything, which
@@ -638,10 +645,18 @@ function Recap({
           — and a wrapped row is a stack of two full-width buttons, which is
           the shape the rule forbids, arrived at by accident at the one width
           that matters. A grid cannot wrap. */}
-      <div className="mx-auto mt-6 grid max-w-sm grid-cols-2 gap-2">
-        <button type="button" onClick={onRestart} className="fluo-btn">↻ Retry</button>
-        <Link href="/practice/speculearn" className="fluo-btn fluo-btn-ghost text-center">← SpecuLearn</Link>
-      </div>
+      {/* THE USHERING NAVIGATORS (Dan, 2026-09-13, over a photograph of THIS
+          card: *"We are missing the ushering navigators… for all the stops
+          there should be something like this at the end"*). His five: back one
+          activity in the stop's chain, forward one, the 🎯 page, redo, and the
+          same activity at the next stop that can play it. `usherFor` decides
+          which of them exist for this stop; « Redo » is `onRestart`.
+
+          IT REPLACES THE OLD TWO-BUTTON GRID, which offered ↻ Retry and a link
+          to SpecuLearn's own front door — the one door of the five that leads
+          AWAY from the stop the learner is standing on, and the reason this
+          card sent people back to a picker to find their place again. */}
+      <ActivityUsher usher={usher} onRedo={onRestart} />
     </article>
   );
 }
