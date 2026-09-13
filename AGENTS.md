@@ -393,6 +393,81 @@ now, which says what it always meant: the band the coils run past, on a page.
 geometry: a grep for `import CahierShell` flags the fifteen correct uses and
 would miss a station that grew the fault without importing anything.
 
+# Every control answers the pointer — permanent (2026-09-13)
+
+**Dan: *"The mouseover effects are not everywhere. are they. they should be"*.**
+The third time. On 12 Sep: *"those hero buttons have a mouseover behaviours
+though that we want to replicate throughout the site"*, then *"even for
+depressed spaces (e.g. buttons in the depressed states) there needs to be some
+mouseover effect and activating effect"*.
+
+**A GREP WOULD HAVE SAID THE APP WAS COVERED.** globals.css holds thirty-two
+`:hover` rules — `.cahier-btn`, `.neo-key`, `.neo-well`, `.fluo-tile-key`,
+`.conjuga-tts`, the 3D map's cap. Reading the file, the job looked done.
+Driving the built app at 1280px across sixteen routes, **122 of 264 controls
+changed nothing at all under the pointer**:
+
+    50  the profile's heat-map cells      a.heat-cell — fifty links in a strip
+    18  tick boxes                        bare <input type="checkbox">
+    13  the deck table's Reviewed switch  .cahier-switch
+    12  plain text links                  « about », in every footer
+    10  the FluOLinGo wordmark            the site bar, every page
+    19  the rest — MAP, EXPORT, <summary>, REVEAL, TYPE IT, « Show rows »
+
+None matched any of the thirty-two rules. Reading CSS cannot tell you which
+rule WINS on a given element, and it cannot see a control assembled out of
+Tailwind utilities that matches no rule at all.
+
+**THE FIX IS A FLOOR, NOT A SWEEP.** `globals.css` ends with a block headed
+`THE HOVER FLOOR`, written entirely in `:where()`. That selector carries **zero
+specificity**, so every designed hover in the file still wins outright and none
+of them was touched; the floor only ever reaches a control that had nothing.
+A control added tomorrow cannot arrive dead.
+
+**TWO SIGNALS, BECAUSE ONE IS NOT ENOUGH ON EVERY GROUND.**
+`filter: brightness(1.07)` costs no layout and reads on any coloured control —
+but it does nothing to a white one, and most of this app is white paper. So the
+floor also lays a soft `box-shadow` ring, which shows on paper and on ink alike.
+A link takes its underline instead of a ring (a box drawn round a word inside a
+sentence reads as a box, not a target), and a tick box takes an outline, because
+16px of browser chrome has nowhere to put either of the other two.
+
+**NEITHER SIGNAL IS A TRANSFORM, and that is deliberate.** A lift has to be
+designed against the thing it lifts — a 3D map cap and a table row want
+different travel — and a stray translate on an absolutely-positioned control
+moves it off its mark. Where a lift IS right, it is written per control:
+`.heat-cell` scales and rings so one cell lifts out of a row of fifty,
+`.cahier-switch` scales and rings because it is the control a learner clicks
+most on that page.
+
+**THE PRESS SITS OUTSIDE THE HOVER QUERY.** `@media (hover: hover)` is the
+right guard for a mouse effect and the wrong one for `:active` — a finger never
+hovers, and Dan asked for a mouseover effect **and** an activating one.
+
+**HOW THE CHECK MEASURES IT, AND THE MISTAKE IT ALMOST SHIPPED.**
+`verify540-hover-floor.py` drives `scripts/hover-scan.mjs`, which forces
+`:hover` through the browser's own engine (CDP `CSS.forcePseudoState`). The
+first version moved a REAL MOUSE to each control's centre and reported **377 of
+541 dead** — nearly three times the truth, because hovering the centre of a
+control that sits under something else lands on the cover. Two more corrections
+came out of the same afternoon and both are in the scan:
+
+- **read the control AND its subtree.** `.home-map3d-node:hover
+  .home-map3d-cap` lifts the CAP, so reading only the node called the map's
+  stops dead.
+- **an element already in motion is inconclusive, not a pass.**
+  `.fluo-edge-beat` pulses its opacity on a 4s loop, so two reads a moment
+  apart differ by themselves and the probe was scoring the pointer for the
+  animation.
+
+The check pins **zero** dead controls, not a ratchet — the app is at zero, and a
+ratchet would wave the next one through. It also fails if the scan finds fewer
+than 150 controls at all, so a wall build or a route that stopped rendering
+cannot report "all clear" over an empty page.
+
+**The lesson is the Geist ban's, restated for behaviour instead of type: a rule
+about what the app DOES has to be measured in the app, not read in its source.**
+
 # Start here — every session (2026-08-17)
 
 Read `docs/STATUS.md` before anything else and update it before you stop. `HANDOFF.md`, `TODO.md` and `docs/planning/*` are historical.

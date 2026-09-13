@@ -4338,3 +4338,109 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   line-height: 1.4;
   color: var(--cahier-ink-soft);
 }
+
+/* ══ THE HOVER FLOOR — every control answers the pointer (2026-09-13) ══════
+   Dan: *"The mouseover effects are not everywhere. are they. they should be"* —
+   the third time he has asked, after *"those hero buttons have a mouseover
+   behaviours though that we want to replicate throughout the site"* and *"even
+   for depressed spaces (e.g. buttons in the depressed states) there needs to be
+   some mouseover effect and activating effect"*.
+
+   MEASURED, NOT GUESSED. Forcing the :hover state through the browser's own
+   engine (CDP `CSS.forcePseudoState`, so a control that happens to sit under
+   something else cannot be scored as dead) across sixteen routes at 1280px:
+   **122 of 264 controls changed nothing at all under the pointer.** A first
+   pass that moved a real mouse said 377 of 541, and was wrong — hovering the
+   centre of a covered element lands on its cover. The silent groups, largest
+   first: the profile's fifty heat-map cells, the deck table's row checkboxes
+   and its Reviewed switch, and every plain text link in the app — « about »,
+   « MAP », « EXPORT », and the FluOLinGo wordmark on the site bar.
+
+   `:where()` IS THE WHOLE MECHANISM. It carries zero specificity, so every
+   designed hover already in this file — .cahier-btn, .neo-key, .neo-well,
+   .fluo-tile-key, .conjuga-tts, the 3D map's cap — still wins outright and is
+   untouched. This is only ever the floor under a control that had nothing, and
+   a control added tomorrow can no longer arrive dead.
+
+   TWO SIGNALS, BECAUSE ONE IS NOT ENOUGH ON EVERY GROUND. `filter: brightness`
+   costs no layout and reads on any coloured control, but it does nothing to a
+   white one — brightness(1.08) of #fff is #fff, which is most of this app's
+   paper. So the floor also lays a soft ring, which shows on white and on ink
+   alike. Neither is a transform: a lift has to be designed against the thing it
+   lifts, and a stray translate on an absolutely-positioned control moves it off
+   its mark. */
+:where(button, [role="button"], summary, select, label[for],
+       input[type="checkbox"], input[type="radio"], a[href]) {
+  transition: filter .12s ease, box-shadow .12s ease, text-decoration-color .12s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(button, [role="button"], summary, select, label[for], a[href]):hover {
+    filter: brightness(1.07) saturate(1.04);
+    box-shadow: 0 0 0 2px color-mix(in oklab, var(--cahier-ink) 20%, transparent);
+  }
+  /* A LINK IS TEXT, and a ring around a word in a sentence reads as a box, not
+     as a target. « about » in the footer and the wordmark on the site bar take
+     the underline instead — the affordance a link has always had. */
+  :where(a[href]):hover {
+    box-shadow: none;
+    text-decoration-line: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  /* A TICK BOX IS 16px OF BROWSER CHROME. Brightness does nothing to it and a
+     shadow disappears under its own border; the outline sits outside both.
+
+     IN THE INK, NOT IN `--dopa-focus`. The first draft used the focus blue and
+     it was wrong for a reason worth keeping: hover and keyboard focus would
+     then look identical, so a learner tabbing through the deck table could not
+     tell which row the keyboard was actually on from which one the mouse
+     happened to be over. The focus ring stays the one blue thing. */
+  :where(input[type="checkbox"], input[type="radio"]):hover {
+    outline: 2px solid color-mix(in oklab, var(--cahier-ink) 45%, transparent);
+    outline-offset: 2px;
+  }
+}
+/* THE PRESS IS NOT INSIDE THE HOVER QUERY — a finger never hovers, and Dan
+   asked for "some mouseover effect AND activating effect". This is the half a
+   touch screen gets. */
+:where(button, [role="button"], summary, select, label[for],
+       input[type="checkbox"], input[type="radio"], a[href]):active {
+  filter: brightness(0.93) saturate(1.02);
+}
+
+/* ── and the three groups the floor alone would under-serve ──────────────── */
+
+/* THE PROFILE'S HEAT MAP, fifty of them in a strip (HeatStrip.tsx). Each cell
+   is a link to a stop and they sit shoulder to shoulder, so the floor's ring
+   would blur into its neighbours. A ring in the ink plus a lift of its own
+   picks exactly one cell out of the row. */
+.heat-cell { transition: transform .1s ease, box-shadow .12s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .heat-cell:hover {
+    box-shadow: 0 0 0 2px var(--cahier-ink), 0 2px 6px rgba(0, 0, 0, .28);
+    transform: scale(1.35);
+    position: relative;
+    z-index: 2;
+  }
+}
+.heat-cell:active { transform: scale(1.1); }
+
+/* THE REVIEWED SWITCH (deck table, thirteen on a page of salutations). It is a
+   coloured disc, so the floor's brightness does read on it — but it is also the
+   one control on that row a learner clicks over and over, and it deserves to
+   say so. Its own transition already animates `background`; the ring is added
+   to it rather than replacing it. */
+.cahier-switch { transition: background .2s, box-shadow .12s ease, transform .1s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .cahier-switch:hover {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--cahier-ink) 30%, transparent);
+    transform: scale(1.08);
+  }
+}
+.cahier-switch:active { transform: scale(0.94); }
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"], summary, select, label[for], input, a[href]) { transition: none; }
+  .heat-cell, .heat-cell:hover, .heat-cell:active,
+  .cahier-switch:hover, .cahier-switch:active { transform: none; }
+}
