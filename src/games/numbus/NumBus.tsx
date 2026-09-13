@@ -1010,6 +1010,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       {stage === "terminus" && (
         <GameOver
           activityKey="numbus"
+          // No deck and no goal — the numbers are generated, so the best is
+          // kept per activity rather than per stop (2026-09-13).
+          runXp={{ id: "numbus", runScore: score }}
           emoji={lives > 0 ? "🎉" : "🚏"}
           title="Terminus"
           score={score}

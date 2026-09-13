@@ -618,3 +618,6 @@ jobs:
 
       - name: "A rule's bounds admit what the app writes (13 Sep)"
         run: python3 verify/verify580-rule-bounds.py
+
+      - name: "The teacher's test accounts are never on the student board (13 Sep)"
+        run: python3 verify/verify600-staff-off-board.py

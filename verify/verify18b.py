@@ -32,6 +32,11 @@ ALLOWED_EMAILS = {
     "dan@chank.wang", "monsieur.chan@gmail.com", "kwangguan@gmail.com",
     "daniel.chan@nus.edu.sg", "drneilchan@gmail.com", "kaygeedan@gmail.com",
     "wanghaoshu2016@gmail.com",
+    # Dan's two alter-ego test learners (2026-09-13: "these two are my alter
+    # ego test identites"). Same reason as the six above — his own accounts,
+    # gating nothing but their own exclusion from the student board
+    # (TEST_ACCOUNT_EMAILS, src/lib/staffAccounts.ts). Not students.
+    "docteur.daniel.chan@gmail.com", "u12@i12.work",
 }
 EMAIL = re.compile(r"[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}")
 

@@ -33,7 +33,7 @@ import { SIOS } from "@/content/sios";
 import { NextChip } from "@/components/DrillShell";
 import { sioForDeck, sioForItem } from "@/lib/curriculum";
 import { nextStep, type NextStep } from "@/lib/nextStep";
-import { queueForReview } from "@/lib/progress";
+import { awardActivityRun, queueForReview } from "@/lib/progress";
 import { reviserHref } from "@/lib/reviser";
 import { HOME_HREF } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
@@ -86,6 +86,7 @@ export default function GameOver({
   onExit,
   extra,
   activityKey,
+  runXp,
 }: {
   /** The game's own mark. A ReactNode, not a string: LexicaLater's is the
    * drawn chest (ChestArt), not a glyph — see components/ChestArt.tsx. */
@@ -113,6 +114,28 @@ export default function GameOver({
   onExit?: () => void;
   /** Anything the game wants under the list (a bill, a debrief). */
   extra?: ReactNode;
+  /** PAY THE RUN (Dan, 2026-09-13: "everything should earn XP at least once ...
+   *  if there were any activity that comes with 0 XP and 0 anything, then
+   *  nobody will ever be motivated to touch them").
+   *
+   *  OPT-IN ON PURPOSE, because most games here already pay. LexicaLocker and
+   *  MémoiRecall call recordItemResult on every answer, and ComposeIt pays
+   *  XP_CONVERSATION for the finished dialogue — handing them this prop as well
+   *  would pay the same work twice. The four that paid NOTHING are the ones
+   *  that pass it: SpecuLearn, VocabulaRain, NumBus and NumBourse.
+   *
+   *  `runScore` is what "you beat your own best" is measured on, so a learner
+   *  may farm all afternoon and every genuine improvement pays (Dan: "there is
+   *  nothing wrong with letting someone farm an afternoon if they are
+   *  successful in improving their scores each time"). Omit it and only the
+   *  FIRST completion pays — which is the honest degradation for a run with no
+   *  comparable number.
+   *
+   *  `id` is the activity's registry key, NOT the `activity:` field of a
+   *  recorder call — deliberately a different name, because `activity: "..."`
+   *  is reserved for an evidence write and verify53 reads every one of them
+   *  looking for its evidence type. */
+  runXp?: { id: string; goal?: string | null; runScore?: number | null };
 }) {
   const router = useRouter();
   const rows = useMemo(() => dedupe(misses), [misses]);
@@ -142,6 +165,22 @@ export default function GameOver({
     queueForReview(queueable);
   }, [queueable]);
 
+  // Pay the run, ONCE per game-over — the same ref guard as the queue above,
+  // and for the same reason: this screen re-renders (the ✕, the usher row, a
+  // resize) and a payout that ran per render would turn one game into a tap
+  // that prints XP. awardActivityRun itself only pays a first finish or a
+  // personal best, so a repeat mount cannot pay twice either — the guard is
+  // belt and braces, and it is what makes the receipt below stable.
+  const [runXpPaid, setRunXpPaid] = useState(0);
+  const paid = useRef(false);
+  useEffect(() => {
+    if (paid.current || !runXp) return;
+    paid.current = true;
+    // awardActivityRun reads and writes localStorage, which cannot happen
+    // during render — the same reason « Next › » resolves in an effect.
+    setRunXpPaid(awardActivityRun(runXp.id, runXp.goal ?? null, runXp.runScore ?? null));
+  }, [runXp]);
+
   const correct = () => {
     // Already queued on mount; the button opens ReVue with these at the head.
     if (queueable.length > 0) queueForReview(queueable);
@@ -156,6 +195,15 @@ export default function GameOver({
           <h2 className="mt-1 text-xl font-black text-[color:var(--cahier-ink)]">{title}</h2>
           {score !== undefined && (
             <p className="cahier-mono mt-0.5 text-base font-bold text-[color:var(--cahier-ink-soft)]">{score}</p>
+          )}
+          {/* THE RECEIPT, and only when there is one. A run that did not beat
+              your best pays nothing and says nothing — printing "+0 XP" would
+              turn the app's one gain-framed number into a notice of failure,
+              which verify32 exists to keep out. */}
+          {runXpPaid > 0 && (
+            <p className="cahier-mono mt-0.5 text-base font-black" style={{ color: "var(--dopa-win)" }}>
+              +{runXpPaid.toLocaleString()} XP
+            </p>
           )}
         </div>
 

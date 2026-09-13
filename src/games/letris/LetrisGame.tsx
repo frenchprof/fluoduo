@@ -916,6 +916,11 @@ export default function LetrisGame({
       {gameOver && (
         <GameOver
           activityKey="vocabularain"
+          // Paid nothing at all until 2026-09-13: the tiles go through
+          // recordResponse (evidence, no XP) so the game "must not double-pay
+          // per tile" — correct, and it left the whole activity worth zero.
+          // The RUN pays instead, once, and again on a personal best per deck.
+          runXp={{ id: "vocabularain", goal: set.id, runScore: score }}
           emoji="🌧️"
           title="Game Over"
           score={score}

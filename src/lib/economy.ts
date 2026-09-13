@@ -41,6 +41,68 @@ export const XP_SIO_BASE = 300; // completing a SIO
 export const XP_SIO_MASTERY = 300; // + up to this, scaled by demonstrated mastery
 export const XP_CONVERSATION = 120; // finishing an AI role-play
 
+/* ── NO ACTIVITY PAYS NOTHING (Dan, 2026-09-13) ──────────────────────────────
+ *
+ * *"why are there activities without XP? … everything should earn XP at least
+ * once"*, then the reason, which is the whole design: *"basically if there
+ * were any activity that comes with 0 XP and 0 anything, then nobody will
+ * ever be motivated to touch them"*.
+ *
+ * Three activities paid nothing at all — SpecuLearn, VocabulaRain and the two
+ * Numbers games. Each had a good local reason (a cold guess must not reward
+ * guessing; an arcade game must not double-pay per tile) and together they
+ * added up to a bad one: three tiles a learner has no reason to open.
+ *
+ * AND FARMING IS ALLOWED, WHICH IS DAN'S SECOND CORRECTION: *"there is nothing
+ * wrong with letting someone farm an afternoon if they are successful in
+ * improving their scores each time (we will not reward worser scores)"*. So
+ * the rule is not "pay once", which would reward one token attempt and nothing
+ * after. It is:
+ *
+ *     FIRST finish of an activity at a goal   XP_ACTIVITY_FIRST
+ *     every run that BEATS your own best      XP_ACTIVITY_BEST
+ *     a run that does not beat it             nothing
+ *
+ * Play all afternoon: every genuine improvement pays, a worse run pays
+ * nothing. That is why the amounts are modest — they are paid repeatedly, by
+ * a learner who keeps getting better, which is the behaviour worth buying.
+ *
+ * SPECULEARN IS SCORED DIFFERENTLY, on purpose. It pays for FINISHING, never
+ * for the score: it is the guess BEFORE the lesson, and paying by score would
+ * make the profitable move "do the lesson first, then take the pre-test" —
+ * which destroys the one thing the activity is for. */
+export const XP_ACTIVITY_FIRST = 60; // first completion of an activity at a goal
+export const XP_ACTIVITY_BEST = 60;  // ...and again every time you beat your own best
+
+/* ── THE WELCOME PURSE (Dan, 2026-09-13: "how much free gems can each learner
+ * begin with?") ────────────────────────────────────────────────────────────
+ *
+ * Everyone started on ZERO, which was fine while gems bought only colours and
+ * a Bouclier — nobody minds waiting for decoration. It stops being fine the
+ * moment gems buy the AI-backed items (Dan, same day: "the right to use
+ * AI-supported items (because in reality they do not come free of charge) be
+ * tied to their hard earned gems"), because a brand-new learner would then meet
+ * a price on their first five minutes with nothing to pay it with.
+ *
+ * 20, AND THE NUMBER IS AN ARGUMENT RATHER THAN A ROUND FIGURE:
+ *
+ *   · it is LEVEL_UP_GEMS, and it is the cheapest colour in the shop. A learner
+ *     can read their purse against a price the shop already shows, instead of
+ *     against nothing;
+ *   · a lucky find pays 2 gems about one answer in eight (FIND_ODDS, FIND_SMALL,
+ *     with a guarantee every 12), so a twenty-item exercise earns roughly 6.
+ *     Twenty is about three exercises — enough that the first session is never
+ *     spent against a wall, small enough that by the end of day one the purse is
+ *     no longer what is paying for anything;
+ *   · the whole shop costs 205 gems and a full pass through the course pays out
+ *     around 1,450, so the grant changes nobody's ceiling. It changes the FIRST
+ *     five minutes, which is the only thing it is for.
+ *
+ * Paid ONCE, to an account that has never been paid it (progress.welcomed), and
+ * it is a floor rather than a top-up: it never fires again, however the balance
+ * is spent. */
+export const WELCOME_GEMS = 20;
+
 // THE LADDER, one place (Dan, 2026-09-07 — from the retention read: the old
 // ladder stopped at day 7, so day 40 paid exactly what day 7 paid and the
 // video's point about compounding was being left on the table). Day 30 agrees

@@ -69,6 +69,17 @@ function mergeFind(local: Progress, remote: Partial<Progress>): {
     : { findDay: rd, findGems: rg, findDry: rdry };
 }
 
+/** Best-per-activity, keeping the higher score on each key (see Progress.bests
+ *  and awardActivityRun): dropping this map on sign-in would let a second
+ *  device collect the first-finish XP for work already finished. */
+function mergeBests(local: Progress, remote: Partial<Progress>): Record<string, number> {
+  const out: Record<string, number> = { ...(remote.bests ?? {}) };
+  for (const [k, v] of Object.entries(local.bests ?? {})) {
+    out[k] = Math.max(out[k] ?? 0, v);
+  }
+  return out;
+}
+
 export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
   if (!remote) return local;
   const itemSrs = { ...(remote.itemSrs ?? {}) };
@@ -116,5 +127,16 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
     // Cohort marker: once stamped remotely it never changes. startProgressSync
     // handles the pre-marker cases (remote doc without the field = legacy).
     term: remote.term ?? local.term,
+    // Personal bests, so a second device cannot re-collect the first-finish XP
+    // for an activity this learner has already finished. Per key, the HIGHER
+    // score wins — the same favours-the-learner rule as gems, and the same one
+    // awardActivityRun applies when it decides whether a run improved.
+    bests: mergeBests(local, remote),
+    // The welcome purse is paid ONCE. This function rebuilds Progress from a
+    // fixed key list, so a flag that is not named here is DROPPED on every
+    // sign-in — and normalize() would then pay the grant again on the next
+    // read, every read, on every device. Sticky true: whichever side has been
+    // paid, the account has been paid.
+    welcomed: (local.welcomed ?? false) || (remote.welcomed ?? false),
   };
 }
