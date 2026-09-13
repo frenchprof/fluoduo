@@ -92,6 +92,34 @@ Break-tested by restoring the bug.
 > the check says so in its own docstring because that gap cannot be closed
 > from here.
 
+**SAME DAY, LATER — Dan sent the LIVE file and asked for it back with the fix
+in it, and the diff turned up a second drift going the other way.** The two
+copies disagreed in two places, on opposite sides of the console:
+
+    mail/{id}    LIVE AHEAD.  Dan closed the letterbox 12 Sep; the closure
+                              never came back into git. The repo still had
+                              the weaker "tied to an invite" create rule, so
+                              deploying the repo copy would have RE-OPENED it.
+    level >= 1   GIT AHEAD.   Only by yesterday's fix. Still `>= 1` live.
+
+Reconciled: `firestore.rules` is now the live file plus the two bounds, and it
+carries a block saying it is not the source of truth. **Ask Dan for the live
+copy before editing it** — a correct-looking edit rolls a live fix backwards.
+
+**AND THE EMULATOR SUITE WAS GREEN THROUGH THE WHOLE BUG.** `legit-paths.mjs`
+called itself *"the EXACT payload publishLeaderboard() sends"* and hard-coded
+`level: 3` — a level none of its three learners has, since `levelForXp` starts
+at 0 and the first span is 2000 XP. The one suite that drives the real rules
+engine could not see the thing that was erasing beginners. Default is `0` now,
+a second case covers `update` (which re-runs `validLeaderboardRow` too), and
+the mail case is kept with its expectation flipped to `deny` so re-opening the
+box turns the suite red rather than green.
+
+Break-tested with the real engine, `node scripts/rules-test/run.mjs --compare`:
+
+    origin/main's rules     4 of 4 leaderboard cases FAIL
+    this branch's rules     17 / 17 PASS, run.mjs exits 0
+
 ## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, branch `claude/peers-vd2h6h`, NOT merged; the usher row is HALF DONE)
 
 **Dan: *"when one chooses to close any activity, it must take the learner back
