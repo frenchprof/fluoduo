@@ -126,7 +126,7 @@ const STEPS: Step[] = [
     title: "Practise it.",
     ways: [
       <><b>Drill</b>: 🔤 ConjugaZone · 🏃 GramMarathon · ❌ ErroReview</>,
-      <><b>I-Play</b>: 🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</>,
+      <><b>Amuse</b>: 🔢 Numbers · 🌧️ VocabulaRain · 🔐 LexicaLocker</>,
       <><b>Speak</b>: 🔊 VoixLà · 🎙️ WorDrill · 🎧 ÉcouTexte</>,
       <>a <b>greyed</b> tile has nothing at that stop</>,
     ],

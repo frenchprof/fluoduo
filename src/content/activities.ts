@@ -78,14 +78,16 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 //
 // SEVEN VERBS, IN THE ORDER A LEARNER DOES THEM:
 //
-//     START · LEARN · DRILL · I-PLAY · SPEAK · WRITE · TRACK
+//     START · LEARN · DRILL · AMUSE · SPEAK · WRITE · TRACK
 //
 // ALL FIVE LETTERS, WHICH IS THE POINT (Dan, 2026-09-13: *"all five letter
 // words"*). The sideways label down each row is set in one column of type, so
 // equal-length words make a straight edge instead of a ragged one — the labels
 // stop being seven different shapes and become one repeated shape. "Practice"
-// (8) became DRILL and "Play" (4) became I-Play to reach it; the hyphen is what
-// buys the fifth letter without inventing a word.
+// (8) became DRILL and "Play" (4) became AMUSE to reach it. I-PLAY was tried
+// first and dropped the same hour: it needed a hyphen to reach five, and a
+// label that has to be punctuated into shape is a label fighting the rule.
+// AMUSE is five on its own.
 //
 // which is why this is a better set than the one it replaces and not merely a
 // different one: every row now names an ACTION rather than a category, and read
@@ -95,7 +97,7 @@ export type Family = { key: FamilyKey; name: string; emoji: string; href: string
 //     key         was         is now
 //     practice    Practice    Learn
 //     review      Revise      Drill
-//     svplay      Games       I-Play
+//     svplay      Games       Amuse
 //     oral        Oral        Speak
 //     tools       Tools       Write
 //     user        User        Track
@@ -140,7 +142,7 @@ export const FAMILIES: Family[] = [
   // retired 2026-09-09 ("retire /games"), the last of the three (Dan
   // hedged on it first as "nearly all" the hubs, then confirmed it too).
   // /games itself still exists as a redirect for old links/bookmarks.
-  { key: "svplay", name: "FluOLin I-Play", emoji: "🎮", href: "/games/vocabularain" },
+  { key: "svplay", name: "FluOLin Amuse", emoji: "🎮", href: "/games/vocabularain" },
   // ORAL (NEW, 2026-09-09) — half of retired Skills: VoixLà, WorDrill,
   // ÉcouTexte, the three activities that put French in your mouth or ear.
   // href is a DELIBERATE DOOR to VoixLà (see DELIBERATE_DOOR below) — Oral
