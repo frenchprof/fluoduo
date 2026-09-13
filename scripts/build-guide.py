@@ -30,13 +30,14 @@ ROUTES = {
 FAM_OF = {"LEARN": "practice", "DRILL": "review", "AMUSE": "svplay", "SPEAK": "oral", "WRITE": "tools", "TRACK": "user"}
 # Band colour per top-level section: getting around is Start-yellow, the activity
 # chapter is family-coloured inside, connections are Learn-blue, the rest is Track-grey.
-SECTION_FAM = {0: "goals", 1: "goals", 2: "goals", 3: "goals", 4: "practice", 5: "practice", 6: "user", 7: "user", 8: "user", 9: "goals"}
-SECTION_EMOJI = {0: "🧑‍🏫", 1: "🗺️", 2: "🧭", 3: "👣", 4: "📝", 5: "🔗", 6: "⭐", 7: "🔐", 8: "💡", 9: "⚡"}
+SECTION_FAM = {0: "goals", 1: "goals", 2: "goals", 3: "goals", 4: "practice", 5: "practice", 6: "user", 7: "user", 8: "user", 9: "goals", 10: "goals"}
+SECTION_EMOJI = {0: "🧑‍🏫", 1: "🗺️", 2: "🧭", 3: "👣", 4: "📝", 5: "🔗", 6: "⭐", 7: "🔐", 8: "💡", 9: "🎯", 10: "⚡"}
 DESKTOP = {"menu-desktop", "home-desktop"}
 
 def inline(s):
     s = html.escape(s, quote=False)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"<a href='\2' target='_blank' rel='noopener'>\1</a>", s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", s)
     return s
@@ -87,6 +88,11 @@ def render(md):
     src = md.split("\n"); out = []; i = 0; sec = -1; toc = []
     while i < len(src):
         l = src[i]
+        fo = re.match(r"^<!-- fold: (.*?) -->$", l)
+        if fo:
+            out.append(f"<details class='fold'><summary>{inline(fo.group(1))}</summary>"); i += 1; continue
+        if l.strip() == "<!-- /fold -->":
+            out.append("</details>"); i += 1; continue
         fm = re.match(r"^<!-- fig: (.*?) \| (.*?) -->$", l)
         if fm:
             out.append(figure([n.strip() for n in fm.group(1).split(",")], fm.group(2))); i += 1; continue
@@ -196,6 +202,10 @@ figure.shot{margin:14px 0 18px;padding:12px;background:var(--raised);border:1.5p
 .shots img{max-width:100%;height:auto;border-radius:14px;border:2px solid var(--ink);box-shadow:0 8px 20px rgba(34,40,80,.18);background:#fff}
 .shots img.phone{width:230px} .shots img.wide{width:min(100%,560px)}
 figcaption{font-family:var(--hand);font-weight:700;font-size:1.05rem;color:var(--ink-soft);margin-top:10px;text-align:center;text-wrap:balance}
+details.fold{margin:.6rem 0 1rem;border:1.5px solid var(--ink);border-radius:12px;background:var(--raised);padding:.2rem .9rem}
+details.fold>summary{cursor:pointer;font-family:var(--hand);font-weight:700;font-size:1.2rem;padding:.4rem 0;list-style:none;display:flex;align-items:center;gap:.5rem}
+details.fold>summary::before{content:"▸";font-family:var(--body);transition:transform .15s} details.fold[open]>summary::before{transform:rotate(90deg)}
+details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font-family:var(--hand);font-size:1.15rem}
 .footer{margin-top:40px;font-size:.8rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:10px}
 .totop{position:fixed;right:16px;bottom:16px;z-index:9;width:46px;height:46px;border-radius:50%;background:var(--hl);border:2px solid var(--ink);box-shadow:0 4px 0 0 var(--ink);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink);font-weight:900}
 :focus-visible{outline:3px solid var(--fam-practice);outline-offset:2px}

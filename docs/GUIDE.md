@@ -6,6 +6,7 @@
 
 ## 0. In one breath
 
+- **What this is:** a homework helper for your French class. **What it is not:** a course that replaces the class.
 - The course is a **road with 50 stops**. Each stop is one **goal** (one thing you will be able to say or do in French).
 - At each stop you **guess first**, then **learn**, then **practise**, then **come back** to what you got wrong.
 - Nothing is locked. You can tap any stop at any time.
@@ -59,7 +60,7 @@
 - **5 units**, 10 stops each: Unité 0 « Bienvenue en classe », 1 « Qui suis-je ? », 2 « Ma vie, mes envies », 3 « En ville », 4 « À table ! ».
 - **Stop colours** = what the goal is about: 🔵 blue vocabulary · 🩷 pink grammar · 🟠 orange expressions · 🟢 green communication.
 - A **🚩 flag** marks where the class currently is. The road is paved up to it and dotted beyond.
-- A done stop wears a **✓ green** tick.
+- A **done stop** is pressed flat and paler, and keeps its number. There is no tick. The 🧑‍🎓 rides your current stop, which glows.
 - **Tap a stop** → its goal page.
 - The **🏁 button** under the map opens the GramMarathon Finale (one long gap-fill across all 50 goals).
 - Keyboard shortcut anywhere: type a two-digit number (e.g. `31`) to jump the map to that stop.
@@ -121,7 +122,7 @@
 4. **Make it stick: 🃏 MémoiRecall.** Flashcards on the same words.
 5. **Practise it.** Type it (🏃 GramMarathon, 🔤 ConjugaZone), say it (🎙️ WorDrill), hear it (🎧 ÉcouTexte), play it (🌧️ 🔐 🔢).
 6. **Come back: ❌ ErroReview.** Whatever you missed returns on a schedule.
-7. The stop turns **✓ green** once you have tried every learning activity it offers (games do not count).
+7. The stop is marked **done** (pressed flat, paler) once you have tried every learning activity it offers (games do not count).
 
 **Before the lesson** (flipped learning): do step 2 first, then come to class.
 **Before a test** (revision): do the same step 2 to find what you still do not know, then steps 5 and 6.
@@ -176,14 +177,14 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** a sentence with a gap. No options. You type the missing word, for a whole deck.
 - **How:** the gap sits inside the sentence, English meaning below. A wrong try lets you retry. « Bien ! (accent differs) » still counts as right. **?** gives the base word, the first letter, the skeleton.
 - **Ends:** ✓ score, **↻ Again**.
-- **Note:** a **Finale** exists too: one long bank across all 50 goals, always open.
+- **Note:** 27 of the 50 goals have gap sentences; on the others the tile is grey. The **🏁 Finale** (under the map) is a daily paper of 50 questions: at least one from every goal, the rest weighted towards your weak spots.
 
 #### 🔤 ConjugaZone — verb endings
 <!-- fig: conjugazone | ConjugaZone opens on a blanked table. REVEAL / TYPE IT switch, SHOW CONJUGATIONS, one 🔊 per form. -->
 - **What:** learn a conjugation table, then type each form.
 - **How:** pick verbs (default: être, avoir, aller). The table opens **blanked**. **REVEAL** mode: tap a cell to see it. **TYPE IT** mode: every cell is a box. 🎲 adds a full phrase under every person. **Questions →** starts the drill: one person + verb, you type the form. On a phone, the word tiles are the same verb's other forms, so you must really choose.
 - **Ends:** back to the table with 🎉 ✓ score.
-- **Note:** opened from a goal, it loads that goal's verbs.
+- **Note:** opened from a goal, it loads that goal's verbs. It sits on the swipe chain for the 40 goals whose lesson has verbs. Your verb answers are graded and remembered, but they are never dealt in ErroReview, which only replays deck words.
 
 #### ❌ ErroReview — what you got wrong comes back
 <!-- fig: erroreview | ErroReview with nothing due yet. Practise any deck and its words come back here on schedule. -->
@@ -199,7 +200,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** words fall from the sky. Steer each into its correct column (category).
 - **How:** a study table shows the exact words that will fall (« Jump to game » to skip). Speed rises every 6 words. Sort every word right and the day turns to **night** (slower, some letters hidden), then **storm**, then **dawn**. 3 misses in the storm drops you back to night.
 - **Ends:** when a column stacks to the top. Post-mortem of misses.
-- **Note:** has its own in-game score. Pays no XP. One expert set costs gems.
+- **Note:** no lives. The game ends when a column stacks to the top. Has its own in-game score, pays no XP. Available at 33 of the 50 goals. One expert set costs gems.
 
 #### 🔢 Numbers — NumBus and NumBourse
 <!-- fig: numbus, numbus-game, numbourse | NumBus setup (tick what to practise), NumBus in play (hear the number, type it on the keypad), and the NumBourse landing with its eight levels. -->
@@ -212,7 +213,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** a locked chest shows the English. Build the French from syllable keys moving on a belt.
 - **How:** put the right key in the right slot. A wrong key rattles back and costs a life. 3 lives, 6 words per level. Level 1 = whole word, levels 2–3 = syllables, level 4+ = random letter chunks. Hard mode hides how many pieces.
 - **Ends:** post-mortem of misses.
-- **Note:** a deck not yet prepared says « LexicaLocker is being prepared ». Pays XP per word.
+- **Note:** available at 28 of the 50 goals; a deck not yet prepared says « LexicaLocker is being prepared ». Pays XP per word, and misses go to ErroReview.
 
 ### 💬 SPEAK
 
@@ -249,13 +250,13 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** a role-play (café, directions, shopping…). You write your lines.
 - **How:** build each line from phrase chips, **✔** sends it. The other character replies out loud and moves the scene on (greet → order → drink → bill → goodbye). Some scenes have **check my work**, where the other character reads your whole text and reacts.
 - **Ends:** post-mortem. Finishing a scene pays 120 XP.
-- **Note:** the chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
+- **Note:** available at 12 goals: 9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50 (the six communication goals 10, 20, 30, 40, 49, 50 among them). The chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
 
 ### 👤 TRACK (one page, four tabs)
 <!-- fig: profile, leaderboard, settings | The Track page: Profile (heat strip of the 50 stops), Leaderboard (sign in to see it), Settings (icon labels, map wheel, bottom bar, Gems). -->
 
 - **Profile:** 🔥 streak · ⭐ XP · 💎 gems · 🎖️ badges · 🎚️ level (on the account chip); a « DO THIS NEXT » card; **RE-DRILLS** = your weakest stops and a **heat strip** of all 50 stops (STRONG ≥ 75 %, MIXED ≥ 50 %, WEAK below, NEW never tried, DONE outlined); **THRILLS** = badges earned.
-- **Leaderboard:** ranked by XP. **This week** (resets Monday, everyone starts level) or **All term**. « AROUND YOU » shows your neighbours and how many exercises to catch up. Sign-in needed.
+- **Leaderboard:** ranked by XP, never by gems. Opens on **This week** (resets Monday, everyone starts level); **All term** is lifetime XP. « AROUND YOU » shows your neighbours and how many exercises to catch up. Sign-in needed.
 - **History ⌛:** every answer you ever gave. Sign-in needed.
 - **Settings ⚙️:** icon labels on/off · mouse wheel direction on the map · which rows the bottom bar shows · the **Gems** shelf (colours, Streak-Freezer).
 
@@ -287,6 +288,8 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **One deck, many doors.** The same words appear in SpecuLearn, MneMemo, MémoiRecall, GramMarathon, WorDrill, VocabulaRain, LexicaLocker and ComposeIt. Repeating never means the same exercise twice.
 - **SpecuLearn is outside the loop.** It records nothing and pays nothing. That is on purpose: it is a cold guess.
 - **ErroReview is the sink.** Game misses, hints taken, revealed answers, and « Show the sentence » in ÉcouTexte all flow into it.
+- **Feeds ErroReview:** MneMemo's exercise, MémoiRecall (Me tester), GramMarathon, WorDrill, ÉcouTexte, LexicaLocker, and a game post-mortem when the missed word is a deck word.
+- **Does not feed it:** SpecuLearn, VoixLà, ChaTutor, ConjugaZone, NumBus, NumBourse.
 - **ConjugaZone and Numbers are not tied to a deck.** ConjugaZone uses the verb list; Numbers generates numbers.
 - **The lesson makes the stop tick, the rest makes it stick.** Finishing MneMemo pays the goal bonus; MémoiRecall and ErroReview keep the words alive.
 - **The ladder of demand:** guess → learn → recognise (MémoiRecall, VocabulaRain, LexicaLocker, ÉcouTexte) → produce (GramMarathon, ConjugaZone, WorDrill) → create (ComposeIt, ChaTutor).
@@ -300,7 +303,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 |---|---|
 | A right answer, first try | **60** |
 | A wrong answer, first try | **20** (effort counts) |
-| Second try on the same item | 0 (it is remembered, not paid) |
+| Second try on the same item | 0 (it is remembered, not paid). Wrong then right in one run = 20 in total, not 20 + 60 |
 | Reveal the answer | 0 |
 | A goal becomes done | **300**, plus up to **300** more depending on how many of its words you have mastered |
 | Finish a ComposeIt scene | **120** |
@@ -312,7 +315,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 
 ### 🔥 Streak
 - Any graded answer counts the day. Right or wrong. NumBus and NumBourse count too.
-- The day changes at **4 am** your local time, so 1 am still counts as yesterday.
+- The day changes at **4 am** your local time, so 1 am still counts as yesterday. A wrong answer never breaks a streak.
 - Miss **one** day: a ❄️ Streak-Freezer saves it automatically (you are told the next morning). Miss two: back to 1.
 - ❄️ Streak-Freezer: 25 gems, hold at most 2, bought **in advance** in Settings → Gems.
 
@@ -378,7 +381,90 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 
 ---
 
-## 9. Thirty-second cheat sheet
+## 9. The 50 goals, unit by unit
+
+Tap a number to open that goal. Colour on the map: blue vocabulary · pink grammar · orange expressions · green communication. Goals 10, 20, 30, 40, 49 and 50 are the communication role-plays and writing tasks.
+<!-- fold: 50 goals -->
+
+**Unité 0 · « Bienvenue en classe »** (goals 1–10)
+
+| Goal | Topic |
+|---|---|
+| [1](https://fluolingo.com/sio/SIO-001) | Introductions |
+| [2](https://fluolingo.com/sio/SIO-002) | Tu / Vous |
+| [3](https://fluolingo.com/sio/SIO-003) | Alphabet |
+| [4](https://fluolingo.com/sio/SIO-004) | Days + moments |
+| [5](https://fluolingo.com/sio/SIO-005) | Colours |
+| [6](https://fluolingo.com/sio/SIO-006) | Some nouns |
+| [7](https://fluolingo.com/sio/SIO-007) | Numbers 0–20 |
+| [8](https://fluolingo.com/sio/SIO-008) | Classroom instructions |
+| [9](https://fluolingo.com/sio/SIO-009) | Greetings |
+| [10](https://fluolingo.com/sio/SIO-010) | First meeting role-play |
+
+**Unité 1 · « Qui suis-je ? »** (goals 11–20)
+
+| Goal | Topic |
+|---|---|
+| [11](https://fluolingo.com/sio/SIO-011) | Stressed pronouns |
+| [12](https://fluolingo.com/sio/SIO-012) | Professions |
+| [13](https://fluolingo.com/sio/SIO-013) | School subjects — les matières |
+| [14](https://fluolingo.com/sio/SIO-014) | Subject pronouns + ÊTRE |
+| [15](https://fluolingo.com/sio/SIO-015) | Countries |
+| [16](https://fluolingo.com/sio/SIO-016) | Nationalities |
+| [17](https://fluolingo.com/sio/SIO-017) | Languages |
+| [18](https://fluolingo.com/sio/SIO-018) | Numbers 20–69 |
+| [19](https://fluolingo.com/sio/SIO-019) | Avoir — age & states |
+| [20](https://fluolingo.com/sio/SIO-020) | Mini-text: present a country |
+
+**Unité 2 · « Ma vie, mes envies »** (goals 21–30)
+
+| Goal | Topic |
+|---|---|
+| [21](https://fluolingo.com/sio/SIO-021) | Everyday objects — c'est un… / ce sont des… |
+| [22](https://fluolingo.com/sio/SIO-022) | Possessives |
+| [23](https://fluolingo.com/sio/SIO-023) | Leisure activities — j'aime, j'adore |
+| [24](https://fluolingo.com/sio/SIO-024) | faire + partitive (du / de la) |
+| [25](https://fluolingo.com/sio/SIO-025) | pourquoi ? parce que |
+| [26](https://fluolingo.com/sio/SIO-026) | aller + article contraction |
+| [27](https://fluolingo.com/sio/SIO-027) | Time — when I do it |
+| [28](https://fluolingo.com/sio/SIO-028) | Négation — pas de, pas le, ne… plus |
+| [29](https://fluolingo.com/sio/SIO-029) | vouloir — invite, accept, refuse, reschedule |
+| [30](https://fluolingo.com/sio/SIO-030) | Well wishes + connectors for a short email |
+
+**Unité 3 · « En ville »** (goals 31–40)
+
+| Goal | Topic |
+|---|---|
+| [31](https://fluolingo.com/sio/SIO-031) | Weather |
+| [32](https://fluolingo.com/sio/SIO-032) | en / au / aux / à — prepositions for cities & countries |
+| [33](https://fluolingo.com/sio/SIO-033) | Places in town |
+| [34](https://fluolingo.com/sio/SIO-034) | Yes/no and open-ended questions |
+| [35](https://fluolingo.com/sio/SIO-035) | Locating places + article contraction |
+| [36](https://fluolingo.com/sio/SIO-036) | Directions + ordinal numbers |
+| [37](https://fluolingo.com/sio/SIO-037) | pouvoir — what one can do (+ where) |
+| [38](https://fluolingo.com/sio/SIO-038) | Getting around — en train, à vélo (+ y) |
+| [39](https://fluolingo.com/sio/SIO-039) | Wants and needs |
+| [40](https://fluolingo.com/sio/SIO-040) | Describe itinerary steps with connectors |
+
+**Unité 4 · « À table ! »** (goals 41–50)
+
+| Goal | Topic |
+|---|---|
+| [41](https://fluolingo.com/sio/SIO-041) | Aliments + meals |
+| [42](https://fluolingo.com/sio/SIO-042) | Partitives + manger/boire |
+| [43](https://fluolingo.com/sio/SIO-043) | Frequency adverbs |
+| [44](https://fluolingo.com/sio/SIO-044) | Commerces — shopping, and the market exchange |
+| [45](https://fluolingo.com/sio/SIO-045) | Numbers 70–99 |
+| [46](https://fluolingo.com/sio/SIO-046) | Demonstratives |
+| [47](https://fluolingo.com/sio/SIO-047) | Making plans — aller + infinitif |
+| [48](https://fluolingo.com/sio/SIO-048) | Giving advice — devoir / falloir / pouvoir |
+| [49](https://fluolingo.com/sio/SIO-049) | Reviewing a restaurant |
+| [50](https://fluolingo.com/sio/SIO-050) | Role-play: restaurant scene |
+<!-- /fold -->
+
+---
+
+## 10. Thirty-second cheat sheet
 
 ```
 Where am I?          🎯 NN in the top bar, or 🧑‍🎓 on the map
