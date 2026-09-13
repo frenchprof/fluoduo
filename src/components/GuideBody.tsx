@@ -78,15 +78,37 @@ const STEPS: Step[] = [
   {
     hue: 3,
     title: "Start where you are.",
+    // THE SAME ACTIVITY, TWO FRAMINGS — NOT TWO ACTIVITIES (Dan, 2026-09-13:
+    // *"SpecuLearn is indeed for pre-lessons, but there are people who are
+    // discovering the app for the first time before their tests. so we cannot
+    // tell them it is for their pre-lessons. They can still go through the same
+    // SpecuLearn but as revision. That was what i meant by step 2! (NOT
+    // ERROREVIEW!)"*
+    //
+    // The first cut sent the revising learner to ErroReview, which was wrong on
+    // its own terms: ErroReview replays what you have ALREADY got wrong, so it
+    // is empty for someone opening the app for the first time the week of a
+    // test — the exact person this half is for. Both halves are SpecuLearn.
+    // What changes is what the learner is told it is FOR.
     split: [
-      { when: "Before the lesson", body: <><b>💡 SpecuLearn</b> asks you first. Guess — wrong costs nothing, and it is how the lesson lands.</> },
-      { when: "Before a test", body: <><b>❌ ErroReview</b> first: it keeps what you already got wrong. Then the goal’s drills.</> },
+      { when: "Before the lesson", body: <><b>💡 SpecuLearn</b> — guess first. You are not meant to know it yet.</> },
+      { when: "Before a test", body: <>the same <b>💡 SpecuLearn</b> — use it to find what you do not know yet.</> },
     ],
   },
+  // LEARN IT IS MneMemo, NOT VoixLà (Dan, 2026-09-13: *"Learn it is not via
+  // VoixLà. You're giving all the wrong instructions!"*). Checked against the
+  // registry rather than written from memory a third time:
+  //
+  //     lesson  ->  📚 MneMemo  "The lesson: rule, then practice."  href: null
+  //     tts     ->  🔊 VoixLà   "Type French, hear it back, get it checked."
+  //
+  // VoixLà is a CHECKING tool and lives in Oral; it has no part in learning the
+  // goal. MneMemo has `href: null` on purpose — it opens from the stop you
+  // picked in step 1, which is why the bullet names the goal and not a door.
   {
     hue: 2,
     title: "Learn it.",
-    ways: [<>the goal’s own lesson; <b>🔊 VoixLà</b> reads any French aloud</>],
+    ways: [<><b>📚 MneMemo</b> — the rule, then practice. It opens from the goal you picked.</>],
   },
   {
     hue: 4,
@@ -120,95 +142,84 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
         {STEPS.map((s, i) => (
           <li
             key={i}
-            className={`fluo-h-${s.hue} flex items-start gap-2 rounded-xl border-2 px-2.5 py-1`}
+            className={`fluo-h-${s.hue} rounded-xl border-2 px-2.5 py-1`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
-            <span
-              /* On the ramp like the text beside it — a fixed 28px circle next to
-                 type that grows to 20px on a desktop reads as a badge that
-                 stayed small (Dan, 12 Sep: no hard-coded button sizes). */
-              className="mt-0.5 flex h-[calc(1.75rem+var(--fs-step)*1.75)] w-[calc(1.75rem+var(--fs-step)*1.75)] shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
-              style={{ background: "var(--fluo-card-accent)" }}
-            >
-              {i + 1}
-            </span>
-            <div className="min-w-0 flex-1">
-              {/* THE TITLE IS ROBOTO, THE REST IS THE HAND (Dan, 2026-09-13:
-                  *"The title words right after the number must be in a bigger
-                  thicker font (try Roboto) and the rest in hand font normal"*).
+            {/* THE BADGE AND THE TITLE SHARE A ROW; EVERYTHING BELOW STARTS AT
+                THE CARD'S OWN LEFT EDGE (Dan, 2026-09-13: *"START THE BULLET
+                POINTS FROM THE VERY LEFT!"*, then *"those two boxes side by
+                side also start earlier!"* and *"BUY BACK SPACE ALL AND ANY
+                SPACE"*).
 
-                  This INVERTS what was here — the title wore the hand and the
-                  body wore the default. Roboto is `.cahier-body`, the face Dan
-                  picked on 1 Jul for anything that must be legible fast, and a
-                  heading is exactly that; the hand then carries the explaining,
-                  at its normal weight, which is what `.cahier-hand` sets. */}
-              <p className="cahier-hand text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">
+                The card was ONE two-column flex — badge left, everything else
+                in a column beside it — so the bullets AND the two split boxes
+                began under the TITLE, indented past the badge by the badge's
+                width plus its gap. Dan's mock starts them at the card's own
+                padding edge.
+
+                Splitting the badge row off fixes alignment and buys space in
+                the same stroke: every line below is wider by the badge column,
+                so it wraps less often. That is the point — the indent was
+                costing horizontal room on the device with least of it. */}
+            <div className="flex items-start gap-2">
+              <span
+                /* On the ramp like the text beside it — a fixed 28px circle next
+                   to type that grows on a desktop reads as a badge that stayed
+                   small (Dan, 12 Sep: no hard-coded button sizes). */
+                className="mt-0.5 flex h-[calc(1.75rem+var(--fs-step)*1.75)] w-[calc(1.75rem+var(--fs-step)*1.75)] shrink-0 items-center justify-center rounded-full text-sm font-black text-white"
+                style={{ background: "var(--fluo-card-accent)" }}
+              >
+                {i + 1}
+              </span>
+              {/* THE TITLE IS ROBOTO, THE REST IS THE HAND (Dan, 13 Sep: *"The
+                  title words right after the number must be in a bigger thicker
+                  font (try Roboto) and the rest in hand font normal"*). This
+                  INVERTS what was here. Roboto is `.cahier-body`, his own pick
+                  for anything that must be legible fast. */}
+              <p className="cahier-hand min-w-0 flex-1 text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">
                 <b className="cahier-body text-[1.3em] font-black">{s.title}</b>
                 {s.what ? <> {s.what}</> : null}
               </p>
-              {/* THE WAYS IN, AS DAN WROTE THEM (13 Sep):
-                    Step 1. Select your goal.
-                      · via the map (home page) in 3D or 2D view
-                      · via the menu: enter it at the top. then OK
-                  A step with two doors names both; a step with one names it
-                  rather than padding itself out to match its neighbours. The
-                  bullet is a real `ul`, so a screen reader says "list, two
-                  items" instead of reading two dots. */}
-              {/* FLUSH LEFT (Dan, 2026-09-13: *"the bullet points are to start
-                  from the very left edge of the text boxes"*). `list-inside`
-                  puts the marker in the text flow instead of hanging it in a
-                  gutter, and the padding goes to zero — so a bullet begins on
-                  the same vertical line as the title above it. */}
-              {s.ways && (
-                <ul className="mt-0.5 flex flex-col pl-0">
-                  {s.ways.map((w, j) => (
-                    <li key={j} className="flex gap-1">
-                      {/* THREE FAULTS, ONE SHAPE. Dan put his mock beside this
-                          render and the differences were: his bullets fit ONE
-                          line, his dot sits tight to the text, and nothing
-                          wraps back under the dot.
-
-                          THE SIZE WAS A BUG, NOT A TASTE. `.cahier-page li`
-                          sets `font-size: var(--fs-body)` at (0,1,1), which
-                          outranks a `text-[13px]` utility — so the list
-                          rendered at 16px however it was labelled, and every
-                          line wrapped. Measured, not guessed: computed 16px
-                          where 13 was asked for. Putting the words in a SPAN
-                          takes them out of that selector's reach.
-
-                          The flex row fixes the other two at the same time:
-                          the dot is its own column so a wrapped line hangs
-                          under the words rather than under the dot, and the
-                          gap is set here rather than by a list marker's
-                          built-in indent. */}
-                      <span aria-hidden className="cahier-hand text-[13px] leading-snug" style={{ color: "var(--fluo-card-accent)" }}>•</span>
-                      <span className="cahier-hand min-w-0 flex-1 text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">{w}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {/* THE TWO AUDIENCES, SIDE BY SIDE. Two columns at every width:
-                  they are short and the whole point is reading them against
-                  each other, which a stack destroys. */}
-              {s.split && (
-                <div className="mt-0.5 grid grid-cols-2 gap-1">
-                  {s.split.map((b, j) => (
-                    <div
-                      key={j}
-                      className="rounded-lg border px-1.5 py-0.5"
-                      style={{ borderColor: "var(--fluo-card-accent)", background: "var(--cahier-paper-raised)" }}
-                    >
-                      <span className="cahier-body block text-[11px] font-black uppercase tracking-[0.04em] leading-tight" style={{ color: "var(--fluo-card-accent)" }}>
-                        {b.when}
-                      </span>
-                      <span className="cahier-hand block text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">
-                        {b.body}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
+            {/* THE WAYS IN, AS DAN WROTE THEM:
+                  · via the map (home page) in 3D or 2D view
+                  · via the menu: enter it at the top. then OK
+                The dot is its own column, so a line that wraps hangs under the
+                words rather than under the dot. The text sits in a SPAN because
+                `.cahier-page li` sets `font-size: var(--fs-body)` at (0,1,1) and
+                outranks a `text-[13px]` utility — which is why these rendered at
+                16px however they were labelled, and every one wrapped. */}
+            {s.ways && (
+              <ul className="mt-0.5 flex flex-col pl-0">
+                {s.ways.map((w, j) => (
+                  <li key={j} className="flex gap-1">
+                    <span aria-hidden className="cahier-hand text-[13px] leading-snug" style={{ color: "var(--fluo-card-accent)" }}>•</span>
+                    <span className="cahier-hand min-w-0 flex-1 text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">{w}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {/* THE TWO AUDIENCES, SIDE BY SIDE and at the card's left edge.
+                Two columns at every width: they are short, and the whole point
+                is reading them against each other, which a stack destroys. */}
+            {s.split && (
+              <div className="mt-0.5 grid grid-cols-2 gap-1">
+                {s.split.map((bx, j) => (
+                  <div
+                    key={j}
+                    className="rounded-lg border px-1.5 py-0.5"
+                    style={{ borderColor: "var(--fluo-card-accent)", background: "var(--cahier-paper-raised)" }}
+                  >
+                    <span className="cahier-body block text-[11px] font-black uppercase tracking-[0.04em] leading-tight" style={{ color: "var(--fluo-card-accent)" }}>
+                      {bx.when}
+                    </span>
+                    <span className="cahier-hand block text-[13px] font-normal leading-snug text-[color:var(--cahier-ink)]">
+                      {bx.body}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </li>
         ))}
       </ol>
