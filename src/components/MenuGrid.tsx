@@ -370,62 +370,67 @@ export default function MenuGrid({
               return <div key={key} aria-hidden />;
             }
             if (cell.kind === "goto") {
-              // A TILE, NOT A STRIP (Dan, 2026-09-13). It wears the same
-              // outline and paper ground as the doors either side, so the row
-              // reads as one row; what marks it out is that it holds controls
-              // rather than a name. Two lines, because a third of the width
-              // cannot hold a label, a field, two steppers and OK abreast and
-              // still give each a finger-sized target.
+              // THE NUMBER IN A RING, AND THE 🎯 IS THE BUTTON (Dan,
+              // 2026-09-13, two messages: a mock showing the cell as a circled
+              // number beside the target, then *"the target icon serves as the
+              // OK button"*).
+              //
+              // WHAT WENT, AND WHY IT IS NOT A LOSS. The cell carried a « GO
+              // TO » label, a field, − and +, and an OK — five things in a
+              // third of the width, stacked on two lines because they could
+              // not sit abreast and still give each a finger. Dan's mock keeps
+              // two. The label went because the 🎯 says the same thing in one
+              // glyph and the row is already LESSON; OK went because the 🎯 is
+              // now the button, which is the better economy: the thing you aim
+              // at IS the thing you press.
+              //
+              // THE − AND + WENT WITH THEM, and that is worth stating plainly
+              // because Dan asked for them on this same day ("the +- controls
+              // at the side") and this mock, sent later, has none. The newer
+              // drawing wins. They are trivial to restore if he wants them —
+              // the nudge maths is one line — but they are not being kept on
+              // the quiet against a picture that omits them.
+              //
+              // The number is a real input, so it still takes a keypad and a
+              // typed value; Enter commits, and so does leaving the field, so
+              // a learner who types and taps a tile does not lose what they
+              // typed.
               const commit = () => {
                 const n = parseInt(draft, 10);
                 if (Number.isFinite(n)) setStop(Math.min(SIOS.length, Math.max(1, n)));
               };
-              const nudge = (by: number) =>
-                setDraft((d) => String(Math.min(SIOS.length, Math.max(1, (parseInt(d, 10) || 1) + by))));
               return (
-                <div key={key} className={`${TILE} gap-0.5`} style={{ borderColor: row.ink }}>
-                  <span className="flex items-center gap-[0.1em] font-black uppercase leading-none text-[color:var(--cahier-ink)]">
-                    <span className={NAME}>Go to</span>
-                    <span aria-hidden className="text-[22px] leading-none">🎯</span>
-                  </span>
-                  <span className="flex w-full items-center justify-center gap-0.5">
-                    <button
-                      type="button"
-                      aria-label="Previous goal"
-                      onClick={() => nudge(-1)}
-                      className="flex min-h-[44px] shrink-0 items-center justify-center px-[0.25em] font-black leading-none text-[color:var(--cahier-ink)]"
-                    >
-                      <span aria-hidden className={STEP}>−</span>
-                    </button>
-                    <label className="flex min-w-0 flex-1 items-center justify-center">
-                      <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
-                      <input
-                        type="number"
-                        min={1}
-                        max={SIOS.length}
-                        value={draft}
-                        onChange={(e) => setDraft(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } }}
-                        className="fluo-stepper w-full min-w-0 bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
-                      />
-                    </label>
-                    <button
-                      type="button"
-                      aria-label="Next goal"
-                      onClick={() => nudge(1)}
-                      className="flex min-h-[44px] shrink-0 items-center justify-center px-[0.25em] font-black leading-none text-[color:var(--cahier-ink)]"
-                    >
-                      <span aria-hidden className={STEP}>+</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={commit}
-                      className="min-h-[44px] shrink-0 rounded-lg border-2 px-[0.45em] font-black text-[color:var(--cahier-ink)]"
-                      style={{ borderColor: "var(--cahier-ink)", background: "var(--cahier-paper-raised)" }}
-                    >
-                      <span className={NAME}>OK</span>
-                    </button>
-                  </span>
+                <div key={key} className={`${TILE} !flex-row gap-1.5`} style={{ borderColor: row.ink }}>
+                  <label
+                    /* The ring is round, so it is sized as one box rather than
+                       a width and a height: a single ramped measure keeps it
+                       circular at every step of the type ladder. */
+                    className="flex h-[calc(2.75rem+var(--fs-step)*2.75)] w-[calc(2.75rem+var(--fs-step)*2.75)] shrink-0 items-center justify-center rounded-full border-2"
+                    style={{ borderColor: "var(--cahier-ink)" }}
+                  >
+                    <span className="sr-only">Goal number, 1 to {SIOS.length}</span>
+                    <input
+                      type="number"
+                      min={1}
+                      max={SIOS.length}
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      onBlur={commit}
+                      onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commit(); } }}
+                      className="fluo-stepper w-full min-w-0 bg-transparent text-center font-black leading-none text-[color:var(--cahier-ink)] outline-none"
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    onClick={commit}
+                    /* The 🎯 IS the OK. It says so to a screen reader too — the
+                       glyph alone would be announced as "direct hit", which is
+                       not what pressing it does. */
+                    aria-label={`Go to goal ${draft}`}
+                    className="flex min-h-[44px] shrink-0 items-center justify-center px-[0.1em] leading-none"
+                  >
+                    <span aria-hidden className={STEP}>🎯</span>
+                  </button>
                 </div>
               );
             }
