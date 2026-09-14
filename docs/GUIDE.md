@@ -2,6 +2,8 @@
 
 *FluOLinGo = Fluency On Linguistic Goals. A companion website for a French A1 course. Written 13 Sep 2026 from the code as it is today.*
 
+In a hurry? The [**QuickStart**](/guide) is the five steps you need to begin. This page is the same course in full, with a picture of every screen. [← Back to FluOLinGo](/home)
+
 ---
 
 ## 0. In one breath
@@ -200,11 +202,12 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** words fall from the sky. Steer each into its correct column (category).
 - **How:** a study table shows the exact words that will fall (« Jump to game » to skip). Speed rises every 6 words. Sort every word right and the day turns to **night** (slower, some letters hidden), then **storm**, then **dawn**. 3 misses in the storm drops you back to night.
 - **Ends:** when a column stacks to the top. Post-mortem of misses.
-- **Note:** no lives. The game ends when a column stacks to the top. Has its own in-game score, pays no XP. Available at 33 of the 50 goals. One expert set costs gems.
+- **Note:** no lives. The game ends when a column stacks to the top. It keeps its own in-game score, and pays **60 XP** the first time you finish it at a goal — then 60 again on any run that beats that score. Available at 33 of the 50 goals. One expert set costs gems.
 
 #### 🔢 Numbers — NumBus and NumBourse
 <!-- fig: numbus, numbus-game, numbourse | NumBus setup (tick what to practise), NumBus in play (hear the number, type it on the keypad), and the NumBourse landing with its eight levels. -->
 - **🚌 NumBus:** tick what to practise: numbers 0–99, times, prices, phone numbers (FR or SG style), each with its own range. Hear a French number, type the digits on the board before the bus leaves. 10 rounds, 3 lives, 🐌 replays slower.
+- **Both pay 60 XP** the first time you finish, and 60 again whenever you beat your own best score.
 - **📈 NumBourse:** you are a floor trader. Hear a shouted price, type the digits, lock the trade before the ticket expires. 8 levels from 0–9 up to 999 999. 6 trades per level, 3 lives. The number is repeated every 3 seconds.
 - **Note:** both count towards your daily streak. Neither pays XP.
 
@@ -286,7 +289,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 ```
 
 - **One deck, many doors.** The same words appear in SpecuLearn, MneMemo, MémoiRecall, GramMarathon, WorDrill, VocabulaRain, LexicaLocker and ComposeIt. Repeating never means the same exercise twice.
-- **SpecuLearn is outside the loop.** It records nothing and pays nothing. That is on purpose: it is a cold guess.
+- **SpecuLearn is outside the loop.** No answer of yours is scored there and nothing you get wrong is held against you — it is a cold guess, on purpose. Finishing the run pays 60 XP regardless of how you did.
 - **ErroReview is the sink.** Game misses, hints taken, revealed answers, and « Show the sentence » in ÉcouTexte all flow into it.
 - **Feeds ErroReview:** MneMemo's exercise, MémoiRecall (Me tester), GramMarathon, WorDrill, ÉcouTexte, LexicaLocker, and a game post-mortem when the missed word is a deck word.
 - **Does not feed it:** SpecuLearn, VoixLà, ChaTutor, ConjugaZone, NumBus, NumBourse.
@@ -307,8 +310,13 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 | Reveal the answer | 0 |
 | A goal becomes done | **300**, plus up to **300** more depending on how many of its words you have mastered |
 | Finish a ComposeIt scene | **120** |
-| SpecuLearn, VocabulaRain, NumBus, NumBourse | 0 |
+| Finish SpecuLearn, VocabulaRain, NumBus or NumBourse for the first time at a goal | **60** |
+| …and again on any run that **beats your own best** | **60** |
+| A run that does not beat your best | 0 — and nothing is taken away |
 
+- **Nothing you can open pays nothing.** Every activity is worth XP at least once. The four that are not paid per answer pay for the **run** instead.
+- **Beating your own best pays again.** Play a game all afternoon if you like: every genuine improvement earns another 60. A worse run simply earns nothing. Your best is kept per game **per goal**, so a record on the Unit 0 deck is not a record on Unit 3.
+- **SpecuLearn is the exception**: it pays for *finishing*, once per goal, and never for the score. It is the guess *before* the lesson — if the score paid, the clever move would be to do the lesson first, and the activity would stop measuring anything. A wrong guess is worth exactly what a right one is.
 - **🔥 Multiplier:** 3-day streak ×1.5 · 7 days ×2 · 14 days ×2.5 · 30 days ×3 (the ceiling). Applies to every award above.
 - **🎚️ Level 0–4:** level 1 at 2 000 XP, level 2 at 6 000, level 3 at 14 000, level 4 at 30 000.
 - There is no daily XP cap.
@@ -320,8 +328,10 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - ❄️ Streak-Freezer: 25 gems, hold at most 2, bought **in advance** in Settings → Gems.
 
 ### 💎 Gems (the only currency; never needed to learn anything)
-- **Earned by:** badges (5–50 each, once) · every level-up (20) · lucky finds on answers (2 gems, rarely 10; about 1 answer in 8; at most 40 gems a day).
+- **You start with 20, free, once.** That is the same as one level-up and the same as the cheapest colour in the shop, so you can read your purse against a price you can see. It is about three exercises' worth of lucky finds — enough that your first session never meets a price you cannot pay.
+- **Earned by:** badges (5–50 each, once) · every level-up (20) · lucky finds on answers (2 gems, rarely 10; about 1 answer in 8, guaranteed by the 12th find-less answer; at most 40 gems a day). **A find can only ever give** — there is no bad outcome and nothing is ever taken away.
 - **Spent on:** home accent colours (Rose 20 · Turquoise 20 · Violet 30 · Émeraude 30 · Or 50) · Streak-Freezer (25) · the « Expert countries » VocabulaRain set (30).
+- Over all fifty goals a thorough learner earns roughly **1 450 gems**. The whole shop costs **205**, so gems are never what stands between you and the course.
 
 ### 🎖️ Badges (9)
 | Badge | For | Gems |

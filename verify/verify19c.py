@@ -68,22 +68,58 @@ check("activitiesIn(" not in guide_code and "FAMILIES.map" not in guide_code,
 # other has the details"). The five steps are the QuickStart; the full manual is
 # a standalone page in public/ that the QuickStart links to. Both halves have
 # to exist, or Help offers one guide and a dead link.
-check(os.path.isfile("public/manual.html"),
-      "the full manual ships (public/manual.html, served at /manual)",
-      "public/manual.html is missing — the QuickStart's « full guide » link "
-      "would 404")
+# THE ILLUSTRATED GUIDE IS THE FULL MANUAL (Dan, 14 Sep, shown the two side by
+# side and asked which should sit behind Help: "YES PLS DO THAT NOW"). It had
+# been built in #357 and served NOWHERE — docs/ is not in the static export — so
+# for a day the only full guide a learner could open was the pictureless wiki,
+# which is now retired into it.
+#
+# It is a COPY of docs/guide/, not a second document: docs/GUIDE.md is the
+# source, scripts/build-guide.py renders it, and public/manual/ is what ships.
+# The check compares the two, because a copy that drifts from its source is how
+# the app came to have two guides disagreeing about XP in the first place.
+check(os.path.isfile("public/manual/index.html"),
+      "the full manual ships (public/manual/index.html, served at /manual)",
+      "public/manual/index.html is missing — the QuickStart's « full guide » "
+      "link would 404")
+check(not os.path.isfile("public/manual.html"),
+      "the pictureless wiki is retired, not left beside it",
+      "public/manual.html is back — two full guides behind one Help door, and "
+      "the host decides which one /manual serves")
+_manual = read("public/manual/index.html")
+_source = read("docs/guide/index.html")
+check(bool(_source) and _manual == _source,
+      "the served manual is byte-for-byte the built docs/guide",
+      "public/manual/index.html has drifted from docs/guide/index.html — "
+      "re-run scripts/build-guide.py and copy it across")
+check(os.path.isdir("public/manual/img"),
+      f"its {len(os.listdir('public/manual/img')) if os.path.isdir('public/manual/img') else 0} "
+      "screenshots ship with it",
+      "public/manual/img is missing — every figure would be a broken image")
 check('href="/manual"' in guide_code,
       "the QuickStart links to the full manual",
       "GuideBody no longer links to /manual — the detailed half becomes "
       "unreachable from Help")
-_manual = read("public/manual.html")
-check("💎" in _manual and "20💎" in _manual,
+check("/guide" in _manual,
+      "…and the manual links back to the QuickStart",
+      "the manual has no way back to the five steps — the pair only walks one way")
+check("20" in _manual and "free, once" in _manual,
       "the manual states the welcome purse",
       "the manual does not state what a learner starts with")
-check("no XP" not in _manual and "No XP" not in _manual,
-      "the manual claims no activity pays nothing (13 Sep economy)",
-      "the manual still says an activity pays no XP — every one of them pays "
-      "at least once now")
+# The three stale claims by name, not a sweep for the word "nothing" — the
+# manual's own opening line on the subject is « Nothing you can open pays
+# nothing », which a blunt test flags as the very fault it is announcing fixed.
+_stale = [c for c in ("pays no XP", "records nothing and pays nothing",
+                      "NumBus, NumBourse | 0", "SpecuLearn, VocabulaRain, NumBus, NumBourse | 0")
+          if c in _manual]
+check(not _stale,
+      "no activity is described as paying nothing (13 Sep economy)",
+      f"the manual still carries the pre-13-Sep claim(s): {_stale} — every "
+      "activity pays at least once now")
+check("beats your own best" in _manual,
+      "…and it explains that improving pays again",
+      "the manual does not mention beating your own best — the farming rule "
+      "(Dan, 13 Sep) is invisible to a learner")
 
 # Registry sanity: every family that groups ACTIVITIES has at least one, so no
 # grouped surface can render an empty shelf.
