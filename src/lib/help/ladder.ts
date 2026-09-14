@@ -3,6 +3,13 @@
  * (Track D, docs/TRACK_D_HELP_LADDER.md).
  *
  *   FRESH ──wrong──▶ TRY ──wrong×N / idle / ?──▶ HINT_1 ──▶ HINT_2 ──▶ REVEAL
+ *
+ *   HINT_2 IS "SECOND OR LATER", NOT "LAST". The cap was two rungs until
+ *   2026-09-14, when Dan asked GramMarathon for a third — *"please add as a
+ *   final clue: the English rendering of the intended sentence"*. The STATE
+ *   names stay as they are: they exist to label the transition in the research
+ *   log, and renaming them would rewrite the meaning of every event already
+ *   recorded. `hintsTaken` is the number that actually counts the rungs.
  *     │               │                            │           │          │
  *     └── correct ────┴──────── correct ───────────┴───────────┘          │
  *                                   ▼                                     ▼
@@ -69,7 +76,18 @@ export const LADDER_CONFIG: Record<TaskKind, LadderConfig> = {
 export type Ladder = {
   kind: TaskKind;
   state: LadderState;
-  /** Assistance level of each hint rung available (from hints.ts). Length 0–2. */
+  /**
+   * Assistance level of each hint rung available (from hints.ts).
+   *
+   * THE LENGTH IS THE HINTS' OWN, NOT A CONSTANT. It was `slice(0, 2)`, so a
+   * ladder built with three rungs silently offered two and the third could
+   * never be reached — which is exactly what happened when GramMarathon gained
+   * its English clue on 14 Sep: the rung existed, `hintsFor` returned it, and
+   * driving the game showed the ? going dead after the skeleton. A cap that
+   * throws away what a caller passed is a cap that has to be found by a
+   * learner; `hints.ts` decides how many rungs a kind has, and this records
+   * them all. THREE is the most any kind offers today.
+   */
   hintLevels: AssistanceLevel[];
   hintsTaken: number;
   /** Wrong attempts, in total and since the last climb. */
@@ -94,7 +112,7 @@ export type StepResult = { ladder: Ladder; effect: Effect; auto: boolean };
 
 export function createLadder(kind: TaskKind, hintLevels: AssistanceLevel[], at: number): Ladder {
   return {
-    kind, state: "FRESH", hintLevels: hintLevels.slice(0, 2),
+    kind, state: "FRESH", hintLevels,
     hintsTaken: 0, wrongTries: 0, triesAtRung: 0, revealed: false, autoClimbs: 0,
     startedAt: at, lastActionAt: at,
   };

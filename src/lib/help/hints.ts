@@ -60,6 +60,21 @@ export type HintSource = {
   example?: string;
   /** MCQ: the option labels on screen (the answer among them). */
   options?: string[];
+  /**
+   * THE ENGLISH OF THE WHOLE SENTENCE BEING DRILLED — the last clue before
+   * the answer itself (Dan, 2026-09-14: *"for grammarathon, please add as a
+   * final clue: the English rendering of the intended sentence"*).
+   *
+   * NOT `en`, WHICH IS THE ANSWER'S OWN GLOSS. On a gap card the two are
+   * different things: `en` is « late » where this is « I'm late, sorry! », and
+   * a session that mixed them would print a one-word clue that reads like the
+   * answer. Keeping them apart is why this field exists instead of overloading
+   * the one above it.
+   *
+   * OPT-IN, so it changes nothing anywhere it is not passed. On a typed card
+   * the English IS the prompt, so a rung repeating it would be no clue at all.
+   */
+  sentenceEn?: string;
 };
 
 /** Letters we count and skeletonise over — spaces and apostrophes stay visible. */
@@ -169,7 +184,18 @@ export function hintsFor(kind: TaskKind, src: HintSource): Rung[] {
       // Two rungs max: (gender/POS nudge, else first letter) then the
       // skeleton + model sentence. The skeleton shows the first letter too,
       // so nothing is lost when rung 1 was the nudge.
-      return [nudgeFor(src) ?? firstLetterRung(src), skeletonRung(src)];
+      //
+      // AND A THIRD WHEN THE CALLER SUPPLIES THE SENTENCE'S ENGLISH — the last
+      // step before REVEAL. It is last on purpose: a learner who is told what
+      // the sentence MEANS can usually reason the missing word out, so giving
+      // it earlier would skip the work the card exists to make them do.
+      // `level: "partial"` rather than "answer", because it still is not the
+      // answer — it is the strongest hint short of one.
+      return [
+        nudgeFor(src) ?? firstLetterRung(src),
+        skeletonRung(src),
+        ...(src.sentenceEn ? [{ text: `🇬🇧 « ${src.sentenceEn} »`, level: "partial" } as Rung] : []),
+      ];
     }
     case "dictation": {
       const words = answer.split(/\s+/).length;
