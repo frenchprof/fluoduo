@@ -251,6 +251,43 @@ ok("welcomed: true" in prog and "WELCOME_GEMS" in prog,
    "a new learner opens with the purse, and an existing blob is paid once",
    "progress.ts does not pay the welcome purse")
 
+# ── THE BUG BOUNTY (Dan, 2026-09-14) ──────────────────────────────────────
+# "set a budget for something to dish out when some bug is reported, and dish
+# out 33% of that for each report, and the remaining when the bug is a major
+# one (for me to decide) they only need to know the 33% value so the other 66%
+# will come as a hidden surprise".
+for sym in ("BUG_BOUNTY", "BUG_BOUNTY_ON_REPORT", "BUG_BOUNTY_MAJOR", "BUG_BOUNTY_DAILY_CAP"):
+    ok(f"export const {sym}" in econ, f"economy.ts defines {sym}",
+       f"economy.ts no longer defines {sym}")
+_m = re.search(r"BUG_BOUNTY\s*=\s*(\d+)", econ)
+_r = re.search(r"BUG_BOUNTY_ON_REPORT\s*=\s*(\d+)", econ)
+ok(bool(_m and _r) and abs(int(_r.group(1)) / int(_m.group(1)) - 1 / 3) < 0.05,
+   f"the advertised share is a third of the budget ({_r.group(1) if _r else '?'} of {_m.group(1) if _m else '?'})",
+   "the on-report payment is no longer ~33% of the budget — Dan's split was "
+   "a third now, the rest if the bug is major")
+ok("export function awardBugReport" in prog,
+   "progress.ts pays a bug report",
+   "awardBugReport is gone — reporting a bug earns nothing again")
+_fb = read("src/components/FeedbackButton.tsx")
+ok("awardBugReport()" in _fb, "the report form pays on a successful send",
+   "the form does not pay — the bounty exists but nothing calls it")
+# The payment must sit INSIDE the try, after the write: an offline tap is not
+# a bug report and must not print gems.
+_send = _fb[_fb.find("async function send("):]
+_send = _send[: _send.find("} catch")]
+ok("addDoc(" in _send and _send.find("addDoc(") < _send.find("awardBugReport()"),
+   "…and only after the report actually reached Firestore",
+   "the bounty is paid before/outside the write — a failed send would pay")
+# THE HIDDEN 66% MUST STAY HIDDEN. Nothing a learner reads may name it.
+ok("BUG_BOUNTY_MAJOR" not in _fb,
+   "the form never names the unannounced half",
+   "the report form references the major bounty — the surprise is spent in "
+   "advance, and the app cannot yet pay it")
+ok("mergeBug" in merge,
+   "mergeProgress carries the bounty's daily books through sign-in",
+   "mergeProgress drops the bug-bounty counter — a sign-in would reset the "
+   "daily cap and the ceiling becomes a suggestion")
+
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL: print("\n".join("  FAIL  " + m for m in FAIL))
 print("-" * 70)

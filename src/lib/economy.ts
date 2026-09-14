@@ -103,6 +103,45 @@ export const XP_ACTIVITY_BEST = 60;  // ...and again every time you beat your ow
  * is spent. */
 export const WELCOME_GEMS = 20;
 
+/* ── THE BUG BOUNTY (Dan, 2026-09-14) ───────────────────────────────────────
+ *
+ * *"we also want to reward bug reporters, so set a budget for something to dish
+ * out when some bug is reported, and dish out 33% of that for each report, and
+ * the remaining when the bug is a major one (for me to decide) they only need
+ * to know the 33% value so the other 66% will come as a hidden surprise"*.
+ *
+ * THE BUDGET IS 15 GEMS PER BUG, and the split is his: a third on the spot, the
+ * rest if Dan judges it major.
+ *
+ *     BUG_BOUNTY_ON_REPORT   5    paid the moment the report sends; ADVERTISED
+ *     BUG_BOUNTY_MAJOR      10    paid later, only on a major bug; NEVER shown
+ *                                 in advance — that is the whole point of it
+ *
+ * WHY 15, AND NOT 50 OR 2. A twenty-item exercise finds about 6 gems, so a
+ * report pays a little under one exercise: worth stopping to write, never worth
+ * farming instead of practising. The full 15 on a major bug is three quarters
+ * of the cheapest colour in the shop — a real prize a learner can spend, and
+ * still only 1% of what a full pass through the course pays out.
+ *
+ * A DAILY CAP, FOR THE SAME REASON THE LUCKY FIND HAS ONE. The report form
+ * takes anonymous writes and pays from the client, so without a ceiling the
+ * button IS a gem tap: hold it down and print currency. Two paid reports a day
+ * is more than any honest learner files and turns spamming into unpaid work.
+ * Reports past the cap still SEND — the report is what matters, and refusing to
+ * file a third bug because a counter is full would be the tail wagging the dog.
+ * They simply pay nothing, and the form says so rather than paying in silence.
+ *
+ * THE HIDDEN 66% IS NOT WIRED YET AND IS NOT FAKED HERE. Paying it needs Dan to
+ * mark a report major and the learner's own browser to find that out, and today
+ * the rules let only an admin read the `feedback` collection — so there is no
+ * channel. What it needs is written out in full beside `awardBugReport` in
+ * progress.ts. Nothing in the app promises the learner a second payment, so
+ * nothing is owed by a promise the app cannot keep. */
+export const BUG_BOUNTY = 15;
+export const BUG_BOUNTY_ON_REPORT = 5;   // 33% — the only figure a learner sees
+export const BUG_BOUNTY_MAJOR = BUG_BOUNTY - BUG_BOUNTY_ON_REPORT; // 10, unannounced
+export const BUG_BOUNTY_DAILY_CAP = 2 * BUG_BOUNTY_ON_REPORT;      // two paid reports
+
 // THE LADDER, one place (Dan, 2026-09-07 — from the retention read: the old
 // ladder stopped at day 7, so day 40 paid exactly what day 7 paid and the
 // video's point about compounding was being left on the table). Day 30 agrees

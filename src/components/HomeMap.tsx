@@ -574,14 +574,29 @@ export default function HomeMap({
           >
             −
           </button>
-          {/* One field, two ways in (Dan, 2026-08-21, re-asked): type any
-              number, or drop the field down to the milestone levels. */}
+          {/* ONE FIELD, ONE WAY IN (Dan, 2026-09-14: "why does it need to be
+              there and what purpose does it serve" → "yes delete it").
+
+              It carried a `<datalist>` of five named levels — 50 « whole
+              course » to 200 « stop by stop » — which Dan asked for twice in
+              August and which Chrome drew as a grey ▼ inside the well: the one
+              piece of browser chrome in a strip made of keys and wells.
+
+              It failed his own litmus test. Take it away and a learner still
+              finds the right zoom, because they press − or + and the MAP shows
+              them the answer — a label describing what is already on screen is
+              the definition of redundant. And the labels were unreadable at the
+              moment they would have helped: you only saw « whole course » by
+              opening the list, by which time you were choosing a value rather
+              than learning what the values meant.
+
+              Deleting the list deletes the triangle. No colour filter, no
+              replacement SVG, no Chromium-only pseudo-element to maintain. */}
           <input
             type="number"
             min={30}
             max={200}
             step={5}
-            list="fluo-zoom-milestones"
             value={zoomDraft ?? zoomPct}
             onChange={(e) => {
               const text = e.target.value;
@@ -594,19 +609,12 @@ export default function HomeMap({
             }}
             onBlur={(e) => commitZoom(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") commitZoom((e.target as HTMLInputElement).value); }}
-            aria-label="Zoom percent — type a value or pick a milestone"
+            aria-label="Zoom percent"
             // A WELL, not a key: the app's word for a value you read and
             // type into rather than press. Same grammar the streak mark uses.
             className="neo-well h-6 w-12 rounded-md px-1 text-center text-[11px]"
             style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
-          <datalist id="fluo-zoom-milestones">
-            <option value="50" label="50 — whole course" />
-            <option value="75" label="75 — two regions" />
-            <option value="100" label="100 — one region" />
-            <option value="150" label="150 — a few stops" />
-            <option value="200" label="200 — stop by stop" />
-          </datalist>
           <button
             type="button"
             aria-label="Zoom in"

@@ -55,6 +55,8 @@ import {
   XP_ACTIVITY_FIRST,
   XP_ACTIVITY_BEST,
   WELCOME_GEMS,
+  BUG_BOUNTY_ON_REPORT,
+  BUG_BOUNTY_DAILY_CAP,
   FIND_BIG,
   luckyFind,
   LEVEL_UP_GEMS,
@@ -116,6 +118,12 @@ export type Progress = {
    *  run BEATS the stored number, which is exactly when XP is paid — see
    *  `awardActivityRun`. Absent key = never finished it. */
   bests?: Record<string, number>;
+  /** The BUG BOUNTY's books, shaped exactly like the lucky find's above and for
+   *  the same reason: the payout is made by the client, so the ceiling is
+   *  arithmetic on these two and they must survive a sign-in. `bugDay` is the
+   *  learner-local day key the counter belongs to. */
+  bugDay?: string | null;
+  bugGems?: number;
   /** Has this account been paid the WELCOME_GEMS purse? A one-time flag, never
    *  cleared — it is what stops a sign-in, a second device or a cleared cache
    *  from paying the grant again. Absent on every blob written before
@@ -183,7 +191,7 @@ const STORAGE_KEY = "fluolingo:progress";
 // todayStr() replaced by dayKey() - learner-local zone, 04:00 rollover.
 
 export function defaultProgress(): Progress {
-  return { doneSios: [], gems: WELCOME_GEMS, welcomed: true, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [], bests: {} };
+  return { doneSios: [], gems: WELCOME_GEMS, welcomed: true, bugDay: null, bugGems: 0, xp: 0, streak: 0, weekXp: 0, weekKey: null, lastActiveDay: null, itemSrs: {}, badges: [], cosmetics: { owned: [], equipped: {} }, term: CURRENT_TERM, findDay: null, findGems: 0, findDry: 0, prevWeekXp: 0, prevWeekKey: null, shields: 0, unlocks: [], bests: {} };
 }
 
 /** Fill in fields added after a learner's blob was first written, and migrate
@@ -216,6 +224,11 @@ function normalize(raw: Partial<Progress>): Progress {
   // the learner's gem balance is then NaN forever. A spread default cannot
   // catch that — the key IS present, it is just not a number.
   p.findGems = Number.isFinite(raw.findGems) ? Math.max(0, raw.findGems as number) : 0;
+  // Same guard as findGems, same reason: the daily cap is arithmetic on this,
+  // and a blob carrying `bugGems: "10"` would make every comparison NaN and the
+  // balance NaN forever.
+  p.bugGems = Number.isFinite(raw.bugGems) ? Math.max(0, raw.bugGems as number) : 0;
+  p.bugDay = typeof raw.bugDay === "string" ? raw.bugDay : null;
   p.findDry = Number.isFinite(raw.findDry) ? Math.max(0, raw.findDry as number) : 0;
   p.prevWeekXp = Number.isFinite(raw.prevWeekXp) ? Math.max(0, raw.prevWeekXp as number) : 0;
   p.shields = Number.isFinite(raw.shields) ? Math.max(0, Math.min(SHIELD_MAX, raw.shields as number)) : 0;
@@ -526,6 +539,40 @@ export function awardConversationXp(): Progress {
  *  Returns the XP paid, so a caller can show it; 0 means the run did not beat
  *  the stored best. The streak bumps on any finish — showing up counts, which
  *  is the rule everywhere else in this file. */
+/**
+ * Pay a learner for filing a bug report (Dan, 2026-09-14). Returns the gems
+ * paid — 0 when today's cap is already spent, which the caller shows rather
+ * than hiding.
+ *
+ * THE OTHER 66% IS NOT PAID HERE, and this is what it would take. Dan decides
+ * which bugs are major, so the payment has to travel from his judgement to the
+ * learner's browser, and today there is no road: `feedback` documents are
+ * admin-read-only in firestore.rules, so a learner cannot see their own report,
+ * let alone a verdict on it. The smallest honest version is
+ *
+ *     rules   allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid)
+ *     teacher a « major » tick on the feedback triage row, writing { major: true }
+ *     client  on sign-in, read your own feedback docs, pay BUG_BOUNTY_MAJOR for
+ *             each one marked major that you have not already been paid for
+ *             (the ids go in a `bugPaid` list, exactly like `badges`)
+ *
+ * That needs a rules deploy, which is a hand action in the Firebase console, so
+ * it is deliberately NOT half-built here. Nothing in the app tells a learner a
+ * second payment is coming — the surprise stays a surprise, and an unkept
+ * promise is not made in the meantime.
+ */
+export function awardBugReport(): number {
+  const p0 = loadProgress();
+  const today = dayKey();
+  const sameDay = p0.bugDay === today;
+  const spent = sameDay ? (p0.bugGems ?? 0) : 0;
+  const room = BUG_BOUNTY_DAILY_CAP - spent;
+  if (room <= 0) return 0;
+  const pay = Math.min(BUG_BOUNTY_ON_REPORT, room);
+  finalize({ ...p0, gems: p0.gems + pay, bugDay: today, bugGems: spent + pay });
+  return pay;
+}
+
 export function awardActivityRun(activity: string, goal: string | null, score: number | null): number {
   const key = `${activity}:${goal ?? "-"}`;
   const p0 = loadProgress();
