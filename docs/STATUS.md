@@ -89,6 +89,30 @@ choice each"* and it is not yet settled whether that means the setup screen or
 the in-play keypad. **LexicaLocker's scale** (*"i cannot see anything beyond
 three chest trunks"*) did not reproduce at 390px and needs the width Dan saw.
 
+## 14 Sep — the blinking arrows, taken from the peers lane rather than waited for (fluoduo-main)
+
+**Dan: *"Cn you go grab peers blinking arrows pls. do not wait foir him to give
+it to you"*.** Three commits cherry-picked off `claude/peers-vd2h6h` straight
+onto main — MneMemo's « NEXT PART IS BELOW », the same cue everywhere a learner
+has to reach the next section, and the fix that followed them (the cue counted
+as its own "more below", so it could never turn itself off).
+
+They picked cleanly: none of them touches `NumBusSetup.tsx`, so the picture fix
+an hour earlier is untouched, and the only shared file is `globals.css`, in a
+different block.
+
+**DRIVEN BEFORE HANDING IT ON, and the number is the reason the cue exists.**
+On `/lessons/deck/partitifs` at 390px a MneMemo panel scrolls inside an
+`overflow-y-auto` box while the page itself does not scroll at all — **2050px
+of lesson hidden**, no scrollbar on a phone, and the content cut at a line of
+prose that looks like the end of one. The cue rides the panel's bottom edge and
+measures the scroller, so it appears only while there really is more below.
+
+**WHAT WAS DELIBERATELY LEFT ON THAT BRANCH:** its fourth commit, *"The
+revision path stays inside the test: stops 1–30"*. That is a change to the
+curated path, not an arrow, and folding it into an arrows patch would land a
+path decision nobody named.
+
 ## 14 Sep — NumBus's pictures were never removed; three of them were greyed out (fluoduo-main)
 
 **Dan, an hour after the rebuild went live: *"Your removed my bus and all the
