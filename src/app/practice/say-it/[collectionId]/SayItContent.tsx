@@ -502,6 +502,7 @@ export default function SayItContent({
         <HowManyQuestions
           lengths={offer(cards.length)!}
           total={cards.length}
+          noun="words"
           onPick={(n) => { setAsked(true); seedRun(cards, n); }}
         />
         {onExit && (

@@ -229,6 +229,7 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
         <HowManyQuestions
           lengths={offer(rows.length)!}
           total={rows.length}
+          noun="cards"
           onPick={(n) => { setChosen(n); setAsked(true); }}
         />
       </DrillShell>
