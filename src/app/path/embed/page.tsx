@@ -89,8 +89,10 @@ export default function Page() {
                 {current ? `${activity(current.activityKey)?.emoji ?? "📋"} ${current.title}` : "✓ Path complete"}
               </p>
               <div className="fluo-path-next-row">
+                {/* `_top`: this document is the frame, and a drill drawn
+                    inside it arrives wearing two notebooks. */}
                 {current && stepHref(current) && (
-                  <Link href={stepHref(current)!} className="neo-key fluo-path-next-go">
+                  <Link href={stepHref(current)!} target="_top" className="neo-key fluo-path-next-go">
                     ▶ Continue · {current.minutes} min
                   </Link>
                 )}
@@ -194,6 +196,7 @@ function Tier({ path, steps, run, current }: {
                     <Link
                       key={s.id}
                       href={href}
+                      target="_top"   /* see above */
                       className="neo-key fluo-path-step-go"
                       style={{ "--key-bg": sDone ? "var(--dopa-win-wash)" : "var(--fam-review-wash)" } as React.CSSProperties}
                     >

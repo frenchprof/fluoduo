@@ -20,5 +20,5 @@ export default function Page() {
     .slice()
     .sort((a, b) => a.unit - b.unit)
     .map((b) => ({ id: b.id, href: `/games/compose/${b.id}`, title: `${b.emoji} ${b.title}`, unit: b.unit, deckId: b.deckId }));
-  return <GameGallery activityKey="compose" emoji="🧩" name="ComposeIt" entries={entries} />;
+  return <GameGallery activityKey="compose" emoji="🧩" name="ComposeIt" entries={entries} breakOut />;
 }

@@ -134,7 +134,9 @@ export default function ReviserPage() {
             <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">
               Practise any objective&rsquo;s deck and its words will come back here when they&rsquo;re due.
             </p>
-            <Link href="/home" className="fluo-btn fluo-btn-sm mt-4 inline-block">← Back to the path</Link>
+            {/* `_top` for the reason the Numbers hub states: this document is
+                the frame, and a whole page drawn inside it nests. */}
+            <Link href="/home" target="_top" className="fluo-btn fluo-btn-sm mt-4 inline-block">← Back to the path</Link>
             {/* THE EMPTY QUEUE IS AN END TOO, and the path must not stall on
                 it. On the mid-term path this branch is rare — step 1 is the
                 Finale, which queues everything it catches — but a learner who
@@ -237,6 +239,7 @@ function GapPanel({ gaps }: { gaps: Gap[] }) {
           <Link
             key={g.deckId}
             href={`/practice/flip-it/${g.deckId}`}
+            target="_top"   /* the frame must not host a whole drill — see above */
             className="flex items-center justify-between rounded-xl border-2 px-3 py-2 transition hover:bg-[var(--fluo-card-tint)]"
             style={{ borderColor: "var(--fluo-line)" }}
           >

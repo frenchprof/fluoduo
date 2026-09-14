@@ -15,7 +15,11 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 
 const ROOT = join(process.cwd(), "out");
-const PORT = 4743;
+/* PORT 0 — THE OS PICKS ONE. A fixed port made two of these scans
+   collide when they ran at the same time, and the failure reads as the
+   fault the check is for rather than as a busy socket. Nothing outside
+   this file needs to know the number. */
+const PORT = 0;
 const MIME = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
   ".json": "application/json", ".svg": "image/svg+xml", ".png": "image/png",
   ".woff2": "font/woff2", ".txt": "text/plain", ".mp3": "audio/mpeg",
@@ -36,7 +40,7 @@ const server = createServer((req, res) => {
   res.end(readFileSync(f));
 });
 await new Promise((r) => server.listen(PORT, r));
-const BASE = `http://localhost:${PORT}`;
+const BASE = `http://localhost:${server.address().port}`;
 
 const exe = existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null;
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
