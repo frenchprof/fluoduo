@@ -44,7 +44,6 @@ import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
-import MoreBelow from "@/components/MoreBelow";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept } from "@/content/lessons/native/types";
@@ -216,19 +215,12 @@ function count(n: number, word: string): string {
 }
 
 function Panel({ children }: { children: ReactNode }) {
-  /* EVERY SUBSECTION ENDS WITH THE CUE (Dan, 2026-09-14: *"MneMemo needs to add
-     at the end of each subsection 'next part is below' with blinking arrows"*).
-     It lives here rather than at each of the six call sites so a panel written
-     next month inherits it — and so it cannot be added to five of them and
-     forgotten on the sixth, which is the only way this fault comes back.
-     `MoreBelow` measures the scroller and shows nothing when there is nothing
-     below, so the last panel stays quiet. */
-  return (
-    <div className="pb-4 pt-3 text-[15px] leading-relaxed text-[color:var(--cahier-ink)]">
-      {children}
-      <MoreBelow />
-    </div>
-  );
+  /* THE CUE LIVES IN `DrillShell`, NOT HERE. One panel is visible at a time
+     and this component renders inside that shell's scroller, so a copy here
+     would be the same cue twice on one screen. Moved up 14 Sep when Dan asked
+     for it *"everywhere that requires the user to go to the next section"* —
+     the shell is every drill in the app, this file is one of them. */
+  return <div className="pb-4 pt-3 text-[15px] leading-relaxed text-[color:var(--cahier-ink)]">{children}</div>;
 }
 
 /** A tab with nothing behind it yet. Names what is missing and who owes it,

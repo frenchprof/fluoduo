@@ -37,6 +37,7 @@
  * all. Both were shipped and measured before the lock was.
  */
 import { Children, forwardRef, useEffect, useImperativeHandle, useRef, type ReactNode } from "react";
+import MoreBelow from "@/components/MoreBelow";
 
 import useFillHeight from "@/lib/useFillHeight";
 
@@ -47,6 +48,9 @@ export type SnapFeedHandle = { scrollToRow: (i: number) => void };
 
 const SnapFeed = forwardRef<SnapFeedHandle, {
   children: ReactNode;
+  /** Draw the « next part is below » cue on each card. Off for a caller that
+   *  supplies its own way on — see the note beside it in the render. */
+  cue?: boolean;
   /** Fired as the magnet settles — for a counter, or to keep a URL honest. */
   onIndex?: (i: number) => void;
   /** Which row to open on, once, without animating past the ones before it. */
@@ -55,6 +59,7 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
   sectionClassName?: string;
 }>(function SnapFeed({
   children,
+  cue = true,
   onIndex,
   startAt = 0,
   className = "",
@@ -148,6 +153,17 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
           className={`flex h-full snap-start snap-always flex-col ${sectionClassName}`}
         >
           {row}
+          {/* « NEXT PART IS BELOW » (Dan, 2026-09-14: *"please apply blinking
+              arrows everywhere that requires the user to go to the next
+              section"*). A SNAP FEED IS THE PUREST CASE OF THAT — one card
+              fills the screen and the only way on is a swipe nobody is told
+              about. Measured at 390px: 34 398px below the fold on /sio and
+              5 196px on the goal feed.
+
+              `cue={false}` exists for PretestFeed, which already draws Dan's
+              own « NEXT QUESTION » key with the same arrows once a question is
+              answered; two cues in one corner would be worse than none. */}
+          {cue && <MoreBelow />}
         </section>
       ))}
     </div>
