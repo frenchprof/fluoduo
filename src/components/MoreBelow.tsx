@@ -53,6 +53,11 @@ import { useEffect, useRef, useState } from "react";
  *  stray pixels of rounding must not keep the cue on screen forever. */
 const FLOOR = 24;
 
+/** How tall the band plus its arrows actually stand, measured on the built app.
+ *  Used only to ask what the cue would cover — it is not a layout size, so it
+ *  is not on the type ramp and does not want to be. */
+const BAND_H = 96;
+
 /** The nearest ancestor that actually scrolls.
  *
  *  FOUND BY COMPUTED STYLE, NOT BY CLASS NAME, and that is the difference
@@ -90,8 +95,44 @@ export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: st
   useEffect(() => {
     const root = scrollerOf(anchor.current);
     if (!root) return;
+    /* THE CUE NEVER COVERS A CONTROL, and this clause is here because it did.
+     *
+     * Dan, 2026-09-14, on ComposeIt: *"the interface for this activity is
+     * completely OFF !!"*. Driven at 1280px, the band was drawn across the
+     * « Présenter » chip grid, hiding « Mon voisin », « Ma cousine » and
+     * « Un camarade de classe » — the phrases the card had just told him to
+     * tap. The wrapper is `pointer-events-none`, so the chips were still
+     * clickable; they were simply invisible, which is worse than unclickable
+     * because nothing says why.
+     *
+     * It broke the collapse rule's own last line — *"never collapse the only
+     * copy of something a learner needs to answer the question in front of
+     * them"* — and it broke it on a surface I added the cue to this morning,
+     * in one sweep, without looking at each one.
+     *
+     * SO THE TEST IS GEOMETRIC, NOT A LIST OF SURFACES. A list would be right
+     * today and stale at the next drill. The band knows where it will land, so
+     * it asks: is a control sitting there? If yes it stays hidden — the
+     * scrollbar and the content itself still say there is more, and a learner
+     * who cannot see the chips has a worse problem than one who must scroll. */
+    const anchorEl = anchor.current;
+    const coversAControl = () => {
+      const rail = anchorEl?.getBoundingClientRect();
+      if (!rail) return false;
+      const top = rail.bottom - BAND_H;
+      for (const el of Array.from(
+        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, [role='button']"),
+      )) {
+        const r = el.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) continue;
+        if (r.bottom > top && r.top < rail.bottom && r.right > rail.left && r.left < rail.right) return true;
+      }
+      return false;
+    };
+
     const read = () => {
-      setMore(root.scrollHeight - root.scrollTop - root.clientHeight > FLOOR);
+      const below = root.scrollHeight - root.scrollTop - root.clientHeight > FLOOR;
+      setMore(below && !coversAControl());
     };
     read();
     root.addEventListener("scroll", read, { passive: true });

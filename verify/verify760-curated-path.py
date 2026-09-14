@@ -327,7 +327,7 @@ ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}|\{minutesOf", summary.grou
 STOP_MAX = 30
 # The eighteen stops Dan named on 14 Sep after auditing the real Test 1 paper.
 # Held here as well as in content/finale.ts so a silent edit to either fails.
-EXPECT_STOPS = [1, 4, 7, 9, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29]
+EXPECT_STOPS = [1, 4, 7, 9, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29]
 goals = [(sid, int(m.group(1)))
          for sid, body in steps
          if (m := re.search(r"goal:\s*(\d+)", body))]

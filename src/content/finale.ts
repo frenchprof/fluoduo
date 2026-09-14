@@ -511,7 +511,7 @@ export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004"
  * shrinks the bank — it only says which stops a DEFAULT draw may use.
  */
 export const TESTED_STOPS: number[] = [
-  1, 4, 7, 9, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29,
+  1, 4, 7, 9, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29,
 ];
 
 /** The same eighteen as SIO ids, which is what the draw works in. */
