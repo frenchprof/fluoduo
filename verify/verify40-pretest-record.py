@@ -162,7 +162,15 @@ check('"fluolingo:pretest.v1"' in record,
 # ---- 2 · nothing pre-lesson is ever scored ---------------------------------
 # The load-bearing assertion. A pretest that reaches any of these is charging
 # the learner for material the course has not taught them yet.
-SCORING = ("recordItemResult", "queueForReview", "awardXp", "addXp", "awardConversationXp")
+# `awardActivityRun` joins the list on 2026-09-13. Finishing a SpecuLearn run
+# now pays 60 XP (Dan: "everything should earn XP at least once") and that is
+# NOT scoring — it ignores the score entirely, so a learner who gets 3 of 63 is
+# paid what one who gets 63 of 63 is paid, and nothing is charged for not
+# knowing. The payout belongs in an effect watching `answered === total`; in a
+# PICK handler it would become exactly the per-answer XP this section forbids,
+# which is why the name is banned here rather than left to judgement.
+SCORING = ("recordItemResult", "queueForReview", "awardXp", "addXp",
+           "awardConversationXp")
 for name, src in (("the runner", runner), ("PretestQuiz", popup), ("/pretests/[id]", solo),
                   ("the Unit-0 questions", unit0)):
     src = code(src)
@@ -188,6 +196,47 @@ for sym in SCORING:
     check(sym not in pick,
           f"Unit-0's doPick does not call {sym}",
           f"Unit-0's doPick calls {sym} — a pre-lesson miss now costs XP / accuracy / review")
+
+# ---- 2a · the FINISH may pay; an ANSWER may not ---------------------------
+# TWO OF DAN'S RULES MET HERE ON 2026-09-13 and this is where the line was
+# drawn, written out because the next session will meet them again.
+#
+#   the older   "remember it, but don't score it" (27 Aug) — a pre-lesson miss
+#               must never dent accuracy, cost XP, or enter the review queue
+#   the newer   "why are there activities without XP? i meam SpecuLearm ...
+#               everything should earn XP at least once", and the reason: "if
+#               there were any activity that comes with 0 XP and 0 anything,
+#               then nobody will ever be motivated to touch them"
+#
+# They only look contradictory if "XP" is read as one thing. The older rule is
+# about what an ANSWER is worth — it forbids paying for a right guess and
+# charging for a wrong one, because the learner has not been taught this yet.
+# The newer one is about what the ACTIVITY is worth. So: finishing the run pays
+# a flat 60 XP that does not look at `score` (3 of 63 pays exactly what 63 of 63
+# pays), and no pick pays anything at all.
+#
+# THE FILE-WIDE BAN CANNOT EXPRESS THAT, which is why awardActivityRun is tested
+# on the HANDLER instead — the same treatment Unit0Panel already gets below, for
+# the same reason ("the pick handler is the surface under test, not the whole
+# file"). Two clauses, and together they are stricter than the blunt version:
+# the payout must be absent from `pick`, AND it must be gated on every question
+# being answered, so scrolling to the recap early cannot earn it either.
+feed_pick = code(solo[solo.find("function pick("):])
+feed_pick = feed_pick[: feed_pick.find("\n  /* KEEP THE ADDRESS HONEST")] if "KEEP THE ADDRESS HONEST" in feed_pick else feed_pick
+check("setVerdicts" in feed_pick,
+      "SpecuLearn's pick handler located",
+      "could not isolate SpecuLearn's pick() — rewrite this slice")
+check("awardActivityRun" not in feed_pick,
+      "SpecuLearn pays nothing for an ANSWER",
+      "SpecuLearn's pick() pays XP — a cold guess would be scored")
+check("answered < total" in code(solo),
+      "…and the finish payout waits for every question to be answered",
+      "SpecuLearn's finish payout is not gated on a finished run — reaching "
+      "the recap early would earn it")
+check("awardActivityRun(\"speculearn\", sioId, null)" in code(solo),
+      "…and passes NO score, so a wrong guess is worth what a right one is",
+      "SpecuLearn's payout reads the score — a pre-test that pays by score "
+      "rewards taking it AFTER the lesson")
 
 # ---- 2b · MCQ IS WHAT MAKES IT A PRE-TEST ----------------------------------
 # Dan's rule (2026-08-28), which decides pre- vs post- by FORM, not intent:

@@ -42,10 +42,27 @@
  * the address point somewhere new on every load. Options are still shuffled
  * once per mount, which is the part a learner could otherwise memorise.
  *
- * A PRE-TEST IS STILL A COLD GUESS. No XP, no accuracy, no review queue —
- * verify40's rule for every pre-test surface, and the merge does not soften it:
- * pooling generated questions into a pre-test makes them part of the cold
- * guess, not the other way round.
+ * A PRE-TEST IS STILL A COLD GUESS. No accuracy, no review queue, and NOTHING
+ * AN ANSWER CAN EARN OR COST — verify40's rule for every pre-test surface, and
+ * the merge does not soften it: pooling generated questions into a pre-test
+ * makes them part of the cold guess, not the other way round.
+ *
+ * THE ONE THING THAT CHANGED, 2026-09-13, and the line it does not cross.
+ * Dan: *"everything should earn XP at least once ... if there were any activity
+ * that comes with 0 XP and 0 anything, then nobody will ever be motivated to
+ * touch them"*. So FINISHING the run pays 60 XP, once per goal.
+ *
+ * That is not scoring, and the distinction is the whole of verify40's rule: the
+ * payout does not look at `score`, so a learner who gets 3 of 63 is paid exactly
+ * what a learner who gets 63 of 63 is paid. Nothing is charged for not knowing,
+ * which is what a cold guess must never be charged for. And it is deliberately
+ * NOT paid by score, because paying by score would make the profitable move
+ * « do the lesson first, then take the pre-test » — which destroys the one
+ * thing this activity measures.
+ *
+ * verify40 bans awardActivityRun from the per-ANSWER handler for the same
+ * reason it bans addXp there; the finish payout lives in an effect that watches
+ * `answered === total`, outside every pick.
  */
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -60,6 +77,7 @@ import { speak } from "@/games/letris/speech";
 import { getPretestForSio } from "@/content/pretests";
 import { SPECULEARN_READY } from "@/lib/collections/speculearnReady";
 import { addressWindow } from "@/lib/addressWindow";
+import { awardActivityRun } from "@/lib/progress";
 import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
 import { HOME_HREF } from "@/lib/routes";
@@ -218,6 +236,35 @@ function Run({ pool, pretest, sioId, deck }: {
     [verdicts],
   );
 
+  /* PAY THE FINISH (Dan, 2026-09-13: "everything should earn XP at least
+     once"). WIRED HERE AND NOT ONLY IN SpecuLearnContent, which is the lesson
+     this cost: that component is an OLD DOOR — every deck with a goal forwards
+     to this feed (see [collectionId]/page.tsx, 7 Sep) — so a payout wired only
+     there fires for almost nobody. It was found by driving the built app to a
+     finished run and watching no receipt appear, which the passing check could
+     not have told anyone.
+
+     FINISHED MEANS EVERY QUESTION ANSWERED, and a feed makes that a real
+     condition rather than a formality: a learner can scroll to the recap at any
+     time, and the recap itself says so ("62 still unanswered"). Skipping is not
+     finishing, so it pays nothing.
+
+     ONE PAYOUT PER RUN — the ref resets with `run`, which is what « ↻ Redo »
+     bumps. awardActivityRun pays only a first finish anyway (SpecuLearn passes
+     no score, so a replay is worth nothing), but a receipt that reappeared on
+     every render would be a second claim about the same 60 XP. */
+  const [runXp, setRunXp] = useState(0);
+  const paid = useRef(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { paid.current = false; setRunXp(0); }, [run]);
+  useEffect(() => {
+    if (paid.current || total === 0 || answered < total) return;
+    paid.current = true;
+    // localStorage cannot be read during render, so the payout and its receipt
+    // can only happen here.
+    setRunXp(awardActivityRun("speculearn", sioId, null));
+  }, [answered, total, sioId]);
+
   function pick(i: number, choice: string) {
     const row = rows[i];
     if (!row || verdicts[i]) return;
@@ -373,6 +420,7 @@ function Run({ pool, pretest, sioId, deck }: {
           score={score}
           answered={answered}
           total={total}
+          runXp={runXp}
           onRestart={() => setRun((r) => r + 1)}
           /* The compass is anchored on the GOAL, not the deck: a pre-test's
              pool is the stop's, and `sioId` is what this runner is given. */
@@ -572,6 +620,7 @@ function Recap({
   total,
   onRestart,
   usher,
+  runXp,
 }: {
   pretest: Pretest | null;
   score: number;
@@ -579,6 +628,9 @@ function Recap({
   total: number;
   onRestart: () => void;
   usher: Usher | null;
+  /** What this run paid, 0 if nothing. Only shown when there is something to
+   *  show — a "+0 XP" on a replay would read as a penalty. */
+  runXp: number;
 }) {
   const pct = total ? Math.round((score / total) * 100) : 0;
   // A feed lets a learner reach the end without answering everything, which
@@ -592,6 +644,11 @@ function Recap({
           {left > 0 ? "👀" : pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}
         </div>
         <h2 className="mt-2 text-2xl font-black text-slate-900">{score} / {total} correct</h2>
+        {runXp > 0 && (
+          <p className="fluo-mono text-base font-black" style={{ color: "var(--dopa-win)" }}>
+            +{runXp.toLocaleString()} XP
+          </p>
+        )}
         <p className="text-slate-600">
           {left > 0
             ? `${left} still unanswered — swipe back up for them.`
