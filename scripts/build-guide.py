@@ -233,6 +233,17 @@ details.fold>summary{cursor:pointer;font-family:var(--hand);font-weight:700;font
 details.fold>summary::before{content:"▸";font-family:var(--body);transition:transform .15s} details.fold[open]>summary::before{transform:rotate(90deg)}
 details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font-family:var(--hand);font-size:1.15rem}
 .footer{margin-top:40px;font-size:.8rem;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:10px}
+/* EXPAND A SIDEWAYS-SCROLLING BLOCK (Dan, 2026-09-14: "for items that are
+   scrollable side ways, can we have a buttion to expand them landscape wise",
+   sending a shot of a cut-off diagram with a diagonal arrow drawn on it).
+   The key is only added to blocks that REALLY overflow — a key on a block that
+   already fits is furniture. */
+.scroll{position:relative}
+.scroll>.widen{position:absolute;top:6px;right:6px;z-index:2;width:30px;height:30px;border-radius:9px;border:1.5px solid var(--ink);background:var(--hl);color:var(--ink);font-size:.95rem;font-weight:900;line-height:1;cursor:pointer;box-shadow:0 2px 0 0 var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.scroll>.widen:hover,.scroll>.widen:focus-visible{filter:brightness(1.07)}
+.widebox{position:fixed;inset:0;z-index:60;background:var(--paper);display:flex;align-items:center;justify-content:center;overflow:auto}
+.widebox .inner{transform-origin:center center}
+.widebox .shut{position:fixed;top:10px;right:12px;z-index:61;width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);background:var(--hl);color:var(--ink);font-size:1.1rem;font-weight:900;cursor:pointer;box-shadow:0 3px 0 0 var(--ink)}
 .totop{position:fixed;right:16px;bottom:16px;z-index:9;width:46px;height:46px;border-radius:50%;background:var(--hl);border:2px solid var(--ink);box-shadow:0 4px 0 0 var(--ink);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink);font-weight:900}
 :focus-visible{outline:3px solid var(--fam-practice);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
@@ -263,7 +274,47 @@ def main():
         "if(d)d.open=true;s.scrollIntoView();}"
         "addEventListener('hashchange',o);addEventListener('DOMContentLoaded',o);o();})();</script>"
     )
-    body = body.replace("<section id='s0'", nav + opener + "<section id='s0'", 1)
+    # EXPAND LANDSCAPE-WISE. A diagram 900px wide inside a 390px phone is cut
+    # at a line that looks like the end of one, and scrolling a <pre> sideways
+    # with a finger is a gesture nobody discovers. Dan asked for a button.
+    #
+    # ROTATING IS THE POINT, NOT ZOOMING. Scaling an 900px diagram down to
+    # 390px makes it unreadable; turning it a quarter turn gives it the
+    # screen's LONG edge — 844px on the same phone — so it comes out about
+    # twice the size. So: full screen, rotate only when the screen is portrait
+    # AND the block does not already fit, then scale to fit whichever way it
+    # ended up. On a desktop, where it fits unrotated, it simply opens big.
+    widen = (
+        "<script>(function(){"
+        "function fit(box,inner,rot){var w=inner.scrollWidth,h=inner.scrollHeight,"
+        "W=innerWidth,H=innerHeight;"
+        "var s=rot?Math.min(H/w,W/h):Math.min(W/w,H/h);s=Math.min(s,1.6);"
+        "inner.style.transform=(rot?'rotate(90deg) ':'')+'scale('+s+')';}"
+        "function open(src){var box=document.createElement('div');box.className='widebox';"
+        "var inner=src.cloneNode(true);inner.className='inner';"
+        "var b=inner.querySelector('.widen');if(b)b.remove();"
+        "inner.style.overflow='visible';inner.style.width='max-content';"
+        "var shut=document.createElement('button');shut.className='shut';shut.textContent='\u2715';"
+        "shut.setAttribute('aria-label','Close');"
+        "box.appendChild(inner);box.appendChild(shut);document.body.appendChild(box);"
+        "var rot=innerHeight>innerWidth&&inner.scrollWidth>innerWidth;fit(box,inner,rot);"
+        "function close(){box.remove();removeEventListener('keydown',esc);}"
+        "function esc(e){if(e.key==='Escape')close();}"
+        "shut.onclick=close;box.onclick=function(e){if(e.target===box)close();};"
+        "addEventListener('keydown',esc);shut.focus();}"
+        "function arm(){document.querySelectorAll('.scroll').forEach(function(el){"
+        "if(el.querySelector('.widen'))return;"
+        "if(el.scrollWidth<=el.clientWidth+2)return;"
+        "var b=document.createElement('button');b.className='widen';b.type='button';"
+        "b.title='Expand';b.setAttribute('aria-label','Expand this to fill the screen');"
+        "b.textContent='\u2921';b.onclick=function(){open(el);};el.appendChild(b);});}"
+        # A closed <details> measures zero, so every block inside one looks as
+        # if it fits. Arm again whenever a section opens, and on resize.
+        "addEventListener('DOMContentLoaded',arm);addEventListener('resize',arm);"
+        "document.addEventListener('toggle',arm,true);arm();})();</script>"
+    )
+
+    body = body.replace("<section id='s0'", nav + opener + widen + "<section id='s0'", 1)
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FluOLinGo Plain Guide</title>
