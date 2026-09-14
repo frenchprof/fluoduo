@@ -4928,3 +4928,38 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   font-weight: 900;
   color: var(--cahier-ink);
 }
+
+/* ══ « NEXT PART IS BELOW » — the end of a MneMemo subsection points on ═════
+   Dan, 2026-09-14: *"MneMemo needs to add at the end of each subsection 'next
+   part is below' with blinking arrows"*, then, sent the first attempt: *"the
+   signal is way too weak and nearly not compulsive… the blinking arrows are OF
+   ULTRA IMPORTANCE"* and *"add blinking arrows like i did for end of each
+   SIO"*.
+
+   SO IT IS HIS OWN « NEXT QUESTION » TREATMENT, reused rather than imitated —
+   `.fluo-nextq` and `.fluo-nextq-arrows` above carry the orange band, the blue
+   text, the three staggered ↓ and the reduced-motion rule. Everything here is
+   only what differs: it floats over a scroller instead of sitting under a
+   card, so it needs a ground and a shadow to stay readable over the lesson's
+   last line.
+
+   MEASURED FIRST: a lesson panel scrolls inside an `overflow-y-auto` div while
+   the page itself does not scroll, so a phone draws no scrollbar anywhere. On
+   `partitifs` that hid 2050px of lesson behind a cut that looks exactly like
+   the end of a paragraph. */
+.fluo-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: calc(0.3rem + var(--fs-step) * 0.3);
+  /* A fade from the paper, so the band is never read as part of the sentence
+     it happens to be sitting over. */
+  background: linear-gradient(to bottom, transparent, var(--cahier-paper) 45%);
+}
+.fluo-more-band {
+  /* It is a LABEL, not a button — the gesture is the scroll, and a key you can
+     press that does nothing is worse than no key. The look is borrowed; the
+     affordance is not. */
+  cursor: default;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
+}
