@@ -147,32 +147,23 @@ const MIDTERM: CuratedPath = {
       why: "Every item is one you got wrong ten minutes ago. Highest value per minute on the path, and it beats guessing which goals to drill.",
     },
     {
-      id: "flip-16",
+      /* ONE DOOR ACROSS SEVENTEEN DECKS (Dan, 2026-09-14, offered one mixed
+         run or seventeen doors: *"One step, drawing across all 17 — a single
+         ~10 min run that mixes cards"*).
+         IT REPLACES THREE. The step used to open nationalities, possessives
+         and faire — three decks of the thirty the first thirty stops have, and
+         of the seventeen the paper reaches. That was me protecting the hour,
+         not the test: Dan's own words when it was put to him were *"We have so
+         many stops and we are looking at 3 of them???"*.
+         The deck list is DERIVED from TESTED_STOPS, so a stop leaving the list
+         leaves this run with it — stop 12 did, this evening. */
+      id: "flip-revision",
       activityKey: "flip",
-      goal: 16,
-      group: "MémoiRecall, Test Yourself",
-      title: "MémoiRecall — nationalities",
+      href: "/practice/flip-it/revision",
+      title: "MémoiRecall — the whole test",
       does: "types a whole word from the English · recall, not recognition",
-      minutes: 3,
-      why: "The most rule-bearing deck. It ends with a nationality the app never taught, to see whether the ending rule transferred.",
-    },
-    {
-      id: "flip-22",
-      activityKey: "flip",
-      goal: 22,
-      group: "MémoiRecall, Test Yourself",
-      title: "MémoiRecall — possessives",
-      does: "types a whole word from the English",
-      minutes: 3,
-    },
-    {
-      id: "flip-24",
-      activityKey: "flip",
-      goal: 24,
-      group: "MémoiRecall, Test Yourself",
-      title: "MémoiRecall — faire",
-      does: "types a whole word from the English",
-      minutes: 3,
+      minutes: 10,
+      why: "Cards from all seventeen stops the paper reaches, in one sitting. It ends with a nationality the app never taught, to see whether the ending rule transferred.",
     },
     /* THREE LESSONS THAT WERE ALREADY IN THE COURSE AND ON NO STEP.
      *

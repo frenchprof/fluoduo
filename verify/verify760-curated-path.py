@@ -240,6 +240,9 @@ ENDS = {
     "/games/compose/remettre-aller-destinations": "src/components/GameOver.tsx",
     "/games/compose/presenter-personne": "src/components/GameOver.tsx",
     "/practice/ecoutexte/quand-time": "src/app/practice/ecoutexte/EcouTexte.tsx",
+    # The mixed MémoiRecall run is the SAME component as the per-deck route,
+    # handed a list instead of one id — so it ends where that one ends.
+    "/practice/flip-it/revision": "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
     # NumBus ends in GameOver, like the compose games. The step is addressed to
     # /games/numbus and NOT to /games/numbers, which is only the two-game
     # chooser: a learner who starts there finishes at /games/numbus, so a step
