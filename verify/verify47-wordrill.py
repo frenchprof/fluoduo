@@ -195,5 +195,44 @@ check("SessionMap" in SAYIT and "CAP" in MAP,
       "the session map is uncapped")
 
 print("-" * 66)
+# ── THE LENGTH CHOOSER NAMES WHAT THE DRILL DEALS (Dan, 13-14 Sep) ─────────
+# "some pop ups instructions are misleading" -> "4th item: WorDrill" -> shown
+# three candidates: "IT WAS A POP UP ABOUT PICKING THE NUMBER OF ITEMS".
+#
+# One component asks all three drills how long a run should be, and it asked
+# « How many questions? » on every one of them. WorDrill shows a French word
+# and you SAY IT; MémoiRecall deals flashcards. Neither asks a question, so a
+# learner was told to expect a different activity than the one in front of them.
+#
+# THE PROP IS REQUIRED, WITH NO DEFAULT, and that is what this clause pins. A
+# default of "questions" is precisely how the wrong word reached two drills —
+# each call site inherited it without deciding. Every caller must say what it
+# deals, so a fourth drill cannot arrive carrying the wrong noun in silence.
+_hmq = read("src/components/HowManyQuestions.tsx")
+check("How many {noun}?" in _hmq,
+      "the length chooser names what the drill deals",
+      "the length chooser is back to a hard-coded noun — it says « questions » "
+      "on WorDrill, which asks none")
+check("noun: string;" in _hmq and "noun = " not in _hmq,
+      "…and the noun is REQUIRED, with no default to inherit",
+      "the noun has a default again — a new drill would silently inherit it, "
+      "which is how « questions » reached WorDrill and MémoiRecall")
+_callers = {
+    "src/app/practice/say-it/[collectionId]/SayItContent.tsx": "words",
+    "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx": "cards",
+    "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx": "questions",
+}
+import os as _os
+_src_all = "".join(read(_p) for _p in _callers)
+check(_src_all.count("<HowManyQuestions") == len(_callers),
+      f"all {len(_callers)} callers of the length chooser are accounted for",
+      "a caller of HowManyQuestions is not in this check's list — add it with "
+      "the noun it deals")
+for _p, _n in _callers.items():
+    check(f'noun="{_n}"' in read(_p),
+          f"{_os.path.basename(_p)} asks for {_n}",
+          f"{_p} does not pass noun=\"{_n}\" — its chooser would name the "
+          "wrong thing")
+
 print(f"  {passed} passed · {failed} failed")
 sys.exit(1 if failed else 0)
