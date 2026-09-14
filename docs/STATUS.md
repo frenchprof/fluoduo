@@ -89,6 +89,47 @@ choice each"* and it is not yet settled whether that means the setup screen or
 the in-play keypad. **LexicaLocker's scale** (*"i cannot see anything beyond
 three chest trunks"*) did not reproduce at 390px and needs the width Dan saw.
 
+## 14 Sep — NumBus's pictures were never removed; three of them were greyed out (fluoduo-main)
+
+**Dan, an hour after the rebuild went live: *"Your removed my bus and all the
+other images from NumBus. Wtf"*.** Nothing was removed, and that is not a
+defence — it is the diagnosis. The four kind keys drew an UNTICKED kind as
+
+    filter: grayscale(1);  opacity: 0.5;
+
+so three of the four pictures were grey smudges at half strength, and their
+only names were `title` tooltips, which a phone has no way to show. What
+reaches a learner is one bus and three blanks.
+
+**SO THE ARTWORK NEVER DIMS.** Off-ness is carried by the KEY — paper instead
+of the family tint, and the label muted — and the picture is the same picture
+either way. **And every tile now wears its name** (Bus numbers · Times ·
+Prices · Phone numbers), which earns its place by the litmus test: 🍔 alone
+cannot tell anyone that tile means prices, and no other copy of that word is on
+the screen. Two up on a phone, four across when there is room, counted by the
+grid rather than told (verify270).
+
+**THE PROCESS FAILURE IS THE PART WORTH KEEPING.** This screen WAS screenshotted
+before the merge, and the shot shows the fault plainly. It was read as "bus
+selected, three others off" instead of as what a learner sees. *Show it, don't
+describe it* only works if the picture is looked at as a stranger would.
+
+## 14 Sep — LexicaLocker's belt is below the fold, and full screen is still a key you press (fluoduo-main)
+
+**Dan, twice: *"The LexicaLocker is displaying in too much of a scaled up, i
+cannot see anything beyond three chest trunks"*, then *"force a full screen
+view on lexicalocker"* — and, shown the result: *"can it be first in the frame
+then in full screen by choice"*.** So the forced full screen was reverted the
+same hour, `openFull` and all; the 7 Sep default stands and `⤡` is the way in.
+
+**THE MEASUREMENT SURVIVES THE REVERT, because the fault is real and still
+there.** Driven at 430x860: the three chests are the entire board and the WORD
+BELT — the row a learner taps — sits below the fold with only its three arrows
+visible. Three chests is the design (`LANE = 3`); seeing nothing else is not.
+Full screen fixes it and Dan has chosen not to force it, so the remedy is
+inside the board: shrink the chests when the frame is short, or put the belt
+above them. **That is a design call, not a patch**, and it is open.
+
 ## 14 Sep — the ✕ goes up, and a check of mine was flaky before it was right (fluoduo-main)
 
 **Dan: *"When closing the X it always goes back to the page where it came from
