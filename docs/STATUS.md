@@ -6,6 +6,45 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — five of Dan's eight edges, and a framed game can take the whole screen (fluoduo-main)
+
+**Dan sent eight fixes in one message.** Five are here; three are still open
+and named at the foot of this entry.
+
+- **Every protruding top face gets its hairline.** The map's ＋ / − zoom keys
+  and the 3D stops drew no outline on the face that catches the light, so a
+  raised control read as a flat patch of colour. `.neo-key` and
+  `.home-map3d-cap` take an `inset 0 0 0 1px` ring in the house ink at 22 %.
+  Measured in the browser first: the key already had two *offset* insets (a
+  highlight and a lip) and the cap had `box-shadow: none`, which is why
+  grepping for `inset 0 0 0 1px` answered "already done" and was wrong.
+- **The phone bar gets room to breathe** — `.cahier-topbar` gap 0.8rem, about
+  half a button, which is what Dan asked for.
+- **The bar sheds what nobody uses and gains the door people need.** The stop
+  field went (removed weeks ago and still drawn), ⌛ History went, 🎯 replaced
+  the person glyph on the map badge, and the 2D/3D switch gave back 19px.
+  The revision door sits in the middle of the bar wearing 🚀 — Dan: *"your 📋
+  is too inconspicuous"* — and shows a count only while a run is live.
+- **The guide's door moves into the yellow strip.** `PageBand` takes an
+  optional `right` slot; `/guide` puts a 📖 Full guide chip there, and the
+  full guide links back to QuickStart. The pair walks both ways.
+- **A framed game can ask for the whole screen.** Every station runs in an
+  iframe, so a game had the frame's box and nothing more. `EmbedFrame` now
+  allows `fullscreen` and `GameFrame` has a ⛶ key that calls
+  `requestFullscreen()` on the frame and listens for `fullscreenchange` so the
+  key cannot lie about the state it is in.
+
+**STILL OPEN from the same message**, so the next session does not have to
+re-read it: the **WorDrill / MémoiRecall step-1 pointer** (the guided walk
+says *"choose how long a run you want"* and lights nothing — a first fix was
+reverted because `/practice/say-it/…` shares that hint row and has no such
+control, which `verify220` drives and caught); **MneMemo's "next part is
+below"** with the blinking arrows `.fluo-nextq-arrows` already provides; and
+**NumBus / NumBourse**, where Dan asked for *"tiled buttons representing a
+choice each"* and it is not yet settled whether that means the setup screen or
+the in-play keypad. **LexicaLocker's scale** (*"i cannot see anything beyond
+three chest trunks"*) did not reproduce at 390px and needs the width Dan saw.
+
 ## 14 Sep — integration: two lanes built « Présenter quelqu'un » twice, and only one of them may keep the four countries (fluoduo-main)
 
 **Two sessions built the same ComposeIt scene on the same afternoon**, which is
