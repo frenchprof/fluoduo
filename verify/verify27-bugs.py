@@ -13,8 +13,8 @@ What this asserts (static over source, plus ONE executed table):
      Index), never the bare string "No deck specified.".
   3  DeckContent.tsx carries no slate-*/rose-*/emerald-*/bg-white; the 19b
      ratchet baseline is at or under the migrated counts.
-  4  /sio/[id] is a redirect to /?unit=N#SIO (SioRedirect); nothing but
-     that folder links to /sio/…; KeyNav's two-digit jump opens Home.
+  4  /sio/[id] is the goal's own page; KeyNav's two-digit jump opens it, the
+     same door a tap opens, and mints no #SIO- hash (14 Sep).
   5  DEPLOY.md names fluolingo-dot-com and keeps the which-main banner.
   6  The meta description keeps LAF1201, English first, no French.
   7  ONE definition of weak: progress.ts exports WEAK_BELOW 50 / GOOD_FROM
@@ -160,12 +160,27 @@ rolled = [f for f in sharers
 check(not rolled,
       "and neither hand-rolls the can-do plus its links alongside it",
       f"{rolled} builds its own can-do + link list next to the shared card.")
+# THIS CLAUSE USED TO PIN THE OPPOSITE, and it is inverted rather than deleted
+# (Dan, 2026-09-14: "typing on numbers in the map view is bringing up old popup
+# SIOs"). It required KeyNav to set `location.hash`, which MapBody answers by
+# drawing StopPopup — and on 7 Sep Dan retired exactly that popup as a door
+# ("WE ARE STILL SEEING THE POPUPS FROM CLICKING THE MAP, WHERE ARE THE FULL
+# PAGED SIOS"). MapBody's own tap handler moved to /sio/[id] that day; the
+# keyboard did not, so the finger opened the page and the keyboard opened the
+# popup for a week, with a check standing guard over the wrong one.
+#
+# It still fails in BOTH directions. Minting a `#SIO-` hash from the shortcut
+# is the fault coming back; losing the push is the shortcut going dead.
 kn = CODE["src/components/KeyNav.tsx"]
-check("`${HOME_HREF}?unit=${sio.unit}#${sio.id}`" in kn and "window.location.hash = sio.id" in kn,
-      "KeyNav two-digit jump opens the outcome on The Map",
-      "KeyNav does not deep-link the two-digit jump to the map. The address moved to\n"
-      "       HOME_HREF on 12 Sep; the second half of this check is the in-place branch,\n"
-      "       which only fires when the pathname test names the page the map is on.")
+check("sioHref(sio.id)" in kn,
+      "KeyNav's two-digit jump opens the goal's own page, like a tap",
+      "KeyNav no longer pushes /sio/<id>. The two-digit shortcut and a tap on the\n"
+      "       stop must open the SAME door — Dan, 7 Sep: 'WHERE ARE THE FULL PAGED SIOS'.")
+check("window.location.hash = sio.id" not in kn,
+      "and mints no #SIO- hash, which is what drew the retired popup",
+      "KeyNav sets location.hash again. MapBody answers that by drawing StopPopup,\n"
+      "       which stopped being a door on 7 Sep — it is kept ONLY so a QR code or a\n"
+      "       bookmark already in the wild still lands somewhere.")
 
 # ── 5 · DEPLOY.md ─────────────────────────────────────────────────────────
 dep = read("docs/DEPLOY.md")
