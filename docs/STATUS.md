@@ -132,12 +132,19 @@ strip is in `canonicalHref`, so the heart, the ★ and anything added later
 cannot disagree about it.
 
 **A BAND THAT CARRIES A KEY NOW DROPS ITS EMOJI**, and that came out of driving
-it. At 430px the guide's strip is 398px and its four parts — ✕, title, « 📖
+it — after a first attempt that an existing check refused, correctly. At 430px the guide's strip is 398px and its four parts — ✕, title, « 📖
 Full guide here », 🤍 — wanted more, so the title truncated to « Gui… ». Of the
 two things in a title the NAME is what the band is for and the glyph is
 decoration, and 🧑‍🏫 is a ZWJ sequence costing a third of the title's width.
 Only bands with a `right` key are affected; every other band keeps its emoji.
 Measured across fifteen routes at 390px and 430px: **0 truncated titles**.
+
+**THE FIRST ATTEMPT WAS A FLOOR UNDER THE TITLE, AND verify82 WAS RIGHT TO
+REFUSE IT.** `min-w-0` on that title is not styling — it is what lets the title
+shrink and truncate instead of pushing the row wider, which is Dan's 1 Sep rule
+that every strip is one line and the same thickness. A `min-w-[5.5rem]` floor
+bought two characters and cost the rule. Dropping the emoji does the whole job
+on its own, which is why the floor is gone rather than made smaller.
 
 **EVERY PLACE THAT TAUGHT THE OLD GESTURE WAS CHANGED, not just the guide** —
 `docs/GUIDE.md`'s top-bar line and its Favourites bullet, QuickStart's step 5,

@@ -114,20 +114,13 @@ export default function PageBand({
       {/* ONE LINE. `min-w-0` lets the flex child shrink below its content and
           `truncate` cuts what is left — without the first, the second never
           fires and a long name pushes the goal circle off the band. */}
-      {/* A FLOOR UNDER THE TITLE. The band shrinks its title first by design —
-          `min-w-0` + `truncate` — which is right when the alternative is
-          pushing the goal chip off the strip. But the heart added a control to
-          every band, and on /guide, whose band also carries a « 📖 Full guide
-          here » key, the title collapsed to « Gu… ». A band that cannot say
-          which page it is has stopped doing its one job, so the title keeps
-          5rem before anything else yields, and the room comes out of the
-          `right` slot instead — which is a key whose own label can ellipsise.
-
-          7rem, measured rather than guessed: at 430px the guide's band is
-          398px wide and its four parts want 36 + title + 143 + 36 with 24 of
-          gap and 28 of padding. « 🧑‍🏫 Guide » needs about 112 of that, and the
-          ZWJ emoji is a third of it. */}
-      <p className="min-w-[5.5rem] flex-1 truncate leading-none">
+      {/* `min-w-0` IS LOAD-BEARING AND STAYS (verify82): it is what lets the
+          title shrink and truncate instead of pushing the row wider, which is
+          Dan's 1 Sep rule that every strip is one line and the same thickness.
+          A floor was tried here when the heart made /guide's band too full and
+          the title read « Gui… »; it bought two characters and cost the rule.
+          The room comes out of the EMOJI instead — see below. */}
+      <p className="min-w-0 flex-1 truncate leading-none">
         {/* SPELT THE WAY THE NAME IS SPELT (Dan, 2026-09-11, shown the two side
             by side: *"GramMarathon instead of GRAMMARATHON"*). This REVERSES
             5 Sep's "the names of activities in FULL caps", and the reason that
