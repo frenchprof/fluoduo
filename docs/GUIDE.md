@@ -250,7 +250,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** a role-play (café, directions, shopping…). You write your lines.
 - **How:** build each line from phrase chips, **✔** sends it. The other character replies out loud and moves the scene on (greet → order → drink → bill → goodbye). Some scenes have **check my work**, where the other character reads your whole text and reacts.
 - **Ends:** post-mortem. Finishing a scene pays 120 XP.
-- **Note:** available at 12 goals: 9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50 (the six communication goals 10, 20, 30, 40, 49, 50 among them). The chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
+- **Note:** available at 13 goals: 9, 10, 20, 21, 23, 29, 30, 36, 40, 41, 44, 49, 50 (the six communication goals 10, 20, 30, 40, 49, 50 among them). Goal 23's scene, « Présenter quelqu'un », hands you a different person each time and asks six questions; the word count sits in the bar. The chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
 
 ### 👤 TRACK (one page, four tabs)
 <!-- fig: profile, leaderboard, settings | The Track page: Profile (heat strip of the 50 stops), Leaderboard (sign in to see it), Settings (icon labels, map wheel, bottom bar, Gems). -->

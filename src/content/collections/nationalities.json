@@ -385,6 +385,66 @@
         "mp": "algériens",
         "fp": "algériennes"
       }
+    },
+    {
+      "id": "nat-26-inde",
+      "fr": "indien / indienne",
+      "en": "Indian (m / f)",
+      "emoji": "🇮🇳",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "indien",
+        "fs": "indienne",
+        "mp": "indiens",
+        "fp": "indiennes"
+      }
+    },
+    {
+      "id": "nat-27-luxembourg",
+      "fr": "luxembourgeois / luxembourgeoise",
+      "en": "Luxembourgish (m / f)",
+      "emoji": "🇱🇺",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "luxembourgeois",
+        "fs": "luxembourgeoise",
+        "mp": "luxembourgeois",
+        "fp": "luxembourgeoises"
+      }
+    },
+    {
+      "id": "nat-28-italie",
+      "fr": "italien / italienne",
+      "en": "Italian (m / f)",
+      "emoji": "🇮🇹",
+      "tags": [
+        "col:l_apos"
+      ],
+      "nat": {
+        "ms": "italien",
+        "fs": "italienne",
+        "mp": "italiens",
+        "fp": "italiennes"
+      }
+    },
+    {
+      "id": "nat-29-liban",
+      "fr": "libanais / libanaise",
+      "en": "Lebanese (m / f)",
+      "emoji": "🇱🇧",
+      "tags": [
+        "col:le"
+      ],
+      "nat": {
+        "ms": "libanais",
+        "fs": "libanaise",
+        "mp": "libanais",
+        "fp": "libanaises"
+      }
     }
   ],
   "gameConfig": {

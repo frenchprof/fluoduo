@@ -380,6 +380,64 @@
         "gé",
         "rie"
       ]
+    },
+    {
+      "id": "countries-letris-26-inde",
+      "fr": "Inde",
+      "en": "India",
+      "emoji": "🇮🇳",
+      "tags": [
+        "col:l_apos",
+        "region:asia"
+      ],
+      "syllables": [
+        "In",
+        "de"
+      ]
+    },
+    {
+      "id": "countries-letris-27-luxembourg",
+      "fr": "Luxembourg",
+      "en": "Luxembourg",
+      "emoji": "🇱🇺",
+      "tags": [
+        "col:le",
+        "region:europe"
+      ],
+      "syllables": [
+        "Lu",
+        "xem",
+        "bourg"
+      ]
+    },
+    {
+      "id": "countries-letris-28-italie",
+      "fr": "Italie",
+      "en": "Italy",
+      "emoji": "🇮🇹",
+      "tags": [
+        "col:l_apos",
+        "region:europe"
+      ],
+      "syllables": [
+        "I",
+        "ta",
+        "lie"
+      ]
+    },
+    {
+      "id": "countries-letris-29-liban",
+      "fr": "Liban",
+      "en": "Lebanon",
+      "emoji": "🇱🇧",
+      "tags": [
+        "col:le",
+        "region:asia"
+      ],
+      "syllables": [
+        "Li",
+        "ban"
+      ]
     }
   ],
   "gameConfig": {

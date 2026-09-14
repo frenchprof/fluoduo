@@ -450,6 +450,119 @@ export const RESTAURANT_SCENE_BANK: ComposeBank = {
   },
 };
 
+// ---------------------------------------------------------------------------
+// Unité 2 · Présenter quelqu'un  (solo, written) — sits on goal 23's deck
+//
+// WHY THIS EXISTS (Dan, 2026-09-14). The written half of the course's first
+// test is a third-person portrait — name, age and status, likes, sport, plans,
+// one negative — built from avoir, être, aimer, faire, aller and vouloir with
+// « ne … pas / ne … plus » and two connectors. Nothing on the site rehearsed
+// that shape: the writing ateliers were a country (20), an e-mail (30) and a
+// journey (40). Eleven of the words the test hands out belong to goal 23, so
+// the scene lives there.
+//
+// THE PERSON ROTATES, AND THE TEST'S OWN SUBJECT IS NOT IN THE LIST. Dan,
+// same day: *"we don't want to give away the fact that the question in the
+// test is about my best friend … présenter qqn is the correct framing"*. So
+// the learner is handed a cousin, a neighbour, a singer — eight people, on the
+// same clock the country scene uses — and answers the same six questions
+// whoever it is. « Un ami / une amie » is one of the eight and is never
+// singled out. What is rehearsed is the shape the marking grid rewards; what
+// stays hidden is the topic.
+//
+// THE MODEL IS ALWAYS SOMEONE ELSE — the next person round the list — and is
+// built from that person's own fields, so it cannot drift from the chips.
+// ---------------------------------------------------------------------------
+type Person = {
+  /** « ton cousin » — the person as the task names them. */
+  fr: string;
+  en: string;
+  /** « Mon cousin » — the chip the learner opens with. */
+  mine: string;
+  g: "m" | "f";
+  emoji: string;
+  /* The model portrait's own facts. Every phrase is one the chips can build. */
+  name: string;
+  age: string;
+  status: string;
+  likes: string;
+  sport: string;
+  goes: string;
+  wants: string;
+  not: string;
+};
+
+const PEOPLE: readonly Person[] = [
+  { fr: "ton cousin", en: "your cousin", mine: "Mon cousin", g: "m", emoji: "🧑", name: "Thomas", age: "20 ans", status: "est étudiant", likes: "le football et le cinéma", sport: "du football", goes: "au stade le samedi", wants: "aller au cinéma ce week-end", not: "n'aime pas la danse" },
+  { fr: "ta voisine", en: "your neighbour", mine: "Ma voisine", g: "f", emoji: "👩", name: "Julie", age: "45 ans", status: "travaille", likes: "lire et la musique", sport: "de la natation", goes: "à la piscine le lundi", wants: "aller au théâtre avec moi", not: "ne fait plus de danse" },
+  { fr: "un camarade de classe", en: "a classmate", mine: "Mon camarade", g: "m", emoji: "🎒", name: "Marc", age: "18 ans", status: "est étudiant", likes: "la natation et le théâtre", sport: "de la natation", goes: "à la piscine le week-end", wants: "faire du théâtre", not: "n'aime pas le football" },
+  { fr: "ta colocataire", en: "your flatmate", mine: "Ma colocataire", g: "f", emoji: "🏠", name: "Léa", age: "22 ans", status: "est étudiante", likes: "la danse et la musique", sport: "de la danse", goes: "au cinéma le samedi", wants: "aller à la piscine avec moi", not: "n'aime pas lire" },
+  { fr: "ton coéquipier", en: "your teammate", mine: "Mon coéquipier", g: "m", emoji: "⚽", name: "Paul", age: "25 ans", status: "travaille", likes: "le football et la natation", sport: "du football", goes: "au stade le week-end", wants: "faire de la natation ce week-end", not: "ne fait plus de théâtre" },
+  { fr: "ta chanteuse préférée", en: "your favourite singer", mine: "Ma chanteuse préférée", g: "f", emoji: "🎤", name: "Marie", age: "30 ans", status: "travaille", likes: "la musique et la danse", sport: "de la danse", goes: "au théâtre le samedi", wants: "aller au cinéma avec moi", not: "n'est plus étudiante" },
+  { fr: "ton grand-père", en: "your grandfather", mine: "Mon grand-père", g: "m", emoji: "👴", name: "Jean", age: "70 ans", status: "ne travaille plus", likes: "lire et le cinéma", sport: "de la natation", goes: "à la piscine le lundi", wants: "aller au théâtre avec moi", not: "n'aime pas le football" },
+  { fr: "une amie", en: "a friend", mine: "Mon amie", g: "f", emoji: "🙋‍♀️", name: "Emma", age: "19 ans", status: "est étudiante", likes: "le théâtre et lire", sport: "de la danse", goes: "au théâtre le week-end", wants: "aller au cinéma ce week-end", not: "ne fait plus de natation" },
+] as const;
+
+const il = (p: Person) => (p.g === "f" ? "Elle" : "Il");
+
+function portrait(p: Person): string {
+  const S = il(p);
+  const s = S.toLowerCase();
+  /* ONE CHIP-SHAPED SENTENCE PER QUESTION, capital subjects, no mid-sentence
+     capital — verify440 rebuilds this text from the palette, case and commas
+     included, so every token here is a chip. */
+  return `${p.mine} s'appelle ${p.name}. ${S} a ${p.age}. ${S} ${p.status}. `
+    + `${S} aime ${p.likes}. ${S} fait ${p.sport}. ${S} va ${p.goes}. `
+    + `${S} veut ${p.wants}, mais ${s} ${p.not}.`;
+}
+
+export const PRESENT_PERSON_BANK: ComposeBank = {
+  id: "presenter-quelquun",
+  title: "Présenter quelqu'un",
+  emoji: "🧑‍🤝‍🧑",
+  unit: 2,
+  deckId: "aimer-activites",
+  mode: "solo",
+  aiCheck: true,
+  /* 50–60 words is the length the portrait is asked for; the learner sees the
+     count climb under the sheet and nothing else about where the target
+     comes from. */
+  wordGoal: { min: 50, max: 60 },
+  categories: withPalette([
+    // Generated from PEOPLE, so a person added without an opening chip is impossible.
+    { label: "Présenter", phrases: [...PEOPLE.map((p) => p.mine), "s'appelle", "Il s'appelle", "Elle s'appelle", ...PEOPLE.map((p) => p.name)] },
+    // Ages generated from PEOPLE for the same reason as the names above.
+    { label: "Âge et statut", phrases: ["Il a", "Elle a", ...new Set(PEOPLE.map((p) => p.age)), "Il est étudiant", "Elle est étudiante", "Il travaille", "Elle travaille", "Il ne travaille plus", "et", "il est étudiant", "elle est étudiante", "il travaille", "elle travaille"] },
+    { label: "Aimer", phrases: ["Il aime", "Elle aime", "Il adore", "Elle adore", "lire", "le football", "la natation", "la danse", "le théâtre", "le cinéma", "la musique", "et", "aussi"] },
+    { label: "Faire et aller", phrases: ["Il fait", "Elle fait", "du football", "de la natation", "de la danse", "du théâtre", "Il va", "Elle va", "au stade", "à la piscine", "au cinéma", "au théâtre", "le lundi", "le samedi", "le week-end"] },
+    { label: "Vouloir", phrases: ["Il veut", "Elle veut", "aller", "faire", "au cinéma", "au théâtre", "à la piscine", "avec moi", "ce week-end", ", ", "mais"] },
+    /* Both cases on purpose: capitals open a sentence of their own (question
+       6), lower-case follows « , mais » inside the sentence before. */
+    { label: "Ne … pas / ne … plus", phrases: ["Il n'aime pas", "Elle n'aime pas", "il n'aime pas", "elle n'aime pas", "Il ne fait plus", "Elle ne fait plus", "il ne fait plus", "elle ne fait plus", "il n'est plus étudiant", "elle n'est plus étudiante", "de sport", "de danse", "de natation", "de théâtre", "la danse", "le football", "lire"] },
+  ]),
+  newScenario() {
+    const i = Math.floor(Date.now() / 60000) % PEOPLE.length;
+    const p = PEOPLE[i];
+    const m = PEOPLE[(i + 1) % PEOPLE.length];
+    const s = il(p);
+    const et = p.g === "f" ? "étudiante" : "étudiant";
+    return {
+      headline: `${p.emoji} ${p.fr}`,
+      instructionEn: `Present ${p.en} in six sentences — answer one question at a time. Aim for 50 to 60 words.`,
+      prompts: [
+        { ask: `Parle-moi de ${p.fr} ! ${s} s'appelle comment ?`, use: "Présenter" },
+        { ask: `${s} a quel âge ? ${s} est ${et} ?`, use: "Âge et statut" },
+        { ask: `${s} aime quoi ?`, use: "Aimer" },
+        { ask: `${s} fait quel sport ? ${s} va où ?`, use: "Faire et aller" },
+        { ask: `${s} veut faire quoi ce week-end ?`, use: "Vouloir" },
+        { ask: `Et qu'est-ce qu'${s.toLowerCase()} n'aime pas ?`, use: "Ne … pas / ne … plus" },
+      ],
+      model: { label: `${m.emoji} ${m.fr} — un modèle`, text: portrait(m) },
+      openingFr: `Parle-moi de ${p.fr} ! ${s} s'appelle comment ?`,
+    };
+  },
+};
+
 /** The production banks, in curriculum order. Register these in banks.tsx's
  *  BANKS array so getComposeBank() and the SIO activity rail can find them.
  *  ORDER MATTERS on a shared deck: the FIRST bank with a deckId is the rail's
@@ -459,6 +572,7 @@ export const PRODUCTION_BANKS: ComposeBank[] = [
   FIRST_MEETING_BANK,
   PRESENT_COUNTRY_BANK,
   EMAIL_BANK,
+  PRESENT_PERSON_BANK,
   ITINERARY_BANK,
   POSTCARD_BANK,
   REVIEW_BANK,

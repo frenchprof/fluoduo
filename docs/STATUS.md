@@ -6,6 +6,30 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — « Présenter quelqu'un »: ComposeIt at goal 23, and the test's gaps closed (branch `claude/modest-galileo-xstape`)
+
+**Dan, after the study path below: *"we don't want to give away the fact that
+the question in the test is about my best friend … présenter qqn is the
+correct framing"*.** The written half of Test 1 is a third-person portrait
+(name, age/status, likes, sport, plans, one negative) and nothing rehearsed it.
+
+- `banks-production.tsx` gains `PRESENT_PERSON_BANK` on deck `aimer-activites`
+  (goal 23 — eleven of the test's sixteen words are that goal's). EIGHT PEOPLE
+  ROTATE on the country scene's clock — cousin, neighbour, classmate, flatmate,
+  teammate, singer, grandfather, « une amie » — and « meilleur ami » is not in
+  the list. Six questions, one chip group each; the model is always the NEXT
+  person, built from its own fields, and verify440 rebuilds it from the chips.
+- `ComposeBank.wordGoal` + a word count in the game bar (« 19 / 50–60 mots »),
+  because the test asks for a length and a count says where you are.
+- `functions/api/compose.js` has the scene's persona; the guide says 13 goals.
+- Decks: countries + nationalities gain Inde, Luxembourg, Italie, Liban (the
+  four the test names and the site lacked — the endings were already trained
+  by chinois / indonésien); goal 19's deck gains « en retard » beside fatigué.
+
+Gate: tsc clean, OPEN_APP build clean, verify suite green (verify95 needs PIL,
+absent here), eslint clean on touched files. Screenshots in
+`docs/revision/shots/`.
+
 ## 14 Sep — Test 1 study path (branch `claude/modest-galileo-xstape`, docs only)
 
 Dan pasted LAF 1201 Test 1 with its corrigé and asked which parts of the site

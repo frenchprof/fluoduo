@@ -62,6 +62,10 @@ export type ComposeBank = {
    *  the French (Dan, 2026-07-05) — this closes that gap without turning the
    *  builder into a full back-and-forth dialogue. */
   aiCheck?: boolean;
+  /** Solo banks: the length the finished text is asked for. The composer
+   *  counts the words under the sheet and shows the range beside them —
+   *  a count says where you are, which a bare instruction cannot. */
+  wordGoal?: { min: number; max: number };
   /** Dialogue banks: the persona config for ComposeDialogue. */
   scene?: DialogueScene;
   categories: ComposeCategory[];

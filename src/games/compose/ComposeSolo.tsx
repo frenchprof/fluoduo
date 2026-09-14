@@ -91,6 +91,11 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
 
   const lineText = joinChips(line);
   const dialogueText = [...lines, lineText].filter(Boolean).join(" ");
+  /* THE WORD COUNT, on banks that ask for a length. Counted the way a marker
+   * counts: whitespace-separated tokens, so « n'aime » is one word and
+   * « s'il vous plaît » is three. Only the sentences already added count —
+   * the line in progress is not written yet. */
+  const wordCount = lines.join(" ").split(/\s+/).filter(Boolean).length;
 
   const addPhrase = (p: string) => setLine((d) => [...d, p]);
   const undo = () => {
@@ -188,7 +193,11 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       title={`${bank.emoji} ${bank.title}`}
       exitHref={exitHref}
       progress={null}
-      score={lines.length > 0 ? <>{lines.length} ✎</> : undefined}
+      score={
+        bank.wordGoal
+          ? <>{wordCount} <span className="opacity-60">/ {bank.wordGoal.min}–{bank.wordGoal.max} mots</span></>
+          : lines.length > 0 ? <>{lines.length} ✎</> : undefined
+      }
       help={help}
       hintKey="compose"
       menu={[
