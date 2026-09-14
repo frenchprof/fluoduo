@@ -94,7 +94,18 @@ type Order = { value: number; words: string; sym: string; name: string; side: "A
 
 // Draw mostly from the level's NEW band (above the previous level's ceiling)
 // with some review below it, and never the same value twice running.
-function dealValue(level: number, prev: number | null): number {
+function dealValue(level: number, prev: number | null, floor?: number, ceiling?: number): number {
+  // THE LEARNER'S RANGE WINS where they set one. The rung's own band below is
+  // the fallback for the climbing ladder, untouched.
+  if (floor != null && ceiling != null) {
+    const lo = Math.min(floor, ceiling);
+    const hi = Math.max(floor, ceiling);
+    for (let i = 0; i < 12; i++) {
+      const v = lo + Math.floor(Math.random() * (hi - lo + 1));
+      if (v !== prev) return v;
+    }
+    return lo;
+  }
   const { max } = LEVELS[level - 1];
   const lo = level === 1 ? 0 : LEVELS[level - 2].max + 1;
   for (let guard = 0; guard < 24; guard++) {
@@ -107,9 +118,23 @@ function dealValue(level: number, prev: number | null): number {
   return max;
 }
 
-export default function NumBourse() {
+/** A FLOOR AND A CEILING, and nothing else (Dan, 2026-09-14: *"let the user
+ *  decide what is the floor and the ceiling. no need so much PLEASE"*).
+ *
+ *  THE LADDER STILL RUNS THE CLOCK, which is why the levels did not have to
+ *  go: each one carries `secs`, the time a learner gets to type, and a
+ *  six-digit price needs longer than a single digit whoever chose it. So the
+ *  level is picked FROM the ceiling — the first rung that covers it — and the
+ *  VALUE is drawn from the learner's own floor..ceiling. One setting, and the
+ *  timing still fits the numbers.
+ *
+ *  Defaults are the full spread, so a learner who sets nothing gets the game
+ *  as it always was. */
+export default function NumBourse({ floor = 0, ceiling = 99 }: { floor?: number; ceiling?: number } = {}) {
+  /** The rung whose range covers the ceiling — it is the clock, not the range. */
+  const startLevel = Math.max(1, LEVELS.findIndex((l) => l.max >= ceiling) + 1 || LEVELS.length);
   const [started, setStarted] = useState(false);
-  const [level, setLevel] = useState(1);
+  const [level, setLevel] = useState(startLevel);
   const [score, setScore] = useState(0);
   const [combo, setCombo] = useState(0);
   const [lives, setLives] = useState(START_LIVES);
@@ -163,7 +188,7 @@ export default function NumBourse() {
   }, []);
 
   const deal = useCallback((lv: number) => {
-    const value = dealValue(lv, lastValueRef.current);
+    const value = dealValue(lv, lastValueRef.current, floor, ceiling);
     lastValueRef.current = value;
     const [sym, name] = COMPANIES[Math.floor(Math.random() * COMPANIES.length)];
     const next: Order = {
@@ -181,7 +206,11 @@ export default function NumBourse() {
     setReveal(false);
     setTimeFrac(1);
     speak(next.words, "fr-FR");
-  }, []);
+    // `floor` and `ceiling` ARE dependencies and a real one, not lint noise:
+    // an empty array freezes the range this callback closes over, so a learner
+    // who set 0–20 would keep hearing whatever was captured when the component
+    // first mounted. Every other value here is a ref for exactly this reason.
+  }, [floor, ceiling]);
 
   // Deal the level's first ticket — on start and on each level change.
   useEffect(() => {
