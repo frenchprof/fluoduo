@@ -140,7 +140,10 @@ const STEPS: Step[] = [
       // on 6 Sep (Map2DGrid.tsx: "there is no ✓ at all now — the fill says it");
       // a done stop is the pressed-down coin in its kind's wash, number kept.
       // Two learner guides copied the old line from here before it was noticed.
-      <>a done stop is <b>pressed flat</b> and paler; <b>★</b> saves any page</>,
+      /* The 🤍 replaced the ★ as the way a page is saved (Dan, 14 Sep). The
+         line has to name the CONTROL a learner will actually press, or it
+         sends them to the top bar for something that now lives on the strip. */
+      <>a done stop is <b>pressed flat</b> and paler; the <b>🤍</b> at the end of any coloured strip saves that page</>,
     ],
   },
 ];

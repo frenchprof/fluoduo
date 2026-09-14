@@ -101,6 +101,55 @@ scan.
 **AND A CLASS OF FALSE ALARM IS GONE.** The driven scans bound fixed ports, so
 two running at once reported the fault they check for instead of a busy socket
 — it cost two wasted diagnoses today. They ask the OS for a port now.
+## 14 Sep — 🤍 at the end of every coloured band (fluoduo-main)
+
+**Dan: *"can you put 🤍 at the end of each colore band. When users tap on it,
+they favourite it and it becomes ❤️. Update the guide too"*, then, when the ★
+came up: *"that means the mention about star as favourite should now be removed
+or replaced or changed"*.**
+
+**THE WORK SPLITS, and that is the whole design:**
+
+    band 🤍 / ❤️   favourite THIS page, and unfavourite it
+    bar  ★         open your favourites, always, one tap
+
+The ★ used to do both — tap to star, tap again once starred to open the list,
+long-press for the list — three behaviours on one glyph, two of them invisible.
+That double duty only existed because it was the app's ONLY favourites control
+and the list had to be reachable somehow. With a heart on every band it becomes
+a second control doing the first one's job on the same screen, which is the
+two-doors fault Help was cut down for in September.
+
+**IT SITS AFTER THE GOAL CHIP**, which reverses PageBand's own note that the
+chip "stays the rightmost object": the chip is a LABEL and the heart is a
+CONTROL, and the end of the strip is where a control that acts on the whole
+page belongs.
+
+**A FAVOURITE NEVER POINTS AT AN /embed ROUTE.** Every station runs in an
+iframe, so a control drawn inside the frame reads the FRAME's path — and
+`/tts/embed` is a chrome-less document with no site bar and no way back. The
+strip is in `canonicalHref`, so the heart, the ★ and anything added later
+cannot disagree about it.
+
+**A BAND THAT CARRIES A KEY NOW DROPS ITS EMOJI**, and that came out of driving
+it — after a first attempt that an existing check refused, correctly. At 430px the guide's strip is 398px and its four parts — ✕, title, « 📖
+Full guide here », 🤍 — wanted more, so the title truncated to « Gui… ». Of the
+two things in a title the NAME is what the band is for and the glyph is
+decoration, and 🧑‍🏫 is a ZWJ sequence costing a third of the title's width.
+Only bands with a `right` key are affected; every other band keeps its emoji.
+Measured across fifteen routes at 390px and 430px: **0 truncated titles**.
+
+**THE FIRST ATTEMPT WAS A FLOOR UNDER THE TITLE, AND verify82 WAS RIGHT TO
+REFUSE IT.** `min-w-0` on that title is not styling — it is what lets the title
+shrink and truncate instead of pushing the row wider, which is Dan's 1 Sep rule
+that every strip is one line and the same thickness. A `min-w-[5.5rem]` floor
+bought two characters and cost the rule. Dropping the emoji does the whole job
+on its own, which is why the floor is gone rather than made smaller.
+
+**EVERY PLACE THAT TAUGHT THE OLD GESTURE WAS CHANGED, not just the guide** —
+`docs/GUIDE.md`'s top-bar line and its Favourites bullet, QuickStart's step 5,
+and the Favourites page's own empty state, which said *"Tap ☆ at the top right"*
+and would have sent a learner to tap the very button they were standing on.
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 

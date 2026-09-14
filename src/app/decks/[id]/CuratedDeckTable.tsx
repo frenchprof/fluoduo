@@ -223,6 +223,7 @@ function TopBar({ collectionId }: { collectionId: string }) {
          precedent — a display rename never touches keys or routes, and this
          page's key and URL do not move). Typing "MémoiRecall" here is how the
          band drifts the next time the activity is renamed. */
+      activeKey="flip"
       title={activity("flip")?.name ?? "MémoiRecall"}
       /* …and its glyph from the same row (Dan, 11 Sep: "we have fixed emojis
          for them"). This is the ONE band the shell does not draw — the page

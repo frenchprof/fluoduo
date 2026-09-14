@@ -233,7 +233,7 @@ export default function CahierShell({
           <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
           {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} emoji={band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)} goal={band?.goal} right={band?.right} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} emoji={band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)} goal={band?.goal} right={band?.right} exitHref={band?.exitHref ?? HOME_HREF} activeKey={active} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
                    (globals.css, `.cahier-binding` z-index) — a real coil
                    crosses the cover strip, it does not stop at it. The ✕ stays
                    clickable: the binding is `pointer-events: none`. */ />

@@ -75,7 +75,7 @@ In a hurry? The [**QuickStart**](/guide) is the five steps you need to begin. Th
 - Swipe **up / down** to move to the previous / next goal. A counter reads « n / 50 ».
 
 ### 2.4 The top bar (every page)
-- **☰** the menu · **FluOLinGo** wordmark = back to Home · **🚀** start (or resume) the mid-term revision path — it shows how far you are once one is running · **🔇 / volume** one mute for all sound · **★** star this page — tap to star or unstar, long-press (or a second tap once it is filled) to open your Favourites · **account** sign in / out.
+- **☰** the menu · **FluOLinGo** wordmark = back to Home · **🚀** start (or resume) the mid-term revision path — it shows how far you are once one is running · **🔇 / volume** one mute for all sound · **★** open your Favourites (one tap, always) · **account** sign in / out.
 - Two things left this bar on 14 Sep and are not lost: **your answer history** is in ☰ → 👤 User → History, and **your current stop** is the editable **🎯 NN** just above the map, next to the zoom.
 
 ### 2.5 The ☰ menu — 7 rows, read top to bottom in the order you do them
@@ -267,7 +267,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 
 ### Also
 <!-- fig: favourites | Favourites, empty. Tap ☆ at the top right of any page to star it. -->
-- **★ Favourites:** star any page from the top bar. Organise into folders. Drag with a mouse, or press-and-hold on a phone.
+- **🤍 Favourites:** every coloured strip ends in a **🤍**. Tap it to save that page and it turns **❤️**; tap it again to remove it. The **★** in the top bar opens the list. Organise into folders. Drag with a mouse, or press-and-hold on a phone.
 - **Help:** the five-step guide inside the app (☰ → Start → Help).
 
 ---

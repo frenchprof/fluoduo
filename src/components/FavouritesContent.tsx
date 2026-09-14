@@ -501,12 +501,16 @@ export default function FavouritesContent() {
               </p>
             ) : (
               <>
-                {/* The empty state TEACHES THE GESTURE — a star nobody knows
-                    about is a feature nobody has. */}
-                <p className="text-base font-extrabold" style={{ color: INK }}>Nothing starred yet.</p>
+                {/* The empty state TEACHES THE GESTURE — a control nobody
+                    knows about is a feature nobody has — and it must name the
+                    control that EXISTS. It said « tap ☆ at the top right »,
+                    and since 14 Sep the ☆ up there only opens this page: a
+                    learner following that sentence would tap the button they
+                    are already standing on. Saving is the 🤍 on the strip. */}
+                <p className="text-base font-extrabold" style={{ color: INK }}>Nothing saved yet.</p>
                 <p className="mt-2 text-sm" style={{ color: SOFT }}>
-                  Tap <b style={{ color: INK }}>☆</b> at the top right of any page — a lesson, a game,
-                  the map — and it lands here.
+                  Tap the <b style={{ color: INK }}>🤍</b> at the end of the coloured strip on any page — a
+                  lesson, a game, the map — and it turns <b style={{ color: INK }}>❤️</b> and lands here.
                 </p>
               </>
             )}
