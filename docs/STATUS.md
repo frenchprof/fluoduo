@@ -6,7 +6,7 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
 all optimal (tiled buttons representing a choice each)"*, and after I twice

@@ -36,7 +36,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 import { ACTIVITY_HINTS, isGuided, stepText, type GuidedStep } from "@/content/hints";
-import GuidedSteps from "@/components/GuidedSteps";
+import GuidedSteps, { targetVisible } from "@/components/GuidedSteps";
 
 /** One key per activity, so dismissing one says nothing about the others. */
 const keyFor = (k: string) => `fluolingo:hint.${k}`;
@@ -243,7 +243,6 @@ export default function FirstRunHint({
  */
 export function ActivityFirstRun({ activityKey, on }: { activityKey: string | undefined; on: "drill" | "page" }) {
   const hint = activityKey ? ACTIVITY_HINTS[activityKey] : undefined;
-  const guided: GuidedStep[] = (hint?.steps ?? []).filter(isGuided);
   // The card's own "Got it" is what starts a guided run: read the two lines,
   // then be walked through them. Kept in one state here rather than inside
   // FirstRunHint, so a row with no selectors is byte-for-byte what it was.
@@ -267,7 +266,73 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
   // just finished. `done` is that, and it lives in component state, so the
   // next arrival offers the card again exactly as before.
   const [phase, setPhase] = useState<"card" | "walking" | "done">("card");
+
+  /*
+   * A STEP THIS DECK NEVER DRAWS IS NOT LISTED AND NOT WALKED (Dan, 2026-09-13:
+   * *"The WorDrill and MemoiRecall problem is not solved. I see Step 1 asking
+   * to choose how ong a run but the guide isn't pointing to how or where it can
+   * be done"*).
+   *
+   * HE WAS READING A TRUE SENTENCE ABOUT ANOTHER DECK. Both rows open on « How
+   * many words? » / « How many cards? », which is right: on a long deck that
+   * chooser IS the first thing on screen and the mic does not exist until it is
+   * answered. But `sessionLength.offer()` returns null at 14 items or fewer, so
+   * a short deck never asks — it just starts. Driven across every exported
+   * WorDrill route on the built app: the chooser is on screen on 29 of them and
+   * absent on 21, and on those 21 the card's step 1 named a control that was
+   * never going to exist and the walk then sat on "Finding it…".
+   *
+   *     /practice/say-it/aller-destinations   49 words  -> chooser   ✓
+   *     /practice/say-it/salutations          11 words  -> no chooser ✗
+   *
+   * THE LIST AND THE WALK ARE PRUNED TOGETHER, from one measurement, because
+   * fixing only the walk would have left the card still promising a step that
+   * silently never came — which is the half Dan was actually looking at.
+   *
+   * MEASURED UNTIL THE LEARNER PRESSES « Show me », NOT ONCE ON ARRIVAL — and
+   * the difference is a regression this went through before it worked. A
+   * drill's queue is `useState([])` filled by a mount shuffle (SayItContent
+   * line 143: the shuffle has to happen after mount so the server's HTML and
+   * the first client render agree), so ON THE FIRST COMMIT THERE IS NO DECK
+   * AND THEREFORE NO CHOOSER — on every deck, long or short. Measuring once
+   * pruned the step out of all fifty, and driving it showed « Step 1 of 1 ·
+   * Tap the mic · Finding it… » sitting under a « How many words? » that had
+   * arrived a tick later. One fault swapped for its mirror image.
+   *
+   * So it re-measures while the card is up and freezes when the walk starts:
+   * the card lists what is on screen, and the walk is handed exactly what the
+   * card promised. A step without `optional` is never measured, so the
+   * seventeen other rows behave byte-for-byte as before.
+   */
+  const [pruned, setPruned] = useState<(string | GuidedStep)[] | null>(null);
+  useEffect(() => {
+    if (phase !== "card") return;
+    // Reading the DOM is not something render may do, so this cannot be a
+    // `useMemo` — the measurement has to happen after the page has painted.
+    //
+    // SET ONLY WHEN IT CHANGES. A fresh array every 150ms is never `Object.is`
+    // to the last one, so storing it unconditionally would re-render the card
+    // seven times a second for as long as a learner reads it.
+    const measure = () => setPruned((was) => {
+      const now = (hint?.steps ?? []).filter(
+        (s) => !isGuided(s) || !s.optional || targetVisible(s.selector),
+      );
+      if (was && was.length === now.length && was.every((s, k) => s === now[k])) return was;
+      return now;
+    });
+    measure();
+    const id = window.setInterval(measure, 150);
+    return () => window.clearInterval(id);
+  }, [hint, phase]);
+
   if (!hint || hint.on !== on) return null;
+
+  // Until the measurement has happened there is nothing honest to draw: the
+  // card is what promises the steps, so showing it a frame early is the bug.
+  if (pruned === null) return null;
+
+  const steps = pruned;
+  const guided: GuidedStep[] = steps.filter(isGuided);
 
   // A ROW WITH SELECTORS GUIDES; A ROW WITHOUT ONE ONLY TELLS, exactly as
   // before. That is what lets the seventeen activities move one at a time
@@ -281,7 +346,7 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
       : (
         <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setPhase("walking")}>
           <ol className="ml-4 list-decimal space-y-1.5">
-            {hint.steps.map((s) => <li key={stepText(s)}>{stepText(s)}</li>)}
+            {steps.map((s) => <li key={stepText(s)}>{stepText(s)}</li>)}
           </ol>
         </FirstRunHint>
       );
@@ -290,7 +355,7 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
   return (
     <FirstRunHint hintKey={activityKey!} title={hint.title}>
       <ol className="ml-4 list-decimal space-y-1.5">
-        {hint.steps.map((s) => (
+        {steps.map((s) => (
           <li key={stepText(s)}>{stepText(s)}</li>
         ))}
       </ol>

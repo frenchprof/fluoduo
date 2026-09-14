@@ -28,10 +28,19 @@ export default function GuidePage() {
         <a
           href="/manual"
           title="Every activity, every number, all fifty goals"
-          className="cahier-mono inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-black leading-none no-underline"
-          style={{ background: "var(--cahier-ink)", color: "var(--cahier-hl)" }}
+          /* RED, AND BIG ENOUGH TO READ AS A DOOR (Dan, 2026-09-14, circling it
+             on the yellow strip: *"i would also like to replace the black in
+             this pill with red, and for the pill to be bigger by add the word
+             here"*). `--cahier-la` is the app's own red — the one the deck
+             table already uses for « to review ». The label takes the PAPER
+             token rather than a raw white, which measures 5.2:1 on it — read,
+             not merely seen — and keeps verify19b's ratchet where it is. 14px
+             is on the ramp (globals.css), not a pixel nailed down: on a
+             desktop it opens out with everything else. */
+          className="cahier-mono inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[14px] font-black leading-none no-underline"
+          style={{ background: "var(--cahier-la)", color: "var(--cahier-paper)" }}
         >
-          📖 Full guide
+          📖 Full guide here
         </a>
       ),
     }}>
