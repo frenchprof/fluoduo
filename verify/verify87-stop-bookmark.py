@@ -83,10 +83,17 @@ for surface, name in ((mapb, "MapBody"),):
 # stop info (and make that editable) at the top right"). Home's hero well is
 # gone; the editable reading rides the TOP BAR (StopMark), so it is on all
 # 28 surfaces instead of one — the claim survives at a better address.
+# THE ADDRESS MOVED AGAIN, 2026-09-14, AND THE CLAIM WITH IT (Dan: "we don't
+# have the stop field anymore, it s ben a while since it was take off"). It was
+# on Home's hero, then the top bar; it is the map's control row now and nowhere
+# else. What must not change is that the number a learner READS is a number
+# they can EDIT — which is the claim this file has carried through all three
+# addresses. So the bar is now checked for its ABSENCE, and the map for its
+# presence, rather than the file quietly losing an assertion.
 bar = read("src/components/SiteTopBar.tsx")
-ok("<StopBookmark" in bar, "the top bar's well is the editable indicator",
-   "the bar shows a number that cannot be edited — Dan: 'we can make the stop "
-   "number indicator editable'")
+ok("<StopBookmark" not in bar,
+   "the bar no longer carries the well — one number, one place",
+   "the stop field is back in the top bar; it was taken off on 14 Sep")
 mi = mapb.find("<StopBookmark")
 ok(mi != -1, "the map's control row carries the indicator",
    "the map has no editable indicator")

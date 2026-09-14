@@ -3252,14 +3252,41 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
    pinned. The switch's KNOB is derived from its track (28/38 ≈ 0.74) rather
    than declared, so the two can never drift apart. */
 .fluo-measure { max-width: 37.5rem; }
+/* NARROWER, AND THE TRAVEL NOW FOLLOWS THE TRACK (Dan, 2026-09-14: "can the
+   2D-3D switch be made to occupy less space"). The ratio was 1.9 — 84px wide
+   beside a 44px-tall finger target — and it is 1.48 now: 65px at 390px, 19px
+   back for the row that also carries the stop badge and the zoom.
+
+   TAKEN TWICE (Dan, same day: "the 3d-2d nuttom can still be smaller right?").
+   The first cut was the track alone, 1.9 -> 1.62. Narrowing the track again on
+   its own would have closed the gap between the label and the knob to about a
+   millimetre, so the KNOB came in with it, 0.74 -> 0.68 of the track height.
+   It still reads as a knob and the label keeps its air; the measured clearance
+   is in the commit message, in both positions and at both widths.
+
+   THE HEIGHT IS UNTOUCHED ON PURPOSE. 44px is the smallest a finger reliably
+   hits and a floor is not a size (verify270); the width is what was spending
+   the room, so the width is what gives it back.
+
+   --travel AND --label-in ARE DERIVED, which also fixes a quiet mismatch: the
+   component moved the knob a hard-coded 36px while this file sized the track
+   off a ratio, so at 44px the knob stopped 7px short of its own end. Now both
+   are computed from the same three numbers, and any future ratio stays
+   correct instead of needing the component edited to match. */
 .fluo-switch {
   --track-h: max(44px, calc(2.375rem + var(--fs-step) * 2));
+  --track-w: calc(var(--track-h) * 1.48);
+  --knob: calc(var(--track-h) * 0.68);
+  /* the 4px padding on each side is set in the component's class */
+  --travel: calc(var(--track-w) - 8px - var(--knob));
+  /* the label sits in the half the knob is not in, centred in what is left */
+  --label-in: calc((var(--travel) - 1.1em) / 2 + 4px);
   height: var(--track-h);
-  width: calc(var(--track-h) * 1.9);
+  width: var(--track-w);
 }
 .fluo-switch-knob {
-  height: calc(var(--track-h) * 0.74);
-  width: calc(var(--track-h) * 0.74);
+  height: var(--knob);
+  width: var(--knob);
 }
 .fluo-fab {
   --fab: max(44px, calc(2.875rem + var(--fs-step) * 2.5));
@@ -4606,4 +4633,178 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   color: var(--cahier-ink);
   text-align: center;
   text-decoration: none;
+}
+
+/* ══ THE CURATED PATH — the push, and the map (2026-09-14) ════════════════
+   Dan: *"what i would really need now is a 'curated path' automatically
+   driving the sequence of activities on FluOLinGo — essential, optional
+   etc"*, and, on how a learner is moved along, BOTH: the end screen pushes,
+   a page maps.
+
+   THE GOLD BOX IS A CARD, NOT A BUTTON, which is what keeps it clear of the
+   no-control-spans-the-width rule (5 Sep). It may run the width because it
+   carries a name, a line of description and the dots — none of them
+   tappable. The one control inside it is content-sized, exactly like a
+   usher key. */
+.fluo-path-next {
+  margin-top: calc(1rem + var(--fs-step) * 1);
+  padding: calc(0.85rem + var(--fs-step) * 0.85) calc(1rem + var(--fs-step) * 1);
+  border: 2px solid var(--cahier-gold);
+  border-radius: calc(0.9rem + var(--fs-step) * 0.9);
+  background: color-mix(in srgb, var(--cahier-gold) 12%, var(--cahier-paper));
+  text-align: center;
+}
+.fluo-path-next-eyebrow {
+  font-family: var(--fluo-mono);
+  font-size: calc(0.68rem + var(--fs-step) * 0.68);
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cahier-ink-soft);
+}
+.fluo-path-next-title {
+  margin-top: calc(0.3rem + var(--fs-step) * 0.3);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.25rem + var(--fs-step) * 1.25);
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--cahier-ink);
+}
+.fluo-path-next-does {
+  margin-top: calc(0.15rem + var(--fs-step) * 0.15);
+  font-size: calc(0.82rem + var(--fs-step) * 0.82);
+  color: var(--cahier-ink-soft);
+}
+.fluo-path-next-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.6rem + var(--fs-step) * 0.6);
+}
+.fluo-path-next-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* the finger floor — see .fluo-usher-key */
+  padding: calc(0.35rem + var(--fs-step) * 0.35) calc(1rem + var(--fs-step) * 1);
+  border-radius: calc(0.55rem + var(--fs-step) * 0.55);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+  text-decoration: none;
+  --key-bg: var(--cahier-gold);
+}
+.fluo-path-next-all {
+  font-size: calc(0.8rem + var(--fs-step) * 0.8);
+  color: var(--cahier-ink-soft);
+}
+.fluo-path-dots {
+  margin-top: calc(0.45rem + var(--fs-step) * 0.45);
+  font-size: calc(0.7rem + var(--fs-step) * 0.7);
+  letter-spacing: 0.22em;
+  color: var(--cahier-rule);
+}
+.fluo-path-dots .on { color: var(--cahier-gold); }
+
+/* ── the map: one row per step ─────────────────────────────────────────────
+   A ROW IS NOT A BUTTON EITHER. The row carries the number, the name and the
+   « does » line; the GO key inside it is content-sized. That is the same
+   shape the usher row takes and for the same rule. */
+.fluo-path-step {
+  display: grid;
+  grid-template-columns: calc(2rem + var(--fs-step) * 2) 1fr;
+  gap: 0 calc(0.7rem + var(--fs-step) * 0.7);
+  padding: calc(0.7rem + var(--fs-step) * 0.7) 0;
+  border-top: 1px solid var(--cahier-rule);
+}
+.fluo-path-step:first-child { border-top: 0; }
+.fluo-path-step-n {
+  display: grid;
+  place-items: center;
+  width: calc(1.9rem + var(--fs-step) * 1.9);
+  height: calc(1.9rem + var(--fs-step) * 1.9);
+  border-radius: 999px;
+  background: var(--cahier-paper-2);
+  font-family: var(--fluo-mono);
+  font-size: calc(0.78rem + var(--fs-step) * 0.78);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--cahier-ink-soft);
+}
+.fluo-path-step[data-state="done"] .fluo-path-step-n {
+  background: color-mix(in srgb, var(--dopa-win) 22%, var(--cahier-paper));
+  color: var(--cahier-ink);
+}
+.fluo-path-step[data-state="now"] .fluo-path-step-n {
+  background: var(--cahier-gold);
+  color: var(--cahier-ink);
+}
+.fluo-path-step-hd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: calc(0.2rem + var(--fs-step) * 0.2) calc(0.7rem + var(--fs-step) * 0.7);
+}
+.fluo-path-step-title {
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+}
+.fluo-path-step-min {
+  margin-left: auto;
+  font-family: var(--fluo-mono);
+  font-size: calc(0.75rem + var(--fs-step) * 0.75);
+  font-variant-numeric: tabular-nums;
+  color: var(--cahier-ink-soft);
+  white-space: nowrap;
+}
+.fluo-path-step-does {
+  margin-top: calc(0.15rem + var(--fs-step) * 0.15);
+  font-family: var(--fluo-mono);
+  font-size: calc(0.68rem + var(--fs-step) * 0.68);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--cahier-ink-faint, var(--cahier-ink-soft));
+}
+.fluo-path-step-why {
+  margin-top: calc(0.3rem + var(--fs-step) * 0.3);
+  font-size: calc(0.85rem + var(--fs-step) * 0.85);
+  color: var(--cahier-ink-soft);
+}
+.fluo-path-step-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* the finger floor */
+  margin-top: calc(0.4rem + var(--fs-step) * 0.4);
+  padding: calc(0.3rem + var(--fs-step) * 0.3) calc(0.9rem + var(--fs-step) * 0.9);
+  border-radius: calc(0.5rem + var(--fs-step) * 0.5);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(0.95rem + var(--fs-step) * 0.95);
+  font-weight: 900;
+  color: var(--cahier-ink);
+  text-decoration: none;
+}
+
+/* ── the dedicated START key on Home ───────────────────────────────────────
+   Dan asked for "a dedicated 'Mid-Term Revision' START button", so it is
+   sized to its own words rather than to the page: content-sized, in a
+   centred row, exactly like a usher key. */
+.fluo-path-door {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  min-height: 44px; /* the finger floor — see .fluo-usher-key */
+  padding: calc(0.4rem + var(--fs-step) * 0.4) calc(1.1rem + var(--fs-step) * 1.1);
+  border-radius: calc(0.6rem + var(--fs-step) * 0.6);
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--cahier-ink);
+  text-align: center;
+  text-decoration: none;
+  --key-bg: var(--fam-review-wash);
 }

@@ -16,11 +16,17 @@
  * both, and the caption's removal then costs a learner nothing, which is Dan's
  * litmus test.
  *
- * THE GEOMETRY IS FIXED AND THE LABEL DEPENDS ON IT. Track 72, padding 4, knob
- * 28, so the travel is 36 and the free half is 36 wide; the label is pinned 10
- * from the end the knob is NOT at, which clears it by 6px in both positions. A
- * caller passing a long word would overrun that, which is why the labels are
- * two-or-three characters by contract and asserted by verify80.
+ * THE GEOMETRY IS DERIVED, NOT TYPED TWICE (14 Sep). It used to be written in
+ * two places — a ratio in globals.css sizing the track, and a hard-coded
+ * `translateX(36px)` here moving the knob — and the two had already drifted:
+ * at a 44px track the knob stopped 7px short of its own end. globals.css now
+ * computes --travel and --label-in from the track, the knob and the padding,
+ * and this file reads them. Narrowing the switch is a one-number change there
+ * and nothing here.
+ *
+ * The label still sits in the half the knob is not in, and swaps sides with it.
+ * Labels are two-or-three characters by contract: --label-in reserves 1.1em for
+ * them, and a caller passing a long word would overrun the knob.
  */
 
 type Hue = "focus" | "reward" | "win" | "streak";
@@ -94,7 +100,7 @@ export default function PillSwitch({
       <span
         aria-hidden
         className="fluo-mono absolute top-1/2 -translate-y-1/2 text-[16px] font-black leading-none tracking-tight"
-        style={{ [on ? "left" : "right"]: "10px", color: INK[hue] }}
+        style={{ [on ? "left" : "right"]: "var(--label-in)", color: INK[hue] }}
       >
         {name}
       </span>
@@ -114,7 +120,7 @@ export default function PillSwitch({
         // to check the travel arithmetic, and a class wedged between them makes
         // it unreadable. Better to keep their check strict than to loosen it.
         className="neo-key block fluo-switch-knob fluo-spring rounded-[9px]"
-        style={{ transform: on ? "translateX(36px)" : "translateX(0)", background: KNOB[hue] }}
+        style={{ transform: on ? "translateX(var(--travel))" : "translateX(0)", background: KNOB[hue] }}
       />
     </button>
   );

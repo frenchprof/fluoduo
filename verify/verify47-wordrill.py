@@ -221,6 +221,10 @@ _callers = {
     "src/app/practice/say-it/[collectionId]/SayItContent.tsx": "words",
     "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx": "cards",
     "src/app/practice/grammarathon/[collectionId]/GramMarathonContent.tsx": "questions",
+    # Added by the revision-path lane the same day, and the required prop is
+    # what made it declare itself: « Remettre dans l'ordre » deals one
+    # scrambled SENTENCE per item.
+    "src/games/compose/ComposeUnscramble.tsx": "sentences",
 }
 import os as _os
 _src_all = "".join(read(_p) for _p in _callers)

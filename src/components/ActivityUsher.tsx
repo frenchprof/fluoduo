@@ -29,6 +29,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
+import PathNext from "@/components/PathNext";
 import type { Usher } from "@/lib/usher";
 
 /** One key on the row. The colour is passed as `--key-bg` for the reason
@@ -62,10 +63,19 @@ export default function ActivityUsher({
   onRedo?: () => void;
   className?: string;
 }) {
-  if (!usher) return null;
+  /* THE PATH'S PUSH SITS ABOVE THE COMPASS, AND OUTSIDE THE `usher` GUARD.
+     A learner walking a path must be moved on even from a screen that has no
+     compass to draw — SpecuLearn's recap and ÉcouTexte both hand this
+     component a null usher, and both are steps on a path. Returning early
+     before drawing the push is how the path would silently stop on exactly
+     the screens that needed it most. */
+  const push = <PathNext />;
+  if (!usher) return push;
   const { prev, next, goal, onward } = usher;
   return (
-    <nav className={`fluo-usher ${className}`} aria-label="Where to next">
+    <>
+      {push}
+      <nav className={`fluo-usher ${className}`} aria-label="Where to next">
       {prev && (
         <Key href={prev.href} bg="var(--fam-practice-wash)">
           ← {prev.emoji} {prev.name}
@@ -90,6 +100,7 @@ export default function ActivityUsher({
           ↓ {onward.emoji} {onward.name} · 🎯 {onward.goal}
         </Key>
       )}
-    </nav>
+      </nav>
+    </>
   );
 }

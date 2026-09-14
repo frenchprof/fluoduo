@@ -222,9 +222,24 @@ export default function MapBody() {
         {/* THE BOOKMARK, left of the zoom (Dan, 2 Sep: "could that editable
             indicator be placed to the left of zoom control") — the same
             editable stop number Home's well carries, in this row's mono
-            dress. 🧑‍🎓 names it: it is the stop that figure stands on. */}
-        <span className="fluo-mono flex items-center text-[13px] font-black text-[color:var(--cahier-ink)]">
-          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🧑‍🎓</span>
+            dress.
+
+            🎯, NOT 🧑‍🎓 (Dan, 2026-09-14: "the 🎯 stop badge is currently being
+            displayed as a person. can we take put the 🎯 back?"). The person
+            was chosen here because the figure stands on that stop out on the
+            map — true, and it made this badge the only one in the app wearing a
+            different glyph from the one the top bar's stop badge wears, two
+            controls showing the same number. 🎯 is the goal family's own icon
+            and is what the bar uses; one number, one mark. */}
+        {/* A WELL, LIKE THE ZOOM FIELD BESIDE IT (Dan, 2026-09-14: "can the 01
+            be in a similar depressed space something or else learners wont
+            know they can tap on it"). The number has always been editable —
+            StopBookmark puts a real input under it — but it was set as plain
+            mono text, so nothing on screen said so. A well is this app's word
+            for a value you read AND type into; the zoom field two controls
+            along is the same shape, which is exactly why it reads as one. */}
+        <span className="neo-well fluo-mono flex items-center rounded-lg px-1.5 py-1 text-[13px] font-black leading-none text-[color:var(--cahier-ink)]">
+          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🎯</span>
           <StopBookmark
             stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}
             totalClassName="font-bold text-[color:var(--cahier-ink-faint)]"

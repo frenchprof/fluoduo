@@ -17,6 +17,7 @@ import { awardConversationXp } from "@/lib/progress";
 import { recordResponse } from "@/lib/firebase/responses";
 import { categoryHeaderClass, type ComposeBank } from "@/games/compose/banks";
 import GameFrame from "@/components/GameFrame";
+import { checkRequired, countWords } from "@/lib/compose/required";
 import GameOver from "@/components/GameOver";
 import ToolSummon from "@/components/tools/ToolSummon";
 import { drillExitHref } from "@/components/DrillShell";
@@ -175,7 +176,57 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
       {bank.aiCheck && <p className="mt-2">🚶 The passer-by reads the whole itinerary and reacts — in French.</p>}
     </>
   );
-  const record = (
+  /* ── THE WORD LIST, TICKING ITSELF OFF ────────────────────────────────
+   * A set-word-list task asks for two things at once — *"utilisez 10 mots
+   * minimum. N'oubliez pas de conjuguer les verbes dans la liste. (50 – 60
+   * mots)"* — and the composer could show neither.
+   *
+   * It reads `dialogueText`, which is the committed lines PLUS the sentence
+   * being built, so a word ticks the moment it is tapped rather than one ✔
+   * later. Only the matching is here; why « il a » ticks « avoir » is in
+   * lib/compose/required.ts.
+   *
+   * IT LIVES IN THE PANE, AND « ✎ YOUR LINES » GOES. That pane held a second
+   * copy of the learner's committed sentences — which the body already prints
+   * directly below the question, and which starts empty. The checklist is the
+   * thing a learner needs beside them while writing and cannot get anywhere
+   * else. Same litmus-test call as the phrase bank taking ComposeIt's pane on
+   * 13 Sep, for the same reason. A bank with no `required` keeps the old pane. */
+  const hits = bank.required ? checkRequired(dialogueText, bank.required.words) : [];
+  const usedCount = hits.filter((h) => h.used).length;
+  const written = countWords(dialogueText);
+  const goal = bank.lengthGoal;
+  const record = bank.required ? (
+    <div className="flex flex-col gap-2 text-sm">
+      <p className="font-black">
+        <span className={usedCount >= bank.required.min ? "text-[color:var(--tier-good)]" : ""}>
+          {usedCount} / {bank.required.words.length}
+        </span>{" "}
+        <span className="font-normal text-[color:var(--cahier-ink-soft)]">used · {bank.required.min} needed</span>
+      </p>
+      {goal && (
+        <p className="font-black">
+          <span className={written >= goal.min && written <= goal.max ? "text-[color:var(--tier-good)]" : ""}>{written}</span>{" "}
+          <span className="font-normal text-[color:var(--cahier-ink-soft)]">
+            {written === 1 ? "word" : "words"} · {goal.min}–{goal.max} asked for
+          </span>
+        </p>
+      )}
+      <ul className="flex flex-col gap-0.5">
+        {hits.map((h) => (
+          <li key={h.label} lang="fr" className={h.used ? "" : "text-[color:var(--cahier-ink-soft)]"}>
+            <span aria-hidden>{h.used ? "✓" : "·"}</span>{" "}
+            <span className={h.used ? "font-bold line-through decoration-2" : ""}>{h.label}</span>
+            {/* « avoir → a » — the form that ticked it, so a learner can SEE
+                that conjugating is what counted, not copying the list. */}
+            {h.used && h.as && h.as !== h.label && (
+              <span className="text-[color:var(--cahier-ink-soft)]"> → {h.as}</span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
     <ol className="flex flex-col gap-1.5">
       {lines.map((l, i) => (
         <li key={`${i}-${l}`} lang="fr" className="rounded-lg border-2 border-[color:var(--cahier-line)] px-2 py-1 text-sm">{l}</li>
@@ -196,7 +247,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
         { label: "🧹 Clear", onClick: clearOnly },
       ]}
       record={record}
-      recordTitle="✎ Your lines"
+      recordTitle={bank.required ? "✎ La liste de mots" : "✎ Your lines"}
     >
     <div className="mx-auto flex h-full w-full max-w-5xl flex-col gap-4 overflow-y-auto px-4 py-4 text-[color:var(--cahier-ink)]">
       {/* The task — the one line the learner cannot compose without. */}

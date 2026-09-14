@@ -371,6 +371,12 @@ export default function HomeDashboard() {
           verify80's own header, which records the other three. The POSTCARD
           ruling is untouched: what comes back is the real switch over the real
           scene, not a cropped 2D picture under a dead band. */}
+      {/* THE REVISION DOOR MOVED INTO THE TOP BAR (Dan, 2026-09-14: "can you
+          move it to the top of the page between the menu burger and buttons,
+          in the middle"). It stood here, under the hero, until then — see
+          components/PathDoor.tsx for why it is a glyph up there and not the
+          sentence it was down here. */}
+
       <section aria-label="Course map" className="mt-5">
         <div className="relative" style={{ touchAction: "pan-y" }}>
           <MapBody />

@@ -52,6 +52,7 @@ import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
 import { shuffle } from "@/lib/shuffle";
 import { HOME_HREF } from "@/lib/routes";
+import PathNext from "@/components/PathNext";
 
 // ── Phrases complètes (Dan, 2026-07-21): "what is genuinely missing from
 // ConjugaZone is the possibility to hear the conjugations in simple complete
@@ -388,6 +389,19 @@ function StudyTable({
           🎉 ✓ {score.ok}/{score.total}
         </p>
       )}
+
+      {/* THE CURATED PATH'S PUSH (14 Sep). ConjugaZone is step 6 of the
+          mid-term path and the only step on it that drills a whole paradigm.
+          Like ErroReview it draws no `ActivityUsher` and cannot — the compass
+          is computed from a STOP, and ConjugaZone belongs to no stop — so the
+          push is rendered here directly. Gated on a finished run for the same
+          reason `sfx.stage()` is (verify660): the end of a run is not the
+          start of one, and nothing may perform unasked.
+
+          Found by WALKING the path in the built app. Every check was green and
+          the walk still stalled, because the two screens that had to tick
+          drew nothing at all. */}
+      {score.total > 0 && <PathNext />}
 
       {/* TWO MODES ON A SWITCH (Dan, 2026-09-11: *"one for reveal the verb
           form, the other for typing it in. there should be a switch to toggle

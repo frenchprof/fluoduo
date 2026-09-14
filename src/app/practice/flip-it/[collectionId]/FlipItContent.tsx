@@ -59,6 +59,7 @@ import { logEvent } from "@/lib/firebase/usage";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
 import ActivityUsher from "@/components/ActivityUsher";
+import TransferProbe from "@/components/TransferProbe";
 import { usherFor, type Usher } from "@/lib/usher";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import CuratedDeckTable from "@/app/decks/[id]/CuratedDeckTable";
@@ -602,6 +603,12 @@ function Recap({ test, run, nReviewed, total, deckId, usher, onRedo }: {
       <div className="mt-5 flex justify-center">
         <Link href={`/decks/${deckId}`} className="cahier-btn">▦ Whole list</Link>
       </div>
+      {/* ONE WORD THE DECK NEVER TAUGHT, asked here and nowhere else. It sits
+          AFTER the score and BEFORE the way out: the run is over and nothing
+          it does can change the numbers above it. See content/transfer.ts —
+          Dan, 14 Sep, "approach indirectly via application of knowledge". */}
+      <TransferProbe deckId={deckId} className="mt-5" />
+
       {/* Dan, 13 Sep: *"for all the stops there should be something like this
           at the end"*. « ▦ Whole list » stays above it because it is about
           THIS deck, not about where to go next. */}

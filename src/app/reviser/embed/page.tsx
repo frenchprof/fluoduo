@@ -28,6 +28,7 @@ import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
 import SectionBand from "@/components/SectionBand";
 import AuthGate from "@/components/AuthGate";
+import PathNext from "@/components/PathNext";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -134,6 +135,13 @@ export default function ReviserPage() {
               Practise any objective&rsquo;s deck and its words will come back here when they&rsquo;re due.
             </p>
             <Link href="/home" className="fluo-btn fluo-btn-sm mt-4 inline-block">← Back to the path</Link>
+            {/* THE EMPTY QUEUE IS AN END TOO, and the path must not stall on
+                it. On the mid-term path this branch is rare — step 1 is the
+                Finale, which queues everything it catches — but a learner who
+                arrives with nothing due has finished with this screen either
+                way, and freezing their walk because the SRS had nothing to
+                offer would be the worse of the two answers. */}
+            <PathNext />
           </div>
         ) : done ? (
           <div className="space-y-4">
@@ -155,6 +163,18 @@ export default function ReviserPage() {
                 is right in general and wrong here. */}
             {/* eslint-disable-next-line react-hooks/purity */}
             <GapPanel gaps={gapsByDeck(loadProgress(), Date.now())} />
+            {/* THE CURATED PATH'S PUSH (14 Sep). ErroReview is TWO steps on the
+                mid-term path — step 2, which corrects what the Finale just
+                caught, and step 9 the next morning, which makes it stick.
+                It draws no `ActivityUsher`, and it cannot: the compass is
+                computed from a STOP, and ErroReview belongs to no stop. So the
+                push is rendered directly.
+
+                THIS WAS FOUND BY WALKING THE PATH IN THE BUILT APP, not by
+                reading it. Every check passed, the map page drew all eighteen
+                rows, and the walk still stalled at step 2 forever — because
+                the one screen that had to tick it drew nothing at all. */}
+            <PathNext />
           </div>
         ) : card ? (
           <>

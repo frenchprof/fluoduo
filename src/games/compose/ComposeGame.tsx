@@ -9,9 +9,12 @@
 import { getComposeBank } from "@/games/compose/banks";
 import ComposeSolo from "@/games/compose/ComposeSolo";
 import ComposeDialogue from "@/games/compose/ComposeDialogue";
+import ComposeUnscramble from "@/games/compose/ComposeUnscramble";
 
 export default function ComposeGame({ bankId }: { bankId: string }) {
   const bank = getComposeBank(bankId);
   if (!bank) return null; // the route 404s before this can happen
-  return bank.mode === "dialogue" ? <ComposeDialogue bank={bank} /> : <ComposeSolo bank={bank} />;
+  if (bank.mode === "dialogue") return <ComposeDialogue bank={bank} />;
+  if (bank.mode === "unscramble") return <ComposeUnscramble bank={bank} />;
+  return <ComposeSolo bank={bank} />;
 }
