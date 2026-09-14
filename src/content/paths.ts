@@ -109,6 +109,15 @@ export function groupsOf(steps: PathStep[]): { label: string; steps: PathStep[] 
 const MIDTERM: CuratedPath = {
   id: "midterm",
   name: "Mid-term revision",
+  /* NINE STEPS, AND THE HOUR IS THE CONSTRAINT, not a result (Dan,
+     2026-09-14, sent back a 104-minute tier: *"104 minutes is now too long.
+     We had promised about half that duration. Can you divide that into
+     essential and optional"*).
+     So the tier line is drawn by MARKS PER MINUTE against the real Test 1
+     paper, not by "is this useful". Everything that earns its minute is here;
+     everything that is merely good is in the fold, and the fold now carries
+     the things a learner reaches for when an hour turns out to be ninety
+     minutes. */
   blurb:
     "Nine steps, about an hour, plus ten minutes the next morning. No two steps do the same job.",
   essential: [
@@ -165,6 +174,47 @@ const MIDTERM: CuratedPath = {
       does: "types a whole word from the English",
       minutes: 3,
     },
+    /* THREE LESSONS THAT WERE ALREADY IN THE COURSE AND ON NO STEP.
+     *
+     * Dan, 2026-09-14, reading the Test 1 paper against the path: *"please
+     * stick to the 30 stops"*, and, of the reading section, *"it is not so
+     * much about reading per se, but what those reading questions are really
+     * testing"*. Both point the same way — every gap the audit turned up was
+     * a rule the course ALREADY teaches inside stops 1–30, sitting in a
+     * MneMemo lesson that no step opened. Nothing here is new material and
+     * nothing reaches past stop 30.
+     *
+     *   quel-prefere   SIO-015. « Quel ? Quelle ? Quels ? Quelles ? » — four
+     *                  of the paper's five question marks are Quel âge /
+     *                  Quelle nationalité / Quelles langues / Quelle
+     *                  profession. The systematic question lesson IS at
+     *                  SIO-034, out of scope; this one was moved into Unit 1
+     *                  on 2026-09-05 for exactly this reason and the map in
+     *                  lessons.ts says so.
+     * ONLY THE FIRST OF THE THREE IS ESSENTIAL, and the tier line is drawn on
+     * marks per minute: « Quel ? » is worth four marks of a fifty-mark paper.
+     * The négation lesson is worth one and l'article devant le pays two, so
+     * both sit in the fold — named, counted, and one tap away.
+     *
+     * EACH CARRIES ITS OWN ADDRESS rather than `goal: 15`, because SIO-015 has
+     * TWO lessons and `cellHref` takes the first — a goal-scoped step would
+     * silently open articles-pays twice and never quel-prefere.
+     *
+     * FIVE MINUTES, NOT TEN. The first pass at this priced a MneMemo lesson
+     * like a drill and put 104 minutes on an hour-long path. Driven in the
+     * built app, a lesson is a REFERENCE PAGE with four tabs — 🎯 Goal, 💡
+     * Idée, 📐 Formes, 🏋️ Exercice — and no fixed card count to measure, so
+     * five is an honest estimate for reading two tabs and working the third,
+     * where ten was a guess dressed as a number. */
+    {
+      id: "lesson-quel",
+      activityKey: "lesson",
+      href: "/lessons/quel-prefere",
+      title: "MneMemo — Quel ? Quelle ? Quels ? Quelles ?",
+      does: "reads a rule and applies it · the only step that explains",
+      minutes: 5,
+      why: "The four forms, and the possessive that answers them, on one card — « quel pays » / « ton pays », « quelle ville » / « ta ville ». A learner who can ask the question can already give the answer.",
+    },
     {
       id: "conjuga",
       activityKey: "conjugaison",
@@ -196,15 +246,6 @@ const MIDTERM: CuratedPath = {
       why: "Five sentences, sixteen words to draw on, 50–60 words. The list ticks a verb only when you conjugate it.",
     },
     {
-      id: "wordrill",
-      activityKey: "wordrill",
-      goal: 23,
-      title: "WorDrill",
-      does: "speaks · the only spoken step",
-      minutes: 4,
-      why: "Ten words. The job is to find the handful you cannot say under pressure, not to rehearse the ones you can.",
-    },
-    {
       id: "ecoutexte",
       activityKey: "ecoutexte",
       /* A DECK, NOT THE TOPIC PICKER. `/practice/ecoutexte` lists every unit
@@ -214,7 +255,7 @@ const MIDTERM: CuratedPath = {
       title: "ÉcouTexte — one text",
       does: "writes what it hears · the only listening step",
       minutes: 6,
-      why: "One text, not three — goal 27's days, times and plans. A path with a speaking step and no listening step is lopsided.",
+      why: "One text, not three — goal 27's days, times and plans. The paper's listening is ten marks and this is the only step that answers it.",
     },
     {
       id: "erroreview-morning",
@@ -223,10 +264,75 @@ const MIDTERM: CuratedPath = {
       title: "ErroReview, the next morning",
       does: "the same misses, spaced · retention rather than correction",
       minutes: 10,
-      why: "A different job from step 2: that one corrects, this one makes it stick. Steps 3–8 will have added to the queue.",
+      why: "A different job from step 2: that one corrects, this one makes it stick. Every step before it will have added to the queue.",
     },
   ],
+  /* THE FOLD IS ORDERED BY WHAT IT IS WORTH ON THE PAPER, best first, because
+     a learner who finds they have ninety minutes rather than sixty opens the
+     top of this list and stops when the time runs out. Everything down to
+     « four more verbs » carries real marks; the last two are practice. */
   optional: [
+    {
+      /* NumBus is the highest-value thing in the fold and the only reason it
+         is in the fold at all is its ten minutes. `quand-time` teaches whole
+         hours only — measured, « à 8 heures », « à 10 heures » — so NumBus 🕑
+         is the ONLY place in the app that says a 24-hour time, and its 📞 is
+         the only place a French phone number is read in two-digit blocks. The
+         paper asks for 15h45, 18h, 16h30 and « 06 27 68 05 15 ».
+         POINTED AT THE GAME, not at `/games/numbers`, which is only the
+         NumBus/NumBourse chooser: a learner finishes at /games/numbus, so a
+         step addressed to the chooser could never tick. */
+      id: "opt-numbus",
+      activityKey: "numbers",
+      href: "/games/numbus",
+      title: "NumBus",
+      does: "numbers by ear · 24-hour times, prices, a phone number",
+      minutes: 10,
+      why: "Worth about four marks and nothing else in the app says « seize heures trente » or « zéro six, vingt-sept, soixante-huit ». Do this one first if there is any time at all.",
+    },
+    {
+      id: "opt-lesson-pays",
+      activityKey: "lesson",
+      href: "/lessons/articles-pays",
+      group: "MneMemo — two more rules",
+      title: "MneMemo — l'article devant le pays",
+      does: "reads a rule and applies it",
+      minutes: 5,
+      why: "le / la / l' / les, by ending and by vowel. The only place a country the course never taught is explained.",
+    },
+    {
+      /* The DECK cannot do this and the LESSON can, which is the whole reason
+         this entry exists: measured, 0 of the négation deck's 20 items is
+         reflexive and none is « ne…pas » + être. */
+      id: "opt-lesson-negation",
+      activityKey: "lesson",
+      href: "/lessons/negation",
+      group: "MneMemo — two more rules",
+      title: "MneMemo — la négation",
+      does: "reads a rule and applies it",
+      minutes: 5,
+      why: "« il ne s'appelle pas », « elle n'est pas anglaise » — the two shapes the négation deck never drills.",
+    },
+    {
+      /* Stop 26, « aller + au / à la / aux » — which is both « où elle
+         habite » and « après le film, on va au parc ». */
+      id: "opt-remettre-26",
+      activityKey: "compose",
+      href: "/games/compose/remettre-aller-destinations",
+      group: "Remettre dans l'ordre — two more",
+      title: "Remettre dans l'ordre — going places",
+      does: "verb + preposition + place, in order",
+      minutes: 4,
+    },
+    {
+      id: "opt-remettre-27",
+      activityKey: "compose",
+      href: "/games/compose/remettre-quand-time",
+      group: "Remettre dans l'ordre — two more",
+      title: "Remettre dans l'ordre — when",
+      does: "where a time expression sits in the sentence",
+      minutes: 4,
+    },
     {
       id: "opt-gram-28",
       activityKey: "grammarathon",
@@ -245,28 +351,19 @@ const MIDTERM: CuratedPath = {
       minutes: 10,
     },
     {
-      id: "opt-remettre-27",
-      activityKey: "compose",
-      href: "/games/compose/remettre-quand-time",
-      title: "Remettre dans l'ordre — when",
-      does: "where a time expression sits in the sentence",
+      /* Moved out of the essential tier on 14 Sep, and the reason is worth
+         keeping: Test 1 has no spoken section at all. « Compréhension orale »
+         is listening, which ÉcouTexte answers. WorDrill trains a skill the
+         paper does not score, so it costs four minutes of an hour that is
+         already short — but it stays on the path, because the course is not
+         only this paper. */
+      id: "opt-wordrill",
+      activityKey: "wordrill",
+      goal: 23,
+      title: "WorDrill",
+      does: "speaks · the only spoken step",
       minutes: 4,
-    },
-    {
-      id: "opt-remettre-26",
-      activityKey: "compose",
-      href: "/games/compose/remettre-aller-destinations",
-      title: "Remettre dans l'ordre — going places",
-      does: "verb + preposition + place, in order",
-      minutes: 4,
-    },
-    {
-      id: "opt-numbers",
-      activityKey: "numbers",
-      href: "/games/numbers",
-      title: "NumBus",
-      does: "numbers by ear · which nothing else tests",
-      minutes: 10,
+      why: "Ten words, said out loud. Nothing on Test 1 scores speaking — this one is for the course, not the paper.",
     },
     {
       id: "opt-conjuga-2",
@@ -278,14 +375,6 @@ const MIDTERM: CuratedPath = {
       does: "écouter · adorer · acheter · vouloir",
       minutes: 6,
       why: "Two more -ER, the -eR spelling change, and vouloir.",
-    },
-    {
-      id: "opt-lesson-15",
-      activityKey: "lesson",
-      goal: 15,
-      title: "MneMemo — countries",
-      does: "articles before country names",
-      minutes: 10,
     },
     {
       id: "opt-tts",

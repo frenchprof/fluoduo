@@ -91,10 +91,30 @@ ok(bool(ESSENTIAL) and bool(OPTIONAL),
    "could not read the tiers — re-point this parse rather than letting every "
    "clause below pass over an empty list.")
 
-steps = re.findall(r"\{\s*\n\s*id:\s*\"([^\"]+)\",(.*?)\n    \}", src, re.S)
-ok(len(steps) >= 10,
-   f"{len(steps)} path steps read from the module",
-   f"only {len(steps)} steps parsed — the parse is wrong, not the data.")
+# A STEP MAY OPEN WITH A COMMENT, and for an afternoon this parse said it may
+# not. The pattern used to demand `id:` on the line straight after `{`, so the
+# two steps promoted out of the optional fold on 14 Sep — each carrying a
+# comment saying WHY it was promoted — were simply not seen: the check read 19
+# of 21 steps and passed, having never looked at two of them. That is the
+# failure this file was written to prevent, committed by the file itself.
+#
+# So the pattern now skips a leading comment, AND the count is cross-checked
+# against a plain tally of `id:` lines below — a parse that silently drops a
+# step now fails instead of shrinking.
+# ANCHORED ON THE INDENTATION, which is what actually distinguishes a step from
+# the object that holds it. A loose `\{\s*…id:` also matched `const MIDTERM = {
+# id: "midterm"` and then swallowed whole runs of real steps inside one match —
+# the first attempt at this fix read ELEVEN of twenty-one and looked fine.
+STEP = (r"\n    \{\n"                                   # a step opens at 4 spaces
+        r"(?:[^\S\n]*(?:/\*[\s\S]*?\*/|//[^\n]*)\n)*"   # …optionally a comment
+        r"[^\S\n]*id:\s*\"([^\"]+)\",([\s\S]*?)\n    \}")
+steps = re.findall(STEP, src, re.S)
+declared = len(re.findall(r"^\s{6}id:\s*\"", ESSENTIAL + OPTIONAL, re.M))
+ok(len(steps) >= 10 and len(steps) == declared,
+   f"{len(steps)} path steps read from the module (all {declared} declared)",
+   f"parsed {len(steps)} steps but {declared} are declared in the two tiers. "
+   "The parse is dropping steps, which means every clause below is silently "
+   "skipping them too. Fix STEP, never the data.")
 
 # ── 1 · every literal address is a page that was built ──────────────────────
 hrefs = re.findall(r'href:\s*"(/[^"]*)"', src)
@@ -135,7 +155,7 @@ ok(not dupes,
 # goals 16, 22 and 24 is three DOORS but one job, and the screen numbers it
 # once. Comparing raw entries flagged exactly that and was wrong to — the first
 # run of this check caught it. So compare one `does` per group.
-blocks = re.findall(r"\{\s*\n\s*id:\s*\"[^\"]+\",(.*?)\n    \}", ESSENTIAL, re.S)
+blocks = [b for _, b in re.findall(STEP, ESSENTIAL, re.S)]
 does_e, seen_groups = [], set()
 for b in blocks:
     d = re.search(r'does:\s*"([^"]+)"', b)
@@ -217,8 +237,21 @@ ENDS = {
     "/reviser": "src/app/reviser/embed/page.tsx",
     "/conjugaison": "src/app/conjugaison/embed/page.tsx",
     "/games/compose/remettre-negation-pas": "src/components/GameOver.tsx",
+    "/games/compose/remettre-aller-destinations": "src/components/GameOver.tsx",
     "/games/compose/presenter-personne": "src/components/GameOver.tsx",
     "/practice/ecoutexte/quand-time": "src/app/practice/ecoutexte/EcouTexte.tsx",
+    # NumBus ends in GameOver, like the compose games. The step is addressed to
+    # /games/numbus and NOT to /games/numbers, which is only the two-game
+    # chooser: a learner who starts there finishes at /games/numbus, so a step
+    # pointed at the chooser would never match and never tick.
+    "/games/numbus": "src/components/GameOver.tsx",
+    # Every MneMemo lesson runs in LessonPager, which is a DrillShell — and
+    # DrillShell draws ActivityUsher, which returns the push BEFORE its own
+    # null-guard. A lesson belongs to no stop-chain of its own, so that
+    # ordering is the whole reason these three can tick at all.
+    "/lessons/quel-prefere": "src/components/DrillShell.tsx",
+    "/lessons/negation": "src/components/DrillShell.tsx",
+    "/lessons/articles-pays": "src/components/DrillShell.tsx",
 }
 # The goal-scoped steps (MémoiRecall, WorDrill) end in their own content
 # components, which draw the usher and therefore the push.

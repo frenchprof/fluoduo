@@ -112,8 +112,13 @@ export default function Page() {
             </>
           ) : (
             <>
+              {/* COUNT THE NUMBERED STEPS, NOT THE DOORS. `Tier` numbers by
+                  GROUP — the three MémoiRecall decks are step 3, the three
+                  MneMemo lessons are step 4 — so counting `essential.length`
+                  printed « 16 steps » over a list numbered 1 to 11, and the
+                  blurb right above it said something else again. */}
               <p className="fluo-path-next-eyebrow">
-                {path.essential.length} steps · {minutesOf(path.essential)} min
+                {groupsOf(path.essential).length} steps · {minutesOf(path.essential)} min
               </p>
               <p className="fluo-path-next-does">
                 Each step asks for something no other step asks for. The app will walk you through them.
@@ -136,11 +141,12 @@ export default function Page() {
 
         <details className="mt-6">
           <summary className="cursor-pointer font-[family-name:var(--font-fluohand-stack)] text-[calc(1rem+var(--fs-step)*1)] font-black text-[color:var(--cahier-ink)]">
-            Optional · {path.optional.length} more · {minutesOf(path.optional)} min
+            Optional · {groupsOf(path.optional).length} more · {minutesOf(path.optional)} min
           </summary>
           <p className="mt-2 text-[calc(0.85rem+var(--fs-step)*0.85)] text-[color:var(--cahier-ink-soft)]">
-            Only when there is time left after the {path.essential.length}. Adding all of these takes the
-            path past two hours, which is past the point where revision becomes re-reading.
+            Only when there is time left after the {groupsOf(path.essential).length}. Adding all of
+            these takes the path past two hours, which is past the point where revision becomes
+            re-reading.
           </p>
           <Tier path={path} steps={path.optional} run={running} current={null} />
         </details>

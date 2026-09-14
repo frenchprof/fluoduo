@@ -45,6 +45,65 @@ their narrowing query) and was break-tested both ways.
   tsc clean · build green · eslint clean on the touched files ·
   **144/144 verify** · before/after walked in the real app
 
+### Then: the path was audited against the REAL Test 1 paper (same day)
+
+Dan sent the actual LAF 1201 Test 1 and its corrigé, approved an item-by-item
+list of what it tests (all of it except the poster-reading exercise, and
+without « chez »), and ruled twice on scope: ***"please stick to the 30
+stops"*** and, of the reading section, ***"it is not so much about reading per
+se, but what those reading questions are really testing"***.
+
+**EVERY GAP TURNED OUT TO BE A LESSON THE COURSE ALREADY HAS INSIDE STOPS
+1–30 THAT NO STEP OPENED.** Nothing new was written and nothing reaches past
+stop 30:
+
+    quel-prefere    SIO-015 — « Quel ? Quelle ? Quels ? Quelles ? ». Four of
+                    the paper's five question marks. The systematic question
+                    lesson IS at SIO-034 and stays out; this one was moved
+                    into Unit 1 on 5 Sep for exactly this reason.
+    negation        SIO-028 — measured: 0 of the deck's 20 items is reflexive
+                    and none is « ne…pas » + être. The paper asks for both.
+                    The LESSON has « il ne s'appelle pas », « elle n'est pas
+                    anglaise ».
+    articles-pays   SIO-015 — the only place « l'Italie » and « le Liban » are
+                    explained. Neither is one of the 25 countries and by the
+                    transfer ruling neither needs to be, PROVIDED the rule is
+                    taught. Behind a fold, it was not.
+
+**THE FIRST CUT PUT ALL OF THEM IN THE ESSENTIAL TIER AND CAME OUT AT 104
+MINUTES.** Dan: *"104 minutes is now too long. We had promised about half that
+duration. Can you divide that into essential and optional"*. So the tier line
+is drawn on MARKS PER MINUTE against the real paper, and the fold is ordered
+best-first so a learner with ninety minutes rather than sixty starts at the
+top and stops when time runs out.
+
+        essential   9 steps · 63 min   (53 + 10 the next morning)
+        optional    8 more  · 60 min   NumBus first — four marks, and the only
+                                       24-hour clock and phone number in the app
+
+**WorDrill left the essential tier**: Test 1 has no spoken section at all
+(« Compréhension orale » is listening, which ÉcouTexte answers). It stays on
+the path because the course is not only this paper.
+
+**AND THE CHECK'S OWN PARSER WAS SKIPPING STEPS.** `verify760` matched a step
+only when `id:` sat on the line straight after `{`, so the two steps promoted
+with a comment explaining the promotion were invisible — it read 19 of 21 and
+passed, having never looked at two of them. That is the exact failure this file
+exists to prevent, committed by the file itself. The pattern is anchored on the
+four-space indentation now, and a new clause cross-checks the parsed count
+against a plain tally of declared `id:` lines, so a parse that drops a step
+FAILS instead of quietly shrinking. (A first fix read ELEVEN of twenty-one and
+looked fine — the guard is what caught it.)
+
+**Known and stated, not silently absent:** the paper's reading exercise 1 is 5
+marks; its six questions decompose into numbers, a 24-hour time, *où*, *aller
+au*, *adorer* and *ne…plus* — all stops 1–30 and all on the path — but no
+activity in FluOLinGo asks a learner to read a whole text and pull a fact out
+of it. Say so in the letter rather than build one.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · path walked and screenshotted at 880px
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
