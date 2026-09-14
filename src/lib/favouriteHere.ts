@@ -57,7 +57,13 @@ export type HereEntry = {
  *  The ONE exception is the User page's own tabs, which really are four
  *  different screens — so `tab` alone survives. */
 export function canonicalHref(pathname: string, search: string): string {
-  const path = pathname.replace(/\/+$/, "") || "/";
+  /* A FAVOURITE NEVER POINTS AT AN /embed ROUTE. Every station runs in an
+     iframe since 7 Sep, so a control drawn inside the frame reads the FRAME's
+     path — and `/tts/embed` opens a chrome-less document with no site bar, no
+     coils and no way back. Saving that is saving a page that does not exist as
+     a page. The strip is here rather than in the callers so the band's heart,
+     the bar's ★ and anything added later cannot disagree about it. */
+  const path = (pathname.replace(/\/embed$/, "") || "/").replace(/\/+$/, "") || "/";
   const tab = new URLSearchParams(search).get("tab");
   return tab ? `${path}?tab=${tab}` : path;
 }

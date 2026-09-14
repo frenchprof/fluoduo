@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { HOME_HREF } from "@/lib/routes";
+import FavouriteHeart from "@/components/FavouriteHeart";
 
 /**
  * The page's heading band — ONE structure site-wide, ONE LINE, three parts.
@@ -56,6 +57,7 @@ export default function PageBand({
   emoji,
   goal,
   exitHref = HOME_HREF,
+  activeKey,
   exitLabel = "Close",
   right,
   className = "",
@@ -89,6 +91,10 @@ export default function PageBand({
   exitHref?: string;
   exitLabel?: string;
   className?: string;
+  /** CahierShell's `active` key, so the heart can ASK which page this is
+   *  rather than guess it from the path — see lib/favouriteHere's note on why
+   *  guessing named WorDrill « FluOLinGo ». */
+  activeKey?: string;
 }) {
   return (
     <header
@@ -108,7 +114,20 @@ export default function PageBand({
       {/* ONE LINE. `min-w-0` lets the flex child shrink below its content and
           `truncate` cuts what is left — without the first, the second never
           fires and a long name pushes the goal circle off the band. */}
-      <p className="min-w-0 flex-1 truncate leading-none">
+      {/* A FLOOR UNDER THE TITLE. The band shrinks its title first by design —
+          `min-w-0` + `truncate` — which is right when the alternative is
+          pushing the goal chip off the strip. But the heart added a control to
+          every band, and on /guide, whose band also carries a « 📖 Full guide
+          here » key, the title collapsed to « Gu… ». A band that cannot say
+          which page it is has stopped doing its one job, so the title keeps
+          5rem before anything else yields, and the room comes out of the
+          `right` slot instead — which is a key whose own label can ellipsise.
+
+          7rem, measured rather than guessed: at 430px the guide's band is
+          398px wide and its four parts want 36 + title + 143 + 36 with 24 of
+          gap and 28 of padding. « 🧑‍🏫 Guide » needs about 112 of that, and the
+          ZWJ emoji is a third of it. */}
+      <p className="min-w-[5.5rem] flex-1 truncate leading-none">
         {/* SPELT THE WAY THE NAME IS SPELT (Dan, 2026-09-11, shown the two side
             by side: *"GramMarathon instead of GRAMMARATHON"*). This REVERSES
             5 Sep's "the names of activities in FULL caps", and the reason that
@@ -140,11 +159,19 @@ export default function PageBand({
              belongs on the element rather than in the class. */
           style={{ fontSize: "calc(var(--fs-h2) * 1.35)", fontWeight: 700 }}
         >
-          {emoji && <span aria-hidden className="mr-1.5">{emoji}</span>}
+          {/* A BAND THAT CARRIES A KEY DROPS ITS EMOJI. Measured at 430px: the
+              guide's strip is 398px and its four parts — ✕, title, « 📖 Full
+              guide here », 🤍 — want more than that, so the title truncated to
+              « Gui… ». Of the two things in the title, the NAME is what the
+              band is for and the glyph is decoration; 🧑‍🏫 is a ZWJ sequence
+              costing about a third of the title's width on its own. So the
+              emoji yields first, and only on the bands that have a key to make
+              room for — every other band keeps it exactly as before. */}
+          {emoji && !right && <span aria-hidden className="mr-1.5">{emoji}</span>}
           {title}
         </span>
       </p>
-      {right && <div className="min-w-0 shrink truncate">{right}</div>}
+      {right && <div className="min-w-0 shrink truncate [&>a]:max-w-full [&>a]:truncate">{right}</div>}
       {goal != null && (
         <span
           aria-label={`Goal ${goal}`}
@@ -174,6 +201,19 @@ export default function PageBand({
           <span aria-hidden>{goal}</span>
         </span>
       )}
+      {/* 🤍 AT THE END OF THE BAND, ON EVERY PAGE (Dan, 2026-09-14: *"can you
+          put 🤍 at the end of each colore band. When users tap on it, they
+          favourite it and it becomes ❤️"*).
+
+          AFTER the goal chip, which reverses this file's own note that the
+          chip "stays the rightmost object" — the chip is a LABEL and the heart
+          is a CONTROL, and the end of the strip is where a control that acts
+          on the whole page belongs. Nothing about the chip changes; it simply
+          is no longer last.
+
+          The bar's ★ becomes the door to the LIST only, because this is now
+          the way a page is saved — see FavouriteHeart. */}
+      <FavouriteHeart activeKey={activeKey} />
     </header>
   );
 }

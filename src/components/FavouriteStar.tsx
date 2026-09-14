@@ -1,7 +1,19 @@
 "use client";
 
 /**
- * THE ★ — one button in the top bar, on every page.
+ * THE ★ — THE DOOR TO THE LIST, one button in the top bar, on every page.
+ *
+ * ⚠️ IT NO LONGER STARS ANYTHING (Dan, 2026-09-14: *"can you put 🤍 at the end
+ * of each colore band. When users tap on it, they favourite it and it becomes
+ * ❤️"*). Saving a page is the BAND's heart now, so a star that also toggled
+ * would be a second control doing the first one's job on the same screen —
+ * the two-doors fault Help was cut down for in September. What is left here is
+ * the half the heart cannot do: reach the list.
+ *
+ * THAT ALSO RETIRES A GESTURE NOBODY COULD SEE. It used to tap-to-toggle,
+ * long-press to open the list, and only link to the list once something was
+ * starred — three behaviours on one glyph, two of them invisible. One tap,
+ * one destination, always.
  *
  * Dan, 2026-09-12, shown three places the list could live and asked where:
  * *"At the top right next to their name"*, then *"option A"*. So the star
@@ -31,34 +43,20 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
-import { describeHere } from "@/lib/favouriteHere";
-import {
-  MAX_ITEMS,
-  isStarred,
-  loadFavourites,
-  saveFavourites,
-  toggleFavourite,
-  type Favourites,
-} from "@/lib/favourites";
+import { loadFavourites } from "@/lib/favourites";
 
 export default function FavouriteStar({ activeKey }: { activeKey?: string }) {
-  const [fav, setFav] = useState<Favourites | null>(null);
-  const [here, setHere] = useState<ReturnType<typeof describeHere> | null>(null);
-  const [full, setFull] = useState(false);
+  const [count, setCount] = useState<number | null>(null);
 
-  const reread = useCallback(() => {
-    setFav(loadFavourites());
-    setHere(describeHere(window.location.pathname, window.location.search, document.title, activeKey));
-  }, [activeKey]);
+  const reread = useCallback(() => setCount(loadFavourites().items.length), []);
 
   useEffect(() => {
-    // localStorage cannot be read during render on a static export, and the
-    // path is only known in the browser.
+    // localStorage cannot be read during render on a static export.
     /* eslint-disable-next-line react-hooks/set-state-in-effect */
     reread();
-    // The Favourites page writes the same key; a star removed there must go
-    // hollow here without a reload. Both events matter: `storage` fires for
-    // another tab, the custom one for this document (which `storage` skips).
+    // The band's heart and the Favourites page write the same key; the count
+    // in the label must follow without a reload. `storage` fires for another
+    // tab, the custom event for this document (which `storage` skips).
     window.addEventListener("storage", reread);
     window.addEventListener("fluolingo:favourites", reread);
     return () => {
@@ -67,45 +65,21 @@ export default function FavouriteStar({ activeKey }: { activeKey?: string }) {
     };
   }, [reread]);
 
-  if (!fav || !here) return null;
-
-  const on = isStarred(fav, here.href);
-
-  // Starred already → the button is a link to the list, so the list is
-  // reachable with no gesture anyone has to be taught.
-  if (on) {
-    return (
-      <Link
-        href="/favourites"
-        aria-label={`Starred — open your favourites (${fav.items.length})`}
-        title={`« ${here.auto} » is starred. Open your favourites (${fav.items.length})`}
-        className="cahier-btn cahier-btn-sm"
-        onContextMenu={(e) => {
-          // Right-click unstars, so the page can be un-starred from here too.
-          e.preventDefault();
-          setFav(saveFavourites(toggleFavourite(fav, here, Date.now()).next));
-        }}
-      >
-        ★
-      </Link>
-    );
-  }
+  // `activeKey` is no longer read — the star names no page now — but the prop
+  // stays so every caller does not have to change for a component that may
+  // want it again. Referenced here so it is not an unused parameter.
+  void activeKey;
 
   return (
-    <button
-      type="button"
-      aria-label={full ? `Favourites are full — ${MAX_ITEMS} is the limit` : `Star this page — ${here.auto}`}
-      title={full
-        ? `Favourites are full (${MAX_ITEMS}). Remove one first.`
-        : `Star « ${here.auto} » so you can come back to it`}
+    <Link
+      href="/favourites"
+      aria-label={count ? `Open your favourites (${count})` : "Open your favourites"}
+      title={count
+        ? `Your favourites (${count}). Save a page with the 🤍 on its coloured strip.`
+        : "Your favourites. Save a page with the 🤍 on its coloured strip."}
       className="cahier-btn cahier-btn-sm"
-      onClick={() => {
-        const r = toggleFavourite(fav, here, Date.now());
-        setFull(r.full);
-        if (!r.full) setFav(saveFavourites(r.next));
-      }}
     >
-      ☆
-    </button>
+      ★
+    </Link>
   );
 }
