@@ -215,6 +215,11 @@ function count(n: number, word: string): string {
 }
 
 function Panel({ children }: { children: ReactNode }) {
+  /* THE CUE LIVES IN `DrillShell`, NOT HERE. One panel is visible at a time
+     and this component renders inside that shell's scroller, so a copy here
+     would be the same cue twice on one screen. Moved up 14 Sep when Dan asked
+     for it *"everywhere that requires the user to go to the next section"* —
+     the shell is every drill in the app, this file is one of them. */
   return <div className="pb-4 pt-3 text-[15px] leading-relaxed text-[color:var(--cahier-ink)]">{children}</div>;
 }
 

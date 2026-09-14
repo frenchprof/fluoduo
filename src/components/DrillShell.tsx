@@ -50,6 +50,7 @@ import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
 import { HOME_HREF, sioHref } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
+import MoreBelow from "@/components/MoreBelow";
 import { usherFor } from "@/lib/usher";
 
 export type DrillCta = {
@@ -675,6 +676,15 @@ export default function DrillShell({
       <div className={`flex min-h-0 flex-initial flex-col overflow-y-auto px-4 [&_h1]:hidden${snapRows ? " snap-y snap-mandatory" : ""}`}>
         <div className="mx-auto flex w-full fluo-measure flex-col justify-start pb-4 pt-6 sm:pt-10">
           {children}
+          {/* « NEXT PART IS BELOW » (Dan, 2026-09-14: *"please apply blinking
+              arrows everywhere that requires the user to go to the next
+              section"*). IT GOES IN THE SHELL, not at each drill, for the
+              reason the usher row is in one place too: this scroller is
+              ConjugaZone, MneMemo's panels and every snap feed at once, and a
+              drill written next month inherits it rather than being forgotten.
+              `MoreBelow` measures the scroller and shows nothing when there is
+              nothing below, so a short card stays quiet. */}
+          <MoreBelow />
           {/* HINTS ARE GUIDANCE TOWARD AN UNANSWERED QUESTION (Dan, 2026-08-27:
               "The red error stays after you fix it. You correct your answer,
               get a green tick — and 'Not that one, pick again' is still sitting
