@@ -6,6 +6,51 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, NOT merged)
+
+**A written task of the classic revision shape**: five sentences on a given
+subject, one question at a time, drawing on a set list of sixteen words,
+landing in 50–60. *« Présentez quelqu'un. Voici une liste de mots, utilisez
+10 mots minimum. N'oubliez pas de conjuguer les verbes dans la liste. »*
+
+**THE WHOLE DIFFICULTY IS ONE WORD OF THAT INSTRUCTION — *conjuguer*.** The
+list gives INFINITIVES and the learner must not write them: « avoir » is
+ticked by « il **a** vingt ans », never by the word "avoir". A checklist that
+searched for the listed string would tick precisely when the learner got it
+wrong. **The data already existed** — `content/conjugaison.ts` carries the six
+present forms of 67 verbs because ConjugaZone needs them — so matching a
+written form back to its infinitive is a table read. That is why
+`lib/compose/required.ts` is 130 lines.
+
+Driven in the built app, tapping chips as a learner does:
+
+    13 / 16 used · 10 needed      40 words · 50–60 asked for
+    ✓ avoir → a    ✓ faire → fait    ✓ la danse → de danse
+    ✓ être → est   ✓ vouloir → veut  ✓ ne…pas / ne…plus → ne … plus
+
+**THE SUBJECT ROTATES THROUGH A CAST OF EIGHT** — brother, neighbour,
+classmate, team-mate, cousin — so nobody rehearses one fixed answer. Dan's
+transfer ruling of 14 Sep (*"APPROACH INDIRECTLY VIA APPLICATION OF
+KNOWLEDGE"*) applied to a whole task: a scene with one subject teaches that
+subject; a scene with eight teaches the shape, and the shape survives into the
+next thing they write.
+
+**The pane holds the checklist and « ✎ Your lines » goes** — it was a second
+copy of sentences the body already prints, empty until the learner had written
+one. Same litmus-test call as the phrase bank taking the dialogue's pane.
+
+**TWO FAULTS FOUND BY MEASURING.** `verify440` rejected the model text twice,
+correctly: it used the person's name and age, which no chip carried, and a
+lower-case « il fait » where the palette had only « Il fait » — 50–60 words
+cannot be reached in five sentences without a lower-case subject, so
+`[Continuer]` exists and the palette is honest about what the task needs. And
+« de danse » had to join the accepted forms: after a negation French drops the
+partitive to « de », so the article-only forms refused to tick the very
+sentence the `[Négation]` chips build.
+
+The server persona is in `functions/api/compose.js` — without an entry there
+an unknown scene silently gets the CAFÉ WAITER, menu and all.
+
 ## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, PR #362, NOT merged)
 
 **Dan, in one message: *"The [victory] jingle is sometimes playing for no good

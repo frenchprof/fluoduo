@@ -14,6 +14,7 @@ import { PRODUCTION_BANKS } from "./banks-production";
 import OBJETS from "@/content/collections/objets-articles.json";
 import ALIMENTS from "@/content/collections/aliments.json";
 import { aLe } from "@/lib/textgen/french";
+import type { Requirement } from "@/lib/compose/required";
 
 export type ComposeCategory = { label: string; chip: string; phrases: string[] };
 
@@ -64,6 +65,20 @@ export type ComposeBank = {
   aiCheck?: boolean;
   /** Dialogue banks: the persona config for ComposeDialogue. */
   scene?: DialogueScene;
+  /* ── A WRITTEN TASK WITH A WORD LIST (2026-09-14) ──────────────────────
+   * A written task of the classic revision shape: *"Voici une liste de mots,
+   * utilisez 10 mots minimum. N'oubliez pas de conjuguer les verbes dans la
+   * liste. (50 – 60 mots)"*. Two constraints the composer had no way to
+   * express — how many of a given list you used, and how long the piece is —
+   * and both are what stop a learner writing only the words they already
+   * know.
+   *
+   * A bank without these behaves exactly as before: no checklist, no counter.
+   */
+  /** The list the learner must draw from, and how many of it they must use. */
+  required?: { words: Requirement[]; min: number };
+  /** The length the task asks for, in words. */
+  lengthGoal?: { min: number; max: number };
   categories: ComposeCategory[];
   /** Solo mode: a fresh prompt. Random — call only from handlers/mount effects.
    *  openingFr, when present, is a persona line that opens the scene (spoken +
