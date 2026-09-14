@@ -61,6 +61,46 @@ shape, so it wants doing once rather than per hub.
 **STILL OPEN FROM THE SAME HOUR:** Dan asked that *"for items that are
 scrollable side ways, can we have a buttion to expand them landscape wise"*.
 Not started.
+## 14 Sep — a hub's door draws ONE notebook, not two (fluoduo-main)
+
+**Dan, sending a photograph of one phone screen carrying TWO site bars, TWO
+bands and two sets of coils: *"Numbers is now nesting numbus - what did you
+break"*.** Nothing — and that was checked before it was answered. The tree at
+`8612ec3`, what was live that morning before any of the day's merges, was built
+and driven through the same click and behaved identically. **The fault was
+older than the question, which is exactly why it needed a check and not just a
+fix.**
+
+**WHAT IT WAS.** Every station has run in an iframe since 7 Sep, so a hub
+rendered from an `/embed` route IS the framed document — and a plain `<Link>`
+there navigates the FRAME. A whole page loaded into a frame brings its own site
+bar, coils and band, inside the band still wrapped around it:
+
+    before   main  /games/numbus   band "🔢 Numbers"   childIframes=1
+             frame /games/numbus   band "🎮 NumBus"
+    after    main  /games/numbus   band "🎮 NumBus"    childIframes=0
+
+`target="_top"` sends the destination to the window, which is where a whole
+page belongs. It costs a full load instead of a soft route change; a page drawn
+twice costs more than that.
+
+**IT WAS NEVER ONLY NUMBERS.** Four places had the same shape: the Numbers hub,
+ErroReview's framed page, the path map's step keys, and `GameGallery` (three
+framed callers). **A PROP, NOT ALWAYS-ON** — `/games/matching` renders the same
+gallery UNFRAMED, and there `_top` would only cost it a soft navigation.
+
+**verify840 DRIVES IT, and a grep could not.** A grep for `target="_top"` tests
+the FIX, not the FAULT: it passes on the next hub that grows a door without
+one. The check clicks a real door on each hub and then COUNTS NOTEBOOKS — one
+band, naming where you landed rather than where you left, and no document
+hosting another. Break-tested by removing the fix: it goes red naming both
+symptoms at once. A walk whose door needs a live run (`/path`'s ▶ Continue) is
+skipped, and a floor of three real clicks stops that leniency swallowing the
+scan.
+
+**AND A CLASS OF FALSE ALARM IS GONE.** The driven scans bound fixed ports, so
+two running at once reported the fault they check for instead of a busy socket
+— it cost two wasted diagnoses today. They ask the OS for a port now.
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 

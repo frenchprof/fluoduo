@@ -636,3 +636,6 @@ jobs:
 
       - name: "The ✕ goes up, and it goes somewhere that exists (14 Sep)"
         run: python3 verify/verify820-exit-parent.py
+
+      - name: "A hub's door draws one notebook, not two (14 Sep)"
+        run: python3 verify/verify840-no-nested-notebook.py

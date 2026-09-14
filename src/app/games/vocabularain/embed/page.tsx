@@ -39,5 +39,5 @@ export default function LetrisIndexPage() {
       locked: { unlockId: u.id, cost: u.cost, emoji: u.emoji },
     });
   }
-  return <GameGallery activityKey="vocabularain" emoji="🌧️" name="VocabulaRain" entries={entries} />;
+  return <GameGallery activityKey="vocabularain" emoji="🌧️" name="VocabulaRain" entries={entries} breakOut />;
 }
