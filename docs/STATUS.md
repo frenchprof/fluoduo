@@ -6,6 +6,41 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — integration: two lanes built « Présenter quelqu'un » twice, and only one of them may keep the four countries (fluoduo-main)
+
+**Two sessions built the same ComposeIt scene on the same afternoon**, which is
+the collision one lane cannot see from inside itself. `claude/peers-vd2h6h`
+landed it as #369 (already live); `claude/modest-galileo-xstape` had built its
+own `PRESENT_PERSON_BANK` with a different cast, a `wordGoal` field and a
+second server persona `presenter-quelquun`. Both are correct on their own
+terms. The landed one is the one AGENTS.md describes, and it already carries
+`lengthGoal: { min: 50, max: 60 }` — the same word count `wordGoal` was adding
+— so the duplicate scene, the duplicate field, the duplicate persona and the
+duplicate `ComposeSolo` counter were all dropped in the merge, not merged.
+
+**AND THE SAME BRANCH WOULD HAVE SILENTLY KILLED THE TRANSFER PROBE.** It adds
+Inde, Luxembourg, Italie and Liban to the countries and nationalities decks —
+in lock-step, so verify700's clause 5 would have passed. But
+`content/transfer.ts` asks for exactly **luxembourgeois, indien, italien and
+libanais**, and a transfer item the deck teaches is not a transfer item; it is
+a memory test wearing the words « un mot nouveau ». Clause 1 of verify700 says
+so and names « italien » by example. Those four subjects are NOT merged, and
+Dan's 14 Sep ruling stands unchanged: *"WE WANT TO APPROACH INDIRECTLY VIA
+APPLICATION OF KNOWLEDGE"* — close a gap by teaching the rule, not by widening
+the deck.
+
+What DID come across from the two content lanes:
+
+- « en retard » in goal 19's states deck, plus « Pardon, je suis en retard ! »
+  as a cloze on être (`avoir-etats`). Both lanes asked for it; verify700's own
+  docstring lists it as one of the three holes.
+- **Suède / suédois·e** in the two decks, in lock-step
+  (`claude/french-grammar-exercises-4aek45`). It is not a transfer item, and
+  it gives the **-ois → -oise** family a second taught example, so the rule
+  the probe tests reads as a rule rather than as « chinois » alone.
+- `docs/revision/PROMPT-midterm-revision-path.md` and its four screenshots —
+  a brief, kept as history now that #369 shipped the path itself.
+
 ## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
 **Dan: *"what i would really need now is a 'curated path' automatically driving
