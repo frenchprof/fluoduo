@@ -28,8 +28,6 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { loadProgress } from "@/lib/progress";
-import { loadBookmark, nextGoalNumber, BOOKMARK_EVENT } from "@/lib/continuer";
-import StopBookmark from "@/components/StopBookmark";
 import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
@@ -55,10 +53,6 @@ export default function SiteTopBar({
    *  the bar takes the tighter right inset. */
   nested?: boolean;
 }) {
-  // Home draws the editable goal itself, just above the map (Dan,
-  // 2026-09-12). `active` already says which page this is — CahierShell
-  // keys Home's hero off the same value — so no router hook is needed.
-  const onHome = active === "home";
   const [menuOpen, setMenuOpen] = useState(false);
   // Tap-away for the ☰ dropdown (Dan, 2026-07-20): a capture-phase document
   // listener sees every pointerdown regardless of z-order, which the old
@@ -262,13 +256,15 @@ export default function SiteTopBar({
               why 🏠 hid itself below `sm` rather than push the ☰ off a phone.
               One door that works at every width beats two that share a
               destination and only one of which survives a narrow screen. */}
-          {/* ⌛ My learning history — always visible (Dan, 2026-07-25).
-              The crumb text retired to make its room: the page name
-              between 🏠 and the avatar was the least-load-bearing
-              element on the bar. */}
-          <Link href="/moi" aria-label="My learning history" title="My learning history" className="cahier-btn cahier-btn-sm">
-            ⌛
-          </Link>
+          {/* ⌛ IS GONE (Dan, 2026-09-14, looking at the crowded bar: "maybe we
+              can remove the history and favourites button too there"). It was
+              a DOOR, and the same door is already in the ☰ menu — 👤 User
+              carries History at /moi/historique. Two doors to one room, one of
+              which was spending the bar's last pixels: the wordmark had begun
+              truncating to « FluO » on a phone.
+
+              Same reasoning that retired 🏠 on 12 Sep: one door that works at
+              every width beats two that share a destination. */}
           {/* 🔥 THE STREAK, between History and User (Dan, 1 Sep: "move the
               streak value and emoji up between History and User"). It was a
               tile on Home, which meant the one reading with a deadline was
@@ -279,11 +275,15 @@ export default function SiteTopBar({
               NOT a button: every other item in this strip is a destination
               (verify31's rule) and a streak is a reading. It renders as plain
               text so the icon strip keeps meaning "these go somewhere". */}
-          {/* NOT ON HOME (Dan, 2026-09-12): Home brings the editable field down
-              to sit just above the map, next to the road it names. Everywhere
-              else there is no map to sit above, so the mark stays here. One
-              reading, one place on any given screen. */}
-          {!onHome && <StopMark />}
+          {/* THE STOP FIELD IS GONE FROM THE BAR (Dan, 2026-09-14: "we don't
+              have the stop field anymore, it s ben a while since it was take
+              off"). It had already been taken off HOME on 12 Sep, because the
+              map's own control row carries the editable number just above the
+              road it names; what this line did was keep it everywhere ELSE, so
+              the thing Dan remembers removing was still on 27 surfaces.
+
+              The number is not lost: the map's row has it, in a well, and the
+              ☰'s own 🎯 badge computes the same stop. */}
           {/* THE ★, BESIDE THE ACCOUNT CHIP — Dan, 2026-09-12, asked where the
               favourites live: "At the top right next to their name". The chip
               is the learner's name (an initialled chip signed in, the red
@@ -303,57 +303,3 @@ export default function SiteTopBar({
   );
 }
 
-/**
- * The STOP, where the streak was (Dan, 7 Sep: "replace the streak info with
- * the stop info (and make that editable) at the top right between the
- * history and the user icon — so we free up the space between the play
- * rewind etc buttons at the hero"). The streak is not lost: it lives on the
- * account card, one tap away, wearing its role ink and its next-rung
- * tooltip. What rides all 28 surfaces now is the reading a learner can ACT
- * on — which goal they are at — and it is writable right here: typing a
- * number bookmarks that stop, clearing it hands the reading back to the
- * computation (the same StopBookmark the hero used to carry).
- *
- * WHY IT READS AFTER MOUNT — unchanged from the streak it replaces:
- * localStorage does not exist during static export, and this bar renders on
- * every page, so it starts null and renders NOTHING until the real value
- * arrives. A stop that appears a frame late is invisible; a bar that fails
- * to hydrate is not.
- */
-function StopMark() {
-  const [stopNo, setStopNo] = useState<number | null>(null);
-  useEffect(() => {
-    // First read here (see above) — and it KEEPS reading: goal completions
-    // and bookmark edits on any surface both announce themselves.
-    const read = () => {
-      const p = loadProgress();
-      setStopNo(nextGoalNumber(p, loadBookmark()) ?? null);
-    };
-    read();
-    window.addEventListener("fluolingo:progress-updated", read);
-    window.addEventListener(BOOKMARK_EVENT, read);
-    return () => {
-      window.removeEventListener("fluolingo:progress-updated", read);
-      window.removeEventListener(BOOKMARK_EVENT, read);
-    };
-  }, []);
-  if (stopNo === null) return null;
-  return (
-    /* The same depressed well the streak wore (Dan, 1 Sep: a well is the
-       app's word for a value you read rather than press) — except this
-       number is also a one-field form. The 🎯 below is the goal family's
-       own icon, so the mark reads as "goal N" without a word. The /50
-       lives in the tooltip: in a strip whose hard rule is that nothing
-       pushes the ☰ off a 320px screen, the total is the half a learner
-       already knows. */
-    <span
-      className="neo-well flex shrink-0 flex-col items-center rounded-lg px-1.5 py-0.5 leading-none"
-      title={`Your goal, ${stopNo}/50 — edit the number to bookmark a stop`}
-    >
-      <span className="fluo-mono text-[13px] font-black leading-none [font-variant-numeric:tabular-nums]">
-        <StopBookmark stopNo={stopNo} totalClassName="hidden" />
-      </span>
-      <span aria-hidden className="text-[12px]">🎯</span>
-    </span>
-  );
-}

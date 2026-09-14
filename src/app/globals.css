@@ -3254,8 +3254,15 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
 .fluo-measure { max-width: 37.5rem; }
 /* NARROWER, AND THE TRAVEL NOW FOLLOWS THE TRACK (Dan, 2026-09-14: "can the
    2D-3D switch be made to occupy less space"). The ratio was 1.9 — 84px wide
-   beside a 44px-tall finger target — and it is 1.62 now: 71px at 390px, 13px
+   beside a 44px-tall finger target — and it is 1.48 now: 65px at 390px, 19px
    back for the row that also carries the stop badge and the zoom.
+
+   TAKEN TWICE (Dan, same day: "the 3d-2d nuttom can still be smaller right?").
+   The first cut was the track alone, 1.9 -> 1.62. Narrowing the track again on
+   its own would have closed the gap between the label and the knob to about a
+   millimetre, so the KNOB came in with it, 0.74 -> 0.68 of the track height.
+   It still reads as a knob and the label keeps its air; the measured clearance
+   is in the commit message, in both positions and at both widths.
 
    THE HEIGHT IS UNTOUCHED ON PURPOSE. 44px is the smallest a finger reliably
    hits and a floor is not a size (verify270); the width is what was spending
@@ -3268,8 +3275,8 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
    correct instead of needing the component edited to match. */
 .fluo-switch {
   --track-h: max(44px, calc(2.375rem + var(--fs-step) * 2));
-  --track-w: calc(var(--track-h) * 1.62);
-  --knob: calc(var(--track-h) * 0.74);
+  --track-w: calc(var(--track-h) * 1.48);
+  --knob: calc(var(--track-h) * 0.68);
   /* the 4px padding on each side is set in the component's class */
   --travel: calc(var(--track-w) - 8px - var(--knob));
   /* the label sits in the half the knob is not in, centred in what is left */

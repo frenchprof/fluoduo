@@ -37,22 +37,31 @@ prog = read("src/lib/progress.ts")
 bar = read("src/components/SiteTopBar.tsx")
 
 # ---- 1 · the mark listens ------------------------------------------------
-# The bar's well changed tenant on 7 Sep (Dan: the stop replaced the streak),
-# and the stale-mark fault this file exists for transfers whole: a mark that
-# reads once on mount shows the OLD stop after every goal completion and
-# bookmark edit, exactly as the streak once froze. Same claim, new tenant.
-# (The streak itself now reads fresh each time the account card opens.)
-mark = bar[bar.find("function StopMark") :]
-ok('addEventListener("fluolingo:progress-updated"' in mark,
-   "StopMark subscribes to progress saves",
-   "the mark reads once on mount again — finishing a goal would leave the bar "
-   "showing the old stop until a full reload, the streak's 2 Sep fault reborn")
-ok("addEventListener(BOOKMARK_EVENT" in mark,
-   "and to bookmark edits from any surface",
-   "a bookmark edit on the map never reaches the bar's own number")
-ok('removeEventListener("fluolingo:progress-updated"' in mark,
-   "and unsubscribes on unmount",
-   "the listener leaks — 28 surfaces mount this bar")
+# THE WELL LEFT THE BAR ON 14 Sep (Dan: "we don't have the stop field anymore,
+# it s ben a while since it was take off"), so the stale-mark claim follows it
+# to the map's control row rather than being dropped.
+#
+# THE FAULT THIS FILE EXISTS FOR IS UNCHANGED: a mark that reads once on mount
+# shows the OLD stop after every goal completion and bookmark edit, exactly as
+# the streak once froze. StopBookmark is the component now, and it is shared —
+# the map row and any other caller get the same freshness or none of them do.
+# HOW IT STAYS FRESH IS DIFFERENT NOW, AND THAT IS THE POINT. StopMark held its
+# own listeners because the bar has no idea which stop you are looking at. The
+# map does: its row derives the number from `activeId`, the same render-time
+# state that moves the map, so there is no mount-once read left to go stale.
+# A number computed at render cannot freeze; a number cached in state can, and
+# THAT is what this clause guards against coming back.
+mapb_89 = read("src/app/map/MapBody.tsx")
+ok("<StopBookmark" in mapb_89,
+   "the map's control row carries the stop bookmark",
+   "the map lost the stop bookmark — since the bar gave it up on 14 Sep, the "
+   "number would have no home at all")
+_row = mapb_89[mapb_89.find("<StopBookmark"):]
+_row = _row[: _row.find("/>") + 2]
+ok("activeId" in _row,
+   "…and its number is derived from the live map position, not read once",
+   "the map's stop number no longer follows activeId — it would show the stop "
+   "the page opened on, the streak's 2 Sep staleness in a new place")
 
 # ---- 2 · the narrow door exists and is the right shape -------------------
 ok(re.search(r"export function notePracticeDay\(\)", prog) is not None,

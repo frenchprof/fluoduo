@@ -147,25 +147,28 @@ ok("min-w-0" in mk and "truncate" in mk and "shrink" in mk,
 # and verify31 exists because things that push the icons off screen keep being
 # added. So the streak is pinned as text: not a <Link>, not a <button>, and
 # shrink-0 like its neighbours so it cannot be the thing that squeezes ☰ out.
-# THE WELL'S TENANT CHANGED, ITS RULES DID NOT (Dan, 7 Sep: "replace the
-# streak info with the stop info (and make that editable)"). StopMark took
-# StreakMark's slot; every structural claim transfers: it must hold the
-# strip's width, and render nothing before hydration. The one licensed
-# difference: its number is an INPUT (the editable bookmark) — a one-field
-# form, not a door, so the destinations-only rule is kept in spirit: no
-# <Link> and no navigation from the well.
-stop = re.search(r"function StopMark\(\)[\s\S]*?\n\}", nocom_shell)
-sm = stop.group(0) if stop else ""
-ok(bool(sm), "the stop mark exists in the bar", "StopMark is gone from the top bar")
-ok("<Link" not in sm,
-   "the stop mark navigates nowhere — the strip stays destinations-or-readings only",
-   "the stop mark became a link; the icon strip's one meaning is that everything else in it goes somewhere")
-ok("shrink-0" in sm,
-   "the stop mark cannot be squeezed out of the strip",
-   "the stop mark is shrinkable: on a narrow phone it would collapse or push ☰ off, which is this file's whole subject")
-ok("stopNo === null" in sm or "stopNo == null" in sm,
-   "the stop mark renders nothing until it is read — no hydration mismatch on 28 pages",
-   "the stop mark renders a value on the server; localStorage does not exist there and the mismatch would blame the whole bar")
+# THE WELL LEFT THE BAR ENTIRELY (Dan, 2026-09-14, on a screenshot of a bar so
+# tight the wordmark had truncated to « FluO »: "we don't have the stop field
+# anymore, it s ben a while since it was take off").
+#
+# HE WAS RIGHT AND HALF-RIGHT, WHICH IS THE BIT WORTH KEEPING. It HAD been
+# taken off — on 12 Sep, but only from HOME, by `{!onHome && <StopMark />}`.
+# So the thing he remembered removing was still riding the other 27 surfaces,
+# which is exactly the kind of half-removal a check should catch and this one
+# could not, because it was pinning the mark's PRESENCE.
+#
+# The claim flips rather than disappears: the bar carries no stop mark, and the
+# editable number still exists where Home put it — the map's own control row,
+# above the road it names (verify87 pins that end).
+ok("StopMark" not in nocom_shell,
+   "the bar carries no stop mark — it lives on the map's control row",
+   "StopMark is back in the top bar; it was taken off on 14 Sep and the map's "
+   "row is where the editable number lives")
+mapb_31 = open("src/app/map/MapBody.tsx", encoding="utf-8").read()
+ok("<StopBookmark" in mapb_31,
+   "…and the editable number is still reachable there",
+   "neither the bar NOR the map has the stop number — removing it from the bar "
+   "was a move, not a deletion")
 
 # ── 3c · the Kallang wave TRAVELS, and stops when asked (1 Sep) ───────────
 # Dan: "the top return link to be in the same FluOLinGo font but with the

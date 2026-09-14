@@ -26,9 +26,17 @@
  * records the bar's budget: at 390px the icon row cleared the screen by 0.8px,
  * and "ANY addition — a live score on /reviser, the daily-goal chip, a streak
  * flame — pushed navigation off the screen". « Start Mid-Term Revision » is
- * about 190px of text. So the bar gets 📋, which is the same grammar as every
- * other thing up there (icons only, no words — 2026-07-08), and the words live
- * in the tooltip and for a screen reader.
+ * about 190px of text. So the bar gets a GLYPH, which is the same grammar as
+ * every other thing up there (icons only, no words — 2026-07-08), and the words
+ * live in the tooltip and for a screen reader.
+ *
+ * 🚀, NOT 📋 (Dan, 2026-09-14: "your 📋 is too inconspicuous. can't you just
+ * put more striking emoji"). A clipboard is a pale outline at 16px beside a
+ * blue 🔊 and a red ⏻ — it reads as a form to fill in, which is the opposite of
+ * what this starts. 🚀 is unused anywhere in the app (checked, not assumed:
+ * 📋 was still in use by the path's own step rows, so only the DOOR moved),
+ * it is high-contrast at a glyph's size, and it says « start » rather than
+ * « list ». The page it opens wears the same one — one glyph, one idea.
  *
  * THE COUNT IS THE ONE EXCEPTION, and it earns its place by the 1 Sep rule: a
  * number belongs on a control when it describes something you CANNOT see. Once
@@ -71,7 +79,7 @@ export default function PathDoor({ className = "" }: { className?: string }) {
          size instead of staying 16px on a desktop that grew around it. */
       className={`neo-key flex shrink-0 items-center gap-1 rounded-lg px-1.5 py-0.5 leading-none ${className}`}
     >
-      <span aria-hidden className="text-[length:var(--fs-small)]">📋</span>
+      <span aria-hidden className="text-[length:var(--fs-small)]">🚀</span>
       {at && (
         <span className="fluo-mono text-[length:var(--fs-small)] font-black tabular-nums">
           {at.done}/{at.total}

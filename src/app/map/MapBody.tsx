@@ -231,7 +231,14 @@ export default function MapBody() {
             different glyph from the one the top bar's stop badge wears, two
             controls showing the same number. 🎯 is the goal family's own icon
             and is what the bar uses; one number, one mark. */}
-        <span className="fluo-mono flex items-center text-[13px] font-black text-[color:var(--cahier-ink)]">
+        {/* A WELL, LIKE THE ZOOM FIELD BESIDE IT (Dan, 2026-09-14: "can the 01
+            be in a similar depressed space something or else learners wont
+            know they can tap on it"). The number has always been editable —
+            StopBookmark puts a real input under it — but it was set as plain
+            mono text, so nothing on screen said so. A well is this app's word
+            for a value you read AND type into; the zoom field two controls
+            along is the same shape, which is exactly why it reads as one. */}
+        <span className="neo-well fluo-mono flex items-center rounded-lg px-1.5 py-1 text-[13px] font-black leading-none text-[color:var(--cahier-ink)]">
           <span aria-hidden className="mr-0.5 text-[15px] leading-none">🎯</span>
           <StopBookmark
             stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}

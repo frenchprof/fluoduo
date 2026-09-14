@@ -13,7 +13,7 @@ export default function Page() {
        verify126 both caught it. `reviser` is the Revise family's own door, so
        the page wears that family's colour; the band's own words are given
        explicitly below, because this page is the PATH, not ErroReview. */
-    <CahierShell active="reviser" band={{ title: "Mid-term revision", emoji: "📋" }}>
+    <CahierShell active="reviser" band={{ title: "Mid-term revision", emoji: "🚀" }}>
       <EmbedFrame src="/path/embed" title="Mid-term revision path" />
     </CahierShell>
   );
