@@ -124,7 +124,15 @@ export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: st
   }, []);
 
   return (
-    <div ref={anchor} className="pointer-events-none sticky bottom-0 z-[2]" aria-hidden={!more}>
+    /* ZERO FLOW HEIGHT, and this is not a tidy-up — without it the cue can
+       never turn off. A `sticky` element still occupies space in normal flow,
+       so the band's own height is added to what is left to scroll: it appears,
+       the content grows by exactly its height, and there is now that much
+       "below" again. Driven at the true bottom of a MneMemo panel it reported
+       80px remaining — the band's height to the pixel — and stayed on screen
+       forever, pointing at nothing. The wrapper is a zero-height rail now and
+       the band hangs off it. */
+    <div ref={anchor} className="pointer-events-none sticky bottom-0 z-[2] h-0" aria-hidden={!more}>
       {more && (
         <div className="fluo-more-wrap">
           <p className="neo-key fluo-nextq fluo-more-band">{label}</p>
