@@ -89,6 +89,16 @@ export default function EmbedFrame({
            lesson: SIO-025, 027, 029, every other goal skipped). The frame posts
            its destination up either way, so nothing is lost by the host keeping
            its hands off. See useScrollOn. */
+        /* FULL SCREEN HAS TO BE GRANTED BY THE HOST (Dan, 2026-09-14: "the
+           games that appear within the framing, offer a full-screen mode to
+           play in full screen"). A game's ⤢ key already existed and already
+           worked — but it draws a `position: fixed` overlay, and inside a frame
+           `fixed` positions against the FRAME's viewport, not the window. So
+           "full screen" filled 361x722 of an 844px phone: the notebook, the
+           site bar and the browser chrome all stayed exactly where they were,
+           and the key looked broken because visibly almost nothing happened.
+           `requestFullscreen()` from inside a frame is refused unless the host
+           says so, and this attribute is the host saying so. */
         data-station-frame=""
         /* THE KEYBOARD HAS TO LAND IN THE STATION. A drill answers to 1-4 and
            ↵ (useChoiceKeys), and those keys go to whichever DOCUMENT has focus
@@ -101,7 +111,7 @@ export default function EmbedFrame({
         /* The station is our own page, so it needs no sandbox loosening — and
            `allow` names the two things a station legitimately asks for: the
            microphone (WorDrill) and autoplay (every drill that speaks). */
-        allow="microphone; autoplay"
+        allow="microphone; autoplay; fullscreen"
       />
     </div>
   );

@@ -57,6 +57,7 @@ export default function PageBand({
   goal,
   exitHref = HOME_HREF,
   exitLabel = "Close",
+  right,
   className = "",
 }: {
   /** The ACTIVITY's name — MémoiRecall, GramMarathon, MneMemo, Settings.
@@ -74,6 +75,16 @@ export default function PageBand({
   /** The goal's number, 1–50. Omitted on a page that belongs to no goal, and
    *  the circle is then not drawn rather than drawn empty. */
   goal?: number;
+  /** THE BAND'S BLANK SPACE, filled (Dan, 2026-09-14: "the link to the full
+   *  guide (and to the quick start guide) to be made more prominent in the
+   *  yellow colored strip within that blank space").
+   *
+   *  A band is a title, a ✕ and — on a goal page — a chip, which on a wide
+   *  screen leaves most of a coloured strip doing nothing. This is for the one
+   *  thing a page's band can usefully carry. It sits BEFORE the goal chip so
+   *  the chip stays the rightmost object, and it shrinks before the title does.
+   *  Optional everywhere: a band given nothing draws nothing, as before. */
+  right?: ReactNode;
   /** Where the ✕ goes. A drill passes its goal's unit; a site page takes Home. */
   exitHref?: string;
   exitLabel?: string;
@@ -133,6 +144,7 @@ export default function PageBand({
           {title}
         </span>
       </p>
+      {right && <div className="min-w-0 shrink truncate">{right}</div>}
       {goal != null && (
         <span
           aria-label={`Goal ${goal}`}

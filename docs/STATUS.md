@@ -82,7 +82,7 @@ words « GramMarathon ».
   tsc clean · build green · eslint clean on all ten touched files ·
   **144/144 verify** · walked end to end in the built app at 430px and 1280px
 
-## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, MERGED as #369 and live)
 
 **A written task of the classic revision shape**: five sentences on a given
 subject, one question at a time, drawing on a set list of sixteen words,
@@ -127,7 +127,7 @@ sentence the `[Négation]` chips build.
 The server persona is in `functions/api/compose.js` — without an entry there
 an unknown scene silently gets the CAFÉ WAITER, menu and all.
 
-## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, PR #362, NOT merged)
+## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, MERGED as #362)
 
 **Dan, in one message: *"The [victory] jingle is sometimes playing for no good
 reason. The floating tour button should now be deleted for good. The ComposeIt

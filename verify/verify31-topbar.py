@@ -223,9 +223,22 @@ ok(pad is not None and float(pad.group(1)) <= 0.32,
    f"below sm the icon buttons stay tight ({pad.group(1) if pad else '?'}rem)",
    "the below-sm button padding grew — that budget is what fits six icons on a 320px phone")
 gap = re.search(r"\.cahier-topbar\s*\{[^}]*gap:\s*([\d.]+)rem", body)
-ok(gap is not None and float(gap.group(1)) <= 0.125,
-   f"below sm the strip gap stays tight ({gap.group(1) if gap else '?'}rem)",
-   "the below-sm strip gap grew — 6 icons no longer fit a 320px phone")
+# THE BOUND MOVED WHEN THE STRIP LOST HALF ITS ICONS (14 Sep). 0.125rem was
+# what six icons needed to clear a 320px phone; the strip holds three now — 🔊,
+# ★ and the account chip — and two pixels between three buttons reads as one
+# smeared control (Dan: "the top right buttons can have more breathing space
+# between them (0.5 button distance apart)"). 0.8rem is that half-button: the
+# icons measure ~27px here, so 13px is half of one, and it was measured at
+# 320/360/390 with nothing pushed off.
+#
+# The ceiling stays because the FAULT this file exists for has not changed —
+# an unbounded gap is how the row starts overflowing again — but it is now a
+# ceiling rather than a pin, so the number is a decision someone can revisit
+# without editing a check to match.
+ok(gap is not None and float(gap.group(1)) <= 1.0,
+   f"below sm the strip gap is a named value ({gap.group(1) if gap else '?'}rem)",
+   "the below-sm strip gap rule is gone — it is what keeps the row legible on "
+   "a phone, and its size is a decision rather than a default")
 
 # ── 5 · nobody has quietly hidden an icon to make room ────────────────────
 hidden = re.findall(r"cahier-btn cahier-btn-sm[^\"]*!hidden(?! sm:)", nocom_shell)

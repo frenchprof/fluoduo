@@ -96,10 +96,21 @@ check(os.path.isdir("public/manual/img"),
       f"its {len(os.listdir('public/manual/img')) if os.path.isdir('public/manual/img') else 0} "
       "screenshots ship with it",
       "public/manual/img is missing — every figure would be a broken image")
-check('href="/manual"' in guide_code,
-      "the QuickStart links to the full manual",
-      "GuideBody no longer links to /manual — the detailed half becomes "
-      "unreachable from Help")
+# THE DOOR MOVED INTO THE BAND, 14 Sep (Dan: "the link to the full guide ... to
+# be made more prominent in the yellow colored strip within that blank space"),
+# so the claim follows the door: SOMETHING on the QuickStart page must reach the
+# manual, not specifically GuideBody. The page is checked instead of the body.
+#
+# AND EXACTLY ONE THING, which is the half worth pinning. When the chip went
+# into the band the old line under step 5 was still there, and two doors to one
+# page on one screen is the HelpDot fault Help itself was cut down for in
+# September: a learner reads it as two destinations and has to check.
+_qs_page = read("src/app/guide/page.tsx")
+_doors = _qs_page.count('href="/manual"') + guide_code.count('href="/manual"')
+check(_doors == 1,
+      "the QuickStart offers the full manual once — in the band",
+      f"the QuickStart has {_doors} doors to /manual; it needs exactly one "
+      "(zero makes the manual unreachable from Help, two is the HelpDot fault)")
 check("/guide" in _manual,
       "…and the manual links back to the QuickStart",
       "the manual has no way back to the five steps — the pair only walks one way")
