@@ -60,13 +60,50 @@ const routes = [
 
 /** The selectors a step can name, read off the card's own text is impossible —
  *  so the page is asked directly for every `data-tour` hook it is showing. */
+async function open(page, route) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      await page.goto(BASE + route, { waitUntil: "load", timeout: 40000 });
+      // The card opens from an effect that reads localStorage, so it is never
+      // in the first paint. 6s is generous against a cold runner and still
+      // returns promptly on a route that simply has no card to show.
+      await page.locator('div[role="dialog"]').first()
+        .waitFor({ state: "visible", timeout: 6000 }).catch(() => {});
+      // AND LET THE LIST SETTLE. The card can open before the drill's mount
+      // shuffle has filled its queue, and the card is honest about that — it
+      // re-measures every 150ms and grows the step back when the chooser
+      // arrives. Reading it in the first instant scores the app for a frame
+      // no learner sees; this waits for two consecutive identical readings.
+      let last = null;
+      for (let k = 0; k < 20; k++) {
+        const now = await page.evaluate(() =>
+          [...document.querySelectorAll('div[role="dialog"] ol li')]
+            .map((li) => li.textContent.trim()).join("|"));
+        if (last !== null && now === last) break;
+        last = now;
+        await page.waitForTimeout(150);
+      }
+      return;
+    } catch (e) {
+      if (attempt === 1) throw e;
+    }
+  }
+}
+
 const report = [];
 for (const route of routes) {
   const ctx = await browser.newContext({ viewport: { width: 430, height: 860 } });
   const page = await ctx.newPage();
   try {
-    await page.goto(BASE + route, { waitUntil: "networkidle", timeout: 25000 });
-    await page.waitForTimeout(500);
+    /* `load`, THEN WAIT FOR THE CARD — not `networkidle`, and the CI run that
+       taught us is worth the line. One route in fifty timed out at 25s on a
+       cold runner while every substantive clause passed, which is a flake
+       reporting a fault. `networkidle` waits for a 500ms gap in requests, and
+       this app polls: the prune's own 150ms measure loop, the TTS bank, the
+       usher. On a slow machine that gap may simply never arrive. What the scan
+       actually needs is the first-run card, so it waits for THAT, and a route
+       that misses gets one more go before it counts as broken. */
+    await open(page, route);
     const card = await page.evaluate(() => {
       const dlg = document.querySelector('div[role="dialog"]');
       if (!dlg) return null;

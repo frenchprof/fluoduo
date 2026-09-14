@@ -56,7 +56,13 @@ for (const route of routes) {
   const ctx = await browser.newContext({ viewport: { width: 430, height: 860 } });
   const page = await ctx.newPage();
   try {
-    await page.goto(BASE + route, { waitUntil: "networkidle", timeout: 25000 });
+    // `load` and a retry, not `networkidle` — see handhold-scan.mjs for the
+    // CI run that made the difference. This app polls, so the 500ms quiet gap
+    // networkidle waits for may never arrive on a cold runner.
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try { await page.goto(BASE + route, { waitUntil: "load", timeout: 40000 }); break; }
+      catch (e) { if (attempt === 1) throw e; }
+    }
     await page.waitForTimeout(400);
     // The band may be in the host document or in the station's frame.
     let href = null;
