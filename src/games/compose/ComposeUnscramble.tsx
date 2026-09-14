@@ -138,6 +138,13 @@ export default function ComposeUnscramble({ bank }: { bank: ComposeBank }) {
           <HowManyQuestions
             lengths={offer(pool.length) ?? []}
             total={pool.length}
+            // « sentences », because that is what this deals: one scrambled
+            // sentence per item, and you put its words back in order. The prop
+            // is required (14 Sep) precisely so a new drill has to answer this
+            // rather than inherit « questions » from whoever wrote it first —
+            // which is how WorDrill and MémoiRecall came to ask a question
+            // count on screens that ask no questions.
+            noun="sentences"
             onPick={(n) => { setChosen(n); setAsked(true); }}
           />
         </div>

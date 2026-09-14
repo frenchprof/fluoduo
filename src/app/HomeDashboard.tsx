@@ -30,7 +30,6 @@
  * /map still owns the zoom, the legend and the 2D view.
  */
 import { useEffect, useState } from "react";
-import PathDoor from "@/components/PathDoor";
 import MapBody from "@/app/map/MapBody";
 
 /** « par Dr Chan » as pen strokes, in writing order (stem before bowl, the
@@ -372,25 +371,11 @@ export default function HomeDashboard() {
           verify80's own header, which records the other three. The POSTCARD
           ruling is untouched: what comes back is the real switch over the real
           scene, not a cropped 2D picture under a dead band. */}
-      {/* ── THE CURATED PATH'S OWN DOOR (Dan, 2026-09-14) ───────────────────
-          Offered three places to put it — Home, the ☰ menu, the 🎯 page — Dan
-          asked for none of them by name and said instead: *"there should be a
-          dedicated 'Mid-Term Revision' START button"*. So it is its own key
-          rather than a row tucked into a list, and it sits on Home, the one
-          screen every learner passes through.
-
-          ABOVE THE MAP, NOT ABOVE THE HERO. Home's hero has been stripped
-          four times this month — the transport row, the 🎯 well, the « n in a
-          row » counter, the « Next: … » prose — every time because something
-          was sitting there that did not need to be. A revision path is not a
-          fifth thing competing with the wordmark; it belongs with the map,
-          which is the other « where do I go now? » answer on this page.
-
-          IT IS CONTENT-SIZED, in a centred row, because no single control
-          spans the width (5 Sep) and « primary action » is not an exemption.
-          It changes its own label once a path is running, which is why it is
-          a component and not a link. */}
-      <PathDoor />
+      {/* THE REVISION DOOR MOVED INTO THE TOP BAR (Dan, 2026-09-14: "can you
+          move it to the top of the page between the menu burger and buttons,
+          in the middle"). It stood here, under the hero, until then — see
+          components/PathDoor.tsx for why it is a glyph up there and not the
+          sentence it was down here. */}
 
       <section aria-label="Course map" className="mt-5">
         <div className="relative" style={{ touchAction: "pan-y" }}>

@@ -34,6 +34,7 @@ import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
 import MenuGrid from "@/components/MenuGrid";
+import PathDoor from "@/components/PathDoor";
 import AccountButton from "@/components/AccountButton";
 import FavouriteStar from "@/components/FavouriteStar";
 import SoundControl from "@/components/SoundControl";
@@ -207,7 +208,7 @@ export default function SiteTopBar({
             current <-- FluOLinGo in the top should be on the left rather
             than in the middle"): the wordmark now sits AGAINST the ☰, and
             everything after it is pushed right by this margin. */}
-        <Link href="/home" className="mr-auto min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
+        <Link href="/home" className="min-w-0 shrink truncate text-xl font-black text-[color:var(--cahier-ink)]">
           {active !== "home" && <>← </>}
           {/* THE KALLANG WAVE (Dan, 1 Sep: "the top return link to be in the
               same FluOLinGo font but with the KALLANG wave effect and
@@ -232,6 +233,18 @@ export default function SiteTopBar({
             <span className="sr-only">FluOLinGo</span>
           </span>
         </Link>
+        {/* THE MIDDLE SLOT (Dan, 2026-09-14: "between the menu burger and
+            buttons, in the middle"). flex-1 so it takes the slack the wordmark
+            used to absorb, justify-center so the key sits in the middle of
+            that slack rather than against either neighbour — which is what
+            "in the middle" has to mean on a row whose two ends are pinned.
+
+            min-w-0 so this slot, not the icon strip, is what gives way when
+            the row is tight: verify31's whole finding is that navigation must
+            never be pushed off the edge. */}
+        <div className="flex min-w-0 flex-1 justify-center">
+          <PathDoor />
+        </div>
         {/* Yield slot 1 — shrinks and truncates before anything else. */}
         {topRight && (
           <div className="cahier-topslot min-w-0 flex-shrink truncate text-right">{topRight}</div>
