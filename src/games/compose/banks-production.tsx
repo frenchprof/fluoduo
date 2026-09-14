@@ -453,22 +453,18 @@ export const RESTAURANT_SCENE_BANK: ComposeBank = {
 // ---------------------------------------------------------------------------
 // Unité 2 · Présenter quelqu'un  (solo, written) — sits on goal 23's deck
 //
-// WHY THIS EXISTS (Dan, 2026-09-14). The written half of the course's first
-// test is a third-person portrait — name, age and status, likes, sport, plans,
-// one negative — built from avoir, être, aimer, faire, aller and vouloir with
+// WHY THIS EXISTS (Dan, 2026-09-14). Presenting a person in the third
+// person — name, age and status, likes, sport, plans, one negative — is the
+// Unité 1–2 writing skill: avoir, être, aimer, faire, aller and vouloir with
 // « ne … pas / ne … plus » and two connectors. Nothing on the site rehearsed
 // that shape: the writing ateliers were a country (20), an e-mail (30) and a
-// journey (40). Eleven of the words the test hands out belong to goal 23, so
-// the scene lives there.
+// journey (40). Most of its words belong to goal 23, so the scene lives there.
 //
-// THE PERSON ROTATES, AND THE TEST'S OWN SUBJECT IS NOT IN THE LIST. Dan,
-// same day: *"we don't want to give away the fact that the question in the
-// test is about my best friend … présenter qqn is the correct framing"*. So
-// the learner is handed a cousin, a neighbour, a singer — eight people, on the
-// same clock the country scene uses — and answers the same six questions
-// whoever it is. « Un ami / une amie » is one of the eight and is never
-// singled out. What is rehearsed is the shape the marking grid rewards; what
-// stays hidden is the topic.
+// THE PERSON ROTATES (Dan, same day: *"présenter qqn is the correct
+// framing"*). The learner is handed a cousin, a neighbour, a singer — eight
+// people, on the same clock the country scene uses — and answers the same six
+// questions whoever it is. « Un ami / une amie » is one of the eight and is
+// never singled out. What is rehearsed is the shape; the subject is anyone.
 //
 // THE MODEL IS ALWAYS SOMEONE ELSE — the next person round the list — and is
 // built from that person's own fields, so it cannot drift from the chips.
