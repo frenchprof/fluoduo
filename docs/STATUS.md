@@ -89,6 +89,42 @@ choice each"* and it is not yet settled whether that means the setup screen or
 the in-play keypad. **LexicaLocker's scale** (*"i cannot see anything beyond
 three chest trunks"*) did not reproduce at 390px and needs the width Dan saw.
 
+## 14 Sep — the ✕ goes up, and a check of mine was flaky before it was right (fluoduo-main)
+
+**Dan: *"When closing the X it always goes back to the page where it came from
+right? Like closing NumBus should back to Numbers where i came from"*.**
+
+Measured across eighteen surfaces on the built app before changing anything:
+every ✕ not opened for a deck went to `/home`. On sixteen that is the right
+answer — they are top-level doors off the ☰ with nothing above them. The two
+exceptions were exactly the two Dan named. NumBus and NumBourse have no
+registry row of their own, because on 31 Aug he parked them under ONE hub tile,
+so `GameLanding` had neither a stop nor a row and the band took CahierShell's
+default. The page above them exists and the ✕ stepped over it.
+
+**A DECLARED PARENT, NOT THE BROWSER'S HISTORY**, and the reason is worth
+keeping: literal Back breaks on the three ways a learner really arrives — a
+deep link, a refresh, and the ☰ menu, which is not a page to return to — and it
+would quietly undo the 13 Sep ruling that the ✕ lands on the 🎯 page *even when
+you came from the map*. The order is the stop, then the page above, then Home.
+`verify820` drives it, because `exitHref` is threaded through three components
+with a default at every hop.
+
+**AND A LESSON ABOUT THE CHECKS THEMSELVES, paid for in a CI run.**
+`verify800` went red on main's PR with five clauses green and one failure: a
+single route out of fifty timed out at 25s on a cold runner. `networkidle`
+waits for a 500ms gap in network activity, and this app polls — the prune's own
+150ms measure loop, the TTS bank, the usher — so on a slow machine that gap may
+never arrive. **A driven check must wait for the THING IT MEASURES, not for the
+network to go quiet.** Both scans now wait for `load`, then for the card
+itself, and retry a route once before calling it broken.
+
+The second half of the same fix is subtler and is the app being honest: the
+card can open before the drill's mount shuffle has filled its queue, and it
+re-measures every 150ms and grows the step back when the chooser arrives. The
+scan was reading it in that first instant and scoring the app for a frame no
+learner sees. It now waits for two consecutive identical readings.
+
 ## 14 Sep — integration: two lanes built « Présenter quelqu'un » twice, and only one of them may keep the four countries (fluoduo-main)
 
 **Two sessions built the same ComposeIt scene on the same afternoon**, which is

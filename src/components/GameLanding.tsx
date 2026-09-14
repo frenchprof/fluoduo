@@ -33,6 +33,7 @@ export default function GameLanding({
   title,
   bleed,
   deck,
+  exitHref,
   children,
 }: {
   /** Registry key — also CahierShell's `active`, which is what makes the
@@ -65,16 +66,46 @@ export default function GameLanding({
    *  than in each of the seven callers.
    *
    *  Optional because two games are not opened for a deck at all: NumBus and
-   *  NumBourse are pure number games with no stop behind them, and for those
-   *  the map remains the honest way out. */
+   *  NumBourse are pure number games with no stop behind them. Where they go
+   *  instead is `exitHref`, below. */
   deck?: string;
+  /**
+   * WHERE THE ✕ GOES WHEN THERE IS NO STOP BEHIND THE GAME (Dan, 2026-09-14:
+   * *"When closing the X it always goes back to the page where it came from
+   * right? Like closing NumBus should back to Numbers where i came from"*).
+   *
+   * Measured across eighteen surfaces on the built app, every ✕ that is not
+   * opened for a deck went to `/home`. On sixteen of them that is right —
+   * they are top-level doors off the ☰ and there is nothing above them. The
+   * two exceptions are exactly the two Dan named: NumBus and NumBourse have
+   * no registry row of their own, because on 31 Aug he parked them under one
+   * hub tile (*"park NumBus / NumBourse under a hub-tab Numbers"*). So the
+   * page ABOVE them exists — `/games/numbers` — and the ✕ was stepping over
+   * it to the map, which is the same hassle the 13 Sep ruling named: you have
+   * to find your way back in again.
+   *
+   * A DECLARED PARENT, NOT THE BROWSER'S HISTORY. Going literally "back"
+   * breaks on the three ways a learner really arrives — a deep link, a
+   * refresh, and the ☰ menu, which is not a page to return to — and it would
+   * undo the 13 Sep ruling, which says the ✕ lands on the 🎯 page even when
+   * you came from the map. So the order is: the stop this was opened for,
+   * then the page above it, then Home.
+   */
+  exitHref?: string;
   children: React.ReactNode;
 }) {
   const a = activity(activityKey);
   const name = title ?? a?.name;
   const stop = deck ? stopForDeck(deck) : null;
-  const band = name || stop
-    ? { ...(name ? { title: name } : {}), ...(stop ? { exitHref: sioHref(stop.id), goal: goalNumber(stop) } : {}) }
+  // The stop wins, then the declared parent; CahierShell supplies Home when
+  // neither is given, which is the right answer for a top-level door.
+  const out = stop ? sioHref(stop.id) : exitHref;
+  const band = name || out
+    ? {
+        ...(name ? { title: name } : {}),
+        ...(out ? { exitHref: out } : {}),
+        ...(stop ? { goal: goalNumber(stop) } : {}),
+      }
     : undefined;
   return (
     <CahierShell active={activityKey} band={band}>
