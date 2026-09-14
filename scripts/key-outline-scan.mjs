@@ -36,8 +36,14 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 
 const OUT = "out";
-const PORT = 4561;
 const FLOOR = 30;
+/* THE OS PICKS THE PORT, and that is not fastidiousness — `qc/frame-breakout`
+   spent two diagnoses today on exactly this. A driven scan that binds a fixed
+   port fails when a second scan is already on it, and it fails by reporting
+   THE FAULT IT CHECKS FOR (every page 404s, so every key reads as missing)
+   rather than by saying the socket was busy. CI runs these one after another
+   today; nothing guarantees it always will. */
+const PORT = 0;
 
 /* The eleven routes are chosen to reach every SHAPE of key the app has — a
    text key, an emoji key, a tile, a stepper, a switch knob, a repeated row
@@ -75,6 +81,7 @@ const server = http.createServer((q, r) => {
   createReadStream(f).pipe(r);
 });
 await new Promise((r) => server.listen(PORT, r));
+const port = server.address().port;
 
 const exe = existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null;
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
@@ -97,7 +104,7 @@ const bare = [];
 for (const route of ROUTES) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 950 } });
   await page.addInitScript(QUIET);
-  await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: "networkidle" }).catch(() => {});
+  await page.goto(`http://localhost:${port}${route}`, { waitUntil: "networkidle" }).catch(() => {});
   await sleep(1800);
   /* EVERY STATION RUNS IN AN IFRAME (7 Sep), so the main frame of /map holds
      the cahier and the keys live one frame down. Reading only the main frame
