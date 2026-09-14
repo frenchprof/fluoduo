@@ -4921,34 +4921,55 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
    is what removed the four bare <input type="checkbox"> this screen carried
    (Dan, 2026-09-14: "tiled buttons representing a choice each"). A kind that
    is off greys its own emoji, so the state reads before any colour does. */
+/* COUNTED, NOT TOLD (verify270). Four tiles go two-up on a phone and four-up
+   when there is room, because the row measures itself rather than carrying a
+   pixel width that a desktop's larger type would then overflow. */
 .nb-kinds {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  /* Two-up on a phone, four-up when there is room — COUNTED, not told
+     (verify270). `auto-fit` divides whatever width the card has by a tile that
+     is itself on the type ramp, so the row cannot come out 3+1 on one screen
+     and clipped on another. The 24rem cap keeps four tiles from stretching to
+     half a desktop each; it is in rem, so a learner who raises their browser's
+     text size takes the whole row up with it. */
+  grid-template-columns: repeat(auto-fit, minmax(calc(6.5rem + var(--fs-step) * 6.5), 1fr));
+  align-items: stretch;
   justify-content: center;
+  max-width: calc(24rem + var(--fs-step) * 24);
+  margin-inline: auto;
   gap: calc(0.5rem + var(--fs-step) * 0.5);
   margin-top: calc(0.8rem + var(--fs-step) * 0.8);
 }
 .nb-kinds-sub { margin-top: calc(0.45rem + var(--fs-step) * 0.45); }
 .nb-kind {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: calc(0.2rem + var(--fs-step) * 0.2);
   min-height: 44px; /* the finger floor — not a size, and it does not grow */
   min-width: 44px;
-  padding: calc(0.35rem + var(--fs-step) * 0.35) calc(0.6rem + var(--fs-step) * 0.6);
+  padding: calc(0.5rem + var(--fs-step) * 0.5) calc(0.6rem + var(--fs-step) * 0.6);
   border-radius: calc(0.7rem + var(--fs-step) * 0.7);
-  font-size: calc(1.5rem + var(--fs-step) * 1.5);
   line-height: 1;
   --key-bg: var(--cahier-paper-raised);
-  filter: grayscale(1);
-  opacity: 0.5;
+}
+/* THE ART IS NEVER DIMMED — see NumBusSetup's note. An off kind changes the
+   KEY it sits on and the weight of its name; the picture is the same picture
+   either way, because a greyed-out 🚌 reads as a missing 🚌. */
+.nb-kind-art { font-size: calc(1.9rem + var(--fs-step) * 1.9); }
+.nb-kind-name {
+  font-family: var(--fluo-mono);
+  font-size: calc(0.6875rem + var(--fs-step) * 0.69);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: color-mix(in srgb, var(--cahier-ink) 55%, transparent);
+  white-space: nowrap;
 }
 .nb-kind.is-on {
-  filter: none;
-  opacity: 1;
   --key-bg: color-mix(in srgb, var(--fam-svplay, var(--cahier-gold)) 26%, var(--cahier-paper));
 }
+.nb-kind.is-on .nb-kind-name { color: var(--cahier-ink); font-weight: 900; }
 .nb-kind-sm {
   font-family: var(--fluo-mono);
   font-size: calc(0.95rem + var(--fs-step) * 0.95);

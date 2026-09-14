@@ -102,7 +102,21 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
             title={name}
             className={`neo-key nb-kind${cfg[k] ? " is-on" : ""}`}
           >
-            <span aria-hidden>{emoji}</span>
+            {/* THE PICTURE NEVER DIMS, AND THE NAME IS ON THE TILE (Dan,
+                2026-09-14: *"Your removed my bus and all the other images from
+                NumBus. Wtf"*). Nothing was removed — an unticked kind was drawn
+                `grayscale(1); opacity: .5`, so three of the four pictures were
+                grey smudges and their only names were `title` tooltips, which a
+                phone cannot show. From the learner's side that is four icons
+                where one is a bus and the rest are nothing.
+
+                So off-ness is carried by the KEY — paper instead of the family
+                tint, and the label muted — and never by the artwork. The name
+                earns its place by the litmus test: 🍔 alone cannot tell anyone
+                this tile means prices, and there is no other copy of that word
+                on the screen. */}
+            <span className="nb-kind-art" aria-hidden>{emoji}</span>
+            <span className="nb-kind-name">{name}</span>
           </button>
         ))}
       </div>
