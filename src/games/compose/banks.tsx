@@ -57,7 +57,7 @@ export type ComposeBank = {
   emoji: string;
   unit: number;
   deckId: string; // which deck's activity rail this bank attaches to
-  mode: "solo" | "dialogue";
+  mode: "solo" | "dialogue" | "unscramble";
   /** Solo banks only: offer an AI "check my work" pass (POSTs to /api/compose
    *  with scene=id). Directions used to accept anything with nothing checking
    *  the French (Dan, 2026-07-05) — this closes that gap without turning the

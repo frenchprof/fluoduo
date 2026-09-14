@@ -143,6 +143,16 @@ const ACTIVITY_EVIDENCE: Array<[string, EvidenceType]> = [
   ["lesson-dice:", "recognition"],
   ["lesson:", "constrained"],          // the lesson pager's gap/build/translate cards
 
+  /* REMETTRE DANS L'ORDRE — CONSTRAINED, and the choice is worth a line
+     because two of the nine types are arguable here (14 Sep).
+     NOT `recognition`: the learner is not picking a right answer from wrong
+     ones — every token on screen belongs in the sentence, and choosing them
+     all in the wrong order still fails. NOT `productive`: they supply no
+     words of their own. What they supply is the ARRANGEMENT, with the
+     material given — which is what "constrained" names, and the same call
+     already made for the lesson pager's build cards above. */
+  ["unscramble:", "constrained"],
+
   ["conj", "constrained"],
   ["deck-test:", "constrained"],   // the deck page's Test Yourself — typed target
   ["/conjugaison", "constrained"],

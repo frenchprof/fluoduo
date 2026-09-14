@@ -611,6 +611,59 @@ export const PRESENT_PERSON_BANK: ComposeBank = {
   },
 };
 
+
+/* ═══ REMETTRE DANS L'ORDRE — the sentence, shuffled ══════════════════════
+
+   Word order is the first thing a learner loses and the last thing anything
+   in this app rehearses. Every drill here asks for a WORD — a gap, a form, an
+   article — and none of them asks where the words go, so somebody can know
+   « ne », « pas » and « fait » and still not produce « il ne fait pas de
+   sport ».
+
+   THESE BANKS CARRY NO CONTENT, and that is the design. The sentences come
+   from the deck each one hangs off (see ComposeUnscramble's `scrambleable`),
+   so a deck that gains a sentence gains a question and nothing is authored
+   twice. What a bank supplies is a title, a stop and a door.
+
+   THREE, NOT NINETEEN. Nineteen of the forty-four decks carry six or more
+   sentences long enough to scramble, and putting a new door on all nineteen
+   would redraw the app's navigation on the strength of one idea. These three
+   are unit 2, and each is a different word-order problem rather than three
+   helpings of the same one:
+
+       negation-pas        goal 28   « ne … pas » wrapping the verb — the
+                                     one place French word order is a RULE
+                                     rather than a habit. 20 of 20 items are
+                                     sentences.
+       quand-time          goal 27   where a time expression sits, which
+                                     French allows in more than one place
+       aller-destinations  goal 26   verb + preposition + place, where the
+                                     preposition is chosen by the place
+
+   `categories` is empty and `newScenario` returns nothing usable: an
+   unscramble screen has no chips and no scenario. verify440's probe calls
+   newScenario inside a try/catch and skips what it cannot use, and its
+   persona clause now asks only banks that can reach /api/compose — which
+   these cannot, because they grade locally. */
+function unscrambleBank(deckId: string, title: string, unit: number): ComposeBank {
+  return {
+    id: `remettre-${deckId}`,
+    title,
+    emoji: "🧩",
+    unit,
+    deckId,
+    mode: "unscramble",
+    categories: [],
+    newScenario: () => ({ instructionEn: "", headline: "" }),
+  };
+}
+
+export const UNSCRAMBLE_BANKS: ComposeBank[] = [
+  unscrambleBank("negation-pas", "Remettre dans l'ordre · la négation", 2),
+  unscrambleBank("quand-time", "Remettre dans l'ordre · quand ?", 2),
+  unscrambleBank("aller-destinations", "Remettre dans l'ordre · où ?", 2),
+];
+
 /** The production banks, in curriculum order. Register these in banks.tsx's
  *  BANKS array so getComposeBank() and the SIO activity rail can find them.
  *  ORDER MATTERS on a shared deck: the FIRST bank with a deckId is the rail's
@@ -625,4 +678,5 @@ export const PRODUCTION_BANKS: ComposeBank[] = [
   REVIEW_BANK,
   RESTAURANT_SCENE_BANK,
   PRESENT_PERSON_BANK,
+  ...UNSCRAMBLE_BANKS,
 ];

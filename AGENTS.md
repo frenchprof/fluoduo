@@ -468,6 +468,82 @@ cannot report "all clear" over an empty page.
 **The lesson is the Geist ban's, restated for behaviour instead of type: a rule
 about what the app DOES has to be measured in the app, not read in its source.**
 
+# Close a gap by teaching the rule, not by adding the word — permanent (2026-09-14)
+
+**Dan, asked how to fix a nationality the course does not carry:** ***"WE WANT
+TO APPROACH INDIRECTLY VIA APPLICATION OF KNOWLEDGE, E.G. for luxembourgeois,
+do we have any other nationality that covers similar endings -geois(e)"***
+
+It does, and that settled it. Goal 16's twenty-five nationalities fall into
+four families, and the lesson already prints the rules in its own summary box:
+
+    -ien → -ienne          7   indonésien, cambodgien, singapourien,
+                               malaisien, tunisien, algérien, coréen
+    -in  → -ine            6   américain, mexicain, cubain, philippin,
+                               argentin, marocain
+    ends in -s, add -e     5   français, portugais, CHINOIS, thaïlandais,
+                               anglais
+    no change              4   russe, suisse, belge, britannique
+
+So « luxembourgeois » is the « chinois → chinoise » shape exactly, and
+« indien » is « singapourien → singapourienne ». **Neither needed adding.**
+
+**AND ADDING THEM WOULD HAVE COST SOMETHING NOBODY WOULD HAVE NOTICED.** Goal
+15's `countries-letris` and goal 16's `nationalities` are LOCK-STEPPED: the
+same twenty-five subjects, in the same order, paired by id. A 26th entry in one
+alone desynchronises two decks and the two games that read them, and nothing
+about the edit looks wrong. `verify700` pins the pairing for that reason.
+
+**WHAT WAS ACTUALLY MISSING is smaller and sharper: every nationality the app
+ever asks for is one of the twenty-five it taught.** Nothing distinguished a
+learner who knew the rule from one who had memorised twenty-five pairs — which
+is the only distinction that matters the moment they meet a word on a page.
+
+So the remedy is a **TRANSFER ITEM**: a word the app never teaches, asked once
+at the end of a run, NOT SCORED. `content/transfer.ts` holds them,
+`components/TransferProbe.tsx` draws one, and the feedback is the RULE, never a
+verdict — « ends in -s → add -e, comme portugais → portugaise ». You cannot
+mark somebody wrong for not knowing something you never told them; that is
+verify40's ruling (*"remember it, but don't score it"*, 27 Aug) applied to a
+second case.
+
+**The generalisation, for the next gap:** when something the course does not
+carry turns out to be produced by a rule the course DOES teach, the fix is to
+prove the rule transfers — not to widen the deck. Widening is what you do when
+the rule itself is absent.
+
+# Vary the subject so the skill generalises — permanent (2026-09-14)
+
+**Dan, the same day, about a written task:** ***"BUT WE DON'T WANT TO GIVE AWAY
+THE FACT THAT THE QUESTION IN THE TEST IS ABOUT MY BEST FRIEND, SO HOW?"***
+
+**By making the best friend one of eight.** `presenter-personne`
+(`games/compose/banks-production.tsx`) asks the learner to present A PERSON,
+and which person is drawn fresh each run from a cast — brother, sister,
+neighbour, cousin, classmate, team-mate, best friend. Nobody rehearses one
+fixed answer, and no screen names any subject as the important one.
+
+**IT IS THE TRANSFER RULE ABOVE, APPLIED TO A WHOLE TASK RATHER THAN A WORD
+ENDING, and that is why it is written as a rule and not as a trick.** A scene
+with ONE subject teaches that subject. A scene with eight teaches the SHAPE —
+name, age, studies, likes, what they do and where, what they want, what they no
+longer do — and the shape is what survives into the next thing the learner
+writes. The disguise and the pedagogy point the same way, which is the only
+reason to keep it.
+
+**The cast drives the chips**, exactly as `COUNTRIES` drives the country bank's,
+so a subject cannot be added without its own chip and its own model sentences.
+**The server persona is part of it**: `functions/api/compose.js` tells the
+checker it does not know the person and must never assume their relationship to
+the writer — a reply that guessed would undo the rotation.
+
+**The WORD LIST is not the secret and must not be hidden.** Sixteen ordinary
+Unit 1–2 words, and requiring them is the skill: without a list a learner
+writes the six words they are already sure of and revises nothing. See
+`lib/compose/required.ts`, where a verb is ticked only by a CONJUGATED form —
+« avoir » by « il a », never by the word "avoir", which is the whole of
+« n'oubliez pas de conjuguer ».
+
 # The app does not perform unasked — permanent (2026-09-13)
 
 **Dan, in one message:** ***"The [victory] jingle is sometimes playing for no
