@@ -124,18 +124,18 @@ const MIDTERM: CuratedPath = {
     {
       id: "finale",
       activityKey: "grammarathon",
-      /* `?upto=30` IS LOAD-BEARING, not tidiness (Dan, 2026-09-14: *"the
-         curated exercises are not at all adapted for the first test covering
-         stops 1 to 30"*, then *"Stops 0 to 30 only please"*). FINALE_BANK holds
-         437 items and 201 of them — 46% — are from stops 31–50. Unscoped, a
-         25-question paper put about eleven questions on material the test does
-         not cover, AND those misses fed ErroReview, so step 2 then drilled
-         units 3 and 4. The diagnostic was poisoning the repair. */
-      href: "/practice/grammarathon/finale?upto=30",
+      /* NO QUERY, AND THAT IS THE FIX RATHER THAN AN OMISSION. This step used
+         to carry `?upto=30`, which was right against the old default and is
+         now WRONG: `?upto=N` means "stops 1..N", so passing 30 here would put
+         the twelve stops the paper never asks about back into the draw. The
+         Finale's own default is `TESTED_STOPS` — the eighteen Dan named after
+         auditing the paper — so the bare address is the scoped one, through
+         this step and through every other door alike. */
+      href: "/practice/grammarathon/finale",
       title: "GramMarathon — the Finale",
-      does: "types a gap · across stops 1–30",
+      does: "types a gap · only what the paper asks",
       minutes: 8,
-      why: "The only thing in the app that samples the whole test in one sitting — 236 sentences across stops 1–30. Everything missed is queued automatically, which is what makes step 2 possible.",
+      why: "162 sentences across the eighteen stops the test actually asks about — nothing on the twelve it does not. Everything missed is queued automatically, which is what makes step 2 possible.",
     },
     {
       id: "erroreview-now",

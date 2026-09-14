@@ -52,7 +52,7 @@
  * the quiet lines on paper keep the soft one.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
+import { FINALE_BANK, FINALE_SIOS, TESTED_STOPS, type FinaleItem } from "@/content/finale";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
@@ -73,45 +73,46 @@ function mulberry32(seed: number) {
 }
 const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
 
-/** The SIOs a run may draw from.
+/** The SIOs a run may draw from: `TESTED_SIOS` by default, or stops 1..N when
+ *  an address says `?upto=N`.
  *
- *  THE FINALE IS THE WHOLE-COURSE PAPER AND STAYS THAT WAY — this only ever
- *  NARROWS it, from an address. `?upto=30` keeps stops 1–30 and nothing above.
+ *  A LIST, NOT A RANGE — Dan, 2026-09-14, after the item-by-item audit of the
+ *  real paper: *"Then can we curate GramMarathon based entirely on ONLY 1, 4,
+ *  7, 9, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29"*.
  *
- *  WHY IT EXISTS (Dan, 2026-09-14, looking at the curated path: *"the curated
- *  exercises are not at all adapted for the first test covering stops 1 to
- *  30"*, then *"Stops 0 to 30 only please"*). Measured: FINALE_BANK holds 437
- *  items and **201 of them — 46% — are from stops 31–50**. A learner capping
- *  the paper at 25 questions met about eleven on material their test does not
- *  cover, and because the Finale feeds ErroReview, those misses then became
- *  the revision queue. The diagnostic was poisoning the repair.
+ *  THIS IS THE THIRD ANSWER TO THE SAME COMPLAINT and the first that holds,
+ *  which is why all three are written down rather than tidied away:
  *
+ *    1  scope the PATH's step   `?upto=30` on the href. Fixed the path and
+ *       nothing else: the ☰ menu, the picker and a bookmark all still dealt
+ *       the whole course, and that is where Dan met SIO-047 and SIO-049.
+ *    2  cap the COMPONENT       `DEFAULT_UPTO = 30`. Removed units 3 and 4
+ *       through every door — and the paper still felt wrong, because
+ *       `drawDaily`'s 360° floor deals ONE QUESTION FROM EVERY STOP IN RANGE
+ *       before weighting anything. Thirty stops in range, eighteen on the
+ *       paper: **twelve of every fifty questions off-target by construction**.
+ *       Measured: 164 of the 236 in-range items drilled nothing the test asks.
+ *    3  name the STOPS          the list above. The floor now covers eighteen
+ *       stops that are all on the paper, and the weighted remainder can only
+ *       land on those same eighteen.
+ *
+ *  The lesson under it: a RANGE is a guess about what a test covers; the
+ *  eighteen are the answer to reading the test. `content/finale.ts` carries
+ *  the list and the reasoning for each of the twelve stops left out.
+ *
+ *  `?upto=50` still gives the whole-course paper back, unchanged, and
+ *  `?upto=30` still means "stops 1–30" for anyone who wants the old range.
  *  A FILTER, NOT A SECOND BANK: every item already carries its `sio`, so
  *  nothing is duplicated and the two can never drift. */
-/** Stops 1–30 unless an address asks for more. `?upto=50` gives the whole
- *  course back; nothing else has to be passed for the common case.
- *
- *  THE DEFAULT MOVED ON 14 SEP, AND THAT IS THE WHOLE POINT. It used to be
- *  "the whole course unless a query narrows it", on the reasoning that a path
- *  should scope itself and not shrink the activity for anyone else. That is
- *  tidy and it was wrong in practice: the Finale has more than one door — the
- *  ☰ menu, the GramMarathon picker, a bookmark — and every door that is not
- *  the curated path handed a learner revising for Test 1 a paper that was 40%
- *  units 3 and 4. Dan met SIO-047 and SIO-049 that way and asked the same
- *  question twice.
- *
- *  A DEFAULT THAT IS RIGHT ONLY WHEN YOU ARRIVE THROUGH ONE PARTICULAR DOOR IS
- *  NOT A DEFAULT. The course teaches 1–50 and will again; when the second test
- *  comes this constant moves, or the address carries `?upto=50`. Until then the
- *  safe answer is the taught-so-far answer, and no caller can forget it. */
-const DEFAULT_UPTO = 30;
-
 function scopeOf(upto: number | null): { sios: string[]; bank: typeof FINALE_BANK } {
-  upto = upto ?? DEFAULT_UPTO;
   const no = (id: string) => parseInt(id.slice(4), 10);
+  const inScope =
+    upto == null
+      ? (id: string) => TESTED_STOPS.includes(no(id))
+      : (id: string) => no(id) <= upto;
   return {
-    sios: FINALE_SIOS.filter((id) => no(id) <= upto),
-    bank: FINALE_BANK.filter((q) => no(q.sio) <= upto),
+    sios: FINALE_SIOS.filter(inScope),
+    bank: FINALE_BANK.filter((q) => inScope(q.sio)),
   };
 }
 
@@ -233,8 +234,31 @@ export default function FinaleContent() {
     return ids.map((id) => byId.get(id)!).filter(Boolean);
   }, [ids]);
 
-  // Focus the blank whenever the question changes.
-  useEffect(() => { inputRef.current?.focus(); }, [idx, paper]);
+  /* THE CURSOR LANDS IN THE BLANK ITSELF (Dan, 2026-09-14: *"When landing on a
+     new question, please put the cursor directly at the new blank, rather than
+     require one to go put it there oneself"*).
+
+     THE EFFECT WAS ALREADY HERE AND IT WAS NOT ENOUGH, which is the part worth
+     writing down. Every station runs inside the cahier's iframe (7 Sep), and
+     focusing an element in a frame the BROWSER has not focused moves the
+     document's activeElement without giving the caret to the learner — they
+     see an empty gap and have to click it. `window.focus()` first hands the
+     frame the focus, and only then does focusing the input put the caret where
+     they are looking.
+
+     AND IT RUNS AFTER PAINT. On the first question the input mounts in the
+     same commit as the paper, so a synchronous focus can land before the node
+     is laid out; a frame later it always exists. `preventScroll` keeps the
+     page from jumping to the field on a phone, where the gap is already in
+     view and a scroll reads as the screen twitching. */
+  useEffect(() => {
+    if (!paper) return;
+    const id = requestAnimationFrame(() => {
+      try { window.focus(); } catch { /* a frame may refuse; the focus below still helps */ }
+      inputRef.current?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [idx, paper]);
 
   const okCount = paper ? paper.filter((q) => verdicts[q.id]?.ok).length : 0;
   const skipCount = paper ? paper.filter((q) => skipped[q.id] && !verdicts[q.id]?.ok).length : 0;

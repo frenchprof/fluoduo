@@ -325,6 +325,9 @@ ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}|\{minutesOf", summary.grou
 # the query that narrows them. A bare `/practice/grammarathon/finale` on this
 # path is the 46% bug, silently, again.
 STOP_MAX = 30
+# The eighteen stops Dan named on 14 Sep after auditing the real Test 1 paper.
+# Held here as well as in content/finale.ts so a silent edit to either fails.
+EXPECT_STOPS = [1, 4, 7, 9, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29]
 goals = [(sid, int(m.group(1)))
          for sid, body in steps
          if (m := re.search(r"goal:\s*(\d+)", body))]
@@ -335,7 +338,12 @@ ok(not over,
    "the first test covers 1–30 only.")
 
 NARROW = {
-    "/practice/grammarathon/finale": "upto=",
+    # THE FINALE MUST CARRY NO `upto=` NOW, which inverts what this line said
+    # an hour ago. `?upto=N` means "stops 1..N", and the Finale's own default
+    # is the eighteen stops the paper asks about — so passing `upto=30` here
+    # would WIDEN the draw back to thirty stops, twelve of which the test never
+    # touches. The bare address is the scoped one.
+    "/practice/grammarathon/finale": "",
     "/conjugaison": "v=",
     "/practice/ecoutexte": None,  # narrowed by taking a deck route, not a query
 }
@@ -343,6 +351,11 @@ wide = []
 for h in sorted(set(re.findall(r'href:\s*"(/[^"]*)"', src))):
     page, _, query = h.partition("?")
     need = NARROW.get(page)
+    if need == "":
+        # "" means: this door is narrow by DEFAULT and a query would widen it.
+        if query:
+            wide.append(f"{h} — carries ?{query}, which widens it back")
+        continue
     if need is None and page in NARROW:
         wide.append(f"{h} — open the picker, every unit")
     elif need and need not in query:
@@ -367,17 +380,21 @@ ok(not wide,
 # version of this design — "a path scopes itself, the activity stays whole" —
 # is exactly what shipped the bug, and it will read as the right idea again.
 fin = read("src/app/practice/grammarathon/finale/FinaleContent.tsx")
-m = re.search(r"const DEFAULT_UPTO\s*=\s*(\d+)", fin)
-ok(bool(m) and int(m.group(1)) == STOP_MAX,
-   f"the Finale itself defaults to stops 1-{STOP_MAX}, whatever door opened it",
-   "FinaleContent has no `const DEFAULT_UPTO = 30`. Without it the bare "
-   "/practice/grammarathon/finale deals the whole fifty-stop course — 201 of "
-   "its 437 items are stops 31-50 — to anyone who did not arrive through the "
-   "curated path. Pin the cap in the component; let `?upto=50` ask for more.")
-ok(bool(re.search(r"upto\s*=\s*upto\s*\?\?\s*DEFAULT_UPTO", fin)),
-   "and scopeOf applies that default rather than falling through to the full bank",
-   "scopeOf does not fall back to DEFAULT_UPTO — a null scope must mean the "
-   "test's range, never the whole course.")
+bank = read("src/content/finale.ts")
+m = re.search(r"export const TESTED_STOPS[^=]*=\s*\[([^\]]*)\]", bank, re.S)
+got = sorted(int(n) for n in re.findall(r"\d+", m.group(1))) if m else []
+ok(got == EXPECT_STOPS,
+   f"the Finale draws from the {len(EXPECT_STOPS)} stops the paper asks about",
+   f"TESTED_STOPS is {got or 'missing'}, expected {EXPECT_STOPS}. Dan named these "
+   "after auditing the real paper item by item (14 Sep). Changing the list is a "
+   "content decision, not a refactor — twelve stops are deliberately absent and "
+   "content/finale.ts says why for each one.")
+ok("TESTED_STOPS" in fin and bool(re.search(r"upto == null", fin)),
+   "and scopeOf uses that list whenever the address names no range",
+   "scopeOf does not fall back to TESTED_STOPS. A null scope must mean the "
+   "eighteen tested stops, never the whole course and never a bare 1..30 range "
+   "— `drawDaily` floors ONE question per stop in range, so twelve of every "
+   "fifty would be off-target by construction.")
 
 print("\nthe curated path holds (14 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))
