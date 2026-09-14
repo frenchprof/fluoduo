@@ -30,7 +30,7 @@
         },
         {
           "key": "ponctualite",
-          "label": "PONCTUALITÉ",
+          "label": "TÔT / TARD",
           "prefix": ""
         }
       ]
@@ -301,12 +301,23 @@
       "gap": "à"
     },
     {
-      "id": "quand-time-23",
-      "fr": "en retard",
-      "en": "late",
+      "id": "quand-time-tot-tard-1",
+      "fr": "c'est tôt",
+      "en": "it's early",
       "syllables": [
-        "en",
-        "re",
+        "c'est",
+        "tôt"
+      ],
+      "tags": [
+        "col:ponctualite"
+      ]
+    },
+    {
+      "id": "quand-time-tot-tard-2",
+      "fr": "c'est tard",
+      "en": "it's late",
+      "syllables": [
+        "c'est",
         "tard"
       ],
       "tags": [
@@ -314,61 +325,20 @@
       ]
     },
     {
-      "id": "quand-time-24",
-      "fr": "à l'heure",
-      "en": "on time",
-      "syllables": [
-        "à",
-        "l'heure"
-      ],
-      "tags": [
-        "col:ponctualite"
-      ]
+      "id": "quand-time-tot-tard-gap-1",
+      "fr": "Il est huit heures : c'est tôt.",
+      "en": "It's eight o'clock: it's early.",
+      "gap": "tôt",
+      "example": "Il est huit heures : c'est tôt.",
+      "tags": []
     },
     {
-      "id": "quand-time-25",
-      "fr": "en avance",
-      "en": "early",
-      "syllables": [
-        "en",
-        "a",
-        "vance"
-      ],
-      "tags": [
-        "col:ponctualite"
-      ]
-    },
-    {
-      "id": "quand-time-26",
-      "fr": "Je suis en retard.",
-      "en": "I'm late.",
-      "example": "Je suis à l'heure.",
-      "tags": [],
-      "gap": "en retard"
-    },
-    {
-      "id": "quand-time-27",
-      "fr": "Le bus est en retard.",
-      "en": "The bus is late.",
-      "example": "Le bus est à l'heure.",
-      "tags": [],
-      "gap": "en retard"
-    },
-    {
-      "id": "quand-time-28",
-      "fr": "Tu es à l'heure !",
-      "en": "You're on time!",
-      "example": "Tu es en avance !",
-      "tags": [],
-      "gap": "à l'heure"
-    },
-    {
-      "id": "quand-time-29",
-      "fr": "Elle est en avance.",
-      "en": "She's early.",
-      "example": "Elle est en retard.",
-      "tags": [],
-      "gap": "en avance"
+      "id": "quand-time-tot-tard-gap-2",
+      "fr": "Il est minuit : c'est tard.",
+      "en": "It's midnight: it's late.",
+      "gap": "tard",
+      "example": "Il est minuit : c'est tard.",
+      "tags": []
     }
   ]
 }
