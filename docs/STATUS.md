@@ -35,13 +35,16 @@ What DID come across from the two content lanes:
   as a cloze on être (`avoir-etats`). Both lanes asked for it; verify700's own
   docstring lists it as one of the three holes.
 - **Suède / suédois·e** in the two decks, in lock-step
-  (`claude/french-grammar-exercises-4aek45`). It is not a transfer item, and
-  it gives the **-ois → -oise** family a second taught example, so the rule
-  the probe tests reads as a rule rather than as « chinois » alone.
+  (`countries-letris-26-suede`, `nat-26-suede`, `col:la`, from
+  `claude/french-grammar-exercises-4aek45`). It is not a transfer item, and it
+  gives the **-ois → -oise** family a second taught example, so the rule the
+  probe tests reads as a rule rather than as « chinois » alone. That lane
+  states the distinction itself: *"No single country is added to cover an
+  ending."* — which is the same ruling read from the other side.
 - `docs/revision/PROMPT-midterm-revision-path.md` and its four screenshots —
   a brief, kept as history now that #369 shipped the path itself.
 
-## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, MERGED as #369 and live)
 
 **Dan: *"what i would really need now is a 'curated path' automatically driving
 the sequence of activities on FluOLinGo — essential, optional etc"*.** The
