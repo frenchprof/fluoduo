@@ -138,6 +138,7 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
       <HowManyQuestions
         lengths={offer(order.length)!}
         total={order.length}
+        noun="questions"
         onPick={(n) => { setChosen(n); setAsked(true); }}
       />
     );
