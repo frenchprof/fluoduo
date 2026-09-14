@@ -112,12 +112,30 @@ under step 5 — a line and not a tile, because Help was ruled on 9 Sep to open
 onto a manual and not another grid. Its economy section is rewritten to what
 ships; it used to say « SpecuLearn · VocabulaRain · Numbers → 0 XP ».
 
-**STILL OPEN, AND ONLY DAN CAN CLOSE IT: `level >= 1` IS STILL LIVE.** The peers
-entry below explains it — every learner under 2,000 XP is level 0, the live rule
-denies their row, and the client reads a denied write as "excluded" and DELETES
-it. The repo copy is fixed; **the console copy is not**, and nothing here can
-deploy it. Until it is pasted in, the board keeps erasing beginners whatever
-else lands.
+**✅ CLOSED 14 Sep — `level >= 0` IS LIVE, and the way this was got wrong is
+worth more than the fix.** Dan pasted the console's copy back and it carries
+`level >= 0`: the beginner fix was already deployed. He had pasted it once
+before, and it was read as the repo file rather than the live one, so he was
+asked a further three times to do a thing he had already done — *"HAVENT I
+PASTED IT ALREADY"*.
+
+The evidence was in his own paste both times and nobody looked: it carries
+SEVENTEEN addresses in `isExcludedFromLeaderboard()`, where the repo carries
+nineteen. It could not have been a copy of the repo file, because the repo had
+already gained Dan's two alter-ego test accounts. A paste that differs from the
+repo IS the console.
+
+**So live is behind git by exactly one item, and that gap is harmless by
+design**: `publishLeaderboard` refuses those two accounts client-side before it
+writes and deletes any row they left, so the exclusion never depended on the
+rules being current. That is why it was built in the client — the client half
+ships with every build; the rules half needs a human at a console.
+
+**THE LESSON, for the next session: a note saying "not yet deployed" is a claim
+about the world, and it goes stale the moment Dan acts on it.** Before repeating
+any outstanding-task line from this file or from `firestore.rules`, check
+whether it has already been done. Repeating it is not free — it spends Dan's
+attention on a closed item and buries the ones that are still open.
 
 Gate on both: tsc clean, `NEXT_PUBLIC_OPEN_APP=1` build clean, every
 `verify/*.py` passing, eslint clean on touched files.

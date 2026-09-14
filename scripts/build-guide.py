@@ -38,6 +38,12 @@ def inline(s):
     s = html.escape(s, quote=False)
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"<a href='\2' target='_blank' rel='noopener'>\1</a>", s)
+    # ...and a link to another page of THIS site (/guide, /home). Added 14 Sep,
+    # when the manual moved into public/ and gained a line back to the
+    # QuickStart: without this it rendered as literal « [QuickStart](/guide) »
+    # on the page. No target=_blank — leaving the site for the site is not a
+    # new tab.
+    s = re.sub(r"\[([^\]]+)\]\((/[^)]*)\)", r"<a href='\2'>\1</a>", s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?![\w*])", r"<em>\1</em>", s)
     return s
@@ -218,6 +224,15 @@ def main():
     artifact = sys.argv[1] if len(sys.argv) > 1 else None
     body, toc = render(SRC.read_text())
     toc_html = "".join(f"<a href='#s{n}' class='fam-{fam}'><span class='n'>{n}</span>{inline(t)}</a>" for n, t, fam in toc)
+    # THE CONTENTS LIST GOES BELOW THE WHOLE INTRO, not after the first
+    # paragraph. It used to be injected after the first </p>, which was fine
+    # while the intro was one line — and on 14 Sep, when the manual gained a
+    # second line pointing back to the QuickStart, that line landed UNDERNEATH
+    # eleven chapter buttons where nobody would read it. Anchoring on the first
+    # <section> puts every introductory line above the contents, whatever they
+    # are, which is what a reader expects of a contents list anyway.
+    nav = '<nav class="toc" aria-label="Contents">' + toc_html + "</nav>\n"
+    body = body.replace("<section id='s0'", nav + "<section id='s0'", 1)
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FluOLinGo Plain Guide</title>
@@ -225,7 +240,7 @@ def main():
 <style>{CSS}</style></head><body>
 <main class="sheet"><div class="binding" aria-hidden="true"></div>
 <div class="sitebar"><span class="burger" aria-hidden="true">☰</span><a class="wordmark" href="{SITE}/home" target="_blank" rel="noopener">FluOLinGo</a><span class="right">the plain guide · <a href="{SITE}" target="_blank" rel="noopener">fluolingo.com</a></span></div>
-{body.replace('</p>', '</p><nav class="toc" aria-label="Contents">' + toc_html + '</nav>', 1)}
+{body}
 <p class="footer">Every screen above is a real screenshot of the app as built on 13 Sep 2026, at phone width (390px) unless it says desktop. Text checked against the code the same day. Source: <code>docs/GUIDE.md</code> in the fluoduo repository.</p>
 </main>
 <a class="totop" href="#top" aria-label="Back to contents" onclick="window.scrollTo({{top:0,behavior:'smooth'}});return false;">↑</a>
