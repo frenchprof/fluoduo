@@ -135,9 +135,16 @@ export default function ComposeUnscramble({ bank }: { bank: ComposeBank }) {
     return (
       <GameFrame title={`${bank.emoji} ${bank.title}`} exitHref={exitHref} progress={null} hintKey="unscramble">
         <div className="mx-auto flex h-full max-w-lg flex-col justify-center px-4">
+          {/* « How many SENTENCES? » — this drill deals one whole sentence at
+              a time, scrambled, and asks for it back in order. It asks no
+              questions and shows no cards, so it is exactly the fourth drill
+              PR 366's required `noun` was written to catch: a default of
+              "questions" is how the wrong word reached WorDrill and
+              MémoiRecall, each call site simply inheriting it. */}
           <HowManyQuestions
             lengths={offer(pool.length) ?? []}
             total={pool.length}
+            noun="sentences"
             onPick={(n) => { setChosen(n); setAsked(true); }}
           />
         </div>
