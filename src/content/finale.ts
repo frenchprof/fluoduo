@@ -32,11 +32,21 @@ export const FINALE_BANK: FinaleItem[] = [
   { id: "finale:SIO-027:3", sio: "SIO-027", unit: 2, pre: "Il fait du sport ", post: " week-end.", a: ["le", "ce"], cat: "an article in a time expression" },
   { id: "finale:SIO-028:1", sio: "SIO-028", unit: 2, pre: "Je n'aime pas ", post: " poisson.", a: ["le"], cat: "an article (general statement — pas LE, not de)" },
   { id: "finale:SIO-028:2", sio: "SIO-028", unit: 2, pre: "Elle n'aime pas ", post: " musique classique.", a: ["la"], cat: "an article (general statement — pas LA, not de)" },
-  { id: "finale:SIO-028:3", sio: "SIO-028", unit: 2, pre: "— Tu n'aimes pas ", post: " légumes ? — Si, j'adore ça !", a: ["les"], cat: "an article (general statement — pas LES, not de)" },
+  /* « SI » IS NOT IN UNITS 0–2, so the reply was teaching past the test (Dan,
+     2026-09-14: *"REPLACE légumes with sports AND REPLACE Si j'adore ça, WITH
+     Non, je déteste ça"*). Answering a NEGATIVE question with « si » rather
+     than « oui » is its own rule and the course has not taught it here; a
+     plain « non » keeps the card about the article, which is what it tests.
+     The subject moved to « les sports » in the same edit. */
+  { id: "finale:SIO-028:3", sio: "SIO-028", unit: 2, pre: "— Tu n'aimes pas ", post: " sports ? — Non, je déteste ça !", a: ["les"], cat: "an article (general statement — pas LES, not de)" },
   { id: "finale:SIO-042:1", sio: "SIO-042", unit: 4, pre: "Un verre ", post: "eau, s'il vous plaît !", a: ["d'", "d"], cat: "de in a container expression" },
   { id: "finale:SIO-042:2", sio: "SIO-042", unit: 4, pre: "Je bois un verre ", post: " lait le matin.", a: ["de"], cat: "de in a container expression" },
   { id: "finale:SIO-042:3", sio: "SIO-042", unit: 4, pre: "Un verre ", post: " jus d'orange pour moi, merci !", a: ["de"], cat: "de in a container expression" },
-  { id: "finale:SIO-022:1", sio: "SIO-022", unit: 2, pre: "C'est le sac ", post: " Marie.", a: ["de"], cat: "de of possession" },
+  /* THE POSSESSIVE ADJECTIVE, NOT « de + name » (Dan, 2026-09-14: *"Q5 should
+     be : Le sac est à Marie ? Oui, c'est son sac"*). The paper's section F is
+     exactly this exchange — « Le livre est à toi ? — Oui, c'est ton livre » —
+     so the card now asks for the form the test asks for. */
+  { id: "finale:SIO-022:1", sio: "SIO-022", unit: 2, pre: "— Le sac est à Marie ? — Oui, c'est ", post: " sac.", a: ["son"], cat: "a possessive adjective" },
   { id: "finale:SIO-022:2", sio: "SIO-022", unit: 2, pre: "C'est le livre ", post: " professeur.", a: ["du"], cat: "de + le of possession (contracted)" },
   { id: "finale:SIO-006:1", sio: "SIO-006", unit: 0, pre: "La porte ", post: " la salle de classe est verte.", a: ["de"], cat: "de of possession" },
   { id: "finale:SIO-032:1", sio: "SIO-032", unit: 3, pre: "Il vient ", post: " Japon : il est japonais.", a: ["du"], cat: "origin — de + le (contracted)" },

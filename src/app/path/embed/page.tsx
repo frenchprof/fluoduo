@@ -201,7 +201,14 @@ function Tier({ path, steps, run, current }: {
                       key={s.id}
                       href={href}
                       className="neo-key fluo-path-step-go"
-                      style={{ "--key-bg": sDone ? "var(--dopa-win-wash)" : "var(--fam-review-wash)" } as React.CSSProperties}
+                      /* The edge follows the fill, so a finished step is
+                         outlined in the win ink and a waiting one in the
+                         family's — the ☰ menu's colour law (11 Sep), applied
+                         to the one control this page repeats sixteen times. */
+                      style={{
+                        "--key-bg": sDone ? "var(--dopa-win-wash)" : "var(--fam-review-wash)",
+                        "--key-edge": sDone ? "var(--dopa-win-ink)" : "var(--fam-review-ink)",
+                      } as React.CSSProperties}
                     >
                       {sDone ? "✓" : "▶"} {label}
                     </Link>

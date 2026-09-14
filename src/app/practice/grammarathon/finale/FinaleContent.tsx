@@ -88,8 +88,26 @@ const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCo
  *
  *  A FILTER, NOT A SECOND BANK: every item already carries its `sio`, so
  *  nothing is duplicated and the two can never drift. */
+/** Stops 1–30 unless an address asks for more. `?upto=50` gives the whole
+ *  course back; nothing else has to be passed for the common case.
+ *
+ *  THE DEFAULT MOVED ON 14 SEP, AND THAT IS THE WHOLE POINT. It used to be
+ *  "the whole course unless a query narrows it", on the reasoning that a path
+ *  should scope itself and not shrink the activity for anyone else. That is
+ *  tidy and it was wrong in practice: the Finale has more than one door — the
+ *  ☰ menu, the GramMarathon picker, a bookmark — and every door that is not
+ *  the curated path handed a learner revising for Test 1 a paper that was 40%
+ *  units 3 and 4. Dan met SIO-047 and SIO-049 that way and asked the same
+ *  question twice.
+ *
+ *  A DEFAULT THAT IS RIGHT ONLY WHEN YOU ARRIVE THROUGH ONE PARTICULAR DOOR IS
+ *  NOT A DEFAULT. The course teaches 1–50 and will again; when the second test
+ *  comes this constant moves, or the address carries `?upto=50`. Until then the
+ *  safe answer is the taught-so-far answer, and no caller can forget it. */
+const DEFAULT_UPTO = 30;
+
 function scopeOf(upto: number | null): { sios: string[]; bank: typeof FINALE_BANK } {
-  if (upto == null) return { sios: FINALE_SIOS, bank: FINALE_BANK };
+  upto = upto ?? DEFAULT_UPTO;
   const no = (id: string) => parseInt(id.slice(4), 10);
   return {
     sios: FINALE_SIOS.filter((id) => no(id) <= upto),

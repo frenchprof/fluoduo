@@ -2890,7 +2890,26 @@ h3.cahier-display { font-size: var(--fs-h3); }
     7px 12px 20px color-mix(in oklab, var(--cahier-ink) 32%, transparent),
     inset 1px 3px 0 color-mix(in oklab, white 62%, transparent),
     inset -1px -6px 0 color-mix(in oklab, black 16%, transparent);
-  border: 0;
+  /* THE OUTLINED TOP SURFACE (Dan, 2026-09-14: *"the buttons are missing the
+     outlined top surface"*). This line used to read `border: 0`.
+     WHY IT WAS INVISIBLE IN THE SOURCE, and why a census was needed: the 3D
+     above is four shadows, and on a DARK key the `inset 1px 3px 0 white 62%`
+     lip does read as a lit top face. On a pale one it cannot — the path's
+     « ▶ Open » sits on --fam-review-wash, rgb(205,244,231), and a 62%-white
+     highlight on near-white is nothing at all. So the key looked 3D in some
+     places and flat in others, which reads as a bug in the flat ones rather
+     than as a missing rule.
+     MEASURED across eleven routes in the built app: 42 of 50 raised keys had
+     no outline of any kind. The eight that did are the ☰ menu's tiles, which
+     add `border-2` themselves in `familyTile.ts` and colour it with the
+     family's darkest rung — Dan's own ruling of 11 Sep, *"the darkest shade
+     in there"* moved onto the tile outlines. This makes that the rule rather
+     than the exception.
+     `--key-edge` IS THE `--key-bg` MECHANISM AGAIN, for the same reason: a
+     caller sets it inline and always wins, and every key that sets nothing
+     keeps the house ink. Box-sizing is border-box app-wide, so the 2px eats
+     into padding — no row measurement moves. */
+  border: 2px solid var(--key-edge, var(--cahier-ink));
   transition: transform .1s ease, box-shadow .1s ease;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -3026,6 +3045,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
    :active overrides it with a short, hard ease-in so the press is immediate.
    One property animates — transform — which the compositor handles without
    laying out or painting, so fifty of these cost nothing. */
+/* A COIN KEEPS `border: 0`; A BUTTON DOES NOT.
+   `.fluo-spring` is worn by both — the 3D map's stop NODES, and the ± zoom
+   steppers, the 2D/3D switch knob and the map's two text buttons. The line
+   between them is already in the markup and needs no new class: a stop node is
+   `home-map3d-node fluo-spring` with NO `.neo-key`, every button here is
+   `.neo-key fluo-spring`. So the two-class rule below returns the outlined top
+   surface to the four buttons and leaves the coins exactly as Dan ruled them
+   on 8 Sep — *"a coin, not a neumorphic pill"*. */
+.neo-key.fluo-spring { border: 2px solid var(--key-edge, var(--cahier-ink)); }
 .fluo-spring, .fluo-stop {
   border: 0;
   transition:

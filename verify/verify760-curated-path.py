@@ -354,6 +354,31 @@ ok(not wide,
    "/practice/ecoutexte and /conjugaison open choosers covering all five units "
    "and all 67 verbs.")
 
+# ── 9 · THE FINALE'S OWN DEFAULT IS THE TEST, NOT THE COURSE ────────────────
+# Clause 8 pins the query on the PATH's step. That is not enough and Dan paid
+# for the difference: he opened /practice/grammarathon/finale directly — the
+# ☰ menu and a bookmark reach it the same way — and met SIO-047 and SIO-049 on
+# a paper he was revising for a test that stops at 30. He said so three times
+# before it was heard.
+#
+# A DEFAULT THAT IS ONLY RIGHT THROUGH ONE DOOR IS NOT A DEFAULT. So the cap
+# lives in the component: `DEFAULT_UPTO = 30`, and `?upto=50` is what asks for
+# the whole course back. This clause pins that constant, because the tidy
+# version of this design — "a path scopes itself, the activity stays whole" —
+# is exactly what shipped the bug, and it will read as the right idea again.
+fin = read("src/app/practice/grammarathon/finale/FinaleContent.tsx")
+m = re.search(r"const DEFAULT_UPTO\s*=\s*(\d+)", fin)
+ok(bool(m) and int(m.group(1)) == STOP_MAX,
+   f"the Finale itself defaults to stops 1-{STOP_MAX}, whatever door opened it",
+   "FinaleContent has no `const DEFAULT_UPTO = 30`. Without it the bare "
+   "/practice/grammarathon/finale deals the whole fifty-stop course — 201 of "
+   "its 437 items are stops 31-50 — to anyone who did not arrive through the "
+   "curated path. Pin the cap in the component; let `?upto=50` ask for more.")
+ok(bool(re.search(r"upto\s*=\s*upto\s*\?\?\s*DEFAULT_UPTO", fin)),
+   "and scopeOf applies that default rather than falling through to the full bank",
+   "scopeOf does not fall back to DEFAULT_UPTO — a null scope must mean the "
+   "test's range, never the whole course.")
+
 print("\nthe curated path holds (14 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:
