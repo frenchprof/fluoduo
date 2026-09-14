@@ -6,6 +6,45 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — the path now stays inside the test: stops 1–30 (peers lane, `claude/peers-vd2h6h`, NOT merged)
+
+**Dan, opening the curated path: *"I just saw the curated exercises are not at
+all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to 30
+only please"*.** Stops 1–30 are units 0, 1 and 2; 31–50 are units 3 and 4.
+
+**MEASURED BY WALKING A WHOLE PAPER IN THE BUILT APP**, one card at a time at
+390px, hint · hint · skip, fifty times:
+
+        before   50 questions · 20 of them stops 31–50 (40%)
+        after    50 questions ·  0
+
+« Le matin, je bois un ___ au lait. » is SIO-041. And because the Finale feeds
+ErroReview, those twenty misses BECAME the revision queue — step 1 was
+manufacturing the wrong homework for step 2.
+
+**Three different ways a step left the test, only one of them visible in
+`paths.ts`:** a goal above 30 (« MneMemo — asking a question », goal 34 — cut);
+an unscoped BANK (FINALE_BANK is 437 items, 201 of them stops 31–50 — the step
+looked right, one href and no goal); an unscoped PICKER (`/practice/ecoutexte`
+and `/conjugaison` open choosers over all five units and all 67 verbs, so the
+ConjugaZone step's own text named six verbs it never picked).
+
+**The scope lives in the address** — `?upto=30`, `?v=etre,avoir,faire,aller,sappeler,aimer`,
+`/practice/ecoutexte/quand-time` — and `scopeOf()` is a filter over the one
+bank, never a second bank. Read with `addressSearch()`, not `window.location`:
+the Finale runs in the cahier's iframe, whose src carries no query at all.
+
+**The Finale is still the whole-course paper.** No query, fifty stops, exactly
+as before. The path scopes itself; it does not shrink the activity for anyone
+else. The second test is `?upto=50`, or another entry in `paths.ts`, and no new
+code.
+
+`verify760` clause 8 pins both halves (goals ≤ 30; the three wide doors carry
+their narrowing query) and was break-tested both ways.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · before/after walked in the real app
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at

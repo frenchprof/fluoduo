@@ -1077,3 +1077,53 @@ which screen ticks it.
 station runs in an iframe, so the pathname when the usher mounts ends in
 `/embed` and matches no step's address. Without the strip the path never
 advances anywhere, and the code reads as if it works.
+
+# A step is only revision if it stays inside the test — permanent (2026-09-14)
+
+**Dan, opening the path he had just asked for: *"I just saw the curated
+exercises are not at all adapted for the first test covering stops 1 to 30"*,
+then, asked how wide to cut it: *"Stops 0 to 30 only please"*.**
+
+Stops 1–30 are units 0, 1 and 2. Stops 31–50 are units 3 and 4, which the first
+test does not cover. **Walked in the built app, a Finale paper dealt 20 of its
+50 questions from stops 31–50** — « Le matin, je bois un ___ au lait. » is
+SIO-041 — and because the Finale feeds ErroReview, those misses then BECAME the
+revision queue. Step 1 was manufacturing the wrong homework for step 2.
+
+**THREE DIFFERENT WAYS A STEP LEFT THE TEST, and only one was visible in the
+step list:**
+
+    a GOAL above 30     « MneMemo — asking a question » was goal 34, unit 3.
+                        The only one you could see reading paths.ts.
+    an UNSCOPED BANK    the Finale draws FINALE_BANK: 437 items, 201 of them
+                        (46%) stops 31–50. The step LOOKED right — one href,
+                        no goal — and was the worst offender of the three.
+    an UNSCOPED PICKER  `/practice/ecoutexte` and `/conjugaison` open choosers
+                        covering all five units and all 67 verbs. The
+                        ConjugaZone step's own text named six verbs
+                        (être · avoir · faire · aller · s'appeler · aimer) that
+                        it then never picked.
+
+**SO THE SCOPE LIVES IN THE ADDRESS, and the address is the step's data.**
+`?upto=30` on the Finale, `?v=etre,avoir,…` on ConjugaZone, a deck route
+(`/practice/ecoutexte/quand-time`) instead of the topic picker. `scopeOf()` in
+`FinaleContent.tsx` is a FILTER over the one bank, never a second bank —
+every item already carries its `sio`, so the two can never drift apart.
+
+**AND THE QUERY IS READ WITH `addressSearch()`, NOT `window.location`** — the
+Finale runs inside the cahier's iframe, whose own src carries no query at all.
+ConjugaZone's `?deck=` was silently ignored for exactly that reason until
+somebody measured it. A scope read off `window.location` inside a frame is a
+scope that is always null, and the code reads as if it works.
+
+**`verify760` clause 8 holds both halves** — every goal-scoped step is ≤ 30,
+and the three wide doors carry the query that narrows them. It takes a LIST of
+doors, per the Geist precedent, because the next wide door will not be one of
+these three. A bare `/practice/grammarathon/finale` on a curated path is the
+46% bug, silently, again.
+
+**WHAT THIS DOES NOT DO: the Finale is still the whole-course paper.** Nothing
+narrows unless an address asks it to, so `/practice/grammarathon/finale` with
+no query is fifty stops exactly as before. A path scopes ITSELF; it does not
+shrink the activity for everybody else. When the second test comes, that is
+`?upto=50` — or a second entry in `paths.ts` — and no new code.

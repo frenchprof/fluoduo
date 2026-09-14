@@ -59,6 +59,7 @@ import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
 import { isWeakSrs, loadProgress, recordItemResult } from "@/lib/progress";
 import { buildLadder, shownRungs } from "@/lib/help/hints";
 import { buildEvidence } from "@/lib/evidence";
+import { addressSearch } from "@/lib/addressWindow";
 
 const DAILY_N = 50; // Dan, 2026-07-22: 50, not 100
 
@@ -72,16 +73,40 @@ function mulberry32(seed: number) {
 }
 const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
 
-function sioWeakness(): Record<string, number> {
+/** The SIOs a run may draw from.
+ *
+ *  THE FINALE IS THE WHOLE-COURSE PAPER AND STAYS THAT WAY — this only ever
+ *  NARROWS it, from an address. `?upto=30` keeps stops 1–30 and nothing above.
+ *
+ *  WHY IT EXISTS (Dan, 2026-09-14, looking at the curated path: *"the curated
+ *  exercises are not at all adapted for the first test covering stops 1 to
+ *  30"*, then *"Stops 0 to 30 only please"*). Measured: FINALE_BANK holds 437
+ *  items and **201 of them — 46% — are from stops 31–50**. A learner capping
+ *  the paper at 25 questions met about eleven on material their test does not
+ *  cover, and because the Finale feeds ErroReview, those misses then became
+ *  the revision queue. The diagnostic was poisoning the repair.
+ *
+ *  A FILTER, NOT A SECOND BANK: every item already carries its `sio`, so
+ *  nothing is duplicated and the two can never drift. */
+function scopeOf(upto: number | null): { sios: string[]; bank: typeof FINALE_BANK } {
+  if (upto == null) return { sios: FINALE_SIOS, bank: FINALE_BANK };
+  const no = (id: string) => parseInt(id.slice(4), 10);
+  return {
+    sios: FINALE_SIOS.filter((id) => no(id) <= upto),
+    bank: FINALE_BANK.filter((q) => no(q.sio) <= upto),
+  };
+}
+
+function sioWeakness(sios: string[], bank: typeof FINALE_BANK): Record<string, number> {
   const p = loadProgress();
   const now = Date.now();
   const w: Record<string, number> = {};
-  for (const sio of FINALE_SIOS) {
+  for (const sio of sios) {
     const s = SIOS.find((x) => x.id === sio);
     const c = s ? CURATED.find((x) => x.id === s.collectionId) : undefined;
     const ids: string[] = [
       ...(c ? (c.items.map((it: { id?: string }) => it.id).filter(Boolean) as string[]) : []),
-      ...FINALE_BANK.filter((q) => q.sio === sio).map((q) => q.id),
+      ...bank.filter((q) => q.sio === sio).map((q) => q.id),
     ];
     let bad = 0, tracked = 0;
     for (const id of ids) {
@@ -95,10 +120,11 @@ function sioWeakness(): Record<string, number> {
   return w;
 }
 
-function drawDaily(seedKey: string | number): string[] {
+function drawDaily(seedKey: string | number, upto: number | null): string[] {
+  const { sios, bank } = scopeOf(upto);
   const rnd = mulberry32(hash(String(seedKey)));
   const bySio = new Map<string, FinaleItem[]>();
-  for (const q of FINALE_BANK) {
+  for (const q of bank) {
     if (!bySio.has(q.sio)) bySio.set(q.sio, []);
     bySio.get(q.sio)!.push(q);
   }
@@ -106,7 +132,7 @@ function drawDaily(seedKey: string | number): string[] {
   // With DAILY_N below the SIO count, the 360-degree floor takes a seeded
   // shuffle of the SIOs and floors as many as fit — a different SIO sits
   // out each draw, none is ever systematically skipped.
-  const floorSios = [...FINALE_SIOS];
+  const floorSios = [...sios];
   for (let i = floorSios.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
     [floorSios[i], floorSios[j]] = [floorSios[j], floorSios[i]];
@@ -115,10 +141,10 @@ function drawDaily(seedKey: string | number): string[] {
     const pool = bySio.get(sio)!;
     chosen.add(pool[Math.floor(rnd() * pool.length)].id);
   }
-  const w = sioWeakness();
-  const remaining = FINALE_BANK.filter((q) => !chosen.has(q.id));
+  const w = sioWeakness(sios, bank);
+  const remaining = bank.filter((q) => !chosen.has(q.id));
   const weights = remaining.map((q) => w[q.sio] ?? 1);
-  while (chosen.size < Math.min(DAILY_N, FINALE_BANK.length) && remaining.length > 0) {
+  while (chosen.size < Math.min(DAILY_N, bank.length) && remaining.length > 0) {
     const total = weights.reduce((a, b) => a + b, 0);
     let r = rnd() * total;
     let k = 0;
@@ -160,12 +186,28 @@ export default function FinaleContent() {
   const [skipped, setSkipped] = useState<Record<string, boolean>>({});
   const graded = useRef<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement | null>(null);
+  /* The scope the address asked for, kept so « another paper » redraws inside
+     the same stops rather than silently widening to all fifty. */
+  const uptoRef = useRef<number | null>(null);
 
   // Every visit is a FRESH weakness-weighted draw (Dan, 2026-07-21: the
   // cached daily paper felt dead — and a reload loses typing anyway, so a
   // frozen draw protected nothing). Seed = clock + entropy.
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
-  useEffect(() => { setIds(drawDaily(Date.now() + ":" + Math.random())); }, []);
+  /* READ AFTER MOUNT, and off `addressSearch()` rather than `window.location`
+     — this runs inside the cahier's iframe, whose own src carries no query at
+     all. ConjugaZone's `?deck=` was silently ignored for exactly that reason
+     until it was measured. */
+  /* (The `set-state-in-effect` disable that used to sit here is gone because
+     the rule no longer fires — it reported on a one-statement effect, and the
+     draw is now preceded by the address read. The reason it was there still
+     holds: the shuffle happens after mount so SSR and the first client render
+     agree.) */
+  useEffect(() => {
+    const raw = new URLSearchParams(addressSearch()).get("upto");
+    const n = raw == null ? null : parseInt(raw, 10);
+    uptoRef.current = Number.isFinite(n as number) ? (n as number) : null;
+    setIds(drawDaily(Date.now() + ":" + Math.random(), uptoRef.current));
+  }, []);
 
   const paper = useMemo(() => {
     if (!ids) return null;
@@ -299,7 +341,7 @@ export default function FinaleContent() {
             onClick={() => {
               graded.current = new Set();
               setTyped({}); setVerdicts({}); setClue({}); setSkipped({}); setIdx(0);
-              setIds(drawDaily(Date.now() + ":" + Math.random()));
+              setIds(drawDaily(Date.now() + ":" + Math.random(), uptoRef.current));
             }}
             className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             🎲 Another marathon!

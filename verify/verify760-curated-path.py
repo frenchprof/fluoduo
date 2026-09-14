@@ -110,7 +110,9 @@ if not os.path.isdir("out"):
 else:
     dead = []
     for h in sorted(set(hrefs)):
-        rel = h.lstrip("/")
+        # A step may carry a query that SCOPES it — `?upto=30` on the Finale,
+        # `?v=…` on ConjugaZone. The page is the part before the `?`.
+        rel = h.split("?")[0].lstrip("/")
         if not (os.path.isfile(f"out/{rel}.html") or os.path.isfile(f"out/{rel}/index.html")):
             dead.append(h)
     ok(not dead,
@@ -216,7 +218,7 @@ ENDS = {
     "/conjugaison": "src/app/conjugaison/embed/page.tsx",
     "/games/compose/remettre-negation-pas": "src/components/GameOver.tsx",
     "/games/compose/presenter-personne": "src/components/GameOver.tsx",
-    "/practice/ecoutexte": "src/app/practice/ecoutexte/EcouTexte.tsx",
+    "/practice/ecoutexte/quand-time": "src/app/practice/ecoutexte/EcouTexte.tsx",
 }
 # The goal-scoped steps (MémoiRecall, WorDrill) end in their own content
 # components, which draw the usher and therefore the push.
@@ -224,7 +226,7 @@ GOAL_SCOPED_ENDS = [
     "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
     "src/app/practice/say-it/[collectionId]/SayItContent.tsx",
 ]
-ess_hrefs = sorted(set(re.findall(r'href:\s*"(/[^"]*)"', ESSENTIAL)))
+ess_hrefs = sorted({h.split("?")[0] for h in re.findall(r'href:\s*"(/[^"]*)"', ESSENTIAL)})
 unmapped = [h for h in ess_hrefs if h not in ENDS]
 ok(not unmapped,
    f"every literal essential step names the screen that ends it ({len(ess_hrefs)})",
@@ -266,6 +268,58 @@ ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}|\{minutesOf", summary.grou
    "the closed fold says what is behind it (a count, not a bare chevron)",
    "the optional fold carries no count. « a collapsed section with no count is "
    "a section nobody opens, which is just deletion with extra steps ».")
+
+# ── 8 · NOTHING ON THE PATH REACHES PAST THE TEST ───────────────────────────
+# Dan, 2026-09-14, looking at the built path: *"the curated exercises are not
+# at all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to
+# 30 only please"*.
+#
+# THREE DIFFERENT WAYS A STEP ESCAPED THE TEST, and only one of them was
+# visible in the step list:
+#
+#   a GOAL above 30        « MneMemo — asking a question » was goal 34, unit 3.
+#                          The only one you could see by reading paths.ts.
+#   an UNSCOPED BANK       the Finale draws from FINALE_BANK, 437 items, of
+#                          which 201 (46%) are stops 31–50. The step LOOKED
+#                          fine — one href, no goal — and put about eleven of
+#                          twenty-five questions outside the test, then fed
+#                          those misses to ErroReview as the revision queue.
+#   an UNSCOPED PICKER     `/practice/ecoutexte` and `/conjugaison` open on a
+#                          chooser covering all five units and all 67 verbs.
+#                          The step's own text named six verbs it never picked.
+#
+# So this clause checks the goal numbers AND that the three wide doors carry
+# the query that narrows them. A bare `/practice/grammarathon/finale` on this
+# path is the 46% bug, silently, again.
+STOP_MAX = 30
+goals = [(sid, int(m.group(1)))
+         for sid, body in steps
+         if (m := re.search(r"goal:\s*(\d+)", body))]
+over = [f"{sid} → stop {n}" for sid, n in goals if n > STOP_MAX]
+ok(not over,
+   f"every goal-scoped step is inside stops 1–{STOP_MAX} ({len(goals)} steps)",
+   f"THESE STEPS ARE OUTSIDE THE TEST: {over}. Stops 31–50 are units 3 and 4; "
+   "the first test covers 1–30 only.")
+
+NARROW = {
+    "/practice/grammarathon/finale": "upto=",
+    "/conjugaison": "v=",
+    "/practice/ecoutexte": None,  # narrowed by taking a deck route, not a query
+}
+wide = []
+for h in sorted(set(re.findall(r'href:\s*"(/[^"]*)"', src))):
+    page, _, query = h.partition("?")
+    need = NARROW.get(page)
+    if need is None and page in NARROW:
+        wide.append(f"{h} — open the picker, every unit")
+    elif need and need not in query:
+        wide.append(f"{h} — needs ?{need}…")
+ok(not wide,
+   "every wide door on the path carries the query that narrows it",
+   "A STEP OPENS A DOOR WIDER THAN THE TEST: " + "; ".join(wide) + ". The "
+   "Finale unscoped is 437 items of which 201 are stops 31–50; "
+   "/practice/ecoutexte and /conjugaison open choosers covering all five units "
+   "and all 67 verbs.")
 
 print("\nthe curated path holds (14 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))

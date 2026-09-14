@@ -115,11 +115,18 @@ const MIDTERM: CuratedPath = {
     {
       id: "finale",
       activityKey: "grammarathon",
-      href: "/practice/grammarathon/finale",
+      /* `?upto=30` IS LOAD-BEARING, not tidiness (Dan, 2026-09-14: *"the
+         curated exercises are not at all adapted for the first test covering
+         stops 1 to 30"*, then *"Stops 0 to 30 only please"*). FINALE_BANK holds
+         437 items and 201 of them — 46% — are from stops 31–50. Unscoped, a
+         25-question paper put about eleven questions on material the test does
+         not cover, AND those misses fed ErroReview, so step 2 then drilled
+         units 3 and 4. The diagnostic was poisoning the repair. */
+      href: "/practice/grammarathon/finale?upto=30",
       title: "GramMarathon — the Finale",
-      does: "types a gap · across all 30 goals",
+      does: "types a gap · across stops 1–30",
       minutes: 8,
-      why: "The only thing in the app that samples the whole course in one sitting. Everything missed is queued automatically, which is what makes step 2 possible.",
+      why: "The only thing in the app that samples the whole test in one sitting — 236 sentences across stops 1–30. Everything missed is queued automatically, which is what makes step 2 possible.",
     },
     {
       id: "erroreview-now",
@@ -161,7 +168,10 @@ const MIDTERM: CuratedPath = {
     {
       id: "conjuga",
       activityKey: "conjugaison",
-      href: "/conjugaison",
+      /* THE SIX VERBS ARE NAMED IN THE ADDRESS. Plain `/conjugaison` opens on
+         être / avoir / aller and offers all 67, so the six this step's own text
+         promises were never actually the ones drilled. */
+      href: "/conjugaison?v=etre,avoir,faire,aller,sappeler,aimer",
       title: "ConjugaZone, TYPE IT",
       does: "types verb forms across a paradigm · the only conjugation step",
       minutes: 8,
@@ -197,11 +207,14 @@ const MIDTERM: CuratedPath = {
     {
       id: "ecoutexte",
       activityKey: "ecoutexte",
-      href: "/practice/ecoutexte",
+      /* A DECK, NOT THE TOPIC PICKER. `/practice/ecoutexte` lists every unit
+         including 3 and 4, so the step said "one text" and let a learner pick
+         one from outside the test. quand-time is goal 27 — days, times, plans. */
+      href: "/practice/ecoutexte/quand-time",
       title: "ÉcouTexte — one text",
       does: "writes what it hears · the only listening step",
       minutes: 6,
-      why: "One text, not three. A path with a speaking step and no listening step is lopsided.",
+      why: "One text, not three — goal 27's days, times and plans. A path with a speaking step and no listening step is lopsided.",
     },
     {
       id: "erroreview-morning",
@@ -226,7 +239,7 @@ const MIDTERM: CuratedPath = {
     {
       id: "opt-ecoutexte-2",
       activityKey: "ecoutexte",
-      href: "/practice/ecoutexte",
+      href: "/practice/ecoutexte/aimer-activites",
       title: "ÉcouTexte — two more scenarios",
       does: "a whole text by ear: days, times, plans",
       minutes: 10,
@@ -256,17 +269,11 @@ const MIDTERM: CuratedPath = {
       minutes: 10,
     },
     {
-      id: "opt-lesson-34",
-      activityKey: "lesson",
-      goal: 34,
-      title: "MneMemo — asking a question",
-      does: "writes a whole question in French",
-      minutes: 15,
-    },
-    {
       id: "opt-conjuga-2",
       activityKey: "conjugaison",
-      href: "/conjugaison",
+      /* Named in the address, like the essential step — a bare /conjugaison
+         opens on être/avoir/aller and these four are never picked. */
+      href: "/conjugaison?v=ecouter,adorer,acheter,vouloir",
       title: "ConjugaZone — four more verbs",
       does: "écouter · adorer · acheter · vouloir",
       minutes: 6,
