@@ -337,6 +337,27 @@
       "lemma": "avoir",
       "tags": [],
       "gap": "a"
+    },
+    {
+      "id": "avoir-etats-30",
+      "fr": "en retard",
+      "en": "late",
+      "syllables": [
+        "en",
+        "re",
+        "tard"
+      ],
+      "tags": [
+        "col:il_est"
+      ]
+    },
+    {
+      "id": "avoir-etats-31",
+      "fr": "Pardon, je suis en retard !",
+      "en": "Sorry, I am late!",
+      "lemma": "être",
+      "tags": [],
+      "gap": "suis"
     }
   ]
 }

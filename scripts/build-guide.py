@@ -175,6 +175,13 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .sitebar .right{margin-left:auto;font-size:.8rem;color:var(--ink-soft);font-weight:500}
 h1{font-family:var(--hand);font-weight:700;font-size:clamp(2.2rem,5vw,3.2rem);line-height:1.05;margin:26px 0 4px;text-wrap:balance}
 .lede{color:var(--ink-soft);font-style:italic;margin:.2rem 0 1rem;max-width:64ch}
+/* THE WAY BACK, IN THE YELLOW STRIP (Dan, 2026-09-14: "the link to the full
+   guide (and to the quick start guide) to be made more prominent in the yellow
+   colored strip within that blank space"). The pair now walks both ways from
+   the band each page already draws, rather than from a line of prose halfway
+   down. The words « the plain guide » gave way for it: they named the page a
+   reader is already on, which is the litmus test's definition of redundant. */
+.sitebar a.qs{background:var(--ink);color:var(--hl,#c8d400);border-radius:999px;padding:.15rem .55rem;font-weight:700;text-decoration:none;white-space:nowrap}
 nav.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:14px 0 8px}
 nav.toc a{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink);background:var(--raised);border:2px solid var(--ink);border-left-width:8px;border-radius:0 12px 12px 0;padding:.35rem .7rem;font-weight:700;font-size:.9rem;box-shadow:0 3px 0 0 var(--ink)}
 nav.toc a:hover,nav.toc a:focus-visible{background:var(--hl);outline:none}
@@ -239,7 +246,7 @@ def main():
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700;900&display=swap">
 <style>{CSS}</style></head><body>
 <main class="sheet"><div class="binding" aria-hidden="true"></div>
-<div class="sitebar"><span class="burger" aria-hidden="true">☰</span><a class="wordmark" href="{SITE}/home" target="_blank" rel="noopener">FluOLinGo</a><span class="right">the plain guide · <a href="{SITE}" target="_blank" rel="noopener">fluolingo.com</a></span></div>
+<div class="sitebar"><span class="burger" aria-hidden="true">☰</span><a class="wordmark" href="{SITE}/home" target="_blank" rel="noopener">FluOLinGo</a><span class="right"><a class="qs" href="/guide">⚡ QuickStart</a> · <a href="{SITE}" target="_blank" rel="noopener">fluolingo.com</a></span></div>
 {body}
 <p class="footer">Every screen above is a real screenshot of the app as built on 13 Sep 2026, at phone width (390px) unless it says desktop. Text checked against the code the same day. Source: <code>docs/GUIDE.md</code> in the fluoduo repository.</p>
 </main>

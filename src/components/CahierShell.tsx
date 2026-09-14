@@ -83,7 +83,7 @@ export default function CahierShell({
    *  When the page went yellow to match its ☰ tile (Dan, same day) that became
    *  Lesson's 🧑‍🏫 sitting on a page that is not a lesson, contradicting the ★
    *  on the tile that opens it. A caller that has a glyph may now say so. */
-  band?: { title?: ReactNode; emoji?: string; goal?: number; exitHref?: string } | false;
+  band?: { title?: ReactNode; emoji?: string; goal?: number; exitHref?: string; right?: ReactNode } | false;
   children: ReactNode;
 }) {
   const site = tabsWithActive(siteTabs(), active);
@@ -233,7 +233,7 @@ export default function CahierShell({
           <div className="relative flex flex-1 flex-col">
           <div className="cahier-binding" aria-hidden />
           {famKey && active !== "home" && band !== false && (
-            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} emoji={band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)} goal={band?.goal} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
+            <PageBand title={band?.title ?? pageLabel ?? familyName(famKey)} emoji={band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)} goal={band?.goal} right={band?.right} exitHref={band?.exitHref ?? HOME_HREF} /* The band's ✕ keeps its own padding and the COILS PAINT OVER IT
                    (globals.css, `.cahier-binding` z-index) — a real coil
                    crosses the cover strip, it does not stop at it. The ✕ stays
                    clickable: the binding is `pointer-events: none`. */ />
