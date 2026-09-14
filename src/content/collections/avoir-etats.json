@@ -176,6 +176,19 @@
       ]
     },
     {
+      "id": "avoir-etats-30",
+      "fr": "en retard",
+      "en": "late",
+      "syllables": [
+        "en",
+        "re",
+        "tard"
+      ],
+      "tags": [
+        "col:il_est"
+      ]
+    },
+    {
       "id": "avoir-etats-12",
       "fr": "fatigués",
       "en": "tired (pl)",
@@ -337,6 +350,14 @@
       "lemma": "avoir",
       "tags": [],
       "gap": "a"
+    },
+    {
+      "id": "avoir-etats-31",
+      "fr": "Je suis en retard, désolé !",
+      "en": "I'm late, sorry!",
+      "lemma": "être",
+      "tags": [],
+      "gap": "suis"
     }
   ]
 }

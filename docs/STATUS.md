@@ -6,6 +6,37 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — two deck additions for Test 1, and a ComposeIt scene held back (french-grammar-exercises, NOT merged)
+
+**Dan pasted LAF 1201 Test 1 and asked which stops win each mark** (the map is
+an artifact, not in the repo). Two content gaps the paper exposed are closed
+here, additions only:
+
+- **« en retard » had no home in goals 1–30** — it appeared once, in a pre-test
+  sentence. It is now a state in SIO-019's deck (`avoir-etats-30`, IL EST
+  column: « il est en retard », beside fatigué / malade), plus the sentence
+  « Je suis en retard, désolé ! » (`avoir-etats-31`, gap « suis »).
+- **The -ois → -oise ending was met once** (chinois). The paper asks for
+  luxembourgeois → luxembourgeoise, and Dan wants it reached by applying the
+  rule, not by adding Luxembourg. « Suède · suédois / suédoise » joins goals 15
+  and 16 (`countries-letris-26-suede`, `nat-26-suede`, col:la), so the ending
+  is seen twice.
+
+**HELD BACK, Dan's call pending: a ComposeIt scene for the paper's writing
+task** (« Présentez votre meilleur ami », 50–60 words, ten of sixteen listed
+words). A first draft was named « Mon meilleur ami »; Dan: *"we don't want to
+give away the fact that the question in the test is about my best friend, so
+how?"* The proposal on the table is « Présenter quelqu'un » on SIO-023: same
+six questions (name + student? · age · likes · sport and where · doesn't like /
+no longer · wants), chip groups named by the verbs the paper scores, the
+PERSON rotating (mon frère, ma cousine, mon voisin, ma camarade de classe, mon
+colocataire, ma sœur), model always the next person of the other gender. Not
+built; nothing of it is in this branch. Needs a `SCENES` entry in
+`functions/api/compose.js` when it is (verify440).
+
+Gate: tsc clean, `NEXT_PUBLIC_OPEN_APP=1` build clean, verify440 / 48 / 39 /
+560 green on the deck edits.
+
 ## 13 Sep — the board is for learners, no activity pays nothing, and everyone opens with 20 gems (fluoduo-main, MERGED as #359 and #360)
 
 **Dan, in one evening: *"all the 18 names under 'ALL TERM' must now be hidden.
