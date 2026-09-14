@@ -1,48 +1,72 @@
 "use client";
 
 /**
- * NumBus setup — "I want to practice", then one tickable English sentence per
- * kind of number, each with its own bounds as dropdowns. Defaults are the full
- * range of every type, so the learner narrows rather than builds.
+ * NumBus setup — a floor, a ceiling, and which kinds you want to hear.
+ *
+ * Dan, 2026-09-14, after I built more than he asked for three times running:
+ * *"Look NumBourse and NumBus very simple : let the user decide what is the
+ * floor and the ceiling. no need so much PLEASE"*.
+ *
+ * WHAT THIS SCREEN USED TO BE, measured in the built app before it was touched:
+ *
+ *     11 native <select> menus holding 770 <option>s
+ *      4 bare <input type="checkbox">
+ *        slate greys and #58cc02 — the last screen in the app that was not on
+ *        the cahier tokens, and visibly another product's form
+ *
+ * A phone opened the OS picker wheel and asked a learner to spin through a
+ * hundred entries to say « up to 69 ».
+ *
+ * ALL FOUR KINDS STAY (Dan, the same hour: *"So we still can have the full
+ * range of activities"*, after *"each of the categories have to be selected
+ * too you know (single category or multiple)"*). They are four keys, tapped on
+ * and off — no tick boxes, no rows, no per-kind bounds.
+ *
+ * AND THE ONE RANGE REACHES ALL OF THEM (*"For time, price and phone numbers,
+ * adapt the value of each double digit to the range picked. That is all"*).
+ * Every two-digit part of every kind is drawn from the floor and ceiling set
+ * once above: the hour and the minute, the euros and the centimes, and every
+ * block of a phone number. Pick 0–20 and nothing above twenty is ever said,
+ * in any shape. config.ts does that work; this screen only asks the question.
+ *
+ * THE 8/10 CHOICE APPEARS ONLY WITH 📞 ON, because it is the one setting that
+ * belongs to a single kind, and a control for something switched off is the
+ * clutter Dan has now asked three times to be rid of.
+ *
+ * A WELL, NOT A DROPDOWN. `.neo-well` is the app's own word for a value you
+ * read and type into rather than press — the zoom field, the streak mark, the
+ * goal picker's editable stop number, which is where Dan asked for this shape
+ * in the first place (*"it would be good if it could appear as a depressed
+ * space"*). A real <input> under it means a phone raises its digit keyboard
+ * instead of a hundred-row wheel.
  */
 
 import { useEffect, useState } from "react";
 import {
   DEFAULT_NUMBUS_CONFIG,
-  hasAnyMode,
-  hoursOf,
   loadNumBusConfig,
-  minutesOf,
   normalizeConfig,
   saveNumBusConfig,
   type NumBusConfig,
 } from "./config";
 
-const NUMBERS = Array.from({ length: 100 }, (_, i) => i);
-const HOURS = Array.from({ length: 24 }, (_, i) => i);
-const MINUTES = Array.from({ length: 60 }, (_, i) => i);
-const CENTS = Array.from({ length: 100 }, (_, i) => i);
-const TWO = (n: number) => String(n).padStart(2, "0");
-
 export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) => void }) {
   const [cfg, setCfg] = useState<NumBusConfig>(DEFAULT_NUMBUS_CONFIG);
 
   useEffect(() => {
-    // Deliberate: the saved config lives in localStorage, which cannot be
-    // read during render (the site is statically exported) — this mount
-    // effect has to seed it.
+    // Deliberate: the saved config lives in localStorage, which cannot be read
+    // during render (the site is statically exported) — this mount effect has
+    // to seed it.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setCfg(loadNumBusConfig());
   }, []);
 
   const set = (patch: Partial<NumBusConfig>) => setCfg((c) => normalizeConfig({ ...c, ...patch }));
 
-  const setTime = (which: "timeFrom" | "timeTo", h: number, m: number) =>
-    set({ [which]: h * 60 + m } as Partial<NumBusConfig>);
-  const setPrice = (which: "priceFrom" | "priceTo", euros: number, cents: number) =>
-    set({ [which]: euros * 100 + cents } as Partial<NumBusConfig>);
+  const toggle = (k: "numbers" | "times" | "prices" | "phones") =>
+    set({ [k]: !cfg[k] } as Partial<NumBusConfig>);
 
-  const ready = hasAnyMode(cfg);
+  const ready = cfg.numbers || cfg.times || cfg.prices || cfg.phones;
 
   const start = () => {
     const c = normalizeConfig(cfg);
@@ -51,173 +75,98 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
   };
 
   return (
-    <div className="mx-auto max-w-xl">
-      <h2 className="text-xl font-black text-slate-800">I want to practice</h2>
+    <div className="mx-auto w-full max-w-md text-center">
+      <h2 className="nb-setup-h">Numbers from</h2>
 
-      <div className="mt-3 flex flex-col gap-2">
-        <Row on={cfg.numbers} onToggle={() => set({ numbers: !cfg.numbers })} emoji="🚌">
-          numbers from{" "}
-          <Select value={cfg.min} onChange={(v) => set({ min: v })} options={NUMBERS} label="Lowest number" />
-          {" "}to{" "}
-          <Select value={cfg.max} onChange={(v) => set({ max: v })} options={NUMBERS} label="Highest number" />
-        </Row>
-
-        <Row on={cfg.times} onToggle={() => set({ times: !cfg.times })} emoji="🕑">
-          time from{" "}
-          <Select
-            value={hoursOf(cfg.timeFrom)}
-            onChange={(h) => setTime("timeFrom", h, minutesOf(cfg.timeFrom))}
-            options={HOURS}
-            pad
-            label="Earliest hour"
-          />
-          h
-          <Select
-            value={minutesOf(cfg.timeFrom)}
-            onChange={(m) => setTime("timeFrom", hoursOf(cfg.timeFrom), m)}
-            options={MINUTES}
-            pad
-            label="Earliest minute"
-          />
-          {" "}to{" "}
-          <Select
-            value={hoursOf(cfg.timeTo)}
-            onChange={(h) => setTime("timeTo", h, minutesOf(cfg.timeTo))}
-            options={HOURS}
-            pad
-            label="Latest hour"
-          />
-          h
-          <Select
-            value={minutesOf(cfg.timeTo)}
-            onChange={(m) => setTime("timeTo", hoursOf(cfg.timeTo), m)}
-            options={MINUTES}
-            pad
-            label="Latest minute"
-          />
-        </Row>
-
-        <Row on={cfg.prices} onToggle={() => set({ prices: !cfg.prices })} emoji="🍔">
-          prices from{" "}
-          <Select
-            value={Math.floor(cfg.priceFrom / 100)}
-            onChange={(e) => setPrice("priceFrom", e, cfg.priceFrom % 100)}
-            options={NUMBERS}
-            label="Lowest price, euros"
-          />
-          ,
-          <Select
-            value={cfg.priceFrom % 100}
-            onChange={(c) => setPrice("priceFrom", Math.floor(cfg.priceFrom / 100), c)}
-            options={CENTS}
-            pad
-            label="Lowest price, centimes"
-          />
-          {" "}to{" "}
-          <Select
-            value={Math.floor(cfg.priceTo / 100)}
-            onChange={(e) => setPrice("priceTo", e, cfg.priceTo % 100)}
-            options={NUMBERS}
-            label="Highest price, euros"
-          />
-          ,
-          <Select
-            value={cfg.priceTo % 100}
-            onChange={(c) => setPrice("priceTo", Math.floor(cfg.priceTo / 100), c)}
-            options={CENTS}
-            pad
-            label="Highest price, centimes"
-          />
-          {" "}euros
-        </Row>
-
-        <Row on={cfg.phones} onToggle={() => set({ phones: !cfg.phones })} emoji="📞">
-          phone numbers —{" "}
-          <select
-            value={cfg.phoneStyle}
-            onChange={(e) => set({ phoneStyle: e.target.value === "sg" ? "sg" : "fr" })}
-            aria-label="Phone number length"
-            className="rounded-lg border-2 border-slate-300 bg-white px-2 py-1 font-bold text-slate-800"
-          >
-            <option value="fr">10 digits (France)</option>
-            <option value="sg">8 digits (Singapore)</option>
-          </select>
-        </Row>
+      <div className="nb-scope">
+        <Well value={cfg.min} onChange={(v) => set({ min: v })} max={99} label="Lowest number" />
+        <span className="nb-scope-lab">to</span>
+        <Well value={cfg.max} onChange={(v) => set({ max: v })} max={99} label="Highest number" />
       </div>
 
-      <button
-        type="button"
-        onClick={start}
-        disabled={!ready}
-        className="mt-4 w-full rounded-2xl border-2 border-b-[6px] border-[#46a302] bg-[#58cc02] py-4 text-xl font-black text-white shadow-sm transition hover:brightness-105 active:translate-y-[3px] active:border-b-2 disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        ▶ Start
-      </button>
+      {/* FOUR KEYS, TAPPED ON AND OFF. The key IS the tick box — that is what
+          removed the four bare checkboxes this screen used to carry. */}
+      <div className="nb-kinds">
+        {([
+          ["numbers", "🚌", "Bus numbers"],
+          ["times", "🕑", "Times"],
+          ["prices", "🍔", "Prices"],
+          ["phones", "📞", "Phone numbers"],
+        ] as const).map(([k, emoji, name]) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => toggle(k)}
+            aria-pressed={cfg[k]}
+            aria-label={name}
+            title={name}
+            className={`neo-key nb-kind${cfg[k] ? " is-on" : ""}`}
+          >
+            <span aria-hidden>{emoji}</span>
+          </button>
+        ))}
+      </div>
+
+      {cfg.phones && (
+        <div className="nb-kinds nb-kinds-sub">
+          {([8, 10] as const).map((d) => (
+            <button
+              key={d}
+              type="button"
+              onClick={() => set({ phoneDigits: d })}
+              aria-pressed={cfg.phoneDigits === d}
+              aria-label={`${d}-digit phone numbers`}
+              className={`neo-key nb-kind nb-kind-sm${cfg.phoneDigits === d ? " is-on" : ""}`}
+            >
+              {d}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* NO CONTROL SPANS THE WIDTH (5 Sep). It was `w-full` before. */}
+      <div className="mt-4 flex justify-center">
+        <button type="button" onClick={start} disabled={!ready} className="neo-key nb-start">
+          ▶ Start
+        </button>
+      </div>
     </div>
   );
 }
 
-function Row({
-  on,
-  onToggle,
-  emoji,
-  children,
-}: {
-  on: boolean;
-  onToggle: () => void;
-  emoji: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className="flex items-start gap-3 rounded-2xl border-2 border-b-4 bg-white p-3 transition"
-      style={{ borderColor: on ? "#e0567f" : "#e2e8f0" }}
-    >
-      <input
-        type="checkbox"
-        checked={on}
-        onChange={onToggle}
-        className="mt-1 h-6 w-6 shrink-0 accent-[#e0567f]"
-      />
-      <span
-        className={`flex flex-wrap items-center gap-x-1 gap-y-2 text-sm font-bold ${
-          on ? "text-slate-800" : "text-slate-400"
-        }`}
-      >
-        <span aria-hidden className="text-lg">
-          {emoji}
-        </span>
-        {children}
-      </span>
-    </div>
-  );
-}
-
-function Select({
-  value,
-  onChange,
-  options,
-  pad,
-  label,
-}: {
+/** A number pressed into the paper, typed rather than spun.
+ *
+ *  IT HOLDS ITS OWN TEXT WHILE BEING EDITED. Clearing the field to type "7"
+ *  passes through the empty string, and a control that reads that back as 0
+ *  fights the caret — the zoom field in HomeMap documents the same trap. So
+ *  the draft lives here, and only a well-formed in-range value is committed. */
+function Well({ value, onChange, max, label }: {
   value: number;
   onChange: (v: number) => void;
-  options: number[];
-  pad?: boolean;
+  max: number;
   label: string;
 }) {
+  const [draft, setDraft] = useState<string | null>(null);
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(Number(e.target.value))}
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      value={draft ?? String(value)}
       aria-label={label}
-      className="rounded-lg border-2 border-slate-300 bg-white px-1.5 py-1 font-mono font-black text-slate-800"
-    >
-      {options.map((o) => (
-        <option key={o} value={o}>
-          {pad ? TWO(o) : o}
-        </option>
-      ))}
-    </select>
+      onChange={(e) => {
+        const text = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
+        setDraft(text);
+        const n = parseInt(text, 10);
+        if (Number.isFinite(n) && n <= max) onChange(n);
+      }}
+      onBlur={(e) => {
+        const n = parseInt(e.target.value, 10);
+        if (Number.isFinite(n)) onChange(Math.max(0, Math.min(max, n)));
+        setDraft(null);
+      }}
+      onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+      className="neo-well nb-well"
+    />
   );
 }

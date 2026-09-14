@@ -2,7 +2,8 @@
 
 /**
  * NumBus — one game: hear French numbers, type digits before time runs out.
- * Setup picks bus range (0–99), optional times, prices, and phones (FR/SG).
+ * Setup picks ONE number range (0–99) that governs every kind, which kinds
+ * are on, and the two add-ons: minutes inside a time, centimes inside a price.
  * Speech is slow by default; ⏸ pause and 🔊/🐌 repeat are always available.
  */
 
@@ -335,13 +336,13 @@ function BureauScene({
   timerHue,
   onRepeat,
   talking,
-  phoneStyle,
+  phoneDigits,
 }: {
   left: number;
   timerHue: string;
   onRepeat: () => void;
   talking: boolean;
-  phoneStyle: "fr" | "sg";
+  phoneDigits: 8 | 10;
 }) {
   return (
     <div
@@ -356,7 +357,11 @@ function BureauScene({
       <div className="absolute bottom-24 left-6 hidden text-4xl opacity-60 sm:block" aria-hidden>📁</div>
       <div className="absolute bottom-24 right-6 hidden text-4xl opacity-60 sm:block" aria-hidden>🗂️</div>
       <p className="absolute left-0 right-0 top-14 text-center text-[11px] font-bold uppercase tracking-widest text-[#455a64] sm:top-16 sm:text-xs">
-        {phoneStyle === "sg" ? "Singapore — four two-digit blocks" : "Standard — five two-digit blocks"}
+        {/* The count is the blocks the learner will HEAR, which is what the
+            hint is for — an 8-digit number is read as four pairs, a 10-digit
+            one as five. Keyed off the digits now that the country is no longer
+            what is chosen (Dan, 14 Sep: "8 and 10 digit is fine"). */}
+        {phoneDigits === 8 ? "8 digits — four two-digit blocks" : "10 digits — five two-digit blocks"}
       </p>
       <button type="button" onClick={onRepeat} title="Repeat" className="absolute right-3 top-12 text-2xl sm:top-14" style={{ animation: talking ? "nbring .7s ease-in-out infinite" : undefined }}>
         📢
@@ -873,7 +878,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       ) : mode === "price" ? (
         <BurgerScene {...sceneProps} totalLabel={priceDisplay} />
       ) : (
-        <BureauScene {...sceneProps} phoneStyle={config.phoneStyle} />
+        <BureauScene {...sceneProps} phoneDigits={config.phoneDigits} />
       )}
 
       <div

@@ -5,17 +5,27 @@ import AuthGate from "@/components/AuthGate";
 import GameLanding from "@/components/GameLanding";
 import NumBourse from "@/games/numbourse/NumBourse";
 
-/** The eight-level ladder (Dan, 2026-07-28), named here rather than met blind
- *  on the trading floor. Mirrors the table in NumBourse.tsx; if that ladder
- *  changes, this list is the other half to change — it is prose about the
- *  levels, not a second source of them (the game reads its own LEVELS). */
-const LADDER = [
-  "1 — single digits", "2 — up to 20", "3 — up to 69",
-  "4 — up to 80, the soixante-dix zone", "5 — up to 99, quatre-vingt-dix",
-  "6 — up to 999", "7 — up to 99 999", "8 — up to 999 999",
-];
-
+/** NumBourse's landing — A FLOOR AND A CEILING (Dan, 2026-09-14: *"the same
+ *  for NumBourse also ok : let user decide the floor and ceiling"*).
+ *
+ *  WHAT WENT: a table of eight level names — « 4 — up to 80, the soixante-dix
+ *  zone » — that a learner had to read before playing and could not act on,
+ *  since the game always started at level 1 regardless. It was prose about the
+ *  levels, kept in step with the game's own LEVELS by hand.
+ *
+ *  THE LADDER ITSELF STAYS, because it is the CLOCK and not the range: each
+ *  rung carries the seconds a learner gets to type, and six digits need longer
+ *  than one. The rung is now picked FROM the ceiling — the first that covers
+ *  it — while the value is drawn from the learner's own floor..ceiling. One
+ *  setting, and the timing still fits the numbers it is timing.
+ */
 export default function NumBoursePage() {
+  // A FLOOR AND A CEILING (Dan, 2026-09-14: *"let the user decide what is the
+  // floor and the ceiling. no need so much PLEASE"*). The eight-level ladder
+  // is still in the game and still runs the clock; it is simply no longer
+  // something a learner has to read a table about before playing.
+  const [floor, setFloor] = useState(0);
+  const [ceiling, setCeiling] = useState(99);
   const [playing, setPlaying] = useState(false);
 
   // NumBourse had NO landing at all — the flap dropped you straight onto the
@@ -29,30 +39,66 @@ export default function NumBoursePage() {
         // The same shell the landing below already uses, so the band and the
         // spine stay put while you play; ⛶ on the game bar takes it full.
         <GameLanding activityKey="numbourse" title="NumBourse" bleed>
-          <NumBourse />
+          <NumBourse floor={floor} ceiling={ceiling} />
         </GameLanding>
       ) : (
         <GameLanding activityKey="numbourse" title="NumBourse">
           <p className="text-sm text-[color:var(--cahier-ink)]">
             Hear a price, type the digits, lock the trade before the ticket expires.
-            Eight levels, each widening the range of numbers:
           </p>
-          <ol className="mt-3 grid gap-1.5 text-[13px] text-[color:var(--cahier-ink)] sm:grid-cols-2">
-            {LADDER.map((l) => (
-              <li key={l} className="rounded-lg border-2 border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] px-2.5 py-1.5">
-                {l}
-              </li>
-            ))}
-          </ol>
-          <button
-            type="button"
-            onClick={() => setPlaying(true)}
-            className="fluo-btn mt-5 w-full py-3 text-lg font-black"
-          >
-            ▶ Jouer
-          </button>
+
+          <div className="nb-scope">
+            <span className="nb-scope-lab">from</span>
+            <Well value={floor} onChange={setFloor} label="Lowest price" />
+            <span className="nb-scope-lab">to</span>
+            <Well value={ceiling} onChange={setCeiling} label="Highest price" />
+            <span className="nb-scope-lab">€</span>
+          </div>
+
+          {/* NO CONTROL SPANS THE WIDTH (5 Sep). It was `w-full py-3`. */}
+          <div className="mt-4 flex justify-center">
+            {/* « Start », not « Jouer » — the 6 Sep ruling, applied rather than
+                re-decided: French that BLOCKS goes, French that decorates
+                stays, and this is the only button between a learner and the
+                game. It is also what its twin says: NumBusSetup's start key
+                reads « ▶ Start », and two sister games disagreeing about the
+                same button is the confusion, not the French. */}
+            <button type="button" onClick={() => setPlaying(true)} className="neo-key nb-start">
+              ▶ Start
+            </button>
+          </div>
         </GameLanding>
       )}
     </AuthGate>
+  );
+}
+
+/** Same well as NumBus's, and deliberately so: two games asking one question
+ *  should not ask it in two shapes. Six digits, because NumBourse's ladder
+ *  reaches 999 999 where NumBus stops at 99. */
+function Well({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) {
+  const [draft, setDraft] = useState<string | null>(null);
+  const MAX = 999999;
+  return (
+    <input
+      type="text"
+      inputMode="numeric"
+      pattern="[0-9]*"
+      value={draft ?? String(value)}
+      aria-label={label}
+      onChange={(e) => {
+        const text = e.target.value.replace(/[^0-9]/g, "").slice(0, 6);
+        setDraft(text);
+        const n = parseInt(text, 10);
+        if (Number.isFinite(n) && n <= MAX) onChange(n);
+      }}
+      onBlur={(e) => {
+        const n = parseInt(e.target.value, 10);
+        if (Number.isFinite(n)) onChange(Math.max(0, Math.min(MAX, n)));
+        setDraft(null);
+      }}
+      onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
+      className="neo-well nb-well nb-well-wide"
+    />
   );
 }

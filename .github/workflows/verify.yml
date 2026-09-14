@@ -630,3 +630,6 @@ jobs:
 
       - name: "The curated path — every step lands somewhere, the walk cannot stall (14 Sep)"
         run: python3 verify/verify760-curated-path.py
+
+      - name: "The hand-hold points at something that is on the screen (14 Sep)"
+        run: python3 verify/verify800-handhold-points.py

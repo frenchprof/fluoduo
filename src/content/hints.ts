@@ -60,7 +60,22 @@ export type ActivityHint = {
 };
 
 /** The text of a step, plus the control it belongs to. */
-export type GuidedStep = { text: string; selector: string };
+/**
+ * `optional` MEANS "ON SCREEN NOW OR NOT AT ALL ON THIS DECK", and it is the
+ * opposite of the waiting GuidedSteps does by default. A control that is not
+ * born yet is normally fine — MémoiRecall's ✓/↺ row does not exist until the
+ * card has been flipped, so the walk waits for it. But « How many cards? » is
+ * only asked on a deck long enough to be worth shortening (`sessionLength
+ * .offer()` returns null at 14 items or fewer), so on 21 of the 50 exported
+ * WorDrill decks it is never drawn — and waiting for it means sitting on
+ * "Finding it…" forever, under a card that promised the step.
+ *
+ * Waiting and skipping look identical in the source; only the deck tells them
+ * apart, which is why the row has to say which one it means. An optional step
+ * that is absent is dropped from the card's list AND from the walk, together,
+ * by `ActivityFirstRun` — see FirstRunHint.tsx.
+ */
+export type GuidedStep = { text: string; selector: string; optional?: true };
 
 /** Does this row guide, or only tell? */
 export const isGuided = (s: string | GuidedStep): s is GuidedStep => typeof s !== "string";
@@ -148,10 +163,18 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     steps: [
       // THE FIRST STEP IS THE LENGTH, and that was found by driving it rather
       // than reasoning about it. The first-run card fires on ARRIVAL, and on
-      // arrival this activity is showing « How many questions? » — the deck
+      // arrival this activity is showing « How many cards? » — the deck
       // itself does not exist yet. A guide that opened on the card would have
       // pointed at nothing and sat there saying "Finding it…".
-      { text: "First, choose how long a run you want.", selector: '[data-tour="how-many"]' },
+      //
+      // AND `optional` IS THE OTHER HALF OF THAT SENTENCE, which took Dan
+      // pointing at it twice. « How many cards? » is only asked when the deck
+      // is long enough to be worth shortening — `sessionLength.offer()` returns
+      // null at 14 items or fewer — so on a short deck the run simply starts
+      // and this control is never drawn. Waiting for a control that is coming
+      // and waiting for one that never will look identical from in here; the
+      // flag is what tells them apart. See GuidedSteps' type for the count.
+      { text: "First, choose how long a run you want.", selector: '[data-tour="how-many"]', optional: true },
       { text: "English on the front. Tap the card to turn it over.", selector: '[data-tour="flip-card"]' },
       // This control does not exist until step 1 is done — the mark row is
       // born of the flip. GuidedSteps waits for it rather than measuring once.
@@ -228,8 +251,12 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
     steps: [
       // The length first, for the same reason MémoiRecall needs it: on arrival
       // this activity is asking how long a run you want, and the mic does not
-      // exist until that is answered.
-      { text: "First, choose how long a run you want.", selector: '[data-tour="how-many"]' },
+      // exist until that is answered. `optional` for that reason too — driven
+      // across every exported WorDrill deck on the built app, the chooser is
+      // on screen on 29 and absent on 21 (« salutations » has 11 words, so it
+      // is never asked), and on those 21 this step named a control that was
+      // never going to exist.
+      { text: "First, choose how long a run you want.", selector: '[data-tour="how-many"]', optional: true },
       { text: "Tap the mic and say the French out loud.", selector: '[data-tour="wordrill-mic"]' },
       // Kept from the plain row for the same reason as GramMarathon's third:
       // 🔤 ESCALATES — one hint, then another, then the words — and nothing on

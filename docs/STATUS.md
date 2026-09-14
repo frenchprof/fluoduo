@@ -6,6 +6,50 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
+
+**Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
+all optimal (tiled buttons representing a choice each)"*, and after I twice
+built more than he asked for: *"Look NumBourse and NumBus very simple : let the
+user decide what is the floor and the ceiling. no need so much PLEASE"*.**
+
+**MEASURED BEFORE ANYTHING WAS TOUCHED**, by driving the built app:
+
+        NumBus setup     11 native <select> menus · 770 <option>s · 4 bare
+                         checkboxes · slate greys and #58cc02, the last screen
+                         in the app not on the cahier tokens
+        after             0 selects · 0 checkboxes · 2 wells · 4 kind keys
+                          0 full-width controls, at 390px and 1280px
+
+A phone opened the OS picker wheel and asked a learner to spin through a
+hundred entries to say « up to 69 ».
+
+**ONE RANGE REACHES EVERY KIND** — Dan's sentence that finished the design:
+*"For time, price and phone numbers, adapt the value of each double digit to
+the range picked. That is all"*. The hour and the minute, the euros and the
+centimes, and **every two-digit block of a phone number** are drawn from the
+one floor/ceiling. `frenchPhone` is what makes that real rather than
+decorative: it speaks in two-digit blocks, so 0–20 means a learner hears
+« zéro six, douze, dix-huit » and nothing above twenty. Ten loose digits would
+have ignored the setting while looking like it obeyed it.
+
+`unitSpan` intersects the range with what a unit can hold (23, 59, 99) and
+**can never return empty** — a learner may pick 30–40 and there is no 30th
+hour; an empty range would deal NaN and look like the game had frozen.
+
+**NumBourse gets the same two fields.** Its eight-level table went; the ladder
+stays because it is the CLOCK, not the range — each rung carries the seconds a
+learner gets to type. The rung is picked from the ceiling, the value from the
+learner's own range.
+
+**Four kinds stay, as keys you tap on and off** (*"So we still can have the
+full range of activities"*). The key IS the tick box, which is what removed all
+four bare checkboxes. The 8/10 phone choice shows only with 📞 on.
+
+  tsc clean · build green · eslint clean · **144/144 verify** · both screens
+  driven at 390px and 1280px
+
+## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
 ## 14 Sep — five of Dan's eight edges, and a framed game can take the whole screen (fluoduo-main)
 
 **Dan sent eight fixes in one message.** Five are here; three are still open
