@@ -113,7 +113,12 @@ export default function GramMarathonContent({ collectionId, embedded = false }: 
   // The help ladder (Track D): cloze rungs from the item (lemma as the
   // nudge, first letter, skeleton), ONE ? control in the shell bar.
   const hints = useMemo(
-    () => hintsFor("cloze", { answer: gap, pos: item?.lemma ? `← ${item.lemma}` : undefined, topic: sioTopic, example: item?.example }),
+    /* `sentenceEn` is the LAST rung — what the sentence means in English (Dan,
+       2026-09-14). It comes from `gapSentenceEn`, which returns the gloss of
+       whichever sentence `gapSentence` actually drilled: some decks gap the
+       `fr` field and some gap `example`, and the English has to follow the one
+       on screen rather than the one that happens to be first. */
+    () => hintsFor("cloze", { answer: gap, pos: item?.lemma ? `← ${item.lemma}` : undefined, topic: sioTopic, example: item?.example, sentenceEn: item ? gapSentenceEn(item) : undefined }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [gap, item?.id],
   );

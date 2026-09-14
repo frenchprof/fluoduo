@@ -185,6 +185,40 @@ press it, and a key that DOES something beats both. It scrolls a screenful less
 the reserve, smoothly, so the reader lands on the next part rather than at the
 end. Measured on MneMemo: scrollTop 681 → 1354.
 
+## 14 Sep — GramMarathon's last clue is what the sentence MEANS, and the ladder was capped at two (fluoduo-main)
+
+**Dan: *"for grammarathon, please add as a final clue: the English rendering of
+the intended sentence"*.** The cloze ladder now runs:
+
+    ?  1   💡 ← avoir
+    ?  2   ✏️ o _ _
+    ?  3   🇬🇧 « They are thirsty. »        ← new, for « Ils ___ soif. »
+    ?  →   REVEAL
+
+**IT IS LAST ON PURPOSE.** A learner told what the sentence MEANS can usually
+reason the missing word out, so giving it earlier would skip the work the card
+exists to make them do. `level: "partial"`, not `"answer"` — it is the
+strongest hint short of one.
+
+**AND BUILDING IT FOUND A CAP THAT ONLY DRIVING THE GAME COULD SHOW.**
+`createLadder` did `hintLevels.slice(0, 2)`. The rung was returned by
+`hintsFor`, counted in the logs and **unreachable**: driven, the ? went dead
+after the skeleton. A cap that throws away what the caller passed is a cap
+that has to be found by a learner. `hints.ts` decides how many rungs a kind
+has now, and the ladder records them all.
+
+**THE STATE NAMES STAY `HINT_1` / `HINT_2`.** They label the transition in the
+research log, and renaming them would rewrite the meaning of every event
+already recorded; `hintsTaken` is the number that counts the rungs.
+
+**`sentenceEn` IS ITS OWN FIELD, NOT `en`.** On a gap card the two differ —
+`en` is « late » where this is « I'm late, sorry! » — and a session that mixed
+them would print a one-word clue that reads like the answer. It comes from
+`gapSentenceEn`, which follows whichever sentence `gapSentence` actually
+drilled: some decks gap `fr` and some gap `example`, and the English has to
+match the one on screen. Opt-in, so it changes nothing for the kinds that share
+that branch — on a typed card the English IS the prompt.
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
