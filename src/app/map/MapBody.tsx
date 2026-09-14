@@ -238,11 +238,17 @@ export default function MapBody() {
             mono text, so nothing on screen said so. A well is this app's word
             for a value you read AND type into; the zoom field two controls
             along is the same shape, which is exactly why it reads as one. */}
-        <span className="neo-well fluo-mono flex items-center rounded-lg px-1.5 py-1 text-[13px] font-black leading-none text-[color:var(--cahier-ink)]">
-          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🎯</span>
+        {/* NO « /50 » HERE, AND THE WELL GIVES BACK ITS PADDING (Dan,
+            2026-09-14: *"the numbered stop-indicatpr, why on earth did you add
+            '/50' it pushed down my map"*). The total is not new — it has been
+            in StopBookmark since PR 211 — but the WELL around it is, and the two
+            together grew this row at the top of the map. Dan's own 1 Sep rule
+            settles the denominator: a count earns its place when it describes
+            what you cannot see, and the map is fifty stops on screen. */}
+        <span className="neo-well fluo-mono flex items-center rounded-lg px-1 py-0.5 text-[13px] font-black leading-none text-[color:var(--cahier-ink)]">
+          <span aria-hidden className="mr-0.5 text-[13px] leading-none">🎯</span>
           <StopBookmark
             stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}
-            totalClassName="font-bold text-[color:var(--cahier-ink-faint)]"
           />
         </span>
         {/* Zoom, migrated up from under the map (Dan, 2 Sep: "right-aligned

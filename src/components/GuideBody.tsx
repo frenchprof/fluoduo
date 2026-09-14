@@ -151,10 +151,18 @@ const CONTINUE_STYLE =
 export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
   return (
     <>
-      {/* ONE SCREEN BEFORE ANYTHING OPENS (the long-pages rule). Five cards,
-          each one sentence or two, the title run into the line rather than
-          set above it — the first cut stacked title and text and ran to
-          1,350px on a phone; this one is measured to fit 844. */}
+      {/* EACH STEP IS A FOLD, AND THEY ALL START CLOSED (Dan, 2026-09-14:
+          *"can i suggest that, for the QuickGuide, each item be collapsable"*).
+
+          Five titles is the whole argument — select a goal, start where you
+          are, learn it, practise it, come back to what you missed — and it is
+          the argument that must fit one screen (the long-pages rule). The
+          detail under each is what you consult, so it folds.
+
+          NATIVE `<details>`/`<summary>`, per that rule: keyboard and screen
+          reader support come free, it needs no state, and it survives having
+          no JavaScript. The summary is not a bare chevron — it carries the
+          step's number and its title, which is what says what is behind it. */}
       <ol className="mt-1 flex flex-col gap-1">
         {STEPS.map((s, i) => (
           <li
@@ -162,6 +170,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
             className={`fluo-h-${s.hue} rounded-xl border-2 px-2.5 py-1`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
+            <details className="fluo-guide-step">
             {/* THE BADGE AND THE TITLE SHARE A ROW; EVERYTHING BELOW STARTS AT
                 THE CARD'S OWN LEFT EDGE (Dan, 2026-09-13: *"START THE BULLET
                 POINTS FROM THE VERY LEFT!"*, then *"those two boxes side by
@@ -178,7 +187,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                 the same stroke: every line below is wider by the badge column,
                 so it wraps less often. That is the point — the indent was
                 costing horizontal room on the device with least of it. */}
-            <div className="flex items-start gap-2">
+            <summary className="flex cursor-pointer list-none items-start gap-2">
               <span
                 /* On the ramp like the text beside it — a fixed 28px circle next
                    to type that grows on a desktop reads as a badge that stayed
@@ -195,9 +204,12 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                   for anything that must be legible fast. */}
               <p className="cahier-hand min-w-0 flex-1 text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">
                 <b className="cahier-body text-[1.3em] font-black">{s.title}</b>
-                {s.what ? <> {s.what}</> : null}
               </p>
-            </div>
+              <span aria-hidden className="fluo-guide-chev mt-0.5 shrink-0 text-[13px] font-black" style={{ color: "var(--fluo-card-accent)" }}>▾</span>
+            </summary>
+            {s.what && (
+              <p className="cahier-hand mt-0.5 text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">{s.what}</p>
+            )}
             {/* THE WAYS IN, AS DAN WROTE THEM:
                   · via the map (home page) in 3D or 2D view
                   · via the menu: enter it at the top. then OK
@@ -237,6 +249,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                 ))}
               </div>
             )}
+            </details>
           </li>
         ))}
       </ol>

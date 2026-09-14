@@ -6,6 +6,62 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — « /50 » off the map, both guides fold, and the nesting Dan saw is older than today (fluoduo-main)
+
+**« /50 » WAS NOT ADDED YESTERDAY; THE WELL AROUND IT WAS.** Dan: *"the
+numbered stop-indicatpr, why on earth did you add '/50' it pushed down my
+map"*. The total has been in `StopBookmark` since #211 — but the 14 Sep patch
+put that number in a `.neo-well` so a learner could see it is editable, and a
+well has padding. Well + 🎯 + « /50 » is what grew the row at the top of the
+map.
+
+The denominator goes by **Dan's own 1 Sep rule** — *a count earns its place
+when it describes what you cannot see* — and the map is fifty stops on screen.
+`totalClassName` is optional now rather than deleted: the total is right
+wherever the fifty are NOT on screen, which is what that component is for
+elsewhere. The well's padding comes back down with it.
+
+**THE 2D/3D SWITCH, A THIRD TIME:** 1.48 → 1.34, knob 0.68 → 0.64.
+65 → 59px wide on a phone, 73 → 66 on a desktop. **Height untouched at 44px**
+throughout — that is the finger, and a floor is not a size (verify270).
+
+**BOTH GUIDES FOLD** (Dan: *"can i suggest that, for the QuickGuide, each item
+be collapsable"*, then *"and the other gudie"*). QuickStart is five native
+`<details>`, all closed — the five titles ARE the argument and they fit one
+screen. The manual is its contents grid over eleven closed bands: 2497px
+instead of scrolling forever.
+
+**A CONTENTS LINK HAD TO OPEN WHAT IT NAMES**, or the fold reads as a broken
+link: an anchor into a closed `<details>` scrolls to a band with nothing under
+it. Twelve lines of script in the generated page do that, and the page still
+works with the script blocked — every section is one tap from open.
+
+## 14 Sep — « Numbers is now nesting NumBus », and it is NOT new (fluoduo-main)
+
+**Dan: *"Numbers is now nesting numbus - what did you break"*.** Nothing, and
+this was checked rather than asserted: the tree at `8612ec3` — what was live
+this morning, before all four of today's merges — was built and driven through
+the same click. Identical:
+
+    main  /games/numbus   band "🔢 Numbers"   childIframes=1
+    frame /games/numbus   band "🎮 NumBus"
+
+**THE CAUSE IS THE 7 SEP FRAMING, AND IT IS STILL OPEN.** `/games/numbers`
+runs in a frame, and its two tiles are ordinary links to the FULL
+`/games/numbus` page rather than to an embed route. So a tile navigates the
+FRAME; NumBus draws its own whole notebook inside it; the outer Numbers band
+stays wrapped around it, and the address bar says `/games/numbus` while the
+band says Numbers.
+
+**The fix is deliberately not in this patch**: the tiles have to break out to
+the top document, the way `useRailSwipe` already posts its destination up to
+`EmbedFrame`. Every framed hub whose tiles point at full pages has the same
+shape, so it wants doing once rather than per hub.
+
+**STILL OPEN FROM THE SAME HOUR:** Dan asked that *"for items that are
+scrollable side ways, can we have a buttion to expand them landscape wise"*.
+Not started.
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
