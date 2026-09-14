@@ -57,8 +57,14 @@ export default function NumBoursePage() {
 
           {/* NO CONTROL SPANS THE WIDTH (5 Sep). It was `w-full py-3`. */}
           <div className="mt-4 flex justify-center">
+            {/* « Start », not « Jouer » — the 6 Sep ruling, applied rather than
+                re-decided: French that BLOCKS goes, French that decorates
+                stays, and this is the only button between a learner and the
+                game. It is also what its twin says: NumBusSetup's start key
+                reads « ▶ Start », and two sister games disagreeing about the
+                same button is the confusion, not the French. */}
             <button type="button" onClick={() => setPlaying(true)} className="neo-key nb-start">
-              ▶ Jouer
+              ▶ Start
             </button>
           </div>
         </GameLanding>
