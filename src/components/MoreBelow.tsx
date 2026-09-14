@@ -53,27 +53,73 @@ import { useEffect, useRef, useState } from "react";
  *  stray pixels of rounding must not keep the cue on screen forever. */
 const FLOOR = 24;
 
+/** The nearest ancestor that actually scrolls.
+ *
+ *  FOUND BY COMPUTED STYLE, NOT BY CLASS NAME, and that is the difference
+ *  between this working on one screen and on all of them. The first version
+ *  looked for `.overflow-y-auto`, which is what MneMemo happens to use —
+ *  ConjugaZone's panel, ComposeIt's column and the goal page's snap feed each
+ *  scroll under a different class, so a class-name lookup would have found
+ *  nothing and shown nothing, silently, on exactly the surfaces with the most
+ *  hidden below. Measured: 435px, 2544px and 34398px respectively. */
+function scrollerOf(from: Element | null): HTMLElement | null {
+  let el = from?.parentElement ?? null;
+  while (el) {
+    const oy = getComputedStyle(el).overflowY;
+    /* THE OVERFLOW TEST IS DELIBERATELY NOT HERE, and leaving it in cost two
+       rounds. Requiring `scrollHeight > clientHeight` to IDENTIFY the scroller
+       means that at mount — before a panel's content has filled in — nothing
+       overflows, the walk finds no scroller, and the effect returns without
+       attaching a single listener. It can then never recover, because the
+       observers that would have caught the content arriving were the things
+       not attached. Measured: MneMemo's cue stayed hidden over 2050px of
+       lesson while ConjugaZone's worked, purely because ConjugaZone renders
+       its content synchronously.
+       So this finds the box that CAN scroll; `read` decides whether it
+       currently does. */
+    if (oy === "auto" || oy === "scroll") return el;
+    el = el.parentElement;
+  }
+  return null;
+}
+
 export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: string }) {
   const anchor = useRef<HTMLDivElement>(null);
   const [more, setMore] = useState(false);
 
   useEffect(() => {
-    const root = anchor.current?.closest(".overflow-y-auto") as HTMLElement | null;
+    const root = scrollerOf(anchor.current);
     if (!root) return;
     const read = () => {
       setMore(root.scrollHeight - root.scrollTop - root.clientHeight > FLOOR);
     };
     read();
     root.addEventListener("scroll", read, { passive: true });
-    // The panel's own height changes when a <details> opens or an image lands,
-    // and neither fires a scroll event — without this the cue goes stale in
-    // exactly the lessons that are long enough to need it.
+
+    /* WATCH THE CONTENT, NOT THE SCROLLER — this is where the first version
+       was wrong, and it failed in the one place that mattered most.
+       A ResizeObserver on the scroller never fires when its CONTENT grows: the
+       scroller's own border-box is fixed, only its `scrollHeight` changes, and
+       ResizeObserver does not watch scrollHeight. So on MneMemo — whose panel
+       fills in after mount — the effect measured an empty box, found nothing
+       below, and hid the cue over 2050px of lesson. ConjugaZone happened to
+       render its content synchronously and so happened to work, which is
+       exactly how a bug like this ships.
+
+       The column the cue sits in DOES grow with the content, so that is what
+       is observed, plus the subtree for a <details> opening or an image
+       landing — neither of which fires a scroll event either. */
+    const column = anchor.current?.parentElement ?? null;
     const ro = new ResizeObserver(read);
     ro.observe(root);
+    if (column) ro.observe(column);
     for (const child of Array.from(root.children)) ro.observe(child);
+    const mo = new MutationObserver(read);
+    mo.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["open", "hidden", "class", "style"] });
     return () => {
       root.removeEventListener("scroll", read);
       ro.disconnect();
+      mo.disconnect();
     };
   }, []);
 

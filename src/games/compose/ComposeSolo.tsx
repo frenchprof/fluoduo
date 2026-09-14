@@ -21,6 +21,7 @@ import { checkRequired, countWords } from "@/lib/compose/required";
 import GameOver from "@/components/GameOver";
 import ToolSummon from "@/components/tools/ToolSummon";
 import { drillExitHref } from "@/components/DrillShell";
+import MoreBelow from "@/components/MoreBelow";
 import { buildEvidence } from "@/lib/evidence";
 
 /** Join tapped chips into readable French (", " chips collapse into commas). */
@@ -461,7 +462,10 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
           french: dialogueText,
         }}
       />
-    </div>
+          {/* ComposeIt scrolls in its own column, outside DrillShell — measured
+          at 2544px hidden below the fold at 390px. */}
+      <MoreBelow />
+</div>
     </GameFrame>
   );
 }

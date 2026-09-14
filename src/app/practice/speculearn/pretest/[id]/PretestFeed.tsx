@@ -398,6 +398,8 @@ function Run({ pool, pretest, sioId, deck }: {
           question — Dan circled the goal card that used to sit here. The
           recap is the one row after them, which is where a score belongs. */}
       <SnapFeed
+        /* Its own « NEXT QUESTION » key carries these arrows already. */
+        cue={false}
         key={run}
         ref={feed}
         onIndex={onIndex}
