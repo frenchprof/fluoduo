@@ -141,7 +141,18 @@ TABS_SRC = open("src/app/lessons/pager/LessonTabs.tsx", encoding="utf-8").read()
 # scroll and something had to observe them. The class list is what this check
 # measures, so it no longer insists className comes FIRST; that assumption is
 # what made this rule go vacuous rather than fail loudly.
-wrap = re.search(r'return \(\s*(?:/\*.*?\*/\s*)?<div\s+[^>]*?className="([^"]*)"[\s\S]*?>\s*\{/\* ONE ROW', TABS_SRC, re.S)
+# ANCHOR ON THE TAB STRIP, NOT ON THE FIRST `return (` IN THE FILE. The old
+# pattern started at the earliest `return (<div className=…>` and scanned
+# forward to `{/* ONE ROW`, so it measured whichever component happened to be
+# defined first — and on 14 Sep a new `Panel` wrapper took that place and this
+# check failed on a tab strip it had never looked at. Search BACKWARDS from the
+# marker instead: the wrapper is the last opening div before it, whatever else
+# the file gains above.
+_marker = TABS_SRC.find("{/* ONE ROW")
+wrap = None
+if _marker > 0:
+    for m in re.finditer(r'<div\s+[^>]*?className="([^"]*)"[^>]*>', TABS_SRC[:_marker], re.S):
+        wrap = m
 check(wrap is not None,
       "the tabs wrapper parsed",
       "could not find the tab strip's wrapper — the assertions below are vacuous")
