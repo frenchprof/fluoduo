@@ -222,9 +222,17 @@ export default function MapBody() {
         {/* THE BOOKMARK, left of the zoom (Dan, 2 Sep: "could that editable
             indicator be placed to the left of zoom control") — the same
             editable stop number Home's well carries, in this row's mono
-            dress. 🧑‍🎓 names it: it is the stop that figure stands on. */}
+            dress.
+
+            🎯, NOT 🧑‍🎓 (Dan, 2026-09-14: "the 🎯 stop badge is currently being
+            displayed as a person. can we take put the 🎯 back?"). The person
+            was chosen here because the figure stands on that stop out on the
+            map — true, and it made this badge the only one in the app wearing a
+            different glyph from the one the top bar's stop badge wears, two
+            controls showing the same number. 🎯 is the goal family's own icon
+            and is what the bar uses; one number, one mark. */}
         <span className="fluo-mono flex items-center text-[13px] font-black text-[color:var(--cahier-ink)]">
-          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🧑‍🎓</span>
+          <span aria-hidden className="mr-0.5 text-[15px] leading-none">🎯</span>
           <StopBookmark
             stopNo={activeId ? SIOS.findIndex((s) => s.id === activeId) + 1 : SIOS.length}
             totalClassName="font-bold text-[color:var(--cahier-ink-faint)]"
