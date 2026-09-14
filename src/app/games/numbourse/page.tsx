@@ -38,11 +38,11 @@ export default function NumBoursePage() {
       {playing ? (
         // The same shell the landing below already uses, so the band and the
         // spine stay put while you play; ⛶ on the game bar takes it full.
-        <GameLanding activityKey="numbourse" title="NumBourse" bleed>
+        <GameLanding activityKey="numbourse" title="NumBourse" exitHref="/games/numbers" bleed>
           <NumBourse floor={floor} ceiling={ceiling} />
         </GameLanding>
       ) : (
-        <GameLanding activityKey="numbourse" title="NumBourse">
+        <GameLanding activityKey="numbourse" title="NumBourse" exitHref="/games/numbers">
           <p className="text-sm text-[color:var(--cahier-ink)]">
             Hear a price, type the digits, lock the trade before the ticket expires.
           </p>

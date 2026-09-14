@@ -633,3 +633,6 @@ jobs:
 
       - name: "The hand-hold points at something that is on the screen (14 Sep)"
         run: python3 verify/verify800-handhold-points.py
+
+      - name: "The ✕ goes up, and it goes somewhere that exists (14 Sep)"
+        run: python3 verify/verify820-exit-parent.py
