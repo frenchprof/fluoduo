@@ -241,28 +241,20 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
         ))}
       </ol>
 
-      {/* TWO GUIDES, ONE DOOR (Dan, 2026-09-13: *"Both should live under SOS
-          HELP, although one should be the abridged version essential to begin,
-          while the other has the details"*).
+      {/* THE DOOR TO THE FULL GUIDE MOVED INTO THE BAND (Dan, 2026-09-14:
+          "the link to the full guide ... to be made more prominent in the
+          yellow colored strip within that blank space"), and this line went
+          with it rather than staying behind it.
 
-          The five steps above ARE the QuickStart — the abridged half — and the
-          full manual is a line under them rather than a second tile, because
-          Help already ruled out opening onto another grid (9 Sep: *"help should
-          open to a 'How to use' manuel, not another grid"*). One door, the
-          essential thing open, the detail one tap away: the collapse rule's
-          shape, applied to a pair of documents instead of a pair of sections.
+          Two doors to one page on one screen is the HelpDot fault, and it is
+          the reason Help itself was cut down in September: a learner who sees
+          « Full guide » twice does not read it as emphasis, they read it as two
+          different things and have to check. The band's chip is the prominent
+          one Dan asked for, so this is the copy that goes.
 
-          A PLAIN <a>, NOT next/link: /manual is a standalone HTML page in
-          public/, outside the app's router — the searchable wiki with every
-          activity, the whole economy and all fifty goals. next/link would try
-          to prefetch a route that does not exist. */}
-      <p className="mt-2 text-[13px] leading-snug text-[color:var(--cahier-ink-soft)]">
-        <a href="/manual" className="font-black text-[color:var(--cahier-accent)]">
-          The full guide
-        </a>{" "}
-        — every activity, every number, all fifty goals.
-      </p>
-
+          What the line carried that the chip does not — "every activity, every
+          number, all fifty goals" — is on the chip's own title, where it costs
+          the page nothing. */}
       {onContinue ? (
         <button type="button" onClick={onContinue} className={CONTINUE_STYLE}>
           <span aria-hidden>▶</span> Continue
