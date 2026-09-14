@@ -9,8 +9,8 @@ a trailing period did the reverse; the Finale graded one paper two ways.
 
 Now THE grader is lib/practice/cloze.ts — one normalizer (case, curly→
 straight apostrophe, hyphens, punctuation, whitespace), one tier engine
-(perfect / good / wrong, accents forgiven as "good" unless the item is
-accent-strict), one alternates helper (gradeAgainst). Every typed-answer
+(perfect / good / wrong; an answer carrying a diacritic REQUIRES it — Dan,
+14 Sep — and only speech opts back into leniency), one alternates helper (gradeAgainst). Every typed-answer
 surface imports it; the speech drills keep their SPEECH policy on top of the
 shared transforms, never beside them.
 
@@ -68,14 +68,26 @@ t("leau = l'eau", g.gradeAnswer("leau", "l'eau"), "perfect");
 t("curly l\\u2019eau = l'eau", g.gradeAnswer("l\\u2019eau", "l'eau"), "perfect");
 t("dix sept = dix-sept", g.gradeAnswer("dix sept", "dix-sept"), "perfect");
 t("cest = c'est", g.gradeAnswer("cest", "c'est"), "perfect");
-t("fatigue -> fatigu\\u00e9 is GOOD not perfect", g.gradeAnswer("fatigue", "fatigu\\u00e9"), "good");
+// AN ACCENT IS PART OF THE WORD — REVERSED 2026-09-14. Dan: *"français (pls
+// don't accept francais) · fatigué (pls NOT fatigue) — and everywhere else of
+// such cases"*. These three lines used to pin the opposite, and the leniency
+// they pinned was a real kindness to a learner on a keyboard with no accents.
+// On a course whose test marks « français » wrong without its cedilla it was
+// teaching the wrong thing. Strictness is DERIVED, not flagged: an answer that
+// carries a diacritic requires it, one that carries none never had anything to
+// forgive. That is why there is no list of accent-strict items to forget.
+t("fatigue -> fatigu\\u00e9 is WRONG (the accent is the word)", g.gradeAnswer("fatigue", "fatigu\\u00e9"), "wrong");
+t("francais -> fran\\u00e7ais is WRONG (the cedilla too)", g.gradeAnswer("francais", "fran\\u00e7ais"), "wrong");
+t("fran\\u00e7ais typed right is perfect", g.gradeAnswer("fran\\u00e7ais", "fran\\u00e7ais"), "perfect");
+t("speech stays lenient — the recogniser picks the accents", g.gradeAnswer("fatigue", "fatigu\\u00e9", {accents: "lenient"}), "good");
 t("Fatigu\\u00e9 capital forgiven", g.gradeAnswer("Fatigu\\u00e9", "fatigu\\u00e9"), "perfect");
 t("trailing period forgiven", g.gradeAnswer("il est huit heures.", "il est huit heures"), "perfect");
-t("ou for o\\u00f9 lenient = good", g.gradeAnswer("ou", "o\\u00f9"), "good");
+t("ou for o\\u00f9 is WRONG by default now", g.gradeAnswer("ou", "o\\u00f9"), "wrong");
 t("ou for o\\u00f9 STRICT = wrong", g.gradeAnswer("ou", "o\\u00f9", {accents: "strict"}), "wrong");
 t("o\\u00f9 for o\\u00f9 strict = perfect", g.gradeAnswer("o\\u00f9", "o\\u00f9", {accents: "strict"}), "perfect");
 t("empty input is wrong", g.gradeAnswer("", "l'eau"), "wrong");
-t("alternates: best tier wins", g.gradeAgainst("velo", ["bicyclette", "v\\u00e9lo"]), "good");
+t("alternates: best tier wins (case, not accent)", g.gradeAgainst("V\\u00e9lo", ["bicyclette", "v\\u00e9lo"]), "perfect");
+t("alternates: an accent slip is wrong on every alternate", g.gradeAgainst("velo", ["bicyclette", "v\\u00e9lo"]), "wrong");
 t("alternates: exact alt is perfect", g.gradeAgainst("v\\u00e9lo", ["bicyclette", "v\\u00e9lo"]), "perfect");
 t("de for d' gap capped at good", g.gradeGap("de", "d'"), "good");
 console.log(JSON.stringify(out));
