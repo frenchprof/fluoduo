@@ -4948,6 +4948,11 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
    `partitifs` that hid 2050px of lesson behind a cut that looks exactly like
    the end of a paragraph. */
 .fluo-more-wrap {
+  /* Hung off a zero-height rail (see MoreBelow.tsx): it must not add to the
+     scroller's content height, or its own height is forever "more below". */
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
