@@ -6,6 +6,16 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — Test 1 study path (branch `claude/modest-galileo-xstape`, docs only)
+
+Dan pasted LAF 1201 Test 1 with its corrigé and asked which parts of the site
+a learner must do to get full marks. `docs/revision/LAF1201-test1-study-path.md`
+maps every section (Grammaire A–G, CE 1–2, EE, CO 1–2) to its goals, lessons
+and the one drill that matches the question type — 14 goals in all. Found on
+the way: the deck for goal 15 lacks *l'Italie* / *le Liban*, goal 16's lacks
+*indien* / *luxembourgeois*, and the corrigé itself has « Julien et moi font »
+(should be *faisons*). No code touched.
+
 ## 13 Sep — the board is for learners, no activity pays nothing, and everyone opens with 20 gems (fluoduo-main, MERGED as #359 and #360)
 
 **Dan, in one evening: *"all the 18 names under 'ALL TERM' must now be hidden.
