@@ -1588,10 +1588,21 @@ input[type="number"].fluo-stepper::-webkit-inner-spin-button {
   /* Every icon in this strip is a destination, and the strip is shrink-0, so
      anything that does not fit goes off the screen rather than wrapping — it
      is the one row on the site that must never overflow (Dan, 2026-08-21).
-     Measured before this rule: the bar needed 389px, so at 360 the ☰ sat 28px
-     past the edge and at 320 both ☰ and the account button were gone. Tighter
-     gap + padding buys 33px; the wordmark's truncate absorbs the rest. */
-  .cahier-topbar { gap: 0.125rem; }
+     Measured before the original rule: the bar needed 389px, so at 360 the ☰
+     sat 28px past the edge and at 320 both ☰ and the account button were gone.
+
+     0.125rem BOUGHT THAT ROOM WHEN THE STRIP HELD SIX ICONS. It holds three
+     now — 🔊, ★ and the account chip — because ⌛ and the stop field left on
+     14 Sep, and two pixels between three buttons reads as one smeared control
+     (Dan, same day: "on the mobile, the top right buttons can have more
+     breathing space between them (0.5 button distance apart)").
+
+     0.8rem is that half-button: the icons measure ~27px across at this width,
+     so 13px is half of one. The room comes out of the middle slot, which is
+     flex-1 and yields first BY DESIGN — the strip keeps shrink-0, so the
+     invariant this whole file exists for is untouched: nothing is pushed past
+     the right edge, measured at 320/360/390 after the change. */
+  .cahier-topbar { gap: 0.8rem; }
   /* Last line of defence. The strip drops shrink-0 and wraps below sm, so if
      a future feature adds an icon that does not fit, the row gets TALLER —
      it never pushes anything past the right edge. A second line is a visible
@@ -2890,7 +2901,16 @@ h3.cahier-display { font-size: var(--fs-h3); }
     -5px -5px 10px color-mix(in oklab, white 92%, transparent),
     7px 12px 20px color-mix(in oklab, var(--cahier-ink) 32%, transparent),
     inset 1px 3px 0 color-mix(in oklab, white 62%, transparent),
-    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent);
+    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent),
+    /* THE TOP FACE'S OWN HAIRLINE (Dan, 2026-09-12: "those protruding buttons
+       should have their top most face very-thinly-outlined for better 3D
+       enhancement", and again on 14 Sep about the zoom + and −).
+       The two insets above are a highlight and a lip — they shade the top face
+       but never draw its EDGE, so a pale key on pale paper had no boundary at
+       all and read as a smudge rather than a surface. A 1px inset ring with no
+       offset and no blur IS that edge: it costs no layout, follows the radius
+       for free, and sits last so it draws over the highlight. */
+    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 22%, transparent);
   border: 0;
   transition: transform .1s ease, box-shadow .1s ease;
 }
@@ -3126,7 +3146,14 @@ h3.cahier-display { font-size: var(--fs-h3); }
    is where any button goes while held. Both are absolute positions rather
    than deltas, so a latched button does not travel twice. */
 .home-map3d-cap { transform: var(--cap-t) translateY(var(--cap-rest, 0px));
-  transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease; }
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), filter .2s ease;
+  /* THE CAP'S TOP FACE GETS THE KEY'S HAIRLINE TOO (Dan, 2026-09-14: "and so
+     have the buttons for the other 3d stops"). Measured before this line, the
+     cap computed `box-shadow: none` and `border: 0` — the stop's colour was the
+     only thing separating its top face from its own side, and on the pale
+     stops there was nothing. Same 1px inset ring as .neo-key, so the map's
+     stops and the app's keys are lit the same way. */
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 22%, transparent); }
 .home-map3d-node:active .home-map3d-cap {
   transform: var(--cap-t) translateY(var(--n-press, 3px));
   transition-duration: .06s, .06s;
