@@ -450,6 +450,220 @@ export const RESTAURANT_SCENE_BANK: ComposeBank = {
   },
 };
 
+
+/* ═══ PRÉSENTER QUELQU'UN — goal 23 ═══════════════════════════════════════
+
+   THE SUBJECT ROTATES, AND THAT IS THE DESIGN, not decoration. The scene asks
+   the learner to present A PERSON, and which person is drawn fresh each time
+   from the cast below: your brother, your neighbour, a classmate, your
+   team-mate, a cousin. Nobody revising this ever rehearses one fixed answer.
+
+   WHY THAT MATTERS MORE THAN IT LOOKS. The skill is *present a person*: name,
+   age, studies, what they like, what they do and where, what they want to do,
+   what they no longer do. A learner who can do that for a cousin and for a
+   neighbour can do it for anyone — which is the whole of Dan's 14 Sep
+   instruction, ***"WE WANT TO APPROACH INDIRECTLY VIA APPLICATION OF
+   KNOWLEDGE"***, applied to a task instead of to a word ending. A scene with
+   one fixed subject teaches that subject; a scene with eight teaches the
+   shape, and the shape is what survives into the next thing they write.
+
+   THE CAST DRIVES THE CHIPS, exactly as COUNTRIES drives the country bank's:
+   every subject arrives with its own « Mon frère » / « Ma cousine » chip and
+   its own model sentences, so one cannot be added without them.
+
+   THE WORD LIST is ordinary Unit 1–2 vocabulary — vouloir, mais, ans, lire,
+   étudiant(e), le football, et, la natation, avoir, faire, aller, la danse,
+   ne..pas/ne..plus, théâtre, être, aimer — and requiring it is the point:
+   without a list, a learner writes the six words they are already sure of and
+   revises nothing. See lib/compose/required.ts for how « avoir » is ticked by
+   « il a » and never by the word "avoir". */
+type Person = {
+  who: string;        // « Mon frère » — the chip and the headline
+  g: "m" | "f";
+  emoji: string;
+  name: string;
+  age: number;
+  study: string;      // « étudiant » / « étudiante »
+  likes: string;      // from the list's nouns
+  does: string;       // « de la natation » — after faire
+  goes: string;       // « à la piscine » — after aller
+  wants: string;      // after « il veut »
+  stopped: string;    // after « il ne fait plus » / « il n'aime plus »
+};
+
+const CAST = [
+  { who: "Mon frère",             g: "m", emoji: "🧑", name: "Thomas",  age: 19, study: "étudiant",  likes: "le football",  does: "du football",   goes: "au stade",     wants: "aller au cinéma",      stopped: "danse" },
+  { who: "Ma sœur",               g: "f", emoji: "👩", name: "Camille", age: 22, study: "étudiante", likes: "la danse",     does: "de la danse",   goes: "au théâtre",   wants: "faire du théâtre",     stopped: "natation" },
+  { who: "Mon meilleur ami",      g: "m", emoji: "🧑", name: "Malik",   age: 20, study: "étudiant",  likes: "la natation",  does: "de la natation", goes: "à la piscine", wants: "aller à la piscine",   stopped: "football" },
+  { who: "Ma meilleure amie",     g: "f", emoji: "👩", name: "Léa",     age: 21, study: "étudiante", likes: "le théâtre",   does: "du théâtre",    goes: "au théâtre",   wants: "lire un livre",        stopped: "danse" },
+  { who: "Mon voisin",            g: "m", emoji: "🧔", name: "Hugo",    age: 25, study: "étudiant",  likes: "la lecture",   does: "du sport",      goes: "à la piscine", wants: "aller au stade",       stopped: "du théâtre" },
+  { who: "Ma cousine",            g: "f", emoji: "👧", name: "Sofia",   age: 18, study: "étudiante", likes: "le football",  does: "de la natation", goes: "au stade",     wants: "faire de la danse",    stopped: "lecture" },
+  { who: "Un camarade de classe", g: "m", emoji: "🧑", name: "Yann",    age: 20, study: "étudiant",  likes: "le cinéma",    does: "du théâtre",    goes: "au cinéma",    wants: "aller au théâtre",     stopped: "football" },
+  { who: "Ma coéquipière",        g: "f", emoji: "👩", name: "Inès",    age: 19, study: "étudiante", likes: "la natation",  does: "de la natation", goes: "à la piscine", wants: "faire du football",    stopped: "danse" },
+] as const satisfies readonly Person[];
+
+const il = (p: Person) => (p.g === "f" ? "Elle" : "Il");
+
+export const PRESENT_PERSON_BANK: ComposeBank = {
+  id: "presenter-personne",
+  title: "Présenter quelqu'un",
+  emoji: "🧑‍🤝‍🧑",
+  unit: 2,
+  deckId: "aimer-activites",
+  mode: "solo",
+  aiCheck: true,
+  /* THE SIXTEEN WORDS, and the two shapes of matching they need. A verb is
+     ticked by any of its present forms (that is the whole point of
+     « n'oubliez pas de conjuguer »); everything else is matched as written.
+     « ne…pas / ne…plus » needs two groups because its halves are never
+     adjacent, and « n' » is listed beside « ne » because elision splits the
+     token — see lib/compose/required.ts.
+
+     « la danse » AND « la natation » CARRY THEIR ARTICLE ON PURPOSE. Bare
+     « danse » would be ticked by the VERB in « il danse bien », which is a
+     different word on the list's own terms — measured, and the reason the
+     generous one-word fallback is not used here.
+
+     AND « de danse » IS IN THE LIST BESIDE THEM, which driving the finished
+     screen is what found. After a negation French drops the partitive to
+     « de » — « il ne fait plus **de danse** » — so the article-only forms
+     would have refused to tick the very sentence the [Négation] chips build,
+     and a learner doing it right would have watched the counter stay put.
+     « de danse » cannot be the verb: nothing conjugates after « de ». */
+  required: {
+    min: 10,
+    words: [
+      { label: "vouloir", verb: "vouloir" },
+      { label: "mais" },
+      { label: "ans" },
+      { label: "lire", verb: "lire" },
+      { label: "étudiant(e)", all: [["étudiant", "étudiante"]] },
+      { label: "le football", all: [["le football", "du football", "au football", "de football"]] },
+      { label: "et" },
+      { label: "la natation", all: [["la natation", "de la natation", "de natation"]] },
+      { label: "avoir", verb: "avoir" },
+      { label: "faire", verb: "faire" },
+      { label: "aller", verb: "aller" },
+      { label: "la danse", all: [["la danse", "de la danse", "de danse"]] },
+      { label: "ne…pas / ne…plus", all: [["ne", "n"], ["pas", "plus"]] },
+      { label: "théâtre" },
+      { label: "être", verb: "être" },
+      { label: "aimer", verb: "aimer" },
+    ],
+  },
+  lengthGoal: { min: 50, max: 60 },
+  categories: withPalette([
+    // Generated from CAST, so a subject cannot be added without its chip —
+    // and so « Mon meilleur ami » is visibly one of eight. The NAMES are here
+    // for the country bank's stated reason: question 1 is answered with one,
+    // and a learner with no French had nothing to tap.
+    { label: "Présenter", phrases: [...CAST.map((p) => p.who), "s'appelle", ...CAST.map((p) => p.name)] },
+    { label: "Âge et études", phrases: ["Il a", "Elle a", ...new Set(CAST.map((p) => String(p.age))), "ans", "Il est étudiant", "Elle est étudiante", "étudiant", "étudiante", "à l'université"] },
+    { label: "Aimer", phrases: ["Il aime", "Elle aime", "adore", "déteste", "lire", "le football", "la natation", "la danse", "le théâtre", "la musique", "le cinéma", "la lecture"] },
+    { label: "Faire et aller", phrases: ["Il fait", "Elle fait", "du sport", "du football", "de la natation", "de la danse", "du théâtre", "Il va", "Elle va", "au stade", "à la piscine", "au théâtre", "au cinéma", "le week-end"] },
+    { label: "Vouloir", phrases: ["Il veut", "Elle veut", "aller", "faire", "un livre", "avec moi", "ce week-end"] },
+    /* THE BARE NOUNS ARE HERE, NOT THE PARTITIVE ONES. After a negation
+       French drops du/de la to « de » — « il ne fait plus DE danse », never
+       « de la danse » — so the negation group carries « danse » and its
+       neighbours bare. Writing the partitive form here is the single
+       commonest A1 slip this task produces, and the palette should not be
+       the thing that teaches it. */
+    { label: "Négation", phrases: ["ne", "n'", "pas", "plus", "ne fait plus de", "n'aime pas", "danse", "football", "natation", "théâtre", "lecture"] },
+    /* CONTINUING A SENTENCE NEEDS A LOWER-CASE SUBJECT, and until verify440
+       rejected the model it did not have one. 50–60 words cannot be reached
+       in five sentences without « … et **il** fait … », and a palette whose
+       only « Il » carries a capital puts one in the middle of the learner's
+       line — the exact fault that check was written for (see its « c'est
+       nuageux » note). */
+    { label: "Continuer", phrases: ["et", "mais", "aussi", "parce que", "il", "elle", "il a", "elle a", "il est", "elle est", "il aime", "elle aime", "il fait", "elle fait", "il va", "elle va", "il veut", "elle veut", "ne fait plus de"] },
+  ]),
+  newScenario() {
+    const i = Math.floor(Date.now() / 60000) % CAST.length;
+    const p: Person = CAST[i];
+    // The model is always a DIFFERENT person — the next in the cast — for the
+    // country bank's stated reason: a shape to lay your own five against,
+    // never an answer to copy. Built from that person's own fields so it
+    // cannot drift from the chips on offer.
+    const m: Person = CAST[(i + 1) % CAST.length];
+    const model =
+      `${m.who} s'appelle ${m.name}. `
+      + `${il(m)} a ${m.age} ans et ${il(m).toLowerCase()} est ${m.study}. `
+      + `${il(m)} aime ${m.likes} et ${il(m).toLowerCase()} fait ${m.does}. `
+      + `${il(m)} va ${m.goes} le week-end. `
+      + `${il(m)} veut ${m.wants} mais ${il(m).toLowerCase()} ne fait plus de ${m.stopped}.`;
+    return {
+      headline: `${p.emoji} ${p.who}`,
+      instructionEn:
+        `Present this person in five sentences — one question at a time. `
+        + `Use at least 10 words from the list, and conjugate the verbs in it.`,
+      /* FIVE QUESTIONS, ONE PER SENTENCE — which is how 50–60 words is
+         reached without asking anyone to write a paragraph from nothing.
+         Dan's own five, in his order. */
+      prompts: [
+        { ask: `${p.who} — ${il(p).toLowerCase()} s'appelle comment ?`, use: "Présenter" },
+        { ask: `${il(p)} a quel âge ? ${il(p)} est étudiant${p.g === "f" ? "e" : ""} ?`, use: "Âge et études" },
+        { ask: `${il(p)} aime quoi ?`, use: "Aimer" },
+        { ask: `${il(p)} fait quel sport, et ${il(p).toLowerCase()} va où ?`, use: "Faire et aller" },
+        { ask: `${il(p)} veut faire quoi ce week-end ? Et qu'est-ce qu${il(p) === "Elle" ? "'elle" : "'il"} ne fait plus ?`, use: "Vouloir" },
+      ],
+      model: { label: `Un modèle — ${m.who.toLowerCase()}`, text: model },
+    };
+  },
+};
+
+
+/* ═══ REMETTRE DANS L'ORDRE — the sentence, shuffled ══════════════════════
+
+   Word order is the first thing a learner loses and the last thing anything
+   in this app rehearses. Every drill here asks for a WORD — a gap, a form, an
+   article — and none of them asks where the words go, so somebody can know
+   « ne », « pas » and « fait » and still not produce « il ne fait pas de
+   sport ».
+
+   THESE BANKS CARRY NO CONTENT, and that is the design. The sentences come
+   from the deck each one hangs off (see ComposeUnscramble's `scrambleable`),
+   so a deck that gains a sentence gains a question and nothing is authored
+   twice. What a bank supplies is a title, a stop and a door.
+
+   THREE, NOT NINETEEN. Nineteen of the forty-four decks carry six or more
+   sentences long enough to scramble, and putting a new door on all nineteen
+   would redraw the app's navigation on the strength of one idea. These three
+   are unit 2, and each is a different word-order problem rather than three
+   helpings of the same one:
+
+       negation-pas        goal 28   « ne … pas » wrapping the verb — the
+                                     one place French word order is a RULE
+                                     rather than a habit. 20 of 20 items are
+                                     sentences.
+       quand-time          goal 27   where a time expression sits, which
+                                     French allows in more than one place
+       aller-destinations  goal 26   verb + preposition + place, where the
+                                     preposition is chosen by the place
+
+   `categories` is empty and `newScenario` returns nothing usable: an
+   unscramble screen has no chips and no scenario. verify440's probe calls
+   newScenario inside a try/catch and skips what it cannot use, and its
+   persona clause now asks only banks that can reach /api/compose — which
+   these cannot, because they grade locally. */
+function unscrambleBank(deckId: string, title: string, unit: number): ComposeBank {
+  return {
+    id: `remettre-${deckId}`,
+    title,
+    emoji: "🧩",
+    unit,
+    deckId,
+    mode: "unscramble",
+    categories: [],
+    newScenario: () => ({ instructionEn: "", headline: "" }),
+  };
+}
+
+export const UNSCRAMBLE_BANKS: ComposeBank[] = [
+  unscrambleBank("negation-pas", "Remettre dans l'ordre · la négation", 2),
+  unscrambleBank("quand-time", "Remettre dans l'ordre · quand ?", 2),
+  unscrambleBank("aller-destinations", "Remettre dans l'ordre · où ?", 2),
+];
+
 /** The production banks, in curriculum order. Register these in banks.tsx's
  *  BANKS array so getComposeBank() and the SIO activity rail can find them.
  *  ORDER MATTERS on a shared deck: the FIRST bank with a deckId is the rail's
@@ -463,4 +677,6 @@ export const PRODUCTION_BANKS: ComposeBank[] = [
   POSTCARD_BANK,
   REVIEW_BANK,
   RESTAURANT_SCENE_BANK,
+  PRESENT_PERSON_BANK,
+  ...UNSCRAMBLE_BANKS,
 ];

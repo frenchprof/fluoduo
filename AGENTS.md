@@ -468,6 +468,82 @@ cannot report "all clear" over an empty page.
 **The lesson is the Geist ban's, restated for behaviour instead of type: a rule
 about what the app DOES has to be measured in the app, not read in its source.**
 
+# Close a gap by teaching the rule, not by adding the word — permanent (2026-09-14)
+
+**Dan, asked how to fix a nationality the course does not carry:** ***"WE WANT
+TO APPROACH INDIRECTLY VIA APPLICATION OF KNOWLEDGE, E.G. for luxembourgeois,
+do we have any other nationality that covers similar endings -geois(e)"***
+
+It does, and that settled it. Goal 16's twenty-five nationalities fall into
+four families, and the lesson already prints the rules in its own summary box:
+
+    -ien → -ienne          7   indonésien, cambodgien, singapourien,
+                               malaisien, tunisien, algérien, coréen
+    -in  → -ine            6   américain, mexicain, cubain, philippin,
+                               argentin, marocain
+    ends in -s, add -e     5   français, portugais, CHINOIS, thaïlandais,
+                               anglais
+    no change              4   russe, suisse, belge, britannique
+
+So « luxembourgeois » is the « chinois → chinoise » shape exactly, and
+« indien » is « singapourien → singapourienne ». **Neither needed adding.**
+
+**AND ADDING THEM WOULD HAVE COST SOMETHING NOBODY WOULD HAVE NOTICED.** Goal
+15's `countries-letris` and goal 16's `nationalities` are LOCK-STEPPED: the
+same twenty-five subjects, in the same order, paired by id. A 26th entry in one
+alone desynchronises two decks and the two games that read them, and nothing
+about the edit looks wrong. `verify700` pins the pairing for that reason.
+
+**WHAT WAS ACTUALLY MISSING is smaller and sharper: every nationality the app
+ever asks for is one of the twenty-five it taught.** Nothing distinguished a
+learner who knew the rule from one who had memorised twenty-five pairs — which
+is the only distinction that matters the moment they meet a word on a page.
+
+So the remedy is a **TRANSFER ITEM**: a word the app never teaches, asked once
+at the end of a run, NOT SCORED. `content/transfer.ts` holds them,
+`components/TransferProbe.tsx` draws one, and the feedback is the RULE, never a
+verdict — « ends in -s → add -e, comme portugais → portugaise ». You cannot
+mark somebody wrong for not knowing something you never told them; that is
+verify40's ruling (*"remember it, but don't score it"*, 27 Aug) applied to a
+second case.
+
+**The generalisation, for the next gap:** when something the course does not
+carry turns out to be produced by a rule the course DOES teach, the fix is to
+prove the rule transfers — not to widen the deck. Widening is what you do when
+the rule itself is absent.
+
+# Vary the subject so the skill generalises — permanent (2026-09-14)
+
+**Dan, the same day, about a written task:** ***"BUT WE DON'T WANT TO GIVE AWAY
+THE FACT THAT THE QUESTION IN THE TEST IS ABOUT MY BEST FRIEND, SO HOW?"***
+
+**By making the best friend one of eight.** `presenter-personne`
+(`games/compose/banks-production.tsx`) asks the learner to present A PERSON,
+and which person is drawn fresh each run from a cast — brother, sister,
+neighbour, cousin, classmate, team-mate, best friend. Nobody rehearses one
+fixed answer, and no screen names any subject as the important one.
+
+**IT IS THE TRANSFER RULE ABOVE, APPLIED TO A WHOLE TASK RATHER THAN A WORD
+ENDING, and that is why it is written as a rule and not as a trick.** A scene
+with ONE subject teaches that subject. A scene with eight teaches the SHAPE —
+name, age, studies, likes, what they do and where, what they want, what they no
+longer do — and the shape is what survives into the next thing the learner
+writes. The disguise and the pedagogy point the same way, which is the only
+reason to keep it.
+
+**The cast drives the chips**, exactly as `COUNTRIES` drives the country bank's,
+so a subject cannot be added without its own chip and its own model sentences.
+**The server persona is part of it**: `functions/api/compose.js` tells the
+checker it does not know the person and must never assume their relationship to
+the writer — a reply that guessed would undo the rotation.
+
+**The WORD LIST is not the secret and must not be hidden.** Sixteen ordinary
+Unit 1–2 words, and requiring them is the skill: without a list a learner
+writes the six words they are already sure of and revises nothing. See
+`lib/compose/required.ts`, where a verb is ticked only by a CONJUGATED form —
+« avoir » by « il a », never by the word "avoir", which is the whole of
+« n'oubliez pas de conjuguer ».
+
 # The app does not perform unasked — permanent (2026-09-13)
 
 **Dan, in one message:** ***"The [victory] jingle is sometimes playing for no
@@ -951,3 +1027,53 @@ The precedent this follows is the one the Geist ban set: the rule goes in this
 file AND into a check in the same patch, and the check takes a list or a count
 rather than a single hard-coded name, because the next ruling will not be about
 this tile.
+
+# A curated path is DATA, and it is walked in the app — permanent (2026-09-14)
+
+**Dan: *"what i would really need now is a 'curated path' automatically driving
+the sequence of activities on FluOLinGo — essential, optional etc"*.** Asked
+how a learner moves between steps he chose BOTH — *"the end screen offers the
+next step as the primary button, AND there's a path page showing all nine with
+ticks"* — and, offered three doors to start from, named a fourth: *"there
+should be a dedicated 'Mid-Term Revision' START button"*.
+
+**A PATH IS AN ENTRY IN `content/paths.ts`, NEVER A PAGE.** Asked whether this
+was one path or the first of several, Dan chose *"built for several, ship
+one"*. So a finals path, a catch-up week or a single-unit path is a new entry
+and nothing else — no route, no component, no second copy of the walking logic
+to drift out of step with this one.
+
+**THE RULE THE STEP LIST IS BUILT ON: no two steps may do the same job.** Each
+step's `does` line names the physical thing the learner does, and `verify760`
+fails when two on the essential tier match. That is what makes a list
+*"sufficient and not excessive"* — Dan's own test — and it is what cut the
+per-goal GramMarathon runs, which were step 1's mechanic a second time.
+
+**PROGRESS IS A SET OF FINISHED STEPS, NOT A CURSOR**, and everything that
+displays it must ask each step rather than count. The first walk of the feature
+finished step 2 before step 1, and the count-based label read « Step 2 of 11 »
+above the words « GramMarathon », which is step 1. A count cannot say WHICH
+step is being offered once the order is not guaranteed.
+
+**THE HALF THAT ONLY A BROWSER COULD FIND, and it is the whole lesson again.**
+The push rides `ActivityUsher`, so it reached eleven drills in one edit — but
+the usher's compass is computed from a STOP, and two essential steps belong to
+no stop at all. **ErroReview (steps 2 and 9) and ConjugaZone (step 6) drew
+nothing**, so the walk reached step 2 and stopped there permanently. Every
+check was green. Every step id was unique, every address resolved, the map page
+drew all eighteen rows. The feature did not work.
+
+    read in the source   eleven drills draw the usher, so the push is everywhere
+    walked in the app    the push never appeared; nothing ever ticked
+
+So `verify760` holds a **named map of every essential step to the screen that
+ends it**, and FAILS on a step that is not in the map — `verify105`'s shape,
+chosen for the same reason: a clever sweep would have to follow every
+component's render tree, and would answer "yes" for a screen that renders a
+usher it was never given. A new step cannot be added without someone stating
+which screen ticks it.
+
+**A SECOND TRAP IN THE SAME COMPARISON, also invisible in source:** every
+station runs in an iframe, so the pathname when the usher mounts ends in
+`/embed` and matches no step's address. Without the strip the path never
+advances anywhere, and the code reads as if it works.

@@ -27,6 +27,11 @@
           "key": "heure",
           "label": "HEURE",
           "prefix": ""
+        },
+        {
+          "key": "ponctualite",
+          "label": "PONCTUALITÉ",
+          "prefix": ""
         }
       ]
     },
@@ -47,7 +52,9 @@
     {
       "id": "quand-time-01",
       "fr": "le lundi",
-      "alt": ["les lundis"],
+      "alt": [
+        "les lundis"
+      ],
       "en": "on Mondays",
       "tags": [
         "col:jour"
@@ -61,7 +68,9 @@
     {
       "id": "quand-time-02",
       "fr": "le week-end",
-      "alt": ["les week-ends"],
+      "alt": [
+        "les week-ends"
+      ],
       "en": "on weekends",
       "tags": [
         "col:jour"
@@ -128,7 +137,9 @@
     {
       "id": "quand-time-07",
       "fr": "le mardi",
-      "alt": ["les mardis"],
+      "alt": [
+        "les mardis"
+      ],
       "en": "on Tuesdays",
       "syllables": [
         "le",
@@ -142,7 +153,9 @@
     {
       "id": "quand-time-08",
       "fr": "le samedi",
-      "alt": ["les samedis"],
+      "alt": [
+        "les samedis"
+      ],
       "en": "on Saturdays",
       "syllables": [
         "le",
@@ -286,6 +299,76 @@
       "example": "Je regarde la télé à 10 heures.",
       "tags": [],
       "gap": "à"
+    },
+    {
+      "id": "quand-time-23",
+      "fr": "en retard",
+      "en": "late",
+      "syllables": [
+        "en",
+        "re",
+        "tard"
+      ],
+      "tags": [
+        "col:ponctualite"
+      ]
+    },
+    {
+      "id": "quand-time-24",
+      "fr": "à l'heure",
+      "en": "on time",
+      "syllables": [
+        "à",
+        "l'heure"
+      ],
+      "tags": [
+        "col:ponctualite"
+      ]
+    },
+    {
+      "id": "quand-time-25",
+      "fr": "en avance",
+      "en": "early",
+      "syllables": [
+        "en",
+        "a",
+        "vance"
+      ],
+      "tags": [
+        "col:ponctualite"
+      ]
+    },
+    {
+      "id": "quand-time-26",
+      "fr": "Je suis en retard.",
+      "en": "I'm late.",
+      "example": "Je suis à l'heure.",
+      "tags": [],
+      "gap": "en retard"
+    },
+    {
+      "id": "quand-time-27",
+      "fr": "Le bus est en retard.",
+      "en": "The bus is late.",
+      "example": "Le bus est à l'heure.",
+      "tags": [],
+      "gap": "en retard"
+    },
+    {
+      "id": "quand-time-28",
+      "fr": "Tu es à l'heure !",
+      "en": "You're on time!",
+      "example": "Tu es en avance !",
+      "tags": [],
+      "gap": "à l'heure"
+    },
+    {
+      "id": "quand-time-29",
+      "fr": "Elle est en avance.",
+      "en": "She's early.",
+      "example": "Elle est en retard.",
+      "tags": [],
+      "gap": "en avance"
     }
   ]
 }

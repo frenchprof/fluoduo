@@ -624,3 +624,9 @@ jobs:
 
       - name: "The app does not perform unasked — float, fanfare, voice (13 Sep)"
         run: python3 verify/verify660-unasked.py
+
+      - name: "The revision path's holes stay patched — transfer, word order (14 Sep)"
+        run: python3 verify/verify700-transfer-and-order.py
+
+      - name: "The curated path — every step lands somewhere, the walk cannot stall (14 Sep)"
+        run: python3 verify/verify760-curated-path.py

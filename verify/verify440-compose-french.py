@@ -60,7 +60,8 @@ for (const b of listComposeBanks()) {
     if (s.model?.text) models.add(s.model.text);
   }
   Date.now = real;
-  out.push({ id: b.id, lines: [...lines], heads: [...heads], uses: [...uses], models: [...models],
+  out.push({ id: b.id, mode: b.mode, aiCheck: !!b.aiCheck,
+             lines: [...lines], heads: [...heads], uses: [...uses], models: [...models],
              cats: b.categories.map((c) => ({ label: c.label, phrases: c.phrases })) });
 }
 process.stdout.write(JSON.stringify(out));
@@ -270,9 +271,23 @@ with open(API, encoding="utf-8") as fh:
     api = fh.read()
 # Top-level keys of the SCENES object: two-space indent, bare or quoted.
 personas = set(re.findall(r'^  "?([a-z][a-z-]*)"?: \{', api, re.M))
-orphans = [b["id"] for b in BANKS if b["id"] not in personas]
+# ONLY THE BANKS THAT CAN REACH THE CHECKER, and this is a narrowing of the
+# clause, not a loosening of it (14 Sep). A bank POSTs to /api/compose in
+# exactly two cases: `mode: "dialogue"` (every turn goes through the persona)
+# and `aiCheck: true` (solo's "check my work" pass). An `unscramble` bank does
+# neither — it grades locally with gradeAnswer and never opens a socket — so
+# demanding a persona for it would be demanding a persona for a screen that
+# cannot consult one.
+#
+# The condition is computed FROM THE BANK, so the day somebody turns aiCheck on
+# without writing the persona, this catches it exactly as before. What is
+# exempt is not a bank someone chose to exempt; it is a bank that provably
+# cannot reach the fallback this clause exists to make unreachable.
+needs = [b for b in BANKS if b["mode"] == "dialogue" or b["aiCheck"]]
+orphans = [b["id"] for b in needs if b["id"] not in personas]
 ok(not orphans,
-   f"every bank has its own persona in {API} ({len(personas)} scenes, {len(BANKS)} banks)",
+   f"every bank that can reach the checker has its own persona in {API} "
+   f"({len(personas)} scenes, {len(needs)} of {len(BANKS)} banks consult one)",
    f"{len(orphans)} bank(s) have no persona and would silently get the café waiter — "
    + ", ".join(orphans)
    + f". Add a SCENES entry in {API}; the fallback is `SCENES[scene] || SCENES.cafe`, "
