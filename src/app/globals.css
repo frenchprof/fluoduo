@@ -5010,10 +5010,12 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   background: linear-gradient(to bottom, transparent, var(--cahier-paper) 45%);
 }
 .fluo-more-band {
-  /* It is a LABEL, not a button — the gesture is the scroll, and a key you can
-     press that does nothing is worse than no key. The look is borrowed; the
-     affordance is not. */
-  cursor: default;
+  /* IT IS A BUTTON NOW, and it takes you there (Dan, 2026-09-14: "that NEXT
+     PART IS BELOW SHOULD BE CLICKABLE TO TAKE YOU BELOW"). It always looked
+     like a key — `.neo-key` — so a learner was always going to press it. */
+  cursor: pointer;
+  border: 0;
+  font: inherit;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
 }
 /* THE QUICKSTART'S FOLDS (Dan, 2026-09-14: "for the QuickGuide, each item be

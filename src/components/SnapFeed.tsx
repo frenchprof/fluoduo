@@ -163,7 +163,7 @@ const SnapFeed = forwardRef<SnapFeedHandle, {
               `cue={false}` exists for PretestFeed, which already draws Dan's
               own « NEXT QUESTION » key with the same arrows once a question is
               answered; two cues in one corner would be worse than none. */}
-          {cue && <MoreBelow />}
+          {cue && <MoreBelow flow />}
         </section>
       ))}
     </div>

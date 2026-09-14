@@ -151,6 +151,40 @@ on its own, which is why the floor is gone rather than made smaller.
 and the Favourites page's own empty state, which said *"Tap ☆ at the top right"*
 and would have sent a learner to tap the very button they were standing on.
 
+## 14 Sep — the « NEXT PART IS BELOW » cue stops covering things, and takes you there (fluoduo-main)
+
+**Dan: *"why is 'NEXT PART IS BELOW' covering the tiles partialy??"*, then
+*"and that NEXT PART IS BELOW SHOULD BE CLICKABLE TO TAKE YOU BELOW"*.**
+
+**HE WAS RIGHT, AND THE GOAL PAGE WAS WORSE THAN THE COMPLAINT SAID.** Driven
+at 430x860 before this: ConjugaZone's « Questions → » key was covered by 40px —
+its whole height — and goal 23's WorDrill and ComposeIt tiles by 52px, with
+**two cues on screen at once**, because SnapFeed draws one per section.
+
+**TWO SHAPES, TWO ANSWERS, and that is the whole fix:**
+
+- **Where content flows past the bottom edge** (a lesson panel, a conjugation
+  column) the floating band is right — there is no empty space to sit in and
+  the fade is what keeps it readable over the last line. It simply never
+  RESERVED room. It now pads the foot of its own column while it is up, and
+  subtracts exactly what that padding cost, measured (`grew`) rather than
+  assumed — or the padding is its own "more below" and the cue never turns off,
+  which is the loop the zero-height rail was already written to escape.
+- **A snap section is the opposite**: a fixed screen with the card pinned to
+  the top and real room underneath. Floating there put the band ON the tiles
+  when it could stand below them. `flow` makes it the section's last child with
+  `margin-top: auto`, and because the section is a fixed height that costs no
+  scroll length at all. `pb-16` clears the goal page's floating « 🎯 24 » chip,
+  which sits on the same edge.
+
+**IT IS A BUTTON NOW**, and that REVERSES MoreBelow's own ruling — *"it is a
+LABEL, not a button: the gesture is the scroll, and a key you can press that
+does nothing is worse than no key"*. The premise was right and the conclusion
+was Dan's to draw: it looks like a `.neo-key`, so a learner was always going to
+press it, and a key that DOES something beats both. It scrolls a screenful less
+the reserve, smoothly, so the reader lands on the next part rather than at the
+end. Measured on MneMemo: scrollTop 681 → 1354.
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
