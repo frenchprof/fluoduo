@@ -248,9 +248,8 @@ export default function MapBody() {
             min={30}
             max={200}
             step={10}
-            list="fluo-zoom-milestones"
             value={zoomDraft ?? zoomPct}
-            aria-label="Zoom percent — type a value or pick a milestone"
+            aria-label="Zoom percent"
             onChange={(e) => {
               const text = e.target.value;
               setZoomDraft(text);
@@ -271,7 +270,9 @@ export default function MapBody() {
                read « 00 » at 100% and « ?00 » at 200%. A phone was fine, which
                is why it survived — the mono face is set from a smaller step
                there. Three digits is the widest this field can ever hold
-               (max=200), and 68 leaves room for the datalist arrow beside them. */
+               (max=200). The 68 also left room for the datalist arrow; the list went
+               on 14 Sep and the width stays, because the measurement above is
+               about THREE DIGITS and those have not moved. */
             /* `!` ON ALL FOUR, AND THE NOTEBOOK IS WHY (12 Sep). The map moved
                onto Home, which is a `.cahier-page`, and that shell dresses every
                input it contains: `.cahier-page input` sets width 100%, padding
@@ -286,13 +287,6 @@ export default function MapBody() {
             className="neo-well !w-[4.25rem] rounded-lg !px-1 !py-1 !text-[length:var(--fs-small)] text-center leading-none"
             style={{ background: "var(--cahier-paper-raised)", color: "var(--cahier-ink)" }}
           />
-          <datalist id="fluo-zoom-milestones">
-            <option value="50" />
-            <option value="75" />
-            <option value="100" />
-            <option value="150" />
-            <option value="200" />
-          </datalist>
           <button
             type="button"
             aria-label="Zoom in"
