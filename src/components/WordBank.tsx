@@ -104,10 +104,22 @@ export default function WordBank({
     if (disabled) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      /* WHOSE DIGIT IS IT — and this is the whole reason the first version did
+         nothing. The drill focuses its own gap on every question (so the caret
+         is where the learner looks), so by the time a key is pressed an INPUT
+         always has focus, and a blanket "never steal from a focused field"
+         guard refused every time. Measured: pressing 3 then 1 typed « 01 » into
+         the gap instead of placing two words.
+
+         `builtInGap` is exactly the distinction. When it is ON the gap is
+         WORDBANK'S OWN OUTPUT — the learner does not type into it, they tap
+         tiles and this component writes the result — so a digit belongs to the
+         bank. When it is OFF the drill really does offer a typed surface
+         alongside the bank, and the digit is the learner's to type. */
       const el = document.activeElement as HTMLElement | null;
-      // Never steal a digit from somebody typing — the same drill offers a
-      // typed field above sm, and ComposeIt has a text surface of its own.
-      if (el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable)) return;
+      const typing =
+        !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+      if (typing && !builtInGap) return;
       const n = Number(e.key);
       if (!Number.isInteger(n) || n < 1 || n > Math.min(9, tokens.length)) return;
       e.preventDefault();
@@ -119,7 +131,7 @@ export default function WordBank({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [disabled, tokens, onChange]);
+  }, [disabled, tokens, onChange, builtInGap]);
 
   return (
     <div>
