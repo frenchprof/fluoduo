@@ -15,7 +15,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { choiceKeysBusy } from "@/lib/useChoiceKeys";
-import { HOME_HREF } from "@/lib/routes";
+import { sioHref } from "@/lib/routes";
 
 const DIGIT_WINDOW_MS = 900;
 
@@ -93,24 +93,26 @@ export default function KeyNav() {
           const num = parseInt(buf.current, 10);
           clear();
           const sio = SIOS.find((s) => s.num === num);
-          // The outcome lives on The Map now (/sio/[id] is only a
-          // redirect): `?unit=N#SIO-0NN` opens its popup. Already on
-          // the map → set the hash so its hashchange listener opens it
-          // without a reload.
-          //
-          // THE MAP IS HOME SINCE 12 SEP. Typing a number while standing on
-          // the map has to take the branch that only moves the hash — and the
-          // test still named `/map`, which nobody is on any more, so every
-          // in-place jump went through `router.push` to a redirect instead:
-          // the map you were already looking at, reloaded twice.
-          if (sio) {
-            if (window.location.pathname === HOME_HREF) {
-              window.history.replaceState(null, "", `${HOME_HREF}?unit=${sio.unit}`);
-              window.location.hash = sio.id;
-            } else {
-              router.push(`${HOME_HREF}?unit=${sio.unit}#${sio.id}`);
-            }
-          }
+          /* IT OPENS THE GOAL'S PAGE, THE SAME DOOR A TAP OPENS (Dan,
+             2026-09-14: *"typing on numbers in the map view is bringing up old
+             popup SIOs"*).
+
+             THE COMMENT THAT USED TO BE HERE WAS TRUE WHEN IT WAS WRITTEN AND
+             HAD BEEN WRONG FOR A WEEK. It read « the outcome lives on The Map
+             now (/sio/[id] is only a redirect): ?unit=N#SIO-0NN opens its
+             popup », so this set `location.hash` and MapBody's hashchange
+             listener drew `StopPopup`. On 7 Sep Dan retired exactly that —
+             *"WE ARE STILL SEEING THE POPUPS FROM CLICKING THE MAP, WHERE ARE
+             THE FULL PAGED SIOS"* — and `/sio/[id]` became the real
+             one-goal-per-screen page. MapBody's own `openSio` was changed to
+             push it; this shortcut was not, so the keyboard kept opening the
+             retired popup while the finger opened the page.
+
+             MapBody still parses `#SIO-nnn` and still draws the popup for it,
+             deliberately: a QR code or a bookmark in the wild must land
+             somewhere. Nothing in the app should MINT one of those any more,
+             which is what this line stops doing. */
+          if (sio) router.push(sioHref(sio.id));
         } else {
           timer.current = window.setTimeout(clear, DIGIT_WINDOW_MS);
         }

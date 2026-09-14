@@ -184,6 +184,37 @@ was Dan's to draw: it looks like a `.neo-key`, so a learner was always going to
 press it, and a key that DOES something beats both. It scrolls a screenful less
 the reserve, smoothly, so the reader lands on the next part rather than at the
 end. Measured on MneMemo: scrollTop 681 → 1354.
+## 14 Sep — the keyboard opened the retired popup a week after the finger stopped (fluoduo-main)
+
+**Dan: *"typing on numbers in the map view is bringing up old popup SIOs"*.**
+It was not the map. `KeyNav` gives the app a two-digit shortcut — type 2, 3
+anywhere and jump to goal 23 — and it did that by setting
+`location.hash = "SIO-023"`, which `MapBody`'s hashchange listener answers by
+drawing **StopPopup**.
+
+**THE STALE COMMENT IS THE WHOLE STORY, and it is the third one to bite today.**
+The line above it read:
+
+> *"The outcome lives on The Map now (/sio/[id] is only a redirect):
+> `?unit=N#SIO-0NN` opens its popup."*
+
+True when written. **Wrong since 7 Sep**, the day Dan said *"WE ARE STILL SEEING
+THE POPUPS FROM CLICKING THE MAP, WHERE ARE THE FULL PAGED SIOS"* and
+`/sio/[id]` became the real one-goal-per-screen page. `MapBody`'s own `openSio`
+was changed to push it; this shortcut was not. So the FINGER opened the page and
+the KEYBOARD opened the retired popup, and the comment made that look
+deliberate to every session that read it.
+
+It pushes `sioHref(sio.id)` now — the same door a tap opens. Driven at 1280px:
+typing 2 then 3 on the map lands on `/sio/SIO-023` with zero dialogs.
+
+**MapBody KEEPS parsing `#SIO-nnn` and keeps drawing the popup for it**, on
+purpose: a QR code or a bookmark in the wild has to land somewhere. What
+changed is that nothing in the app MINTS one of those any more.
+
+**Also: `.tmp-verify-gems/` is gitignored**, like the two scratch directories
+listed beside it. It was the only one of the three missing, so a clean tree
+read as dirty after any full verify sweep.
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
