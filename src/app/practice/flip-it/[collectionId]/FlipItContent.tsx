@@ -58,6 +58,8 @@ import { loadBuckets, setBucket, type Bucket } from "@/lib/practice/buckets";
 import { logEvent } from "@/lib/firebase/usage";
 import { hintsFor } from "@/lib/help/hints";
 import { useHelpLadder } from "@/lib/help/useHelpLadder";
+import ActivityUsher from "@/components/ActivityUsher";
+import { usherFor, type Usher } from "@/lib/usher";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import CuratedDeckTable from "@/app/decks/[id]/CuratedDeckTable";
 import WordBank from "@/components/WordBank";
@@ -136,6 +138,9 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   // table, and the deck-wide ✓ counter.
   const runRows = useMemo(() => cap(rows, chosen), [rows, chosen]);
   const done = i >= runRows.length;
+  // The compass the Recap draws. Null for a deck that belongs to no stop, in
+  // which case ActivityUsher renders nothing at all.
+  const usher = useMemo(() => usherFor("flip", { collectionId: collection.id }), [collection.id]);
   const row = runRows[Math.min(i, runRows.length - 1)];
   const isLast = i === runRows.length - 1;
   const parts = useMemo(() => partsFor(row, isNat, hasArt), [row, isNat, hasArt]);
@@ -238,10 +243,14 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
       progress={view !== "one" || done ? null : { done: i, total: runRows.length }}
       right={<>✓ {nReviewed}/{rows.length}</>}
       cta={
+        /* NO « 🃏 Again » WHEN DONE — redo moved onto the ushering row in the
+           Recap, and the shell's primary slot would have made it the same
+           door twice. Null is the shell's documented "body owns flow" case,
+           the one the missing « Flip » button already relies on below. */
         view !== "one"
           ? null
           : done
-          ? { label: "🃏 Again", onClick: restart }
+          ? null
           : test
             ? phase === "idle" && !retry
               ? { label: "Check", onClick: check, disabled: nothingTyped }
@@ -360,7 +369,7 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
         </>
       )}
       {view === "one" && done && (
-        <Recap test={test} run={run} nReviewed={nReviewed} total={rows.length} deckId={collection.id} />
+        <Recap test={test} run={run} nReviewed={nReviewed} total={rows.length} deckId={collection.id} usher={usher} onRedo={restart} />
       )}
     </DrillShell>
   );
@@ -573,9 +582,10 @@ function TestCard({
 
 /* ─────────────────────────── recap ─────────────────────────── */
 
-function Recap({ test, run, nReviewed, total, deckId }: {
+function Recap({ test, run, nReviewed, total, deckId, usher, onRedo }: {
   test: boolean; run: { su: number; revoir: number; right: number; wrong: number };
   nReviewed: number; total: number; deckId: string;
+  usher: Usher | null; onRedo: () => void;
 }) {
   const good = test ? run.right : run.su;
   const pct = total > 0 ? Math.round((nReviewed / total) * 100) : 0;
@@ -591,6 +601,10 @@ function Recap({ test, run, nReviewed, total, deckId }: {
       <div className="mt-5 flex justify-center">
         <Link href={`/decks/${deckId}`} className="cahier-btn">▦ Whole list</Link>
       </div>
+      {/* Dan, 13 Sep: *"for all the stops there should be something like this
+          at the end"*. « ▦ Whole list » stays above it because it is about
+          THIS deck, not about where to go next. */}
+      <ActivityUsher usher={usher} onRedo={onRedo} className="mt-4" />
     </div>
   );
 }

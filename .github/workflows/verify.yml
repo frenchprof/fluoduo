@@ -621,3 +621,6 @@ jobs:
 
       - name: "The teacher's test accounts are never on the student board (13 Sep)"
         run: python3 verify/verify600-staff-off-board.py
+
+      - name: "The app does not perform unasked — float, fanfare, voice (13 Sep)"
+        run: python3 verify/verify660-unasked.py

@@ -285,7 +285,13 @@ export default function ConjugaisonPage() {
             <div className="mt-5 text-center">
               <button
                 type="button"
-                onClick={() => { sfx.stage(); setScreen("table"); }}
+                /* NO FANFARE. Dan, 2026-09-13: *"The [victory] jingle is
+                   sometimes playing for no good reason."* This is the button
+                   that STOPS the drill early — the learner gave up, and the
+                   app played the full victory fanfare and rained confetti on
+                   them for it. The run's real completion, in next() below,
+                   keeps its jingle. */
+                onClick={() => setScreen("table")}
                 className="fluo-btn fluo-btn-sm fluo-btn-ghost"
                 title="Stop and see the table"
               >
@@ -305,7 +311,9 @@ export default function ConjugaisonPage() {
             setMode={setMode}
             hidden={hidden}
             setHidden={setHidden}
-            startDrill={() => { sfx.stage(); setScreen("drill"); }}
+            /* NO FANFARE — same 13 Sep ruling. This is the START button: it
+               celebrated a run before a single verb had been typed. */
+            startDrill={() => setScreen("drill")}
             canDrill={!!queue && queue.length > 0}
           />
         ) : (

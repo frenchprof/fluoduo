@@ -126,7 +126,20 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
     setAiDone(false);
     setDebrief(null);
     setDebriefBusy(false);
-    speak(opening, lang, { gender: personaVoice });
+    /* THE OPENING LINE NO LONGER SPEAKS ITSELF (Dan, 2026-09-13: ComposeIt
+       *"plays TTS even before the learner gets to look at the page"*).
+     *
+     * `start()` runs from a mount effect, so the persona began talking while
+     * the page was still painting — before the learner had read the scene,
+     * and with no way to have asked for it. That is not what a messenger
+     * does: a message ARRIVES, you read it, and you tap if you want to hear
+     * it. Every bubble already carries its own 🔊 (see the `actions` on each
+     * ChatMessage below), so nothing is lost — the sound is now the
+     * learner's choice instead of the app's.
+     *
+     * Speech that ANSWERS the learner is untouched: sending a reply still
+     * voices their line and the persona's answer, because they asked for it
+     * by pressing ✔ Reply. */
   };
 
   // The learner can ask for the bilan any time; it also auto-loads when the
@@ -363,12 +376,46 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
       <p>{personaEmoji} speaks first. Compose your reply from the phrases below and / or type it, then ✔ Reply. Every line can be replayed with a tap.</p>
     </>
   );
-  const record = (
-    <ol className="flex flex-col gap-1.5">
-      {messages.filter((m) => m.who === "me").map((m, i) => (
-        <li key={i} lang="fr" className="rounded-lg border-2 border-[color:var(--cahier-line)] px-2 py-1 text-sm">{m.text}</li>
+  /* THE PHRASE BANK — one definition, rendered in two places.
+   *
+   * Dan, 2026-09-13, shown the scene as it opens: *"the phrase tray should not
+   * have to be scrollable inside. Cant they be outside?"*
+   *
+   * They can, on a wide screen, and the room was already there: GameFrame's
+   * right pane held « ✎ Your lines » — a second copy of the learner's own
+   * sent messages, sitting beside a thread that already shows them, and
+   * EMPTY until they had sent one. That is the litmus test's own example of
+   * text that can be removed without costing the learner anything. The bank
+   * takes the pane, gets its full height, and needs no scroll box of its own.
+   *
+   * ON A PHONE THE PANE DOES NOT EXIST (`hidden … lg:flex` in GameFrame), so
+   * below 1024px the tray stays inside the card. That half is NOT solved and
+   * is not pretended to be: at 430px, twenty chips plus a thread plus the
+   * composer do not fit in 100dvh, and the frame does not scroll by design. */
+  const phraseTray = (
+    <div className="msgr-tray">
+      {bank.categories.map((cat, i) => (
+        <div key={cat.label} className="msgr-tray-group">
+          <span className={`msgr-tray-label ${categoryHeaderClass(i)} rounded-full px-2 py-0.5`}>{cat.label}</span>
+          {cat.phrases.map((p) => (
+            <button
+              key={p}
+              type="button"
+              lang="fr"
+              className={`msgr-chip ${cat.chip}`}
+              onClick={() => {
+                setUndoStack((u) => [...u, typed]);
+                setTyped((t) => joinChips([t, p].filter(Boolean)));
+                setNudge(null);
+              }}
+              title={`Add ${p}`}
+            >
+              {p === ", " ? ",  (comma)" : p}
+            </button>
+          ))}
+        </div>
       ))}
-    </ol>
+    </div>
   );
 
   return (
@@ -383,8 +430,8 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
         { label: "Restart", onClick: start },
         { label: "▶️ Listen to the dialogue", onClick: playAll },
       ]}
-      record={record}
-      recordTitle="✎ Your lines"
+      record={phraseTray}
+      recordTitle="✎ Your phrases"
     >
     <div
       style={themeVars}
@@ -515,32 +562,12 @@ export default function ComposeDialogue({ bank }: { bank: ComposeBank }) {
               above where you type, which is where the eye already is. */}
           {nudge && <p className="msgr-note">{nudge}</p>}
 
-          {/* THE TRAY — every chip, still all on screen, now above the
-              composer instead of below the fold. Tapping one appends it to the
-              field rather than to a separate "reply under construction" box. */}
-          <div className="msgr-tray">
-            {bank.categories.map((cat, i) => (
-              <div key={cat.label} className="msgr-tray-group">
-                <span className={`msgr-tray-label ${categoryHeaderClass(i)} rounded-full px-2 py-0.5`}>{cat.label}</span>
-                {cat.phrases.map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    lang="fr"
-                    className={`msgr-chip ${cat.chip}`}
-                    onClick={() => {
-                      setUndoStack((u) => [...u, typed]);
-                      setTyped((t) => joinChips([t, p].filter(Boolean)));
-                      setNudge(null);
-                    }}
-                    title={`Add ${p}`}
-                  >
-                    {p === ", " ? ",  (comma)" : p}
-                  </button>
-                ))}
-              </div>
-            ))}
-          </div>
+          {/* THE TRAY, PHONE ONLY. On a wide screen the same chips are the
+              right pane instead (see `phraseTray` above) — Dan, 13 Sep:
+              *"the phrase tray should not have to be scrollable inside. Cant
+              they be outside?"* `lg:hidden` is the breakpoint GameFrame uses
+              to show that pane, so exactly one copy is ever on screen. */}
+          <div className="lg:hidden">{phraseTray}</div>
 
           <ChatComposer
             className="has-fab"

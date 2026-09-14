@@ -8,6 +8,8 @@ import { CURATED } from "@/content/collections";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { logEvent } from "@/lib/firebase/usage";
+import ActivityUsher from "@/components/ActivityUsher";
+import { usherFor } from "@/lib/usher";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import ToolSummon from "@/components/tools/ToolSummon";
 import SessionMap, { type Mark } from "@/components/SessionMap";
@@ -119,6 +121,13 @@ export default function SayItContent({
 }) {
   const deck = deckOverride ?? CURATED.find((c) => c.id === collectionId);
   const isWorDrill = variant === "wordrill";
+  /* The compass both done cards draw. Keyed « wordrill » for both, because
+     both ARE WorDrill: the goal's own row calls this activity WorDrill and
+     sends it to /practice/say-it/<deck> (deckActivityTabs keeps the old tab
+     key "say"), and /practice/wordrill/embed renders this same component with
+     variant="wordrill". Null for a deck belonging to no stop, which is what
+     makes ActivityUsher draw nothing at all. */
+  const usher = useMemo(() => usherFor("wordrill", { collectionId }), [collectionId]);
   // The ladder is the recording path too (it queues hinted items for ReVue),
   // so WorDrill joins the standalone page in using it. SioModal's popup keeps
   // the old direct-record path — it has no shell bar to hang rungs off.
@@ -332,13 +341,17 @@ export default function SayItContent({
     setCard(prev.it);
   }, [trail, card, resetTurn]);
 
-  // End here = stop now and show the summary.
+  /* End here = stop now and show the summary. NO FANFARE (Dan, 2026-09-13:
+     *"The [victory] jingle is sometimes playing for no good reason."*).
+     It used to fire `sfx.stage()` whenever anything at all had been attempted,
+     so answering two words out of twenty and then quitting was celebrated
+     exactly as hard as finishing the run. The jingle marks COMPLETING a run —
+     `next()` above still fires it when the queue empties — not stopping one. */
   const endNow = useCallback(() => {
     stopRec();
     setCard(null);
     setFinished(true);
-    if (score.total > 0) sfx.stage(); // something was attempted — celebrate the run
-  }, [stopRec, score.total]);
+  }, [stopRec]);
 
   const restart = useCallback(() => {
     // A replay reshuffles and asks again — someone who did ten may want
@@ -534,7 +547,12 @@ export default function SayItContent({
             {score.total > 0 && ` (${Math.round((score.ok / score.total) * 100)}%)`}
           </>
         }
-        cta={finished ? { label: "Restart", onClick: restart } : null}
+        cta={
+          /* NO « Restart » IN THE SHELL WHEN FINISHED — redo is one of Dan's
+             five ushering moves and now sits on the row in the done card, so
+             a second one in the primary slot would be the same door twice. */
+          null
+        }
         help={finished ? null : ladder.help}
         feedback={
           !finished && phase === "result" && result && ui && card
@@ -678,14 +696,19 @@ export default function SayItContent({
                       ))}
                   </div>
                 )}
-                <div className="mt-5 flex flex-wrap justify-center gap-2">
-                  <button type="button" onClick={restart} className="cahier-btn cahier-btn-accent cahier-btn-sm">Restart</button>
-                  {missedIds.length > 0 && (
+                {/* « Les N ratés » stays on its own line above the ushering
+                    row: it is about THIS run's misses, not about where to go
+                    next, and it is the only door here that disappears when a
+                    learner gets everything right. Restart has moved onto the
+                    row as ↻ Redo — see ActivityUsher. */}
+                {missedIds.length > 0 && (
+                  <div className="mt-5 flex justify-center">
                     <Link href={reviserHref(missedIds)} className="cahier-btn cahier-btn-sm">
                       Les {missedIds.length} ratés ›
                     </Link>
-                  )}
-                </div>
+                  </div>
+                )}
+                <ActivityUsher usher={usher} onRedo={restart} className="mt-5" />
               </div>
             ) : card ? (
               /* ── one word ─────────────────────────────────────────────── */
@@ -882,9 +905,15 @@ export default function SayItContent({
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               {embedded && <button type="button" onClick={restart} className="fluo-btn fluo-btn-sm">Restart</button>}
-              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">DéjàRevu ›</Link>
+              {/* ErroReview, not « DéjàRevu » — renamed 9 Sep with the seven
+                  families; same key, same route, display name only. */}
+              <Link href="/reviser" className="fluo-btn fluo-btn-sm fluo-btn-ghost">ErroReview ›</Link>
               {embedded && <Link href="/home" className="fluo-btn fluo-btn-sm fluo-btn-ghost">← Back to the path</Link>}
             </div>
+            {/* Dan, 13 Sep: *"for all the stops there should be something like
+                this at the end"*. Not shown in the SioModal popup, which is
+                already standing on the 🎯 page this row leads back to. */}
+            {!embedded && <ActivityUsher usher={usher} onRedo={restart} className="mt-4" />}
           </div>
         )}
 

@@ -6,6 +6,48 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, PR #362, NOT merged)
+
+**Dan, in one message: *"The [victory] jingle is sometimes playing for no good
+reason. The floating tour button should now be deleted for good. The ComposeIt
+activity … plays TTS even before the learner gets to look at the page."***
+
+Measured in the built app, before → after:
+
+    /home, tour already seen   floats:  Feedback · On to Goal · Replay the tour
+                                    ->  Feedback · On to Goal
+    ComposeIt /au-restaurant   speech attempts in the first 4s:  2  ->  0
+                               (fetch:/api/tts, then synth:"Bonsoir ! Vous
+                                avez réservé ?" — over the first paint)
+
+**THERE IS NOW NO WAY TO REPLAY A TOUR**, and that is the ruling, not an
+oversight: the first-visit offer is the only entry point and it never returns.
+If a way back is wanted it goes in ⚙️ Réglages, never as a third floating
+circle beside 🐞 and 🛠️.
+
+`sfx.stage()` (full jingle + site-wide confetti) came off ConjugaZone's « See
+the table » and start button and off WorDrill's « End here ». The runs' own
+celebrations are untouched and `verify600-unasked.py` pins them, so the check
+cannot pass on an app that lost its celebration entirely. Full rule in
+AGENTS.md, *"The app does not perform unasked"*.
+
+## 13 Sep — the ushering row reaches every end screen (same branch/PR)
+
+GramMarathon, MémoiRecall, WorDrill and ÉcouTexte now draw the row; each was
+played to its end in the built app and photographed at 430px and 1280px
+against its own before.
+
+**Two corrections to what shipped that morning.** `chainOf` walked
+`activitiesIn("practice")` — the practice FAMILY — which is not a goal's
+activities (GramMarathon is 🔄 Revise, ÉcouTexte and WorDrill are 💬 Oral), so
+← and → were silently absent wherever the finished activity was not in that
+family. It reads `deckActivityTabs` now, the same table `cellHref` reads. And
+**`SayItContent.tsx` is WorDrill, not VoixLà** — VoixLà is `/tts`, a free-form
+studio with no deck, no run and no end, so it has no end screen to usher from.
+
+Redo moved onto the row, so three shells lost their done-state primary
+(« ↻ Again », « 🃏 Again », « Restart »): two doors for one move. ÉcouTexte
+gets 🎯 alone, on purpose — it is in no goal's chain and cannot repeat a text.
 ## 13 Sep — the board is for learners, no activity pays nothing, and everyone opens with 20 gems (fluoduo-main, MERGED as #359 and #360)
 
 **Dan, in one evening: *"all the 18 names under 'ALL TERM' must now be hidden.
@@ -115,7 +157,7 @@ ComposeIt 12 (9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50) · the rest 50.
 Gate: tsc clean, build green, the ten guide-reading verify scripts pass, eslint
 clean on the touched files.
 
-## 13 Sep — the leaderboard erased every beginner, and a rule bound was why (peers lane, branch `claude/peers-vd2h6h`, NOT merged — ⚠️ THE RULES MUST BE DEPLOYED BY HAND)
+## 13 Sep — the leaderboard erased every beginner, and a rule bound was why (peers lane, MERGED as #358 — ⚠️ STILL INERT: THE RULES DEPLOY BY HAND)
 
 **Dan: *"the leaderboard is not happening yet? why?"*, and when given an
 answer: *"i already proved it, the leader board did not register anything at
@@ -194,7 +236,7 @@ Break-tested with the real engine, `node scripts/rules-test/run.mjs --compare`:
     origin/main's rules     4 of 4 leaderboard cases FAIL
     this branch's rules     17 / 17 PASS, run.mjs exits 0
 
-## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, branch `claude/peers-vd2h6h`, NOT merged; the usher row is HALF DONE)
+## 13 Sep — closing an activity returns to the 🎯 page, not the map (peers lane, MERGED as #358; the usher row was HALF DONE here — finished in #362, above)
 
 **Dan: *"when one chooses to close any activity, it must take the learner back
 to that 🎯 page, NOT to the map"*, and the reason: *"with the latter they would
@@ -299,7 +341,7 @@ was self-inflicted: a rebuild rewrote `out/` while the scan was reading it. Gree
 on a settled build. Do not chase it as a real failure — run the sweep when no
 build is in flight.
 
-## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, branch `claude/peers-vd2h6h`, NOT merged)
+## 13 Sep — SpecuLearn speaks the sentence, its keys go 3D, and « NEXT QUESTION » (peers lane, MERGED as #358)
 
 **Dan: *"SpecuLearn, I am still hearing TTS for individual parts words WHEN I
 SHOULD BE HEARING FULL SENTENCES !"*** — « still », because the 12 Sep pass had

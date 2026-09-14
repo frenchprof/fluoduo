@@ -8,8 +8,11 @@
  * spotlight tour:
  *   - first visit to that page type → a small invite (accept, decline, or
  *     "never offer again" globally);
- *   - after that, the permanent ✨ chip bottom-left replays the CURRENT
- *     page's tour any time (Dan: "permanently on the bottom left").
+ *   - after that, NOTHING. A permanent ✨ chip used to sit bottom-right and
+ *     replay the current page's tour; Dan deleted it on 2026-09-13 — *"The
+ *     floating tour button should now be deleted for good."* — so a tour is
+ *     offered once and never again. See the note where the chip used to be
+ *     rendered, and verify660.
  * Steps are DO-to-advance (Dan: "user need to interact to advance"): tap
  * steps catch the tap on the spotlighted part without navigating away; the
  * drag step lets the width grip really drag.
@@ -17,7 +20,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
-import { useDragFloat } from "@/lib/useDragFloat";
 import { usePathname } from "next/navigation";
 import { SIOS } from "@/content/sios";
 import { loadProgress } from "@/lib/progress";
@@ -271,10 +273,9 @@ function readSeen(): Record<string, 1> {
 }
 
 export default function FirstTour() {
-  const drag = useDragFloat("fl.float.tour", { right: 16, bottom: 16 }, "left");
   const pathname = usePathname() ?? HOME_HREF;
   const tour = tourFor(pathname);
-  const [mode, setMode] = useState<"hidden" | "offer" | "chip" | "tour">("hidden");
+  const [mode, setMode] = useState<"hidden" | "offer" | "tour">("hidden");
   /** Ticked on the offer sheet: « No thanks » then means never again. */
   const [never, setNever] = useState(false);
   const [step, setStep] = useState(0);
@@ -309,9 +310,11 @@ export default function FirstTour() {
     }
     try {
       const never = window.localStorage.getItem(NEVER_KEY) === "1";
-      setMode(never || readSeen()[tour.key] ? "chip" : "offer");
+      // SEEN OR OPTED OUT = NOTHING. This used to be "chip" — the floating ✨
+      // replay button — which Dan deleted on 13 Sep (see below).
+      setMode(never || readSeen()[tour.key] ? "hidden" : "offer");
     } catch {
-      setMode("chip");
+      setMode("hidden");
     }
     /* eslint-enable react-hooks/set-state-in-effect */
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -376,15 +379,17 @@ export default function FirstTour() {
     } catch {}
   }
 
+  // Both of these used to land on "chip" — the floating ✨ that is now
+  // deleted. Finishing a tour, or declining it, leaves nothing behind.
   function finish() {
     markSeen();
-    setMode("chip");
+    setMode("hidden");
   }
 
   function neverAgain() {
     try { window.localStorage.setItem(NEVER_KEY, "1"); } catch {}
     markSeen();
-    setMode("chip");
+    setMode("hidden");
   }
 
   function startTour() {
@@ -409,27 +414,25 @@ export default function FirstTour() {
 
   if (!tour || mode === "hidden") return null;
 
-  // The permanent bottom-left guide: always there, one tap replays this
-  // page's tour.
-  if (mode === "chip") {
-    // Portal + draggable (Dan, 2026-07-26): same transformed-ancestor bug as
-    // the popups was rendering this off-screen on some pages; and every
-    // float on the site is now movable by decree.
-    return createPortal(
-      <button
-        type="button"
-        {...drag.handlers}
-        style={drag.style}
-        onClick={() => { if (drag.consumeClick()) return; startTour(); }}
-        title="Replay the tour"
-        aria-label="Replay the tour"
-        className="fixed z-[80] flex h-10 w-10 items-center justify-center rounded-full border-2 border-[color:var(--cahier-ink)] bg-white text-lg shadow-[3px_3px_0_var(--cahier-hl,#eaff00)] transition hover:-translate-y-0.5 active:translate-y-0"
-      >
-        ✨
-      </button>,
-      document.body,
-    );
-  }
+  /* THE FLOATING ✨ REPLAY CHIP IS GONE, FOR GOOD (Dan, 2026-09-13: *"The
+     floating tour button should now be deleted for good."*).
+   *
+   * It was a draggable ✨ pinned bottom-right on every page that has a tour,
+   * from the moment that tour had been seen once — so the steady state of the
+   * app, for anyone past their first visit, was a float that did nothing until
+   * tapped. It also sat beside two other floats (🐞 report a bug, 🛠️ Outils),
+   * which is three permanent circles competing on a phone.
+   *
+   * WHAT THIS COSTS, said plainly rather than buried: there is now NO way to
+   * replay a tour. `startTour` is only reached from the « Yes, show me » on the
+   * first-visit offer, and that offer never returns once seen or declined. That
+   * is what "for good" means, and it follows a fortnight of Dan reporting tours
+   * that were broken or looping (GramMarathon, WorDrill). If a way back is
+   * wanted later it belongs in ⚙️ Réglages, as a line of settings — not as a
+   * circle floating over the lesson.
+   *
+   * `verify660-deleted-floats.py` holds this as a LIST, the Geist-ban shape:
+   * banning the next float is adding a name to it. */
 
   if (mode === "offer") {
     return createPortal(

@@ -41,8 +41,10 @@
  *     silent until the learner asks (Check / Show the sentence).
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
+import ActivityUsher from "@/components/ActivityUsher";
+import { usherFor } from "@/lib/usher";
 import DrillShell, { drillExitHref } from "@/components/DrillShell";
 import { pauseSpeech, resumeSpeech, speak, speakSequence } from "@/games/letris/speech";
 import { gradeAnswer, type Grade } from "@/lib/practice/cloze";
@@ -290,6 +292,18 @@ export default function EcouTexte({
     return row.length > 0 && row.every((m) => m !== null && m !== "wrong");
   };
   const worked = sentences.filter((_, i) => solvedAt(i)).length;
+  /* THE END OF AN ÉCOUTEXTE RUN IS THE TEXT, NOT THE ACTIVITY. There is no
+     score card here — a dictation is a list that fills in — so "finished" is
+     every sentence of the drawn text worked. « ♻️ All heard » is a different
+     thing entirely: that is the POOL of texts running out. */
+  const textDone = sentences.length > 0 && worked === sentences.length;
+  /* WHAT THIS COMPASS CAN AND CANNOT OFFER, said plainly. ÉcouTexte is not in
+     `deckActivityTabs`, so it is in no goal's chain: ← and → are absent, and
+     ↓ (the same activity at the next stop) has no address to point at. What
+     is left is 🎯 and ↻ — and 🎯 is the one Dan said must ALWAYS be offered.
+     This is the documented ÉcouTexte gap (AGENTS.md, 9 Sep), showing up here
+     as two doors instead of five rather than as a broken link. */
+  const usher = useMemo(() => usherFor("ecoutexte", { collectionId: deck ?? null }), [deck]);
   const allRevealed = revealed.length > 0 && revealed.every(Boolean);
   const last = at >= sentences.length - 1;
   /** The learner's own words on the open sentence — the 🛠️ hand-off. */
@@ -588,6 +602,14 @@ export default function EcouTexte({
           ♻️ All heard — start over
         </button>
       )}
+
+      {/* Dan, 13 Sep: *"for all the stops there should be something like this
+          at the end"*. NO ↻ Redo here, deliberately: this activity cannot
+          repeat a text — the shell's primary already reads « New text », and a
+          key that drew a DIFFERENT text while calling itself Redo would lie.
+          Not drawn in the topic picker (shell === false), which has no run to
+          be at the end of. */}
+      {shell && textDone && <ActivityUsher usher={usher} />}
 
       {/* NO 🛠️ here — Dan, 5 Sep, in two steps: first "Voix-Là is for TTS.
           and it does NOT make any sense to have it im EcouTexte" (the
