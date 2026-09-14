@@ -627,3 +627,6 @@ jobs:
 
       - name: "The revision path's holes stay patched — transfer, word order (14 Sep)"
         run: python3 verify/verify700-transfer-and-order.py
+
+      - name: "The curated path — every step lands somewhere, the walk cannot stall (14 Sep)"
+        run: python3 verify/verify760-curated-path.py

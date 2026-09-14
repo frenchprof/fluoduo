@@ -1027,3 +1027,53 @@ The precedent this follows is the one the Geist ban set: the rule goes in this
 file AND into a check in the same patch, and the check takes a list or a count
 rather than a single hard-coded name, because the next ruling will not be about
 this tile.
+
+# A curated path is DATA, and it is walked in the app — permanent (2026-09-14)
+
+**Dan: *"what i would really need now is a 'curated path' automatically driving
+the sequence of activities on FluOLinGo — essential, optional etc"*.** Asked
+how a learner moves between steps he chose BOTH — *"the end screen offers the
+next step as the primary button, AND there's a path page showing all nine with
+ticks"* — and, offered three doors to start from, named a fourth: *"there
+should be a dedicated 'Mid-Term Revision' START button"*.
+
+**A PATH IS AN ENTRY IN `content/paths.ts`, NEVER A PAGE.** Asked whether this
+was one path or the first of several, Dan chose *"built for several, ship
+one"*. So a finals path, a catch-up week or a single-unit path is a new entry
+and nothing else — no route, no component, no second copy of the walking logic
+to drift out of step with this one.
+
+**THE RULE THE STEP LIST IS BUILT ON: no two steps may do the same job.** Each
+step's `does` line names the physical thing the learner does, and `verify760`
+fails when two on the essential tier match. That is what makes a list
+*"sufficient and not excessive"* — Dan's own test — and it is what cut the
+per-goal GramMarathon runs, which were step 1's mechanic a second time.
+
+**PROGRESS IS A SET OF FINISHED STEPS, NOT A CURSOR**, and everything that
+displays it must ask each step rather than count. The first walk of the feature
+finished step 2 before step 1, and the count-based label read « Step 2 of 11 »
+above the words « GramMarathon », which is step 1. A count cannot say WHICH
+step is being offered once the order is not guaranteed.
+
+**THE HALF THAT ONLY A BROWSER COULD FIND, and it is the whole lesson again.**
+The push rides `ActivityUsher`, so it reached eleven drills in one edit — but
+the usher's compass is computed from a STOP, and two essential steps belong to
+no stop at all. **ErroReview (steps 2 and 9) and ConjugaZone (step 6) drew
+nothing**, so the walk reached step 2 and stopped there permanently. Every
+check was green. Every step id was unique, every address resolved, the map page
+drew all eighteen rows. The feature did not work.
+
+    read in the source   eleven drills draw the usher, so the push is everywhere
+    walked in the app    the push never appeared; nothing ever ticked
+
+So `verify760` holds a **named map of every essential step to the screen that
+ends it**, and FAILS on a step that is not in the map — `verify105`'s shape,
+chosen for the same reason: a clever sweep would have to follow every
+component's render tree, and would answer "yes" for a screen that renders a
+usher it was never given. A new step cannot be added without someone stating
+which screen ticks it.
+
+**A SECOND TRAP IN THE SAME COMPARISON, also invisible in source:** every
+station runs in an iframe, so the pathname when the usher mounts ends in
+`/embed` and matches no step's address. Without the strip the path never
+advances anywhere, and the code reads as if it works.

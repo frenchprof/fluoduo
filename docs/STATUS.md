@@ -6,6 +6,44 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
+
+**Dan: *"what i would really need now is a 'curated path' automatically driving
+the sequence of activities on FluOLinGo — essential, optional etc"*.** The
+mid-term revision path is now a thing the app DRIVES, not a document.
+
+    Home            a dedicated « ▶ Start Mid-Term Revision » key — Dan's own
+                    words when offered three doors and picking none of them
+    /path           the map: 9 numbered steps (11 destinations), ticks, the
+                    step to do now, and the optional tier folded behind
+                    « Optional · 9 more · 71 min »
+    every end       a gold push card — « Step 1 of 11 · 57 min left », the
+                    next step's name, ▶ Continue, and one dot per step
+
+**BUILT FOR SEVERAL, SHIPPED AS ONE** (Dan's choice): a path is an entry in
+`src/content/paths.ts`. A finals or catch-up path later is data, not code.
+
+**A step's address is DERIVED wherever the activity is goal-scoped** —
+`cellHref` reads `deckActivityTabs`, so a step cannot point at a door the stop
+does not have. Only the six activities that belong to no stop carry a literal
+address, and `verify760` resolves every one against `out/`.
+
+**THE BUG ONLY A BROWSER COULD FIND, and the reason verify760 has a named
+map.** The push rides `ActivityUsher`, reaching eleven drills in one edit — but
+the usher's compass comes from a STOP, and **ErroReview (steps 2 and 9) and
+ConjugaZone (step 6) belong to no stop, so they drew nothing.** The walk
+reached step 2 and stopped there for good, with every check green and the map
+page drawing all eighteen rows. Both render `<PathNext />` directly now.
+
+**Two more faults found the same way**: the pathname inside the cahier's iframe
+ends in `/embed` and matched no step (the path would never have advanced
+anywhere); and the push's label counted finished steps instead of naming the
+offered one, so a learner who did step 2 first read « Step 2 of 11 » above the
+words « GramMarathon ».
+
+  tsc clean · build green · eslint clean on all ten touched files ·
+  **144/144 verify** · walked end to end in the built app at 430px and 1280px
+
 ## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
 **A written task of the classic revision shape**: five sentences on a given
