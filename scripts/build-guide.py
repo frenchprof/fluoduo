@@ -113,15 +113,22 @@ def render(md):
             if n == 1:
                 out.append(f"<h1>{inline(t)}</h1>")
             elif n == 2:
-                if sec >= 0: out.append("</section>")
+                if sec >= 0: out.append("</details></section>")
                 sec += 1
                 num = re.match(r"(\d+)\. (.*)", t)
                 fam = SECTION_FAM.get(sec, "goals")
                 title = num.group(2) if num else t
                 toc.append((sec, title, fam))
-                out.append(f"<section id='s{sec}' class='fam-{fam}'>"
-                           f"<div class='band'><span class='band-emoji'>{SECTION_EMOJI.get(sec,'')}</span>"
-                           f"<h2>{inline(title)}</h2><span class='band-pill'>{sec}</span></div>")
+                # EACH SECTION IS A FOLD, ITS OWN BAND THE SUMMARY (Dan,
+                # 2026-09-14, having asked for the QuickStart's steps to
+                # collapse: *"and the other gudie"*). Native <details>, per the
+                # long-pages rule — the whole manual fits one screen as eleven
+                # bands over the contents grid, and nothing needs JavaScript to
+                # read. The band already names what is behind it, which is what
+                # that rule asks of a closed section.
+                out.append(f"<section id='s{sec}' class='fam-{fam}'><details class='sec'>"
+                           f"<summary><div class='band'><span class='band-emoji'>{SECTION_EMOJI.get(sec,'')}</span>"
+                           f"<h2>{inline(title)}</h2><span class='band-pill'>{sec}</span></div></summary>")
             elif n == 3:
                 fam = next((v for k, v in FAM_OF.items() if k in t), None)
                 chip = open_chip(t)
@@ -149,7 +156,7 @@ def render(md):
         ptxt = " ".join(b.strip() for b in buf)
         m = re.match(r"^\*(.+)\*$", ptxt)
         out.append(f"<p class='lede'>{inline(m.group(1))}</p>" if m else f"<p>{inline(ptxt)}</p>")
-    if sec >= 0: out.append("</section>")
+    if sec >= 0: out.append("</details></section>")
     return "\n".join(out), toc
 
 CSS = """
@@ -215,6 +222,12 @@ figure.shot{margin:14px 0 18px;padding:12px;background:var(--raised);border:1.5p
 .shots img{max-width:100%;height:auto;border-radius:14px;border:2px solid var(--ink);box-shadow:0 8px 20px rgba(34,40,80,.18);background:#fff}
 .shots img.phone{width:230px} .shots img.wide{width:min(100%,560px)}
 figcaption{font-family:var(--hand);font-weight:700;font-size:1.05rem;color:var(--ink-soft);margin-top:10px;text-align:center;text-wrap:balance}
+details.sec>summary{list-style:none;cursor:pointer}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::marker{content:""}
+details.sec>summary .band{position:relative}
+details.sec>summary .band::after{content:"\25be";margin-left:auto;font-family:var(--body);font-weight:900;transition:transform .15s}
+details.sec[open]>summary .band::after{transform:rotate(180deg)}
 details.fold{margin:.6rem 0 1rem;border:1.5px solid var(--ink);border-radius:12px;background:var(--raised);padding:.2rem .9rem}
 details.fold>summary{cursor:pointer;font-family:var(--hand);font-weight:700;font-size:1.2rem;padding:.4rem 0;list-style:none;display:flex;align-items:center;gap:.5rem}
 details.fold>summary::before{content:"▸";font-family:var(--body);transition:transform .15s} details.fold[open]>summary::before{transform:rotate(90deg)}
@@ -239,7 +252,18 @@ def main():
     # <section> puts every introductory line above the contents, whatever they
     # are, which is what a reader expects of a contents list anyway.
     nav = '<nav class="toc" aria-label="Contents">' + toc_html + "</nav>\n"
-    body = body.replace("<section id='s0'", nav + "<section id='s0'", 1)
+
+    # A CONTENTS LINK MUST OPEN WHAT IT POINTS AT. An anchor into a closed
+    # <details> scrolls to a band with nothing under it, which reads as a
+    # broken link rather than a closed fold. Twelve lines, and the page still
+    # works with the script blocked: every section is one tap from open.
+    opener = (
+        "<script>(function(){function o(){var h=location.hash;if(!h)return;"
+        "var s=document.querySelector(h);if(!s)return;var d=s.querySelector('details.sec');"
+        "if(d)d.open=true;s.scrollIntoView();}"
+        "addEventListener('hashchange',o);addEventListener('DOMContentLoaded',o);o();})();</script>"
+    )
+    body = body.replace("<section id='s0'", nav + opener + "<section id='s0'", 1)
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FluOLinGo Plain Guide</title>

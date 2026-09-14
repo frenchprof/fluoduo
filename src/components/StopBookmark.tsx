@@ -24,7 +24,21 @@ export default function StopBookmark({
 }: {
   /** The current stop's number — bookmark if set, computed otherwise. */
   stopNo: number;
-  totalClassName: string;
+  /**
+   * How to set « /50 », and OMIT IT TO DROP IT ENTIRELY (Dan, 2026-09-14:
+   * *"the numbered stop-indicatpr, why on earth did you add '/50' it pushed
+   * down my map"*).
+   *
+   * The total is not new — it has been in this component since #211 — but on
+   * the MAP it fails Dan's own rule from 1 Sep: *a count earns its place when
+   * it describes what you cannot see*. The map draws all fifty stops on
+   * screen; the denominator is the one number a learner is already looking at,
+   * and on that row it was spending width and height the map wanted.
+   *
+   * Optional rather than deleted, because the total is right wherever the
+   * fifty are NOT on screen — which is what this component is for elsewhere.
+   */
+  totalClassName?: string;
 }) {
   // While the learner is typing, the field is theirs — committing on every
   // keystroke would bookmark "4" on the way to "46". Commit on Enter/blur.
@@ -77,7 +91,7 @@ export default function StopBookmark({
            no utility class can beat, so the escape has to be CSS too. */
         className="fluo-bookmark"
       />
-      <span className={totalClassName}>/{SIOS.length}</span>
+      {totalClassName ? <span className={totalClassName}>/{SIOS.length}</span> : null}
     </>
   );
 }

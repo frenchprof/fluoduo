@@ -65,6 +65,12 @@ figure.shot{margin:14px 0 18px;padding:12px;background:var(--raised);border:1.5p
 .shots img{max-width:100%;height:auto;border-radius:14px;border:2px solid var(--ink);box-shadow:0 8px 20px rgba(34,40,80,.18);background:#fff}
 .shots img.phone{width:230px} .shots img.wide{width:min(100%,560px)}
 figcaption{font-family:var(--hand);font-weight:700;font-size:1.05rem;color:var(--ink-soft);margin-top:10px;text-align:center;text-wrap:balance}
+details.sec>summary{list-style:none;cursor:pointer}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::marker{content:""}
+details.sec>summary .band{position:relative}
+details.sec>summary .band::after{content:"be";margin-left:auto;font-family:var(--body);font-weight:900;transition:transform .15s}
+details.sec[open]>summary .band::after{transform:rotate(180deg)}
 details.fold{margin:.6rem 0 1rem;border:1.5px solid var(--ink);border-radius:12px;background:var(--raised);padding:.2rem .9rem}
 details.fold>summary{cursor:pointer;font-family:var(--hand);font-weight:700;font-size:1.2rem;padding:.4rem 0;list-style:none;display:flex;align-items:center;gap:.5rem}
 details.fold>summary::before{content:"▸";font-family:var(--body);transition:transform .15s} details.fold[open]>summary::before{transform:rotate(90deg)}
@@ -81,10 +87,10 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
 <p class='lede'>FluOLinGo = Fluency On Linguistic Goals. A companion website for a French A1 course. Written 13 Sep 2026 from the code as it is today.</p>
 <p>In a hurry? The <a href='/guide'><strong>QuickStart</strong></a> is the five steps you need to begin. This page is the same course in full, with a picture of every screen. <a href='/home'>← Back to FluOLinGo</a></p>
 <nav class="toc" aria-label="Contents"><a href='#s0' class='fam-goals'><span class='n'>0</span>In one breath</a><a href='#s1' class='fam-goals'><span class='n'>1</span>The big picture (the map of the site)</a><a href='#s2' class='fam-goals'><span class='n'>2</span>Finding your way</a><a href='#s3' class='fam-goals'><span class='n'>3</span>One goal, step by step (the intended path)</a><a href='#s4' class='fam-practice'><span class='n'>4</span>The activities, one by one</a><a href='#s5' class='fam-practice'><span class='n'>5</span>How the activities connect</a><a href='#s6' class='fam-user'><span class='n'>6</span>Points, streaks, gems, badges</a><a href='#s7' class='fam-user'><span class='n'>7</span>Sign-in, saving, devices</a><a href='#s8' class='fam-user'><span class='n'>8</span>Good to know</a><a href='#s9' class='fam-goals'><span class='n'>9</span>The 50 goals, unit by unit</a><a href='#s10' class='fam-goals'><span class='n'>10</span>Thirty-second cheat sheet</a></nav>
-<section id='s0' class='fam-goals'><div class='band'><span class='band-emoji'>🧑‍🏫</span><h2>In one breath</h2><span class='band-pill'>0</span></div>
+<script>(function(){function o(){var h=location.hash;if(!h)return;var s=document.querySelector(h);if(!s)return;var d=s.querySelector('details.sec');if(d)d.open=true;s.scrollIntoView();}addEventListener('hashchange',o);addEventListener('DOMContentLoaded',o);o();})();</script><section id='s0' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>🧑‍🏫</span><h2>In one breath</h2><span class='band-pill'>0</span></div></summary>
 <ul><li><strong>What this is:</strong> a homework helper for your French class. <strong>What it is not:</strong> a course that replaces the class.</li><li>The course is a <strong>road with 50 stops</strong>. Each stop is one <strong>goal</strong> (one thing you will be able to say or do in French).</li><li>At each stop you <strong>guess first</strong>, then <strong>learn</strong>, then <strong>practise</strong>, then <strong>come back</strong> to what you got wrong.</li><li>Nothing is locked. You can tap any stop at any time.</li><li>Wrong answers never punish you. They still earn points, and they come back later so you can fix them.</li></ul>
-</section>
-<section id='s1' class='fam-goals'><div class='band'><span class='band-emoji'>🗺️</span><h2>The big picture (the map of the site)</h2><span class='band-pill'>1</span></div>
+</details></section>
+<section id='s1' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>🗺️</span><h2>The big picture (the map of the site)</h2><span class='band-pill'>1</span></div></summary>
 <div class='scroll'><pre> FRONT DOOR  ──tap anywhere──▶  HOME  =  THE MAP (50 stops, 5 units)
                                    │
                                    │  tap a stop
@@ -105,8 +111,8 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
    games · ErroReview · VoixLà · ChaTutor · ComposeIt · Profile · Leaderboard · Settings</pre></div>
 <p><strong>The grid idea.</strong> Think of a grid. Rows are the 50 goals. Columns are the activities.</p>
 <ul><li><strong>Left / right</strong> moves along a row (same goal, next activity).</li><li><strong>Up / down</strong> moves along a column (same activity, next goal).</li><li>Scrolling past the bottom of a page also carries you to the <strong>next goal, same activity</strong>.</li><li>Small arrows at the screen edges tell you where a swipe will take you.</li></ul>
-</section>
-<section id='s2' class='fam-goals'><div class='band'><span class='band-emoji'>🧭</span><h2>Finding your way</h2><span class='band-pill'>2</span></div>
+</details></section>
+<section id='s2' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>🧭</span><h2>Finding your way</h2><span class='band-pill'>2</span></div></summary>
 <h3 class='plain'>2.1 The front door (<code>/</code>) <a class='open' href='https://fluolingo.com/' target='_blank' rel='noopener'>Open fluolingo.com ↗</a></h3>
 <figure class='shot'><div class='shots'><a href='img/door.webp' target='_blank' rel='noopener' title='Open full size'><img src='img/door.webp' alt='Screenshot: door' loading='lazy' class='phone'></a></div><figcaption>The front door. The road, stop 1, and the ENTER coin. Tapping anywhere enters.</figcaption></figure>
 <ul><li>A full-screen picture of the road at the time of day it really is.</li><li>One orange <strong>ENTER</strong> coin. Tapping anywhere on the page enters too.</li></ul>
@@ -129,13 +135,13 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
 <ul><li><strong>🛠️ tools</strong> (in WorDrill, ComposeIt, ÉcouTexte): opens a card <strong>over</strong> the exercise with 🔊 VoixLà and/or 🤖 ChaTutor. The exercise stays where it is. ÉcouTexte offers ChaTutor only, so nothing can read you the answer.</li><li><strong>🐞 report a bug</strong>: tick what went wrong (page won't load, audio didn't play, answer marked wrong, French incorrect, activity stuck, layout broken, other), add a screenshot if you like. Works signed in or out.<br><strong>It pays 5 💎.</strong> Two reports a day earn gems; report a third and it still reaches us, it just does not pay. If the bug turns out to be a serious one there is more, and how much is not announced.</li><li><strong>✨ tour</strong> (bottom left on Home, unit and lesson pages): replays the short guided tour of that page.</li></ul>
 <h3 class='plain'>2.8 What every drill has in common </h3>
 <ul><li><strong>How many questions?</strong> appears first on long decks: 10, 25 or all.</li><li><strong>?</strong> = hints, one step at a time. The last step shows the answer.<br>Using the last step means the item goes to ErroReview and pays no first-try points.</li><li><strong>WHY</strong> appears only after a <strong>wrong</strong> answer, only if you tap it. Never before, never for a right answer.</li><li><strong>↵ Enter</strong> fires the visible button. Number keys pick options.</li><li>At the end: a recap with your score, then <strong>« Next › »</strong> naming the next step for this goal.</li><li>Games instead end on a <strong>post-mortem</strong>: each miss, what you did, where it lives on the map, and <strong>CORRIGER MAINTENANT</strong> → ErroReview.</li><li><strong>No hearts, no lockouts</strong> in drills. Only the three arcade games have lives.</li></ul>
-</section>
-<section id='s3' class='fam-goals'><div class='band'><span class='band-emoji'>👣</span><h2>One goal, step by step (the intended path)</h2><span class='band-pill'>3</span></div>
+</details></section>
+<section id='s3' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>👣</span><h2>One goal, step by step (the intended path)</h2><span class='band-pill'>3</span></div></summary>
 <figure class='shot'><div class='shots'><a href='img/help.webp' target='_blank' rel='noopener' title='Open full size'><img src='img/help.webp' alt='Screenshot: help' loading='lazy' class='phone'></a></div><figcaption>The same path as the app's own Help page (☰ → Start → Help).</figcaption></figure>
 <ol><li><strong>Select the goal.</strong> Tap it on the map, or ☰ → GO TO → number → 🎯.</li><li><strong>Guess first: 💡 SpecuLearn.</strong> You are not meant to know it yet. Wrong costs nothing.</li><li><strong>Learn it: 📚 MneMemo.</strong> Read the idea, look at the forms, do the 12 exercise cards.</li><li><strong>Make it stick: 🃏 MémoiRecall.</strong> Flashcards on the same words.</li><li><strong>Practise it.</strong> Type it (🏃 GramMarathon, 🔤 ConjugaZone), say it (🎙️ WorDrill), hear it (🎧 ÉcouTexte), play it (🌧️ 🔐 🔢).</li><li><strong>Come back: ❌ ErroReview.</strong> Whatever you missed returns on a schedule.</li><li>The stop is marked <strong>done</strong> (pressed flat, paler) once you have tried every learning activity it offers (games do not count).</li></ol>
 <p><strong>Before the lesson</strong> (flipped learning): do step 2 first, then come to class. <strong>Before a test</strong> (revision): do the same step 2 to find what you still do not know, then steps 5 and 6.</p>
-</section>
-<section id='s4' class='fam-practice'><div class='band'><span class='band-emoji'>📝</span><h2>The activities, one by one</h2><span class='band-pill'>4</span></div>
+</details></section>
+<section id='s4' class='fam-practice'><details class='sec'><summary><div class='band'><span class='band-emoji'>📝</span><h2>The activities, one by one</h2><span class='band-pill'>4</span></div></summary>
 <p>Each block: <strong>What</strong> you do · <strong>How</strong> it works · <strong>Ends</strong> with · <strong>Note</strong>.</p>
 <div class='band sub fam-practice'><h3>📝 LEARN</h3><a class='open' href='https://fluolingo.com/practice/speculearn' target='_blank' rel='noopener'>Open on fluolingo.com ↗</a></div>
 <h4>💡 SpecuLearn — guess before you are taught <a class='open' href='https://fluolingo.com/practice/speculearn' target='_blank' rel='noopener'>Open on fluolingo.com ↗</a></h4>
@@ -190,8 +196,8 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
 <h3 class='plain'>Also <a class='open' href='https://fluolingo.com/favourites' target='_blank' rel='noopener'>Open on fluolingo.com ↗</a></h3>
 <figure class='shot'><div class='shots'><a href='img/favourites.webp' target='_blank' rel='noopener' title='Open full size'><img src='img/favourites.webp' alt='Screenshot: favourites' loading='lazy' class='phone'></a></div><figcaption>Favourites, empty. Tap ☆ at the top right of any page to star it.</figcaption></figure>
 <ul><li><strong>★ Favourites:</strong> star any page from the top bar. Organise into folders. Drag with a mouse, or press-and-hold on a phone.</li><li><strong>Help:</strong> the five-step guide inside the app (☰ → Start → Help).</li></ul>
-</section>
-<section id='s5' class='fam-practice'><div class='band'><span class='band-emoji'>🔗</span><h2>How the activities connect</h2><span class='band-pill'>5</span></div>
+</details></section>
+<section id='s5' class='fam-practice'><details class='sec'><summary><div class='band'><span class='band-emoji'>🔗</span><h2>How the activities connect</h2><span class='band-pill'>5</span></div></summary>
 <div class='scroll'><pre>                        ONE DECK OF WORDS PER GOAL
                                   │
       ┌──────────┬──────────┬─────┴──────┬───────────┬────────────┬──────────┐
@@ -206,8 +212,8 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
                                                     │
                                        ErroReview → « where your gaps are » → back to MémoiRecall</pre></div>
 <ul><li><strong>One deck, many doors.</strong> The same words appear in SpecuLearn, MneMemo, MémoiRecall, GramMarathon, WorDrill, VocabulaRain, LexicaLocker and ComposeIt. Repeating never means the same exercise twice.</li><li><strong>SpecuLearn is outside the loop.</strong> No answer of yours is scored there and nothing you get wrong is held against you — it is a cold guess, on purpose. Finishing the run pays 60 XP regardless of how you did.</li><li><strong>ErroReview is the sink.</strong> Game misses, hints taken, revealed answers, and « Show the sentence » in ÉcouTexte all flow into it.</li><li><strong>Feeds ErroReview:</strong> MneMemo's exercise, MémoiRecall (Me tester), GramMarathon, WorDrill, ÉcouTexte, LexicaLocker, and a game post-mortem when the missed word is a deck word.</li><li><strong>Does not feed it:</strong> SpecuLearn, VoixLà, ChaTutor, ConjugaZone, NumBus, NumBourse.</li><li><strong>ConjugaZone and Numbers are not tied to a deck.</strong> ConjugaZone uses the verb list; Numbers generates numbers.</li><li><strong>The lesson makes the stop tick, the rest makes it stick.</strong> Finishing MneMemo pays the goal bonus; MémoiRecall and ErroReview keep the words alive.</li><li><strong>The ladder of demand:</strong> guess → learn → recognise (MémoiRecall, VocabulaRain, LexicaLocker, ÉcouTexte) → produce (GramMarathon, ConjugaZone, WorDrill) → create (ComposeIt, ChaTutor).</li></ul>
-</section>
-<section id='s6' class='fam-user'><div class='band'><span class='band-emoji'>⭐</span><h2>Points, streaks, gems, badges</h2><span class='band-pill'>6</span></div>
+</details></section>
+<section id='s6' class='fam-user'><details class='sec'><summary><div class='band'><span class='band-emoji'>⭐</span><h2>Points, streaks, gems, badges</h2><span class='band-pill'>6</span></div></summary>
 <h3 class='plain'>⭐ XP (never spent; drives your level and the leaderboard) </h3>
 <div class='scroll'><table><thead><tr><th>You do this</th><th>You get</th></tr></thead><tbody><tr><td>A right answer, first try</td><td><strong>60</strong></td></tr><tr><td>A wrong answer, first try</td><td><strong>20</strong> (effort counts)</td></tr><tr><td>Second try on the same item</td><td>0 (it is remembered, not paid). Wrong then right in one run = 20 in total, not 20 + 60</td></tr><tr><td>Reveal the answer</td><td>0</td></tr><tr><td>A goal becomes done</td><td><strong>300</strong>, plus up to <strong>300</strong> more depending on how many of its words you have mastered</td></tr><tr><td>Finish a ComposeIt scene</td><td><strong>120</strong></td></tr><tr><td>Finish SpecuLearn, VocabulaRain, NumBus or NumBourse for the first time at a goal</td><td><strong>60</strong></td></tr><tr><td>…and again on any run that <strong>beats your own best</strong></td><td><strong>60</strong></td></tr><tr><td>A run that does not beat your best</td><td>0 — and nothing is taken away</td></tr></tbody></table></div>
 <ul><li><strong>Nothing you can open pays nothing.</strong> Every activity is worth XP at least once. The four that are not paid per answer pay for the <strong>run</strong> instead.</li><li><strong>Beating your own best pays again.</strong> Play a game all afternoon if you like: every genuine improvement earns another 60. A worse run simply earns nothing. Your best is kept per game <strong>per goal</strong>, so a record on the Unit 0 deck is not a record on Unit 3.</li><li><strong>SpecuLearn is the exception</strong>: it pays for <em>finishing</em>, once per goal, and never for the score. It is the guess <em>before</em> the lesson — if the score paid, the clever move would be to do the lesson first, and the activity would stop measuring anything. A wrong guess is worth exactly what a right one is.</li><li><strong>🔥 Multiplier:</strong> 3-day streak ×1.5 · 7 days ×2 · 14 days ×2.5 · 30 days ×3 (the ceiling). Applies to every award above.</li><li><strong>🎚️ Level 0–4:</strong> level 1 at 2 000 XP, level 2 at 6 000, level 3 at 14 000, level 4 at 30 000.</li><li>There is no daily XP cap.</li></ul>
@@ -222,16 +228,16 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
 <ul><li>When you have <strong>attempted every learning activity the stop offers</strong> (one answer each is enough, right or wrong).</li><li>Games (VocabulaRain, LexicaLocker, Numbers) are extras and are <strong>not</strong> required.</li><li>Finishing the MneMemo run also completes the stop.</li><li>A done stop never becomes undone.</li></ul>
 <h3 class='plain'>Celebrations </h3>
 <ul><li>A small banner for a streak day, a done stop, a saved streak, a small find.</li><li>A banner with a chime for a level-up, a badge, a new multiplier, a perfect run, a 10-gem find.</li><li>Confetti and a fanfare for a finished unit.</li></ul>
-</section>
-<section id='s7' class='fam-user'><div class='band'><span class='band-emoji'>🔐</span><h2>Sign-in, saving, devices</h2><span class='band-pill'>7</span></div>
+</details></section>
+<section id='s7' class='fam-user'><details class='sec'><summary><div class='band'><span class='band-emoji'>🔐</span><h2>Sign-in, saving, devices</h2><span class='band-pill'>7</span></div></summary>
 <ul><li><strong>Sign-in is with Google.</strong> It is needed for the lesson, the drills, the games, ErroReview, VoixLà, ChaTutor, the leaderboard and history.</li><li><strong>No sign-in needed</strong> for the map, the goal pages, SpecuLearn, Help, Favourites and the 🐞 bug button.</li><li><strong>Signed in:</strong> your progress is saved to the cloud and follows you to any device (about 2.5 seconds after each answer).</li><li><strong>Signed out:</strong> progress still works, but stays on this device only.</li><li><strong>Signing out wipes your learning data from that device</strong> (cloud copy is kept). Preferences like volume stay.</li><li>The site can be <strong>installed as an app</strong>: after your third visit it offers to. On iPhone: Share → Add to Home Screen.</li></ul>
-</section>
-<section id='s8' class='fam-user'><div class='band'><span class='band-emoji'>💡</span><h2>Good to know</h2><span class='band-pill'>8</span></div>
+</details></section>
+<section id='s8' class='fam-user'><details class='sec'><summary><div class='band'><span class='band-emoji'>💡</span><h2>Good to know</h2><span class='band-pill'>8</span></div></summary>
 <ul><li><strong>Chrome is English, French is the content.</strong> Buttons speak English; unit names, badges and colours keep their French.</li><li><strong>Spoken French is graded gently, typed French strictly.</strong> The mic accepts what sounds right. The keyboard needs the right letters, and usually the right accents.</li><li><strong>Wrong options are meant to be tempting.</strong> A distractor like « l'lecture » is there because that is the mistake a beginner makes.</li><li><strong>A number on a closed section tells you what is inside</strong> (« 18 words », « 3 traps »). Open it if you need it.</li><li><strong>Sound:</strong> one mute switch and a volume slider in the top bar. Individual drills have their own 🔊/🔇 for read-aloud.</li><li><strong>The first time on a page</strong> you may get a short guided tour or a « what to do here » card. Tick « do not show again » to stop it.</li><li><strong>Teacher view</strong> exists but is not linked. Teachers get the address directly.</li></ul>
 <h3 class='plain'>Things you will NOT find (on purpose) </h3>
 <ul><li>No hearts or lockouts in drills.</li><li>No locked content. Gems buy decoration only.</li><li>No ranks or titles. Only a level number 0–4.</li><li>No « mark as done » button. Done is earned by doing.</li><li>No scoring in SpecuLearn. A guess stays a guess.</li></ul>
-</section>
-<section id='s9' class='fam-goals'><div class='band'><span class='band-emoji'>🎯</span><h2>The 50 goals, unit by unit</h2><span class='band-pill'>9</span></div>
+</details></section>
+<section id='s9' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>🎯</span><h2>The 50 goals, unit by unit</h2><span class='band-pill'>9</span></div></summary>
 <p>Tap a number to open that goal. Colour on the map: blue vocabulary · pink grammar · orange expressions · green communication. Goals 10, 20, 30, 40, 49 and 50 are the communication role-plays and writing tasks.</p>
 <details class='fold'><summary>50 goals</summary>
 <p><strong>Unité 0 · « Bienvenue en classe »</strong> (goals 1–10)</p>
@@ -245,8 +251,8 @@ details.fold table{font-size:.9rem} details.fold td:first-child{width:4.5em;font
 <p><strong>Unité 4 · « À table ! »</strong> (goals 41–50)</p>
 <div class='scroll'><table><thead><tr><th>Goal</th><th>Topic</th></tr></thead><tbody><tr><td><a href='https://fluolingo.com/sio/SIO-041' target='_blank' rel='noopener'>41</a></td><td>Aliments + meals</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-042' target='_blank' rel='noopener'>42</a></td><td>Partitives + manger/boire</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-043' target='_blank' rel='noopener'>43</a></td><td>Frequency adverbs</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-044' target='_blank' rel='noopener'>44</a></td><td>Commerces — shopping, and the market exchange</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-045' target='_blank' rel='noopener'>45</a></td><td>Numbers 70–99</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-046' target='_blank' rel='noopener'>46</a></td><td>Demonstratives</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-047' target='_blank' rel='noopener'>47</a></td><td>Making plans — aller + infinitif</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-048' target='_blank' rel='noopener'>48</a></td><td>Giving advice — devoir / falloir / pouvoir</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-049' target='_blank' rel='noopener'>49</a></td><td>Reviewing a restaurant</td></tr><tr><td><a href='https://fluolingo.com/sio/SIO-050' target='_blank' rel='noopener'>50</a></td><td>Role-play: restaurant scene</td></tr></tbody></table></div>
 </details>
-</section>
-<section id='s10' class='fam-goals'><div class='band'><span class='band-emoji'>⚡</span><h2>Thirty-second cheat sheet</h2><span class='band-pill'>10</span></div>
+</details></section>
+<section id='s10' class='fam-goals'><details class='sec'><summary><div class='band'><span class='band-emoji'>⚡</span><h2>Thirty-second cheat sheet</h2><span class='band-pill'>10</span></div></summary>
 <div class='scroll'><pre>Where am I?          🎯 NN in the top bar, or 🧑‍🎓 on the map
 Go to goal 23        ☰ → GO TO → 23 → 🎯      or type 2 3 on a keyboard
 Next activity        swipe LEFT              Previous: swipe RIGHT
@@ -257,7 +263,7 @@ Fix mistakes         ❌ ErroReview (☰ → Drill)
 Stuck on a word      ? (hints)   WHY (after a wrong answer)   🛠️ (VoixLà / ChaTutor)
 Keep the 🔥          one graded answer a day, before 4 am
 Something broke      🐞 button</pre></div>
-</section>
+</details></section>
 <p class="footer">Every screen above is a real screenshot of the app as built on 13 Sep 2026, at phone width (390px) unless it says desktop. Text checked against the code the same day. Source: <code>docs/GUIDE.md</code> in the fluoduo repository.</p>
 </main>
 <a class="totop" href="#top" aria-label="Back to contents" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑</a>

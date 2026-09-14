@@ -3301,8 +3301,8 @@ body:has(.fluo-embed) > *:not(main) { display: none !important; }
    correct instead of needing the component edited to match. */
 .fluo-switch {
   --track-h: max(44px, calc(2.375rem + var(--fs-step) * 2));
-  --track-w: calc(var(--track-h) * 1.48);
-  --knob: calc(var(--track-h) * 0.68);
+  --track-w: calc(var(--track-h) * 1.34);
+  --knob: calc(var(--track-h) * 0.64);
   /* the 4px padding on each side is set in the component's class */
   --travel: calc(var(--track-w) - 8px - var(--knob));
   /* the label sits in the half the knob is not in, centred in what is left */
@@ -5016,3 +5016,11 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   cursor: default;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
 }
+/* THE QUICKSTART'S FOLDS (Dan, 2026-09-14: "for the QuickGuide, each item be
+   collapsable"). Native `<details>`; this only turns the marker off — Safari
+   and Chrome disagree about which pseudo draws it — and turns the chevron
+   over, so the control says which way it is about to go. */
+.fluo-guide-step > summary::-webkit-details-marker { display: none; }
+.fluo-guide-step > summary::marker { content: ""; }
+.fluo-guide-step[open] > summary .fluo-guide-chev { transform: rotate(180deg); }
+.fluo-guide-step > summary .fluo-guide-chev { transition: transform 140ms ease; }
