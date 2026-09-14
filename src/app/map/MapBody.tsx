@@ -241,7 +241,7 @@ export default function MapBody() {
         {/* NO « /50 » HERE, AND THE WELL GIVES BACK ITS PADDING (Dan,
             2026-09-14: *"the numbered stop-indicatpr, why on earth did you add
             '/50' it pushed down my map"*). The total is not new — it has been
-            in StopBookmark since #211 — but the WELL around it is, and the two
+            in StopBookmark since PR 211 — but the WELL around it is, and the two
             together grew this row at the top of the map. Dan's own 1 Sep rule
             settles the denominator: a count earns its place when it describes
             what you cannot see, and the map is fifty stops on screen. */}

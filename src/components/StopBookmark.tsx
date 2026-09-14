@@ -29,7 +29,7 @@ export default function StopBookmark({
    * *"the numbered stop-indicatpr, why on earth did you add '/50' it pushed
    * down my map"*).
    *
-   * The total is not new — it has been in this component since #211 — but on
+   * The total is not new — it has been in this component since PR 211 — but on
    * the MAP it fails Dan's own rule from 1 Sep: *a count earns its place when
    * it describes what you cannot see*. The map draws all fifty stops on
    * screen; the denominator is the one number a learner is already looking at,
