@@ -73,14 +73,34 @@ rules_version = '2';
 //                this file still carried the weaker "tied to an invite"
 //                create rule. Anyone deploying the repo copy would have
 //                RE-OPENED it. Now merged in.
-//   level >= 1   GIT was ahead, and only because of the fix below — it is
-//                still `>= 1` in the console until the file is pasted in.
+//   level >= 1   GIT was ahead when this note was written. ✅ CLOSED 14 Sep:
+//                Dan pasted the live copy back, and it carries `level >= 0`.
+//                The beginner fix IS deployed — no learner's board row is
+//                being denied any more. Do not ask him to paste it again;
+//                that request was repeated three times after it was already
+//                done, which is its own kind of drift.
+//
+// WHERE THE TWO STAND TODAY, so the next session does not re-open this:
+//
+//   live is behind git by exactly ONE item — isExcludedFromLeaderboard()
+//   carries 17 addresses in the console and 19 here, the two extra being Dan's
+//   alter-ego test learners added on 13 Sep. THAT GAP IS HARMLESS AND WAS
+//   DESIGNED TO BE: publishLeaderboard refuses those accounts client-side
+//   before it writes, and deletes any row they left, so the exclusion does not
+//   depend on the rules being current. It is the client half that ships with
+//   every build — which is the whole reason it was built that way.
 //
 // SO THE RULE, PLAINLY: this file is not the source of truth and cannot be.
 // Nothing here deploys itself — the console does, by hand. Before changing
 // it, ask Dan for the live copy and diff, or a correct-looking edit will
 // silently roll a live fix backwards. `verify580-rule-bounds.py` says the
 // same thing in its own docstring and cannot close the gap either.
+//
+// AND THE OTHER HALF OF THAT RULE, LEARNED THE HARD WAY: a note saying "not
+// yet deployed" is a claim about the world, and it goes stale the moment Dan
+// acts on it. This one sat here for a day after it stopped being true and was
+// repeated back to him as an outstanding task four times. When you read a line
+// like that, check whether it has already been done before repeating it.
 // ══════════════════════════════════════════════════════════════════════════
 //
 // APP CHECK — the only real defence for the two anonymous-write collections.
