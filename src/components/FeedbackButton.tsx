@@ -14,6 +14,7 @@
 
 import { useRef, useState } from "react";
 import { useDragFloat } from "@/lib/useDragFloat";
+import { awardBugReport } from "@/lib/progress";
 import { createPortal } from "react-dom";
 // Firebase is imported DYNAMICALLY inside send(): this button sits in the root
 // layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
@@ -58,6 +59,8 @@ export default function FeedbackButton() {
   const [other, setOther] = useState(false);
   const [details, setDetails] = useState("");
   const [screenshot, setScreenshot] = useState<string | null>(null);
+  /** Gems this report earned — 0 once today's two paid reports are spent. */
+  const [paid, setPaid] = useState(0);
   const [status, setStatus] = useState<Status>("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -97,6 +100,11 @@ export default function FeedbackButton() {
         createdAt: serverTimestamp(),
         ...(screenshot ? { screenshot } : {}),
       });
+      // PAID ONLY ON A SUCCESSFUL WRITE (Dan, 2026-09-14: "we also want to
+      // reward bug reporters"). Inside the try, after addDoc resolves: a report
+      // that never reached Firestore is not a report, and paying for one would
+      // make an offline tap worth 5 gems.
+      setPaid(awardBugReport());
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -125,6 +133,20 @@ export default function FeedbackButton() {
               <div className="text-center">
                 <p className="fluo-serif text-lg font-bold text-[color:var(--fluo-ink)]">Thanks! 🙌</p>
                 <p className="mt-1 text-sm text-[color:var(--fluo-ink-soft)]">Your report was sent.</p>
+                {/* The 33%, and ONLY the 33%. The rest of the bounty rides on
+                    Dan judging the bug major, and saying so here would spend
+                    the surprise in advance — and promise a payment the app
+                    cannot yet make. A capped-out report says so plainly rather
+                    than paying nothing in silence. */}
+                {paid > 0 ? (
+                  <p className="cahier-mono mt-2 text-base font-black" style={{ color: "var(--dopa-win)" }}>
+                    +{paid} 💎 for finding it
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-[color:var(--fluo-ink-soft)]">
+                    Gems for reports are capped for today — the report still counts.
+                  </p>
+                )}
                 <button type="button" onClick={close} className="fluo-btn fluo-btn-sm mt-4">Close</button>
               </div>
             ) : (

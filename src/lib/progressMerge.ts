@@ -80,6 +80,15 @@ function mergeBests(local: Progress, remote: Partial<Progress>): Record<string, 
   return out;
 }
 
+/** The bug bounty's day counter — see mergeFind, which this mirrors exactly. */
+function mergeBug(local: Progress, remote: Partial<Progress>): { bugDay: string | null; bugGems: number } {
+  const ld = local.bugDay ?? null, rd = remote.bugDay ?? null;
+  const lg = local.bugGems ?? 0, rg = remote.bugGems ?? 0;
+  if (ld === rd) return { bugDay: ld, bugGems: Math.max(lg, rg) };
+  const localWins = !!ld && (!rd || ld > rd);
+  return localWins ? { bugDay: ld, bugGems: lg } : { bugDay: rd, bugGems: rg };
+}
+
 export function mergeProgress(local: Progress, remote: Partial<Progress> | undefined): Progress {
   if (!remote) return local;
   const itemSrs = { ...(remote.itemSrs ?? {}) };
@@ -138,5 +147,11 @@ export function mergeProgress(local: Progress, remote: Partial<Progress> | undef
     // read, every read, on every device. Sticky true: whichever side has been
     // paid, the account has been paid.
     welcomed: (local.welcomed ?? false) || (remote.welcomed ?? false),
+    // The bug bounty's daily books, on the same rule as the lucky find's: this
+    // function rebuilds Progress from a fixed key list, so a counter left out
+    // here is DROPPED on every sign-in and the cap starts over — which turns a
+    // ceiling into a suggestion. Same day on both sides takes the TIGHTER
+    // (larger spent) figure; different days, the later day's books.
+    ...mergeBug(local, remote),
   };
 }
