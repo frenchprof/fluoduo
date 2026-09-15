@@ -18,6 +18,11 @@
 //
 // WHAT IS PINNED
 //
+// AN EDGE IS AN EDGE, WHICHEVER PROPERTY DRAWS IT. Two branches built this
+// outline at once on 14-15 Sep — a `border` and a 1px inset ring in the shadow
+// stack — and main's ring is the one that landed. The scan accepts either, and
+// pins the CLAIM rather than the spelling; see the note beside `ring()` below.
+//
 //   1  ZERO un-outlined keys. Not a ratchet: the app is at zero, and a ratchet
 //      waves the next one through (verify540's reasoning, unchanged).
 //   2  A FLOOR ON THE CENSUS — fewer than 30 keys found is a FAIL, not a pass.
@@ -113,12 +118,50 @@ for (const route of ROUTES) {
     const found = await frame.evaluate(() => {
       const keys = [...document.querySelectorAll(".neo-key, .fluo-tile-key")]
         .filter((e) => e.getBoundingClientRect().width > 8);
+      /* AN EDGE IS AN EDGE, WHICHEVER PROPERTY DRAWS IT (15 Sep).
+         This used to accept only a real `border`, because that is how the
+         branch that wrote this check drew it. Main drew the same edge, the
+         same day, as the LAST inset in `.neo-key`'s shadow stack — a 1px ring
+         with no offset and no blur — and that version is the one that landed
+         and the better of the two: no layout cost, and it follows the radius
+         for free. A check hard-coded to one property would have reported 38
+         correctly-outlined keys as bare, which is a check lying about the
+         thing it exists to hold. So the test is the CLAIM — does this key's
+         top surface have a visible edge — and not the spelling.
+
+         Parsing a computed box-shadow: layers are comma-separated, but a
+         colour carries commas of its own (`rgba(0, 0, 0, .2)`), so the split
+         has to ignore commas inside parentheses. Chrome normalises each layer
+         to `<color> <x> <y> <blur> <spread> [inset]`. A ring is an INSET layer
+         with no offset, no blur and at least 1px of spread — which is exactly
+         what distinguishes it from the pillow's highlight and lip, both of
+         which are offset insets with zero spread. */
+      const ring = (shadow) => {
+        if (!shadow || shadow === "none") return false;
+        const layers = [];
+        let depth = 0, start = 0;
+        for (let i = 0; i < shadow.length; i++) {
+          const ch = shadow[i];
+          if (ch === "(") depth++;
+          else if (ch === ")") depth--;
+          else if (ch === "," && depth === 0) { layers.push(shadow.slice(start, i)); start = i + 1; }
+        }
+        layers.push(shadow.slice(start));
+        return layers.some((l) => {
+          if (!/\binset\b/.test(l)) return false;
+          const n = (l.match(/-?[\d.]+px/g) || []).map(parseFloat);
+          if (n.length < 4) return false;
+          const [x, y, blur, spread] = n.slice(-4);
+          return Math.abs(x) <= 1 && Math.abs(y) <= 1 && blur <= 1 && spread >= 1;
+        });
+      };
       const out = [];
       for (const e of keys) {
         const c = getComputedStyle(e);
         const w = parseFloat(c.borderTopWidth) || 0;
         const solid = c.borderTopStyle !== "none" && c.borderTopStyle !== "hidden";
-        if (!(w >= 1 && solid)) {
+        const bordered = w >= 1 && solid;
+        if (!bordered && !ring(c.boxShadow)) {
           out.push((e.textContent || "").trim().slice(0, 20) || e.className.split(" ").slice(-1)[0]);
         }
       }
@@ -148,7 +191,7 @@ if (bare.length) {
   if (bare.length > 25) console.log(`          … and ${bare.length - 25} more`);
   console.log("        A `.neo-key` takes its edge from `--key-edge`, defaulting to the");
   console.log("        house ink. If a key must carry a different edge, set --key-edge");
-  console.log("        inline beside --key-bg — do not put `border: 0` back.");
+  console.log("        inline beside --key-bg — do not take the hairline back out.");
 }
 console.log("-".repeat(70));
 if (bad) process.exit(1);

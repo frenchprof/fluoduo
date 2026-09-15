@@ -5032,7 +5032,17 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   cursor: pointer;
   border: 0;
   font: inherit;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
+  /* THE DROP SHADOW REPLACES `.neo-key`'S WHOLE STACK, so the hairline has to
+     be restated here or this key alone loses its top edge — which is exactly
+     what happened, and what the browser scan caught (15 Sep: 2 of 49 keys
+     bare, both of them this one, on /conjugaison and every MneMemo lesson).
+     A `box-shadow` is one declaration, not a set of layers that merge: the
+     band needs its own ground-shadow to stay readable floating over the
+     lesson's last line, and taking that shadow took the 1px ring with it.
+     Nothing in the source says so — the rule looks like it adds a shadow. */
+  box-shadow:
+    0 2px 10px rgb(0 0 0 / 0.22),
+    inset 0 0 0 1px var(--key-edge, color-mix(in oklab, var(--cahier-ink) 22%, transparent));
 }
 /* THE QUICKSTART'S FOLDS (Dan, 2026-09-14: "for the QuickGuide, each item be
    collapsable"). Native `<details>`; this only turns the marker off — Safari
