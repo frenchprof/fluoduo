@@ -6,6 +6,86 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 15 Sep — the peers lane lands ON main instead of beside it, and LexicaLocker fits (fluoduo-main)
+
+**Dan: *"peers pushed https://79fa0564.fluoduo.pages.dev/ but it is missing
+some of the items in your earlier deployment pls help"*.** Nothing was lost.
+That preview is built from the peers BRANCH, whose base is `8612ec3` —
+**eleven merges behind main**. It has never had the NumBus pictures (#373), the
+folding guides (#375), the 🤍 on every band (#378/#382), the clickable cue
+(#379) or the English final clue (#381), because those landed after they
+branched. The remedy is this merge: their work on TOP of the eleven, not
+alongside them.
+
+**SEVEN CONFLICTS, and two of them needed BOTH sides.** This is the case the
+integration lane exists for — each branch was individually green.
+
+    .neo-key's outline   PEERS. Main answered Dan's 12 Sep "very-thinly-
+                         outlined" with a fifth shadow (inset 1px ring at 22%
+                         ink). He sent it back on the 14th in the same words:
+                         on a pale key that ring is a shade of the paper, and
+                         most of this app is pale. Peers MEASURED it — 42 of 50
+                         raised keys with no outline at all — and gave the class
+                         a real 2px border with a --key-edge override.
+    MoreBelow            BOTH. Two lanes fixed "why is NEXT PART IS BELOW
+                         covering the tiles partialy??" from opposite sides:
+                         main MAKES ROOM (reserve, `flow`, the clickable band),
+                         peers STANDS IT DOWN when a control is still there.
+                         Peers' clause catches ComposeIt, which main never
+                         reached from its side.
+    NumBus kind tiles    MAIN. Peers still greyed an unticked kind, which is
+                         the thing Dan photographed.
+
+**THE MERGE INTRODUCED A BUG THAT IS IN NEITHER DIFF, and that is the lesson.**
+MoreBelow's MutationObserver watches `class`/`style` across the subtree and
+`setMore` re-renders — a loop that was harmless while a measurement was two
+integer reads. Folding peers' per-control sweep into that same function made
+every pass force a synchronous layout per control. On `/lessons/deck/aliments`
+a Playwright click with an **8-second** timeout took **38 seconds** to give up.
+verify220 went red and read exactly like a flake; chasing it as one would have
+shipped a lesson page that stops answering taps.
+
+    read the two diffs   both green, both correct, no overlap in intent
+    ran the merged tree  the page locks up and a check lies about why
+
+One `requestAnimationFrame` coalesces it: a burst of mutations measures once,
+and the re-render's own mutations land in the frame already scheduled.
+
+**TWO MORE COLLISIONS THE GATE CAUGHT.** `.fluo-more-band` carried `border: 0`
+— written to undo the `<button>` default back when `.neo-key` had none, and now
+this one key opting out of the rule every other key had just been given. And
+**verify800 was claimed twice the same afternoon** by two lanes that could not
+see each other; peers' key-outline check is **860** now, clear of the frontier
+per the 7 Sep headroom note.
+
+### LexicaLocker, four messages and three reversals
+
+    "pls force a landscape view?"
+    "actually no need sideways, just full screen"
+    "it can be played sideways just not forced"
+    "make sure that it is played in full screen - by pointing to the full
+     screen button!"
+
+**So NOTHING is forced.** GameBar's ⛶ carries a `data-tour` hook, GameFrame
+takes a `guide` a game opts into, and LexicaLocker rings that key once on a
+first run and waits for the learner's own tap. Turning the phone sideways still
+behaves exactly as it always did. **The ⛶ glyph is NOT in the sentence** — it
+draws fine on the key, but set in body text the app's face has no picture for
+it and Chrome drew an empty box.
+
+**And the real fix was the board, not the screen** (Dan: *"why don't you make
+the chest half the current size"*, then *"if it is below the fold, then bring
+the conveyyor higher uo to be closer to the chestss"*). Chests 7rem → 3.5rem in
+the lane and 10.125rem → 5.0625rem in the bay, the arrows bay tightened, and —
+the one that actually mattered — **the FROZEN belt had no ceiling at all**. At
+level 1 every key is a whole phrase (« Monsieur et Madame Martin »), so eleven
+of them wrapped into six rows and the belt grew to 330px and ran off the bottom
+of the frame with « le directeur » cut in half. It is capped and scrolls itself
+now; measured at 430×860, the whole board ends inside the frame.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  148/148 verify · verify-wiring 10/10 · walked in the built app
+
 ## 14 Sep — « /50 » off the map, both guides fold, and the nesting Dan saw is older than today (fluoduo-main)
 
 **« /50 » WAS NOT ADDED YESTERDAY; THE WELL AROUND IT WAS.** Dan: *"the
