@@ -151,9 +151,9 @@ export function progressOf(run: PathRun, path: CuratedPath): { done: number; tot
   };
 }
 
-/** Minutes still to come on the essential tier. */
-export function minutesLeft(run: PathRun, path: CuratedPath): number {
-  return path.essential.filter((s) => !run.done.includes(s.id)).reduce((n, s) => n + s.minutes, 0);
-}
+/* `minutesLeft` lived here and printed « 63 min left » above the dots. Deleted
+   2026-09-15 (Dan: *"No need to give a time duration for those activities"*).
+   The counter it fed was also the one Dan caught lying — « 0 of 11 done · 63
+   min left » — and a number nobody can verify is worse than no number. */
 
 export { PATHS };

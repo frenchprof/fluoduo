@@ -274,6 +274,12 @@ const RAW_ACTIVITIES: Omit<Activity, "hue" | "fill">[] = [
   // not a deck — there is nothing for a stop number to pick between).
   { key: "compose", name: "ComposeIt", emoji: "🧩", family: "tools", href: "/games/compose", blurb: "Play a scene; your writing gets corrected." },
   { key: "tutor", name: "ChaTutor", emoji: "🤖", family: "tools", href: "/tutor", blurb: "Ask anything, in French or English." },
+  // G-COMPRIS! (2026-09-15) — reading comprehension, and the reason the family
+  // stopped being called « Write » the same day. Dan named it himself: *"Call
+  // the reading exercises : G-Compris!"* — « j'ai compris », said out loud.
+  // 📖 is free: nothing in the app wore it (📚 is MneMemo, 📝 is the Practice
+  // family, 📋 is PathNext's fallback), so no glyph means two things.
+  { key: "gcompris", name: "G-Compris!", emoji: "📖", family: "tools", href: "/gcompris", blurb: "Read a note, a postcard, a voicemail — then answer." },
 
   // ── 4 · FluOlin SvPlay — gentlest first ───────────────────────────────────
   // NumBus + NumBourse share ONE hub tile (Dan, 2026-08-31: "park NumBus /
@@ -599,7 +605,7 @@ const SITE_FAMILY: Record<string, FamilyKey> = {
   // tile inherited the goals page's yellow instead of Oral's periwinkle.
   // An alias, not a rename: the key stays where its callers expect it.
   say: "oral",
-  tutor: "tools", compose: "tools",
+  tutor: "tools", compose: "tools", gcompris: "tools",
 };
 
 /**
@@ -646,6 +652,9 @@ const BAND: Record<string, BandKey> = {
   ecoutexte: "recog",     // listening comprehension: the answer is in the audio
   compose: "create",
   tutor: "create",
+  // Reading comprehension sits with listening comprehension: the answer is in
+  // the text, and what is being asked for is recognising it, not producing it.
+  gcompris: "recog",
 };
 
 /** The band an activity belongs to, or null where the page owns its colours

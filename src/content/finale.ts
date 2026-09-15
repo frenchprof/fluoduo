@@ -475,7 +475,7 @@ export const FINALE_BANK: FinaleItem[] = [
 export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004", "SIO-005", "SIO-006", "SIO-007", "SIO-008", "SIO-009", "SIO-010", "SIO-011", "SIO-012", "SIO-013", "SIO-014", "SIO-015", "SIO-016", "SIO-017", "SIO-018", "SIO-019", "SIO-020", "SIO-021", "SIO-022", "SIO-023", "SIO-024", "SIO-025", "SIO-026", "SIO-027", "SIO-028", "SIO-029", "SIO-030", "SIO-031", "SIO-032", "SIO-033", "SIO-035", "SIO-034", "SIO-036", "SIO-037", "SIO-038", "SIO-039", "SIO-040", "SIO-041", "SIO-042", "SIO-043", "SIO-044", "SIO-045", "SIO-046", "SIO-047", "SIO-048", "SIO-049", "SIO-050"];
 
 /**
- * THE STOPS TEST 1 ACTUALLY ASKS FOR — eighteen of the first thirty.
+ * THE STOPS TEST 1 ACTUALLY ASKS FOR — seventeen of the first thirty.
  *
  * Dan, 2026-09-14, after an item-by-item audit of the real LAF 1201 paper:
  * *"Then can we curate GramMarathon based entirely on ONLY 1, 4, 7, 9, 12, 14,
@@ -485,11 +485,11 @@ export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004"
  * removed units 3 and 4 and left the paper still feeling wrong, because the
  * Finale deals ONE QUESTION FROM EVERY STOP IN RANGE before it weights
  * anything (the 360° floor in `drawDaily`). With thirty stops in range and
- * only eighteen on the paper, **twelve questions of every fifty were
- * off-target by construction** — not by luck. Measured: 164 of the 236
- * in-range items drilled nothing the paper tests.
+ * only seventeen on the paper, **thirteen questions of every fifty were
+ * off-target by construction** — not by luck. Measured: 80 of the 234
+ * in-range items drill nothing the paper tests.
  *
- * THE TWELVE THAT ARE OUT, and what each teaches, so the next session can
+ * THE THIRTEEN THAT ARE OUT, and what each teaches, so the next session can
  * check the reasoning rather than trust the list:
  *
  *     2  tu / vous          nothing asks you to choose
@@ -499,6 +499,11 @@ export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004"
  *     8  classroom orders   « Écoutez ! Répétez ! » — no item
  *    10  first-meeting oral a role-play; this paper scores no speaking
  *    11  stressed pronouns  « moi aussi, moi non plus » — no item
+ *    12  professions        DAN'S OWN CUT, and the thirteenth. His list of
+ *                           14 Sep named 12; shown the paper again he asked
+ *                           *"SIO12 is not really tested, is it?"*. It is
+ *                           not — « il est / elle est » + a job is USED in
+ *                           the writing task and never asked for on its own.
  *    13  school subjects    no item
  *    20  mini-text: a country   the writing task is about a PERSON
  *    21  c'est un / des     G1 « une chanteuse » leans on it; borderline
@@ -507,8 +512,14 @@ export const FINALE_SIOS: string[] = ["SIO-001", "SIO-002", "SIO-003", "SIO-004"
  *
  * 21 and 30 are the arguable two and Dan left them out. Both are one edit.
  *
- * 162 items sit on these eighteen, every stop carrying at least six, so a
+ * 154 items sit on these seventeen, every stop carrying at least six, so a
  * fifty-question paper draws comfortably without repeating a stop to death.
+ *
+ * KEEP THESE THREE NUMBERS TRUE. They were « eighteen · 162 · twelve » for a
+ * day after stop 12 came out, because the list is code and the paragraph is
+ * not — exactly the fault this repo keeps relearning. `scripts/` has nothing
+ * to recount them; the honest fix is that the list above is the only place
+ * membership is decided, and `verify760` pins it against the audited set.
  *
  * WHEN THE SECOND TEST COMES this becomes a second list, or the address says
  * `?upto=50` and the Finale is the whole-course paper again. Nothing here
@@ -518,7 +529,7 @@ export const TESTED_STOPS: number[] = [
   1, 4, 7, 9, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29,
 ];
 
-/** The same eighteen as SIO ids, which is what the draw works in. */
+/** The same seventeen as SIO ids, which is what the draw works in. */
 export const TESTED_SIOS: string[] = TESTED_STOPS.map(
   (n) => `SIO-${String(n).padStart(3, "0")}`,
 );

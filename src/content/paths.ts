@@ -52,10 +52,23 @@ export type PathStep = {
   /** THE PHYSICAL THING THE LEARNER DOES — the line that proves this step is
    *  not another step wearing a different name. */
   does: string;
+  /** THE AUTHOR'S BUDGET, NEVER SHOWN TO A LEARNER.
+   *
+   *  Dan, 2026-09-15: *"No need to give a time duration for those
+   *  activities"*. Every minute figure came off the screen that day, and the
+   *  reason is that mine had been wrong: three MneMemo lessons were priced at
+   *  8–10 minutes each like drills, when a MneMemo lesson is a reference page
+   *  with four tabs and no card count at all — which is how the tier reached
+   *  the 104 minutes Dan sent back.
+   *
+   *  It stays in the DATA because it is what draws the essential/optional line
+   *  (see the marks-per-minute costing below): an estimate an author uses to
+   *  decide is not the same object as a number a learner is promised. Nothing
+   *  renders it, and `verify760` clause 9 fails if anything starts to. */
   minutes: number;
   /** Consecutive steps sharing a group render as ONE numbered step. */
   group?: string;
-  /** Why it earns its minutes. Shown on the path page, not on the push. */
+  /** Why it earns its place. Shown on the path page, not on the push. */
   why?: string;
 };
 
@@ -90,10 +103,10 @@ export function pathById(id: string): CuratedPath | undefined {
   return PATHS.find((p) => p.id === id);
 }
 
-/** Minutes for a tier, so no total is ever typed twice. */
-export function minutesOf(steps: PathStep[]): number {
-  return steps.reduce((n, s) => n + s.minutes, 0);
-}
+/* `minutesOf` lived here and printed « 9 steps · 64 min » and « 9 more · 71
+   min ». Deleted 2026-09-15 with every other duration on the page (Dan: *"No
+   need to give a time duration for those activities"*). The budget it summed
+   is still in the data; nothing sums it for display. */
 
 /** Consecutive steps folded by `group`, for numbering and display. */
 export function groupsOf(steps: PathStep[]): { label: string; steps: PathStep[] }[] {
@@ -119,7 +132,7 @@ const MIDTERM: CuratedPath = {
      the things a learner reaches for when an hour turns out to be ninety
      minutes. */
   blurb:
-    "Nine steps, about an hour, plus ten minutes the next morning. No two steps do the same job.",
+    "Ten steps, and the last one is the next morning. No two steps do the same job.",
   essential: [
     {
       id: "finale",
@@ -127,15 +140,15 @@ const MIDTERM: CuratedPath = {
       /* NO QUERY, AND THAT IS THE FIX RATHER THAN AN OMISSION. This step used
          to carry `?upto=30`, which was right against the old default and is
          now WRONG: `?upto=N` means "stops 1..N", so passing 30 here would put
-         the twelve stops the paper never asks about back into the draw. The
-         Finale's own default is `TESTED_STOPS` — the eighteen Dan named after
+         the thirteen stops the paper never asks about back into the draw. The
+         Finale's own default is `TESTED_STOPS` — the seventeen Dan named after
          auditing the paper — so the bare address is the scoped one, through
          this step and through every other door alike. */
       href: "/practice/grammarathon/finale",
       title: "GramMarathon — the Finale",
       does: "types a gap · only what the paper asks",
       minutes: 8,
-      why: "162 sentences across the eighteen stops the test actually asks about — nothing on the twelve it does not. Everything missed is queued automatically, which is what makes step 2 possible.",
+      why: "154 sentences across the seventeen stops the test actually asks about — nothing on the thirteen it does not. Everything missed is queued automatically, which is what makes step 2 possible.",
     },
     {
       id: "erroreview-now",
@@ -144,7 +157,7 @@ const MIDTERM: CuratedPath = {
       title: "ErroReview, straight away",
       does: "your own misses · while you still remember being unsure",
       minutes: 5,
-      why: "Every item is one you got wrong ten minutes ago. Highest value per minute on the path, and it beats guessing which goals to drill.",
+      why: "Every item is one you just got wrong. Nothing else on the path is this well aimed — it beats guessing which goals to drill, because step 1 has already found them.",
     },
     {
       /* ONE DOOR ACROSS SEVENTEEN DECKS (Dan, 2026-09-14, offered one mixed
@@ -226,6 +239,25 @@ const MIDTERM: CuratedPath = {
       does: "arranges words that are given · the only step about order",
       minutes: 4,
       why: "Word order is the first thing a learner loses. Every other drill asks for a word, never for where the words go.",
+    },
+    {
+      /* READING, AND THE PAPER SCORES IT. « Compréhension écrite » is a whole
+         section of Test 1 and until 15 Sep nothing on this path read a text at
+         all — ÉcouTexte is the ear, ComposeIt is the hand, and the eye had no
+         step. G-Compris! was built the same day for exactly this hole.
+         ONE NAMED TEXT, NEVER `/gcompris`. The shelf is a chooser: a learner
+         who starts there finishes at `/gcompris/<text>`, so a step addressed
+         to the shelf could never match and could never tick — the same trap
+         that kept NumBus pointed at /games/numbus rather than at /games/numbers.
+         « Une page de journal » is the densest of the ten: avoir vs être, ne…pas,
+         a nationality asked back as its country, and mon / son twice. */
+      id: "gcompris",
+      activityKey: "gcompris",
+      href: "/gcompris/page-de-journal",
+      title: "G-Compris! — « Une page de journal »",
+      does: "reads a whole text and answers on it · the only reading step",
+      minutes: 6,
+      why: "Five questions, and not one is answered by matching a word: « marocaine » is asked back as the country, « mon frère » as whose brother. The text stays on screen the whole time.",
     },
     {
       id: "composeit",

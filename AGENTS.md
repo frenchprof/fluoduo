@@ -1202,3 +1202,92 @@ half, and a scan that silently finds an empty page all report the same thing —
 success. `verify540` already pins a floor on how many controls its scan must
 find, for this reason; `verify106` already fails a ramp rule that matches
 nothing. This is the same rule stated once, for all of them.
+
+# A number a learner reads is a PROMISE — permanent (2026-09-15)
+
+**Dan, opening the curated path: *"No need to give a time duration for those
+activities."***
+
+The path printed six of them — « 9 steps · 64 min », « 63 min left »,
+« ▶ Continue · 8 min », « 8 min » on each step head, « 9 more · 71 min », and
+an optional blurb about two hours. All six are gone.
+
+**THEY WERE NOT WRONG BY A LITTLE.** Three MneMemo lessons had been priced at
+8–10 minutes each, like drills. Driven in the built app, a MneMemo lesson is a
+REFERENCE PAGE with four tabs and no fixed card count at all — twenty-eight of
+the hundred-and-four minutes Dan sent back the day before were a guess dressed
+as a number.
+
+    written from the source   « ▶ Continue · 8 min »   a promise
+    measured on the screen    there is nothing to measure
+
+**BUT `PathStep.minutes` STAYS IN THE DATA, and the distinction is the whole
+rule.** It is what draws the essential/optional line by marks per minute — the
+14 Sep ruling, unchanged. **An estimate an author uses to DECIDE is not the
+same object as a number a learner is SHOWN.** One may be rough, because being
+wrong by two minutes changes an ordering that a human then reviews; the other
+may not, because being wrong by two minutes is a broken promise to somebody
+revising the night before a test.
+
+**Generalise it past durations.** A count of items left, a percentage, an
+estimated score, a "3 days to fluency" — before any of them is printed, ask
+whether the app can actually measure it. If it cannot, it is an author's note
+and it belongs in a comment. `verify760` clause 10 holds the path's half, and
+it reads the two path COMPONENTS rather than `paths.ts`, precisely because the
+field is allowed to exist and only the rendering is banned.
+
+The 13 Sep sibling — *"the app does not perform unasked"* — and this one point
+the same way: do not tell the learner something they did not ask for and you
+cannot stand behind.
+
+# A reading question is not about reading — permanent (2026-09-15)
+
+**Dan named the activity: *"Call the reading exercises : G-Compris!"*** —
+« j'ai compris », said out loud. It lives in 🛠️ **FluOLin Texts**, the family
+he renamed from « Write » the same day (*"call Write Texts"*) so that a text
+you READ would have somewhere to be. Same key (`tools`), same routes — the
+Memo-rename precedent.
+
+**THE RULE THE BANK IS BUILT ON**, from his own words when the shape was put to
+him: *"it is not so much about reading per se, but what those reading questions
+are really testing"*. **A question that can be answered by matching a string is
+not a reading question** — the learner finds « mardi » in the text and copies
+it without knowing what it means. So every one of the forty-three turns on
+something the course teaches:
+
+    négation      « Je ne suis pas là ce soir » — asked as "is she home?"
+                  A learner who skips the ne … pas answers Vrai.
+    possessives   « Clara et son frère » — asked as WHOSE brother. Two people
+                  are named and only the possessive says which.
+    nationality   the text says « marocaine », the question asks the COUNTRY.
+                  Nothing to copy; the ending has to be read.
+    aller + à     « au cinéma » · « à la bibliothèque » · « chez Julien » —
+                  three shapes for one idea, in one message.
+
+**AND IT MUST NOT LOOK TAILORED.** Dan, on the first outline: *"Ok but it must
+not look like we tailored exercises around the test"*. Every scene is an
+ordinary document a person actually meets — a note on a kitchen table, a club
+noticeboard, a doctor's voicemail, a postcard — chosen for being ordinary. None
+mirrors a question on the paper, and there are ten, which is more than any
+paper asks for.
+
+**READING IS RECEPTIVE, SO THE CEILING IS ON THE ANSWER, NOT ON THE TEXT.** A
+document may carry « bibliothèque » or « gratuit » the way any real note would.
+What it may never do is make an untaught word the ANSWER — *you cannot mark
+somebody wrong for something nobody told them*, which is verify40's ruling
+(*"remember it, but don't score it"*, 27 Aug) applied a third time. The scenes
+are units 0–2, the same *"Stops 0 to 30 only please"* that scoped the Finale.
+
+**THE DOCUMENT NEVER LEAVES THE SCREEN.** It is the only copy of the thing the
+learner needs to answer the question in front of them, which the collapse rule
+names by hand as the one case that may not fold. **And the WHY names the RULE,
+never the line** — quoting the sentence teaches the text; naming the grammar
+teaches the next text.
+
+`verify770-gcompris.py` holds it, and it caught itself on its first run: the
+bank shares `const VF = ["Vrai", "Faux"]`, so ten questions are written
+`options: VF` with no array literal, and the parser read every one of them as a
+TYPED question whose answer (« Faux ») appears nowhere in the document. It
+failed loudly, which is the only reason it was not quietly wrong the other way.
+It now resolves the module's own constants **and cross-checks every count it
+parses** — the 14 Sep rule, one day old, catching its author.

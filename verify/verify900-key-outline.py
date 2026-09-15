@@ -37,14 +37,10 @@ THE EXPORT MUST BE OPEN, for the same reason verify540 says so: a sign-in-walled
 build renders the stub where the activity should be, and its controls are not
 the app's.
 
-Numbered 860, and the renumber is the rule working. It was written as 800,
-with headroom over a frontier that was then at 760 — and 800 had been claimed
-the same afternoon, in another lane, by verify800-handhold-points. Neither
-session could have seen the other's; that is what the integration lane and
-verify-wiring's push-time collision test are both for (AGENTS.md, 6 Sep).
-860 leaves the contested band well behind.
+Numbered 800 and not 770: the frontier was at 760 and a number next to it gets
+claimed again while CI runs (AGENTS.md, 7 Sep).
 
-Run from the repo root:  python3 verify/verify860-key-outline.py
+Run from the repo root:  python3 verify/verify900-key-outline.py
 """
 import os
 import subprocess
