@@ -153,12 +153,28 @@ export default function GameBar({
           className={
             full
               ? "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
-              : "fluo-hit44 flex h-8 shrink-0 items-center justify-center gap-1 rounded-lg px-2 text-[13px] font-black uppercase tracking-wide text-white shadow-[0_2px_0_rgba(0,0,0,.25)] transition sm:h-9 sm:px-2.5 sm:text-[14px]"
+              /* TWO LINES IN THE SAME HEIGHT (Dan, 2026-09-15: *"write FULL
+                 SCREEN in smaller font to fit within the same height (REMEMBER
+                 RELATIVE FONT SIZES PLS)"*). The key stays h-8 / sm:h-9 — the
+                 bar's row height is not negotiable — so the label drops to
+                 two lines of small caps with no leading, and the type is a
+                 RAMP CALC, not a pixel: 0.625rem on a phone, growing with
+                 --fs-step on a desktop, exactly as every other size in the
+                 app. The first cut was `text-[13px]`, which is the hard pixel
+                 Dan has banned twice; a px utility only rides the ramp if
+                 globals.css happens to redefine that exact number, and a
+                 calc written here cannot fall off it. */
+              : "fluo-hit44 flex h-8 shrink-0 items-center justify-center gap-1 rounded-lg px-1.5 text-[calc(0.625rem+var(--fs-step)*0.62)] font-black uppercase leading-none tracking-wide text-white shadow-[0_2px_0_rgba(0,0,0,.25)] transition sm:h-9 sm:px-2"
           }
           style={full ? undefined : { background: "var(--dopa-miss)" }}
         >
-          <span aria-hidden>{full ? "⤡" : "⛶"}</span>
-          {!full && <span>Full</span>}
+          <span aria-hidden className="text-[calc(0.875rem+var(--fs-step)*0.87)]">{full ? "⤡" : "⛶"}</span>
+          {!full && (
+            <span className="flex flex-col items-start">
+              <span>Full</span>
+              <span>screen</span>
+            </span>
+          )}
         </button>
       )}
 
