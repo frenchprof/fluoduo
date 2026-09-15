@@ -57,6 +57,14 @@ function Board({
 }) {
   const colour = state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : warm ? "#ffb84d" : "#ffc233";
   const wide = blindWidth(blind) <= 5;
+  /* AND A SECOND NOTCH, WITH THE STRIP AROUND THEM (Dan, 2026-09-15, shown
+     the two-line FULL / SCREEN key: *"The blank strip really needs to be much
+     slimmer ... DOES THIS LINE NEED TO BE SO THICK"*). The cells were still
+     2.75rem on a phone inside a border-4, py-2.5 strip — 84px of white for a
+     row of digits. Cells 2.25rem, strip border-2 py-1.5; the `sm:` sizes keep
+     the original weight because a tablet has the room. The worded line under
+     it, where it shows, is half its old height — whether it should exist at
+     all is a question put to Dan in the same message, not decided here. */
   /* THE PHONE CELLS COME DOWN A NOTCH (Dan, 2026-09-15: *"the field for
      entering numbers is way too high and big"*, of the same iPhone photo).
      3.5rem -> 2.75rem for the wide board, 2.75 -> 2.25 for the narrow one, and
@@ -69,8 +77,8 @@ function Board({
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[2.75rem] w-[2.25rem] text-[calc(1.625rem+var(--fs-step)*1.6)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[2.25rem] w-[1.375rem] text-[calc(1.0625rem+var(--fs-step)*1.06)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[2.25rem] w-[2rem] text-[calc(1.375rem+var(--fs-step)*1.4)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.875rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -908,7 +916,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-3xl border-4 px-2 py-2.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:px-4 sm:py-3 ${
+        className={`relative rounded-2xl border-2 px-1.5 py-1.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 ${
           mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
         }`}
       >
@@ -942,7 +950,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           }}
         />
         {stage === "revealed" && round && (
-          <p className="mt-2 text-center text-base font-black sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
+          <p className="mt-1 text-center text-sm font-black leading-tight sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
             {round.words}
           </p>
         )}
