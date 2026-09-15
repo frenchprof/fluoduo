@@ -57,9 +57,28 @@ function Board({
 }) {
   const colour = state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : warm ? "#ffb84d" : "#ffc233";
   const wide = blindWidth(blind) <= 5;
+  /* AND A SECOND NOTCH, WITH THE STRIP AROUND THEM (Dan, 2026-09-15, shown
+     the two-line FULL / SCREEN key: *"The blank strip really needs to be much
+     slimmer ... DOES THIS LINE NEED TO BE SO THICK"*). The cells were still
+     2.75rem on a phone inside a border-4, py-2.5 strip — 84px of white for a
+     row of digits. Cells 2.25rem, strip border-2 py-1.5; the `sm:` sizes keep
+     the original weight because a tablet has the room. The worded line under
+     it, where it shows, is half its old height — whether it should exist at
+     all is a question put to Dan in the same message, not decided here. */
+  /* THE PHONE CELLS COME DOWN A NOTCH (Dan, 2026-09-15: *"the field for
+     entering numbers is way too high and big"*, of the same iPhone photo).
+     3.5rem -> 2.75rem for the wide board, 2.75 -> 2.25 for the narrow one, and
+     the digit type with them — as RAMP CALCS, not pixels. The first cut wrote
+     them as twenty-six and seventeen pixel utilities, neither of which the
+     ramp block redefines, and verify106 refused it before the gate did — then
+     refused it AGAIN because this very comment named the two sizes, which the
+     check reads as code. Spelled out in words for that reason. In rem on purpose: a learner who raises their
+     phone's text size raises the cells too, which is what made them look
+     enormous on Dan's — 3.5rem at his text size was 66px per cell before any
+     border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[3.5rem] w-[2.75rem] text-[30px] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[2.75rem] w-[1.625rem] text-[19px] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[2.25rem] w-[2rem] text-[calc(1.375rem+var(--fs-step)*1.4)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.875rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -201,6 +220,21 @@ function Vehicle({
   );
 }
 
+/* `shrink-0` ON EVERY SCENE ROOT (Dan, 2026-09-15, a photo of his iPhone:
+   *"Numbus in general looks broken on my phone. because it is not in full
+   screen so the bus is not visible"*). In the photo the scene is a thin white
+   bar — its 4px border and nothing else.
+
+   THE MECHANISM, measured in Chromium and then explained: the scenes sit in a
+   `flex-col overflow-y-auto` column, and each scene root is `overflow-hidden`.
+   A flex item whose overflow is not `visible` has an automatic minimum size of
+   ZERO, so when the column runs short the scene is the first item allowed to
+   collapse, all the way to nothing — while the digit board, `overflow:
+   visible`, keeps its content height and refuses. Chromium at 390x844 spared
+   it only because 40px were left over; on a phone with a larger text size and
+   Safari's toolbar in the way there are not, and the bus is deleted to make
+   the keypad fit. The column is `overflow-y-auto` precisely so that a short
+   screen SCROLLS — a scene that cannot shrink is what makes it do so. */
 function BusStopScene({
   mode,
   label,
@@ -234,7 +268,7 @@ function BusStopScene({
     ? "linear-gradient(180deg,#5a5f66 0%,#3a3e44 100%)"
     : "linear-gradient(180deg,#5c6470 0%,#3f4650 100%)";
   return (
-    <div className="relative h-[11.625rem] overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
+    <div className="relative h-[11.625rem] shrink-0 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
       <div className="pointer-events-none absolute inset-x-0 bottom-[3.25rem] flex items-end gap-[0.3125rem] px-2 opacity-85">
         {Array.from({ length: 11 }).map((_, i) => (
           <div key={i} className="rounded-t-[4px] bg-[#7f96ad]" style={{ height: 34 + ((i * 43) % 68), width: 34 + ((i * 29) % 36), boxShadow: "inset -5px 0 0 rgba(0,0,0,.2)" }} />
@@ -305,7 +339,7 @@ function BurgerScene({
 }) {
   return (
     <div
-      className="relative h-[7.75rem] overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[15.5rem]"
+      className="relative h-[7.75rem] shrink-0 overflow-hidden rounded-3xl border-4 border-[#ffb74d] shadow-xl sm:h-[15.5rem]"
       style={{ background: "linear-gradient(180deg,#fff8e8 0%,#ffe0b2 55%,#ffcc80 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 flex items-center justify-between border-b-2 border-[#e65100]/20 bg-[#ff6f00] px-4 py-2">
@@ -346,7 +380,7 @@ function BureauScene({
 }) {
   return (
     <div
-      className="relative h-[11.625rem] overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl sm:h-[15.5rem]"
+      className="relative h-[11.625rem] shrink-0 overflow-hidden rounded-3xl border-4 border-[#90a4ae] shadow-xl sm:h-[15.5rem]"
       style={{ background: "linear-gradient(180deg,#eceff1 0%,#cfd8dc 55%,#b0bec5 100%)" }}
     >
       <div className="absolute inset-x-0 top-0 border-b border-[#78909c] bg-[#546e7a] px-4 py-2">
@@ -882,7 +916,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-3xl border-4 px-2 py-2.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:px-4 sm:py-3 ${
+        className={`relative rounded-2xl border-2 px-1.5 py-1.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 ${
           mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
         }`}
       >
@@ -916,7 +950,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           }}
         />
         {stage === "revealed" && round && (
-          <p className="mt-2 text-center text-base font-black sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
+          <p className="mt-1 text-center text-sm font-black leading-tight sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
             {round.words}
           </p>
         )}
