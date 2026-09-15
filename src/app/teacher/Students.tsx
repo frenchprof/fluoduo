@@ -304,7 +304,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
           {/* The syllabus heat-strip (patch 26): this learner's accuracy on
               every outcome, one glance. The same component /moi shows them. */}
           <HeatStrip className="mt-3" values={outcomeAccuracy(detail.responses)} done={new Set(p?.doneSios ?? [])} label={`${learner.name} — accuracy by outcome`} />
-          <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+          <div className="teacher-kpis mt-4">
             <Kpi label="XP" value={p?.xp ?? learner.board?.xp ?? 0} />
             <Kpi label="Gems" value={p?.gems ?? learner.board?.gems ?? 0} />
             <Kpi label="Streak" value={p?.streak ?? learner.board?.streak ?? 0} />
@@ -324,6 +324,7 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
               return (
                 <Kpi
                   label="Last sync"
+                  text
                   value={<span style={stale ? { color: "var(--tier-weak)" } : undefined}>{synced ? fmtWhen(new Date(synced)) : "never"}</span>}
                   sub={
                     stale
@@ -387,7 +388,28 @@ function StudentPanel({ learner, events, cached, onClose }: { learner: Learner; 
               <Section
                 id="sp:xp"
                 title="XP audit"
-                meta={<span className={`font-black ${syncOk && floorOk ? "text-emerald-700" : "text-rose-600"}`}>{syncOk && floorOk ? "✓ in sync, above floor" : "⚠️ check"}</span>}
+                /* SAY WHICH CHECK FAILED (Dan, 2026-09-15, pointing at this
+                   badge and asking what to do about it). It read « ⚠️ check »
+                   for BOTH faults, and they are not the same problem or the
+                   same fix:
+
+                     out of sync   the leaderboard publish is stale. Nothing is
+                                   wrong with the learner's XP; the learner
+                                   opens the app signed in once and it clears.
+                     below floor   the recorded answers imply more XP than the
+                                   learner holds — a real discrepancy worth
+                                   opening.
+
+                   A summary line that sends you into the fold to find out what
+                   it means is the fold doing the summary's job. Both can fire
+                   at once, and then it says so. */
+                meta={
+                  <span className={`font-black ${syncOk && floorOk ? "text-emerald-700" : "text-rose-600"}`}>
+                    {syncOk && floorOk
+                      ? "✓ in sync, above floor"
+                      : `⚠️ ${[!syncOk && "out of sync", !floorOk && "below floor"].filter(Boolean).join(" · ")}`}
+                  </span>
+                }
               >
               <div className={`mt-2 rounded-xl border-2 p-3 text-sm ${syncOk && floorOk ? "border-emerald-300 bg-emerald-50/60" : "border-rose-300 bg-rose-50/60"}`}>
                 <p className="mt-1 text-slate-700">
