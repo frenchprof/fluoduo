@@ -206,7 +206,7 @@ export function hintsFor(kind: TaskKind, src: HintSource): Rung[] {
 // authors a `cat` per item, so it keeps the older nudge → question →
 // scaffold → partial → answer sequence. Same enum, same evidence tagging.
 
-export function buildLadder(opts: { answer: string; topic?: string; category?: string }): Rung[] {
+export function buildLadder(opts: { answer: string; topic?: string; category?: string; english?: string }): Rung[] {
   const a = opts.answer ?? "";
   const rungs: Rung[] = [];
   if (opts.category) rungs.push({ text: `💡 ${opts.category}`, level: "nudge" });
@@ -215,6 +215,17 @@ export function buildLadder(opts: { answer: string; topic?: string; category?: s
     rungs.push({ text: `🔤 Une réponse possible commence par « ${a[0]?.toUpperCase() ?? ""} »`, level: "scaffold" });
     const skel = a[0] + " " + [...a.slice(1)].map(() => "_").join(" ");
     rungs.push({ text: `✏️ ${skel}  (${a.length} lettres)`, level: "partial" });
+    /* THE WHOLE SENTENCE IN ENGLISH, ONE RUNG BEFORE THE ANSWER (Dan,
+       2026-09-14: *"For the clues, as a last resort, give the full sentence in
+       English"*).
+       IT SITS HERE AND NOT HIGHER ON PURPOSE. Given early it is a translation
+       exercise and the French stops being read; given last it is the meaning a
+       learner needs when the skeleton still has not landed — and it is the
+       only rung that can rescue an item whose difficulty is the VOCABULARY
+       rather than the grammar. Still short of the answer: knowing the sentence
+       means « they don't like sweets » does not say whether the gap wants
+       « les » or « de ». */
+    if (opts.english) rungs.push({ text: `🇬🇧 ${opts.english}`, level: "partial" });
     rungs.push({ text: `✅ ${a}`, level: "answer" });
   }
   return rungs;

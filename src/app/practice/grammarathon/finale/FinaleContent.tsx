@@ -353,6 +353,7 @@ export default function FinaleContent() {
       answer: q.a[0] ?? "",
       topic: SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio,
       category: q.cat,
+      english: q.en,
     });
   }
   function clues(q: FinaleItem, level: number): string[] {
