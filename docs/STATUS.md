@@ -219,6 +219,46 @@ drilled: some decks gap `fr` and some gap `example`, and the English has to
 match the one on screen. Opt-in, so it changes nothing for the kinds that share
 that branch — on a typed card the English IS the prompt.
 
+## 15 Sep — the ★ leaves the top bar, because the 🤍 is what made it removable (fluoduo-main)
+
+**Dan, seeing the new heart beside the old star: *"I see it but why does it
+coexist with the star"*.** Because yesterday's change did half the job.
+
+    top bar   ☰  ← FluOLinGo  🚀  🔊  ⏻        no favourites control
+    band      …  🤍 / ❤️                        save THIS page
+    ☰ menu    ★ Favourites → /favourites        the list
+
+**THE ★ HAD ALREADY LOST BOTH OF ITS JOBS.** It went into the bar on 12 Sep
+because Dan asked where favourites live — *"At the top right next to their
+name"* — and at the time it was the app's ONLY favourites control: it starred
+the page AND opened the list. On 14 Sep the band's 🤍 took over the saving and
+this was cut back to a plain door. **That door is already in the ☰**, at Dan's
+own instruction (*"put Favourites in the burger grid menu in the yellow lesson
+strip"*), so what was left was two doors to one room, one of them spending the
+bar's last pixels — the reasoning that retired 🏠 on 12 Sep and ⌛ on 14 Sep.
+
+**HE ASKED FOR THIS ON 14 SEP AND IT WAS KEPT, DELIBERATELY.** *"maybe we can
+remove the history and favourites button too there"* — and the cost was
+reported at the time: the star was then the only way to add a favourite
+anywhere, so removing it would not have moved the feature to the menu, it would
+have removed the feature. **The heart is what made it removable**, and it
+should have gone in the same patch.
+
+`FavouriteStar.tsx` is DELETED, not merely unmounted. Both guides now say the
+list is in the ☰ rather than the bar.
+
+**verify400's CLAUSE IS INVERTED, NOT DELETED — the second check this week to
+have been guarding the wrong behaviour** (verify27's KeyNav clause was the
+first, yesterday). It required the star to be mounted in the bar and to sit
+before the account chip. It now requires the bar to carry NO favourites control
+and the ☰ to keep its door, and it fails in both directions: a bar that grows
+one again is the duplication returning, a menu that loses its cell leaves the
+list unreachable — which is exactly what kept the star alive on 14 Sep.
+
+**AND BREAK-TESTING CAUGHT MY OWN CHECK BEING TOO LOOSE.** `"<FavouriteHeart"
+in BAND` is a SUBSTRING test and passed on `<FavouriteHeartX`; it is a regex
+ending on `[\s/>]` now. A clause that cannot fail is not a clause.
+
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
