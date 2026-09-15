@@ -140,15 +140,15 @@ const MIDTERM: CuratedPath = {
       /* NO QUERY, AND THAT IS THE FIX RATHER THAN AN OMISSION. This step used
          to carry `?upto=30`, which was right against the old default and is
          now WRONG: `?upto=N` means "stops 1..N", so passing 30 here would put
-         the twelve stops the paper never asks about back into the draw. The
-         Finale's own default is `TESTED_STOPS` — the eighteen Dan named after
+         the thirteen stops the paper never asks about back into the draw. The
+         Finale's own default is `TESTED_STOPS` — the seventeen Dan named after
          auditing the paper — so the bare address is the scoped one, through
          this step and through every other door alike. */
       href: "/practice/grammarathon/finale",
       title: "GramMarathon — the Finale",
       does: "types a gap · only what the paper asks",
       minutes: 8,
-      why: "162 sentences across the eighteen stops the test actually asks about — nothing on the twelve it does not. Everything missed is queued automatically, which is what makes step 2 possible.",
+      why: "154 sentences across the seventeen stops the test actually asks about — nothing on the thirteen it does not. Everything missed is queued automatically, which is what makes step 2 possible.",
     },
     {
       id: "erroreview-now",
@@ -157,7 +157,7 @@ const MIDTERM: CuratedPath = {
       title: "ErroReview, straight away",
       does: "your own misses · while you still remember being unsure",
       minutes: 5,
-      why: "Every item is one you got wrong ten minutes ago. Highest value per minute on the path, and it beats guessing which goals to drill.",
+      why: "Every item is one you just got wrong. Nothing else on the path is this well aimed — it beats guessing which goals to drill, because step 1 has already found them.",
     },
     {
       /* ONE DOOR ACROSS SEVENTEEN DECKS (Dan, 2026-09-14, offered one mixed

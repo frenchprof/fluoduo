@@ -104,6 +104,7 @@ export default function GameGallery({
   emoji,
   name,
   entries,
+  breakOut,
 }: {
   /** CahierShell's `active` key. */
   activityKey: string;
@@ -113,6 +114,23 @@ export default function GameGallery({
   name: string;
   /** In course order. */
   entries: GalleryEntry[];
+  /**
+   * SEND THE DESTINATION TO THE WINDOW, NOT TO THIS FRAME (Dan, 2026-09-14,
+   * sending a shot of NumBus drawn inside the Numbers band: *"Numbers is now
+   * nesting numbus"*).
+   *
+   * Every station runs in an iframe since 7 Sep, so a gallery rendered from an
+   * `/embed` route IS the framed document — and a plain link navigates the
+   * frame. The game then draws its own whole notebook (site bar, coils, band)
+   * inside the gallery's band, which is still wrapped around it, and the
+   * address bar names the game while the band names the gallery.
+   *
+   * A PROP RATHER THAN ALWAYS-ON, because one caller is not framed:
+   * `/games/matching` renders this gallery directly, and there `_top` would
+   * only cost it a full page load in place of a soft route change. The three
+   * `/embed` callers pass it; that one does not.
+   */
+  breakOut?: boolean;
 }) {
   const [next, setNext] = useState<GalleryEntry | undefined>(undefined);
   // Which expert gates are open. Read in an effect (localStorage cannot be
@@ -202,6 +220,7 @@ export default function GameGallery({
             <p lang="fr" className="cahier-display mt-1 text-2xl font-black text-[color:var(--cahier-ink)]">{card.title}</p>
             <Link
               href={card.href}
+              target={breakOut ? "_top" : undefined}
               className="cahier-btn cahier-btn-primary mt-4 w-full justify-center text-lg font-black no-underline"
             >
               ▶ Play
@@ -258,6 +277,7 @@ export default function GameGallery({
                         accent={a}
                         unlocked={unlocked}
                         isNext={!!card && e.id === card.id}
+                        breakOut={breakOut}
                       />
                     ))}
                   </div>
@@ -277,7 +297,10 @@ function Tile({
   accent: a,
   unlocked,
   isNext,
+  breakOut,
 }: {
+  /** Send the door to the window rather than to this frame — see GameGallery. */
+  breakOut?: boolean;
   entry: GalleryEntry;
   accent: string;
   unlocked: string[];
@@ -306,6 +329,7 @@ function Tile({
   return (
     <Link
       href={e.href}
+      target={breakOut ? "_top" : undefined}
       /* The suggested set keeps its place in course order and is MARKED
          rather than moved: a learner who reads « Unité 2 » on the card needs
          to find that same set in the list, not discover it has jumped. */

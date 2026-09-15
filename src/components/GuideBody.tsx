@@ -140,7 +140,10 @@ const STEPS: Step[] = [
       // on 6 Sep (Map2DGrid.tsx: "there is no ✓ at all now — the fill says it");
       // a done stop is the pressed-down coin in its kind's wash, number kept.
       // Two learner guides copied the old line from here before it was noticed.
-      <>a done stop is <b>pressed flat</b> and paler; <b>★</b> saves any page</>,
+      /* The 🤍 replaced the ★ as the way a page is saved (Dan, 14 Sep). The
+         line has to name the CONTROL a learner will actually press, or it
+         sends them to the top bar for something that now lives on the strip. */
+      <>a done stop is <b>pressed flat</b> and paler; the <b>🤍</b> at the end of any coloured strip saves that page</>,
     ],
   },
 ];
@@ -151,10 +154,18 @@ const CONTINUE_STYLE =
 export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
   return (
     <>
-      {/* ONE SCREEN BEFORE ANYTHING OPENS (the long-pages rule). Five cards,
-          each one sentence or two, the title run into the line rather than
-          set above it — the first cut stacked title and text and ran to
-          1,350px on a phone; this one is measured to fit 844. */}
+      {/* EACH STEP IS A FOLD, AND THEY ALL START CLOSED (Dan, 2026-09-14:
+          *"can i suggest that, for the QuickGuide, each item be collapsable"*).
+
+          Five titles is the whole argument — select a goal, start where you
+          are, learn it, practise it, come back to what you missed — and it is
+          the argument that must fit one screen (the long-pages rule). The
+          detail under each is what you consult, so it folds.
+
+          NATIVE `<details>`/`<summary>`, per that rule: keyboard and screen
+          reader support come free, it needs no state, and it survives having
+          no JavaScript. The summary is not a bare chevron — it carries the
+          step's number and its title, which is what says what is behind it. */}
       <ol className="mt-1 flex flex-col gap-1">
         {STEPS.map((s, i) => (
           <li
@@ -162,6 +173,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
             className={`fluo-h-${s.hue} rounded-xl border-2 px-2.5 py-1`}
             style={{ borderColor: "var(--fluo-card-accent)", background: "var(--fluo-card-tint)" }}
           >
+            <details className="fluo-guide-step">
             {/* THE BADGE AND THE TITLE SHARE A ROW; EVERYTHING BELOW STARTS AT
                 THE CARD'S OWN LEFT EDGE (Dan, 2026-09-13: *"START THE BULLET
                 POINTS FROM THE VERY LEFT!"*, then *"those two boxes side by
@@ -178,7 +190,7 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                 the same stroke: every line below is wider by the badge column,
                 so it wraps less often. That is the point — the indent was
                 costing horizontal room on the device with least of it. */}
-            <div className="flex items-start gap-2">
+            <summary className="flex cursor-pointer list-none items-start gap-2">
               <span
                 /* On the ramp like the text beside it — a fixed 28px circle next
                    to type that grows on a desktop reads as a badge that stayed
@@ -195,9 +207,12 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                   for anything that must be legible fast. */}
               <p className="cahier-hand min-w-0 flex-1 text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">
                 <b className="cahier-body text-[1.3em] font-black">{s.title}</b>
-                {s.what ? <> {s.what}</> : null}
               </p>
-            </div>
+              <span aria-hidden className="fluo-guide-chev mt-0.5 shrink-0 text-[13px] font-black" style={{ color: "var(--fluo-card-accent)" }}>▾</span>
+            </summary>
+            {s.what && (
+              <p className="cahier-hand mt-0.5 text-[15px] font-normal leading-snug text-[color:var(--cahier-ink)]">{s.what}</p>
+            )}
             {/* THE WAYS IN, AS DAN WROTE THEM:
                   · via the map (home page) in 3D or 2D view
                   · via the menu: enter it at the top. then OK
@@ -237,32 +252,25 @@ export default function GuideBody({ onContinue }: { onContinue?: () => void }) {
                 ))}
               </div>
             )}
+            </details>
           </li>
         ))}
       </ol>
 
-      {/* TWO GUIDES, ONE DOOR (Dan, 2026-09-13: *"Both should live under SOS
-          HELP, although one should be the abridged version essential to begin,
-          while the other has the details"*).
+      {/* THE DOOR TO THE FULL GUIDE MOVED INTO THE BAND (Dan, 2026-09-14:
+          "the link to the full guide ... to be made more prominent in the
+          yellow colored strip within that blank space"), and this line went
+          with it rather than staying behind it.
 
-          The five steps above ARE the QuickStart — the abridged half — and the
-          full manual is a line under them rather than a second tile, because
-          Help already ruled out opening onto another grid (9 Sep: *"help should
-          open to a 'How to use' manuel, not another grid"*). One door, the
-          essential thing open, the detail one tap away: the collapse rule's
-          shape, applied to a pair of documents instead of a pair of sections.
+          Two doors to one page on one screen is the HelpDot fault, and it is
+          the reason Help itself was cut down in September: a learner who sees
+          « Full guide » twice does not read it as emphasis, they read it as two
+          different things and have to check. The band's chip is the prominent
+          one Dan asked for, so this is the copy that goes.
 
-          A PLAIN <a>, NOT next/link: /manual is a standalone HTML page in
-          public/, outside the app's router — the searchable wiki with every
-          activity, the whole economy and all fifty goals. next/link would try
-          to prefetch a route that does not exist. */}
-      <p className="mt-2 text-[13px] leading-snug text-[color:var(--cahier-ink-soft)]">
-        <a href="/manual" className="font-black text-[color:var(--cahier-accent)]">
-          The full guide
-        </a>{" "}
-        — every activity, every number, all fifty goals.
-      </p>
-
+          What the line carried that the chip does not — "every activity, every
+          number, all fifty goals" — is on the chip's own title, where it costs
+          the page nothing. */}
       {onContinue ? (
         <button type="button" onClick={onContinue} className={CONTINUE_STYLE}>
           <span aria-hidden>▶</span> Continue

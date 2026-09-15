@@ -96,8 +96,10 @@ export default function Page() {
                 {current ? `${activity(current.activityKey)?.emoji ?? "📋"} ${current.title}` : "✓ Path complete"}
               </p>
               <div className="fluo-path-next-row">
+                {/* `_top`: this document is the frame, and a drill drawn
+                    inside it arrives wearing two notebooks. */}
                 {current && stepHref(current) && (
-                  <Link href={stepHref(current)!} className="neo-key fluo-path-next-go">
+                  <Link href={stepHref(current)!} target="_top" className="neo-key fluo-path-next-go">
                     ▶ Continue
                   </Link>
                 )}
@@ -204,6 +206,7 @@ function Tier({ path, steps, run, current }: {
                     <Link
                       key={s.id}
                       href={href}
+                      target="_top"   /* see above */
                       className="neo-key fluo-path-step-go"
                       /* The edge follows the fill, so a finished step is
                          outlined in the win ink and a waiting one in the

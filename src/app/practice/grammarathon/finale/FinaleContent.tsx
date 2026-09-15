@@ -89,16 +89,16 @@ const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCo
  *    2  cap the COMPONENT       `DEFAULT_UPTO = 30`. Removed units 3 and 4
  *       through every door — and the paper still felt wrong, because
  *       `drawDaily`'s 360° floor deals ONE QUESTION FROM EVERY STOP IN RANGE
- *       before weighting anything. Thirty stops in range, eighteen on the
- *       paper: **twelve of every fifty questions off-target by construction**.
- *       Measured: 164 of the 236 in-range items drilled nothing the test asks.
- *    3  name the STOPS          the list above. The floor now covers eighteen
+ *       before weighting anything. Thirty stops in range, seventeen on the
+ *       paper: **thirteen of every fifty questions off-target by construction**.
+ *       Measured: 80 of the 234 in-range items drill nothing the test asks.
+ *    3  name the STOPS          the list above. The floor now covers seventeen
  *       stops that are all on the paper, and the weighted remainder can only
- *       land on those same eighteen.
+ *       land on those same seventeen.
  *
  *  The lesson under it: a RANGE is a guess about what a test covers; the
- *  eighteen are the answer to reading the test. `content/finale.ts` carries
- *  the list and the reasoning for each of the twelve stops left out.
+ *  seventeen are the answer to reading the test. `content/finale.ts` carries
+ *  the list and the reasoning for each of the thirteen stops left out.
  *
  *  `?upto=50` still gives the whole-course paper back, unchanged, and
  *  `?upto=30` still means "stops 1–30" for anyone who wants the old range.

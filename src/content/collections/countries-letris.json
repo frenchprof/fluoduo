@@ -380,6 +380,20 @@
         "gé",
         "rie"
       ]
+    },
+    {
+      "id": "countries-letris-26-suede",
+      "fr": "Suède",
+      "en": "Sweden",
+      "emoji": "🇸🇪",
+      "tags": [
+        "col:la",
+        "region:europe"
+      ],
+      "syllables": [
+        "Suè",
+        "de"
+      ]
     }
   ],
   "gameConfig": {

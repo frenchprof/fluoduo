@@ -40,7 +40,7 @@ the app's.
 Numbered 800 and not 770: the frontier was at 760 and a number next to it gets
 claimed again while CI runs (AGENTS.md, 7 Sep).
 
-Run from the repo root:  python3 verify/verify800-key-outline.py
+Run from the repo root:  python3 verify/verify900-key-outline.py
 """
 import os
 import subprocess

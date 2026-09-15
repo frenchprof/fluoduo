@@ -385,6 +385,21 @@
         "mp": "algériens",
         "fp": "algériennes"
       }
+    },
+    {
+      "id": "nat-26-suede",
+      "fr": "suédois / suédoise",
+      "en": "Swedish (m / f)",
+      "emoji": "🇸🇪",
+      "tags": [
+        "col:la"
+      ],
+      "nat": {
+        "ms": "suédois",
+        "fs": "suédoise",
+        "mp": "suédois",
+        "fp": "suédoises"
+      }
     }
   ],
   "gameConfig": {

@@ -46,11 +46,22 @@
  * duplication is deliberate, not overlooked.
  */
 import { useEffect, useRef, useState } from "react";
+import type { GuidedStep } from "@/content/hints";
 import { createPortal } from "react-dom";
 
-/** A step that points at something. `selector` is a real CSS selector against
- *  the live page — the control the learner must actually use. */
-export type GuidedStep = { text: string; selector: string };
+/** A step that points at something. ONE DECLARATION, in `content/hints.ts`
+ *  where the rows that use it live — this file used to declare its own copy of
+ *  the same shape, and a field added to one of them (`optional`, below) simply
+ *  did not exist on the other. */
+export type { GuidedStep } from "@/content/hints";
+
+/** Can the learner see this step's control right now? Exported for
+ *  `ActivityFirstRun`, which asks the same question of the same selectors one
+ *  step earlier — on the card, before any of them is walked. */
+export function targetVisible(selector: string): boolean {
+  if (typeof document === "undefined") return false;
+  return [...document.querySelectorAll(selector)].some(isOnScreen);
+}
 
 type Box = { top: number; left: number; width: number; height: number };
 

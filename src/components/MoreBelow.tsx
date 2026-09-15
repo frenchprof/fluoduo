@@ -53,10 +53,22 @@ import { useEffect, useRef, useState } from "react";
  *  stray pixels of rounding must not keep the cue on screen forever. */
 const FLOOR = 24;
 
-/** How tall the band plus its arrows actually stand, measured on the built app.
- *  Used only to ask what the cue would cover — it is not a layout size, so it
- *  is not on the type ramp and does not want to be. */
-const BAND_H = 96;
+/**
+ * THE ROOM THE CUE RESERVES AT THE FOOT OF THE SCROLLER (Dan, 2026-09-14:
+ * *"why is 'NEXT PART IS BELOW' covering the tiles partialy??"*).
+ *
+ * It rides the bottom edge as an overlay, so whatever the learner has scrolled
+ * to sits UNDER it. Measured at 430x860 before this: ConjugaZone's « Questions
+ * → » key was covered by 40px — its whole height — and goal 23's WorDrill and
+ * ComposeIt tiles by 5px each. A cue that hides the control it is pointing
+ * past is worse than no cue.
+ *
+ * So the scroller gets that much padding at its foot while the cue is up, and
+ * the content can always be scrolled clear of it. `read` subtracts the same
+ * number, or the padding would be its own "more below" — the exact loop the
+ * zero-height rail below was written to escape.
+ */
+const RESERVE = 72;
 
 /** The nearest ancestor that actually scrolls.
  *
@@ -88,51 +100,62 @@ function scrollerOf(from: Element | null): HTMLElement | null {
   return null;
 }
 
-export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: string }) {
+export default function MoreBelow({
+  label = "NEXT PART IS BELOW",
+  flow,
+}: {
+  label?: string;
+  /**
+   * SIT IN THE SECTION'S OWN SPACE INSTEAD OF FLOATING OVER IT (Dan,
+   * 2026-09-14: *"why is 'NEXT PART IS BELOW' covering the tiles
+   * partialy??"*).
+   *
+   * The overlay is right where content flows past the bottom edge — a lesson
+   * panel, a conjugation column — because there is no empty space to sit in
+   * and the fade makes it legible over the last line. A SNAP SECTION is the
+   * opposite: it is a fixed screen with the card pinned to the top and real
+   * room underneath, so floating puts the band on goal 23's WorDrill and
+   * ComposeIt tiles when it could simply stand below them. Measured at 430px:
+   * 52px of overlap on both.
+   *
+   * In flow it is the section's last child with `margin-top: auto`, which is
+   * the bottom of the screen and nothing else's business.
+   */
+  flow?: boolean;
+}) {
   const anchor = useRef<HTMLDivElement>(null);
   const [more, setMore] = useState(false);
 
   useEffect(() => {
     const root = scrollerOf(anchor.current);
     if (!root) return;
-    /* THE CUE NEVER COVERS A CONTROL, and this clause is here because it did.
-     *
-     * Dan, 2026-09-14, on ComposeIt: *"the interface for this activity is
-     * completely OFF !!"*. Driven at 1280px, the band was drawn across the
-     * « Présenter » chip grid, hiding « Mon voisin », « Ma cousine » and
-     * « Un camarade de classe » — the phrases the card had just told him to
-     * tap. The wrapper is `pointer-events-none`, so the chips were still
-     * clickable; they were simply invisible, which is worse than unclickable
-     * because nothing says why.
-     *
-     * It broke the collapse rule's own last line — *"never collapse the only
-     * copy of something a learner needs to answer the question in front of
-     * them"* — and it broke it on a surface I added the cue to this morning,
-     * in one sweep, without looking at each one.
-     *
-     * SO THE TEST IS GEOMETRIC, NOT A LIST OF SURFACES. A list would be right
-     * today and stale at the next drill. The band knows where it will land, so
-     * it asks: is a control sitting there? If yes it stays hidden — the
-     * scrollbar and the content itself still say there is more, and a learner
-     * who cannot see the chips has a worse problem than one who must scroll. */
-    const anchorEl = anchor.current;
-    const coversAControl = () => {
-      const rail = anchorEl?.getBoundingClientRect();
-      if (!rail) return false;
-      const top = rail.bottom - BAND_H;
-      for (const el of Array.from(
-        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, [role='button']"),
-      )) {
-        const r = el.getBoundingClientRect();
-        if (r.width < 4 || r.height < 4) continue;
-        if (r.bottom > top && r.top < rail.bottom && r.right > rail.left && r.left < rail.right) return true;
-      }
-      return false;
-    };
+    /* THE ROOM GOES ON THE CUE'S OWN PARENT, NOT ON THE SCROLLER, and the
+       difference is the snap feed. SnapFeed draws one of these inside EVERY
+       full-height `<section>`, so padding the scroller once at its foot leaves
+       every section but the last still covered — measured: goal 23's WorDrill
+       and ComposeIt tiles were under the cue by 52px. Padding the section
+       gives each one its own strip, and because a snap section is a fixed
+       height that costs no scroll length at all.
+
+       PAY FOR THE ROOM, AND GIVE IT BACK on unmount, so a panel that stops
+       drawing the cue does not keep a gap where it used to be. */
+    /* IN FLOW THE CUE ALREADY HAS ITS OWN ROW, so there is nothing to
+       reserve — padding the section on top of that would push the card up for
+       a band that is not floating over it. */
+    const host = (anchor.current?.parentElement as HTMLElement | null) ?? root;
+    const had = host.style.paddingBottom;
+    const before = root.scrollHeight;
+    if (!flow) host.style.paddingBottom = `calc(${had || "0px"} + ${RESERVE}px)`;
+    /* HOW MUCH THAT ACTUALLY COST, measured rather than assumed. On an
+       auto-height column it adds RESERVE to the scroll length and must be
+       subtracted back, or the padding is its own "more below" and the cue
+       never turns off — the loop the zero-height rail was written to escape.
+       On a fixed-height snap section it adds nothing, and subtracting a
+       constant would switch the cue off a screen early. */
+    const grew = Math.max(0, root.scrollHeight - before);
 
     const read = () => {
-      const below = root.scrollHeight - root.scrollTop - root.clientHeight > FLOOR;
-      setMore(below && !coversAControl());
+      setMore(root.scrollHeight - root.scrollTop - root.clientHeight - grew > FLOOR);
     };
     read();
     root.addEventListener("scroll", read, { passive: true });
@@ -161,8 +184,29 @@ export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: st
       root.removeEventListener("scroll", read);
       ro.disconnect();
       mo.disconnect();
+      if (!flow) host.style.paddingBottom = had;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `flow` is a
+    // constant of the call site, never a value that changes under a learner.
   }, []);
+
+  /* TAPPING IT TAKES YOU THERE (Dan, 2026-09-14: *"and that NEXT PART IS BELOW
+     SHOULD BE CLICKABLE TO TAKE YOU BELOW"*).
+     
+     THIS REVERSES THIS FILE'S OWN RULING — it read "it is a LABEL, not a
+     button: the gesture is the scroll, and a key you can press that does
+     nothing is worse than no key". The premise was right and the conclusion
+     was Dan's to draw: a key that DOES something is better than either. It
+     looks like a key (`.neo-key`), so a learner was always going to press it.
+
+     A SCREENFUL LESS A LITTLE, not all the way to the end: the point is to
+     move to the next part, and landing at the very bottom would skip whatever
+     is between. `behavior: "smooth"` so the reader keeps their place. */
+  const goDown = () => {
+    const root = scrollerOf(anchor.current);
+    if (!root) return;
+    root.scrollBy({ top: Math.max(root.clientHeight - RESERVE, 120), behavior: "smooth" });
+  };
 
   return (
     /* ZERO FLOW HEIGHT, and this is not a tidy-up — without it the cue can
@@ -173,11 +217,33 @@ export default function MoreBelow({ label = "NEXT PART IS BELOW" }: { label?: st
        80px remaining — the band's height to the pixel — and stayed on screen
        forever, pointing at nothing. The wrapper is a zero-height rail now and
        the band hangs off it. */
-    <div ref={anchor} className="pointer-events-none sticky bottom-0 z-[2] h-0" aria-hidden={!more}>
+    <div
+      ref={anchor}
+      className={flow
+        /* `pb-16` CLEARS THE FLOATING STOP CHIP. A snap feed's section ends
+           where the screen does, and the goal page parks its « 🎯 24 » chip on
+           that same edge — measured at 430px, the band landed straight on it.
+           4rem is the chip's height plus air, in rem so it grows with the type
+           rather than being pinned to a pixel. */
+        ? "mt-auto flex shrink-0 flex-col items-center pb-16"
+        : "pointer-events-none sticky bottom-0 z-[2] h-0"}
+      aria-hidden={!more}
+    >
       {more && (
-        <div className="fluo-more-wrap">
-          <p className="neo-key fluo-nextq fluo-more-band">{label}</p>
-          <div className="fluo-nextq-arrows" aria-hidden>
+        /* The RAIL stays `pointer-events: none` when it FLOATS — it spans the
+           scroller's whole width and would otherwise eat taps on anything
+           beside the cue. In flow it occupies only its own row, so it does
+           not need to give anything back. */
+        <div className={flow ? "flex flex-col items-center" : "fluo-more-wrap pointer-events-none"}>
+          <button
+            type="button"
+            onClick={goDown}
+            aria-label={`${label} — go there`}
+            className="neo-key fluo-nextq fluo-more-band pointer-events-auto"
+          >
+            {label}
+          </button>
+          <div className="fluo-nextq-arrows pointer-events-none" aria-hidden>
             <span>↓</span><span>↓</span><span>↓</span>
           </div>
         </div>

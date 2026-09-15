@@ -504,6 +504,11 @@ export default function DrillShell({
         <div className="cahier-binding" aria-hidden />
       {(act || famKey) && (
         <PageBand
+          /* The heart on the band asks which page this is rather than guessing
+             from the path: a drill's route (`/practice/say-it/<deck>`) and its
+             registry door (`/practice/wordrill`) are different strings for the
+             same activity — see lib/favouriteHere. */
+          activeKey={activity}
           title={act?.name ?? familyName(famKey!)}
           /* The activity's own glyph, from the registry (Dan, 11 Sep: "we have
              fixed emojis for them") — never spelt here, so 🐞/🤹/🛠️/🔐 stay

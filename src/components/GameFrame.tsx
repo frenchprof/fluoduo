@@ -37,7 +37,7 @@
  * Tokens only (verify19b ratchet).
  */
 
-import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
@@ -146,6 +146,52 @@ export default function GameFrame({
   // with the heading band above it and a key on the bar to take it full.
   const [full, setFull] = useState(false);
 
+  /* ASK THE BROWSER FOR THE WHOLE SCREEN, NOT JUST THE FRAME (Dan, 2026-09-14:
+     "the games that appear within the framing, offer a full-screen mode to play
+     in full screen please").
+
+     THE KEY WAS ALREADY HERE AND ALREADY WORKED — and that is precisely why it
+     read as broken. `full` draws a `position: fixed` overlay, and inside an
+     iframe `fixed` positions against the FRAME's viewport. Measured on the
+     built app: LexicaLocker's frame is 361x722 inside a 390x844 phone, so
+     "full screen" covered 361x722 and left the notebook, the site bar and the
+     browser's own chrome untouched. The learner pressed it and almost nothing
+     moved.
+     
+     So the overlay stays — it is what gives the game the frame's whole box, and
+     it is the ONLY thing that works on an iPhone, where Safari refuses element
+     fullscreen entirely — and the real screen is asked for ON TOP of it, where
+     the browser allows it. EmbedFrame carries `allow="fullscreen"`, without
+     which this call is refused from inside a frame.
+     
+     EVERY CALL IS GUARDED AND NOTHING THROWS ON REFUSAL. requestFullscreen
+     rejects when the gesture is not trusted, when the host has not granted it,
+     and on every iPhone; each of those must leave the learner with the overlay
+     rather than an error. */
+  const toggleFull = useCallback(() => {
+    setFull((f) => {
+      const next = !f;
+      try {
+        const el = document.documentElement;
+        if (next && !document.fullscreenElement) void el.requestFullscreen?.()?.catch(() => {});
+        else if (!next && document.fullscreenElement) void document.exitFullscreen?.()?.catch(() => {});
+      } catch {
+        /* unsupported or refused — the overlay below is the whole feature then */
+      }
+      return next;
+    });
+  }, []);
+
+  /* THE BROWSER CAN LEAVE FULL SCREEN WITHOUT ASKING US — Escape, the system
+     gesture, a tab switch. Without this the bar would still show ⤡ and the
+     overlay would still be up while the window was back to normal, which is
+     the two-states-disagreeing bug in a new costume. */
+  useEffect(() => {
+    const sync = () => { if (!document.fullscreenElement) setFull((f) => (f ? false : f)); };
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
   // A SIDEWAYS PHONE HAS NO ROOM FOR A PAGE AROUND A GAME (Dan, 7 Sep: "and
   // remember the landscape modes"). Measured on an 844×390 phone: the top bar
   // and the heading band take the first 120px, leaving 270; VocabulaRain's
@@ -247,7 +293,7 @@ export default function GameFrame({
         onMenu={() => setMenuOpen(true)}
         menuOpen={menuOpen}
         full={full}
-        onToggleFull={() => setFull((f) => !f)}
+        onToggleFull={toggleFull}
       />
 
       <div className="game-frame-body flex min-h-0 flex-1 flex-col lg:flex-row">

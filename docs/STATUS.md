@@ -6,7 +6,60 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
-## 14 Sep — the path now stays inside the test: stops 1–30 (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376, NOT merged)
+
+### 15 Sep · three things Dan asked for, in his order
+
+**1 · NO DURATION IS PRINTED ON THE PATH.** *"No need to give a time duration
+for those activities."* Six figures gone — « 9 steps · 64 min », « 63 min
+left », « ▶ Continue · 8 min », the per-step « 8 min », « 9 more · 71 min », and
+the optional blurb about two hours. `minutesOf`, `minutesLeft` and
+`.fluo-path-step-min` deleted with them.
+
+`PathStep.minutes` **stays in the data** as the author's budget: it is what
+draws the essential/optional line by marks per minute. *An estimate an author
+uses to decide is not the same object as a number a learner is shown.*
+`verify760` clause 10 reads the two path COMPONENTS, not `paths.ts`, precisely
+because the field may exist and only the rendering is banned.
+
+**2 · G-COMPRIS! — reading comprehension, new.** *"Call the reading exercises :
+G-Compris!"* Ten ordinary documents, 43 questions, in 🛠️ FluOLin Texts (the
+family renamed from « Write » the same day so a text you *read* would have
+somewhere to be). No question is answered by matching a string: « marocaine »
+is asked back as the country, « son frère » as *whose* brother. Units 0–2 only.
+Routes `/gcompris` and `/gcompris/<id>`, both framed.
+
+**3 · THE PATH READS ONE.** « Compréhension écrite » is a section of the paper
+and nothing on the path read a text at all. Step 7 is « Une page de journal »,
+addressed to the TEXT and never to the shelf — a learner who starts at a
+chooser finishes at `/gcompris/<text>`, so a step pointed at the chooser could
+never tick. Ten steps now.
+
+**MERGED `origin/main` INTO THE BRANCH** (Dan: *"it is missing some of the
+previous merges like the heart shape in the strip"* — the PR preview was cut
+before #370–#382 landed). Eight conflicts, three of them real:
+
+- **`.neo-key`'s outline.** Two branches answered Dan's *"the buttons are
+  missing the outlined top surface"* at once — main's 1px `inset 0 0 0 1px`
+  ring and this branch's `border: 2px solid var(--key-edge)`. **Main's ring
+  wins and is better** (no layout cost, follows the radius, draws over the
+  white lip); `--key-edge` is threaded through its colour so a caller can still
+  tint the hairline. `verify37`'s clause re-pointed at the ring.
+- **`MoreBelow.tsx` was an add/add conflict** — main landed the same cue fix as
+  #379 while this branch built it. Main's taken whole.
+- **`verify800` collided**: main's `verify800-handhold-points.py` against this
+  branch's `verify800-key-outline.py`. The seventh such collision. Renumbered
+  to **900**, with headroom, per AGENTS.md.
+
+**AND THREE NUMBERS WERE STALE IN PROSE.** The Finale's docstrings still said
+« eighteen stops · 162 items · twelve left out » from before Dan cut stop 12.
+Recounted from the data: **seventeen stops · 154 items · thirteen left out**,
+and 80 of the 234 in-range items are off-target. The list is code and the
+paragraph is not, which is the whole reason it drifted.
+
+  tsc clean · build green · **147 verify** · shots of /path, /gcompris and a
+  scene walked in the built app at 390px and 1280px
+
 
 **Dan, opening the curated path: *"I just saw the curated exercises are not at
 all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to 30
@@ -106,6 +159,262 @@ of it. Say so in the letter rather than build one.
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
+## 14 Sep — « /50 » off the map, both guides fold, and the nesting Dan saw is older than today (fluoduo-main)
+
+**« /50 » WAS NOT ADDED YESTERDAY; THE WELL AROUND IT WAS.** Dan: *"the
+numbered stop-indicatpr, why on earth did you add '/50' it pushed down my
+map"*. The total has been in `StopBookmark` since #211 — but the 14 Sep patch
+put that number in a `.neo-well` so a learner could see it is editable, and a
+well has padding. Well + 🎯 + « /50 » is what grew the row at the top of the
+map.
+
+The denominator goes by **Dan's own 1 Sep rule** — *a count earns its place
+when it describes what you cannot see* — and the map is fifty stops on screen.
+`totalClassName` is optional now rather than deleted: the total is right
+wherever the fifty are NOT on screen, which is what that component is for
+elsewhere. The well's padding comes back down with it.
+
+**THE 2D/3D SWITCH, A THIRD TIME:** 1.48 → 1.34, knob 0.68 → 0.64.
+65 → 59px wide on a phone, 73 → 66 on a desktop. **Height untouched at 44px**
+throughout — that is the finger, and a floor is not a size (verify270).
+
+**BOTH GUIDES FOLD** (Dan: *"can i suggest that, for the QuickGuide, each item
+be collapsable"*, then *"and the other gudie"*). QuickStart is five native
+`<details>`, all closed — the five titles ARE the argument and they fit one
+screen. The manual is its contents grid over eleven closed bands: 2497px
+instead of scrolling forever.
+
+**A CONTENTS LINK HAD TO OPEN WHAT IT NAMES**, or the fold reads as a broken
+link: an anchor into a closed `<details>` scrolls to a band with nothing under
+it. Twelve lines of script in the generated page do that, and the page still
+works with the script blocked — every section is one tap from open.
+
+## 14 Sep — « Numbers is now nesting NumBus », and it is NOT new (fluoduo-main)
+
+**Dan: *"Numbers is now nesting numbus - what did you break"*.** Nothing, and
+this was checked rather than asserted: the tree at `8612ec3` — what was live
+this morning, before all four of today's merges — was built and driven through
+the same click. Identical:
+
+    main  /games/numbus   band "🔢 Numbers"   childIframes=1
+    frame /games/numbus   band "🎮 NumBus"
+
+**THE CAUSE IS THE 7 SEP FRAMING, AND IT IS STILL OPEN.** `/games/numbers`
+runs in a frame, and its two tiles are ordinary links to the FULL
+`/games/numbus` page rather than to an embed route. So a tile navigates the
+FRAME; NumBus draws its own whole notebook inside it; the outer Numbers band
+stays wrapped around it, and the address bar says `/games/numbus` while the
+band says Numbers.
+
+**The fix is deliberately not in this patch**: the tiles have to break out to
+the top document, the way `useRailSwipe` already posts its destination up to
+`EmbedFrame`. Every framed hub whose tiles point at full pages has the same
+shape, so it wants doing once rather than per hub.
+
+**STILL OPEN FROM THE SAME HOUR:** Dan asked that *"for items that are
+scrollable side ways, can we have a buttion to expand them landscape wise"*.
+Not started.
+## 14 Sep — a hub's door draws ONE notebook, not two (fluoduo-main)
+
+**Dan, sending a photograph of one phone screen carrying TWO site bars, TWO
+bands and two sets of coils: *"Numbers is now nesting numbus - what did you
+break"*.** Nothing — and that was checked before it was answered. The tree at
+`8612ec3`, what was live that morning before any of the day's merges, was built
+and driven through the same click and behaved identically. **The fault was
+older than the question, which is exactly why it needed a check and not just a
+fix.**
+
+**WHAT IT WAS.** Every station has run in an iframe since 7 Sep, so a hub
+rendered from an `/embed` route IS the framed document — and a plain `<Link>`
+there navigates the FRAME. A whole page loaded into a frame brings its own site
+bar, coils and band, inside the band still wrapped around it:
+
+    before   main  /games/numbus   band "🔢 Numbers"   childIframes=1
+             frame /games/numbus   band "🎮 NumBus"
+    after    main  /games/numbus   band "🎮 NumBus"    childIframes=0
+
+`target="_top"` sends the destination to the window, which is where a whole
+page belongs. It costs a full load instead of a soft route change; a page drawn
+twice costs more than that.
+
+**IT WAS NEVER ONLY NUMBERS.** Four places had the same shape: the Numbers hub,
+ErroReview's framed page, the path map's step keys, and `GameGallery` (three
+framed callers). **A PROP, NOT ALWAYS-ON** — `/games/matching` renders the same
+gallery UNFRAMED, and there `_top` would only cost it a soft navigation.
+
+**verify840 DRIVES IT, and a grep could not.** A grep for `target="_top"` tests
+the FIX, not the FAULT: it passes on the next hub that grows a door without
+one. The check clicks a real door on each hub and then COUNTS NOTEBOOKS — one
+band, naming where you landed rather than where you left, and no document
+hosting another. Break-tested by removing the fix: it goes red naming both
+symptoms at once. A walk whose door needs a live run (`/path`'s ▶ Continue) is
+skipped, and a floor of three real clicks stops that leniency swallowing the
+scan.
+
+**AND A CLASS OF FALSE ALARM IS GONE.** The driven scans bound fixed ports, so
+two running at once reported the fault they check for instead of a busy socket
+— it cost two wasted diagnoses today. They ask the OS for a port now.
+## 14 Sep — 🤍 at the end of every coloured band (fluoduo-main)
+
+**Dan: *"can you put 🤍 at the end of each colore band. When users tap on it,
+they favourite it and it becomes ❤️. Update the guide too"*, then, when the ★
+came up: *"that means the mention about star as favourite should now be removed
+or replaced or changed"*.**
+
+**THE WORK SPLITS, and that is the whole design:**
+
+    band 🤍 / ❤️   favourite THIS page, and unfavourite it
+    bar  ★         open your favourites, always, one tap
+
+The ★ used to do both — tap to star, tap again once starred to open the list,
+long-press for the list — three behaviours on one glyph, two of them invisible.
+That double duty only existed because it was the app's ONLY favourites control
+and the list had to be reachable somehow. With a heart on every band it becomes
+a second control doing the first one's job on the same screen, which is the
+two-doors fault Help was cut down for in September.
+
+**IT SITS AFTER THE GOAL CHIP**, which reverses PageBand's own note that the
+chip "stays the rightmost object": the chip is a LABEL and the heart is a
+CONTROL, and the end of the strip is where a control that acts on the whole
+page belongs.
+
+**A FAVOURITE NEVER POINTS AT AN /embed ROUTE.** Every station runs in an
+iframe, so a control drawn inside the frame reads the FRAME's path — and
+`/tts/embed` is a chrome-less document with no site bar and no way back. The
+strip is in `canonicalHref`, so the heart, the ★ and anything added later
+cannot disagree about it.
+
+**A BAND THAT CARRIES A KEY NOW DROPS ITS EMOJI**, and that came out of driving
+it — after a first attempt that an existing check refused, correctly. At 430px the guide's strip is 398px and its four parts — ✕, title, « 📖
+Full guide here », 🤍 — wanted more, so the title truncated to « Gui… ». Of the
+two things in a title the NAME is what the band is for and the glyph is
+decoration, and 🧑‍🏫 is a ZWJ sequence costing a third of the title's width.
+Only bands with a `right` key are affected; every other band keeps its emoji.
+Measured across fifteen routes at 390px and 430px: **0 truncated titles**.
+
+**THE FIRST ATTEMPT WAS A FLOOR UNDER THE TITLE, AND verify82 WAS RIGHT TO
+REFUSE IT.** `min-w-0` on that title is not styling — it is what lets the title
+shrink and truncate instead of pushing the row wider, which is Dan's 1 Sep rule
+that every strip is one line and the same thickness. A `min-w-[5.5rem]` floor
+bought two characters and cost the rule. Dropping the emoji does the whole job
+on its own, which is why the floor is gone rather than made smaller.
+
+**EVERY PLACE THAT TAUGHT THE OLD GESTURE WAS CHANGED, not just the guide** —
+`docs/GUIDE.md`'s top-bar line and its Favourites bullet, QuickStart's step 5,
+and the Favourites page's own empty state, which said *"Tap ☆ at the top right"*
+and would have sent a learner to tap the very button they were standing on.
+
+## 14 Sep — the « NEXT PART IS BELOW » cue stops covering things, and takes you there (fluoduo-main)
+
+**Dan: *"why is 'NEXT PART IS BELOW' covering the tiles partialy??"*, then
+*"and that NEXT PART IS BELOW SHOULD BE CLICKABLE TO TAKE YOU BELOW"*.**
+
+**HE WAS RIGHT, AND THE GOAL PAGE WAS WORSE THAN THE COMPLAINT SAID.** Driven
+at 430x860 before this: ConjugaZone's « Questions → » key was covered by 40px —
+its whole height — and goal 23's WorDrill and ComposeIt tiles by 52px, with
+**two cues on screen at once**, because SnapFeed draws one per section.
+
+**TWO SHAPES, TWO ANSWERS, and that is the whole fix:**
+
+- **Where content flows past the bottom edge** (a lesson panel, a conjugation
+  column) the floating band is right — there is no empty space to sit in and
+  the fade is what keeps it readable over the last line. It simply never
+  RESERVED room. It now pads the foot of its own column while it is up, and
+  subtracts exactly what that padding cost, measured (`grew`) rather than
+  assumed — or the padding is its own "more below" and the cue never turns off,
+  which is the loop the zero-height rail was already written to escape.
+- **A snap section is the opposite**: a fixed screen with the card pinned to
+  the top and real room underneath. Floating there put the band ON the tiles
+  when it could stand below them. `flow` makes it the section's last child with
+  `margin-top: auto`, and because the section is a fixed height that costs no
+  scroll length at all. `pb-16` clears the goal page's floating « 🎯 24 » chip,
+  which sits on the same edge.
+
+**IT IS A BUTTON NOW**, and that REVERSES MoreBelow's own ruling — *"it is a
+LABEL, not a button: the gesture is the scroll, and a key you can press that
+does nothing is worse than no key"*. The premise was right and the conclusion
+was Dan's to draw: it looks like a `.neo-key`, so a learner was always going to
+press it, and a key that DOES something beats both. It scrolls a screenful less
+the reserve, smoothly, so the reader lands on the next part rather than at the
+end. Measured on MneMemo: scrollTop 681 → 1354.
+
+## 14 Sep — GramMarathon's last clue is what the sentence MEANS, and the ladder was capped at two (fluoduo-main)
+
+**Dan: *"for grammarathon, please add as a final clue: the English rendering of
+the intended sentence"*.** The cloze ladder now runs:
+
+    ?  1   💡 ← avoir
+    ?  2   ✏️ o _ _
+    ?  3   🇬🇧 « They are thirsty. »        ← new, for « Ils ___ soif. »
+    ?  →   REVEAL
+
+**IT IS LAST ON PURPOSE.** A learner told what the sentence MEANS can usually
+reason the missing word out, so giving it earlier would skip the work the card
+exists to make them do. `level: "partial"`, not `"answer"` — it is the
+strongest hint short of one.
+
+**AND BUILDING IT FOUND A CAP THAT ONLY DRIVING THE GAME COULD SHOW.**
+`createLadder` did `hintLevels.slice(0, 2)`. The rung was returned by
+`hintsFor`, counted in the logs and **unreachable**: driven, the ? went dead
+after the skeleton. A cap that throws away what the caller passed is a cap
+that has to be found by a learner. `hints.ts` decides how many rungs a kind
+has now, and the ladder records them all.
+
+**THE STATE NAMES STAY `HINT_1` / `HINT_2`.** They label the transition in the
+research log, and renaming them would rewrite the meaning of every event
+already recorded; `hintsTaken` is the number that counts the rungs.
+
+**`sentenceEn` IS ITS OWN FIELD, NOT `en`.** On a gap card the two differ —
+`en` is « late » where this is « I'm late, sorry! » — and a session that mixed
+them would print a one-word clue that reads like the answer. It comes from
+`gapSentenceEn`, which follows whichever sentence `gapSentence` actually
+drilled: some decks gap `fr` and some gap `example`, and the English has to
+match the one on screen. Opt-in, so it changes nothing for the kinds that share
+that branch — on a typed card the English IS the prompt.
+
+## 15 Sep — the ★ leaves the top bar, because the 🤍 is what made it removable (fluoduo-main)
+
+**Dan, seeing the new heart beside the old star: *"I see it but why does it
+coexist with the star"*.** Because yesterday's change did half the job.
+
+    top bar   ☰  ← FluOLinGo  🚀  🔊  ⏻        no favourites control
+    band      …  🤍 / ❤️                        save THIS page
+    ☰ menu    ★ Favourites → /favourites        the list
+
+**THE ★ HAD ALREADY LOST BOTH OF ITS JOBS.** It went into the bar on 12 Sep
+because Dan asked where favourites live — *"At the top right next to their
+name"* — and at the time it was the app's ONLY favourites control: it starred
+the page AND opened the list. On 14 Sep the band's 🤍 took over the saving and
+this was cut back to a plain door. **That door is already in the ☰**, at Dan's
+own instruction (*"put Favourites in the burger grid menu in the yellow lesson
+strip"*), so what was left was two doors to one room, one of them spending the
+bar's last pixels — the reasoning that retired 🏠 on 12 Sep and ⌛ on 14 Sep.
+
+**HE ASKED FOR THIS ON 14 SEP AND IT WAS KEPT, DELIBERATELY.** *"maybe we can
+remove the history and favourites button too there"* — and the cost was
+reported at the time: the star was then the only way to add a favourite
+anywhere, so removing it would not have moved the feature to the menu, it would
+have removed the feature. **The heart is what made it removable**, and it
+should have gone in the same patch.
+
+`FavouriteStar.tsx` is DELETED, not merely unmounted. Both guides now say the
+list is in the ☰ rather than the bar.
+
+**verify400's CLAUSE IS INVERTED, NOT DELETED — the second check this week to
+have been guarding the wrong behaviour** (verify27's KeyNav clause was the
+first, yesterday). It required the star to be mounted in the bar and to sit
+before the account chip. It now requires the bar to carry NO favourites control
+and the ☰ to keep its door, and it fails in both directions: a bar that grows
+one again is the duplication returning, a menu that loses its cell leaves the
+list unreachable — which is exactly what kept the star alive on 14 Sep.
+
+**AND BREAK-TESTING CAUGHT MY OWN CHECK BEING TOO LOOSE.** `"<FavouriteHeart"
+in BAND` is a SUBSTRING test and passed on `<FavouriteHeartX`; it is a regex
+ending on `[\s/>]` now. A clause that cannot fail is not a clause.
+
+## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
+
+
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
 all optimal (tiled buttons representing a choice each)"*, and after I twice
 built more than he asked for: *"Look NumBourse and NumBus very simple : let the
@@ -148,6 +457,185 @@ four bare checkboxes. The 8/10 phone choice shows only with 📞 on.
   driven at 390px and 1280px
 
 ## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — five of Dan's eight edges, and a framed game can take the whole screen (fluoduo-main)
+
+**Dan sent eight fixes in one message.** Five are here; three are still open
+and named at the foot of this entry.
+
+- **Every protruding top face gets its hairline.** The map's ＋ / − zoom keys
+  and the 3D stops drew no outline on the face that catches the light, so a
+  raised control read as a flat patch of colour. `.neo-key` and
+  `.home-map3d-cap` take an `inset 0 0 0 1px` ring in the house ink at 22 %.
+  Measured in the browser first: the key already had two *offset* insets (a
+  highlight and a lip) and the cap had `box-shadow: none`, which is why
+  grepping for `inset 0 0 0 1px` answered "already done" and was wrong.
+- **The phone bar gets room to breathe** — `.cahier-topbar` gap 0.8rem, about
+  half a button, which is what Dan asked for.
+- **The bar sheds what nobody uses and gains the door people need.** The stop
+  field went (removed weeks ago and still drawn), ⌛ History went, 🎯 replaced
+  the person glyph on the map badge, and the 2D/3D switch gave back 19px.
+  The revision door sits in the middle of the bar wearing 🚀 — Dan: *"your 📋
+  is too inconspicuous"* — and shows a count only while a run is live.
+- **The guide's door moves into the yellow strip.** `PageBand` takes an
+  optional `right` slot; `/guide` puts a 📖 Full guide chip there, and the
+  full guide links back to QuickStart. The pair walks both ways.
+- **A framed game can ask for the whole screen.** Every station runs in an
+  iframe, so a game had the frame's box and nothing more. `EmbedFrame` now
+  allows `fullscreen` and `GameFrame` has a ⛶ key that calls
+  `requestFullscreen()` on the frame and listens for `fullscreenchange` so the
+  key cannot lie about the state it is in.
+
+**STILL OPEN from the same message**, so the next session does not have to
+re-read it: the **WorDrill / MémoiRecall step-1 pointer** (the guided walk
+says *"choose how long a run you want"* and lights nothing — a first fix was
+reverted because `/practice/say-it/…` shares that hint row and has no such
+control, which `verify220` drives and caught); **MneMemo's "next part is
+below"** with the blinking arrows `.fluo-nextq-arrows` already provides; and
+**NumBus / NumBourse**, where Dan asked for *"tiled buttons representing a
+choice each"* and it is not yet settled whether that means the setup screen or
+the in-play keypad. **LexicaLocker's scale** (*"i cannot see anything beyond
+three chest trunks"*) did not reproduce at 390px and needs the width Dan saw.
+
+## 14 Sep — the blinking arrows, taken from the peers lane rather than waited for (fluoduo-main)
+
+**Dan: *"Cn you go grab peers blinking arrows pls. do not wait foir him to give
+it to you"*.** Three commits cherry-picked off `claude/peers-vd2h6h` straight
+onto main — MneMemo's « NEXT PART IS BELOW », the same cue everywhere a learner
+has to reach the next section, and the fix that followed them (the cue counted
+as its own "more below", so it could never turn itself off).
+
+They picked cleanly: none of them touches `NumBusSetup.tsx`, so the picture fix
+an hour earlier is untouched, and the only shared file is `globals.css`, in a
+different block.
+
+**DRIVEN BEFORE HANDING IT ON, and the number is the reason the cue exists.**
+On `/lessons/deck/partitifs` at 390px a MneMemo panel scrolls inside an
+`overflow-y-auto` box while the page itself does not scroll at all — **2050px
+of lesson hidden**, no scrollbar on a phone, and the content cut at a line of
+prose that looks like the end of one. The cue rides the panel's bottom edge and
+measures the scroller, so it appears only while there really is more below.
+
+**WHAT WAS DELIBERATELY LEFT ON THAT BRANCH:** its fourth commit, *"The
+revision path stays inside the test: stops 1–30"*. That is a change to the
+curated path, not an arrow, and folding it into an arrows patch would land a
+path decision nobody named.
+
+## 14 Sep — NumBus's pictures were never removed; three of them were greyed out (fluoduo-main)
+
+**Dan, an hour after the rebuild went live: *"Your removed my bus and all the
+other images from NumBus. Wtf"*.** Nothing was removed, and that is not a
+defence — it is the diagnosis. The four kind keys drew an UNTICKED kind as
+
+    filter: grayscale(1);  opacity: 0.5;
+
+so three of the four pictures were grey smudges at half strength, and their
+only names were `title` tooltips, which a phone has no way to show. What
+reaches a learner is one bus and three blanks.
+
+**SO THE ARTWORK NEVER DIMS.** Off-ness is carried by the KEY — paper instead
+of the family tint, and the label muted — and the picture is the same picture
+either way. **And every tile now wears its name** (Bus numbers · Times ·
+Prices · Phone numbers), which earns its place by the litmus test: 🍔 alone
+cannot tell anyone that tile means prices, and no other copy of that word is on
+the screen. Two up on a phone, four across when there is room, counted by the
+grid rather than told (verify270).
+
+**THE PROCESS FAILURE IS THE PART WORTH KEEPING.** This screen WAS screenshotted
+before the merge, and the shot shows the fault plainly. It was read as "bus
+selected, three others off" instead of as what a learner sees. *Show it, don't
+describe it* only works if the picture is looked at as a stranger would.
+
+## 14 Sep — LexicaLocker's belt is below the fold, and full screen is still a key you press (fluoduo-main)
+
+**Dan, twice: *"The LexicaLocker is displaying in too much of a scaled up, i
+cannot see anything beyond three chest trunks"*, then *"force a full screen
+view on lexicalocker"* — and, shown the result: *"can it be first in the frame
+then in full screen by choice"*.** So the forced full screen was reverted the
+same hour, `openFull` and all; the 7 Sep default stands and `⤡` is the way in.
+
+**THE MEASUREMENT SURVIVES THE REVERT, because the fault is real and still
+there.** Driven at 430x860: the three chests are the entire board and the WORD
+BELT — the row a learner taps — sits below the fold with only its three arrows
+visible. Three chests is the design (`LANE = 3`); seeing nothing else is not.
+Full screen fixes it and Dan has chosen not to force it, so the remedy is
+inside the board: shrink the chests when the frame is short, or put the belt
+above them. **That is a design call, not a patch**, and it is open.
+
+## 14 Sep — the ✕ goes up, and a check of mine was flaky before it was right (fluoduo-main)
+
+**Dan: *"When closing the X it always goes back to the page where it came from
+right? Like closing NumBus should back to Numbers where i came from"*.**
+
+Measured across eighteen surfaces on the built app before changing anything:
+every ✕ not opened for a deck went to `/home`. On sixteen that is the right
+answer — they are top-level doors off the ☰ with nothing above them. The two
+exceptions were exactly the two Dan named. NumBus and NumBourse have no
+registry row of their own, because on 31 Aug he parked them under ONE hub tile,
+so `GameLanding` had neither a stop nor a row and the band took CahierShell's
+default. The page above them exists and the ✕ stepped over it.
+
+**A DECLARED PARENT, NOT THE BROWSER'S HISTORY**, and the reason is worth
+keeping: literal Back breaks on the three ways a learner really arrives — a
+deep link, a refresh, and the ☰ menu, which is not a page to return to — and it
+would quietly undo the 13 Sep ruling that the ✕ lands on the 🎯 page *even when
+you came from the map*. The order is the stop, then the page above, then Home.
+`verify820` drives it, because `exitHref` is threaded through three components
+with a default at every hop.
+
+**AND A LESSON ABOUT THE CHECKS THEMSELVES, paid for in a CI run.**
+`verify800` went red on main's PR with five clauses green and one failure: a
+single route out of fifty timed out at 25s on a cold runner. `networkidle`
+waits for a 500ms gap in network activity, and this app polls — the prune's own
+150ms measure loop, the TTS bank, the usher — so on a slow machine that gap may
+never arrive. **A driven check must wait for the THING IT MEASURES, not for the
+network to go quiet.** Both scans now wait for `load`, then for the card
+itself, and retry a route once before calling it broken.
+
+The second half of the same fix is subtler and is the app being honest: the
+card can open before the drill's mount shuffle has filled its queue, and it
+re-measures every 150ms and grows the step back when the chooser arrives. The
+scan was reading it in that first instant and scoring the app for a frame no
+learner sees. It now waits for two consecutive identical readings.
+
+## 14 Sep — integration: two lanes built « Présenter quelqu'un » twice, and only one of them may keep the four countries (fluoduo-main)
+
+**Two sessions built the same ComposeIt scene on the same afternoon**, which is
+the collision one lane cannot see from inside itself. `claude/peers-vd2h6h`
+landed it as #369 (already live); `claude/modest-galileo-xstape` had built its
+own `PRESENT_PERSON_BANK` with a different cast, a `wordGoal` field and a
+second server persona `presenter-quelquun`. Both are correct on their own
+terms. The landed one is the one AGENTS.md describes, and it already carries
+`lengthGoal: { min: 50, max: 60 }` — the same word count `wordGoal` was adding
+— so the duplicate scene, the duplicate field, the duplicate persona and the
+duplicate `ComposeSolo` counter were all dropped in the merge, not merged.
+
+**AND THE SAME BRANCH WOULD HAVE SILENTLY KILLED THE TRANSFER PROBE.** It adds
+Inde, Luxembourg, Italie and Liban to the countries and nationalities decks —
+in lock-step, so verify700's clause 5 would have passed. But
+`content/transfer.ts` asks for exactly **luxembourgeois, indien, italien and
+libanais**, and a transfer item the deck teaches is not a transfer item; it is
+a memory test wearing the words « un mot nouveau ». Clause 1 of verify700 says
+so and names « italien » by example. Those four subjects are NOT merged, and
+Dan's 14 Sep ruling stands unchanged: *"WE WANT TO APPROACH INDIRECTLY VIA
+APPLICATION OF KNOWLEDGE"* — close a gap by teaching the rule, not by widening
+the deck.
+
+What DID come across from the two content lanes:
+
+- « en retard » in goal 19's states deck, plus « Pardon, je suis en retard ! »
+  as a cloze on être (`avoir-etats`). Both lanes asked for it; verify700's own
+  docstring lists it as one of the three holes.
+- **Suède / suédois·e** in the two decks, in lock-step
+  (`countries-letris-26-suede`, `nat-26-suede`, `col:la`, from
+  `claude/french-grammar-exercises-4aek45`). It is not a transfer item, and it
+  gives the **-ois → -oise** family a second taught example, so the rule the
+  probe tests reads as a rule rather than as « chinois » alone. That lane
+  states the distinction itself: *"No single country is added to cover an
+  ending."* — which is the same ruling read from the other side.
+- `docs/revision/PROMPT-midterm-revision-path.md` and its four screenshots —
+  a brief, kept as history now that #369 shipped the path itself.
+
+## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, MERGED as #369 and live)
 
 **Dan: *"what i would really need now is a 'curated path' automatically driving
 the sequence of activities on FluOLinGo — essential, optional etc"*.** The
@@ -185,7 +673,7 @@ words « GramMarathon ».
   tsc clean · build green · eslint clean on all ten touched files ·
   **144/144 verify** · walked end to end in the built app at 430px and 1280px
 
-## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — ComposeIt learns a set word list, and the subject rotates (peers lane, `claude/peers-vd2h6h`, MERGED as #369 and live)
 
 **A written task of the classic revision shape**: five sentences on a given
 subject, one question at a time, drawing on a set list of sixteen words,
@@ -230,7 +718,7 @@ sentence the `[Négation]` chips build.
 The server persona is in `functions/api/compose.js` — without an entry there
 an unknown scene silently gets the CAFÉ WAITER, menu and all.
 
-## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, PR #362, NOT merged)
+## 13 Sep — the app does not perform unasked: a float, a fanfare, a voice (peers lane, `claude/peers-vd2h6h`, MERGED as #362)
 
 **Dan, in one message: *"The [victory] jingle is sometimes playing for no good
 reason. The floating tour button should now be deleted for good. The ComposeIt

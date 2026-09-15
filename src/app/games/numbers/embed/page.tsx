@@ -55,6 +55,19 @@ export default function Page() {
             <Link
               key={g.href}
               href={g.href}
+              /* BREAK OUT OF THE FRAME (Dan, 2026-09-14: *"Numbers is now
+                 nesting numbus - what did you break"* — nothing; measured
+                 identical on the tree from before that day's merges).
+                 Every station runs in an iframe since 7 Sep, so THIS page is
+                 the framed document, and a plain link navigates the FRAME:
+                 NumBus then draws its own whole notebook — site bar, coils,
+                 band — inside the Numbers band that is still wrapped around
+                 it, and the address bar says /games/numbus while the band
+                 says Numbers. `_top` sends the destination to the window,
+                 which is where a whole page belongs. It costs a full load
+                 instead of a soft route change; a page drawn twice costs more
+                 than that. */
+              target="_top"
               title={g.blurb}
               className="flex flex-col items-center gap-2 rounded-2xl border-2 bg-white p-6 text-center shadow-[2px_2px_0_rgba(0,0,0,0.12)] transition hover:-translate-y-0.5"
               style={{ borderColor: g.hue }}

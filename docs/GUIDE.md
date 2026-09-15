@@ -75,7 +75,7 @@ In a hurry? The [**QuickStart**](/guide) is the five steps you need to begin. Th
 - Swipe **up / down** to move to the previous / next goal. A counter reads « n / 50 ».
 
 ### 2.4 The top bar (every page)
-- **☰** the menu · **FluOLinGo** wordmark = back to Home · **🚀** start (or resume) the mid-term revision path — it shows how far you are once one is running · **🔇 / volume** one mute for all sound · **★** star this page — tap to star or unstar, long-press (or a second tap once it is filled) to open your Favourites · **account** sign in / out.
+- **☰** the menu · **FluOLinGo** wordmark = back to Home · **🚀** start (or resume) the mid-term revision path — it shows how far you are once one is running · **🔇 / volume** one mute for all sound · **account** sign in / out. Your Favourites are in the ☰ menu, on the yellow row.
 - Two things left this bar on 14 Sep and are not lost: **your answer history** is in ☰ → 👤 User → History, and **your current stop** is the editable **🎯 NN** just above the map, next to the zoom.
 
 ### 2.5 The ☰ menu — 7 rows, read top to bottom in the order you do them
@@ -102,6 +102,7 @@ In a hurry? The [**QuickStart**](/guide) is the five steps you need to begin. Th
 <!-- fig: composeit | ComposeIt with both floating buttons: 🐞 report a bug and 🛠️ tools. -->
 - **🛠️ tools** (in WorDrill, ComposeIt, ÉcouTexte): opens a card **over** the exercise with 🔊 VoixLà and/or 🤖 ChaTutor. The exercise stays where it is. ÉcouTexte offers ChaTutor only, so nothing can read you the answer.
 - **🐞 report a bug**: tick what went wrong (page won't load, audio didn't play, answer marked wrong, French incorrect, activity stuck, layout broken, other), add a screenshot if you like. Works signed in or out.
+  **It pays 5 💎.** Two reports a day earn gems; report a third and it still reaches us, it just does not pay. If the bug turns out to be a serious one there is more, and how much is not announced.
 - **✨ tour** (bottom left on Home, unit and lesson pages): replays the short guided tour of that page.
 
 ### 2.8 What every drill has in common
@@ -254,7 +255,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 - **What:** a role-play (café, directions, shopping…). You write your lines.
 - **How:** build each line from phrase chips, **✔** sends it. The other character replies out loud and moves the scene on (greet → order → drink → bill → goodbye). Some scenes have **check my work**, where the other character reads your whole text and reacts.
 - **Ends:** post-mortem. Finishing a scene pays 120 XP.
-- **Note:** available at 12 goals: 9, 10, 20, 21, 29, 30, 36, 40, 41, 44, 49, 50 (the six communication goals 10, 20, 30, 40, 49, 50 among them). The chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
+- **Note:** available at 13 goals: 9, 10, 20, 21, 23, 29, 30, 36, 40, 41, 44, 49, 50 (the six communication goals 10, 20, 30, 40, 49, 50 among them). Goal 23's scene, « Présenter quelqu'un », hands you a different person each time and asks six questions; the word count sits in the bar. The chips come only from words the goal's deck teaches. Needs sign-in. 🛠️ tools available.
 
 ### 👤 TRACK (one page, four tabs)
 <!-- fig: profile, leaderboard, settings | The Track page: Profile (heat strip of the 50 stops), Leaderboard (sign in to see it), Settings (icon labels, map wheel, bottom bar, Gems). -->
@@ -266,7 +267,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 
 ### Also
 <!-- fig: favourites | Favourites, empty. Tap ☆ at the top right of any page to star it. -->
-- **★ Favourites:** star any page from the top bar. Organise into folders. Drag with a mouse, or press-and-hold on a phone.
+- **🤍 Favourites:** every coloured strip ends in a **🤍**. Tap it to save that page and it turns **❤️**; tap it again to remove it. To see the list, open the ☰ menu and tap **★ Favourites** on the yellow row. Organise into folders. Drag with a mouse, or press-and-hold on a phone.
 - **Help:** the five-step guide inside the app (☰ → Start → Help).
 
 ---
@@ -330,7 +331,7 @@ Each block: **What** you do · **How** it works · **Ends** with · **Note**.
 
 ### 💎 Gems (the only currency; never needed to learn anything)
 - **You start with 20, free, once.** That is the same as one level-up and the same as the cheapest colour in the shop, so you can read your purse against a price you can see. It is about three exercises' worth of lucky finds — enough that your first session never meets a price you cannot pay.
-- **Earned by:** badges (5–50 each, once) · every level-up (20) · lucky finds on answers (2 gems, rarely 10; about 1 answer in 8, guaranteed by the 12th find-less answer; at most 40 gems a day). **A find can only ever give** — there is no bad outcome and nothing is ever taken away.
+- **Earned by:** badges (5–50 each, once) · every level-up (20) · **a bug report (5, twice a day)** · lucky finds on answers (2 gems, rarely 10; about 1 answer in 8, guaranteed by the 12th find-less answer; at most 40 gems a day). **A find can only ever give** — there is no bad outcome and nothing is ever taken away.
 - **Spent on:** home accent colours (Rose 20 · Turquoise 20 · Violet 30 · Émeraude 30 · Or 50) · Streak-Freezer (25) · the « Expert countries » VocabulaRain set (30).
 - Over all fifty goals a thorough learner earns roughly **1 450 gems**. The whole shop costs **205**, so gems are never what stands between you and the course.
 

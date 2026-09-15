@@ -57,29 +57,53 @@ def read(p):
 if not os.path.isfile("package.json"):
     print("run from the repo root"); sys.exit(2)
 
-STAR = "src/components/FavouriteStar.tsx"
+HEART = "src/components/FavouriteHeart.tsx"
 LIB = "src/lib/favourites.ts"
 HERE = "src/lib/favouriteHere.ts"
 PAGE = "src/components/FavouritesContent.tsx"
 BAR = read("src/components/SiteTopBar.tsx")
 RULES = read("firestore.rules")
 
-for p in (STAR, LIB, HERE, PAGE, "src/app/favourites/page.tsx", "src/app/favourites/embed/page.tsx"):
+for p in (HEART, LIB, HERE, PAGE, "src/app/favourites/page.tsx", "src/app/favourites/embed/page.tsx"):
     check(os.path.isfile(p), f"{p} exists", f"{p} is gone — Favourites is missing a part")
 
-# ── 1 · the star is MOUNTED in the top bar ────────────────────────────────
-check("<FavouriteStar" in BAR,
-      "the ★ is rendered in the top bar, not merely imported",
-      "SiteTopBar imports FavouriteStar but never renders it — an import is not "
-      "a button, and the ★ is the only way to star a page (verify117's lesson)")
-# Beside the account chip is where Dan put it: "At the top right next to their
-# name". Order matters, so it is asserted rather than assumed.
-star_at = BAR.find("<FavouriteStar")
-acct_at = BAR.find("<AccountButton")
-check(star_at != -1 and acct_at != -1 and star_at < acct_at,
-      "the ★ sits immediately before the account chip, where Dan asked for it",
-      "the ★ is no longer beside the account chip — Dan, 12 Sep: "
-      '"At the top right next to their name"')
+# ── 1 · ONE CONTROL SAVES, ONE DOOR OPENS THE LIST ────────────────────────
+#
+# THIS CLAUSE USED TO PIN THE OPPOSITE and is inverted, not deleted (Dan,
+# 2026-09-15, seeing the new heart beside the old star: "I see it but why does
+# it coexist with the star").
+#
+# The ★ went into the top bar on 12 Sep because it was then the app's ONLY
+# favourites control — it starred the page AND opened the list, and this check
+# guarded both. On 14 Sep the 🤍 on every coloured band took over the saving;
+# the star was cut back to a plain door, and a door is what the ☰ menu already
+# carries at Dan's own instruction ("put Favourites in the burger grid menu in
+# the yellow lesson strip"). Two doors to one room, one of them spending the
+# bar's last pixels — the same reasoning that retired 🏠 and ⌛.
+#
+# It fails in BOTH directions. A bar that grows a second favourites control
+# again is the duplication coming back; a menu that loses its Favourites cell
+# leaves the list with no door at all, which is what kept the star alive on
+# 14 Sep when Dan first asked for it to go.
+MENU = read("src/components/MenuGrid.tsx")
+check("FavouriteStar" not in BAR,
+      "the top bar carries no favourites control — the 🤍 on the band saves a page",
+      "SiteTopBar has a favourites control again. Saving is the band's 🤍 since "
+      "14 Sep, and the list's door is in the ☰ — a third control is the "
+      "duplication Dan asked to be rid of.")
+check('href: "/favourites"' in MENU,
+      "the ☰ menu still holds the door to the list",
+      "MenuGrid no longer links /favourites. With the bar's ★ gone this is the "
+      'only door left — Dan, 13 Sep: "put Favourites in the burger grid menu in '
+      'the yellow lesson strip".')
+# ── 1b · the heart is MOUNTED on the band, not merely imported ────────────
+BAND = read("src/components/PageBand.tsx")
+# `<FavouriteHeart` ALONE IS A SUBSTRING MATCH and passed on `<FavouriteHeartX`
+# when this clause was break-tested — the tag has to END where the name does.
+check(re.search(r"<FavouriteHeart[\s/>]", BAND) is not None,
+      "the 🤍 is rendered on every band, not merely imported",
+      "PageBand imports FavouriteHeart but never renders it — an import is not a "
+      "button, and this is now the only way to save a page (verify117's lesson)")
 
 # ── 2 · the naming rules, EXECUTED ────────────────────────────────────────
 TMP = ".tmp-verify-fav"
