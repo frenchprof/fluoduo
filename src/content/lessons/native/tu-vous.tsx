@@ -157,15 +157,15 @@ export const tuVousLesson: NativeLesson = {
            English ("the teacher"), which the pager suppresses whenever a `big`
            is present, so even that never drew.
 
-           Both now ride `meta`, which renders unconditionally. Deliberately
-           NOT via `en`: that slot is the pager's reference line and it is
-           suppressed under a `big` on every card in the app — changing that
-           rule to fix one lesson would newly print English under every French
-           prompt in the course. The fault was this lesson's data, so the fix
-           is this lesson's data. */
-        meta: `« ${f.en} » · you're talking to ${p.en}`,
+           Both now ride `en`. That slot used to be suppressed under any
+           `big`, app-wide — the first fix put them in `meta` to dodge it —
+           and then Dan hit the same hole on se-presenter (« Bonjour, ___. »
+           under « Mr Moreau »: *"There is no context"*). The pager now shows
+           `en` whenever `big` is not itself English, which is the rule every
+           generator had been writing to all along. */
+        meta: "Tu ou vous ? You're talking to…",
         big: p.fr,
-        en: p.en,
+        en: `« ${f.en} » · ${p.en}`,
         correct,
         easyOptions: [
           correct,

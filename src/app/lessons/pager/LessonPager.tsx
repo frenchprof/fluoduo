@@ -46,6 +46,7 @@ import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { HOME_HREF } from "@/lib/routes";
+import { setBugContext } from "@/lib/bugContext";
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
 
@@ -213,6 +214,31 @@ export default function LessonPager({
     : ex?.kind === "mcq"
       ? selected ?? ""
       : value;
+
+  /* THE CARD, FOR THE 🐞 BUTTON (lib/bugContext). Angelina's report read
+     "e.g. __ bien"; this is the line that would have said « tu-vous · ★★ ·
+     gap · tu-vous-05 · « ___ bien ? » ». The prompt is rebuilt from the
+     frame with the blank in it, never from the answer — a report must not
+     carry what the learner was meant to type. Runs AFTER DrillShell's own
+     effect for the same card (children mount first, parents' effects run
+     after), so the card line wins over the shell's coarser one. */
+  useEffect(() => {
+    if (!ex) return;
+    const frame = ex.before != null || ex.after != null
+      ? `${ex.before ?? ""} ___ ${ex.after ?? ""}`.replace(/\s+/g, " ").trim()
+      : ex.segments
+        ? ex.segments.map((sg) => (sg.kind === "text" ? sg.text : "___")).join("").replace(/\s+/g, " ").trim()
+        : ex.big;
+    setBugContext({
+      activity: "lesson",
+      deck: activityKey,
+      level: ENTRY_LABELS[entry].stars,
+      kind: ex.kind,
+      itemId: ex.itemId,
+      prompt: frame,
+      position: `${done + 1} of ${denom}`,
+    });
+  }, [ex, entry, activityKey, done, denom]);
 
   // The help ladder (Track D): mcq → struck picks; gap → cloze rungs;
   // build/translate → typed rungs (first letter / skeleton). Every graded
@@ -857,8 +883,19 @@ function ExerciseCard({
           <span lang="fr">{tightPunct(ex.after ?? "")}</span>
         </p>
       )}
-      {/* The segmented card renders its own reference line above the rows. */}
-      {ex.en && !ex.big && !ex.segments && (
+      {/* The segmented card renders its own reference line above the rows.
+          THE REFERENCE IS HIDDEN ONLY WHEN `big` ALREADY IS THE REFERENCE.
+          This read `!ex.big` until 2026-09-15, which hid `en` under EVERY big
+          — and on a generated card `big` is usually the SITUATION in French
+          (« le professeur », « Mr Moreau ») while `en` is the INSTRUCTION
+          ("greet Mr Moreau politely", "ask with « tu »"). A learner reported
+          « ___ bien ? » with *"not any indication of the context"*, and Dan
+          hit « Bonjour, ___. » under « Mr Moreau » the same afternoon: *"There
+          is no context"*. Thirty-odd generators write their instruction into
+          `en`; the pager was dropping all of them. Now `en` is hidden only
+          when `big` is itself English (bigLang "en", translate, build), where
+          showing both really would be the same line twice. */}
+      {ex.en && !ex.segments && !(ex.big && (ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build")) && (
         // Equal size to the French frame above it, italic and unbolded so it
         // reads as the reference rather than competing with the target (Dan,
         // 31 Aug: "of equal size (but italics non bold)").

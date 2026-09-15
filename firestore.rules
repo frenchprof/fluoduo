@@ -452,8 +452,19 @@ service cloud.firestore {
     // arbitrary documents (spam/abuse): exactly the fields FeedbackButton sends,
     // with size caps matching what the client itself enforces.
     match /feedback/{id} {
+      // `context` (2026-09-15): what was on screen when 🐞 was pressed — the
+      // card's id and prompt, written by the drill (lib/bugContext.ts). A
+      // MAP with string/number values only, capped small; optional, so a
+      // report from a page that never sets it is unchanged. THIS RULE MUST
+      // BE DEPLOYED BY HAND from the Firebase console before the client that
+      // sends it goes live, or every 🐞 report is rejected by hasOnly.
       allow create: if request.resource.data.keys().hasOnly(
-          ['categories', 'details', 'url', 'userAgent', 'uid', 'createdAt', 'screenshot'])
+          ['categories', 'details', 'url', 'userAgent', 'uid', 'createdAt', 'screenshot', 'context'])
+        && (!('context' in request.resource.data)
+            || (request.resource.data.context is map
+                && request.resource.data.context.keys().hasOnly(
+                    ['activity', 'deck', 'level', 'kind', 'itemId', 'prompt', 'position', 'path'])
+                && request.resource.data.context.size() <= 8))
         && request.resource.data.categories is list
         && request.resource.data.categories.size() <= 10
         && request.resource.data.details is string

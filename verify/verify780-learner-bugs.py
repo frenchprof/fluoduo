@@ -116,9 +116,9 @@ ok(not naive,
 tv = code("src/content/lessons/native/tu-vous.tsx")
 ok(len(tv) > 1000, f"the tu-vous lesson read ({len(tv)} chars)",
    "src/content/lessons/native/tu-vous.tsx did not read.")
-meta = re.search(r"meta:\s*(`[^`]*`|\"[^\"]*\")", tv)
+meta = re.search(r"\n\s*en:\s*(`[^`]*`|\"[^\"]*\")", tv)
 ok(bool(meta) and "f.en" in (meta.group(1) if meta else ""),
-   "every tu-vous card prints the sentence's own English in its meta line",
+   "every tu-vous card carries the sentence's own English in its reference line",
    "the tu-vous card does not carry the frame's English. FRAMES has an `en` "
    "for each question (« Are you well? ») and the card must print it: without "
    "it a learner sees « ___ bien ? » and is told neither what it means nor, on "
@@ -129,6 +129,38 @@ ok(bool(meta) and "p.en" in (meta.group(1) if meta else ""),
    "the tu-vous card names the person only in French. « une personne âgée » "
    "is the whole of the tu/vous decision, so a learner who cannot read it "
    "cannot answer the card at all.")
+
+# AND THE PAGER SHOWS IT. This is the half that made it app-wide: `en` was
+# hidden under EVERY `big`, and on a generated card `big` is the situation in
+# French while `en` is the instruction. Dan hit it on se-presenter the same
+# afternoon (« Bonjour, ___. » under « Mr Moreau » — *"There is no context"*).
+pg = code("src/app/lessons/pager/LessonPager.tsx")
+ok(len(pg) > 5000, f"LessonPager read ({len(pg)} chars)", "LessonPager.tsx did not read.")
+ok(not re.search(r"ex\.en && !ex\.big && !ex\.segments", pg),
+   "the pager no longer hides the English reference under every `big`",
+   "LessonPager is back to `ex.en && !ex.big` — that hides the instruction "
+   "(« greet Mr Moreau politely ») under every French situation line, on ~30 "
+   "generators at once. Hide `en` only when `big` is itself English.")
+ok(re.search(r'ex\.bigLang === "en" \|\| ex\.kind === "translate" \|\| ex\.kind === "build"', pg),
+   "and hides it only where `big` is itself the English reference",
+   "the condition that decides when `en` would merely repeat `big` is gone.")
+
+# ── 2b · A DISTRACTOR IS NEVER A RIGHT ANSWER (Dan, 2026-09-15) ────────────
+# On the se-presenter politesse card « Bonjour, Monsieur. » was offered as a
+# WRONG option. It is correct French. The 1 Sep ruling lets a distractor be bad
+# French; it does not let it be good French. Bare title is accepted now, and
+# the slot holds the register clash « Salut, Monsieur Moreau. » instead.
+sp_gen = code("src/content/lessons/native/se-presenter.gen.ts")
+ok(len(sp_gen) > 1000, f"se-presenter generator read ({len(sp_gen)} chars)", "se-presenter.gen.ts did not read.")
+ok("`Bonjour, ${t.full}.`" in sp_gen and re.search(r"alternates:\s*\[[^\]]*`Bonjour, \$\{t\.full\}\.`", sp_gen),
+   "« Bonjour, Monsieur. » is an ACCEPTED answer on the politesse card",
+   "« Bonjour, ${t.full}. » is no longer in the politesse card's alternates. "
+   "It is correct French; marking it wrong marks a learner wrong for knowing "
+   "the language (Dan: *\"why can't Monsieur be correct\"*).")
+ok(not re.search(r"easyOptions:\s*\[[^\]]*`Bonjour, \$\{t\.full\}\.`", sp_gen),
+   "and it is not offered as a distractor",
+   "« Bonjour, ${t.full}. » is back in easyOptions as a wrong option. A "
+   "distractor may be bad French; it may not be another right answer.")
 
 # ── 3 · A VOICE MISS IS NEVER CACHED ───────────────────────────────────────
 sp = code("src/games/letris/speech.ts")

@@ -16,6 +16,7 @@ import { useRef, useState } from "react";
 import { useDragFloat } from "@/lib/useDragFloat";
 import { awardBugReport } from "@/lib/progress";
 import { createPortal } from "react-dom";
+import { readBugContext } from "@/lib/bugContext";
 // Firebase is imported DYNAMICALLY inside send(): this button sits in the root
 // layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
 // on every page for a form almost nobody opens.
@@ -91,7 +92,7 @@ export default function FeedbackButton() {
         import("firebase/firestore"),
         import("@/lib/firebase/db").then(async (m) => ({ db: m.db, auth: (await import("@/lib/firebase/client")).auth })),
       ]);
-      await addDoc(collection(db, "feedback"), {
+      const report = {
         categories,
         details: details.trim().slice(0, 2000),
         url: typeof window !== "undefined" ? window.location.pathname : "",
@@ -99,7 +100,24 @@ export default function FeedbackButton() {
         uid: auth.currentUser?.uid ?? null,
         createdAt: serverTimestamp(),
         ...(screenshot ? { screenshot } : {}),
-      });
+      };
+      // WHAT WAS ON SCREEN — the card's own id and prompt, written by the
+      // drill that drew it (lib/bugContext). The learner types nothing extra;
+      // the report just arrives knowing which card it is about.
+      const context = readBugContext();
+      try {
+        await addDoc(collection(db, "feedback"), context ? { ...report, context } : report);
+      } catch (e) {
+        // THE RULE IS DEPLOYED BY HAND, and this client may ship first. The
+        // live `feedback` rule lists every allowed key (`hasOnly`), so until
+        // the console carries `context` a report that includes it is refused
+        // outright — and a refused bug report is the one outcome worse than a
+        // report without its card. So: once, without it. Nothing is lost
+        // either way, and the day the rule lands, contexts start arriving.
+        const denied = (e as { code?: string })?.code === "permission-denied";
+        if (!context || !denied) throw e;
+        await addDoc(collection(db, "feedback"), report);
+      }
       // PAID ONLY ON A SUCCESSFUL WRITE (Dan, 2026-09-14: "we also want to
       // reward bug reporters"). Inside the try, after addDoc resolves: a report
       // that never reached Firestore is not a report, and paying for one would

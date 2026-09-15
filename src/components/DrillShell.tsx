@@ -52,6 +52,7 @@ import { HOME_HREF, sioHref } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
 import MoreBelow from "@/components/MoreBelow";
 import { usherFor } from "@/lib/usher";
+import { clearBugContext, setBugContext } from "@/lib/bugContext";
 
 export type DrillCta = {
   label: string;
@@ -236,6 +237,17 @@ export default function DrillShell({
     html.style.overflow = "hidden";
     return () => { html.style.overflow = prev; };
   }, [snapRows]);
+  /* WHAT THE 🐞 BUTTON WILL SAY WAS ON SCREEN (lib/bugContext). The shell
+     knows the activity, the deck and where in the run the learner is, which
+     is most of what a report needs and nothing any learner could be asked to
+     type. A card-level line (the prompt itself) is added by the drills that
+     have one — LessonPager — on top of this. Cleared on unmount, so a report
+     sent from the map does not carry the drill before it. */
+  const position = progress ? `${progress.done + 1} of ${progress.total}` : undefined;
+  useEffect(() => {
+    setBugContext({ activity, deck, position });
+  }, [activity, deck, position]);
+  useEffect(() => () => clearBugContext(), []);
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
   // The band over a drill is coloured by what the drill ASKS, not by which

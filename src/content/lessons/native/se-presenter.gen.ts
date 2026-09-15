@@ -122,10 +122,24 @@ export function sePresenterQuestion(pinned?: Record<string, string>): DiceQuesti
         return {
           meta: `${t.en} → politesse`,
           big: `${t.en} ${sur}`,
-          en: `greet ${t.en} ${sur} politely`,
+          /* THE INTENDED MEANING, IN ENGLISH (Dan, 2026-09-15: *"what we need
+             is a line to say: intended meaning in English"*) — the sentence
+             itself, not an instruction about it. */
+          en: `« Hello, ${t.en} ${sur}. » — politely`,
           correct,
-          alternates: [`Bonjour ${t.full} ${sur}.`, `Bonjour, ${t.t} ${sur}.`],
-          easyOptions: [correct, `Bonjour, ${other.full} ${sur}.`, `Bonjour, ${sur}.`, `Bonjour, ${t.full}.`],
+          /* « Bonjour, Monsieur. » IS CORRECT FRENCH — arguably the more
+             natural greeting — and it sat in easyOptions as a WRONG answer
+             until Dan picked it (2026-09-15: *"why can't Monsieur be
+             correct"*). The house rule (AGENTS.md, 1 Sep) lets a distractor
+             be bad French, but it has to be a mistake a learner could make;
+             a distractor that is simply another right answer marks a learner
+             wrong for knowing the language. So the bare title is ACCEPTED,
+             and its slot goes to the mistake the politesse card is actually
+             about — the register clash of « Salut » with a title, which a
+             learner does make. « Bonjour, Moreau. » stays: a bare surname is
+             the impoliteness the card exists to train out. */
+          alternates: [`Bonjour ${t.full} ${sur}.`, `Bonjour, ${t.t} ${sur}.`, `Bonjour, ${t.full}.`, `Bonjour ${t.full}.`],
+          easyOptions: [correct, `Bonjour, ${other.full} ${sur}.`, `Bonjour, ${sur}.`, `Salut, ${t.full} ${sur}.`],
           med: { before: "Bonjour, ", choices: [t.full, other.full, "Mademoiselle"], correct: t.full, after: ` ${sur}.` },
         };
       }
