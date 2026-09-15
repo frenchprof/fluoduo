@@ -35,6 +35,7 @@ import MenuGrid from "@/components/MenuGrid";
 import PathDoor from "@/components/PathDoor";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
+import NewsBell from "@/components/NewsBell";
 import { type ShellTab } from "@/components/TabFlap";
 
 export default function SiteTopBar({
@@ -248,6 +249,10 @@ export default function SiteTopBar({
               word search lives in the Index's own box, the ranking on
               /leaderboard. */}
           <SoundControl />
+          {/* 🔔 BESIDE 🔊 (Dan, 2026-09-15: *"a notifications icon at the top
+              right of the screen next to the volume button - for all these
+              messages"*). It carries the What's New card and its unread dot. */}
+          <NewsBell />
           {/* 🏠 IS GONE (Dan, 2026-09-12: *"We also don't need the home button
               at the top right"*).
               It was already the second home door on the bar — the ← FluOLinGo
