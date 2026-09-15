@@ -70,6 +70,11 @@ const FLOOR = 24;
  */
 const RESERVE = 72;
 
+/** How tall the band plus its arrows are, for the "would it cover a control?"
+ *  test below. Measured, not guessed: 66px of band and arrows plus the wrap's
+ *  own padding. */
+const BAND_H = 96;
+
 /** The nearest ancestor that actually scrolls.
  *
  *  FOUND BY COMPUTED STYLE, NOT BY CLASS NAME, and that is the difference
@@ -154,10 +159,77 @@ export default function MoreBelow({
        constant would switch the cue off a screen early. */
     const grew = Math.max(0, root.scrollHeight - before);
 
-    const read = () => {
-      setMore(root.scrollHeight - root.scrollTop - root.clientHeight - grew > FLOOR);
+    /* AND IT NEVER COVERS A CONTROL — the peers lane's clause, kept when the
+       two fixes for Dan's *"why is 'NEXT PART IS BELOW' covering the tiles
+       partialy??"* met in a merge. They are not the same fix and BOTH are
+       needed:
+
+         reserve/flow (above)   MAKE ROOM, so the cue has somewhere of its own
+                                to stand — the answer on a lesson panel and on
+                                a snap section
+         this clause            STAND DOWN when, despite that, a control is
+                                still where the band would land
+
+       It earns its place on a surface neither of us reached from the other
+       side: ComposeIt, where Dan said *"the interface for this activity is
+       completely OFF !!"* and the band sat across the « Présenter » chip grid,
+       hiding « Mon voisin » and « Ma cousine » — the phrases the card had just
+       told him to tap. The wrapper is `pointer-events-none`, so they were
+       still clickable and simply invisible, which is worse than unclickable
+       because nothing says why.
+
+       GEOMETRIC, NOT A LIST OF SURFACES: a list would be right today and stale
+       at the next drill. The scrollbar and the content still say there is more,
+       and a learner who cannot see the chips has the worse problem. */
+    const anchorEl = anchor.current;
+    const coversAControl = () => {
+      const rail = anchorEl?.getBoundingClientRect();
+      if (!rail) return false;
+      const top = rail.bottom - BAND_H;
+      for (const el of Array.from(
+        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, [role='button']"),
+      )) {
+        const r = el.getBoundingClientRect();
+        if (r.width < 4 || r.height < 4) continue;
+        if (r.bottom > top && r.top < rail.bottom && r.right > rail.left && r.left < rail.right) return true;
+      }
+      return false;
     };
-    read();
+
+    const measure = () => {
+      const below = root.scrollHeight - root.scrollTop - root.clientHeight - grew > FLOOR;
+      // In FLOW the band has a row of its own and covers nothing by
+      // construction, so the geometric test would only ever cost it a frame.
+      // `&&` short-circuits, so the per-control sweep below never runs at all
+      // on a page with nothing under the fold.
+      setMore(below && (flow || !coversAControl()));
+    };
+
+    /* ONE MEASUREMENT PER FRAME, AND THE MERGE IS WHY (2026-09-15).
+       The MutationObserver below watches `class` and `style` across the whole
+       subtree, and `setMore` re-renders — which changes a class, which fires
+       the observer, which measures again. That loop was already here and was
+       harmless while measuring was two integer reads.
+
+       It stopped being harmless the moment `coversAControl` joined it in the
+       merge of the two "covering the tiles" fixes: every pass now calls
+       `getBoundingClientRect()` once per control on the page, and each of those
+       forces a synchronous layout. On `/lessons/deck/aliments` that pegged the
+       main thread hard enough that a Playwright click with an 8s timeout took
+       38 SECONDS to give up — the tap landed, the page just could not answer.
+       verify220 went red and read like a flake.
+
+       Coalescing into one rAF fixes both halves: a burst of mutations does a
+       single measurement, and the re-render's own mutations land in the frame
+       that is already scheduled instead of starting another. Neither lane's
+       change was wrong on its own; the cost only existed once they were in the
+       same function, which is the collision an integration lane is for. */
+    let queued = 0;
+    const read = () => {
+      if (queued) return;
+      queued = requestAnimationFrame(() => { queued = 0; measure(); });
+    };
+    measure();
     root.addEventListener("scroll", read, { passive: true });
 
     /* WATCH THE CONTENT, NOT THE SCROLLER — this is where the first version
@@ -182,12 +254,15 @@ export default function MoreBelow({
     mo.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ["open", "hidden", "class", "style"] });
     return () => {
       root.removeEventListener("scroll", read);
+      if (queued) cancelAnimationFrame(queued);
       ro.disconnect();
       mo.disconnect();
       if (!flow) host.style.paddingBottom = had;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `flow` is a
-    // constant of the call site, never a value that changes under a learner.
+    // `flow` is a constant of the call site, never a value that changes under
+    // a learner: re-running this effect would tear down the observers and the
+    // reserve padding to arrive at the same answer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* TAPPING IT TAKES YOU THERE (Dan, 2026-09-14: *"and that NEXT PART IS BELOW

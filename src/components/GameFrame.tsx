@@ -42,6 +42,7 @@ import Link from "next/link";
 import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBar";
 import BottomSheet from "@/components/BottomSheet";
 import FirstRunHint from "@/components/FirstRunHint";
+import GuidedSteps, { type GuidedStep } from "@/components/GuidedSteps";
 
 export type { GameHearts, GameProgress };
 
@@ -78,6 +79,7 @@ export default function GameFrame({
   background,
   boardClassName,
   onMenuToggle,
+  guide,
   children,
 }: {
   /** The game's name with its emoji — heads the ⋯ sheet, never the board. */
@@ -129,6 +131,26 @@ export default function GameFrame({
   boardClassName?: string;
   /** Fires when the ⋯ sheet opens/closes — a real-time game pauses its clock. */
   onMenuToggle?: (open: boolean) => void;
+  /**
+   * A HAND-HOLD THAT POINTS AT A CONTROL, run once after the first-run card is
+   * dismissed (Dan, 2026-09-15, of LexicaLocker: *"make sure that it is played
+   * in full screen - by pointing to the full screen button!"*).
+   *
+   * IT POINTS; IT DOES NOT PRESS. Dan asked for the forced version first —
+   * *"pls force a landscape view?"* — and withdrew it twice the same hour:
+   * *"actually no need sideways, just full screen"*, then *"it can be played
+   * sideways just not forced"*. So the learner's own tap is still what takes
+   * the game full, and turning the phone sideways still works exactly as it
+   * did — a short landscape touchscreen opens full by itself (see the rule
+   * below), which is the one case where the SCREEN decides rather than the
+   * app.
+   *
+   * The walk waits for the real press: GuidedSteps advances when the control
+   * is actually used, so a learner who ignores it is not held anywhere.
+   * `hintKey` must be set too — the walk hangs off that card's dismissal, and
+   * the same one-key memory is what stops it coming back.
+   */
+  guide?: GuidedStep[];
   children: ReactNode;
 }) {
   const [menuOpen, setMenuOpenRaw] = useState(false);
@@ -138,6 +160,8 @@ export default function GameFrame({
   const setHelpOpen = (v: boolean) => { setHelpOpenRaw(v); onMenuToggle?.(v || menuOpen); };
   const boardRef = useRef<HTMLDivElement | null>(null);
   const [size, setSize] = useState<BoardSize>({ width: 0, height: 0 });
+  /** The `guide` walk, once, after the first-run card is dismissed. */
+  const [walking, setWalking] = useState(false);
 
   // EMBEDDED BY DEFAULT, FULL SCREEN ON REQUEST (Dan, 7 Sep: games "embedded
   // like the map, (with option to go full screen)"). A game used to BE the
@@ -379,7 +403,12 @@ export default function GameFrame({
           rather than written into each game's `hint`: it is true exactly when
           something was left out, which is exactly when `hint` is set. */}
       {help && hintKey && (
-        <FirstRunHint hintKey={hintKey} title={`How to play`}>
+        <FirstRunHint
+          hintKey={hintKey}
+          title={`How to play`}
+          ctaLabel={guide ? "Show me" : undefined}
+          onGot={guide ? () => setWalking(true) : undefined}
+        >
           <div className="game-help">{hint ?? help}</div>
           {hint && (
             <p className="mt-3 text-xs text-[color:var(--cahier-ink-soft)]">
@@ -388,6 +417,10 @@ export default function GameFrame({
           )}
         </FirstRunHint>
       )}
+      {/* The walk itself, OUTSIDE the card: the card has closed by the time
+          this mounts, which is the point — a spotlight drawn under a dialog
+          lights nothing. */}
+      {guide && walking && <GuidedSteps steps={guide} onDone={() => setWalking(false)} />}
     </div>
   );
 }

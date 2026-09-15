@@ -124,6 +124,13 @@ export default function GameBar({
           aria-pressed={full}
           aria-label={full ? "Leave full screen" : "Play full screen"}
           title={full ? "Leave full screen" : "Play full screen"}
+          /* THE HOOK A HAND-HOLD POINTS AT (Dan, 2026-09-15, of LexicaLocker:
+             *"make sure that it is played in full screen - by pointing to the
+             full screen button!"*). It is on the BAR, so every game has it; a
+             game opts into being pointed at it by passing `guide` to
+             GameFrame, which is what keeps this from becoming a lecture that
+             every game gives. */
+          data-tour="full-screen"
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
         >
           <span aria-hidden>{full ? "⤡" : "⛶"}</span>

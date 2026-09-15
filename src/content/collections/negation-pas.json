@@ -13,32 +13,265 @@
   "gameConfig": {
     "letris": {
       "columns": [
-        { "key": "de", "label": "ne … pas de / d'" },
-        { "key": "def", "label": "ne … pas le / la / les" },
-        { "key": "plus", "label": "ne … plus" }
+        {
+          "key": "de",
+          "label": "ne … pas de / d'"
+        },
+        {
+          "key": "def",
+          "label": "ne … pas le / la / les"
+        },
+        {
+          "key": "plus",
+          "label": "ne … plus"
+        }
       ]
     }
   },
   "items": [
-    { "id": "negpas-01", "fr": "Je ne fais pas de tennis.", "en": "I don't play tennis.", "gap": "de", "emoji": "🎾", "tags": ["col:de"], "example": "faire du tennis → ne … pas de tennis" },
-    { "id": "negpas-02", "fr": "Je n'aime pas le tennis.", "en": "I don't like tennis.", "gap": "le", "emoji": "🎾", "tags": ["col:def"], "example": "aimer keeps le : j'aime le tennis → je n'aime pas le tennis" },
-    { "id": "negpas-03", "fr": "Il n'y a pas de café.", "en": "There is no coffee.", "gap": "de", "emoji": "☕", "tags": ["col:de"], "example": "il y a du café → il n'y a pas de café" },
-    { "id": "negpas-04", "fr": "Je n'aime pas le café.", "en": "I don't like coffee.", "gap": "le", "emoji": "☕", "tags": ["col:def"] },
-    { "id": "negpas-05", "fr": "Elle ne fait pas de natation.", "en": "She doesn't swim.", "gap": "de", "emoji": "🏊", "tags": ["col:de"] },
-    { "id": "negpas-06", "fr": "Elle n'aime pas la natation.", "en": "She doesn't like swimming.", "gap": "la", "emoji": "🏊", "tags": ["col:def"] },
-    { "id": "negpas-07", "fr": "Nous ne faisons pas de vélo.", "en": "We don't cycle.", "gap": "de", "emoji": "🚴", "tags": ["col:de"] },
-    { "id": "negpas-08", "fr": "Il n'aime pas le vélo.", "en": "He doesn't like cycling.", "gap": "le", "emoji": "🚴", "tags": ["col:def"] },
-    { "id": "negpas-09", "fr": "Je ne mange pas de chocolat.", "en": "I don't eat chocolate.", "gap": "de", "emoji": "🍫", "tags": ["col:de"], "example": "manger du chocolat → ne … pas de chocolat" },
-    { "id": "negpas-10", "fr": "Ils n'aiment pas les bonbons.", "en": "They don't like sweets.", "gap": "les", "emoji": "🍬", "tags": ["col:def"] },
-    { "id": "negpas-11", "fr": "Il n'y a pas d'eau.", "en": "There is no water.", "gap": "d'", "emoji": "💧", "tags": ["col:de"], "example": "de + voyelle → d' : pas d'eau" },
-    { "id": "negpas-12", "fr": "Je n'aime pas l'eau gazeuse.", "en": "I don't like sparkling water.", "gap": "l'", "emoji": "🫧", "tags": ["col:def"] },
-    { "id": "negpas-13", "fr": "Tu ne fais pas de musique ?", "en": "You don't play music?", "gap": "de", "emoji": "🎵", "tags": ["col:de"] },
-    { "id": "negpas-14", "fr": "Elles adorent la musique, mais pas le sport.", "en": "They love music, but not sport.", "gap": "le", "emoji": "🎵", "tags": ["col:def"] },
-    { "id": "negpas-15", "fr": "Le stylo n'est plus sur la table.", "en": "The pen is no longer on the table.", "gap": "plus", "emoji": "🖊️", "tags": ["col:plus"], "example": "le stylo est sur la table → il n'est plus sur la table" },
-    { "id": "negpas-16", "fr": "Les lunettes ne sont plus sur la table.", "en": "The glasses are no longer on the table.", "gap": "plus", "emoji": "👓", "tags": ["col:plus"] },
-    { "id": "negpas-17", "fr": "Le cahier n'est plus dans le sac.", "en": "The exercise book is no longer in the bag.", "gap": "plus", "emoji": "📓", "tags": ["col:plus"] },
-    { "id": "negpas-18", "fr": "Il n'y a plus de café.", "en": "There is no more coffee.", "gap": "plus", "emoji": "☕", "tags": ["col:plus"], "example": "il y a du café → il n'y a plus de café" },
-    { "id": "negpas-19", "fr": "Je ne fais plus de tennis.", "en": "I don't play tennis any more.", "gap": "plus", "emoji": "🎾", "tags": ["col:plus"], "example": "faire du tennis → ne … plus de tennis" },
-    { "id": "negpas-20", "fr": "Elle n'habite plus à Paris.", "en": "She doesn't live in Paris any more.", "gap": "plus", "emoji": "🏠", "tags": ["col:plus"] }
+    {
+      "id": "negpas-01",
+      "fr": "Je ne fais pas de tennis.",
+      "en": "I don't play tennis.",
+      "gap": "de",
+      "emoji": "🎾",
+      "tags": [
+        "col:de"
+      ],
+      "example": "faire du tennis → ne … pas de tennis"
+    },
+    {
+      "id": "negpas-02",
+      "fr": "Je n'aime pas le tennis.",
+      "en": "I don't like tennis.",
+      "gap": "le",
+      "emoji": "🎾",
+      "tags": [
+        "col:def"
+      ],
+      "example": "aimer keeps le : j'aime le tennis → je n'aime pas le tennis"
+    },
+    {
+      "id": "negpas-03",
+      "fr": "Il n'y a pas de café.",
+      "en": "There is no coffee.",
+      "gap": "de",
+      "emoji": "☕",
+      "tags": [
+        "col:de"
+      ],
+      "example": "il y a du café → il n'y a pas de café"
+    },
+    {
+      "id": "negpas-04",
+      "fr": "Je n'aime pas le café.",
+      "en": "I don't like coffee.",
+      "gap": "le",
+      "emoji": "☕",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-05",
+      "fr": "Elle ne fait pas de natation.",
+      "en": "She doesn't swim.",
+      "gap": "de",
+      "emoji": "🏊",
+      "tags": [
+        "col:de"
+      ]
+    },
+    {
+      "id": "negpas-06",
+      "fr": "Elle n'aime pas la natation.",
+      "en": "She doesn't like swimming.",
+      "gap": "la",
+      "emoji": "🏊",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-07",
+      "fr": "Nous ne faisons pas de vélo.",
+      "en": "We don't cycle.",
+      "gap": "de",
+      "emoji": "🚴",
+      "tags": [
+        "col:de"
+      ]
+    },
+    {
+      "id": "negpas-08",
+      "fr": "Il n'aime pas le vélo.",
+      "en": "He doesn't like cycling.",
+      "gap": "le",
+      "emoji": "🚴",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-09",
+      "fr": "Je ne mange pas de chocolat.",
+      "en": "I don't eat chocolate.",
+      "gap": "de",
+      "emoji": "🍫",
+      "tags": [
+        "col:de"
+      ],
+      "example": "manger du chocolat → ne … pas de chocolat"
+    },
+    {
+      "id": "negpas-10",
+      "fr": "Ils n'aiment pas les bonbons.",
+      "en": "They don't like sweets.",
+      "gap": "les",
+      "emoji": "🍬",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-11",
+      "fr": "Il n'y a pas d'eau.",
+      "en": "There is no water.",
+      "gap": "d'",
+      "emoji": "💧",
+      "tags": [
+        "col:de"
+      ],
+      "example": "de + voyelle → d' : pas d'eau"
+    },
+    {
+      "id": "negpas-12",
+      "fr": "Je n'aime pas l'eau gazeuse.",
+      "en": "I don't like sparkling water.",
+      "gap": "l'",
+      "emoji": "🫧",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-13",
+      "fr": "Tu ne fais pas de musique ?",
+      "en": "You don't play music?",
+      "gap": "de",
+      "emoji": "🎵",
+      "tags": [
+        "col:de"
+      ]
+    },
+    {
+      "id": "negpas-14",
+      "fr": "Elles adorent la musique, mais pas le sport.",
+      "en": "They love music, but not sport.",
+      "gap": "le",
+      "emoji": "🎵",
+      "tags": [
+        "col:def"
+      ]
+    },
+    {
+      "id": "negpas-15",
+      "fr": "Le stylo n'est plus sur la table.",
+      "en": "The pen is no longer on the table.",
+      "gap": "plus",
+      "emoji": "🖊️",
+      "tags": [
+        "col:plus"
+      ],
+      "example": "le stylo est sur la table → il n'est plus sur la table"
+    },
+    {
+      "id": "negpas-16",
+      "fr": "Les lunettes ne sont plus sur la table.",
+      "en": "The glasses are no longer on the table.",
+      "gap": "plus",
+      "emoji": "👓",
+      "tags": [
+        "col:plus"
+      ]
+    },
+    {
+      "id": "negpas-17",
+      "fr": "Le cahier n'est plus dans le sac.",
+      "en": "The exercise book is no longer in the bag.",
+      "gap": "plus",
+      "emoji": "📓",
+      "tags": [
+        "col:plus"
+      ]
+    },
+    {
+      "id": "negpas-18",
+      "fr": "Il n'y a plus de café.",
+      "en": "There is no more coffee.",
+      "gap": "plus",
+      "emoji": "☕",
+      "tags": [
+        "col:plus"
+      ],
+      "example": "il y a du café → il n'y a plus de café"
+    },
+    {
+      "id": "negpas-19",
+      "fr": "Je ne fais plus de tennis.",
+      "en": "I don't play tennis any more.",
+      "gap": "plus",
+      "emoji": "🎾",
+      "tags": [
+        "col:plus"
+      ],
+      "example": "faire du tennis → ne … plus de tennis"
+    },
+    {
+      "id": "negpas-20",
+      "fr": "Elle n'habite plus à Paris.",
+      "en": "She doesn't live in Paris any more.",
+      "gap": "plus",
+      "emoji": "🏠",
+      "tags": [
+        "col:plus"
+      ]
+    },
+    {
+      "id": "negpas-transform-1",
+      "fr": "Il ne s'appelle pas Philippe.",
+      "en": "His name is not Philippe.",
+      "gap": "ne",
+      "emoji": "🙅",
+      "tags": [],
+      "example": "il s'appelle Philippe → il NE s'appelle pas Philippe"
+    },
+    {
+      "id": "negpas-transform-2",
+      "fr": "Il ne s'appelle pas Philippe.",
+      "en": "His name is not Philippe.",
+      "gap": "pas",
+      "emoji": "🙅",
+      "tags": [],
+      "example": "ne … PAS wraps the verb: ne s'appelle PAS"
+    },
+    {
+      "id": "negpas-transform-3",
+      "fr": "Elles ne sont pas françaises.",
+      "en": "They are not French.",
+      "gap": "ne",
+      "emoji": "🇫🇷",
+      "tags": [],
+      "example": "elles sont françaises → elles NE sont pas françaises"
+    },
+    {
+      "id": "negpas-transform-4",
+      "fr": "Elles ne sont pas françaises.",
+      "en": "They are not French.",
+      "gap": "pas",
+      "emoji": "🇫🇷",
+      "tags": [],
+      "example": "ne … PAS wraps être too: ne sont PAS françaises"
+    }
   ]
 }

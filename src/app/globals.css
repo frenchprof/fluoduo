@@ -2900,17 +2900,38 @@ h3.cahier-display { font-size: var(--fs-h3); }
     -5px -5px 10px color-mix(in oklab, white 92%, transparent),
     7px 12px 20px color-mix(in oklab, var(--cahier-ink) 32%, transparent),
     inset 1px 3px 0 color-mix(in oklab, white 62%, transparent),
-    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent),
-    /* THE TOP FACE'S OWN HAIRLINE (Dan, 2026-09-12: "those protruding buttons
-       should have their top most face very-thinly-outlined for better 3D
-       enhancement", and again on 14 Sep about the zoom + and −).
-       The two insets above are a highlight and a lip — they shade the top face
-       but never draw its EDGE, so a pale key on pale paper had no boundary at
-       all and read as a smudge rather than a surface. A 1px inset ring with no
-       offset and no blur IS that edge: it costs no layout, follows the radius
-       for free, and sits last so it draws over the highlight. */
-    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 22%, transparent);
-  border: 0;
+    inset -1px -6px 0 color-mix(in oklab, black 16%, transparent);
+  /* THE OUTLINED TOP SURFACE (Dan, 2026-09-14: *"the buttons are missing the
+     outlined top surface"*). This line used to read `border: 0`.
+
+     AND IT IS THE SECOND ATTEMPT, which is the part worth keeping. The first
+     answered Dan's 12 Sep ask — *"those protruding buttons should have their
+     top most face very-thinly-outlined"* — with a fifth shadow,
+     `inset 0 0 0 1px ink 22%`: no layout cost, follows the radius for free.
+     He sent it back two days later with the same words, because an inset ring
+     at 22% of the ink is still a shade of the paper on a pale key, and pale
+     keys are most of this app. The lesson is verify540's, again: a rule about
+     what the app LOOKS like is settled by measuring it, not by picking the
+     cheaper implementation.
+
+     WHY IT WAS INVISIBLE IN THE SOURCE, and why a census was needed: the 3D
+     above is four shadows, and on a DARK key the `inset 1px 3px 0 white 62%`
+     lip does read as a lit top face. On a pale one it cannot — the path's
+     « ▶ Open » sits on --fam-review-wash, rgb(205,244,231), and a 62%-white
+     highlight on near-white is nothing at all. So the key looked 3D in some
+     places and flat in others, which reads as a bug in the flat ones rather
+     than as a missing rule.
+     MEASURED across eleven routes in the built app: 42 of 50 raised keys had
+     no outline of any kind. The eight that did are the ☰ menu's tiles, which
+     add `border-2` themselves in `familyTile.ts` and colour it with the
+     family's darkest rung — Dan's own ruling of 11 Sep, *"the darkest shade
+     in there"* moved onto the tile outlines. This makes that the rule rather
+     than the exception.
+     `--key-edge` IS THE `--key-bg` MECHANISM AGAIN, for the same reason: a
+     caller sets it inline and always wins, and every key that sets nothing
+     keeps the house ink. Box-sizing is border-box app-wide, so the 2px eats
+     into padding — no row measurement moves. */
+  border: 2px solid var(--key-edge, var(--cahier-ink));
   transition: transform .1s ease, box-shadow .1s ease;
 }
 @media (hover: hover) and (pointer: fine) {
@@ -3046,6 +3067,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
    :active overrides it with a short, hard ease-in so the press is immediate.
    One property animates — transform — which the compositor handles without
    laying out or painting, so fifty of these cost nothing. */
+/* A COIN KEEPS `border: 0`; A BUTTON DOES NOT.
+   `.fluo-spring` is worn by both — the 3D map's stop NODES, and the ± zoom
+   steppers, the 2D/3D switch knob and the map's two text buttons. The line
+   between them is already in the markup and needs no new class: a stop node is
+   `home-map3d-node fluo-spring` with NO `.neo-key`, every button here is
+   `.neo-key fluo-spring`. So the two-class rule below returns the outlined top
+   surface to the four buttons and leaves the coins exactly as Dan ruled them
+   on 8 Sep — *"a coin, not a neumorphic pill"*. */
+.neo-key.fluo-spring { border: 2px solid var(--key-edge, var(--cahier-ink)); }
 .fluo-spring, .fluo-stop {
   border: 0;
   transition:
@@ -4919,8 +4949,9 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 
 /* The four kinds, as keys you tap on and off — the key IS the tick box, which
    is what removed the four bare <input type="checkbox"> this screen carried
-   (Dan, 2026-09-14: "tiled buttons representing a choice each"). A kind that
-   is off greys its own emoji, so the state reads before any colour does. */
+   (Dan, 2026-09-14: "tiled buttons representing a choice each"). An off kind
+   changes the KEY and the weight of its name — never the picture; that is the
+   `grayscale(1); opacity: .5` Dan sent back the same day. */
 /* COUNTED, NOT TOLD (verify270). Four tiles go two-up on a phone and four-up
    when there is room, because the row measures itself rather than carrying a
    pixel width that a desktop's larger type would then overflow. */
@@ -5012,9 +5043,17 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 .fluo-more-band {
   /* IT IS A BUTTON NOW, and it takes you there (Dan, 2026-09-14: "that NEXT
      PART IS BELOW SHOULD BE CLICKABLE TO TAKE YOU BELOW"). It always looked
-     like a key — `.neo-key` — so a learner was always going to press it. */
+     like a key — `.neo-key` — so a learner was always going to press it.
+
+     AND IT KEEPS `.neo-key`'s EDGE. This block said `border: 0` when it was
+     written, to undo the <button> element's own default border — which was
+     harmless while `.neo-key` itself said `border: 0` two thousand lines
+     above. It stopped being harmless the same day: `.neo-key` now carries
+     `2px solid var(--key-edge)` (Dan: *"the buttons are missing the outlined
+     top surface"*), so a `border: 0` here is this one key opting out of the
+     rule every other key just got. `font: inherit` still has to be stated —
+     that one a <button> really does need undoing. */
   cursor: pointer;
-  border: 0;
   font: inherit;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
 }

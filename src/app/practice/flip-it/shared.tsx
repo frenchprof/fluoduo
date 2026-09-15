@@ -15,7 +15,19 @@ import { gradeAgainst } from "@/lib/practice/cloze";
 
 /* ─────────────────────────── model ─────────────────────────── */
 
-export type Row = { item: Item; art: string; fr: string; full: string };
+/** A card, and THE DECK IT CAME FROM.
+ *
+ *  `deckId` exists for the mixed revision run (Dan, 2026-09-14, choosing one
+ *  MémoiRecall step *"drawing across all 17"* tested stops rather than
+ *  seventeen separate doors). A single-deck run has every row carrying the same
+ *  id, so nothing about it changes.
+ *
+ *  IT IS NOT COSMETIC. Two things in this drill are filed PER DECK — the
+ *  reviewed/again buckets in localStorage, and the evidence tag
+ *  `flip-it:<deck>` that the mastery model reads. Run seventeen decks under one
+ *  synthetic id and a learner's real per-deck progress is neither read nor
+ *  written: the cards would all file under a deck that does not exist. */
+export type Row = { item: Item; deckId: string; art: string; fr: string; full: string };
 
 export function articleOf(collection: Collection, item: Item): string {
   const cols = collection.gameConfig?.letris?.columns ?? [];
@@ -49,7 +61,7 @@ export function frFull(article: string, fr: string): string {
 export function rowsOf(collection: Collection, items: Item[]): Row[] {
   return items.map((it) => {
     const art = articleOf(collection, it);
-    return { item: it, art, fr: it.fr, full: frFull(art, it.fr) };
+    return { item: it, deckId: collection.id, art, fr: it.fr, full: frFull(art, it.fr) };
   });
 }
 

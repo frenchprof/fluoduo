@@ -6,6 +6,86 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 15 Sep — the peers lane lands ON main instead of beside it, and LexicaLocker fits (fluoduo-main)
+
+**Dan: *"peers pushed https://79fa0564.fluoduo.pages.dev/ but it is missing
+some of the items in your earlier deployment pls help"*.** Nothing was lost.
+That preview is built from the peers BRANCH, whose base is `8612ec3` —
+**eleven merges behind main**. It has never had the NumBus pictures (#373), the
+folding guides (#375), the 🤍 on every band (#378/#382), the clickable cue
+(#379) or the English final clue (#381), because those landed after they
+branched. The remedy is this merge: their work on TOP of the eleven, not
+alongside them.
+
+**SEVEN CONFLICTS, and two of them needed BOTH sides.** This is the case the
+integration lane exists for — each branch was individually green.
+
+    .neo-key's outline   PEERS. Main answered Dan's 12 Sep "very-thinly-
+                         outlined" with a fifth shadow (inset 1px ring at 22%
+                         ink). He sent it back on the 14th in the same words:
+                         on a pale key that ring is a shade of the paper, and
+                         most of this app is pale. Peers MEASURED it — 42 of 50
+                         raised keys with no outline at all — and gave the class
+                         a real 2px border with a --key-edge override.
+    MoreBelow            BOTH. Two lanes fixed "why is NEXT PART IS BELOW
+                         covering the tiles partialy??" from opposite sides:
+                         main MAKES ROOM (reserve, `flow`, the clickable band),
+                         peers STANDS IT DOWN when a control is still there.
+                         Peers' clause catches ComposeIt, which main never
+                         reached from its side.
+    NumBus kind tiles    MAIN. Peers still greyed an unticked kind, which is
+                         the thing Dan photographed.
+
+**THE MERGE INTRODUCED A BUG THAT IS IN NEITHER DIFF, and that is the lesson.**
+MoreBelow's MutationObserver watches `class`/`style` across the subtree and
+`setMore` re-renders — a loop that was harmless while a measurement was two
+integer reads. Folding peers' per-control sweep into that same function made
+every pass force a synchronous layout per control. On `/lessons/deck/aliments`
+a Playwright click with an **8-second** timeout took **38 seconds** to give up.
+verify220 went red and read exactly like a flake; chasing it as one would have
+shipped a lesson page that stops answering taps.
+
+    read the two diffs   both green, both correct, no overlap in intent
+    ran the merged tree  the page locks up and a check lies about why
+
+One `requestAnimationFrame` coalesces it: a burst of mutations measures once,
+and the re-render's own mutations land in the frame already scheduled.
+
+**TWO MORE COLLISIONS THE GATE CAUGHT.** `.fluo-more-band` carried `border: 0`
+— written to undo the `<button>` default back when `.neo-key` had none, and now
+this one key opting out of the rule every other key had just been given. And
+**verify800 was claimed twice the same afternoon** by two lanes that could not
+see each other; peers' key-outline check is **860** now, clear of the frontier
+per the 7 Sep headroom note.
+
+### LexicaLocker, four messages and three reversals
+
+    "pls force a landscape view?"
+    "actually no need sideways, just full screen"
+    "it can be played sideways just not forced"
+    "make sure that it is played in full screen - by pointing to the full
+     screen button!"
+
+**So NOTHING is forced.** GameBar's ⛶ carries a `data-tour` hook, GameFrame
+takes a `guide` a game opts into, and LexicaLocker rings that key once on a
+first run and waits for the learner's own tap. Turning the phone sideways still
+behaves exactly as it always did. **The ⛶ glyph is NOT in the sentence** — it
+draws fine on the key, but set in body text the app's face has no picture for
+it and Chrome drew an empty box.
+
+**And the real fix was the board, not the screen** (Dan: *"why don't you make
+the chest half the current size"*, then *"if it is below the fold, then bring
+the conveyyor higher uo to be closer to the chestss"*). Chests 7rem → 3.5rem in
+the lane and 10.125rem → 5.0625rem in the bay, the arrows bay tightened, and —
+the one that actually mattered — **the FROZEN belt had no ceiling at all**. At
+level 1 every key is a whole phrase (« Monsieur et Madame Martin »), so eleven
+of them wrapped into six rows and the belt grew to 330px and ran off the bottom
+of the frame with « le directeur » cut in half. It is capped and scrolls itself
+now; measured at 430×860, the whole board ends inside the frame.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  148/148 verify · verify-wiring 10/10 · walked in the built app
+
 ## 14 Sep — « /50 » off the map, both guides fold, and the nesting Dan saw is older than today (fluoduo-main)
 
 **« /50 » WAS NOT ADDED YESTERDAY; THE WELL AROUND IT WAS.** Dan: *"the
@@ -260,6 +340,105 @@ in BAND` is a SUBSTRING test and passed on `<FavouriteHeartX`; it is a regex
 ending on `[\s/>]` now. A clause that cannot fail is not a clause.
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, cherry-picked by fluoduo-main)
+## 14 Sep — the path now stays inside the test: stops 1–30 (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
+
+**Dan, opening the curated path: *"I just saw the curated exercises are not at
+all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to 30
+only please"*.** Stops 1–30 are units 0, 1 and 2; 31–50 are units 3 and 4.
+
+**MEASURED BY WALKING A WHOLE PAPER IN THE BUILT APP**, one card at a time at
+390px, hint · hint · skip, fifty times:
+
+        before   50 questions · 20 of them stops 31–50 (40%)
+        after    50 questions ·  0
+
+« Le matin, je bois un ___ au lait. » is SIO-041. And because the Finale feeds
+ErroReview, those twenty misses BECAME the revision queue — step 1 was
+manufacturing the wrong homework for step 2.
+
+**Three different ways a step left the test, only one of them visible in
+`paths.ts`:** a goal above 30 (« MneMemo — asking a question », goal 34 — cut);
+an unscoped BANK (FINALE_BANK is 437 items, 201 of them stops 31–50 — the step
+looked right, one href and no goal); an unscoped PICKER (`/practice/ecoutexte`
+and `/conjugaison` open choosers over all five units and all 67 verbs, so the
+ConjugaZone step's own text named six verbs it never picked).
+
+**The scope lives in the address** — `?upto=30`, `?v=etre,avoir,faire,aller,sappeler,aimer`,
+`/practice/ecoutexte/quand-time` — and `scopeOf()` is a filter over the one
+bank, never a second bank. Read with `addressSearch()`, not `window.location`:
+the Finale runs in the cahier's iframe, whose src carries no query at all.
+
+**The Finale is still the whole-course paper.** No query, fifty stops, exactly
+as before. The path scopes itself; it does not shrink the activity for anyone
+else. The second test is `?upto=50`, or another entry in `paths.ts`, and no new
+code.
+
+`verify760` clause 8 pins both halves (goals ≤ 30; the three wide doors carry
+their narrowing query) and was break-tested both ways.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · before/after walked in the real app
+
+### Then: the path was audited against the REAL Test 1 paper (same day)
+
+Dan sent the actual LAF 1201 Test 1 and its corrigé, approved an item-by-item
+list of what it tests (all of it except the poster-reading exercise, and
+without « chez »), and ruled twice on scope: ***"please stick to the 30
+stops"*** and, of the reading section, ***"it is not so much about reading per
+se, but what those reading questions are really testing"***.
+
+**EVERY GAP TURNED OUT TO BE A LESSON THE COURSE ALREADY HAS INSIDE STOPS
+1–30 THAT NO STEP OPENED.** Nothing new was written and nothing reaches past
+stop 30:
+
+    quel-prefere    SIO-015 — « Quel ? Quelle ? Quels ? Quelles ? ». Four of
+                    the paper's five question marks. The systematic question
+                    lesson IS at SIO-034 and stays out; this one was moved
+                    into Unit 1 on 5 Sep for exactly this reason.
+    negation        SIO-028 — measured: 0 of the deck's 20 items is reflexive
+                    and none is « ne…pas » + être. The paper asks for both.
+                    The LESSON has « il ne s'appelle pas », « elle n'est pas
+                    anglaise ».
+    articles-pays   SIO-015 — the only place « l'Italie » and « le Liban » are
+                    explained. Neither is one of the 25 countries and by the
+                    transfer ruling neither needs to be, PROVIDED the rule is
+                    taught. Behind a fold, it was not.
+
+**THE FIRST CUT PUT ALL OF THEM IN THE ESSENTIAL TIER AND CAME OUT AT 104
+MINUTES.** Dan: *"104 minutes is now too long. We had promised about half that
+duration. Can you divide that into essential and optional"*. So the tier line
+is drawn on MARKS PER MINUTE against the real paper, and the fold is ordered
+best-first so a learner with ninety minutes rather than sixty starts at the
+top and stops when time runs out.
+
+        essential   9 steps · 63 min   (53 + 10 the next morning)
+        optional    8 more  · 60 min   NumBus first — four marks, and the only
+                                       24-hour clock and phone number in the app
+
+**WorDrill left the essential tier**: Test 1 has no spoken section at all
+(« Compréhension orale » is listening, which ÉcouTexte answers). It stays on
+the path because the course is not only this paper.
+
+**AND THE CHECK'S OWN PARSER WAS SKIPPING STEPS.** `verify760` matched a step
+only when `id:` sat on the line straight after `{`, so the two steps promoted
+with a comment explaining the promotion were invisible — it read 19 of 21 and
+passed, having never looked at two of them. That is the exact failure this file
+exists to prevent, committed by the file itself. The pattern is anchored on the
+four-space indentation now, and a new clause cross-checks the parsed count
+against a plain tally of declared `id:` lines, so a parse that drops a step
+FAILS instead of quietly shrinking. (A first fix read ELEVEN of twenty-one and
+looked fine — the guard is what caught it.)
+
+**Known and stated, not silently absent:** the paper's reading exercise 1 is 5
+marks; its six questions decompose into numbers, a 24-hour time, *où*, *aller
+au*, *adorer* and *ne…plus* — all stops 1–30 and all on the path — but no
+activity in FluOLinGo asks a learner to read a whole text and pull a fact out
+of it. Say so in the letter rather than build one.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · path walked and screenshotted at 880px
+
+## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
 all optimal (tiled buttons representing a choice each)"*, and after I twice
@@ -302,7 +481,7 @@ four bare checkboxes. The 8/10 phone choice shows only with 📞 on.
   tsc clean · build green · eslint clean · **144/144 verify** · both screens
   driven at 390px and 1280px
 
-## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, NOT merged)
+## 14 Sep — the curated path walks itself (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
 ## 14 Sep — five of Dan's eight edges, and a framed game can take the whole screen (fluoduo-main)
 
 **Dan sent eight fixes in one message.** Five are here; three are still open
