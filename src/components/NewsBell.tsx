@@ -69,7 +69,13 @@ export default function NewsBell() {
           <span
             aria-hidden
             className="absolute right-1 top-1 h-2 w-2 rounded-full border border-[color:var(--cahier-paper)]"
-            style={{ background: "var(--cahier-red, #e03131)" }}
+            /* `--dopa-reward`, NOT a raw hex and NOT `--dopa-miss`. The hex
+               was a literal red behind a `--cahier-red` that does not exist, so
+               the fallback was doing all the work — which verify19b's ratchet
+               caught as a 54th file drifting off the palette. Of the tokens
+               that do exist, `miss` means a wrong answer and would read as an
+               error; an unread notice is news waiting, which is `reward`. */
+            style={{ background: "var(--dopa-reward)" }}
           />
         )}
       </button>
