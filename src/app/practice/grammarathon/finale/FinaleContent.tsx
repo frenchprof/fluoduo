@@ -52,13 +52,14 @@
  * the quiet lines on paper keep the soft one.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FINALE_BANK, FINALE_SIOS, type FinaleItem } from "@/content/finale";
+import { FINALE_BANK, FINALE_SIOS, TESTED_STOPS, type FinaleItem } from "@/content/finale";
 import { SIOS } from "@/content/sios";
 import { CURATED } from "@/content/collections";
 import { deaccent, gradeAgainst, normalize } from "@/lib/practice/cloze";
 import { isWeakSrs, loadProgress, recordItemResult } from "@/lib/progress";
 import { buildLadder, shownRungs } from "@/lib/help/hints";
 import { buildEvidence } from "@/lib/evidence";
+import { addressSearch } from "@/lib/addressWindow";
 
 const DAILY_N = 50; // Dan, 2026-07-22: 50, not 100
 
@@ -72,16 +73,59 @@ function mulberry32(seed: number) {
 }
 const hash = (s: string) => [...s].reduce((h, c) => (Math.imul(h, 31) + c.charCodeAt(0)) | 0, 7);
 
-function sioWeakness(): Record<string, number> {
+/** The SIOs a run may draw from: `TESTED_SIOS` by default, or stops 1..N when
+ *  an address says `?upto=N`.
+ *
+ *  A LIST, NOT A RANGE — Dan, 2026-09-14, after the item-by-item audit of the
+ *  real paper: *"Then can we curate GramMarathon based entirely on ONLY 1, 4,
+ *  7, 9, 12, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29"*.
+ *
+ *  THIS IS THE THIRD ANSWER TO THE SAME COMPLAINT and the first that holds,
+ *  which is why all three are written down rather than tidied away:
+ *
+ *    1  scope the PATH's step   `?upto=30` on the href. Fixed the path and
+ *       nothing else: the ☰ menu, the picker and a bookmark all still dealt
+ *       the whole course, and that is where Dan met SIO-047 and SIO-049.
+ *    2  cap the COMPONENT       `DEFAULT_UPTO = 30`. Removed units 3 and 4
+ *       through every door — and the paper still felt wrong, because
+ *       `drawDaily`'s 360° floor deals ONE QUESTION FROM EVERY STOP IN RANGE
+ *       before weighting anything. Thirty stops in range, eighteen on the
+ *       paper: **twelve of every fifty questions off-target by construction**.
+ *       Measured: 164 of the 236 in-range items drilled nothing the test asks.
+ *    3  name the STOPS          the list above. The floor now covers eighteen
+ *       stops that are all on the paper, and the weighted remainder can only
+ *       land on those same eighteen.
+ *
+ *  The lesson under it: a RANGE is a guess about what a test covers; the
+ *  eighteen are the answer to reading the test. `content/finale.ts` carries
+ *  the list and the reasoning for each of the twelve stops left out.
+ *
+ *  `?upto=50` still gives the whole-course paper back, unchanged, and
+ *  `?upto=30` still means "stops 1–30" for anyone who wants the old range.
+ *  A FILTER, NOT A SECOND BANK: every item already carries its `sio`, so
+ *  nothing is duplicated and the two can never drift. */
+function scopeOf(upto: number | null): { sios: string[]; bank: typeof FINALE_BANK } {
+  const no = (id: string) => parseInt(id.slice(4), 10);
+  const inScope =
+    upto == null
+      ? (id: string) => TESTED_STOPS.includes(no(id))
+      : (id: string) => no(id) <= upto;
+  return {
+    sios: FINALE_SIOS.filter(inScope),
+    bank: FINALE_BANK.filter((q) => inScope(q.sio)),
+  };
+}
+
+function sioWeakness(sios: string[], bank: typeof FINALE_BANK): Record<string, number> {
   const p = loadProgress();
   const now = Date.now();
   const w: Record<string, number> = {};
-  for (const sio of FINALE_SIOS) {
+  for (const sio of sios) {
     const s = SIOS.find((x) => x.id === sio);
     const c = s ? CURATED.find((x) => x.id === s.collectionId) : undefined;
     const ids: string[] = [
       ...(c ? (c.items.map((it: { id?: string }) => it.id).filter(Boolean) as string[]) : []),
-      ...FINALE_BANK.filter((q) => q.sio === sio).map((q) => q.id),
+      ...bank.filter((q) => q.sio === sio).map((q) => q.id),
     ];
     let bad = 0, tracked = 0;
     for (const id of ids) {
@@ -95,10 +139,11 @@ function sioWeakness(): Record<string, number> {
   return w;
 }
 
-function drawDaily(seedKey: string | number): string[] {
+function drawDaily(seedKey: string | number, upto: number | null): string[] {
+  const { sios, bank } = scopeOf(upto);
   const rnd = mulberry32(hash(String(seedKey)));
   const bySio = new Map<string, FinaleItem[]>();
-  for (const q of FINALE_BANK) {
+  for (const q of bank) {
     if (!bySio.has(q.sio)) bySio.set(q.sio, []);
     bySio.get(q.sio)!.push(q);
   }
@@ -106,7 +151,7 @@ function drawDaily(seedKey: string | number): string[] {
   // With DAILY_N below the SIO count, the 360-degree floor takes a seeded
   // shuffle of the SIOs and floors as many as fit — a different SIO sits
   // out each draw, none is ever systematically skipped.
-  const floorSios = [...FINALE_SIOS];
+  const floorSios = [...sios];
   for (let i = floorSios.length - 1; i > 0; i--) {
     const j = Math.floor(rnd() * (i + 1));
     [floorSios[i], floorSios[j]] = [floorSios[j], floorSios[i]];
@@ -115,10 +160,10 @@ function drawDaily(seedKey: string | number): string[] {
     const pool = bySio.get(sio)!;
     chosen.add(pool[Math.floor(rnd() * pool.length)].id);
   }
-  const w = sioWeakness();
-  const remaining = FINALE_BANK.filter((q) => !chosen.has(q.id));
+  const w = sioWeakness(sios, bank);
+  const remaining = bank.filter((q) => !chosen.has(q.id));
   const weights = remaining.map((q) => w[q.sio] ?? 1);
-  while (chosen.size < Math.min(DAILY_N, FINALE_BANK.length) && remaining.length > 0) {
+  while (chosen.size < Math.min(DAILY_N, bank.length) && remaining.length > 0) {
     const total = weights.reduce((a, b) => a + b, 0);
     let r = rnd() * total;
     let k = 0;
@@ -160,12 +205,28 @@ export default function FinaleContent() {
   const [skipped, setSkipped] = useState<Record<string, boolean>>({});
   const graded = useRef<Set<string>>(new Set());
   const inputRef = useRef<HTMLInputElement | null>(null);
+  /* The scope the address asked for, kept so « another paper » redraws inside
+     the same stops rather than silently widening to all fifty. */
+  const uptoRef = useRef<number | null>(null);
 
   // Every visit is a FRESH weakness-weighted draw (Dan, 2026-07-21: the
   // cached daily paper felt dead — and a reload loses typing anyway, so a
   // frozen draw protected nothing). Seed = clock + entropy.
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- shuffled after mount so SSR and the first client render agree — pre-existing, not this change's
-  useEffect(() => { setIds(drawDaily(Date.now() + ":" + Math.random())); }, []);
+  /* READ AFTER MOUNT, and off `addressSearch()` rather than `window.location`
+     — this runs inside the cahier's iframe, whose own src carries no query at
+     all. ConjugaZone's `?deck=` was silently ignored for exactly that reason
+     until it was measured. */
+  /* (The `set-state-in-effect` disable that used to sit here is gone because
+     the rule no longer fires — it reported on a one-statement effect, and the
+     draw is now preceded by the address read. The reason it was there still
+     holds: the shuffle happens after mount so SSR and the first client render
+     agree.) */
+  useEffect(() => {
+    const raw = new URLSearchParams(addressSearch()).get("upto");
+    const n = raw == null ? null : parseInt(raw, 10);
+    uptoRef.current = Number.isFinite(n as number) ? (n as number) : null;
+    setIds(drawDaily(Date.now() + ":" + Math.random(), uptoRef.current));
+  }, []);
 
   const paper = useMemo(() => {
     if (!ids) return null;
@@ -173,8 +234,31 @@ export default function FinaleContent() {
     return ids.map((id) => byId.get(id)!).filter(Boolean);
   }, [ids]);
 
-  // Focus the blank whenever the question changes.
-  useEffect(() => { inputRef.current?.focus(); }, [idx, paper]);
+  /* THE CURSOR LANDS IN THE BLANK ITSELF (Dan, 2026-09-14: *"When landing on a
+     new question, please put the cursor directly at the new blank, rather than
+     require one to go put it there oneself"*).
+
+     THE EFFECT WAS ALREADY HERE AND IT WAS NOT ENOUGH, which is the part worth
+     writing down. Every station runs inside the cahier's iframe (7 Sep), and
+     focusing an element in a frame the BROWSER has not focused moves the
+     document's activeElement without giving the caret to the learner — they
+     see an empty gap and have to click it. `window.focus()` first hands the
+     frame the focus, and only then does focusing the input put the caret where
+     they are looking.
+
+     AND IT RUNS AFTER PAINT. On the first question the input mounts in the
+     same commit as the paper, so a synchronous focus can land before the node
+     is laid out; a frame later it always exists. `preventScroll` keeps the
+     page from jumping to the field on a phone, where the gap is already in
+     view and a scroll reads as the screen twitching. */
+  useEffect(() => {
+    if (!paper) return;
+    const id = requestAnimationFrame(() => {
+      try { window.focus(); } catch { /* a frame may refuse; the focus below still helps */ }
+      inputRef.current?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [idx, paper]);
 
   const okCount = paper ? paper.filter((q) => verdicts[q.id]?.ok).length : 0;
   const skipCount = paper ? paper.filter((q) => skipped[q.id] && !verdicts[q.id]?.ok).length : 0;
@@ -269,6 +353,7 @@ export default function FinaleContent() {
       answer: q.a[0] ?? "",
       topic: SIOS.find((x) => x.id === q.sio)?.topic ?? q.sio,
       category: q.cat,
+      english: q.en,
     });
   }
   function clues(q: FinaleItem, level: number): string[] {
@@ -299,7 +384,7 @@ export default function FinaleContent() {
             onClick={() => {
               graded.current = new Set();
               setTyped({}); setVerdicts({}); setClue({}); setSkipped({}); setIdx(0);
-              setIds(drawDaily(Date.now() + ":" + Math.random()));
+              setIds(drawDaily(Date.now() + ":" + Math.random(), uptoRef.current));
             }}
             className="rounded-full border-2 border-[color:var(--cahier-ink)] bg-[color:var(--fam-wash)] px-4 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)] shadow-[2px_2px_0_var(--cahier-ink)]">
             🎲 Another marathon!

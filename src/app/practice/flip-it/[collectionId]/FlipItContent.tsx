@@ -80,40 +80,72 @@ import {
 
 type Phase = "idle" | "checked" | "revealed";
 
-export default function FlipItPage({ collectionId }: { collectionId: string }) {
-  const collection = CURATED.find((c) => c.id === collectionId);
-  // EVERY item is flippable — emoji is decoration on the card face, not an
-  // entry requirement. (An old emoji?.trim() filter here silently emptied
-  // whole decks — matieres, the ateliers, alphabet… — which is why "No
-  // flippable vocab" kept coming back no matter how the links were fixed.)
-  const items = collection ? practiceItems(collection) : [];
+/** MémoiRecall over ONE deck, or over a set of them.
+ *
+ *  `collectionIds` is the mixed revision run — Dan, 2026-09-14, asked for one
+ *  MémoiRecall step *"drawing across all 17"* tested stops rather than
+ *  seventeen doors, so the whole of it is one ten-minute sitting.
+ *
+ *  ROWS ARE BUILT PER DECK AND THEN MERGED, never from a synthetic collection,
+ *  and that is the trap this shape exists to avoid: `articleOf` resolves an
+ *  item's `col:` tag against ITS OWN deck's Letris columns, so a merged deck
+ *  would hand « du vent » whichever prefix the wrong deck happened to define —
+ *  silently, on a card that still looks right. */
+export default function FlipItPage({
+  collectionId,
+  collectionIds,
+  title,
+}: {
+  collectionId?: string;
+  collectionIds?: string[];
+  title?: string;
+}) {
+  const ids = collectionIds ?? (collectionId ? [collectionId] : []);
+  const decks = ids
+    .map((id) => CURATED.find((c) => c.id === id))
+    .filter((c): c is Collection => !!c)
+    .map((c) => ({ collection: c, items: practiceItems(c) }))
+    .filter((d) => d.items.length > 0);
 
-  if (!collection || items.length === 0) {
+  if (decks.length === 0) {
     return (
       <main className="cahier-sheet relative min-h-screen">
         <div className="cahier-binding" aria-hidden />
         <div className="mx-auto max-w-3xl px-4 py-10 pl-16 text-center text-[color:var(--cahier-ink-soft)]">
-          No flippable vocab in <code>{collectionId}</code>.{" "}
+          No flippable vocab in <code>{ids.join(", ") || "—"}</code>.{" "}
           <Link href="/home" className="font-bold text-[color:var(--cahier-ink)] underline">Home</Link>
         </div>
       </main>
     );
   }
-  return <FlipDrill collection={collection} items={items} />;
+  return <FlipDrill decks={decks} runId={collectionIds ? (title ?? "revision") : decks[0].collection.id} />;
 }
 
-function FlipDrill({ collection, items }: { collection: Collection; items: ReturnType<typeof practiceItems> }) {
+
+function FlipDrill({ decks, runId }: {
+  decks: { collection: Collection; items: ReturnType<typeof practiceItems> }[];
+  runId: string;
+}) {
+  const collection = decks[0].collection;
+  const items = useMemo(() => decks.flatMap((d) => d.items), [decks]);
   const isNat = items.some((i) => i.nat);
-  const rows = useMemo<Row[]>(() => rowsOf(collection, items), [collection, items]);
+  /* PER DECK, THEN MERGED — see FlipItPage's note on `articleOf`. */
+  const rows = useMemo<Row[]>(() => decks.flatMap((d) => rowsOf(d.collection, d.items)), [decks]);
   const articleOptions = useMemo(() => articleOptionsOf(rows), [rows]);
   const hasArt = articleOptions.some((a) => a !== "");
 
   const [buckets, setBuckets] = useState<Record<string, Bucket>>({});
+  /* EVERY DECK IN THE RUN, merged. A mixed run that seeded from one deck would
+     show seventeen decks of cards while remembering only the first one's
+     reviewed marks.
+     The key is the JOINED ids rather than the array: a fresh array each render
+     would re-run this effect forever. */
+  const deckKey = decks.map((d) => d.collection.id).join(",");
   // Deliberate: the saved buckets live in localStorage, which cannot be read
   // during render (the site is statically exported) — this effect has to
   // seed them.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setBuckets(loadBuckets(collection.id)); }, [collection.id]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- the directive has to sit on the SAME line as the call, which is why this is one line
+  useEffect(() => { setBuckets(Object.assign({}, ...deckKey.split(",").map((id) => loadBuckets(id)))); }, [deckKey]);
 
   /** Which of the three original views is on screen. */
   const [view, setView] = useState<"one" | "all" | "list">("one");
@@ -176,7 +208,10 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
     setI((x) => x + 1);
   }
   function markAndNext(b: Bucket) {
-    setBuckets(setBucket(collection.id, row.item.id, b));
+    /* THE ROW'S OWN DECK, not the run's — a mixed revision run holds cards
+       from seventeen decks and each one's bucket belongs to the deck it came
+       from. Identical on a single-deck run, where every row shares the id. */
+    setBuckets(setBucket(row.deckId, row.item.id, b));
     setRun((s) => (b === "reviewed" ? { ...s, su: s.su + 1 } : { ...s, revoir: s.revoir + 1 }));
     advance();
   }
@@ -186,10 +221,10 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
     // the older flashcard.review event stays for the dashboards.
     const r = ladder.attempt(allRight, {
       given: parts.map((p) => vals[p.key] ?? "").join(" ").trim(),
-      activity: `flip-it:${collection.id}`,
+      activity: `flip-it:${row.deckId}`,
     });
     void logEvent("flashcard.review", { itemId: row.item.id, rating: allRight ? "good" : "again" });
-    if (allRight && !ladder.revealed) setBuckets(setBucket(collection.id, row.item.id, "reviewed"));
+    if (allRight && !ladder.revealed) setBuckets(setBucket(row.deckId, row.item.id, "reviewed"));
     if (first) setRun((s) => (allRight ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 }));
     if (r.effect === "done") setPhase("checked");
     else if (r.effect === "reveal") setPhase("revealed");
@@ -222,8 +257,14 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
     return (
       <DrillShell
         activity="flip"
-        deck={collection.id}
-        exitHref={drillExitHref(collection.id)}
+        /* THE RUN'S id, NOT THE FIRST DECK'S. `deck` is what the band reads
+           to print the 🎯 goal badge, and a seventeen-deck run took the badge
+           of whichever deck happened to sort first — measured: the mixed run
+           announced « 🎯 1 », which is Introductions, over cards from all
+           seventeen stops. A run that spans the course belongs to no one
+           stop. */
+        deck={runId}
+        exitHref={drillExitHref(runId)}
         progress={null}
         cta={null}
       >
@@ -240,8 +281,8 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
   return (
     <DrillShell
       activity="flip"
-      deck={collection.id}
-      exitHref={drillExitHref(collection.id)}
+      deck={runId}
+      exitHref={drillExitHref(runId)}
       progress={view !== "one" || done ? null : { done: i, total: runRows.length }}
       right={<>✓ {nReviewed}/{rows.length}</>}
       cta={
@@ -323,7 +364,7 @@ function FlipDrill({ collection, items }: { collection: Collection; items: Retur
             </button>
           </div>
           <AllCards rows={rows} hasArt={hasArt} buckets={buckets}
-            onBucket={(id, b) => setBuckets(setBucket(collection.id, id, b))}
+            onBucket={(id, b) => setBuckets(setBucket(rows.find((r) => r.item.id === id)?.deckId ?? collection.id, id, b))}
             flipAll={flipAll} flippedIds={flippedIds}
             onFlipOne={(id) => setFlippedIds((prev) => {
               const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n;

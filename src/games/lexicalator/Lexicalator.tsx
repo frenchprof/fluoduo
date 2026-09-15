@@ -682,6 +682,27 @@ export default function Lexicalator({
       record={<div className="flex flex-wrap gap-2">{tresorChips}</div>}
       recordTitle={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> Your treasure</>}
       background="linear-gradient(180deg, var(--region-heights-band) 0%, var(--cahier-paper) 60%)"
+      /* POINT AT ⛶, DO NOT PRESS IT (Dan, 2026-09-15: *"make sure that it is
+         played in full screen - by pointing to the full screen button!"*,
+         after withdrawing the forced version — *"it can be played sideways
+         just not forced"*).
+         WHY THIS GAME AND NOT THE OTHERS: the board is three chests across
+         with the WORD BELT — the thing a learner drags FROM — under them.
+         Measured at 430x860, the chests fill the boxed frame and only the tops
+         of the belt's three arrows clear the fold, so a first-timer cannot see
+         the half of the game they are meant to act on. Full screen is what
+         puts the belt on the same screen as the chests. */
+      guide={[
+        {
+          /* NO ⛶ IN THE SENTENCE. The glyph draws fine ON the key — it is one
+             character in a button — but set in a line of body text the app's
+             face has no picture for it and Chrome drew an empty box. The key
+             is ringed by the spotlight anyway, which is the pointing Dan
+             asked for; the words only have to say why. */
+          text: "This board plays better on the whole screen — tap the key it is pointing at.",
+          selector: '[data-tour="full-screen"]',
+        },
+      ]}
     >
     <div ref={rootRef} className="mx-auto h-full max-w-3xl overflow-y-auto px-4 py-3" style={{ color: "#0c4a6e" }}>
       <CreditsSplash game="LexicaLocker" emoji={<ChestArt tint={CHEST_GOLD} className="mx-auto block h-10 w-auto" />} />
@@ -706,7 +727,7 @@ export default function Lexicalator({
       {/* Chest lane — the holding area; the picked chest LEAVES it (it has
           moved down into the main area / bay), so it's never in two places. */}
       <div className="rounded-2xl border-4 border-white p-3" style={{ background: "linear-gradient(180deg,#ffe08a,#ffcf5c)" }}>
-        <div className="flex min-h-[3.5rem] flex-wrap justify-center gap-3">
+        <div className="flex min-h-[2.5rem] flex-wrap justify-center gap-3">
           {chests.filter((c) => c.entry.id !== selected).map((c, laneIdx) => (
             // A locked treasure chest waiting in the holding area: gold body,
             // a darker lid band with a clasp, and the syllable-count lock below.
@@ -724,9 +745,9 @@ export default function Lexicalator({
               // top — is gone; what is left of the button is a transparent hit
               // area holding the drawing, its label and its lock. Nothing about
               // the drag, the letter key or the slot bars changes.
-              className="relative w-36 cursor-grab touch-none rounded-lg text-center transition active:cursor-grabbing"
+              className="relative w-18 cursor-grab touch-none rounded-lg text-center transition active:cursor-grabbing"
               style={{ opacity: ghost?.id === c.entry.id ? 0.4 : 1 }}>
-              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[7rem]" />
+              <ChestArt tint={liveryOf(c.entry.fr, c.tint, level)} className="mx-auto block w-[3.5rem]" />
               {laneIdx < 26 && <span aria-hidden className="absolute left-1 top-1 grid h-4 w-4 place-items-center rounded bg-white/85 text-[10px] font-black" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{String.fromCharCode(65 + laneIdx)}</span>}
               <span className="block px-2 pt-1 text-sm font-black leading-tight" style={{ color: liveryOf(c.entry.fr, c.tint, level).edge }}>{c.entry.en}</span>
               <span className="mb-1.5 mt-1 flex justify-center gap-1">
@@ -741,7 +762,7 @@ export default function Lexicalator({
       </div>
 
       {/* Assembly bay — the active chest with syllable-sized keyholes */}
-      <div className="relative flex min-h-[7rem] items-center justify-center py-5">
+      <div className="relative flex min-h-[2.5rem] items-center justify-center py-1">
         {!active && (
           // The "drag it down here" movement — arrows only (patch 23): the
           // blinking red sentence and its two pointing hands were four
@@ -759,7 +780,7 @@ export default function Lexicalator({
             {/* THE CHEST IN THE BAY, with its lid hinged open — same drawing as
                 the lane's, one prop apart, so the chest you dragged down is
                 visibly the chest you are now filling. */}
-            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[10.125rem]" />
+            <ChestArt tint={liveryOf(active.entry.fr, active.tint, level)} open className="mx-auto block w-[5.0625rem]" />
             <div className="-mt-2 px-4 py-3">
             <div className="mb-3 text-lg font-black" style={{ color: liveryOf(active.entry.fr, active.tint, level).edge }}>{active.entry.en}</div>
             {hard ? (
@@ -797,7 +818,17 @@ export default function Lexicalator({
           syllable is on-screen and reachable (no waiting, no off-screen answers);
           after that it becomes a scrolling belt that eases into real
           time-pressure as levels rise. */}
-      <div className="relative rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", ...(beltFrozen ? { minHeight: "4.5rem" } : { height: "4.5rem", overflow: "hidden" }) }}>
+      {/* THE FROZEN BELT IS CAPPED AND SCROLLS (Dan, 2026-09-15: *"if it is
+          below the fold, then bring the conveyyor higher uo to be closer to the
+          chestss"*). It used to be `minHeight: 4.5rem` with no ceiling, and at
+          LEVEL 1 every key is a whole phrase — « Monsieur et Madame Martin » —
+          so eleven of them wrapped into six rows and the belt grew to 330px.
+          Measured at 430x860: the belt then ran off the bottom of the game
+          frame with « le directeur » cut in half, which is the fold Dan is
+          describing. A ceiling keeps the belt's TOP where he wants it, right
+          under the chests, and moves the overflow into the belt's own scroll
+          instead of into the page. */}
+      <div className="relative overflow-y-auto rounded-2xl border-4 border-white py-3" style={{ background: "linear-gradient(180deg,#bfe6ff,#9fd8fb)", ...(beltFrozen ? { minHeight: "4.5rem", maxHeight: "min(48vh, 19rem)" } : { height: "4.5rem", overflow: "hidden" }) }}>
         {/* A key never wraps or shrinks: level-1 keys are whole PHRASES, and a
             fixed-width key let long ones wrap onto the neighbouring key —
             tiles looked "stacked over each other" (Dan, 2026-07-09). */}

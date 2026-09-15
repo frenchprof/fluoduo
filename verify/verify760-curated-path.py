@@ -91,10 +91,30 @@ ok(bool(ESSENTIAL) and bool(OPTIONAL),
    "could not read the tiers — re-point this parse rather than letting every "
    "clause below pass over an empty list.")
 
-steps = re.findall(r"\{\s*\n\s*id:\s*\"([^\"]+)\",(.*?)\n    \}", src, re.S)
-ok(len(steps) >= 10,
-   f"{len(steps)} path steps read from the module",
-   f"only {len(steps)} steps parsed — the parse is wrong, not the data.")
+# A STEP MAY OPEN WITH A COMMENT, and for an afternoon this parse said it may
+# not. The pattern used to demand `id:` on the line straight after `{`, so the
+# two steps promoted out of the optional fold on 14 Sep — each carrying a
+# comment saying WHY it was promoted — were simply not seen: the check read 19
+# of 21 steps and passed, having never looked at two of them. That is the
+# failure this file was written to prevent, committed by the file itself.
+#
+# So the pattern now skips a leading comment, AND the count is cross-checked
+# against a plain tally of `id:` lines below — a parse that silently drops a
+# step now fails instead of shrinking.
+# ANCHORED ON THE INDENTATION, which is what actually distinguishes a step from
+# the object that holds it. A loose `\{\s*…id:` also matched `const MIDTERM = {
+# id: "midterm"` and then swallowed whole runs of real steps inside one match —
+# the first attempt at this fix read ELEVEN of twenty-one and looked fine.
+STEP = (r"\n    \{\n"                                   # a step opens at 4 spaces
+        r"(?:[^\S\n]*(?:/\*[\s\S]*?\*/|//[^\n]*)\n)*"   # …optionally a comment
+        r"[^\S\n]*id:\s*\"([^\"]+)\",([\s\S]*?)\n    \}")
+steps = re.findall(STEP, src, re.S)
+declared = len(re.findall(r"^\s{6}id:\s*\"", ESSENTIAL + OPTIONAL, re.M))
+ok(len(steps) >= 10 and len(steps) == declared,
+   f"{len(steps)} path steps read from the module (all {declared} declared)",
+   f"parsed {len(steps)} steps but {declared} are declared in the two tiers. "
+   "The parse is dropping steps, which means every clause below is silently "
+   "skipping them too. Fix STEP, never the data.")
 
 # ── 1 · every literal address is a page that was built ──────────────────────
 hrefs = re.findall(r'href:\s*"(/[^"]*)"', src)
@@ -110,7 +130,9 @@ if not os.path.isdir("out"):
 else:
     dead = []
     for h in sorted(set(hrefs)):
-        rel = h.lstrip("/")
+        # A step may carry a query that SCOPES it — `?upto=30` on the Finale,
+        # `?v=…` on ConjugaZone. The page is the part before the `?`.
+        rel = h.split("?")[0].lstrip("/")
         if not (os.path.isfile(f"out/{rel}.html") or os.path.isfile(f"out/{rel}/index.html")):
             dead.append(h)
     ok(not dead,
@@ -133,7 +155,7 @@ ok(not dupes,
 # goals 16, 22 and 24 is three DOORS but one job, and the screen numbers it
 # once. Comparing raw entries flagged exactly that and was wrong to — the first
 # run of this check caught it. So compare one `does` per group.
-blocks = re.findall(r"\{\s*\n\s*id:\s*\"[^\"]+\",(.*?)\n    \}", ESSENTIAL, re.S)
+blocks = [b for _, b in re.findall(STEP, ESSENTIAL, re.S)]
 does_e, seen_groups = [], set()
 for b in blocks:
     d = re.search(r'does:\s*"([^"]+)"', b)
@@ -215,8 +237,24 @@ ENDS = {
     "/reviser": "src/app/reviser/embed/page.tsx",
     "/conjugaison": "src/app/conjugaison/embed/page.tsx",
     "/games/compose/remettre-negation-pas": "src/components/GameOver.tsx",
+    "/games/compose/remettre-aller-destinations": "src/components/GameOver.tsx",
     "/games/compose/presenter-personne": "src/components/GameOver.tsx",
-    "/practice/ecoutexte": "src/app/practice/ecoutexte/EcouTexte.tsx",
+    "/practice/ecoutexte/quand-time": "src/app/practice/ecoutexte/EcouTexte.tsx",
+    # The mixed MémoiRecall run is the SAME component as the per-deck route,
+    # handed a list instead of one id — so it ends where that one ends.
+    "/practice/flip-it/revision": "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
+    # NumBus ends in GameOver, like the compose games. The step is addressed to
+    # /games/numbus and NOT to /games/numbers, which is only the two-game
+    # chooser: a learner who starts there finishes at /games/numbus, so a step
+    # pointed at the chooser would never match and never tick.
+    "/games/numbus": "src/components/GameOver.tsx",
+    # Every MneMemo lesson runs in LessonPager, which is a DrillShell — and
+    # DrillShell draws ActivityUsher, which returns the push BEFORE its own
+    # null-guard. A lesson belongs to no stop-chain of its own, so that
+    # ordering is the whole reason these three can tick at all.
+    "/lessons/quel-prefere": "src/components/DrillShell.tsx",
+    "/lessons/negation": "src/components/DrillShell.tsx",
+    "/lessons/articles-pays": "src/components/DrillShell.tsx",
 }
 # The goal-scoped steps (MémoiRecall, WorDrill) end in their own content
 # components, which draw the usher and therefore the push.
@@ -224,7 +262,7 @@ GOAL_SCOPED_ENDS = [
     "src/app/practice/flip-it/[collectionId]/FlipItContent.tsx",
     "src/app/practice/say-it/[collectionId]/SayItContent.tsx",
 ]
-ess_hrefs = sorted(set(re.findall(r'href:\s*"(/[^"]*)"', ESSENTIAL)))
+ess_hrefs = sorted({h.split("?")[0] for h in re.findall(r'href:\s*"(/[^"]*)"', ESSENTIAL)})
 unmapped = [h for h in ess_hrefs if h not in ENDS]
 ok(not unmapped,
    f"every literal essential step names the screen that ends it ({len(ess_hrefs)})",
@@ -266,6 +304,100 @@ ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}|\{minutesOf", summary.grou
    "the closed fold says what is behind it (a count, not a bare chevron)",
    "the optional fold carries no count. « a collapsed section with no count is "
    "a section nobody opens, which is just deletion with extra steps ».")
+
+# ── 8 · NOTHING ON THE PATH REACHES PAST THE TEST ───────────────────────────
+# Dan, 2026-09-14, looking at the built path: *"the curated exercises are not
+# at all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to
+# 30 only please"*.
+#
+# THREE DIFFERENT WAYS A STEP ESCAPED THE TEST, and only one of them was
+# visible in the step list:
+#
+#   a GOAL above 30        « MneMemo — asking a question » was goal 34, unit 3.
+#                          The only one you could see by reading paths.ts.
+#   an UNSCOPED BANK       the Finale draws from FINALE_BANK, 437 items, of
+#                          which 201 (46%) are stops 31–50. The step LOOKED
+#                          fine — one href, no goal — and put about eleven of
+#                          twenty-five questions outside the test, then fed
+#                          those misses to ErroReview as the revision queue.
+#   an UNSCOPED PICKER     `/practice/ecoutexte` and `/conjugaison` open on a
+#                          chooser covering all five units and all 67 verbs.
+#                          The step's own text named six verbs it never picked.
+#
+# So this clause checks the goal numbers AND that the three wide doors carry
+# the query that narrows them. A bare `/practice/grammarathon/finale` on this
+# path is the 46% bug, silently, again.
+STOP_MAX = 30
+# The eighteen stops Dan named on 14 Sep after auditing the real Test 1 paper.
+# Held here as well as in content/finale.ts so a silent edit to either fails.
+EXPECT_STOPS = [1, 4, 7, 9, 14, 15, 16, 17, 18, 19, 22, 23, 24, 26, 27, 28, 29]
+goals = [(sid, int(m.group(1)))
+         for sid, body in steps
+         if (m := re.search(r"goal:\s*(\d+)", body))]
+over = [f"{sid} → stop {n}" for sid, n in goals if n > STOP_MAX]
+ok(not over,
+   f"every goal-scoped step is inside stops 1–{STOP_MAX} ({len(goals)} steps)",
+   f"THESE STEPS ARE OUTSIDE THE TEST: {over}. Stops 31–50 are units 3 and 4; "
+   "the first test covers 1–30 only.")
+
+NARROW = {
+    # THE FINALE MUST CARRY NO `upto=` NOW, which inverts what this line said
+    # an hour ago. `?upto=N` means "stops 1..N", and the Finale's own default
+    # is the eighteen stops the paper asks about — so passing `upto=30` here
+    # would WIDEN the draw back to thirty stops, twelve of which the test never
+    # touches. The bare address is the scoped one.
+    "/practice/grammarathon/finale": "",
+    "/conjugaison": "v=",
+    "/practice/ecoutexte": None,  # narrowed by taking a deck route, not a query
+}
+wide = []
+for h in sorted(set(re.findall(r'href:\s*"(/[^"]*)"', src))):
+    page, _, query = h.partition("?")
+    need = NARROW.get(page)
+    if need == "":
+        # "" means: this door is narrow by DEFAULT and a query would widen it.
+        if query:
+            wide.append(f"{h} — carries ?{query}, which widens it back")
+        continue
+    if need is None and page in NARROW:
+        wide.append(f"{h} — open the picker, every unit")
+    elif need and need not in query:
+        wide.append(f"{h} — needs ?{need}…")
+ok(not wide,
+   "every wide door on the path carries the query that narrows it",
+   "A STEP OPENS A DOOR WIDER THAN THE TEST: " + "; ".join(wide) + ". The "
+   "Finale unscoped is 437 items of which 201 are stops 31–50; "
+   "/practice/ecoutexte and /conjugaison open choosers covering all five units "
+   "and all 67 verbs.")
+
+# ── 9 · THE FINALE'S OWN DEFAULT IS THE TEST, NOT THE COURSE ────────────────
+# Clause 8 pins the query on the PATH's step. That is not enough and Dan paid
+# for the difference: he opened /practice/grammarathon/finale directly — the
+# ☰ menu and a bookmark reach it the same way — and met SIO-047 and SIO-049 on
+# a paper he was revising for a test that stops at 30. He said so three times
+# before it was heard.
+#
+# A DEFAULT THAT IS ONLY RIGHT THROUGH ONE DOOR IS NOT A DEFAULT. So the cap
+# lives in the component: `DEFAULT_UPTO = 30`, and `?upto=50` is what asks for
+# the whole course back. This clause pins that constant, because the tidy
+# version of this design — "a path scopes itself, the activity stays whole" —
+# is exactly what shipped the bug, and it will read as the right idea again.
+fin = read("src/app/practice/grammarathon/finale/FinaleContent.tsx")
+bank = read("src/content/finale.ts")
+m = re.search(r"export const TESTED_STOPS[^=]*=\s*\[([^\]]*)\]", bank, re.S)
+got = sorted(int(n) for n in re.findall(r"\d+", m.group(1))) if m else []
+ok(got == EXPECT_STOPS,
+   f"the Finale draws from the {len(EXPECT_STOPS)} stops the paper asks about",
+   f"TESTED_STOPS is {got or 'missing'}, expected {EXPECT_STOPS}. Dan named these "
+   "after auditing the real paper item by item (14 Sep). Changing the list is a "
+   "content decision, not a refactor — twelve stops are deliberately absent and "
+   "content/finale.ts says why for each one.")
+ok("TESTED_STOPS" in fin and bool(re.search(r"upto == null", fin)),
+   "and scopeOf uses that list whenever the address names no range",
+   "scopeOf does not fall back to TESTED_STOPS. A null scope must mean the "
+   "eighteen tested stops, never the whole course and never a bare 1..30 range "
+   "— `drawDaily` floors ONE question per stop in range, so twelve of every "
+   "fifty would be off-target by construction.")
 
 print("\nthe curated path holds (14 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))

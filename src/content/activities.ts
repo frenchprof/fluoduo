@@ -152,7 +152,15 @@ export const FAMILIES: Family[] = [
   // TOOLS (NEW, 2026-09-09) — the other half of retired Skills: ChaTutor and
   // ComposeIt, the two summonable helpers (see ToolSummon.tsx's own 🛠️).
   // Deliberate door to ChaTutor, same reasoning as Oral.
-  { key: "tools", name: "FluOLin Write", emoji: "🛠️", href: "/tutor" },
+  //
+  // « TEXTS », NOT « WRITE » (Dan, 2026-09-15, asked where a reading activity
+  // belongs among the seven: *"call Write Texts"*). The family was named for
+  // what its two members made a learner DO — write a scene, write to a tutor —
+  // and that name had no room for reading. Named for the OBJECT instead, it
+  // does: compose a text, chat in text, read a text. The KEY stays `tools` and
+  // every route stays put — the Memo-rename precedent, display names never
+  // move keys.
+  { key: "tools", name: "FluOLin Texts", emoji: "🛠️", href: "/tutor" },
   // User — unchanged route; grey now, was orange (Tools took the orange).
   { key: "user", name: "FluOLin Track", emoji: "👤", href: "/profil" },
 ];

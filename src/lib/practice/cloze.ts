@@ -37,17 +37,44 @@ export function deaccent(s: string) {
 }
 
 export type GradeOpts = {
-  /** "strict": an accent difference is WRONG, not "good" — the Finale's
-   *  où-vs-ou items, where the accent IS the tested knowledge. */
+  /** "strict" forces the accent to count even on a word that carries none —
+   *  kept for callers that were already passing it. "lenient" is the ESCAPE
+   *  HATCH, for input the learner did not spell: a speech transcript, where
+   *  the recogniser chooses the accents and failing them would mark a correct
+   *  utterance wrong. Typed input takes the default. */
   accents?: "lenient" | "strict";
 };
 
+/** AN ACCENT IS PART OF THE WORD (Dan, 2026-09-14: *"français (pls don't
+ *  accept francais) · fatigué (pls NOT fatigue) — and everywhere else of such
+ *  cases"*).
+ *
+ *  WHY THIS IS DERIVED AND NOT A FLAG. The Finale already had a per-item
+ *  `strict` boolean, and « français » and « fatigué » simply did not carry it —
+ *  which is how a flag fails: it is right on the items somebody remembered and
+ *  silently wrong on the rest, with nothing to show which is which. The
+ *  ACCENT ITSELF says whether accents matter: if the answer carries a
+ *  diacritic, typing it without one is a misspelling of a French word, and if
+ *  it carries none there was never anything to be lenient about. So there is
+ *  no list to keep and no item that can be forgotten.
+ *
+ *  « ç » IS INCLUDED, and it is why this reads the ANSWER rather than testing
+ *  for é/è/ê. `deaccent` decomposes NFD and drops every combining mark, so the
+ *  cedilla in « français » is caught by the same line as the acute in
+ *  « fatigué » — one rule, both of Dan's examples.
+ *
+ *  WHAT LENIENCY WAS FOR, so the next session knows what was given up: a
+ *  learner on a keyboard with no accents. On a French course whose test marks
+ *  « français » wrong without its cedilla, that kindness was teaching the
+ *  wrong thing. Speech keeps it, explicitly, at its one call site. */
 export function gradeAnswer(typed: string, answer: string, opts: GradeOpts = {}): Grade {
   const t = normalize(typed);
   const a = normalize(answer);
   if (!t) return "wrong";
   if (t === a) return "perfect";
-  if (opts.accents !== "strict" && deaccent(t) === deaccent(a)) return "good";
+  const accented = deaccent(a) !== a;
+  const forgive = opts.accents === "lenient" || (!accented && opts.accents !== "strict");
+  if (forgive && deaccent(t) === deaccent(a)) return "good";
   return "wrong";
 }
 

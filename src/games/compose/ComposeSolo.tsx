@@ -371,6 +371,25 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
             </span>
           </p>
         )}
+        {/* NOTHING TO ACT ON YET MEANS NOTHING TO SHOW (Dan, 2026-09-14, over
+            a photograph of this card: *"how does anyone know what to do on this
+            page ?? nothing is clickable and the important parts are hidden away
+            in that too-small-a-frame"*).
+
+            All three of these are disabled until a phrase has been tapped —
+            « ✔ Add the sentence » needs a line, « 🔊 Speak it all » needs a
+            line or a finished one, « 🚶 The passer-by checks » needs text. So
+            on arrival the card printed « Start by tapping a phrase below… »
+            and then put THREE DEAD BUTTONS between the learner and the phrases
+            it was pointing at. A row of greyed controls reads as "this page is
+            not working", not as "not yet".
+
+            AND IT IS THE REASON THE CHIPS WERE OFF THE CARD. The row costs ~70
+            vertical pixels at the top of a box whose height is the viewport
+            minus the notebook; removing it while it is useless lifts the
+            « Présenter » group into view on arrival, which is the one thing
+            the instruction tells them to use. */}
+        {(line.length > 0 || lines.length > 0) && (
         <div className="mt-3 flex flex-wrap justify-end gap-2">
           <button
             type="button"
@@ -399,6 +418,7 @@ export default function ComposeSolo({ bank }: { bank: ComposeBank }) {
             </button>
           )}
         </div>
+        )}
 
         {feedback && (
           <div
