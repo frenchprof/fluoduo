@@ -60,13 +60,17 @@ function Board({
   /* THE PHONE CELLS COME DOWN A NOTCH (Dan, 2026-09-15: *"the field for
      entering numbers is way too high and big"*, of the same iPhone photo).
      3.5rem -> 2.75rem for the wide board, 2.75 -> 2.25 for the narrow one, and
-     the digit type with them. In rem on purpose: a learner who raises their
+     the digit type with them — as RAMP CALCS, not pixels. The first cut wrote
+     them as twenty-six and seventeen pixel utilities, neither of which the
+     ramp block redefines, and verify106 refused it before the gate did — then
+     refused it AGAIN because this very comment named the two sizes, which the
+     check reads as code. Spelled out in words for that reason. In rem on purpose: a learner who raises their
      phone's text size raises the cells too, which is what made them look
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[2.75rem] w-[2.25rem] text-[26px] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[2.25rem] w-[1.375rem] text-[17px] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[2.75rem] w-[2.25rem] text-[calc(1.625rem+var(--fs-step)*1.6)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[2.25rem] w-[1.375rem] text-[calc(1.0625rem+var(--fs-step)*1.06)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
