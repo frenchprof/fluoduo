@@ -34,7 +34,6 @@ import type { ReactNode } from "react";
 import MenuGrid from "@/components/MenuGrid";
 import PathDoor from "@/components/PathDoor";
 import AccountButton from "@/components/AccountButton";
-import FavouriteStar from "@/components/FavouriteStar";
 import SoundControl from "@/components/SoundControl";
 import { type ShellTab } from "@/components/TabFlap";
 
@@ -284,17 +283,29 @@ export default function SiteTopBar({
 
               The number is not lost: the map's row has it, in a well, and the
               ☰'s own 🎯 badge computes the same stop. */}
-          {/* THE ★, BESIDE THE ACCOUNT CHIP — Dan, 2026-09-12, asked where the
-              favourites live: "At the top right next to their name". The chip
-              is the learner's name (an initialled chip signed in, the red
-              power icon signed out), so this is the last thing before it.
+          {/* THE ★ IS GONE FROM THE BAR (Dan, 2026-09-15, seeing the new heart
+              beside it: *"I see it but why does it coexist with the star"*).
 
-              BOTH SIDES OF THIS MERGE WERE NEEDED. main hid the stop mark on
-              Home the same afternoon this branch added the star after it, so
-              the two edits landed on one line. Keeping either alone loses a
-              feature nobody would see go: drop main's and Home shows the stop
-              twice; drop this and there is no way to star a page at all. */}
-          <FavouriteStar activeKey={active} />
+              IT HAD ALREADY LOST BOTH OF ITS JOBS. It was put here on 12 Sep
+              because he asked where the favourites live — *"At the top right
+              next to their name"* — and at the time it was the only favourites
+              control in the app: it starred the page AND opened the list. On
+              14 Sep the 🤍 on every coloured band took over the starring, and
+              this was cut back to a plain door to /favourites.
+
+              THAT DOOR IS ALREADY IN THE ☰, AT DAN'S OWN INSTRUCTION — *"put
+              Favourites in the burger grid menu in the yellow lesson strip"* —
+              so `MenuGrid`'s yellow row carries « ★ Favourites → /favourites ».
+              Two doors to one room, and this one was spending the bar's last
+              pixels: the same reasoning that retired 🏠 on 12 Sep and ⌛ on
+              14 Sep.
+
+              He had in fact asked for this on 14 Sep — *"maybe we can remove
+              the history and favourites button too there"* — and it was KEPT
+              then, deliberately and with the cost reported: at that moment it
+              was the only way to add a favourite anywhere, so removing it
+              would not have moved the feature to the menu, it would have
+              removed the feature. The heart is what makes it removable. */}
           <AccountButton />
         </div>
       </div>
