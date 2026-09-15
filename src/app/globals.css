@@ -4780,14 +4780,10 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   font-weight: 900;
   color: var(--cahier-ink);
 }
-.fluo-path-step-min {
-  margin-left: auto;
-  font-family: var(--fluo-mono);
-  font-size: calc(0.75rem + var(--fs-step) * 0.75);
-  font-variant-numeric: tabular-nums;
-  color: var(--cahier-ink-soft);
-  white-space: nowrap;
-}
+/* `.fluo-path-step-min` used to print « 8 min » at the right end of every step
+   head. Deleted 2026-09-15 with its markup (Dan: *"No need to give a time
+   duration for those activities"*) — the rule removed is kept out rather than
+   left orphaned, so nothing can reattach to it by accident. */
 .fluo-path-step-does {
   margin-top: calc(0.15rem + var(--fs-step) * 0.15);
   font-family: var(--fluo-mono);
@@ -4995,4 +4991,112 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
      affordance is not. */
   cursor: default;
   box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
+}
+
+/* ── G-COMPRIS! — a document on the page, then a question about it ──────────
+   Dan, 2026-09-15: *"Call the reading exercises : G-Compris!"*.
+
+   THE DOCUMENT IS THE ONE THING ON SCREEN THAT IS NOT CHROME, so it is set
+   like a piece of paper inside the paper: indented from the drill's own
+   column, ruled down its left edge in the family's pen, and left in French
+   type at reading size. Nothing here is a pixel — every size is on the ramp
+   (5 Sep) and the box is a proportion of its column (12 Sep), so a phone gets
+   the designed size and a desktop grows the whole thing together. */
+.gc-doc {
+  border-left: 4px solid var(--fam-tools, var(--cahier-ink));
+  padding: calc(0.5rem + var(--fs-step) * 0.5) 0
+           calc(0.5rem + var(--fs-step) * 0.5) calc(0.9rem + var(--fs-step) * 0.9);
+  font-size: calc(1rem + var(--fs-step) * 1);
+  line-height: 1.6;
+  color: var(--cahier-ink);
+}
+.gc-doc p + p {
+  margin-top: calc(0.7rem + var(--fs-step) * 0.7);
+}
+
+.gc-question {
+  margin-top: calc(1.2rem + var(--fs-step) * 1.2);
+}
+.gc-q {
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+}
+
+/* NO OPTION SPANS THE WIDTH (rule, 5 Sep) — two columns whatever the count,
+   so Vrai/Faux is a pair and four options are a 2×2. `minmax(0, 1fr)` is what
+   lets a long option wrap inside its cell instead of widening the grid. */
+.gc-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.8rem + var(--fs-step) * 0.8);
+}
+/* A THREE-OPTION QUESTION PUTS THE ODD ONE ACROSS THE BOTTOM, which is the
+   one place a cell spans both columns — it is a cell in a grid, not a button
+   wearing the page's width, and leaving it half-wide beside a gap reads as a
+   missing fourth option. */
+.gc-options[data-n="3"] > :last-child {
+  grid-column: 1 / -1;
+}
+.gc-option {
+  padding: calc(0.6rem + var(--fs-step) * 0.6) calc(0.7rem + var(--fs-step) * 0.7);
+  min-height: 44px; /* the finger floor — not a size (verify270) */
+  font-size: calc(0.95rem + var(--fs-step) * 0.95);
+  font-weight: 700;
+  text-align: center;
+  text-wrap: balance;
+}
+.gc-option.is-picked {
+  --key-bg: var(--fam-tools-wash);
+  --key-edge: var(--fam-tools-ink);
+}
+
+.gc-input {
+  margin-top: calc(0.8rem + var(--fs-step) * 0.8);
+  width: 100%;
+  max-width: 22rem;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 3px solid var(--cahier-ink);
+  background: transparent;
+  font-size: calc(1.15rem + var(--fs-step) * 1.15);
+  font-weight: 800;
+  color: var(--cahier-ink);
+}
+.gc-input:focus-visible {
+  outline: 3px solid var(--dopa-focus);
+  outline-offset: 4px;
+}
+
+/* The shelf tile. A key, so it answers the pointer through `.neo-key`'s own
+   hover and needs nothing from the hover floor. */
+.gc-tile {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.25rem + var(--fs-step) * 0.25);
+  padding: calc(0.8rem + var(--fs-step) * 0.8);
+  text-align: left;
+}
+.gc-tile-title {
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+}
+.gc-tile-setup {
+  font-size: calc(0.82rem + var(--fs-step) * 0.82);
+  color: var(--cahier-ink-soft);
+}
+.gc-tile-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.2rem + var(--fs-step) * 0.2);
+  font-family: var(--fluo-mono);
+  font-size: calc(0.65rem + var(--fs-step) * 0.65);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cahier-ink-faint, var(--cahier-ink-soft));
 }

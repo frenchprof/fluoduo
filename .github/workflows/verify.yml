@@ -631,5 +631,8 @@ jobs:
       - name: "The curated path — every step lands somewhere, the walk cannot stall (14 Sep)"
         run: python3 verify/verify760-curated-path.py
 
+      - name: "G-Compris! — a reading answer is what the document says (15 Sep)"
+        run: python3 verify/verify770-gcompris.py
+
       - name: "Every raised key wears an outlined top surface (14 Sep)"
         run: python3 verify/verify800-key-outline.py
