@@ -131,9 +131,34 @@ export default function GameBar({
              GameFrame, which is what keeps this from becoming a lecture that
              every game gives. */
           data-tour="full-screen"
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
+          /* LOUD WHEN IT IS THE ANSWER, QUIET WHEN IT IS NOT (Dan, 2026-09-15,
+             over a photograph of NumBus on his phone: *"The full screen buttons
+             need to be made MUCH MORE PROMINENT (MAYBE IN RED?) so users know
+             they can resort to that"*, said after *"Numbus in general looks
+             broken on my phone. because it is not in full screen"*).
+
+             It was a 60%-ink glyph in a row of five grey icons — the same
+             weight as ⋯, which opens a menu nobody needs mid-game. On the
+             phone photo it is the least visible control on the bar, and it is
+             the one that fixes the screen.
+
+             So OUT of full screen it is a filled red key with a word on it;
+             IN full screen it goes back to a quiet glyph, because then it is
+             just the way out and the game is the thing to look at. The word
+             matters as much as the colour: ⛶ is not a glyph anyone reads, and
+             `title` does not exist on a phone. `--dopa-miss` is the app's red
+             — used here for salience, which is what Dan asked for, and it is
+             the only place in the app where red does not mean a wrong answer;
+             the label is what keeps that from being ambiguous. */
+          className={
+            full
+              ? "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base font-black text-[color:var(--cahier-ink)]/60 transition hover:bg-[color:var(--cahier-ink)]/10 hover:text-[color:var(--cahier-ink)] sm:h-9 sm:w-9"
+              : "fluo-hit44 flex h-8 shrink-0 items-center justify-center gap-1 rounded-lg px-2 text-[13px] font-black uppercase tracking-wide text-white shadow-[0_2px_0_rgba(0,0,0,.25)] transition sm:h-9 sm:px-2.5 sm:text-[14px]"
+          }
+          style={full ? undefined : { background: "var(--dopa-miss)" }}
         >
           <span aria-hidden>{full ? "⤡" : "⛶"}</span>
+          {!full && <span>Full</span>}
         </button>
       )}
 
