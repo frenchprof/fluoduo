@@ -846,6 +846,49 @@ html, body { overscroll-behavior-x: none; }
   width: 100%;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
+/* A GHOST INPUT IS NOT A FORM FIELD (Dan, 2026-09-15, a photo of NumBus on
+   his iPhone: *"the field for entering mumbers is way too high and big"*, and
+   later, shown the slimmed strip: *"The blank strip really needs to be much
+   slimmer"*).
+
+   THE WHITE BOX HE PHOTOGRAPHED WAS NEVER THE DIGIT BOARD. NumBus types
+   through an <input> laid over the board — meant to be invisible: the markup
+   says bg-transparent, text-transparent, caret-transparent. But it sits inside
+   .cahier-sheet, and the form skin above paints EVERY text input white, with a
+   1.5px border, a 9px radius and 0.55rem 0.75rem of padding, at class + type +
+   two pseudo-classes. That outranks any Tailwind utility, so the "invisible"
+   overlay rendered as a white form field sitting ON TOP of the digit cells.
+   Measured in the built app: computed background rgb(255,255,255), computed
+   colour the ink, on an element whose classes ask for transparent. No cell
+   was ever visible in a single screenshot today, on any device.
+
+   THE SAME WEIGHT, ONE CLASS HEAVIER — the .fluo-stepper precedent, for the
+   reason it records: matching the skin's :not() pair puts this above it
+   without depending on which block sits later in the file. Position is not a
+   plan. -webkit-text-fill-color is the half Safari needs; iOS ignores
+   `color: transparent` on a focused input and paints the digits anyway. */
+.cahier-sheet input.fluo-ghost-input:not([type="checkbox"]):not([type="radio"]),
+.cahier-page input.fluo-ghost-input:not([type="checkbox"]):not([type="radio"]),
+input.fluo-ghost-input {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  width: auto;
+  font-size: inherit;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.cahier-sheet input.fluo-ghost-input:focus,
+.cahier-page input.fluo-ghost-input:focus {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+
 .cahier-sheet input:focus,
 .cahier-sheet select:focus,
 .cahier-sheet textarea:focus {

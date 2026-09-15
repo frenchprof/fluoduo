@@ -938,7 +938,13 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
-          className="absolute inset-x-2 top-2.5 h-[4.25rem] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none sm:inset-x-4 sm:top-3 sm:h-[4.875rem]"
+          /* `inset-0`, NOT a height of its own. The overlay used to be h-[4.25rem]
+             from the strip's top — a frozen box — so when the strip was slimmed
+             the overlay hung 33px out of the bottom of it, over the 🔊 ⏸ 🐌 row.
+             Filling the strip means it is exactly as tall as the digits, always.
+             `fluo-ghost-input` is what stops the form skin painting it white —
+             see globals.css. */
+          className="fluo-ghost-input absolute inset-0 cursor-pointer pointer-coarse:pointer-events-none"
           onChange={(e) => {
             if (stage !== "asking") return;
             if (!typingOpen) setTypingOpen(true);
