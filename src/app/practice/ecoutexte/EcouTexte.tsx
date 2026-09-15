@@ -68,11 +68,41 @@ type Word = { pre: string; core: string; post: string };
 
 const EDGE = /^([«"(]*)(.*?)([.,!?;:»")]*)$/;
 
+/**
+ * A STANDALONE MARK IS NOT A WORD (Angelina Ong, 2026-09-15, through the 🐞:
+ * *"showed 2 blanks when it should just be one for salut, showed 3 blanks when
+ * it should just be 2 for ca va"*).
+ *
+ * FRENCH PUTS A SPACE BEFORE « ! ? : ; », so « Salut ! » splits on whitespace
+ * into two tokens and « Ça va ? » into three. `EDGE` then finds no letters in
+ * the second one — its `core` is the empty string — and the renderer drew a
+ * box for it anyway. Exactly the counts she reported: 2 where 1 belongs, 3
+ * where 2 do.
+ *
+ * It cannot be dropped, because the mark has to stay ON SCREEN — a sentence
+ * that loses its « ? » stops being a question. So it is folded into the
+ * previous word's `post`, which is already printed beside that word's box, and
+ * the box count goes back to the number of words a learner can hear. A mark
+ * with nothing before it rides on the NEXT word's `pre` for the same reason.
+ */
 function words(fr: string): Word[] {
-  return fr.split(/\s+/).filter(Boolean).map((w) => {
+  const out: Word[] = [];
+  let lead = "";
+  for (const w of fr.split(/\s+/).filter(Boolean)) {
     const m = EDGE.exec(w);
-    return { pre: m?.[1] ?? "", core: m?.[2] ?? w, post: m?.[3] ?? "" };
-  });
+    const pre = m?.[1] ?? "", core = m?.[2] ?? w, post = m?.[3] ?? "";
+    if (!core) {
+      // No letters: printed punctuation, never a blank to fill.
+      if (out.length) out[out.length - 1].post += pre + post;
+      else lead += pre + post;
+      continue;
+    }
+    out.push({ pre: lead + pre, core, post });
+    lead = "";
+  }
+  // A sentence of nothing but marks keeps them rather than vanishing.
+  if (lead && !out.length) out.push({ pre: "", core: lead, post: "" });
+  return out;
 }
 
 /** Wide enough for the word, or all the same — the blanks button's two states. */
@@ -253,6 +283,29 @@ export default function EcouTexte({
     });
     if (queued.length) queueForReview(queued);
     setMarks((m) => m.map((r, k) => (k === i ? graded : r)));
+
+    /* THE CURSOR GOES WITH THE LEARNER (Jack Chua, 2026-09-15, through the 🐞:
+       *"After checking one word, and moving to the next question, the typing
+       cursor should remain on the textbox so I don't need to click it again to
+       type"*).
+
+       Typing already walks box to box INSIDE a sentence — a full box jumps to
+       the next, backspace on an empty one steps back — and then stopped dead
+       at the sentence boundary, because `refs` is per-row and a row cannot
+       reach its neighbour. So every sentence but the first had to be clicked
+       into, which on a five-sentence sheet is four unnecessary clicks in a
+       task that is otherwise entirely keyboard.
+
+       Only when the sentence is RIGHT. A marked-wrong sentence is one the
+       learner is about to correct, and moving the cursor off it would take the
+       cursor away from the very box they need. A frame's wait lets the marks
+       paint first. */
+    if (graded.length && graded.every((g) => g && g !== "wrong")) {
+      const next = i + 1;
+      requestAnimationFrame(() => {
+        document.querySelector<HTMLInputElement>(`[data-box="${next}-0"]`)?.focus();
+      });
+    }
   }
 
   function check(i: number) {
@@ -474,6 +527,7 @@ export default function EcouTexte({
                 big={open}
                 onWrite={(j, v) => write(i, j, v)}
                 onCheck={() => check(i)}
+                row={i}
               />
             );
 
@@ -671,6 +725,7 @@ function Blanks({
   big,
   onWrite,
   onCheck,
+  row: rowIndex,
 }: {
   words: Word[];
   written: string[];
@@ -679,6 +734,10 @@ function Blanks({
   big: boolean;
   onWrite: (j: number, value: string) => void;
   onCheck: () => void;
+  /** Which sentence this is. `refs` above is per-ROW, so it cannot reach the
+   *  next sentence's first box; this stamps a `data-box` the parent can find
+   *  once a sentence is done (Jack Chua, 2026-09-15, through the 🐞). */
+  row: number;
 }) {
   const refs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -695,6 +754,7 @@ function Blanks({
                 ref={(el) => {
                   refs.current[j] = el;
                 }}
+                data-box={`${rowIndex}-${j}`}
                 value={written[j] ?? ""}
                 onChange={(e) => {
                   const v = e.target.value;
