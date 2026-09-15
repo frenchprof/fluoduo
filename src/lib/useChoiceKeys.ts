@@ -52,6 +52,22 @@ const inField = (t: EventTarget | null): boolean => {
   return !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable);
 };
 
+/** IS THE LEARNER TYPING INTO A FIELD? Every window-level shortcut handler
+ *  must ask this first and stand down if so.
+ *
+ *  Dan, 2026-09-15: *"i could not type feedback in NumBus it kept causing
+ *  interference"*. NumBus took Space, R and Enter on the whole window — so in
+ *  the 🐞 form a space repeated the bus number, an R replayed it, and Enter
+ *  submitted the ANSWER instead of a new line. Letris, the flashcard lesson
+ *  and WorDrill had the same shape. The digit listener above already stood
+ *  down for fields; the letter and Space shortcuts never did.
+ *
+ *  Exported so the guard is written once: a handler that reimplements it
+ *  will get it half right (INPUT but not TEXTAREA is the usual half). */
+export function typingInField(e: KeyboardEvent): boolean {
+  return inField(e.target) || inField(document.activeElement);
+}
+
 export function claimDigitKeys(onDigit: (d: string) => void): () => void {
   const claim: DigitClaim = { onDigit };
   digitClaims.push(claim);

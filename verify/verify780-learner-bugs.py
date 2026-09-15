@@ -208,6 +208,41 @@ ok("fluo-nextq-arrows" in mb,
    "`.fluo-nextq-arrows` verbatim is what keeps this cue and the SIO cue one "
    "idea. Removing them is his call, not a side effect of a flicker fix.")
 
+# ── 5 · NO WINDOW SHORTCUT FIRES WHILE THE LEARNER IS TYPING ───────────────
+# Dan, 2026-09-15: *"i could not type feedback in NumBus it kept causing
+# interference"*. A window-level keydown handler that acts on Space, Enter or
+# a letter must stand down when the target is a field, or the 🐞 form (and
+# any search box) is unusable on that screen. Escape-only handlers are exempt:
+# Escape in a field closes things and types nothing.
+import glob
+PRINTABLE = re.compile(r'e\.key === "(?: |Enter|[A-Za-z])"')
+loose = []
+handlers = 0
+for f in sorted(glob.glob("src/**/*.ts", recursive=True) + glob.glob("src/**/*.tsx", recursive=True)):
+    body = code(f)
+    # THE HANDLER THAT IS REGISTERED, not the whole file: an <input>'s own
+    # onKeyDown may act on Enter and is nobody's business — only a
+    # window/document listener can steal a keystroke from a field. So find
+    # each `addEventListener("keydown", NAME)`, then read NAME's body.
+    for m in re.finditer(r'addEventListener\("keydown",\s*([A-Za-z_$][\w$]*)', body):
+        name = m.group(1)
+        decl = re.search(r"(?:const|let|function)\s+" + re.escape(name) + r"\b", body[: m.start()])
+        if not decl:
+            continue
+        handler = body[decl.start(): m.start()]
+        if not PRINTABLE.search(handler):
+            continue
+        handlers += 1
+        if not re.search(r"typingInField\(|inField\(|tagName === \"TEXTAREA\"", handler):
+            loose.append(f"{f} ({name})")
+ok(handlers >= 6, f"{handlers} window keydown handlers act on printable keys",
+   "the handler scan found almost nothing — re-point it before trusting the clause below.")
+ok(not loose,
+   "every one of them stands down while the learner is typing in a field",
+   "THESE HANDLERS STEAL KEYSTROKES FROM A FIELD: " + ", ".join(loose) + ". Add "
+   "`if (typingInField(e)) return;` (lib/useChoiceKeys) at the top of the "
+   "handler — a space or an R in the 🐞 form must never play the game.")
+
 print("\nthe four bugs a learner found (15 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))
 if FAIL:

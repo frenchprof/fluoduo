@@ -19,6 +19,7 @@ import { reviewItemByFrench } from "@/lib/reviser";
 import { notePracticeDay } from "@/lib/progress";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
+import { typingInField } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 import { buildEvidence } from "@/lib/evidence";
 import { HOME_HREF } from "@/lib/routes";
@@ -713,6 +714,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      /* Typing into a field (the 🐞 form, a search box) is never a shortcut —
+         see typingInField's note (Dan, 15 Sep). */
+      if (typingInField(e)) return;
       if (e.key === "Enter") {
         e.preventDefault();
         if (stage === "asking") resolve(typed);
