@@ -252,6 +252,10 @@ ENDS = {
     # DrillShell draws ActivityUsher, which returns the push BEFORE its own
     # null-guard. A lesson belongs to no stop-chain of its own, so that
     # ordering is the whole reason these three can tick at all.
+    # G-Compris! is a DrillShell too, and a scene belongs to no stop — so
+    # `usherFor` returns null and the push is drawn only because ActivityUsher
+    # reaches it BEFORE its own null-guard. Same reason the three lessons tick.
+    "/gcompris/page-de-journal": "src/components/DrillShell.tsx",
     "/lessons/quel-prefere": "src/components/DrillShell.tsx",
     "/lessons/negation": "src/components/DrillShell.tsx",
     "/lessons/articles-pays": "src/components/DrillShell.tsx",
@@ -300,7 +304,7 @@ ok("<details" in page and "<summary" in page,
    "(31 Aug) asks for it by name: keyboard and screen-reader support come "
    "free, it needs no state, and it survives having no JavaScript.")
 summary = re.search(r"<summary[\s\S]{0,400}?</summary>", page)
-ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}|\{minutesOf", summary.group(0) if summary else ""),
+ok(bool(summary) and re.search(r"\{[^}]*length[^}]*\}", summary.group(0) if summary else ""),
    "the closed fold says what is behind it (a count, not a bare chevron)",
    "the optional fold carries no count. « a collapsed section with no count is "
    "a section nobody opens, which is just deletion with extra steps ».")
@@ -398,6 +402,90 @@ ok("TESTED_STOPS" in fin and bool(re.search(r"upto == null", fin)),
    "eighteen tested stops, never the whole course and never a bare 1..30 range "
    "— `drawDaily` floors ONE question per stop in range, so twelve of every "
    "fifty would be off-target by construction.")
+
+# ── 11 · EVERY NUMBERED STEP FOLDS ITS OWN PROSE ───────────────────────────
+# Dan, 2026-09-15: *"collapse the texts within each number"*, looking at a path
+# of ten steps each carrying a paragraph.
+#
+# WHAT MAY NOT FOLD IS WHAT IDENTIFIES THE STEP — its number, its name, its
+# `does` line and its door. Those four are how a learner finds where they are,
+# and the collapse rule is explicit that folding the thing somebody needs in
+# front of them is not collapsing, it is hiding. So this clause checks BOTH
+# halves: the `why` is inside a native <details>, and `does` and the door are
+# NOT.
+# READ FRESHLY, UNDER ITS OWN NAME. `page` is taken: clause 8's loop rebinds it
+# to an href fragment (`page, _, query = h.partition("?")`), so by the time this
+# clause runs the module-level `page` is four characters of a route. The first
+# version of this clause failed with "could not read Tier()" and the fault was
+# a shared variable name, not the regex — which is the failure the clause's own
+# parser-floor assertion is there to make loud instead of silent.
+path_page = read("src/app/path/embed/page.tsx")
+tier = re.search(r"function Tier\(\{[\s\S]*?\n\}\n", path_page)
+ok(bool(tier) and len(tier.group(0)) > 800,
+   f"the step renderer parsed ({len(tier.group(0)) if tier else 0} chars)",
+   "could not read Tier() out of the path page — every assertion below would "
+   "pass over an empty string, which is the silent-parser failure this repo "
+   "wrote a rule about on 14 Sep.")
+body = tier.group(0) if tier else ""
+why_folded = re.search(r"<details[^>]*>\s*<summary>[\s\S]{0,200}?</summary>\s*<p[^>]*fluo-path-step-why", body)
+ok(bool(why_folded),
+   "each numbered step folds its `why` behind a native <details>",
+   "a step's `why` is printed inline. Dan asked for it folded (15 Sep) and the "
+   "collapse rule asks for native <details> by name — keyboard and screen "
+   "reader support come free, it needs no state, and it survives having no "
+   "JavaScript.")
+ok("fluo-path-step-does" in body and "fluo-path-step-go" in body
+   and "fluo-path-step-does" not in (why_folded.group(0) if why_folded else ""),
+   "and the step's name, its `does` line and its door stay open",
+   "the fold has swallowed something a learner needs to choose with. Only the "
+   "`why` folds: the number, the title, the `does` line and the ▶ door are how "
+   "somebody finds their place, and *\"never collapse the only copy of "
+   "something a learner needs\"*.")
+
+# ── 10 · NO DURATION IS PRINTED TO A LEARNER ────────────────────────────────
+# Dan, 2026-09-15: *"No need to give a time duration for those activities"*.
+#
+# The path used to print six of them — « 9 steps · 64 min », « 63 min left »,
+# « ▶ Continue · 8 min », « 8 min » on every step head, « 9 more · 71 min », and
+# an optional blurb about two hours. Every one was MY estimate, and the
+# estimates had already been caught: three MneMemo lessons were priced like
+# drills at 8–10 minutes each when a MneMemo lesson is a reference page with
+# four tabs and no card count at all, which is how the tier reached the 104
+# minutes Dan sent back on 14 Sep. *A duration written from the source rather
+# than from the screen is the same fault as a claim written that way — it just
+# fails as a broken promise instead of a broken page.*
+#
+# `PathStep.minutes` STAYS IN THE DATA on purpose. It is what draws the
+# essential/optional line by marks per minute, and an estimate an author uses
+# to decide is not the same object as a number a learner is shown. So the test
+# is not "does the field exist" but "does any surface render it" — which is why
+# this clause reads the two path components and not paths.ts.
+SURFACES = ["src/app/path/embed/page.tsx", "src/components/PathNext.tsx"]
+leak = []
+for f in SURFACES:
+    body = code(f)
+    ok(len(body) > 500, f"{f} read ({len(body)} chars of code)",
+       f"{f} did not read — this clause would pass over an empty string, which "
+       "is the silent-parser failure the file's own header warns about.")
+    for pat, what in ((r"\.minutes\b", ".minutes"),
+                      (r"minutesOf|minutesLeft", "a minutes helper"),
+                      (r"\{[^}]*\}\s*min\b|\bmin left\b", "a printed « min »")):
+        if re.search(pat, body):
+            leak.append(f"{f}: {what}")
+ok(not leak,
+   f"no duration is rendered on either path surface ({len(SURFACES)} files)",
+   "a duration is back on the path: " + "; ".join(leak) + ". Dan asked for "
+   "every one of them off (15 Sep). The budget lives in PathStep.minutes for "
+   "the author; nothing shows it to a learner.")
+# Comments stripped: the deleted rule is NAMED in a comment where it used to
+# sit, saying why it went. A check that greps raw would fail on its own epitaph.
+css = code("src/app/globals.css")
+ok(len(css) > 10000, f"globals.css read ({len(css)} chars of rules)",
+   "globals.css did not read; the rule test below would pass over nothing.")
+ok(".fluo-path-step-min" not in css,
+   "and the per-step « 8 min » rule is gone from globals.css with its markup",
+   "`.fluo-path-step-min` is back in globals.css. The rule was deleted with the "
+   "span it styled so nothing can reattach to it by accident.")
 
 print("\nthe curated path holds (14 Sep)\n" + "-" * 70)
 print("\n".join("  ok    " + m for m in PASS))

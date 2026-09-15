@@ -85,6 +85,179 @@ now; measured at 430×860, the whole board ends inside the frame.
 
   tsc clean · build green · eslint clean on the touched files ·
   148/148 verify · verify-wiring 10/10 · walked in the built app
+## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376, NOT merged)
+
+### 15 Sep · three things Dan asked for, in his order
+
+**1 · NO DURATION IS PRINTED ON THE PATH.** *"No need to give a time duration
+for those activities."* Six figures gone — « 9 steps · 64 min », « 63 min
+left », « ▶ Continue · 8 min », the per-step « 8 min », « 9 more · 71 min », and
+the optional blurb about two hours. `minutesOf`, `minutesLeft` and
+`.fluo-path-step-min` deleted with them.
+
+`PathStep.minutes` **stays in the data** as the author's budget: it is what
+draws the essential/optional line by marks per minute. *An estimate an author
+uses to decide is not the same object as a number a learner is shown.*
+`verify760` clause 10 reads the two path COMPONENTS, not `paths.ts`, precisely
+because the field may exist and only the rendering is banned.
+
+**2 · G-COMPRIS! — reading comprehension, new.** *"Call the reading exercises :
+G-Compris!"* Ten ordinary documents, 43 questions, in 🛠️ FluOLin Texts (the
+family renamed from « Write » the same day so a text you *read* would have
+somewhere to be). No question is answered by matching a string: « marocaine »
+is asked back as the country, « son frère » as *whose* brother. Units 0–2 only.
+Routes `/gcompris` and `/gcompris/<id>`, both framed.
+
+**3 · THE PATH READS ONE.** « Compréhension écrite » is a section of the paper
+and nothing on the path read a text at all. Step 7 is « Une page de journal »,
+addressed to the TEXT and never to the shelf — a learner who starts at a
+chooser finishes at `/gcompris/<text>`, so a step pointed at the chooser could
+never tick. Ten steps now.
+
+**4 · THE PROSE INSIDE EACH NUMBERED ITEM FOLDS** (Dan, same day: *"collapse
+the texts within each number for the mid-term and for the G-compris"*). An
+application of the 31 Aug collapse rule, not a new one.
+
+- **The path**: each step's `why` paragraph goes behind « WHY THIS STEP ▾ ».
+  What stays open is what IDENTIFIES the step — its number, its name, its
+  `does` line and its ▶ door — because *"never collapse the only copy of
+  something a learner needs"*. Measured at 390px: two steps a screen before,
+  three after.
+- **The G-Compris! shelf**: ten four-line tiles become ten folded rows. The
+  CLOSED row still carries all three things a choice needs — the text's name,
+  its unit and its question count. Nine of ten now fit one screen; it was
+  three. A `<details>` cannot live inside an `<a>`, so the row is the fold and
+  the ▶ key is inside it: one extra tap, the whole shelf visible.
+
+`verify760` clause 11 and `verify770` clause 7 pin BOTH halves each — native
+`<details>`, and the closed thing still saying what is behind it. Clause 11's
+first draft failed with *"could not read Tier()"* and the fault was a shared
+variable name (`page` is rebound by clause 8's loop), not the regex — which is
+precisely what its own parser-floor assertion exists to make loud.
+
+**MERGED `origin/main` INTO THE BRANCH** (Dan: *"it is missing some of the
+previous merges like the heart shape in the strip"* — the PR preview was cut
+before #370–#382 landed). Eight conflicts, three of them real:
+
+- **`.neo-key`'s outline.** Two branches answered Dan's *"the buttons are
+  missing the outlined top surface"* at once — main's 1px `inset 0 0 0 1px`
+  ring and this branch's `border: 2px solid var(--key-edge)`. **Main's ring
+  wins and is better** (no layout cost, follows the radius, draws over the
+  white lip); `--key-edge` is threaded through its colour so a caller can still
+  tint the hairline. `verify37`'s clause re-pointed at the ring.
+- **`MoreBelow.tsx` was an add/add conflict** — main landed the same cue fix as
+  #379 while this branch built it. Main's taken whole.
+- **`verify800` collided**: main's `verify800-handhold-points.py` against this
+  branch's `verify800-key-outline.py`. The seventh such collision. Renumbered
+  to **900**, with headroom, per AGENTS.md.
+
+**AND THREE NUMBERS WERE STALE IN PROSE.** The Finale's docstrings still said
+« eighteen stops · 162 items · twelve left out » from before Dan cut stop 12.
+Recounted from the data: **seventeen stops · 154 items · thirteen left out**,
+and 80 of the 234 in-range items are off-target. The list is code and the
+paragraph is not, which is the whole reason it drifted.
+
+  tsc clean · build green · **147 verify** · shots of /path, /gcompris and a
+  scene walked in the built app at 390px and 1280px
+
+
+**Dan, opening the curated path: *"I just saw the curated exercises are not at
+all adapted for the first test covering stops 1 to 30"*, then *"Stops 0 to 30
+only please"*.** Stops 1–30 are units 0, 1 and 2; 31–50 are units 3 and 4.
+
+**MEASURED BY WALKING A WHOLE PAPER IN THE BUILT APP**, one card at a time at
+390px, hint · hint · skip, fifty times:
+
+        before   50 questions · 20 of them stops 31–50 (40%)
+        after    50 questions ·  0
+
+« Le matin, je bois un ___ au lait. » is SIO-041. And because the Finale feeds
+ErroReview, those twenty misses BECAME the revision queue — step 1 was
+manufacturing the wrong homework for step 2.
+
+**Three different ways a step left the test, only one of them visible in
+`paths.ts`:** a goal above 30 (« MneMemo — asking a question », goal 34 — cut);
+an unscoped BANK (FINALE_BANK is 437 items, 201 of them stops 31–50 — the step
+looked right, one href and no goal); an unscoped PICKER (`/practice/ecoutexte`
+and `/conjugaison` open choosers over all five units and all 67 verbs, so the
+ConjugaZone step's own text named six verbs it never picked).
+
+**The scope lives in the address** — `?upto=30`, `?v=etre,avoir,faire,aller,sappeler,aimer`,
+`/practice/ecoutexte/quand-time` — and `scopeOf()` is a filter over the one
+bank, never a second bank. Read with `addressSearch()`, not `window.location`:
+the Finale runs in the cahier's iframe, whose src carries no query at all.
+
+**The Finale is still the whole-course paper.** No query, fifty stops, exactly
+as before. The path scopes itself; it does not shrink the activity for anyone
+else. The second test is `?upto=50`, or another entry in `paths.ts`, and no new
+code.
+
+`verify760` clause 8 pins both halves (goals ≤ 30; the three wide doors carry
+their narrowing query) and was break-tested both ways.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · before/after walked in the real app
+
+### Then: the path was audited against the REAL Test 1 paper (same day)
+
+Dan sent the actual LAF 1201 Test 1 and its corrigé, approved an item-by-item
+list of what it tests (all of it except the poster-reading exercise, and
+without « chez »), and ruled twice on scope: ***"please stick to the 30
+stops"*** and, of the reading section, ***"it is not so much about reading per
+se, but what those reading questions are really testing"***.
+
+**EVERY GAP TURNED OUT TO BE A LESSON THE COURSE ALREADY HAS INSIDE STOPS
+1–30 THAT NO STEP OPENED.** Nothing new was written and nothing reaches past
+stop 30:
+
+    quel-prefere    SIO-015 — « Quel ? Quelle ? Quels ? Quelles ? ». Four of
+                    the paper's five question marks. The systematic question
+                    lesson IS at SIO-034 and stays out; this one was moved
+                    into Unit 1 on 5 Sep for exactly this reason.
+    negation        SIO-028 — measured: 0 of the deck's 20 items is reflexive
+                    and none is « ne…pas » + être. The paper asks for both.
+                    The LESSON has « il ne s'appelle pas », « elle n'est pas
+                    anglaise ».
+    articles-pays   SIO-015 — the only place « l'Italie » and « le Liban » are
+                    explained. Neither is one of the 25 countries and by the
+                    transfer ruling neither needs to be, PROVIDED the rule is
+                    taught. Behind a fold, it was not.
+
+**THE FIRST CUT PUT ALL OF THEM IN THE ESSENTIAL TIER AND CAME OUT AT 104
+MINUTES.** Dan: *"104 minutes is now too long. We had promised about half that
+duration. Can you divide that into essential and optional"*. So the tier line
+is drawn on MARKS PER MINUTE against the real paper, and the fold is ordered
+best-first so a learner with ninety minutes rather than sixty starts at the
+top and stops when time runs out.
+
+        essential   9 steps · 63 min   (53 + 10 the next morning)
+        optional    8 more  · 60 min   NumBus first — four marks, and the only
+                                       24-hour clock and phone number in the app
+
+**WorDrill left the essential tier**: Test 1 has no spoken section at all
+(« Compréhension orale » is listening, which ÉcouTexte answers). It stays on
+the path because the course is not only this paper.
+
+**AND THE CHECK'S OWN PARSER WAS SKIPPING STEPS.** `verify760` matched a step
+only when `id:` sat on the line straight after `{`, so the two steps promoted
+with a comment explaining the promotion were invisible — it read 19 of 21 and
+passed, having never looked at two of them. That is the exact failure this file
+exists to prevent, committed by the file itself. The pattern is anchored on the
+four-space indentation now, and a new clause cross-checks the parsed count
+against a plain tally of declared `id:` lines, so a parse that drops a step
+FAILS instead of quietly shrinking. (A first fix read ELEVEN of twenty-one and
+looked fine — the guard is what caught it.)
+
+**Known and stated, not silently absent:** the paper's reading exercise 1 is 5
+marks; its six questions decompose into numbers, a 24-hour time, *où*, *aller
+au*, *adorer* and *ne…plus* — all stops 1–30 and all on the path — but no
+activity in FluOLinGo asks a learner to read a whole text and pull a fact out
+of it. Say so in the letter rather than build one.
+
+  tsc clean · build green · eslint clean on the touched files ·
+  **144/144 verify** · path walked and screenshotted at 880px
+
+## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, NOT merged)
 
 ## 14 Sep — « /50 » off the map, both guides fold, and the nesting Dan saw is older than today (fluoduo-main)
 
@@ -439,6 +612,7 @@ of it. Say so in the letter rather than build one.
   **144/144 verify** · path walked and screenshotted at 880px
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
+
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at
 all optimal (tiled buttons representing a choice each)"*, and after I twice

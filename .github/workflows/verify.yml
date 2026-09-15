@@ -631,6 +631,9 @@ jobs:
       - name: "The curated path — every step lands somewhere, the walk cannot stall (14 Sep)"
         run: python3 verify/verify760-curated-path.py
 
+      - name: "G-Compris! — a reading answer is what the document says (15 Sep)"
+        run: python3 verify/verify770-gcompris.py
+
       - name: "The hand-hold points at something that is on the screen (14 Sep)"
         run: python3 verify/verify800-handhold-points.py
 
@@ -640,5 +643,11 @@ jobs:
       - name: "A hub's door draws one notebook, not two (14 Sep)"
         run: python3 verify/verify840-no-nested-notebook.py
 
+      # 900, NOT 801. This check was verify800-key-outline on its own branch and
+      # collided with main's verify800-handhold-points at the merge (15 Sep) —
+      # the seventh such collision, and the reason verify-wiring tests the
+      # numbers a branch ADDS at push time. Renumbered with headroom, per
+      # AGENTS.md: a number next to the frontier (840) will be claimed again
+      # while CI runs.
       - name: "Every raised key wears an outlined top surface (14 Sep)"
-        run: python3 verify/verify860-key-outline.py
+        run: python3 verify/verify900-key-outline.py
