@@ -75,6 +75,14 @@ work/**/*.png
 # the next `git add -A` sweeps them in. Ignored before that happens.
 .tmp-verify-find/
 
+# Scratch from verify114-level-curve.py. THE THIRD OF THESE, and the reason
+# it is worth a line rather than a `rm`: a full verify sweep leaves it behind,
+# and this repo has already committed such a directory once by accident (see
+# the 9 Sep note above). It was caught here by a stop hook reporting untracked
+# files, which is the same near-miss a third time — so it is ignored before a
+# `git add -A` sweeps it in, not after.
+.tmp-verify-levels/
+
 # Firebase emulator logs, written into the repo root by `firebase emulators:*`
 # whenever the rules suite runs (scripts/rules-test/run.mjs). Same hazard as
 # the two verify scratch directories above: a `git add -A` after a rules run

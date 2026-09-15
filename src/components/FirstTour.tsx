@@ -439,6 +439,14 @@ export default function FirstTour() {
       // Above the bottom bar's floor, never behind it (2026-08-24): the
       // third option, "Never offer again", used to be clipped off-screen.
       <div
+        /* `data-prompt` NAMES THIS AS A PROMPT so another one can stand down
+           rather than open on top of it (2026-09-15). It is not a dialog — it
+           is a corner chip with no role and no overlay — so anything looking
+           for `[role="dialog"]` finds nothing and opens anyway, which is how
+           the What's New card came to sit over this on its first build. A
+           named hook is the same device as `data-tour`: the next prompt adds
+           the attribute and is found for free. */
+        data-prompt="tour-offer"
         className="fixed left-4 z-[80] max-w-[16rem] rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-[4px_4px_0_var(--cahier-hl,#eaff00)]"
         style={{ bottom: "calc(var(--bottombar-floor, 8px) + 8px)" }}
       >
