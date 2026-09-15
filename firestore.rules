@@ -463,7 +463,7 @@ service cloud.firestore {
         && (!('context' in request.resource.data)
             || (request.resource.data.context is map
                 && request.resource.data.context.keys().hasOnly(
-                    ['activity', 'deck', 'level', 'kind', 'itemId', 'prompt', 'position', 'path'])
+                    ['station', 'deck', 'level', 'kind', 'itemId', 'prompt', 'position', 'path'])
                 && request.resource.data.context.size() <= 8))
         && request.resource.data.categories is list
         && request.resource.data.categories.size() <= 10

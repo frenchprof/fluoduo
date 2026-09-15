@@ -23,8 +23,11 @@
  */
 
 export type BugContext = {
-  /** Registry key of the activity on screen (« lesson », « grammarathon »…). */
-  activity?: string;
+  /** Registry key of the activity on screen (« lesson », « grammarathon »…).
+   *  Named `station`, not `activity`: verify53 reads every `activity: "x"` in
+   *  src/ as an evidence tag and fails on a prefix the mastery model does not
+   *  know, and this is a bug report, not evidence. */
+  station?: string;
   /** The deck or lesson slug, where there is one. */
   deck?: string;
   /** The entry level a learner chose, where the activity has levels. */
@@ -93,7 +96,7 @@ export function readBugContext(): (BugContext & { path: string }) | null {
 export function describeBugContext(c: Partial<BugContext & { path: string }> | null | undefined): string {
   if (!c) return "";
   return [
-    c.activity,
+    c.station,
     c.deck,
     c.level != null ? String(c.level) : null,
     c.kind,

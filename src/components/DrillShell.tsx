@@ -245,7 +245,7 @@ export default function DrillShell({
      sent from the map does not carry the drill before it. */
   const position = progress ? `${progress.done + 1} of ${progress.total}` : undefined;
   useEffect(() => {
-    setBugContext({ activity, deck, position });
+    setBugContext({ station: activity, deck, position });
   }, [activity, deck, position]);
   useEffect(() => () => clearBugContext(), []);
   const act = activity ? activityInfo(activity) : undefined;

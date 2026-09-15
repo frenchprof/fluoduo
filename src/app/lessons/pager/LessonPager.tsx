@@ -230,7 +230,7 @@ export default function LessonPager({
         ? ex.segments.map((sg) => (sg.kind === "text" ? sg.text : "___")).join("").replace(/\s+/g, " ").trim()
         : ex.big;
     setBugContext({
-      activity: "lesson",
+      station: "lesson",
       deck: activityKey,
       level: ENTRY_LABELS[entry].stars,
       kind: ex.kind,

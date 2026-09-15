@@ -403,6 +403,20 @@ ok("TESTED_STOPS" in fin and bool(re.search(r"upto == null", fin)),
    "— `drawDaily` floors ONE question per stop in range, so twelve of every "
    "fifty would be off-target by construction.")
 
+# ── 12 · THE PUSH DRAWS ONLY WHERE A STEP WAS JUST FINISHED ────────────────
+# Dan, 2026-09-15, shown « Step 1 of 10 · Continue » on a goal-2 SpecuLearn
+# pretest — not a path step: *"it should not appear here if I have not gone
+# through the revision route"*. A run switched on once stays on in the browser;
+# without this guard every activity's end screen advertised the path.
+pn = code("src/components/PathNext.tsx")
+ok(len(pn) > 800, f"PathNext read ({len(pn)} chars)", "PathNext.tsx did not read.")
+ok(re.search(r"if \(!here\) return setView\(null\)", pn),
+   "the push renders nothing on a screen that is not a path step",
+   "PathNext draws on every activity's end screen again. It must return early "
+   "when `stepAtPlace` finds no step at this address — otherwise a pretest "
+   "that is not on the path offers « Continue » to a path the learner is not "
+   "walking (Dan, 15 Sep).")
+
 # ── 11 · EVERY NUMBERED STEP FOLDS ITS OWN PROSE ───────────────────────────
 # Dan, 2026-09-15: *"collapse the texts within each number"*, looking at a path
 # of ten steps each carrying a paragraph.
