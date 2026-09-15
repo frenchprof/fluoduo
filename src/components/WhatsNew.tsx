@@ -52,7 +52,13 @@ const NEWS = {
   heading: "What's new",
   shown: "15 Sep 2026",
   items: [
-    { emoji: "💎", text: "Free gems for every bug you report — tap the 🐞" },
+    /* THE NUMBER IS THE REAL ONE, and it is 5 rather than "some" because the
+       feature already exists: `awardBugReport()` pays BUG_BOUNTY_ON_REPORT on
+       a successful Firestore write, capped at two paid reports a day. The
+       further BUG_BOUNTY_MAJOR is deliberately NOT mentioned — economy.ts is
+       explicit that it stays unannounced so the surprise stays a surprise and
+       no promise is made that the app cannot yet keep. */
+    { emoji: "💎", text: "5 gems for every bug you report — tap the 🐞 (twice a day)" },
     /* HELD BACK UNTIL THE WORK IS LIVE (Dan, 2026-09-15: *"can you wait to
        ship the notification about the updated Revision path"*, then *"add that
        the write segment is now the texts segmenet with the addition of
