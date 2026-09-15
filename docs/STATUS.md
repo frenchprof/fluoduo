@@ -35,6 +35,27 @@ addressed to the TEXT and never to the shelf — a learner who starts at a
 chooser finishes at `/gcompris/<text>`, so a step pointed at the chooser could
 never tick. Ten steps now.
 
+**4 · THE PROSE INSIDE EACH NUMBERED ITEM FOLDS** (Dan, same day: *"collapse
+the texts within each number for the mid-term and for the G-compris"*). An
+application of the 31 Aug collapse rule, not a new one.
+
+- **The path**: each step's `why` paragraph goes behind « WHY THIS STEP ▾ ».
+  What stays open is what IDENTIFIES the step — its number, its name, its
+  `does` line and its ▶ door — because *"never collapse the only copy of
+  something a learner needs"*. Measured at 390px: two steps a screen before,
+  three after.
+- **The G-Compris! shelf**: ten four-line tiles become ten folded rows. The
+  CLOSED row still carries all three things a choice needs — the text's name,
+  its unit and its question count. Nine of ten now fit one screen; it was
+  three. A `<details>` cannot live inside an `<a>`, so the row is the fold and
+  the ▶ key is inside it: one extra tap, the whole shelf visible.
+
+`verify760` clause 11 and `verify770` clause 7 pin BOTH halves each — native
+`<details>`, and the closed thing still saying what is behind it. Clause 11's
+first draft failed with *"could not read Tier()"* and the fault was a shared
+variable name (`page` is rebound by clause 8's loop), not the regex — which is
+precisely what its own parser-floor assertion exists to make loud.
+
 **MERGED `origin/main` INTO THE BRANCH** (Dan: *"it is missing some of the
 previous merges like the heart shape in the strip"* — the PR preview was cut
 before #370–#382 landed). Eight conflicts, three of them real:

@@ -6,12 +6,22 @@
  * `/gcompris` is the page a learner opens; this is what runs in the frame it
  * holds, as every station has since 2026-09-07.
  *
- * TEN TILES AND NO FOLD. The collapse rule folds APPARATUS — a pitfall table,
- * a word list, a self-check — and this page is nothing but its own content: a
- * shelf with one tile per text. Folding the only thing on the page is the
- * *"deletion with extra steps"* the same rule warns against. What IS on each
- * tile is the count that earns its place: « 5 questions », because a learner
- * cannot see them from here.
+ * TEN ROWS, EACH FOLDED (Dan, 2026-09-15: *"collapse the texts within each
+ * number"*). Ten tiles carrying a title, a description and a footer made a
+ * shelf three screens long, and *"a page a learner has to scroll past the fold
+ * has stopped showing them where they are"*.
+ *
+ * WHAT STAYS OPEN IS WHAT CHOOSES: the text's own name, its unit and how many
+ * questions it asks — all three on the closed summary, because that is the
+ * half of the rule people forget (*"a collapsed section with no count is a
+ * section nobody opens"*). What folds is the sentence describing the
+ * situation, which tells a learner what kind of document it is once they are
+ * already interested.
+ *
+ * WHY A `<details>` AND NOT A LINK. A disclosure cannot live inside an `<a>`,
+ * so the row is the fold and the door is a key INSIDE it. That costs a second
+ * tap and buys the whole shelf on one screen; it also means the ▶ key is a
+ * real control with a real hover, rather than a whole card being tappable.
  */
 
 import Link from "next/link";
@@ -38,22 +48,33 @@ export default function Page() {
           </p>
 
           {/* The grid counts the room: one column on a phone, two from `sm`.
-              No tile carries a width of its own (the no-hard-coded-control-
+              No row carries a width of its own (the no-hard-coded-control-
               size rule, 12 Sep). */}
-          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {GC_SCENES.map((s) => (
-              <Link key={s.id} href={`/gcompris/${s.id}`} className="neo-key gc-tile">
-                <span className="gc-tile-title" lang="fr">
-                  {s.title}
-                </span>
-                <span className="gc-tile-setup">{s.setup}</span>
-                <span className="gc-tile-foot">
-                  <span>Unité {s.unit}</span>
-                  <span>
-                    {s.questions.length} question{s.questions.length === 1 ? "" : "s"}
+              <details key={s.id} className="gc-row">
+                <summary>
+                  <span className="gc-row-title" lang="fr">
+                    {s.title}
                   </span>
-                </span>
-              </Link>
+                  <span className="gc-row-foot">
+                    Unité {s.unit} · {s.questions.length} question
+                    {s.questions.length === 1 ? "" : "s"}
+                  </span>
+                </summary>
+                <p className="gc-row-setup">{s.setup}</p>
+                <Link
+                  href={`/gcompris/${s.id}`}
+                  target="_top"
+                  className="neo-key gc-row-go"
+                  style={{
+                    "--key-bg": "var(--fam-tools-wash)",
+                    "--key-edge": "var(--fam-tools-ink)",
+                  } as React.CSSProperties}
+                >
+                  ▶ Read it
+                </Link>
+              </details>
             ))}
           </div>
         </SectionBand>

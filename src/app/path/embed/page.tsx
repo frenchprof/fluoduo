@@ -196,7 +196,22 @@ function Tier({ path, steps, run, current }: {
                 </span>
               </div>
               <p className="fluo-path-step-does">{head.does}</p>
-              {head.why && <p className="fluo-path-step-why">{head.why}</p>}
+              {/* THE REASON FOLDS, THE STEP DOES NOT (Dan, 2026-09-15: *"collapse
+                  the texts within each number"*). Ten steps each carrying a
+                  paragraph made a page nobody could see the end of — which is
+                  the fault the collapse rule of 31 Aug names: the whole of it
+                  must fit on one screen before anything is expanded.
+                  WHAT STAYS OPEN IS WHAT IDENTIFIES THE STEP: its number, its
+                  name, its `does` line and its door. The `why` is the argument
+                  for the step, which a learner consults rather than needs, so
+                  it is exactly what the rule folds. The summary says « why this
+                  step » rather than showing a bare chevron. */}
+              {head.why && (
+                <details className="fluo-path-step-fold">
+                  <summary>why this step</summary>
+                  <p className="fluo-path-step-why">{head.why}</p>
+                </details>
+              )}
               <div className="flex flex-wrap gap-2">
                 {g.steps.map((s) => {
                   const href = stepHref(s);

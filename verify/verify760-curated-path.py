@@ -403,6 +403,45 @@ ok("TESTED_STOPS" in fin and bool(re.search(r"upto == null", fin)),
    "— `drawDaily` floors ONE question per stop in range, so twelve of every "
    "fifty would be off-target by construction.")
 
+# ── 11 · EVERY NUMBERED STEP FOLDS ITS OWN PROSE ───────────────────────────
+# Dan, 2026-09-15: *"collapse the texts within each number"*, looking at a path
+# of ten steps each carrying a paragraph.
+#
+# WHAT MAY NOT FOLD IS WHAT IDENTIFIES THE STEP — its number, its name, its
+# `does` line and its door. Those four are how a learner finds where they are,
+# and the collapse rule is explicit that folding the thing somebody needs in
+# front of them is not collapsing, it is hiding. So this clause checks BOTH
+# halves: the `why` is inside a native <details>, and `does` and the door are
+# NOT.
+# READ FRESHLY, UNDER ITS OWN NAME. `page` is taken: clause 8's loop rebinds it
+# to an href fragment (`page, _, query = h.partition("?")`), so by the time this
+# clause runs the module-level `page` is four characters of a route. The first
+# version of this clause failed with "could not read Tier()" and the fault was
+# a shared variable name, not the regex — which is the failure the clause's own
+# parser-floor assertion is there to make loud instead of silent.
+path_page = read("src/app/path/embed/page.tsx")
+tier = re.search(r"function Tier\(\{[\s\S]*?\n\}\n", path_page)
+ok(bool(tier) and len(tier.group(0)) > 800,
+   f"the step renderer parsed ({len(tier.group(0)) if tier else 0} chars)",
+   "could not read Tier() out of the path page — every assertion below would "
+   "pass over an empty string, which is the silent-parser failure this repo "
+   "wrote a rule about on 14 Sep.")
+body = tier.group(0) if tier else ""
+why_folded = re.search(r"<details[^>]*>\s*<summary>[\s\S]{0,200}?</summary>\s*<p[^>]*fluo-path-step-why", body)
+ok(bool(why_folded),
+   "each numbered step folds its `why` behind a native <details>",
+   "a step's `why` is printed inline. Dan asked for it folded (15 Sep) and the "
+   "collapse rule asks for native <details> by name — keyboard and screen "
+   "reader support come free, it needs no state, and it survives having no "
+   "JavaScript.")
+ok("fluo-path-step-does" in body and "fluo-path-step-go" in body
+   and "fluo-path-step-does" not in (why_folded.group(0) if why_folded else ""),
+   "and the step's name, its `does` line and its door stay open",
+   "the fold has swallowed something a learner needs to choose with. Only the "
+   "`why` folds: the number, the title, the `does` line and the ▶ door are how "
+   "somebody finds their place, and *\"never collapse the only copy of "
+   "something a learner needs\"*.")
+
 # ── 10 · NO DURATION IS PRINTED TO A LEARNER ────────────────────────────────
 # Dan, 2026-09-15: *"No need to give a time duration for those activities"*.
 #

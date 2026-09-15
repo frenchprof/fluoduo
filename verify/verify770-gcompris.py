@@ -262,7 +262,35 @@ else:
        "same bank, so an unbuilt id means the route file stopped reading it — "
        "the shelf would link to a 404.")
 
-# ── 7 · THE ACTIVITY IS REGISTERED, UNDER THE NAME DAN GAVE IT ─────────────
+# ── 7 · THE SHELF IS FOLDED, AND THE CLOSED ROW STILL CHOOSES ─────────────
+# Dan, 2026-09-15: *"collapse the texts within each number"*. Ten four-line
+# tiles ran three screens, and *"a page a learner has to scroll past the fold
+# has stopped showing them where they are"*.
+#
+# BOTH HALVES, because folding is easy to do badly in either direction: native
+# <details> (keyboard and screen-reader support come free, no state, survives
+# having no JavaScript), AND a closed row that still says what is behind it —
+# the text's name, its unit and its question count. *"A collapsed section with
+# no count is a section nobody opens, which is just deletion with extra
+# steps."*
+shelf = read("src/app/gcompris/embed/page.tsx")
+ok(len(shelf) > 500, f"the shelf page read ({len(shelf)} chars)",
+   "src/app/gcompris/embed/page.tsx did not read; the two clauses below would "
+   "pass over an empty string.")
+ok("<details" in shelf and "<summary" in shelf,
+   "the shelf folds each text behind a native <details>",
+   "the shelf is not folded with native <details>. The collapse rule asks for "
+   "it by name, and Dan asked for this page specifically on 15 Sep.")
+summ = re.search(r"<summary>([\s\S]*?)</summary>", shelf)
+inside = summ.group(1) if summ else ""
+ok(bool(summ) and "s.title" in inside and "s.unit" in inside
+   and "s.questions.length" in inside,
+   "and the CLOSED row still carries the name, the unit and the question count",
+   "the closed row does not say what is behind it. A learner chooses a text "
+   "from this page, so the summary must carry its name, its unit and how many "
+   "questions it asks — all three, or the fold is deletion with extra steps.")
+
+# ── 8 · THE ACTIVITY IS REGISTERED, UNDER THE NAME DAN GAVE IT ─────────────
 reg = read("src/content/activities.ts")
 ok('key: "gcompris"' in reg and 'name: "G-Compris!"' in reg and 'family: "tools"' in reg.split('key: "gcompris"')[-1][:200],
    "G-Compris! is in the registry, in the 🛠️ Texts family",
