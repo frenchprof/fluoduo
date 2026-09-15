@@ -1077,3 +1077,217 @@ which screen ticks it.
 station runs in an iframe, so the pathname when the usher mounts ends in
 `/embed` and matches no step's address. Without the strip the path never
 advances anywhere, and the code reads as if it works.
+
+# A step is only revision if it stays inside the test — permanent (2026-09-14)
+
+**Dan, opening the path he had just asked for: *"I just saw the curated
+exercises are not at all adapted for the first test covering stops 1 to 30"*,
+then, asked how wide to cut it: *"Stops 0 to 30 only please"*.**
+
+Stops 1–30 are units 0, 1 and 2. Stops 31–50 are units 3 and 4, which the first
+test does not cover. **Walked in the built app, a Finale paper dealt 20 of its
+50 questions from stops 31–50** — « Le matin, je bois un ___ au lait. » is
+SIO-041 — and because the Finale feeds ErroReview, those misses then BECAME the
+revision queue. Step 1 was manufacturing the wrong homework for step 2.
+
+**THREE DIFFERENT WAYS A STEP LEFT THE TEST, and only one was visible in the
+step list:**
+
+    a GOAL above 30     « MneMemo — asking a question » was goal 34, unit 3.
+                        The only one you could see reading paths.ts.
+    an UNSCOPED BANK    the Finale draws FINALE_BANK: 437 items, 201 of them
+                        (46%) stops 31–50. The step LOOKED right — one href,
+                        no goal — and was the worst offender of the three.
+    an UNSCOPED PICKER  `/practice/ecoutexte` and `/conjugaison` open choosers
+                        covering all five units and all 67 verbs. The
+                        ConjugaZone step's own text named six verbs
+                        (être · avoir · faire · aller · s'appeler · aimer) that
+                        it then never picked.
+
+**SO THE SCOPE LIVES IN THE ADDRESS, and the address is the step's data.**
+`?upto=30` on the Finale, `?v=etre,avoir,…` on ConjugaZone, a deck route
+(`/practice/ecoutexte/quand-time`) instead of the topic picker. `scopeOf()` in
+`FinaleContent.tsx` is a FILTER over the one bank, never a second bank —
+every item already carries its `sio`, so the two can never drift apart.
+
+**AND THE QUERY IS READ WITH `addressSearch()`, NOT `window.location`** — the
+Finale runs inside the cahier's iframe, whose own src carries no query at all.
+ConjugaZone's `?deck=` was silently ignored for exactly that reason until
+somebody measured it. A scope read off `window.location` inside a frame is a
+scope that is always null, and the code reads as if it works.
+
+**`verify760` clause 8 holds both halves** — every goal-scoped step is ≤ 30,
+and the three wide doors carry the query that narrows them. It takes a LIST of
+doors, per the Geist precedent, because the next wide door will not be one of
+these three. A bare `/practice/grammarathon/finale` on a curated path is the
+46% bug, silently, again.
+
+**WHAT THIS DOES NOT DO: the Finale is still the whole-course paper.** Nothing
+narrows unless an address asks it to, so `/practice/grammarathon/finale` with
+no query is fifty stops exactly as before. A path scopes ITSELF; it does not
+shrink the activity for everybody else. When the second test comes, that is
+`?upto=50` — or a second entry in `paths.ts` — and no new code.
+
+# A revision path is costed in MARKS PER MINUTE — permanent (2026-09-14)
+
+**Dan, shown an essential tier that had grown to 104 minutes: *"104 minutes is
+now too long. We had promised about half that duration. Can you divide that
+into essential and optional"*.**
+
+The tier had grown honestly. Every step added was covering a real item on the
+real Test 1 paper, and each one on its own was defensible. Added up, the path
+had stopped being an hour of revision and become an evening of it — which is
+past the point the path's own blurb calls *"where revision becomes
+re-reading"*.
+
+**SO THE HOUR IS AN INPUT, NOT AN OUTPUT.** The essential tier is a budget, and
+the question for every step is not *"is this useful?"* — everything on the
+optional tier is useful — but *"what is a minute of this worth on the paper?"*
+
+    ComposeIt         15 marks / 8 min = 1.88   the written production task,
+                                                same sixteen words as the paper
+    MémoiRecall ×3     7 / 9  = 0.78
+    Remettre négation  3 / 4  = 0.75
+    MneMemo « Quel ? » 4 / 5  = 0.80
+    ConjugaZone        5 / 8  = 0.63
+    ─────────────────────────────────── the line
+    NumBus             4 / 10 = 0.40
+    MneMemo article     2 / 5  = 0.40
+    MneMemo négation    1 / 5  = 0.20
+    WorDrill            0 / 4  = 0        Test 1 scores no speaking at all
+
+**THE FOLD IS ORDERED BEST-FIRST FOR THE SAME REASON.** A learner who finds
+they have ninety minutes opens the fold, takes from the top, and stops. NumBus
+is first in it, not last: four marks, and the only place in the app that says a
+24-hour time or reads a phone number in two-digit blocks.
+
+**AND A STEP MAY LEAVE THE ESSENTIAL TIER WITHOUT LEAVING THE PATH.** WorDrill
+was the *"only spoken step"* and is now optional, because this paper's
+« Compréhension orale » is listening, which ÉcouTexte answers. It stays on the
+path, with its reason written on it, because the course is not only this paper.
+
+**THE OTHER HALF: MY OWN MINUTE FIGURES WERE THE BUG.** Three MneMemo lessons
+were priced at 8–10 minutes each, like drills. Driven in the built app, a
+MneMemo lesson is a REFERENCE PAGE with four tabs — 🎯 Goal · 💡 Idée · 📐
+Formes · 🏋️ Exercice — with no fixed card count at all. Twenty-eight of the
+hundred-and-four minutes were a guess dressed as a number. *A duration written
+from the source rather than from the screen is the same fault as a claim
+written that way* — it just fails as a broken promise instead of a broken page.
+
+# A check's own parser is part of the check — permanent (2026-09-14)
+
+**`verify760` matched a step only when `id:` sat on the line immediately after
+`{`.** Two steps promoted on 14 Sep each carried a comment saying WHY they were
+promoted, between the brace and the id. The check read **19 of 21 steps and
+passed**, having never looked at two of them — including whether their
+addresses resolved and whether anything could tick them.
+
+That is precisely the failure this file exists to prevent, committed by the
+file itself, and it is invisible: a passing check and a green line of output.
+
+**THE FIX IS TWO THINGS, AND THE SECOND IS THE ONE THAT MATTERS.**
+
+- The pattern is anchored on the four-space indentation that actually
+  distinguishes a step from the object holding it. A looser `\{\s*…id:` also
+  matched `const MIDTERM = { id: "midterm"` and then swallowed whole runs of
+  real steps inside one match — **the first attempt at this fix read ELEVEN of
+  twenty-one and looked fine.**
+- **The parsed count is cross-checked against a plain tally of declared `id:`
+  lines, and the check FAILS when they differ.** That is what caught the eleven.
+  Without it, every "fix" to a parser is a coin-flip you cannot observe.
+
+**Generalise it: any check that PARSES before it tests must assert how much it
+parsed.** A grep that silently matches nothing, a regex that silently matches
+half, and a scan that silently finds an empty page all report the same thing —
+success. `verify540` already pins a floor on how many controls its scan must
+find, for this reason; `verify106` already fails a ramp rule that matches
+nothing. This is the same rule stated once, for all of them.
+
+# A number a learner reads is a PROMISE — permanent (2026-09-15)
+
+**Dan, opening the curated path: *"No need to give a time duration for those
+activities."***
+
+The path printed six of them — « 9 steps · 64 min », « 63 min left »,
+« ▶ Continue · 8 min », « 8 min » on each step head, « 9 more · 71 min », and
+an optional blurb about two hours. All six are gone.
+
+**THEY WERE NOT WRONG BY A LITTLE.** Three MneMemo lessons had been priced at
+8–10 minutes each, like drills. Driven in the built app, a MneMemo lesson is a
+REFERENCE PAGE with four tabs and no fixed card count at all — twenty-eight of
+the hundred-and-four minutes Dan sent back the day before were a guess dressed
+as a number.
+
+    written from the source   « ▶ Continue · 8 min »   a promise
+    measured on the screen    there is nothing to measure
+
+**BUT `PathStep.minutes` STAYS IN THE DATA, and the distinction is the whole
+rule.** It is what draws the essential/optional line by marks per minute — the
+14 Sep ruling, unchanged. **An estimate an author uses to DECIDE is not the
+same object as a number a learner is SHOWN.** One may be rough, because being
+wrong by two minutes changes an ordering that a human then reviews; the other
+may not, because being wrong by two minutes is a broken promise to somebody
+revising the night before a test.
+
+**Generalise it past durations.** A count of items left, a percentage, an
+estimated score, a "3 days to fluency" — before any of them is printed, ask
+whether the app can actually measure it. If it cannot, it is an author's note
+and it belongs in a comment. `verify760` clause 10 holds the path's half, and
+it reads the two path COMPONENTS rather than `paths.ts`, precisely because the
+field is allowed to exist and only the rendering is banned.
+
+The 13 Sep sibling — *"the app does not perform unasked"* — and this one point
+the same way: do not tell the learner something they did not ask for and you
+cannot stand behind.
+
+# A reading question is not about reading — permanent (2026-09-15)
+
+**Dan named the activity: *"Call the reading exercises : G-Compris!"*** —
+« j'ai compris », said out loud. It lives in 🛠️ **FluOLin Texts**, the family
+he renamed from « Write » the same day (*"call Write Texts"*) so that a text
+you READ would have somewhere to be. Same key (`tools`), same routes — the
+Memo-rename precedent.
+
+**THE RULE THE BANK IS BUILT ON**, from his own words when the shape was put to
+him: *"it is not so much about reading per se, but what those reading questions
+are really testing"*. **A question that can be answered by matching a string is
+not a reading question** — the learner finds « mardi » in the text and copies
+it without knowing what it means. So every one of the forty-three turns on
+something the course teaches:
+
+    négation      « Je ne suis pas là ce soir » — asked as "is she home?"
+                  A learner who skips the ne … pas answers Vrai.
+    possessives   « Clara et son frère » — asked as WHOSE brother. Two people
+                  are named and only the possessive says which.
+    nationality   the text says « marocaine », the question asks the COUNTRY.
+                  Nothing to copy; the ending has to be read.
+    aller + à     « au cinéma » · « à la bibliothèque » · « chez Julien » —
+                  three shapes for one idea, in one message.
+
+**AND IT MUST NOT LOOK TAILORED.** Dan, on the first outline: *"Ok but it must
+not look like we tailored exercises around the test"*. Every scene is an
+ordinary document a person actually meets — a note on a kitchen table, a club
+noticeboard, a doctor's voicemail, a postcard — chosen for being ordinary. None
+mirrors a question on the paper, and there are ten, which is more than any
+paper asks for.
+
+**READING IS RECEPTIVE, SO THE CEILING IS ON THE ANSWER, NOT ON THE TEXT.** A
+document may carry « bibliothèque » or « gratuit » the way any real note would.
+What it may never do is make an untaught word the ANSWER — *you cannot mark
+somebody wrong for something nobody told them*, which is verify40's ruling
+(*"remember it, but don't score it"*, 27 Aug) applied a third time. The scenes
+are units 0–2, the same *"Stops 0 to 30 only please"* that scoped the Finale.
+
+**THE DOCUMENT NEVER LEAVES THE SCREEN.** It is the only copy of the thing the
+learner needs to answer the question in front of them, which the collapse rule
+names by hand as the one case that may not fold. **And the WHY names the RULE,
+never the line** — quoting the sentence teaches the text; naming the grammar
+teaches the next text.
+
+`verify770-gcompris.py` holds it, and it caught itself on its first run: the
+bank shares `const VF = ["Vrai", "Faux"]`, so ten questions are written
+`options: VF` with no array literal, and the parser read every one of them as a
+TYPED question whose answer (« Faux ») appears nowhere in the document. It
+failed loudly, which is the only reason it was not quietly wrong the other way.
+It now resolves the module's own constants **and cross-checks every count it
+parses** — the 14 Sep rule, one day old, catching its author.

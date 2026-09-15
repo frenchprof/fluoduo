@@ -89,6 +89,50 @@ export default function WordBank({
     onChange(idxs.map((i) => tokens[i]).join(" "));
   };
 
+  /* A NUMBER KEY PLACES A WORD (Dan, 2026-09-14: *"put digits in front of each
+     choice, so a number key can be used to answer the question"*, then, asked
+     which screen: *"i am referring to putting words into order (sentence
+     forming)"*).
+     THE DIGIT IS THE TILE'S POSITION IN THE BANK, not in the answer — the bank
+     is shuffled once per question and does not move as you build, so 3 is the
+     same tile before and after every tap. A digit that renumbered itself would
+     be worse than none.
+     1–9 ONLY, AND THE BANK RARELY EXCEEDS THAT: a scrambled sentence is five
+     to eight tokens. A tenth tile is still tappable; it simply has no key, and
+     printing « 10 » on it would promise a keystroke that does not exist. */
+  useEffect(() => {
+    if (disabled) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      /* WHOSE DIGIT IS IT — and this is the whole reason the first version did
+         nothing. The drill focuses its own gap on every question (so the caret
+         is where the learner looks), so by the time a key is pressed an INPUT
+         always has focus, and a blanket "never steal from a focused field"
+         guard refused every time. Measured: pressing 3 then 1 typed « 01 » into
+         the gap instead of placing two words.
+
+         `builtInGap` is exactly the distinction. When it is ON the gap is
+         WORDBANK'S OWN OUTPUT — the learner does not type into it, they tap
+         tiles and this component writes the result — so a digit belongs to the
+         bank. When it is OFF the drill really does offer a typed surface
+         alongside the bank, and the digit is the learner's to type. */
+      const el = document.activeElement as HTMLElement | null;
+      const typing =
+        !!el && (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.isContentEditable);
+      if (typing && !builtInGap) return;
+      const n = Number(e.key);
+      if (!Number.isInteger(n) || n < 1 || n > Math.min(9, tokens.length)) return;
+      e.preventDefault();
+      setChosen((prev) => {
+        const next = [...prev, n - 1];
+        onChange(next.map((i) => tokens[i]).join(" "));
+        return next;
+      });
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [disabled, tokens, onChange, builtInGap]);
+
   return (
     <div>
       {/* The built answer — tap a word to send it back. Omitted when the
@@ -132,7 +176,11 @@ export default function WordBank({
               type="button"
               lang="fr"
               disabled={disabled || (used && !builtInGap)}
-              aria-label={unpick ? `Take back ${w}` : w}
+              aria-label={
+                ti < 9
+                  ? unpick ? `${ti + 1}. Take back ${w}` : `${ti + 1}. ${w}`
+                  : unpick ? `Take back ${w}` : w
+              }
               onClick={() => {
                 if (!unpick) return emit([...chosen, ti]);
                 const last = chosen.lastIndexOf(ti);
@@ -146,6 +194,20 @@ export default function WordBank({
                   : "border-[color:var(--cahier-ink)]/30 bg-white text-[color:var(--cahier-ink)] hover:border-[color:var(--cahier-ink)]"
               } disabled:cursor-default`}
             >
+              {/* THE DIGIT IS PRINTED OR THE KEY IS A SECRET. It rides inside
+                  the tile as a superscript rather than beside it, so the row
+                  keeps wrapping the way it did and no tile grows a fixed box
+                  (the no-hard-coded-control-size rule, 12 Sep). It fades with
+                  a used tile because the digit still works — tapping 3 twice
+                  places « de » twice, which an answer may legitimately want. */}
+              {ti < 9 && (
+                <span
+                  aria-hidden
+                  className="mr-1 align-super text-[0.7em] font-black opacity-45"
+                >
+                  {ti + 1}
+                </span>
+              )}
               {w}
             </button>
           );

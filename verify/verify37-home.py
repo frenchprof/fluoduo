@@ -101,12 +101,55 @@ ok("prefers-reduced-motion" in css and re.search(
    "the key's motion is dropped under prefers-reduced-motion",
    "the key animates regardless of prefers-reduced-motion")
 
-# 2 · no borders: the draft's point is that shadow replaces the box
-for sel in ("neo-well", "neo-key"):
-    blk = re.search(rf"\.{sel}\s*\{{([^}}]*)\}}", css)
-    ok(blk and "border: 0" in blk.group(1),
-       f".{sel} carries no border — the shadow does that work",
-       f".{sel} still draws a border")
+# 2 · A WELL CARRIES NO BORDER. A KEY NOW DOES — and that half is a REVERSAL.
+#
+# The draft of 26 Aug said it plainly, and this check pinned it for three
+# weeks: *"Depth is the affordance, so no control needs a border or a word to
+# say it is pressable."* Both surfaces carried `border: 0`.
+#
+# Dan reversed it for the KEY on 2026-09-14, looking at the revision path:
+# *"the buttons are missing the outlined top surface"*.
+#
+# HE WAS RIGHT AND THE OLD RULE WAS NOT WRONG — it was only true of a dark key.
+# The pillow's lit top face is `inset 1px 3px 0 white 62%`, which reads on gold
+# and cannot read on a pale wash: the path's « ▶ Open » sits on
+# rgb(205,244,231), so one class looked 3D on the START key and flat six rows
+# below it. Measured across eleven routes in the built app, 42 of 50 raised
+# keys had no outline of any kind. The eight that did were the ☰ menu's tiles,
+# which had been adding `border-2` themselves since 11 Sep — the exception was
+# already there, outvoting the rule 8 to 42.
+#
+# THE WELL IS UNTOUCHED. Dan said buttons, and a well already has its own thin
+# outline from the 1 Sep ruling in clause 2b just below.
+#
+# `verify900-key-outline.py` is the other half: this clause pins the RULE in
+# the stylesheet, that one drives the browser and pins zero un-outlined keys on
+# the screen. Neither replaces the other — the Geist lesson, again.
+#
+# TWO BRANCHES BUILT THE OUTLINE AT ONCE, and this clause used to pin the one
+# that lost (15 Sep). A `border: 2px solid var(--key-edge, …)` and a
+# `box-shadow: inset 0 0 0 1px` ring are both answers to Dan's sentence; the
+# ring is the one that landed on main, and it is the better of the two — it
+# costs no layout, follows the border-radius for free, and draws OVER the
+# white lip instead of outside it. So the clause moves to the ring and keeps
+# `--key-edge`, which is the half of the other branch worth having: a caller
+# colours the hairline inline, the way `--key-bg` colours the face. What is
+# pinned is that the top surface HAS an edge and that a caller can colour it,
+# not which CSS property draws it.
+well_blk = re.search(r"\.neo-well\s*\{([^}]*)\}", css)
+ok(well_blk and "border: 0" in well_blk.group(1),
+   ".neo-well carries no border — the shadow does that work",
+   ".neo-well still draws a border")
+key_blk = re.search(r"\.neo-key\s*\{([^}]*)\}", css)
+ok(key_blk and re.search(r"inset 0 0 0 1px var\(--key-edge", key_blk.group(1)),
+   ".neo-key wears an outlined top surface, colourable through --key-edge",
+   ".neo-key has no outlined top surface. Dan reversed the 26 Aug 'no border' "
+   "rule on 14 Sep — *\"the buttons are missing the outlined top surface\"* — "
+   "because the pillow's white top lip is invisible on a pale key. It takes a "
+   "hairline as the LAST inset in the box-shadow stack: "
+   "`inset 0 0 0 1px var(--key-edge, color-mix(in oklab, var(--cahier-ink) 22%, transparent))`. "
+   "A caller that needs a different edge sets --key-edge inline beside "
+   "--key-bg; the path's step links and G-Compris!'s picked option both do.")
 
 # 2b · EVERY DEPRESSED SHAPE IS OUTLINED (Dan, 1 Sep: "for those depressed items
 #      … can you put a thin black outline on the shape of the depressed space,

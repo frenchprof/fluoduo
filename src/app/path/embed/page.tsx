@@ -11,10 +11,19 @@
  * THE OPTIONAL TIER IS FOLDED, AND ITS FOLD CARRIES A COUNT — the collapse
  * rule of 31 Aug, both halves of it. The essential tier is the argument and
  * stays open; the optional tier is apparatus and starts closed; and the
- * summary says « 9 more · 71 min » rather than showing a bare chevron,
- * because *"a collapsed section with no count is a section nobody opens,
- * which is just deletion with extra steps"*. Native `<details>`, so it
- * survives having no JavaScript and costs no state.
+ * summary says « 9 more » rather than showing a bare chevron, because *"a
+ * collapsed section with no count is a section nobody opens, which is just
+ * deletion with extra steps"*. Native `<details>`, so it survives having no
+ * JavaScript and costs no state.
+ *
+ * NO DURATION IS PRINTED ANYWHERE ON THIS PAGE (Dan, 2026-09-15: *"No need to
+ * give a time duration for those activities"*). The numbers were mine and two
+ * of them had already been wrong — three MneMemo lessons priced at 8–10
+ * minutes each turned out to be reference pages with no card count at all,
+ * which is how the tier reached 104 minutes. A number a learner reads is a
+ * promise; `PathStep.minutes` stays as the AUTHOR'S budget, used to draw the
+ * essential/optional line, and is never rendered. `verify760` clause 9 holds
+ * that.
  *
  * A STEP WITH NO DOOR IS DRAWN GREY, NEVER AS A DEAD LINK. `stepHref` returns
  * null for a goal that cannot play an activity — Dan's own parenthesis,
@@ -31,7 +40,6 @@ import { activity } from "@/content/activities";
 import {
   PATHS,
   groupsOf,
-  minutesOf,
   stepHref,
   type CuratedPath,
   type PathStep,
@@ -39,7 +47,6 @@ import {
 import {
   PATH_EVENT,
   endRun,
-  minutesLeft,
   nextStep,
   progressOf,
   readRun,
@@ -83,7 +90,7 @@ export default function Page() {
           {running ? (
             <>
               <p className="fluo-path-next-eyebrow">
-                {done} of {total} done · {minutesLeft(running, path)} min left
+                {done} of {total} done
               </p>
               <p className="fluo-path-next-title">
                 {current ? `${activity(current.activityKey)?.emoji ?? "📋"} ${current.title}` : "✓ Path complete"}
@@ -93,7 +100,7 @@ export default function Page() {
                     inside it arrives wearing two notebooks. */}
                 {current && stepHref(current) && (
                   <Link href={stepHref(current)!} target="_top" className="neo-key fluo-path-next-go">
-                    ▶ Continue · {current.minutes} min
+                    ▶ Continue
                   </Link>
                 )}
                 <button type="button" onClick={() => endRun()} className="fluo-path-next-all">
@@ -114,8 +121,13 @@ export default function Page() {
             </>
           ) : (
             <>
+              {/* COUNT THE NUMBERED STEPS, NOT THE DOORS. `Tier` numbers by
+                  GROUP — the three MémoiRecall decks are step 3, the three
+                  MneMemo lessons are step 4 — so counting `essential.length`
+                  printed « 16 steps » over a list numbered 1 to 11, and the
+                  blurb right above it said something else again. */}
               <p className="fluo-path-next-eyebrow">
-                {path.essential.length} steps · {minutesOf(path.essential)} min
+                {groupsOf(path.essential).length} steps
               </p>
               <p className="fluo-path-next-does">
                 Each step asks for something no other step asks for. The app will walk you through them.
@@ -138,11 +150,11 @@ export default function Page() {
 
         <details className="mt-6">
           <summary className="cursor-pointer font-[family-name:var(--font-fluohand-stack)] text-[calc(1rem+var(--fs-step)*1)] font-black text-[color:var(--cahier-ink)]">
-            Optional · {path.optional.length} more · {minutesOf(path.optional)} min
+            Optional · {groupsOf(path.optional).length} more
           </summary>
           <p className="mt-2 text-[calc(0.85rem+var(--fs-step)*0.85)] text-[color:var(--cahier-ink-soft)]">
-            Only when there is time left after the {path.essential.length}. Adding all of these takes the
-            path past two hours, which is past the point where revision becomes re-reading.
+            Only when there is time left after the {groupsOf(path.essential).length}. Best first:
+            take from the top of this list and stop when you run out of time.
           </p>
           <Tier path={path} steps={path.optional} run={running} current={null} />
         </details>
@@ -168,7 +180,6 @@ function Tier({ path, steps, run, current }: {
         const head = g.steps[0];
         const allDone = !!run && g.steps.every((s) => run.done.includes(s.id));
         const isNow = !!current && g.steps.some((s) => s.id === current.id);
-        const mins = g.steps.reduce((m, s) => m + s.minutes, 0);
         const grouped = g.steps.length > 1;
         return (
           <div
@@ -183,10 +194,24 @@ function Tier({ path, steps, run, current }: {
                   {activity(head.activityKey)?.emoji ?? "📋"}{" "}
                   {grouped ? g.label : head.title}
                 </span>
-                <span className="fluo-path-step-min">{mins} min</span>
               </div>
               <p className="fluo-path-step-does">{head.does}</p>
-              {head.why && <p className="fluo-path-step-why">{head.why}</p>}
+              {/* THE REASON FOLDS, THE STEP DOES NOT (Dan, 2026-09-15: *"collapse
+                  the texts within each number"*). Ten steps each carrying a
+                  paragraph made a page nobody could see the end of — which is
+                  the fault the collapse rule of 31 Aug names: the whole of it
+                  must fit on one screen before anything is expanded.
+                  WHAT STAYS OPEN IS WHAT IDENTIFIES THE STEP: its number, its
+                  name, its `does` line and its door. The `why` is the argument
+                  for the step, which a learner consults rather than needs, so
+                  it is exactly what the rule folds. The summary says « why this
+                  step » rather than showing a bare chevron. */}
+              {head.why && (
+                <details className="fluo-path-step-fold">
+                  <summary>why this step</summary>
+                  <p className="fluo-path-step-why">{head.why}</p>
+                </details>
+              )}
               <div className="flex flex-wrap gap-2">
                 {g.steps.map((s) => {
                   const href = stepHref(s);
@@ -198,7 +223,14 @@ function Tier({ path, steps, run, current }: {
                       href={href}
                       target="_top"   /* see above */
                       className="neo-key fluo-path-step-go"
-                      style={{ "--key-bg": sDone ? "var(--dopa-win-wash)" : "var(--fam-review-wash)" } as React.CSSProperties}
+                      /* The edge follows the fill, so a finished step is
+                         outlined in the win ink and a waiting one in the
+                         family's — the ☰ menu's colour law (11 Sep), applied
+                         to the one control this page repeats sixteen times. */
+                      style={{
+                        "--key-bg": sDone ? "var(--dopa-win-wash)" : "var(--fam-review-wash)",
+                        "--key-edge": sDone ? "var(--dopa-win-ink)" : "var(--fam-review-ink)",
+                      } as React.CSSProperties}
                     >
                       {sDone ? "✓" : "▶"} {label}
                     </Link>

@@ -30,7 +30,6 @@ import { pathById, stepHref, type PathStep } from "@/content/paths";
 import { activity } from "@/content/activities";
 import {
   markDone,
-  minutesLeft,
   nextStep,
   progressOf,
   readRun,
@@ -52,7 +51,6 @@ type View = {
   href: string;
   pos: number;
   total: number;
-  left: number;
   filled: boolean[];
 } | null;
 
@@ -90,7 +88,6 @@ export default function PathNext({ className = "" }: { className?: string }) {
         href,
         pos: path.essential.findIndex((s) => s.id === step.id) + 1,
         total,
-        left: minutesLeft(after, path),
         filled: path.essential.map((s) => after.done.includes(s.id)),
       });
     };
@@ -100,7 +97,7 @@ export default function PathNext({ className = "" }: { className?: string }) {
   }, []);
 
   if (!view) return null;
-  const { step, href, pos, total, left, filled } = view;
+  const { step, href, pos, total, filled } = view;
   const act = activity(step.activityKey);
 
   return (
@@ -109,7 +106,7 @@ export default function PathNext({ className = "" }: { className?: string }) {
       aria-label={`Next on your path: ${step.title}`}
     >
       <p className="fluo-path-next-eyebrow">
-        Step {pos} of {total} · {left} min left
+        Step {pos} of {total}
       </p>
 
       <p className="fluo-path-next-title">
@@ -119,7 +116,7 @@ export default function PathNext({ className = "" }: { className?: string }) {
 
       <div className="fluo-path-next-row">
         <Link href={href} className="neo-key fluo-path-next-go">
-          ▶ Continue · {step.minutes} min
+          ▶ Continue
         </Link>
         <Link href="/path" className="fluo-path-next-all">
           the whole path

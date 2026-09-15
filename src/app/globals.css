@@ -2909,7 +2909,18 @@ h3.cahier-display { font-size: var(--fs-h3); }
        all and read as a smudge rather than a surface. A 1px inset ring with no
        offset and no blur IS that edge: it costs no layout, follows the radius
        for free, and sits last so it draws over the highlight. */
-    inset 0 0 0 1px color-mix(in oklab, var(--cahier-ink) 22%, transparent);
+    /* `--key-edge` LETS A CALLER COLOUR THAT HAIRLINE, the same mechanism as
+       `--key-bg` on the line above and for the same reason: a token set inline
+       always wins, and every key that sets nothing keeps the default this line
+       has always had. The path's step links use it to outline a finished step
+       in the win ink and a waiting one in the family's; G-Compris! uses it on
+       a picked option.
+       TWO BRANCHES ANSWERED DAN'S *"outlined top surface"* AT ONCE (14-15 Sep)
+       — this 1px inset ring, and a 2px `border` on the other side. The ring is
+       the one that landed and the one that is right: it costs no layout, it
+       follows the radius for free, and it draws over the highlight rather than
+       outside it. Only the token survives from the other. */
+    inset 0 0 0 1px var(--key-edge, color-mix(in oklab, var(--cahier-ink) 22%, transparent));
   border: 0;
   transition: transform .1s ease, box-shadow .1s ease;
 }
@@ -3046,6 +3057,15 @@ h3.cahier-display { font-size: var(--fs-h3); }
    :active overrides it with a short, hard ease-in so the press is immediate.
    One property animates — transform — which the compositor handles without
    laying out or painting, so fifty of these cost nothing. */
+/* A COIN KEEPS `border: 0`; A BUTTON DOES NOT.
+   `.fluo-spring` is worn by both — the 3D map's stop NODES, and the ± zoom
+   steppers, the 2D/3D switch knob and the map's two text buttons. The line
+   between them is already in the markup and needs no new class: a stop node is
+   `home-map3d-node fluo-spring` with NO `.neo-key`, every button here is
+   `.neo-key fluo-spring`. So the two-class rule below returns the outlined top
+   surface to the four buttons and leaves the coins exactly as Dan ruled them
+   on 8 Sep — *"a coin, not a neumorphic pill"*. */
+.neo-key.fluo-spring { border: 2px solid var(--key-edge, var(--cahier-ink)); }
 .fluo-spring, .fluo-stop {
   border: 0;
   transition:
@@ -4779,14 +4799,10 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   font-weight: 900;
   color: var(--cahier-ink);
 }
-.fluo-path-step-min {
-  margin-left: auto;
-  font-family: var(--fluo-mono);
-  font-size: calc(0.75rem + var(--fs-step) * 0.75);
-  font-variant-numeric: tabular-nums;
-  color: var(--cahier-ink-soft);
-  white-space: nowrap;
-}
+/* `.fluo-path-step-min` used to print « 8 min » at the right end of every step
+   head. Deleted 2026-09-15 with its markup (Dan: *"No need to give a time
+   duration for those activities"*) — the rule removed is kept out rather than
+   left orphaned, so nothing can reattach to it by accident. */
 .fluo-path-step-does {
   margin-top: calc(0.15rem + var(--fs-step) * 0.15);
   font-family: var(--fluo-mono);
@@ -4795,8 +4811,34 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   text-transform: uppercase;
   color: var(--cahier-ink-faint, var(--cahier-ink-soft));
 }
-.fluo-path-step-why {
+/* « why this step » — the fold inside a numbered step (Dan, 2026-09-15:
+   *"collapse the texts within each number"*). The marker is turned off in both
+   engines (Safari and Chrome disagree about which pseudo draws it) and a
+   chevron is written into the summary instead, so the control says which way
+   it is about to go — the same treatment `.fluo-guide-step` already uses. */
+.fluo-path-step-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(0.3rem + var(--fs-step) * 0.3);
   margin-top: calc(0.3rem + var(--fs-step) * 0.3);
+  min-height: 44px; /* the finger floor — not a size */
+  cursor: pointer;
+  font-family: var(--fluo-mono);
+  font-size: calc(0.65rem + var(--fs-step) * 0.65);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cahier-ink-faint, var(--cahier-ink-soft));
+}
+.fluo-path-step-fold > summary::-webkit-details-marker { display: none; }
+.fluo-path-step-fold > summary::marker { content: ""; }
+.fluo-path-step-fold > summary::after {
+  content: "\25BE";
+  transition: transform 140ms ease;
+}
+.fluo-path-step-fold[open] > summary::after { transform: rotate(180deg); }
+.fluo-path-step-why {
+  margin-top: calc(0.1rem + var(--fs-step) * 0.1);
   font-size: calc(0.85rem + var(--fs-step) * 0.85);
   color: var(--cahier-ink-soft);
 }
@@ -5016,7 +5058,17 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   cursor: pointer;
   border: 0;
   font: inherit;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.22);
+  /* THE DROP SHADOW REPLACES `.neo-key`'S WHOLE STACK, so the hairline has to
+     be restated here or this key alone loses its top edge — which is exactly
+     what happened, and what the browser scan caught (15 Sep: 2 of 49 keys
+     bare, both of them this one, on /conjugaison and every MneMemo lesson).
+     A `box-shadow` is one declaration, not a set of layers that merge: the
+     band needs its own ground-shadow to stay readable floating over the
+     lesson's last line, and taking that shadow took the 1px ring with it.
+     Nothing in the source says so — the rule looks like it adds a shadow. */
+  box-shadow:
+    0 2px 10px rgb(0 0 0 / 0.22),
+    inset 0 0 0 1px var(--key-edge, color-mix(in oklab, var(--cahier-ink) 22%, transparent));
 }
 /* THE QUICKSTART'S FOLDS (Dan, 2026-09-14: "for the QuickGuide, each item be
    collapsable"). Native `<details>`; this only turns the marker off — Safari
@@ -5026,3 +5078,138 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
 .fluo-guide-step > summary::marker { content: ""; }
 .fluo-guide-step[open] > summary .fluo-guide-chev { transform: rotate(180deg); }
 .fluo-guide-step > summary .fluo-guide-chev { transition: transform 140ms ease; }
+
+/* ── G-COMPRIS! — a document on the page, then a question about it ──────────
+   Dan, 2026-09-15: *"Call the reading exercises : G-Compris!"*.
+
+   THE DOCUMENT IS THE ONE THING ON SCREEN THAT IS NOT CHROME, so it is set
+   like a piece of paper inside the paper: indented from the drill's own
+   column, ruled down its left edge in the family's pen, and left in French
+   type at reading size. Nothing here is a pixel — every size is on the ramp
+   (5 Sep) and the box is a proportion of its column (12 Sep), so a phone gets
+   the designed size and a desktop grows the whole thing together. */
+.gc-doc {
+  border-left: 4px solid var(--fam-tools, var(--cahier-ink));
+  padding: calc(0.5rem + var(--fs-step) * 0.5) 0
+           calc(0.5rem + var(--fs-step) * 0.5) calc(0.9rem + var(--fs-step) * 0.9);
+  font-size: calc(1rem + var(--fs-step) * 1);
+  line-height: 1.6;
+  color: var(--cahier-ink);
+}
+.gc-doc p + p {
+  margin-top: calc(0.7rem + var(--fs-step) * 0.7);
+}
+
+.gc-question {
+  margin-top: calc(1.2rem + var(--fs-step) * 1.2);
+}
+.gc-q {
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+}
+
+/* NO OPTION SPANS THE WIDTH (rule, 5 Sep) — two columns whatever the count,
+   so Vrai/Faux is a pair and four options are a 2×2. `minmax(0, 1fr)` is what
+   lets a long option wrap inside its cell instead of widening the grid. */
+.gc-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(0.5rem + var(--fs-step) * 0.5);
+  margin-top: calc(0.8rem + var(--fs-step) * 0.8);
+}
+/* A THREE-OPTION QUESTION PUTS THE ODD ONE ACROSS THE BOTTOM, which is the
+   one place a cell spans both columns — it is a cell in a grid, not a button
+   wearing the page's width, and leaving it half-wide beside a gap reads as a
+   missing fourth option. */
+.gc-options[data-n="3"] > :last-child {
+  grid-column: 1 / -1;
+}
+.gc-option {
+  padding: calc(0.6rem + var(--fs-step) * 0.6) calc(0.7rem + var(--fs-step) * 0.7);
+  min-height: 44px; /* the finger floor — not a size (verify270) */
+  font-size: calc(0.95rem + var(--fs-step) * 0.95);
+  font-weight: 700;
+  text-align: center;
+  text-wrap: balance;
+}
+.gc-option.is-picked {
+  --key-bg: var(--fam-tools-wash);
+  --key-edge: var(--fam-tools-ink);
+}
+
+.gc-input {
+  margin-top: calc(0.8rem + var(--fs-step) * 0.8);
+  width: 100%;
+  max-width: 22rem;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 3px solid var(--cahier-ink);
+  background: transparent;
+  font-size: calc(1.15rem + var(--fs-step) * 1.15);
+  font-weight: 800;
+  color: var(--cahier-ink);
+}
+.gc-input:focus-visible {
+  outline: 3px solid var(--dopa-focus);
+  outline-offset: 4px;
+}
+
+/* THE SHELF IS TEN FOLDED ROWS (Dan, 2026-09-15: *"collapse the texts within
+   each number"*). It was ten four-line tiles and ran three screens.
+   The CLOSED row carries everything a choice needs — the text's name, its unit
+   and how many questions it asks — because *"a collapsed section with no count
+   is a section nobody opens, which is just deletion with extra steps"*. The
+   row is ruled in the family's pen, so ten of them read as a list rather than
+   as ten separate cards. */
+.gc-row {
+  border-left: 4px solid var(--fam-tools, var(--cahier-ink));
+  padding: calc(0.2rem + var(--fs-step) * 0.2) 0
+           calc(0.2rem + var(--fs-step) * 0.2) calc(0.7rem + var(--fs-step) * 0.7);
+}
+.gc-row > summary {
+  display: flex;
+  flex-direction: column;
+  gap: calc(0.1rem + var(--fs-step) * 0.1);
+  justify-content: center;
+  min-height: 44px; /* the finger floor — not a size */
+  cursor: pointer;
+}
+.gc-row > summary::-webkit-details-marker { display: none; }
+.gc-row > summary::marker { content: ""; }
+.gc-row-title {
+  font-family: var(--font-fluohand-stack);
+  font-size: calc(1.05rem + var(--fs-step) * 1.05);
+  font-weight: 900;
+  color: var(--cahier-ink);
+}
+.gc-row-title::after {
+  content: " \25BE";
+  font-family: var(--fluo-mono);
+  font-size: 0.7em;
+  opacity: 0.5;
+}
+.gc-row[open] .gc-row-title::after { content: " \25B4"; }
+.gc-row-foot {
+  font-family: var(--fluo-mono);
+  font-size: calc(0.65rem + var(--fs-step) * 0.65);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cahier-ink-faint, var(--cahier-ink-soft));
+}
+.gc-row-setup {
+  margin-top: calc(0.4rem + var(--fs-step) * 0.4);
+  font-size: calc(0.85rem + var(--fs-step) * 0.85);
+  color: var(--cahier-ink-soft);
+}
+.gc-row-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* the finger floor */
+  margin: calc(0.5rem + var(--fs-step) * 0.5) 0 calc(0.3rem + var(--fs-step) * 0.3);
+  padding: calc(0.3rem + var(--fs-step) * 0.3) calc(0.9rem + var(--fs-step) * 0.9);
+  font-size: calc(0.85rem + var(--fs-step) * 0.85);
+  font-weight: 800;
+  color: var(--cahier-ink);
+}

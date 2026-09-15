@@ -193,7 +193,11 @@ EXPECT = {
     # Tools (the two summonable helpers) — see AGENTS.md and the FAMILIES
     # comment in activities.ts.
     "oral":     {"ecoutexte", "wordrill", "tts"},
-    "tools":    {"compose", "tutor"},
+    # G-COMPRIS! JOINED TOOLS 2026-09-15 — reading comprehension, and the
+    # reason Dan renamed the family from « Write » to « Texts » the same day:
+    # the old name had no room for a text you READ. *"Call the reading
+    # exercises : G-Compris!"*
+    "tools":    {"compose", "tutor", "gcompris"},
     # 31 Aug consolidations, Dan's words: "park NumBus / NumBourse under a
     # hub-tab Numbers … MyProgress should be swallowed by Profile. So that
     # would be 16 (4x4)". Both game routes and /moi survive off-tile.
@@ -226,12 +230,15 @@ check(not [f for _, f in rows if f == "goals"],
 # verify33-family and by the MenuGrid assertions above; its layout is Dan's
 # seven rows, not a 4x4, so re-pointing these at it would have asserted the
 # wrong shape in the right file.
-check(len(rows) == 17,
-      f"the registry holds seventeen activities ({len(rows)}) — Dan's 4x4 plus Settings",
-      f"the registry holds {len(rows)} activities, expected 17 — Dan's 4x4 "
+# EIGHTEEN SINCE 2026-09-15: G-Compris! joined Tools. Changed on purpose, which
+# is what the failure message below asks for — the number is a ratchet against
+# a tile appearing by accident, not a cap on the app.
+check(len(rows) == 18,
+      f"the registry holds eighteen activities ({len(rows)}) — Dan's 4x4, plus Settings, plus G-Compris!",
+      f"the registry holds {len(rows)} activities, expected 18 — Dan's 4x4 "
       "(31 Aug: Sorting cut, iComplete retired, NumBus+NumBourse under one "
-      "Numbers hub, My Progress folded into Profile) plus Settings, added to "
-      "the User row 2026-09-09. If a tile is added or "
+      "Numbers hub, My Progress folded into Profile), plus Settings (User row, "
+      "2026-09-09), plus G-Compris! (Tools, 2026-09-15). If a tile is added or "
       "removed, change this number on purpose.")
 check("HELP!" not in shell and "HELP!" not in topbar,
       "no HELP! label survives on the rail or the bar",

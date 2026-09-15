@@ -34,7 +34,7 @@
  */
 "use client";
 
-import { PATHS, pathById, stepHref, type CuratedPath, type PathStep } from "@/content/paths";
+import { PATHS, groupsOf, pathById, stepHref, type CuratedPath, type PathStep } from "@/content/paths";
 
 const KEY = "fluolingo:path";
 /** Fired on every write, so Home and the path page re-read without a reload —
@@ -130,17 +130,30 @@ export function stepAtPlace(run: PathRun, path: CuratedPath, pathname: string): 
   return all.find((s) => !run.done.includes(s.id) && samePlace(stepHref(s), pathname));
 }
 
-/** How far along: finished and total, counting DESTINATIONS not display
- *  steps, because that is what the learner actually walks. */
+/** How far along, COUNTED IN NUMBERED STEPS — the ones on the screen.
+ *
+ *  THIS USED TO COUNT DESTINATIONS, on the reasoning that destinations are
+ *  what a learner walks. Dan, 2026-09-14: *"the counter of the MID-TERM REVIEW
+ *  PATH is lying: 0 of 11 done · 63 min left"*. He was reading « of 11 » above
+ *  a list numbered 1 to 9, and there is no reading of that which is not a lie:
+ *  either two steps are hidden or the count is wrong.
+ *
+ *  A GROUP IS ONE STEP because the page draws it as one — MémoiRecall's three
+ *  decks are step 3, with three keys inside it — and a group counts as done
+ *  only when EVERY door in it is done, which is what its single tick means.
+ *  The rule is the 14 Sep one restated: nothing that displays progress may
+ *  count differently from the thing the learner is looking at. */
 export function progressOf(run: PathRun, path: CuratedPath): { done: number; total: number } {
-  const total = path.essential.length;
-  const done = path.essential.filter((s) => run.done.includes(s.id)).length;
-  return { done, total };
+  const groups = groupsOf(path.essential);
+  return {
+    total: groups.length,
+    done: groups.filter((g) => g.steps.every((s) => run.done.includes(s.id))).length,
+  };
 }
 
-/** Minutes still to come on the essential tier. */
-export function minutesLeft(run: PathRun, path: CuratedPath): number {
-  return path.essential.filter((s) => !run.done.includes(s.id)).reduce((n, s) => n + s.minutes, 0);
-}
+/* `minutesLeft` lived here and printed « 63 min left » above the dots. Deleted
+   2026-09-15 (Dan: *"No need to give a time duration for those activities"*).
+   The counter it fed was also the one Dan caught lying — « 0 of 11 done · 63
+   min left » — and a number nobody can verify is worse than no number. */
 
 export { PATHS };
