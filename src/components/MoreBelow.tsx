@@ -259,8 +259,10 @@ export default function MoreBelow({
       mo.disconnect();
       if (!flow) host.style.paddingBottom = had;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `flow` is a
-    // constant of the call site, never a value that changes under a learner.
+    // `flow` is a constant of the call site, never a value that changes under
+    // a learner: re-running this effect would tear down the observers and the
+    // reserve padding to arrive at the same answer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* TAPPING IT TAKES YOU THERE (Dan, 2026-09-14: *"and that NEXT PART IS BELOW
