@@ -154,8 +154,31 @@ export default function MoreBelow({
        constant would switch the cue off a screen early. */
     const grew = Math.max(0, root.scrollHeight - before);
 
+    /* TWO THRESHOLDS, NOT ONE — and the single threshold is what made the cue
+       flicker (Angelina Ong, a learner, 2026-09-15: *"the bottom of the page
+       'next page' is constantly flickering and blinking"*).
+
+       THE LOOP, which is not the blink: the cue's own height is part of what
+       is being measured. Showing it lengthens the scroller (in `flow` it is a
+       real child; as an overlay it reserves padding whose cost `grew` is
+       measured ONCE, before the cue has ever rendered). So near the bottom the
+       arithmetic crosses FLOOR one way, the cue mounts, the length changes,
+       the arithmetic crosses back, the cue unmounts — every frame. A
+       MutationObserver on the subtree keeps the wheel turning, because the
+       cue's own mount is a mutation.
+
+       A Schmitt trigger breaks it. The cue APPEARS only when clearly more is
+       hidden, and having appeared it stays until the learner is clearly at the
+       end. The dead band between the two is RESERVE — the cue's own height —
+       so the cue appearing can never be what flips the decision back.
+
+       It cannot lie in either direction: 96px hidden is a real paragraph, and
+       24px is rounding. */
+    const ON_AT = FLOOR + RESERVE;   // clearly more below — turn it on
+    const OFF_AT = FLOOR;            // clearly at the end — turn it off
     const read = () => {
-      setMore(root.scrollHeight - root.scrollTop - root.clientHeight - grew > FLOOR);
+      const left = root.scrollHeight - root.scrollTop - root.clientHeight - grew;
+      setMore((was) => (was ? left > OFF_AT : left > ON_AT));
     };
     read();
     root.addEventListener("scroll", read, { passive: true });
@@ -186,8 +209,13 @@ export default function MoreBelow({
       mo.disconnect();
       if (!flow) host.style.paddingBottom = had;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- `flow` is a
-    // constant of the call site, never a value that changes under a learner.
+    /* `flow` is a constant of the call site, never a value that changes under a
+       learner, so the empty array is deliberate. THE DIRECTIVE HAS TO BE ONE
+       LINE: it was written across two, which makes its "next line" the second
+       comment line rather than the code, so it suppressed nothing and eslint
+       reported the directive itself as unused. The same trap this repo already
+       records for `set-state-in-effect`. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /* TAPPING IT TAKES YOU THERE (Dan, 2026-09-14: *"and that NEXT PART IS BELOW

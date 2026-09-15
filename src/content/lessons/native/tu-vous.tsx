@@ -142,7 +142,28 @@ export const tuVousLesson: NativeLesson = {
       const other: Register = reg === "tu" ? "vous" : "tu";
       const correct = sentence(f, f[reg]);
       return {
-        meta: "Tu ou vous ? You're talking to…",
+        /* THE META LINE CARRIES BOTH HALVES OF THE CONTEXT, and it has to,
+           because neither is anywhere else on the card.
+
+           Angelina Ong, a learner, 2026-09-15: *"we are given the sentence to
+           complete e.g. __ bien, but not any indication of the context or what
+           we're supposed to translate"*. She was right twice over.
+
+           WHAT SHE WAS LOOKING AT: the gap tier draws `meta`, then `big` (the
+           person, in French), then the frame « ___ bien ? ». The FRAME'S OWN
+           ENGLISH — "Are you well?", which FRAMES has carried since the lesson
+           was written — was never passed to the card at all, so nothing on
+           screen said what the sentence means. And `en` was the PERSON'S
+           English ("the teacher"), which the pager suppresses whenever a `big`
+           is present, so even that never drew.
+
+           Both now ride `meta`, which renders unconditionally. Deliberately
+           NOT via `en`: that slot is the pager's reference line and it is
+           suppressed under a `big` on every card in the app — changing that
+           rule to fix one lesson would newly print English under every French
+           prompt in the course. The fault was this lesson's data, so the fix
+           is this lesson's data. */
+        meta: `« ${f.en} » · you're talking to ${p.en}`,
         big: p.fr,
         en: p.en,
         correct,
