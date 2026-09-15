@@ -6,12 +6,28 @@ import { SortableTable } from "@/lib/sortTable";
 import { tierFor } from "@/lib/progress";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
-export function Kpi({ label, value, sub }: { label: string; value: ReactNode; sub?: string }) {
+export function Kpi({
+  label,
+  value,
+  sub,
+  /** The value is a PHRASE, not a figure — a timestamp, a name, a verdict.
+   *  A KPI's big type exists so a number can be read across a room; set a
+   *  date in it and « 15 Sept, 08:02 pm » wraps to three lines and makes its
+   *  tile twice the height of the seven beside it (Dan, 2026-09-15). The
+   *  distinction is what the value IS, which only the caller knows — a rule
+   *  like "shrink it if it is long" would also shrink a six-digit XP. */
+  text,
+}: { label: string; value: ReactNode; sub?: string; text?: boolean }) {
   return (
-    <div className="rounded-xl border-2 border-slate-200 bg-white px-4 py-3">
-      <div className="text-xs uppercase tracking-wider text-slate-500">{label}</div>
-      <div className="mt-1 text-2xl font-black text-slate-900">{value}</div>
-      {sub && <div className="mt-0.5 text-xs text-slate-500">{sub}</div>}
+    /* `min-w-0` + `break-words`: a grid child's default `min-width: auto`
+       refuses to shrink below its longest unbreakable word, which is how
+       « 1477 » and a wrapped date came to sit OUTSIDE their own tiles rather
+       than inside them (Dan, 2026-09-15). The counted row above gives each
+       tile a fair share; this is what makes the tile accept it. */
+    <div className="min-w-0 rounded-xl border-2 border-slate-200 bg-white px-4 py-3">
+      <div className="break-words text-xs uppercase tracking-wider text-slate-500">{label}</div>
+      <div className={`mt-1 break-words font-black text-slate-900 ${text ? "text-base" : "text-2xl"}`}>{value}</div>
+      {sub && <div className="mt-0.5 break-words text-xs text-slate-500">{sub}</div>}
     </div>
   );
 }

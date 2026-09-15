@@ -2644,6 +2644,42 @@ h3.cahier-display { font-size: var(--fs-h3); }
                max(var(--tile-min, 11rem), calc(25% - var(--tile-gap, 6px) * 0.75))), 1fr));
 }
 
+/* THE TEACHER CARD'S STAT ROW — COUNTED, NOT TOLD (Dan, 2026-09-15, sending
+   the learner card: labels clipped to « ANSWER », 1477 spilling into its
+   neighbour, and every tile stretched to six empty lines).
+
+   IT WAS `grid-cols-2 sm:grid-cols-4 lg:grid-cols-8`, and the fault is the one
+   the 12 Sep ruling names — a box told a number instead of counting the room —
+   with a twist worth writing down: a Tailwind breakpoint asks the VIEWPORT,
+   and these tiles do not live in the viewport. They live in a ~750px modal on
+   a >1024px page, so `lg:` fired and eight columns divided 750px into 85px
+   each, of which `px-4` takes 32. « ANSWERS » cannot be drawn in 53px, so it
+   was cut; a `text-2xl` 1477 cannot either, so it overflowed.
+
+   `auto-fit` + `minmax` asks the ROW how wide it actually is, which is the only
+   question with a right answer here. The floor is on the type ramp, so the
+   tiles grow with the text they hold instead of clipping it on a desktop.
+
+   `align-items: start` is the other half. Grid stretches its children by
+   default, so « Last sync », whose value is a wrapped date and whose sub-line
+   is the longest of the eight, was setting the height of all eight — which is
+   the empty space in Dan's screenshot, not padding. */
+.teacher-kpis {
+  display: grid;
+  align-items: start;
+  /* THE APP'S OWN FACE, NOT THE BROWSER'S (Dan, 2026-09-15: *"for the overflow
+     texts, the soltuion is to use FluoLingo fonts"*). The teacher panels are
+     built from stock Tailwind and were falling through to whatever the OS
+     hands `system-ui` — which is not FluOLinGo's face, and on a Mac is wider
+     per character than Roboto, so the same eight labels that fit elsewhere ran
+     out of their tiles here. `--font-body-stack` is the house body font the
+     rest of the app is set in; it is both the right look and the narrower
+     one. */
+  font-family: var(--font-body-stack);
+  gap: calc(0.75rem + var(--fs-step) * 0.75);
+  grid-template-columns: repeat(auto-fit, minmax(calc(7.5rem + var(--fs-step) * 7.5), 1fr));
+}
+
 /* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
    at the screen's width"). `1fr` stops a long French title pushing its column
    wider than its neighbour.
