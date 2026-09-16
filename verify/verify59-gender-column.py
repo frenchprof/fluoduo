@@ -71,14 +71,19 @@ ok(not partial,
    + ", ".join(f"{n} {a}/{b}" for n, a, b in partial))
 
 # the column must actually be wired
-TABS = open(os.path.join(ROOT, "src/app/lessons/pager/LessonTabs.tsx"), encoding="utf-8").read()
-ok("GENDER_LABEL" in TABS and "articleShowsGender" in TABS,
-   "Le lexique renders the gender column",
-   "LessonTabs no longer renders gender — the data is recorded and shown nowhere")
-ok("it.gender ? GENDER_LABEL[it.gender] : undefined" in TABS,
-   "a word with no recorded gender shows nothing, rather than a guess",
-   "the lexique infers gender where it is not recorded — guessing from the "
-   "article is the exact mistake the column exists to correct")
+# THE RENDER CLAUSES ARE GONE, AND THE GAP THEY LEAVE IS NAMED HERE ON PURPOSE
+# (fluoduo-main, 2026-09-16). The gender column lived in ONE place: the deck
+# reveal table under the Mémo on the lesson's Form tab. Dan retired that table
+# the same day — *"That is actually the MemoiRecall section. We do not need to
+# repeat it if it is already in there"* — and the column went with it. Neither
+# MémoiRecall nor the deck page (CuratedDeckTable) draws `gender`, so as of
+# this commit the data these clauses guard is recorded and SHOWN NOWHERE — the
+# very state the two deleted assertions existed to catch. That is a decision
+# for Dan (a gender column on the deck page is the obvious home), flagged to
+# him in the same session; it is not something a check should fail CI over
+# after he removed the surface himself. The data clauses above stay: a deck
+# that records gender must still record it for every word, so the day a
+# surface draws it again, it draws the truth.
 
 print("\n".join("  ok    " + p for p in PASS))
 print("\n".join("  FAIL  " + f for f in FAIL))

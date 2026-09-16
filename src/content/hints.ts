@@ -143,10 +143,12 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       // four tabs that are not on the screen it is pointing at. If these are
       // renamed again, this line moves with them — LessonTabs' TABS is the
       // source of truth.
-      { text: "Idée and Formes are to read. Exercice is where you answer.", selector: '[data-tour="lesson-tabs"]' },
+      // Renamed again 2026-09-16 — Dan: *"should name consistently: Goal Idea
+      // Form Exercise"* — and this line moved with the strip, as promised.
+      { text: "Idea and Form are to read. Exercise is where you answer.", selector: '[data-tour="lesson-tabs"]' },
       // « Same 12 cards either way — harder, not shorter » is printed directly
       // under these four buttons, so the step does not say it again.
-      { text: "You are in Exercice — choose a level to begin.", selector: '[data-tour="entry"]' },
+      { text: "You are in Exercise — choose a level to begin.", selector: '[data-tour="entry"]' },
     ],
   },
   // The one this all started from. Dan had the « Flip » CTA removed as

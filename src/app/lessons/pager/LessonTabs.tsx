@@ -40,7 +40,7 @@
  * than hiding the tab. A hidden gap is a gap nobody fixes.
  */
 import Link from "next/link";
-import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
@@ -95,10 +95,19 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   // learner came from, and FAMILIES spells it that way once for the whole app.
   // Its ← says so — Dan wrote the tab as "<-- 🎯 Goal", an arrow out of the
   // lesson rather than a step in it.
+  //
+  // AND REVERSED AGAIN, 2026-09-16, TO ENGLISH — Dan: *"should name
+  // consistently: Goal Idea Form Exercise"*, on the same day he sent the Forms
+  // page back for carrying *"way too much french in there for a beginner"*.
+  // Four tabs in one language, the language the chrome is in; the 5 Sep
+  // cognate argument lost to consistency, and the 31 Aug ruling — navigation
+  // is furniture, a beginner does not decode it — is back in force in full.
+  // KEYS DO NOT MOVE (the Memo-rename precedent): `formes` and `exercice` are
+  // addresses and storage, and a display rename never touches those.
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
-  { key: "concept", emoji: "💡", label: "Idée", does: "why French does it this way" },
-  { key: "formes", emoji: "📐", label: "Formes", does: "the forms themselves, and every word" },
-  { key: "exercice", emoji: "🏋️", label: "Exercice", does: "use them, one card at a time — 🎁 Bonus included" },
+  { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
+  { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves, and every word" },
+  { key: "exercice", emoji: "🏋️", label: "Exercise", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
 
 /**
@@ -163,7 +172,14 @@ function H({ children }: { children: ReactNode }) {
  * would have to reimplement three of those and would get one of them wrong.
  * `[&::-webkit-details-marker]:hidden` drops Safari's default triangle so the
  * chevron below is the only one.
+ *
+ * UNUSED SINCE 2026-09-16 AND KEPT ON PURPOSE: the last fold in this file was
+ * the word list under Form, which Dan retired as a duplicate of MémoiRecall.
+ * verify68 pins this as the ONE disclosure component so the next fold cannot
+ * hand-roll its own — that is the reason it stays, and the reason the lint
+ * rule is answered here rather than by deleting it.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- the one collapse component, pinned by verify68; see the note above
 function Section({
   title, note, children, open = false, folds = true,
 }: {
@@ -208,11 +224,6 @@ function Section({
   );
 }
 
-/** "1 step" / "3 steps" — a fold's note is learner-facing text, and "1 steps"
- *  on a language-learning app undermines the product it labels. */
-function count(n: number, word: string): string {
-  return `${n} ${word}${n === 1 ? "" : "s"}`;
-}
 
 function Panel({ children }: { children: ReactNode }) {
   /* THE CUE LIVES IN `DrillShell`, NOT HERE. One panel is visible at a time
@@ -290,7 +301,7 @@ function Parcours({ sio }: { sio?: Sio }) {
 function Concept({ c }: { c?: LessonConcept }) {
   const [pane, setPane] = useState<"claim" | "qa" | "traps" | "steps" | "check" | "sum">("claim");
   if (!c) {
-    return <Empty what="Idée has not been written for this lesson yet. Formes has the rules in the meantime." />;
+    return <Empty what="Idea has not been written for this lesson yet. Form has the rules in the meantime." />;
   }
 
   /* SIDE-BY-SIDE PANES, NOT A STACK (Dan, 2026-08-31: *"broken into
@@ -433,193 +444,30 @@ function Concept({ c }: { c?: LessonConcept }) {
   );
 }
 
-/**
- * A NOUN HAS FORMS, AND ITS ARTICLE OFTEN HIDES THEM.
+/* ── 2 · Form — the pattern ────────────────────────────────────────────────
+ * Dan, 2026-08-31: "can we put Words under Forms?" — and 2026-09-16, of the
+ * result: *"there is something called Every Word in This Lesson, That is
+ * actually the MemoiRecall section. We do not need to repeat it if it is
+ * already in there."*
  *
- * Dan, 30-31 Aug, settling the Tier 2 shape: "a vocab list with gender and so
- * on, as seen in SpecuLearn." Sorting `aliments` by gender gives 23 masculine,
- * 10 feminine, and NINE whose article says nothing — `de l'` before a vowel and
- * `des` in the plural. A learner who only ever meets « de l'eau » is never told
- * that `eau` is feminine, and that is the gap the column exists to close.
- *
- * `gender` has been in the Item schema all along and NO deck populated it — a
- * dead field. `aliments` is the first to carry it. Where a deck has not, the
- * column shows nothing rather than guessing from the article, because guessing
- * from the article is exactly the mistake the learner is making.
- */
-const GENDER_LABEL: Record<string, { short: string; full: string; hue: string }> = {
-  m: { short: "m", full: "masculine", hue: "var(--gram-masc)" },
-  f: { short: "f", full: "feminine", hue: "var(--gram-fem)" },
-  mpl: { short: "m pl", full: "masculine plural", hue: "var(--gram-masc)" },
-  fpl: { short: "f pl", full: "feminine plural", hue: "var(--gram-fem)" },
-};
-
-/** True when the item's own French gives the gender away, so the column is
- *  only telling the learner something they could not already see. */
-function articleShowsGender(fr: string): boolean {
-  return /^(le|la|un|une|du|de la)\s/i.test(fr.trim());
-}
-
-/* ── 2 · Forms — the rules, then the words ─────────────────────────────────
- * Dan, 2026-08-31: "can we put Words under Forms?"
- *
- * They answer the same question at two grains. The Mémo states the pattern;
- * the word list is the pattern's own instances, and on a Tier 2 stop it IS the
- * lesson — « un café · une classe » is both the vocabulary and the evidence
- * for the rule above it. Splitting them across two tabs made a learner tab
- * back and forth to hold one idea, and it is the tab that pushed the strip to
- * six, which no phone row fits.
- *
- * Both halves get a real heading, or the table just runs on out of the bottom
- * of the Mémo with nothing to say it has started — the fault Dan reported on
- * the concept page an hour earlier. */
-function Formes({
-  memo, deck, lexique,
-}: { memo?: ReactNode; deck?: Collection; lexique?: ReactNode }) {
-  const hasWords = !!lexique || !!deck?.items?.length;
-  if (!memo && !hasWords) return <Empty what="No Mémo and no deck for this lesson." />;
-  return (
-    <Panel>
-      {memo && (
-        <Section title="The pattern" folds={false}>
-          <div className="mt-2">{memo}</div>
-        </Section>
-      )}
-      {hasWords && (
-        <Section
-          title="Every word in this lesson"
-          note={deck?.items?.length ? count(deck.items.length, "word") : undefined}
-        >
-          {lexique ?? <Lexique deck={deck} bare />}
-        </Section>
-      )}
-    </Panel>
-  );
-}
-
-/* ── 5 · Le lexique ────────────────────────────────────────────────────────
- * The deck's words, as a reveal table.
- *
- * NOT `CuratedDeckTable`. That component is the deck PAGE — a thousand lines
- * of buckets, notes, sorting, selection and test mode — and importing it here
- * would put all of it in every lesson route's bundle for a tab most learners
- * open once. `output: "export"` means that weight is paid at build time by
- * every lesson, not lazily by the few who look.
- *
- * So this is the reading half only, which is what Dan's lexique tab does:
- * hide a column, reveal cells one at a time. The full table with its buckets
- * and notes stays one tap away at /decks/[id], where it already lives. */
-function Lexique({ deck, bare = false }: { deck?: Collection; bare?: boolean }) {
-  const [hide, setHide] = useState<"none" | "fr" | "en">("none");
-  const [shown, setShown] = useState<Set<string>>(new Set());
-  if (!deck?.items?.length) {
-    return <Empty what="This lesson has no deck, so there are no Words." />;
-  }
-  const reveal = (id: string) => setShown((s) => new Set(s).add(id));
-  const hiddenCount = deck.items.filter((i) => i.gender && !articleShowsGender(i.fr)).length;
-  const cell = (id: string, col: "fr" | "en", text: string, lang?: string) => {
-    // A hidden cell is a QUESTION, so it is a button — tapping it is the
-    // answer. Revealed cells stop being interactive rather than staying
-    // clickable buttons that do nothing.
-    if (hide !== col || shown.has(id)) {
-      return <span lang={lang}>{text}</span>;
-    }
-    return (
-      <button
-        type="button"
-        onClick={() => reveal(id)}
-        className="w-full rounded-md border-2 border-dashed border-[color:var(--cahier-rule)] py-0.5 text-center text-[color:var(--fluo-ink-soft)]"
-      >
-        <span className="sr-only">Reveal</span>
-        <span aria-hidden>· · ·</span>
-      </button>
-    );
-  };
-  // `bare` when nested inside Forms: that panel already supplies the padding
-  // and the heading, so a second Panel here would double both.
-  const Wrap = bare ? Fragment : Panel;
-  return (
-    <Wrap>
-      <div className="mb-2 mt-2 flex flex-wrap gap-1.5">
-        {([["none", "Show both"], ["en", "Hide English"], ["fr", "Hide French"]] as const).map(([k, label]) => (
-          <button
-            key={k}
-            type="button"
-            onClick={() => { setHide(k); setShown(new Set()); }}
-            aria-pressed={hide === k}
-            className={[
-              "rounded-lg border-2 px-2.5 py-1 text-xs font-black",
-              hide === k
-                ? "border-[color:var(--cahier-ink)] bg-[color:var(--fam-ink)] text-white"
-                : "border-[color:var(--cahier-rule)] bg-[color:var(--cahier-paper-raised)] text-[color:var(--fluo-ink-soft)]",
-            ].join(" ")}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm">
-          <tbody>
-            {deck.items.map((it) => {
-              const g = it.gender ? GENDER_LABEL[it.gender] : undefined;
-              const hidden = !!g && !articleShowsGender(it.fr);
-              return (
-                <tr key={it.id} className="border-t border-[color:var(--cahier-rule)]">
-                  <td className="w-8 py-1.5 text-lg" aria-hidden>{it.emoji ?? ""}</td>
-                  <td className="py-1.5 pr-3 font-bold text-[color:var(--cahier-ink)]">
-                    {cell(it.id, "fr", it.fr, "fr")}
-                  </td>
-                  {/* The gender column. Emphasised only where the article does
-                      NOT already show it — those are the words a learner would
-                      otherwise never be told, and the reason the column is
-                      here rather than being left to the article. */}
-                  <td className="w-12 py-1.5 pr-3 text-center">
-                    {g && (
-                      <span
-                        title={hidden ? `${g.full} — the article does not show it` : g.full}
-                        className={[
-                          "inline-block rounded px-1.5 py-0.5 text-[11px] font-black",
-                          hidden ? "text-white" : "",
-                        ].join(" ")}
-                        style={hidden
-                          ? { background: g.hue }
-                          : { color: g.hue }}
-                      >
-                        {g.short}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-1.5 text-[color:var(--fluo-ink-soft)]">
-                    {cell(it.id, "en", it.en ?? "")}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      {hiddenCount > 0 && (
-        <p className="mt-3 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
-          <span className="mr-1.5 inline-block rounded bg-[color:var(--gram-fem)] px-1.5 py-0.5 text-[11px] font-black text-white">f</span>
-          {hiddenCount} of these {deck.items.length} words hide their gender behind{" "}
-          <i lang="fr">de l&rsquo;</i> or <i lang="fr">des</i> — the article will not tell you.
-        </p>
-      )}
-      <p className="mt-2 text-xs font-bold text-[color:var(--fluo-ink-soft)]">
-        {deck.items.length} words · the full table, with your notes and review marks, is on the deck page.
-      </p>
-    </Wrap>
-  );
+ * So the word list is GONE from here. It was the deck drawn a second time, as
+ * a reveal table under the Mémo; MémoiRecall is the deck's own door, one tap
+ * away on the same goal, and a learner who wants every word goes there. What
+ * this tab is for is the Mémo — the pattern — and it stands alone, unfolded
+ * and unheaded: with one thing on the page a heading over it is furniture
+ * (the litmus test), and a fold over it would hide the lesson (the collapse
+ * rule's one exception). The gender column that only that table drew went
+ * with it; the full table, gender and all, is on the deck page. */
+function Formes({ memo }: { memo?: ReactNode }) {
+  if (!memo) return <Empty what="No Mémo for this lesson." />;
+  return <Panel>{memo}</Panel>;
 }
 
 export default function LessonTabs({
   sio,
-  deck,
   concept,
   memo,
   exercise,
-  lexique,
   open = "concept",
 }: {
   sio?: Sio;
@@ -629,9 +477,6 @@ export default function LessonTabs({
   memo?: ReactNode;
   /** L'exercice — the entry-level chooser. Picking a level ends the tabs. */
   exercise: ReactNode;
-  /** Le lexique — the deck table, passed in so this file stays free of the
-   *  decks route's imports. */
-  lexique?: ReactNode;
   /**
    * Which tab is open on arrival. Default "concept" (« Idée ») — see below.
    *
@@ -967,7 +812,7 @@ export default function LessonTabs({
         <Concept c={concept} />
       </section>
       <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
-        <Formes memo={memo} deck={deck} lexique={lexique} />
+        <Formes memo={memo} />
       </section>
       <section data-tab="exercice" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Panel>{exercise}</Panel>
