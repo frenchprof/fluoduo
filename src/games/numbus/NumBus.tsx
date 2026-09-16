@@ -77,8 +77,8 @@ function Board({
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[2.25rem] w-[2rem] text-[calc(1.375rem+var(--fs-step)*1.4)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[1.875rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[1.75rem] w-[1.625rem] text-[calc(1.125rem+var(--fs-step)*1.12)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.5rem] w-[1.125rem] text-[calc(0.8125rem+var(--fs-step)*0.81)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -916,8 +916,8 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-2xl border-2 px-1.5 py-1.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 ${
-          mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
+        className={`relative p-0 transition sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 sm:shadow-xl sm:focus-within:border-[#8ec5ff] ${
+          mode === "price" ? "sm:border-[#ffb74d] sm:bg-[#3e2723]/95" : mode === "phone" ? "sm:border-[#78909c] sm:bg-[#37474f]/95" : "sm:border-white sm:bg-slate-900/90"
         }`}
       >
         {round && (
