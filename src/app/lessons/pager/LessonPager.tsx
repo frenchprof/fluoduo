@@ -33,6 +33,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
 import { buildCards, type Exercise } from "./buildCards";
+import ExerciseSlotCascade from "./ExerciseSlotCascade";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
 import { loadProgress, markSioDone } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -550,7 +551,16 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
-          exercise={chooser}
+          // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
+          // one-card chooser swaps, the moment a level is picked, to cards
+          // that hide the slot structure. Slotted lessons opt in here by
+          // slug; `faire` is the reference implementation. Everything else
+          // keeps the chooser until its generator carries a cumulative bank.
+          exercise={
+            lesson?.slug === "faire"
+              ? <ExerciseSlotCascade lesson={lesson} activityKey={activityKey} />
+              : chooser
+          }
           // AN ATELIER OPENS ON FORMS (Dan, 2026-08-31: "Atelier's Memo is to
           // open on the range of sentences and vocabulary one is expected to
           // use or understand. Simple as that"). Forms is exactly that pair —
