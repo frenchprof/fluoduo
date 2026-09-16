@@ -6,6 +6,74 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 16 Sep, afternoon — NumBus on one screen, SpecuLearn says the sentence, the lesson goes English (fluoduo-main)
+
+**Landed, in order, each verified on `fluolingo.com` by pulling real content:**
+#391 → `0b73055` (peers' third round, deploy 104 — the bug-context key in the
+live JS at t+78s) · #392 → `a027deb` (the ▶ tap primes speech, deploy 105 —
+the priming utterance in the NumBus route's chunk; the first probe scanned
+`/games/numbus/embed`, which does not exist, and said "no") · #393 →
+`b4eaec7` and #394 → `66fb04f` (deploy 106, one run for both — `order-15`, the
+🐌 key's phone slot, in the live chunk at t+161s).
+
+**NUMBUS FITS ON DAN'S PHONE NOW, and the pad was the reason it never did.**
+Dan: *"Do the number pad keys need this much space?"*, then *"i think you can
+make the number pad even more compact so as to show the bus or whatever image
+at the top"*. Measured at his phone's shape (390 wide, root font one notch up):
+
+    pad, before      281px · keys 63px · 70% of the visible column
+    pad, after       161px · keys 49px · 40%
+    whole game       column 403 · content 507  →  column 403 · content 403
+
+One grid, five across: the dial rows 1-2-3 / 4-5-6 / 7-8-9 stay rows, ⌫ 0 ✓
+down a fourth column, 🔊 ⏸ 🐌 down a fifth — three rows where there were
+five. `order` places each control per screen (`PHONE_ORDER`), so `sm:` keeps
+the layout it had. The slab around the digits is gone on a phone (the 26px
+strip), and the bus-stop scene is 8.5rem from 11.625 — everything in it hangs
+from the bottom, so what went is sky. Scene, digits and pad on one screen, no
+scroll. *The pad's seven tenths of the column was the room the bus never had;
+every earlier fix moved the symptom.*
+
+**THE BUS WAS SILENT ON AN iPHONE; THE 🔊 KEY WAS NOT.** Same `speak()`, a
+different starter: iOS only begins speech from inside a tap until the page has
+spoken once from one, and the first number arrives from a timer chain seconds
+after ▶. `primeSpeech()` spends the ▶ Start tap on one silent, empty
+utterance, once per page — not through `speak()`, whose bank, mute check and
+`cancel()` are for real speech. Nothing greets; `verify660` passes.
+
+**SPECULEARN'S « Hear the full sentence » SPOKE ONE WORD** (Dan: *"it is not
+playing the full sentence"*). A unit-0 stem — « [Moi,] Je ___ Dan. » — has no
+`tts`, so the pool spoke `right.v`: « m'appelle ». Now the stem with the
+bracketed hint dropped and the gap filled, the recipe Unit0Pretest's `ttsFor`
+always used. All eight of SIO-001.
+
+**THE LESSON WENT ENGLISH, AND THREE CHECKS HAD TO BE TOLD** (PR #395). In one
+sitting Dan sent: *"Demonstrate with a colored background behind that extra
+pronoun"* (m' t' s' on `.cahier-hl`, in the Idea paragraph and the Mémo's
+warning); *"should name consistently: Goal Idea Form Exercise"* (reversing
+the 5 Sep cognate ruling — keys `formes`/`exercice` stay); *"there is
+something called Every Word in This Lesson, That is actually the MemoiRecall
+section. We do not need to repeat it"* (the deck reveal table under the Mémo
+is gone from Form, with `Lexique`, the gender helpers and the `lexique` prop
+no lesson ever passed); and *"way too much french in there for a beginner"*
+(the Mémo's signposts — « Quelqu'un d'autre », « Poliment » — are English; the
+sentences stay French).
+
+The gate came back 147/150 and CI red twice, each time on a check that had
+pinned the thing Dan just removed: `verify59` pinned the gender column in the
+retired list; `verify71` pinned Form holding "both halves"; and
+`scripts/jam-scan.mjs` waited for a tab literally named « Exercice », so every
+lesson "did not hydrate". Each records the reversal in place. **A GAP IS OPEN
+AND NAMED: `gender` is now recorded and drawn nowhere** — the deck page never
+had the column, only the retired list did. Flagged to Dan; the deck page is
+the obvious home. The manual (docs/guide = public/manual) names the tabs and
+moved with them.
+
+**A process note:** the container's browser cannot reach `fluolingo.com`
+(the proxy's certificate is not in Chromium's store), so a "live today"
+screenshot is a build of `origin/main` in a worktree — `cp -al node_modules`
+satisfies Turbopack where a symlink did not.
+
 ## 16 Sep — peers' third round lands, the pad is measured, and the bus learns to speak on an iPhone (fluoduo-main)
 
 **#390 → `08f4c63`, deploy 103.** The transient verify46 probe is ignored and
