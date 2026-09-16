@@ -370,8 +370,13 @@ if tabs_body:
     # as the Forms page being *"way too much french in there for a beginner"*.
     # Consistency won over the cognate argument: four tabs in one language, the
     # one the chrome is in. Keys (`formes`, `exercice`) do not move.
-    check(labels == ["Goal", "Idea", "Form", "Exercise"],
-          "four tabs: ← 🎯 Goal · Idea · Form · Exercise — Bonus parked, Words under Form",
+    # AND FORM MOVED AHEAD OF IDEA the same evening — Dan: *"MeMoiRecall might
+    # be better even right after SpecuLearn, and before the Lesson Idea and
+    # Exercises"*, then, refusing a fifth tab for the cards: *"are cards and
+    # forms not the same thing, they should be put under the same umbrella.
+    # STOP MULTIPLYING CATEGORIES"*. Still four tabs; the cards are inside Form.
+    check(labels == ["Goal", "Form", "Idea", "Exercise"],
+          "four tabs: ← 🎯 Goal · Form · Idea · Exercise — Bonus parked, the cards under Form",
           f"the tab strip reads {labels}. Four tabs, in English (Dan, 16 Sep), no tab of "
           "its own for the word list (under Form) or the bonus (a level of the chooser "
           "since #97).")

@@ -104,9 +104,18 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   // is furniture, a beginner does not decode it — is back in force in full.
   // KEYS DO NOT MOVE (the Memo-rename precedent): `formes` and `exercice` are
   // addresses and storage, and a display rename never touches those.
+  //
+  // FORM COMES BEFORE IDEA (Dan, 2026-09-16): *"MeMoiRecall might be better
+  // even right after SpecuLearn, and before the Lesson Idea and Exercises"*,
+  // then, offered a fifth tab for the cards: *"are cards and forms not the
+  // same thing, they should be put under the same umbrella. STOP MULTIPLYING
+  // CATEGORIES"*. So the cards stay inside Form, and Form — the Mémo with
+  // MémoiRecall folded under it — is the tab right after Goal. Four tabs, as
+  // ever; only the order moved. The lesson still LANDS on Idea (13 Sep), which
+  // is a separate ruling about where a learner starts, not about the order.
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
+  { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves, and the cards" },
   { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
-  { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves, and every word" },
   { key: "exercice", emoji: "🏋️", label: "Exercise", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
 
@@ -840,11 +849,13 @@ export default function LessonTabs({
       <section data-tab="parcours" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Parcours sio={sio} />
       </section>
-      <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
-        <Concept c={concept} />
-      </section>
+      {/* In TABS order: Goal, Form, Idea, Exercise (Dan, 16 Sep) — the feed
+          and the strip must agree or a tap lands on the wrong panel. */}
       <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Formes memo={memo} deck={deck} />
+      </section>
+      <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Concept c={concept} />
       </section>
       <section data-tab="exercice" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Panel>{exercise}</Panel>
