@@ -133,9 +133,16 @@ ok(re.search(r'startsWith\("atelier', mount) is None,
 # ---- 4 · Forms holds BOTH halves -----------------------------------------
 formes = tabs[tabs.find("function Formes("):]
 formes = formes[: formes.find("\n}\n") + 3]
-ok("memo" in formes and ("lexique" in formes or "Lexique" in formes),
-   "Forms holds the pattern AND the words — the pair Dan named",
-   "Forms no longer holds both; 'the range of sentences and vocabulary' would be split across two tabs again")
+# REVERSED 2026-09-16 — Dan, of the word list under the Mémo: *"That is
+# actually the MemoiRecall section. We do not need to repeat it if it is
+# already in there."* So Form holds the MÉMO — the model sentences an atelier
+# opens on, which is the half of "the range of sentences and vocabulary" that
+# lives in a lesson — and the vocabulary is MémoiRecall's, one tap away on the
+# same goal, not drawn a second time here. The clause now pins that Form still
+# renders the Mémo and does NOT draw the deck again.
+ok("memo" in formes and "Lexique" not in formes,
+   "Form holds the pattern, and the words are MémoiRecall's (16 Sep)",
+   "Form draws the deck's word list again, or has lost the Mémo it opens on")
 ok(re.search(r'key:\s*"formes"', tabs) is not None,
    "\"formes\" is a real tab in the strip",
    "there is no formes tab; the pager would ask for one that does not exist")
