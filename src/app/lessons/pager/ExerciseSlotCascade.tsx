@@ -27,13 +27,17 @@ import { useEffect, useMemo, useState } from "react";
 import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types";
 import { sentence as joinSlots } from "@/content/lessons/native/cloze";
 import { speak } from "@/games/letris/speech";
+import { ENTRY_LABELS } from "@/lib/lessonEntry";
 
 type Difficulty = 1 | 2 | 3; // Facile / Intermédiaire / Difficile
 
+// Derived from ENTRY_LABELS, the one source (verify22: a second hand-built
+// picker is what the literal would mean). The cascade's banner is MID-RUN and
+// cycleable, unlike the entry chooser — but it wears the entry chooser's names.
 const DLABEL: Record<Difficulty, string> = {
-  1: "★ Facile",
-  2: "★★ Intermédiaire",
-  3: "★★★ Difficile",
+  1: `${ENTRY_LABELS[1].stars} ${ENTRY_LABELS[1].name}`,
+  2: `${ENTRY_LABELS[2].stars} ${ENTRY_LABELS[2].name}`,
+  3: `${ENTRY_LABELS[3].stars} ${ENTRY_LABELS[3].name}`,
 };
 
 // The app's own three-level scale (good/medium/weak) IS the ★/★★/★★★ ladder
