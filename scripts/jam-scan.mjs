@@ -153,7 +153,9 @@ for (const slug of slugs) {
   // hydrated when an instant count() looked, and the scan called an open
   // build a wall build. networkidle is when the network went quiet, not when
   // React finished.
-  const strip = page.getByRole("tab", { name: "Exercice" });
+  // "Exercise" since 2026-09-16 — the strip is English again (Dan: "Goal Idea
+  // Form Exercise"); LessonTabs' TABS is the source of truth for this name.
+  const strip = page.getByRole("tab", { name: "Exercise" });
   try {
     await strip.first().waitFor({ timeout: 20000 });
   } catch {
