@@ -365,10 +365,16 @@ if tabs_body:
     # need no decoding. GOAL stays English because it is not one of the
     # lesson's parts: it is the 🎯 Goals family's name, spelled once in
     # FAMILIES for the whole app, and its ← says it leaves the lesson.
-    check(labels == ["Goal", "Idée", "Formes", "Exercice"],
-          "four tabs: ← 🎯 Goal · Idée · Formes · Exercice — Bonus parked, Words under Forms",
-          f"the tab strip reads {labels}. Four tabs, no tab of its own for the word list "
-          "(under Formes) or the bonus (a level of the chooser since #97).")
+    # REVERSED AGAIN 2026-09-16, TO ENGLISH, and again the reversal is Dan's:
+    # *"should name consistently: Goal Idea Form Exercise"* — sent the same day
+    # as the Forms page being *"way too much french in there for a beginner"*.
+    # Consistency won over the cognate argument: four tabs in one language, the
+    # one the chrome is in. Keys (`formes`, `exercice`) do not move.
+    check(labels == ["Goal", "Idea", "Form", "Exercise"],
+          "four tabs: ← 🎯 Goal · Idea · Form · Exercise — Bonus parked, Words under Form",
+          f"the tab strip reads {labels}. Four tabs, in English (Dan, 16 Sep), no tab of "
+          "its own for the word list (under Form) or the bonus (a level of the chooser "
+          "since #97).")
     # THE SIX-CHARACTER RULE IS GONE, and what replaced it is the thing the rule
     # was standing in for. Six characters was a proxy for "fits a 320px column
     # in one row beside an emoji"; « Exercice » is eight and the proxy said no,
@@ -392,9 +398,9 @@ if tabs_body:
     # « Le concept » is a page title someone pasted into a tab.
     check(not french,
           "no tab has slipped back to the old article-prefixed French name",
-          f"these tabs read as page titles rather than labels: {french}. The short forms "
-          "are Idée · Formes · Exercice; « Le concept » and « Les formes » are what they "
-          "replaced.")
+          f"these tabs read as page titles rather than labels: {french}. The labels are "
+          "Idea · Form · Exercise (16 Sep); « Le concept » and « Les formes » are what the "
+          "short forms replaced.")
 
 # The learner-facing empty states name the tabs too — a rename that leaves
 # those behind tells a learner to go to a tab that no longer exists.
@@ -473,13 +479,19 @@ check(formes is not None, "the Forms panel parsed",
       "there is no Formes component — the merge did not happen")
 if formes:
     f = formes
-    check("{memo}" in f and "Lexique" in f,
-          "Forms renders the Mémo AND the word list",
-          "the Forms panel does not render both halves, so the move dropped one of them")
-    check(f.count("<Section") >= 2,
-          "each half of Forms is its own titled section",
-          "the word list runs straight on out of the bottom of the Mémo with nothing to say "
-          "it has started — the same fault Dan reported on the concept page")
+    # REVERSED 2026-09-16 — Dan, of the word list under the Mémo: *"That is
+    # actually the MemoiRecall section. We do not need to repeat it if it is
+    # already in there."* The deck is drawn ONCE, by MémoiRecall; Form is the
+    # Mémo and nothing else, so the two assertions that pinned the second half
+    # now pin its absence.
+    check("{memo}" in f and "Lexique" not in f,
+          "Form renders the Mémo and no second copy of the deck",
+          "the Form panel draws the deck's word list again. MémoiRecall is the deck's own "
+          "door (Dan, 16 Sep); a second copy under the Mémo is the duplicate he sent back.")
+    check("<Section" not in f and "<details" not in f,
+          "the Mémo stands alone in Form — no fold over it, no heading over one thing",
+          "Form wraps its only content in a Section. One thing on a page needs no heading "
+          "(the litmus test) and must not sit behind a fold (the collapse rule).")
 
 
 # ── 8 · long panels collapse, and the right half stays open ────────────────
@@ -561,13 +573,10 @@ if conc:
               f"and the tab is as long as it was when Dan asked for this.")
 
 formes_body = _decl(TABS, "Formes") or ""
-check('folds={false}' in formes_body,
-      "Forms keeps the pattern open",
-      "the Mémo is behind a fold. It is the pattern the word list is evidence FOR — "
-      "collapsing it leaves a learner opening two folds to read one idea.")
-check('note={deck?.items?.length' in formes_body,
-      "the folded word list says how many words are behind it",
-      "the word list folds with no count, so nothing tells a learner it is worth opening")
+check("{memo}" in formes_body and "folds={true}" not in formes_body and "<details" not in formes_body,
+      "Form keeps the pattern open",
+      "the Mémo is behind a fold. It is the lesson, not the apparatus — the collapse rule's "
+      "one exception — and since 16 Sep it is the only thing on the tab.")
 
 
 print("\n".join(f"  ok   {m}" for m in OK))

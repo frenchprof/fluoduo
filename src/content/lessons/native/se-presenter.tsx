@@ -40,11 +40,17 @@ export const sePresenterLesson: NativeLesson = {
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">Se présenter</h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>Moi — <i lang="fr"><b>Je m&rsquo;appelle</b> Thomas.</i></li>
-        <li>Quelqu&rsquo;un d&rsquo;autre — <i lang="fr"><b>Il s&rsquo;appelle</b> Lucas. <b>Elle s&rsquo;appelle</b> Emma.</i></li>
-        <li>Demander (tu) — <i lang="fr"><b>Comment tu t&rsquo;appelles ?</b></i></li>
-        <li>Demander (vous) — <i lang="fr"><b>Comment vous vous appelez ?</b></i></li>
-        <li>Poliment — <i lang="fr">Bonjour, <b>Madame</b> Martin. Au revoir, <b>Monsieur</b> Dubois.</i></li>
+        {/* THE LABELS ARE ENGLISH, THE EXAMPLES ARE FRENCH (Dan, 2026-09-16:
+            *"The Forms page is very unclear because there is way too much
+            french in there for a beginner french"*). « Quelqu'un d'autre » and
+            « Poliment » were signposts a first-week learner had to decode
+            before reaching the sentence they point at; the sentence is the
+            lesson, the signpost is furniture, and furniture is English. */}
+        <li>Yourself — <i lang="fr"><b>Je m&rsquo;appelle</b> Thomas.</i></li>
+        <li>Someone else — <i lang="fr"><b>Il s&rsquo;appelle</b> Lucas. <b>Elle s&rsquo;appelle</b> Emma.</i></li>
+        <li>Asking, to a friend — <i lang="fr"><b>Comment tu t&rsquo;appelles ?</b></i></li>
+        <li>Asking, politely — <i lang="fr"><b>Comment vous vous appelez ?</b></i></li>
+        <li>Addressing someone — <i lang="fr">Bonjour, <b>Madame</b> Martin. Au revoir, <b>Monsieur</b> Dubois.</i></li>
       </ul>
       <table className="mt-3 w-full border-collapse text-sm text-[color:var(--cahier-ink)]" lang="fr">
         <thead>
