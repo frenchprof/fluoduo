@@ -6,6 +6,48 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 16 Sep, evening — MémoiRecall goes back into the lesson, Form moves ahead of Idea (fluoduo-main)
+
+**#397 → `992f965`, deploy 108.** Three of Dan's messages in an hour, each
+reversing part of the afternoon, and the lesson is better for all three:
+
+- *"bring MemoiRecall back at where you removed the list, because honestly you
+  created MemoiRecall out of that list in the first place and moved it out of
+  my lesson when it was supposed to be a part of it."* The Form tab frames the
+  REAL station — `/practice/flip-it/<deck>/embed` — under the Mémo, in a
+  `<details>` fold that says « 13 cards » and loads lazily. Not the words
+  drawn again: the flashcards themselves, one copy, one door.
+- *"are cards and forms not the same thing, they should be put under the same
+  umbrella. STOP MULTIPLYING CATEGORIES"* — said to two mock-ups, one of
+  which was a fifth tab. No fifth tab. The cards stay under Form, and Form —
+  Mémo plus cards — is the tab right after Goal, before Idea and Exercise,
+  per his *"right after SpecuLearn, and before the Lesson Idea and
+  Exercises"*. The lesson still LANDS on Idea (13 Sep); order and landing are
+  two rulings.
+- *"alignment means that in the section before the table, you can put each
+  line in two columns."* The Mémo's examples are a `<dl>` grid: signpost left,
+  French right, every sentence on one vertical line, the shape of the table
+  beneath. (I had first read "alignment" as my composite pictures and
+  re-aligned those; the columns he meant were on the page.)
+
+**A CUE THAT COVERED THE ONLY WAY IN, twice.** With the fold under the Mémo the
+Form section grew taller than a phone screen, and « NEXT PART IS BELOW » sat
+on « 🃏 MémoiRecall · 13 cards ». First fix: `summary` joined the cover
+test's control list — and the band stayed, because a lesson is a SNAP feed
+and that branch of `measure()` returned before the cover test ever ran (peers'
+15 Sep flicker fix, correct for sections that fit their screen). Second fix,
+in the snap branch itself. `verify780`'s literal-line clause follows the
+shape now. *Measured on the built lesson both times; the first fix looked
+right in the source and did nothing on the screen.*
+
+**verify68 and verify71 record all of it in place** — the framed station, the
+fold's count, the order. The manual and the first-run hint say the same.
+The `gender` gap from the afternoon (recorded, drawn nowhere) is unchanged:
+the flashcards do not show it either.
+
+**Gates:** three full gates on the branch as the commits landed — 150/150,
+150/150, 150/150 — and CI green on the head before the merge.
+
 ## 16 Sep, afternoon — NumBus on one screen, SpecuLearn says the sentence, the lesson goes English (fluoduo-main)
 
 **Landed, in order, each verified on `fluolingo.com` by pulling real content:**
