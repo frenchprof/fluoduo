@@ -217,7 +217,11 @@ export default function MoreBelow({
       if (!rail) return false;
       const top = rail.bottom - BAND_H;
       for (const el of Array.from(
-        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, [role='button']"),
+        /* `summary` is a control too: the head of a fold, and the one this
+           test missed until MémoiRecall went under a lesson's Mémo (16 Sep) —
+           the band sat squarely on « 🃏 MémoiRecall · 13 cards », the only
+           way to open it. */
+        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, summary, [role='button']"),
       )) {
         const r = el.getBoundingClientRect();
         if (r.width < 4 || r.height < 4) continue;
