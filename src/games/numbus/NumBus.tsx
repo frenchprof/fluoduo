@@ -77,8 +77,8 @@ function Board({
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[1.75rem] w-[1.625rem] text-[calc(1.125rem+var(--fs-step)*1.12)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[1.5rem] w-[1.125rem] text-[calc(0.8125rem+var(--fs-step)*0.81)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[1.375rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.25rem] w-[0.9375rem] text-[calc(0.6875rem+var(--fs-step)*0.69)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
