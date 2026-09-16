@@ -194,6 +194,27 @@ ok(re.search(r"setMore\(\(\w+\) =>", mb),
    "needs the previous value — `setMore((was) => was ? … : …)` — or the two "
    "thresholds do nothing.")
 
+# ON A SNAPPING FEED THE CUE ASKS "IS THERE ANOTHER SECTION?" — and the tap
+# goes to that section's top. Dan, 2026-09-15, live lesson: *"THE ORANGE NEXT
+# PART BELOW KEEPS BLINKING AND CANNOT BE CLICKED ON"*. Measured on the built
+# app: on the LAST tab the feed still had 136px of its own padding below the
+# section, so the pixel rule said "more below", the cue drew, and a tap could
+# move 64px before the snap magnet pulled it back. One helper answers both the
+# measurement and the tap, so what the cue promises is where the tap goes.
+ok("function nextSnapTop" in mb,
+   "MoreBelow has one helper for the next snap section",
+   "`nextSnapTop` is gone from MoreBelow. On a scroll-snap feed the pixel "
+   "arithmetic lies on the last section (its own padding reads as 'more "
+   "below') and a scrollBy is undone by the magnet.")
+ok(re.search(r"setMore\(nextSnapTop\(root\) != null\)", mb),
+   "and the cue shows on a snapping feed only when another section exists",
+   "the snapping branch of `read()` no longer asks nextSnapTop — the cue "
+   "will draw on the last tab again, pointing at padding.")
+ok(re.search(r"const target = nextSnapTop\(root\);[\s\S]{0,120}scrollTo\(\{ top: target", mb),
+   "and a tap scrolls to exactly that section's top",
+   "goDown no longer scrolls to nextSnapTop's answer. A scrollBy that lands "
+   "between two snap points is pulled back to the one the learner is on.")
+
 # THE ARROWS ARE DAN'S AND THEY STAY. He asked for them twice, the second time
 # as *"the blinking arrows are OF ULTRA IMPORTANCE"*, after sending back a
 # quieter first attempt. A learner calling the flicker "blinking" is a report

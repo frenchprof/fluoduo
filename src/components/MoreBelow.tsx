@@ -100,6 +100,36 @@ function scrollerOf(from: Element | null): HTMLElement | null {
   return null;
 }
 
+/** ON A SNAPPING SCROLLER, "MORE BELOW" MEANS ANOTHER SECTION — the top of
+ *  the next snap-aligned descendant, measured against the scroller's own box,
+ *  or null when the section on screen is the last.
+ *
+ *  WHY PIXELS ARE THE WRONG QUESTION HERE, measured on the built lesson
+ *  (Dan, 2026-09-15: *"THE ORANGE NEXT PART BELOW KEEPS BLINKING AND CANNOT
+ *  BE CLICKED ON"*): on the LAST tab the feed still had 136px below the
+ *  section — its own bottom padding — so the arithmetic said "more below",
+ *  the cue drew, and a tap could travel 64px before the magnet pulled it
+ *  back. A cue on the last section, pointing at padding, is the cue lying,
+ *  which is the one thing this file promised never to do.
+ *
+ *  The snap points are NOT the scroller's children (the feed has one child,
+ *  2951px tall, with the sections inside it), and `offsetTop` is measured
+ *  against whatever the containing block happens to be — so this walks every
+ *  descendant that declares a snap alignment and measures each against the
+ *  scroller. Shared by the measurement and the tap, so what the cue promises
+ *  is exactly where the tap goes. */
+function nextSnapTop(root: HTMLElement): number | null {
+  if (getComputedStyle(root).scrollSnapType === "none") return null;
+  const rootTop = root.getBoundingClientRect().top;
+  const here = root.scrollTop;
+  const tops = Array.from(root.querySelectorAll<HTMLElement>("*"))
+    .filter((el) => getComputedStyle(el).scrollSnapAlign !== "none")
+    .map((el) => Math.round(el.getBoundingClientRect().top - rootTop + here))
+    .filter((t) => t > here + 1)
+    .sort((a, b) => a - b);
+  return tops.length ? tops[0] : null;
+}
+
 export default function MoreBelow({
   label = "NEXT PART IS BELOW",
   flow,
@@ -176,7 +206,15 @@ export default function MoreBelow({
        24px is rounding. */
     const ON_AT = FLOOR + RESERVE;   // clearly more below — turn it on
     const OFF_AT = FLOOR;            // clearly at the end — turn it off
+    const snaps = getComputedStyle(root).scrollSnapType !== "none";
     const read = () => {
+      /* A snapping feed answers a different question — is there another
+         section? — and it needs no dead band, because the answer does not
+         depend on the cue's own height. See nextSnapTop. */
+      if (snaps) {
+        setMore(nextSnapTop(root) != null);
+        return;
+      }
       const left = root.scrollHeight - root.scrollTop - root.clientHeight - grew;
       setMore((was) => (was ? left > OFF_AT : left > ON_AT));
     };
@@ -233,6 +271,22 @@ export default function MoreBelow({
   const goDown = () => {
     const root = scrollerOf(anchor.current);
     if (!root) return;
+    /* IN A SNAP FEED, GO TO THE NEXT SECTION'S TOP — never "a screenful less
+       a little" (Dan, 2026-09-15, on the live lesson: *"THE ORANGE NEXT PART
+       BELOW KEEPS BLINKING AND CANNOT BE CLICKED ON"*). It could be clicked;
+       nothing visible happened. A MneMemo tab is a `scroll-snap-type: y
+       mandatory` feed, and a programmatic scroll that lands between two snap
+       points is pulled to the NEAREST one once it settles — with a section
+       taller than the screen, or a tall pinned card, that nearest point is
+       the section the learner is already on. The scroll ran and the magnet
+       undid it. So when the scroller snaps, the destination is the next snap
+       child's own top, which is a snap point by definition and cannot be
+       undone. A plain scroller keeps the screenful. */
+    const target = nextSnapTop(root);
+    if (target != null) {
+      root.scrollTo({ top: target, behavior: "smooth" });
+      return;
+    }
     root.scrollBy({ top: Math.max(root.clientHeight - RESERVE, 120), behavior: "smooth" });
   };
 
