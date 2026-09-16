@@ -78,8 +78,8 @@ function Board({
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[2.25rem] w-[2rem] text-[calc(1.375rem+var(--fs-step)*1.4)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[1.875rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[1.375rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.25rem] w-[0.9375rem] text-[calc(0.6875rem+var(--fs-step)*0.69)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -129,6 +129,24 @@ function Board({
 }
 
 const KEYPAD = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "✓"];
+
+/* ONE GRID ON A PHONE, FIVE ACROSS (Dan, 2026-09-16: *"i think you can make
+   the number pad even more compact so as to show the bus or whatever image at
+   the top"*). Measured at his phone's shape before this: the pad alone was
+   281px, 70% of the visible column, and the bus was what got scrolled away.
+
+   The dial rows every thumb knows stay as rows — 1-2-3 / 4-5-6 / 7-8-9 — and
+   the fourth and fifth columns take what used to be two more rows: ⌫ 0 ✓ down
+   one side, 🔊 ⏸ 🐌 down the other. Three rows instead of five, and the keys
+   come down to the finger floor rather than half again above it. On `sm:` the
+   grid is the same one it always was: the three sound keys across the top,
+   the twelve keys in one row under them — `order` puts each control where its
+   screen wants it, and nothing is rendered twice. */
+const PHONE_ORDER: Record<string, string> = {
+  "1": "order-1", "2": "order-2", "3": "order-3", "⌫": "order-4",
+  "4": "order-6", "5": "order-7", "6": "order-8", "0": "order-9",
+  "7": "order-11", "8": "order-12", "9": "order-13", "✓": "order-14",
+};
 
 /* ── bus + time scenery ────────────────────────────────────────────────── */
 
@@ -269,7 +287,14 @@ function BusStopScene({
     ? "linear-gradient(180deg,#5a5f66 0%,#3a3e44 100%)"
     : "linear-gradient(180deg,#5c6470 0%,#3f4650 100%)";
   return (
-    <div className="relative h-[11.625rem] shrink-0 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
+    /* 8.5rem ON A PHONE, from 11.625 (Dan, 2026-09-16: *"make the number pad
+       even more compact so as to show the bus or whatever image at the top"*).
+       The bus, the queue and the road are all anchored to the BOTTOM of the
+       scene, so what a shorter scene loses is sky: at his text size the
+       tallest building's roof now sits a pixel or two under the top edge.
+       Together with the five-across pad below this is what lets the whole
+       game — scene, digits, pad — stand on one phone screen without a scroll. */
+    <div className="relative h-[8.5rem] shrink-0 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
       <div className="pointer-events-none absolute inset-x-0 bottom-[3.25rem] flex items-end gap-[0.3125rem] px-2 opacity-85">
         {Array.from({ length: 11 }).map((_, i) => (
           <div key={i} className="rounded-t-[4px] bg-[#7f96ad]" style={{ height: 34 + ((i * 43) % 68), width: 34 + ((i * 29) % 36), boxShadow: "inset -5px 0 0 rgba(0,0,0,.2)" }} />
@@ -920,8 +945,12 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-2xl border-2 px-1.5 py-1.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 ${
-          mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
+        /* NO SLAB ON A PHONE (Dan, 2026-09-15, a third time: *"it is still TOO
+           BIG !"*). What read as big was never the two cells but the dark box
+           around them; on a phone the cells stand on the paper and the box
+           exists only from `sm:` up, where a tablet has the room for it. */
+        className={`relative p-0 transition sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 sm:shadow-xl sm:focus-within:border-[#8ec5ff] ${
+          mode === "price" ? "sm:border-[#ffb74d] sm:bg-[#3e2723]/95" : mode === "phone" ? "sm:border-[#78909c] sm:bg-[#37474f]/95" : "sm:border-white sm:bg-slate-900/90"
         }`}
       >
         {round && (
@@ -966,13 +995,16 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      {/* See PHONE_ORDER: five across on a phone, the sound keys in the fifth
+          column; on a desktop the three sound keys across the top and the
+          twelve keys in one row, as before. */}
+      <div ref={keypadRef} className="grid grid-cols-5 gap-1.5 sm:grid-cols-12 sm:gap-2">
         <button
           type="button"
           onClick={() => round && repeatSay(round.say)}
           disabled={!round || stage !== "asking"}
           title="Repeat"
-          className="rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-2.5 text-xl font-black text-sky-800 sm:py-3 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-5 rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-2 text-xl leading-none font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           🔊
         </button>
@@ -981,7 +1013,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={togglePause}
           disabled={!round || stage !== "asking" || !talking && !speechPaused}
           title={speechPaused ? "Resume" : "Pause"}
-          className="rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2.5 text-xl font-black text-violet-800 sm:py-3 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-10 rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2 text-xl leading-none font-black text-violet-800 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           {speechPaused ? "▶" : "⏸"}
         </button>
@@ -990,22 +1022,17 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={() => round && repeatSay(round.say, SLOWER_RATE)}
           disabled={!round || stage !== "asking"}
           title="Repeat slowly"
-          className="rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2.5 text-xl font-black text-amber-900 sm:py-3 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-15 rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2 text-xl leading-none font-black text-amber-900 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           🐌
         </button>
-      </div>
-
-      {/* Three columns on a phone is the dial pad every thumb already knows
-          (1-2-3 / … / ⌫-0-✓); one row on a desktop, where width is free. */}
-      <div ref={keypadRef} className="grid grid-cols-3 gap-2 sm:grid-cols-12">
         {KEYPAD.map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => key(k)}
             disabled={stage !== "asking"}
-            className={`rounded-2xl border-2 border-b-4 py-2.5 text-xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:py-3 ${
+            className={`${PHONE_ORDER[k]} rounded-2xl border-2 border-b-4 py-2 text-xl leading-none font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-1 sm:py-3 sm:leading-normal ${
               k === "✓" ? "border-[#46a302] bg-[#58cc02] text-white" : k === "⌫" ? "border-slate-400 bg-slate-200 text-slate-700" : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
             }`}
           >
