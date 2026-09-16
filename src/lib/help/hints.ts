@@ -95,6 +95,23 @@ export function letterCount(answer: string): number {
   return [...answer].filter((ch) => LETTER.test(ch)).length;
 }
 
+/** HOW MANY WORDS A LEARNER WOULD COUNT — not how many whitespace tokens there
+ *  are, which is not the same thing in French.
+ *
+ *  Angelina Ong, a learner, on 2026-09-15: *"it said the answer was 5 words,
+ *  when in reality it was 4 words and 1 question mark"*. She was looking at
+ *  « Vous vous appelez comment ? ». French typography puts a SPACE before
+ *  ? ! : ; and inside « », so a plain `split(/\s+/)` counts every one of those
+ *  marks as a word — measured: 5 for that answer, 4 for « Tu vas bien ? ».
+ *  English has no such space, which is why nobody noticed.
+ *
+ *  A word is a token with a letter in it. Nothing else changes: « t'appelles »
+ *  and « meilleur-ami » are still one word each, because the test is per
+ *  TOKEN, not per character. */
+export function wordCount(answer: string): number {
+  return answer.trim().split(/\s+/).filter((w) => LETTER.test(w)).length;
+}
+
 /** First letter of the first word, upper-cased for display. */
 export function firstLetter(answer: string): string {
   const m = answer.trim().match(LETTER);
@@ -129,7 +146,7 @@ function nudgeFor(src: HintSource, wide = false): Rung | null {
 /** Rung: first letter + letter count. */
 function firstLetterRung(src: HintSource): Rung {
   const n = letterCount(src.answer);
-  const words = src.answer.trim().split(/\s+/).length;
+  const words = wordCount(src.answer);
   const shape = words > 1 ? `${words} words, ${n} letters` : `${n} letters`;
   return { text: `🔤 « ${firstLetter(src.answer)} » … ${shape}`, level: "scaffold" };
 }
@@ -198,7 +215,7 @@ export function hintsFor(kind: TaskKind, src: HintSource): Rung[] {
       ];
     }
     case "dictation": {
-      const words = answer.split(/\s+/).length;
+      const words = wordCount(answer);
       return [
         { text: `👂 ${words} word${words > 1 ? "s" : ""} · starts « ${firstLetter(answer)} »`, level: "scaffold" },
         skeletonRung(src),

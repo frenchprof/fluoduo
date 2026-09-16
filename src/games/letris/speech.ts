@@ -120,6 +120,11 @@ if (typeof window !== "undefined") {
   // Voices load asynchronously — a cast chosen from an early partial list
   // must be re-chosen once the full list arrives.
   window.speechSynthesis?.addEventListener("voiceschanged", () => voiceCache.clear());
+  // ASKING IS WHAT STARTS THE LOADING on several engines: `getVoices()` kicks
+  // off the fetch and returns [] the first time. Calling it once here means
+  // the table is usually ready by the time a learner presses 🔊, rather than
+  // the first press being the one that starts it.
+  window.speechSynthesis?.getVoices();
 }
 export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoice | null {
   const key = `${lang.split("-")[0]}:${profile}`;
@@ -132,7 +137,24 @@ export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoic
   const named = inLang.filter((x) => rx.test(x.name));
   const pool = named.length ? named : inLang;
   const v = pool.find((x) => /premium|enhanced|natural|neural/i.test(x.name)) ?? pool[0] ?? null;
-  voiceCache.set(key, v);
+  /* A MISS IS NEVER CACHED, and that is the whole of this fix.
+     Angelina Ong, a learner, 2026-09-15: *"the audio reads out in english, not
+     with the accurate french accent"*.
+     `getVoices()` RETURNS AN EMPTY LIST until the browser has loaded its voice
+     table — it is populated asynchronously and announced by `voiceschanged`.
+     Ask before that and `inLang` is empty, `v` is null, and the null was
+     written into the cache: every later call returned it from the map without
+     ever looking again, `u.voice` was left unset, and the engine fell back to
+     its DEFAULT voice, which on an English-locale device reads French with
+     English phonics. For the rest of the session.
+     The `voiceschanged` listener above clears the cache and was meant to cover
+     this — but it only helps if the event still fires after this module is
+     imported, and this module arrives in a route chunk, well after page start.
+     Chrome fires it once, early. So the listener healed the case that was
+     already fine and missed the one that was not.
+     Not caching a miss costs one `getVoices()` filter per utterance until a
+     voice appears, and nothing at all afterwards. */
+  if (v) voiceCache.set(key, v);
   return v;
 }
 

@@ -25,6 +25,7 @@ import type { Collection, Item } from "@/lib/collections/schema";
 import { shuffle } from "@/lib/shuffle";
 import { cap, offer, type SessionLength } from "@/lib/sessionLength";
 import HowManyQuestions from "@/components/HowManyQuestions";
+import { typingInField } from "@/lib/useChoiceKeys";
 
 type Phase = "idle" | "listening" | "result";
 type Grade = "perfect" | "good" | "homophone" | "close" | "miss";
@@ -469,6 +470,9 @@ export default function SayItContent({
   // Embedded (SioModal) keeps the old Space-retry / Enter-next pair.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      /* Typing into a field (the 🐞 form, a search box) is never a shortcut —
+         see typingInField's note (Dan, 15 Sep). */
+      if (typingInField(e)) return;
       const p = phaseRef.current;
       const k = e.key.toLowerCase();
       if (e.key === " " && p === "listening") { e.preventDefault(); stopRec(); return; }
