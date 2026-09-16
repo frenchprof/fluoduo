@@ -6,6 +6,71 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 16 Sep — peers' third round lands, the pad is measured, and the bus learns to speak on an iPhone (fluoduo-main)
+
+**#390 → `08f4c63`, deploy 103.** The transient verify46 probe is ignored and
+the 15–16 Sep STATUS is on main. Deploy 103 took three tries to fire: the
+container's token cannot dispatch a workflow (a 415 without a JSON header, then
+a 403 with one) — the GitHub tool is the one door that works from here.
+
+**PEERS' THIRD ROUND — eight commits on `claude/peers-vd2h6h` since #384 took
+from it, merged on `peers-r3`.** Five conflicts; four were one-sided
+additions and one was real: `MoreBelow.tsx`, where peers' two-threshold
+flicker fix (Angelina's *"constantly flickering and blinking"*) and main's
+"never cover a control" test had both been written into the same `read()`.
+Both are kept in one `measure()`: the snap-feed branch first, then the two
+thresholds against the previous answer, then the cover test — and it is still
+coalesced into one frame, because that coalescing is what ended the 38-second
+click lock-up on 15 Sep.
+
+**THE FIRST SHAPE OF THAT MERGE WAS CORRECT AND FAILED THE CHECK.** It mirrored
+the last decision in a closure variable and set state from it; peers'
+`verify780` looks for `setMore((was) => …)` and for `setMore(nextSnapTop(root)
+!= null)` by name, and read the mirrored form as "a bare comparison again".
+The behaviour was identical; the shape was not. Reshaped to the updater form
+the check expects — which is also the better form, since it has no second
+copy of the state to drift — with the cover test computed OUTSIDE the updater
+(it forces a layout per control, and React may call an updater twice) and
+skipped below OFF_AT, where the answer is "off" whatever it was before. *A
+check that reads a shape is a check that fails an equivalent shape; when the
+equivalent is no better, take the one the check names.*
+
+`NumBus.tsx` merged clean and KEEPS everything #389 shipped — checked by grep
+after the merge, because the two-dot diff against peers' branch showed the
+scene `shrink-0`, the ghost input and the slimmer cells as if peers had
+reverted them. They had not; their branch was merely older than #389 there.
+
+**THE NUMBER PAD (Dan: *"Do the number pad keys need this much space? Or is
+this the optimal amount of space?"*).** Measured at his phone's shape,
+390×640 with the root font one notch up, on the built app:
+
+    now                keys 63px · pad 281px · 70% of the visible column
+    tighter, 3 cols    keys 54px · pad 235px · 58%
+    four across        keys 54px · pad 175px · 43%   (1-2-3 rows kept,
+                                                       ⌫ 0 ✓ down a 4th column)
+
+A finger reliably hits 44px; the keys were half again that, and the pad's
+seven tenths of the column is the room the bus never had. The three were put
+to Dan as one picture — the real page with only the pad's spacing changed by
+injected style, labelled as such — and the four-across pad brings the bus
+AND the digit strip back on screen without a scroll. His call; nothing shipped.
+
+**THE BUS WAS SILENT ON AN iPHONE, AND THE 🔊 KEY WAS NOT.** Dan confirmed the
+shape put to him on 15 Sep and approved the fix: *"ok for if the repeat 🔊
+speaks but the arriving bus is silent, the first utterance moves onto the ▶
+tap."* Both reach the same `speak()`; what differs is who started them. iOS
+Safari only starts speech begun inside a user gesture until the page has
+spoken once from a tap; the bus's first number comes from a timer chain —
+credits → arrival → announce — seconds after the last touch. `primeSpeech()`
+in `speech.ts` spends the ▶ Start tap on one silent, empty utterance, once
+per page. It is NOT routed through `speak()`: the bank, the mute check and
+`cancel()` are for real utterances, and a muted voice must still prime.
+Nothing is heard, nothing greets — the 13 Sep ruling is about greeting, and
+`verify660` passes. On `fix/numbus-prime`, waiting behind the merge.
+
+**Still Dan's, unshipped:** the strip (B1 33px / B2 26px on
+`fix/numbus-strip2`), the pad (above), the worded line (A/B/C).
+
 ## 15 Sep — the peers lane lands ON main instead of beside it, and LexicaLocker fits (fluoduo-main)
 
 **Dan: *"peers pushed https://79fa0564.fluoduo.pages.dev/ but it is missing
@@ -85,7 +150,7 @@ now; measured at 430×860, the whole board ends inside the frame.
 
   tsc clean · build green · eslint clean on the touched files ·
   148/148 verify · verify-wiring 10/10 · walked in the built app
-## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376, NOT merged)
+## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376 — merged onto main by #391 on 16 Sep)
 
 ### 15 Sep · three things Dan asked for, in his order
 
@@ -804,6 +869,7 @@ of it. Say so in the letter rather than build one.
   **144/144 verify** · path walked and screenshotted at 880px
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
+
 
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at

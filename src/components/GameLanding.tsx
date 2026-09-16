@@ -26,7 +26,9 @@
 import CahierShell from "@/components/CahierShell";
 import { sioHref } from "@/lib/routes";
 import { goalNumber, stopForDeck } from "@/lib/stopTag";
+import { useEffect } from "react";
 import { activity } from "@/content/activities";
+import { clearBugContext, setBugContext } from "@/lib/bugContext";
 
 export default function GameLanding({
   activityKey,
@@ -94,6 +96,14 @@ export default function GameLanding({
   exitHref?: string;
   children: React.ReactNode;
 }) {
+  /* WHAT THE 🐞 BUTTON WILL SAY WAS ON SCREEN (lib/bugContext). Every game
+     page passes through here, so this is the games' equivalent of the line
+     DrillShell writes for drills — Dan's first test report came from NumBus
+     and carried no card line because games never ran in the drill shell. */
+  useEffect(() => {
+    setBugContext({ station: activityKey, deck });
+    return () => clearBugContext();
+  }, [activityKey, deck]);
   const a = activity(activityKey);
   const name = title ?? a?.name;
   const stop = deck ? stopForDeck(deck) : null;
