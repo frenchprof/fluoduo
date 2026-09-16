@@ -143,7 +143,15 @@ function fromUnit0(q: Unit0Question, i: number): PoolItem | null {
     whyWrong: Object.fromEntries(
       q.options.filter((o) => !o.ok && o.why).map((o) => [o.v, o.why!]),
     ),
-    speak: q.tts ?? right.v,
+    /* THE FULL SENTENCE, NOT THE ANSWER WORD (Dan, 2026-09-16: *"the button
+       says Hear the full sentence, but it is not playing the full sentence"*).
+       A stem question — « [Moi,] Je ___ Dan. » — has no `tts` of its own, so
+       this read `right.v` and the button under a whole sentence spoke
+       « m'appelle » alone. Same recipe as Unit0Pretest's `ttsFor`: the
+       bracketed framing is a hint for the eye and is not said; the gap takes
+       the right answer. A question with neither stem nor tts is a word, and a
+       word is what it speaks. */
+    speak: q.tts ?? (q.stem ? q.stem.replace(/\[[^\]]*\]\s*/g, "").replace(/_{2,}/, right.v) : right.v),
     unit0: q,
     ...(q.stem ? sentenceFromStem(q.stem) : {}),
   };
