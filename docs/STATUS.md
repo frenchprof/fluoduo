@@ -472,6 +472,198 @@ drilled: some decks gap `fr` and some gap `example`, and the English has to
 match the one on screen. Opt-in, so it changes nothing for the kinds that share
 that branch — on a typed card the English IS the prompt.
 
+## 15 Sep — the bus was being deleted, not hidden; four learner reports; the audit names its check (fluoduo-main)
+
+**Dan, with a photo of his iPhone: *"Numbus in general looks broken on my
+phone. because it is not in full screen so the bus is not visible"*.** In the
+photo the scene is a thin white bar — its 4px border and nothing else.
+Saraphina Bay had filed the same screen through the 🐞 as *"The layout looks
+broken on my screen"*.
+
+**THE BUS WAS THE FIRST THING THE LAYOUT WAS ALLOWED TO THROW AWAY.** The
+scenes sit in a `flex-col overflow-y-auto` column and each scene root is
+`overflow-hidden` — and a flex item whose overflow is not `visible` has an
+automatic minimum size of ZERO. So when the column runs short the scene
+collapses all the way down, while the digit board (`overflow: visible`) keeps
+its content height and refuses. Reproduced in Chromium at 390×640 with the
+root font one notch up — the shape of an iPhone with Safari's toolbar and a
+larger text size:
+
+    before   column 403 · content 507 · scene   8px · flex-shrink 1
+    after    column 403 · content 705 · scene 221px · flex-shrink 0
+
+`shrink-0` on all three scene roots. The column is `overflow-y-auto` precisely
+so that a short screen SCROLLS; a scene that cannot shrink is what makes it.
+Chromium at 390×844 had spared it only because 40px were left over — which is
+why a phone-size probe on this runner said "fine" while Dan's phone said
+"broken". *A measurement that does not reproduce the reporter's shape is a
+measurement of something else.*
+
+**⛶ IS A RED KEY THAT SAYS FULL** (Dan: *"The full screen buttons need to be
+made MUCH MORE PROMINENT (MAYBE IN RED?) so users know they can resort to
+that"*). It was a 60%-ink glyph at the same weight as ⋯ — the least visible
+control on the bar and the one that fixes the screen. Out of full screen it is
+filled `--dopa-miss` with a word on it; in full screen it goes quiet, because
+then it is only the way out. The one place red does not mean a wrong answer,
+and the label is what keeps that unambiguous. The phone digit cells also come
+down a notch (98 → 84px at that text size); `sm:` untouched.
+
+**NUMBUS AUDIO: the code path is sound, the risk is the iPhone's rules.** In
+the driven build `speak()` is reached twice with « Le bus numéro dix. ». But
+the first number is spoken from an effect-and-timer chain — ▶ Start → credits
+(3s) → bus arrives (2.2s) → speak — ~5s after the last touch on a first visit,
+and iOS only honours speech begun inside a user-activation window. The check
+for Dan's phone: if the repeat 🔊 under the board speaks and the arriving bus
+does not, that is it, and the first utterance moves onto the ▶ tap. The bank
+of studio clips is NOT in `public/` in this build, so `tryBank` always falls
+through to the browser voice — the `a.play().catch(() => {})` swallow in that
+path is a real hazard for the day the bank ships to a phone.
+
+### Four 🐞 reports, and two of them were one bug
+
+**Angelina Ong: *"showed 2 blanks when it should just be one for salut, showed
+3 blanks when it should just be 2 for ca va"*.** French puts a space before
+« ! ? : ; », so « Salut ! » splits on whitespace into two tokens and the second
+has no letters; ÉcouTexte drew a box for it anyway. Her OTHER report — *"a
+question's marked answer seems wrong"* — is the same fault: her screenshot has
+an unfillable empty box before the « ? », so the sentence is never full, the
+silent auto-check never fires, and Check marks it wrong. A stray mark now folds
+into the previous word's printed `post`; the box count matches the words a
+learner can hear.
+
+**Jack Chua: *"the typing cursor should remain on the textbox so I don't need
+to click it again"*.** Typing walked box to box inside a sentence and stopped
+dead at the boundary — `refs` is per-row. A finished sentence now hands the
+cursor to the next one's first box, ONLY when it was right: a wrong sentence
+is the one about to be corrected. His report did not carry its route;
+ÉcouTexte is where the description fits.
+
+### The teacher card
+
+**Dan: *"i am asaking for help with XP Audit check"*.** The badge read
+« ⚠️ check » for two faults with opposite answers — OUT OF SYNC (stale
+leaderboard publish; harmless, clears when the learner opens the app signed
+in) and BELOW FLOOR (a real discrepancy). It names the failing one now.
+
+**And a ×20 that looked like a bug and is not, recorded so nobody chases it
+again:** this learner's 3534 XP matches 3/1 against 1477 answers where the
+rate is 60/20 — a ratio of 20.07, the retune factor. Arithmetic, not a fault:
+the app pays once per item per run, re-attempts record `xp: 0`, and the audit
+already excludes them. 1477 answers over 237 items are mostly re-attempts.
+
+**The stat row asked the viewport, not the card.** `lg:grid-cols-8` fired
+because the PAGE is wide while the modal is 750px: eight tiles at 83px, minus
+32px of padding, and « ANSWERS » cannot be drawn in 51px. Counted with
+`auto-fit`, `align-items: start` so one wrapped date no longer sets the height
+of all eight, and `--font-body-stack` (Dan: *"use FluoLingo fonts"*) — the
+panels had been falling through to `system-ui`. Tiles 83 → 175px, row 515 →
+276px, every label on one line.
+
+### Shipped this morning, for the record
+
+#383 (the peers lane on top of main, LexicaLocker fits), #384 (G-Compris!,
+Write → Texts, the path scoped to stops 1–30, the ring outline), #385 (the 🔔
+and its What's New card) — deploys 97, 98, 99, each verified by pulling real
+content off `fluolingo.com`, not by a green workflow.
+
+**Landed, in order:** #386 → `fd7c31a` (deploy 100, the teacher card, verified
+in the live stylesheet) · #387 → `443889b` (deploy 101, ÉcouTexte, verified by
+`data-box` in the live chunk — on the EMBED route, which is the one that loads
+the component; the first probe scanned the topic-picker page and said "no" on
+both hosts, the fourth false negative of the week) · #389 → `f038dbe` (NumBus:
+the bus, the key, the strip, the ghost input — Dan opened the PR himself;
+deploy 102 succeeded on it once main's own verify was green, and the
+`fluo-ghost-input` rule was watched into the live stylesheet).
+
+**The transient file that tripped the stop hook three times** was named by a
+sampler polling `git status` every five seconds through a full sweep:
+`verify46-lesson-axes.py` writes `verify/.verify46-probe.mjs` while it runs
+and deletes it after. Ignored on `chore/ignore-verify-probe`, the way its three
+`.tmp-verify-*` siblings are — a `git add -A` inside that window would sweep
+it in. *A file that is gone by the time anyone looks needs a watcher, not a
+look.* Every merge checked with
+`git merge-tree` first, which needs no working tree and so could run while a
+gate was reading this one.
+
+**Then a container restart, and the audit that followed it:** working tree
+clean, no stashes, no worktrees, every branch of the day at 0 unpushed
+commits, the drafts and gate logs intact in the scratchpad. Nothing lost. The
+one "1 unpushed" line was the superseded `feat/whats-new-bell`, whose commits
+had been cherry-picked onto `whatsnew` before #385.
+
+**"IT IS STILL TOO BIG" — the strip, a third time.** What reads as big is the
+dark SLAB around two small cells, not the cells. Two variants were built on
+`fix/numbus-strip2` and photographed at Dan's phone shape rather than guessed
+at a fourth time: B1 drops the slab on a phone (the cells stand on the paper,
+`sm:` keeps the box) with 1.75rem cells — strip **33px**, from 61; B2 the same
+with 1.375rem cells — strip **26px**. Put to him side by side. B2 gated
+149/149 on `0c942cc` while he looked; B1 gated after, so whichever he points
+at is one cherry-pick and one deploy.
+
+**Deploy 102 verified on `fluolingo.com`** — `fluo-ghost-input` in the live
+stylesheet at t+150s, the same lag as every deploy this week. With it, #386,
+#387 and #389 are all live: the teacher card, ÉcouTexte's blanks and cursor,
+and NumBus — the bus that cannot be crushed, the red FULL / SCREEN key, the
+slimmer strip, and the digit cells visible for the first time on any phone.
+
+**The worded line under NumBus's digits is Dan's call, not mine.** He asked
+*"DO WE REALLY NEED TO ADD ANOTHER LINE"*; the words are the teaching moment
+(the French beside the digits is the one instant the two meet), the second
+LINE is not. Three shapes were put to him — a slimmer line (what is on the
+branch), the words replacing the digits in the same row on reveal, or the
+words in the bus's own « ?? » badge. Until he answers, the slimmer line ships.
+
+**THE WHITE BOX IN DAN'S PHOTO WAS NEVER THE DIGIT BOARD.** NumBus types
+through an `<input>` laid over the board, meant to be invisible —
+`bg-transparent text-transparent caret-transparent`. It sits inside
+`.cahier-sheet`, whose form skin paints EVERY text input white with a 1.5px
+border, a 9px radius and `0.55rem 0.75rem` of padding, at class + type + two
+pseudo-classes — which outranks any utility. So the "invisible" overlay
+rendered as a white form field ON TOP of the digit cells. Measured in the
+built app: computed background `rgb(255,255,255)`, computed colour the ink, on
+an element whose classes ask for transparent. Not one screenshot today showed
+a digit cell, on any device, including Dan's — and nobody noticed, because a
+white box where the digits go LOOKS like a digit board.
+
+Two fixes, and slimming the strip is what exposed the second: `fluo-ghost-input`,
+an opt-out at the skin's own weight (the `.fluo-stepper` precedent — match its
+`:not()` pair, add one class, win on specificity rather than on file order;
+Safari also needs `-webkit-text-fill-color`); and `inset-0` instead of a
+height of its own, because the overlay was `h-[4.25rem]` from the strip's top
+and once the strip was slimmed it hung 33px out of the bottom, over the
+🔊 ⏸ 🐌 row — input 81px in a 61px strip. Two frozen sizes fewer; verify270's
+ratchet moves down.
+
+    before   input bg rgb(255,255,255) · 81px in a 61px strip · 0 cells visible
+    after    input bg transparent      · 57px in a 61px strip · 2 cells, and the
+             hit-test at the first cell's centre lands on the CELL
+
+Measured on the built `4ab3065` at 390×640 with the root font one notch up —
+Dan's phone's shape. The digit cells appeared in a screenshot for the first
+time today. *A control that is styled by a skin it never asked for is
+the specificity trap this file has recorded three times now; this is the
+fourth, and the first where the victim was meant to be invisible.*
+
+**⛶ reads FULL / SCREEN on two lines, on the ramp** (Dan: *"write FULL SCREEN
+in smaller font to fit within the same height (REMEMBER RELATIVE FONT SIZES
+PLS)"*). Same h-8 / sm:h-9 key; the size is a calc written in the class,
+`calc(0.625rem + var(--fs-step) * 0.62)`. The first cut was `text-[13px]` —
+the pixel he has banned twice — and the digit cells had been cut to 26px and
+17px, neither on the ramp table. verify106 refused both, run in a worktree
+BEFORE the gate.
+
+**THREE TIMES TODAY A FIX TRIPPED ITS OWN CHECK BY QUOTING WHAT IT REMOVED.**
+NewsBell's hex survived in the comment explaining its removal; `#211` read as
+a hex earlier; and the NumBus comment that said "text-[26px] / text-[17px]
+are gone" was itself matched by verify106. The checks read `src/` as code and
+cannot tell prose from it — which is correct, and the rule for the writer is:
+when you remove a thing a check forbids, describe it in WORDS, never by name.
+
+**A process note that cost two turns today:** a trailing `&` on an
+`&&`-chain backgrounds the WHOLE chain, not the last command. Twice this
+session a commit or a checkout ran unobserved because of it. Background one
+command, in parentheses, or use the runner's own background mode.
+
 ## 15 Sep — the ★ leaves the top bar, because the 🤍 is what made it removable (fluoduo-main)
 
 **Dan, seeing the new heart beside the old star: *"I see it but why does it
