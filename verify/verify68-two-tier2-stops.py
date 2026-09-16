@@ -370,8 +370,13 @@ if tabs_body:
     # as the Forms page being *"way too much french in there for a beginner"*.
     # Consistency won over the cognate argument: four tabs in one language, the
     # one the chrome is in. Keys (`formes`, `exercice`) do not move.
-    check(labels == ["Goal", "Idea", "Form", "Exercise"],
-          "four tabs: ← 🎯 Goal · Idea · Form · Exercise — Bonus parked, Words under Form",
+    # AND FORM MOVED AHEAD OF IDEA the same evening — Dan: *"MeMoiRecall might
+    # be better even right after SpecuLearn, and before the Lesson Idea and
+    # Exercises"*, then, refusing a fifth tab for the cards: *"are cards and
+    # forms not the same thing, they should be put under the same umbrella.
+    # STOP MULTIPLYING CATEGORIES"*. Still four tabs; the cards are inside Form.
+    check(labels == ["Goal", "Form", "Idea", "Exercise"],
+          "four tabs: ← 🎯 Goal · Form · Idea · Exercise — Bonus parked, the cards under Form",
           f"the tab strip reads {labels}. Four tabs, in English (Dan, 16 Sep), no tab of "
           "its own for the word list (under Form) or the bonus (a level of the chooser "
           "since #97).")
@@ -484,14 +489,24 @@ if formes:
     # already in there."* The deck is drawn ONCE, by MémoiRecall; Form is the
     # Mémo and nothing else, so the two assertions that pinned the second half
     # now pin its absence.
+    # AND AN HOUR LATER, THE SLOT IS FILLED WITH THE REAL THING — Dan: *"bring
+    # MemoiRecall back at where you removed the list, because honestly you
+    # created MemoiRecall out of that list in the first place and moved it out
+    # of my lesson when it was supposed to be a part of it."* Not the words
+    # drawn again: the station itself, framed, folded, counted.
     check("{memo}" in f and "Lexique" not in f,
-          "Form renders the Mémo and no second copy of the deck",
-          "the Form panel draws the deck's word list again. MémoiRecall is the deck's own "
-          "door (Dan, 16 Sep); a second copy under the Mémo is the duplicate he sent back.")
-    check("<Section" not in f and "<details" not in f,
-          "the Mémo stands alone in Form — no fold over it, no heading over one thing",
-          "Form wraps its only content in a Section. One thing on a page needs no heading "
-          "(the litmus test) and must not sit behind a fold (the collapse rule).")
+          "Form renders the Mémo and no second copy of the deck's words",
+          "the Form panel draws the deck's word list again. MémoiRecall is the deck's "
+          "flashcards (Dan, 16 Sep); a table of its words under the Mémo is the duplicate "
+          "he sent back.")
+    check("/practice/flip-it/" in f and "<iframe" in f,
+          "and MémoiRecall itself, framed, under the Mémo",
+          "Form no longer frames MémoiRecall (`/practice/flip-it/<deck>/embed`). Dan asked "
+          "for the station back in the slot the list held — it is part of the lesson.")
+    check(re.search(r"<Section[^>]*note=\{count\(", f) is not None,
+          "the flashcards fold says how many cards are behind it",
+          "the MémoiRecall fold carries no count. A closed fold with nothing on it is a "
+          "section nobody opens — deletion with extra steps (the collapse rule).")
 
 
 # ── 8 · long panels collapse, and the right half stays open ────────────────

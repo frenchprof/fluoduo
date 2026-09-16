@@ -104,9 +104,18 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   // is furniture, a beginner does not decode it — is back in force in full.
   // KEYS DO NOT MOVE (the Memo-rename precedent): `formes` and `exercice` are
   // addresses and storage, and a display rename never touches those.
+  //
+  // FORM COMES BEFORE IDEA (Dan, 2026-09-16): *"MeMoiRecall might be better
+  // even right after SpecuLearn, and before the Lesson Idea and Exercises"*,
+  // then, offered a fifth tab for the cards: *"are cards and forms not the
+  // same thing, they should be put under the same umbrella. STOP MULTIPLYING
+  // CATEGORIES"*. So the cards stay inside Form, and Form — the Mémo with
+  // MémoiRecall folded under it — is the tab right after Goal. Four tabs, as
+  // ever; only the order moved. The lesson still LANDS on Idea (13 Sep), which
+  // is a separate ruling about where a learner starts, not about the order.
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
+  { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves, and the cards" },
   { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
-  { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves, and every word" },
   { key: "exercice", emoji: "🏋️", label: "Exercise", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
 
@@ -172,14 +181,7 @@ function H({ children }: { children: ReactNode }) {
  * would have to reimplement three of those and would get one of them wrong.
  * `[&::-webkit-details-marker]:hidden` drops Safari's default triangle so the
  * chevron below is the only one.
- *
- * UNUSED SINCE 2026-09-16 AND KEPT ON PURPOSE: the last fold in this file was
- * the word list under Form, which Dan retired as a duplicate of MémoiRecall.
- * verify68 pins this as the ONE disclosure component so the next fold cannot
- * hand-roll its own — that is the reason it stays, and the reason the lint
- * rule is answered here rather than by deleting it.
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- the one collapse component, pinned by verify68; see the note above
 function Section({
   title, note, children, open = false, folds = true,
 }: {
@@ -444,27 +446,66 @@ function Concept({ c }: { c?: LessonConcept }) {
   );
 }
 
-/* ── 2 · Form — the pattern ────────────────────────────────────────────────
- * Dan, 2026-08-31: "can we put Words under Forms?" — and 2026-09-16, of the
- * result: *"there is something called Every Word in This Lesson, That is
- * actually the MemoiRecall section. We do not need to repeat it if it is
- * already in there."*
+/* ── 2 · Form — the pattern, then MémoiRecall ──────────────────────────────
+ * Dan, 2026-08-31: "can we put Words under Forms?" — then 2026-09-16, of the
+ * word list that put there: *"That is actually the MemoiRecall section. We do
+ * not need to repeat it if it is already in there"* — and, an hour later, of
+ * the hole that left: *"maybe it is better to bring MemoiRecall back at where
+ * you removed the list, because honestly you created MemoiRecall out of that
+ * list in the first place and moved it out of my lesson when it was supposed
+ * to be a part of it."*
  *
- * So the word list is GONE from here. It was the deck drawn a second time, as
- * a reveal table under the Mémo; MémoiRecall is the deck's own door, one tap
- * away on the same goal, and a learner who wants every word goes there. What
- * this tab is for is the Mémo — the pattern — and it stands alone, unfolded
- * and unheaded: with one thing on the page a heading over it is furniture
- * (the litmus test), and a fold over it would hide the lesson (the collapse
- * rule's one exception). The gender column that only that table drew went
- * with it; the full table, gender and all, is on the deck page. */
-function Formes({ memo }: { memo?: ReactNode }) {
-  if (!memo) return <Empty what="No Mémo for this lesson." />;
-  return <Panel>{memo}</Panel>;
+ * So the slot under the Mémo holds MÉMOIRECALL ITSELF — the deck's flashcards,
+ * the real station, not a second drawing of its words. It runs in a frame,
+ * the way every station runs inside the cahier (EmbedFrame's reasoning: a
+ * station in its own document cannot scroll the page it sits on), pointed at
+ * the deck's own `/practice/flip-it/<deck>/embed`. Nothing is duplicated:
+ * MémoiRecall's door on the goal and this fold open the same page.
+ *
+ * FOLDED, WITH ITS COUNT, and the Mémo above it is not. The Mémo is the
+ * lesson — the collapse rule's one exception — and it stands unheaded because
+ * a heading over the only thing in view is furniture. The flashcards are the
+ * apparatus a learner consults, so they start closed and the fold says what
+ * is behind it (« 34 cards »), which is what makes a closed fold worth
+ * opening. `loading="lazy"` means a closed fold costs nothing: the station
+ * loads the first time the fold is opened, not with the lesson. */
+function Formes({ memo, deck }: { memo?: ReactNode; deck?: Collection }) {
+  const cards = deck?.items?.length ?? 0;
+  if (!memo && !cards) return <Empty what="No Mémo and no deck for this lesson." />;
+  return (
+    <Panel>
+      {memo}
+      {cards > 0 && deck && (
+        <Section title="🃏 MémoiRecall" note={count(cards, "card")}>
+          <div className="lesson-flip-frame mt-2 overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-rule)]">
+            <iframe
+              src={`/practice/flip-it/${deck.id}/embed`}
+              title="MémoiRecall — this lesson's flashcards"
+              loading="lazy"
+              /* The host must grant full screen for a station's ⤢ key to work
+                 inside a frame — see EmbedFrame. No focus-on-load here: this
+                 frame sits under a lesson the learner is reading, and pulling
+                 the keyboard into it would move them off the page. */
+              data-station-frame=""
+              allow="autoplay; fullscreen"
+              className="h-full w-full border-0 bg-transparent"
+            />
+          </div>
+        </Section>
+      )}
+    </Panel>
+  );
+}
+
+/** "1 card" / "34 cards" — a fold's note is learner-facing text, and "1 cards"
+ *  on a language-learning app undermines the product it labels. */
+function count(n: number, word: string): string {
+  return `${n} ${word}${n === 1 ? "" : "s"}`;
 }
 
 export default function LessonTabs({
   sio,
+  deck,
   concept,
   memo,
   exercise,
@@ -808,11 +849,13 @@ export default function LessonTabs({
       <section data-tab="parcours" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Parcours sio={sio} />
       </section>
+      {/* In TABS order: Goal, Form, Idea, Exercise (Dan, 16 Sep) — the feed
+          and the strip must agree or a tap lands on the wrong panel. */}
+      <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
+        <Formes memo={memo} deck={deck} />
+      </section>
       <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Concept c={concept} />
-      </section>
-      <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
-        <Formes memo={memo} />
       </section>
       <section data-tab="exercice" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Panel>{exercise}</Panel>

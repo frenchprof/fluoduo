@@ -206,7 +206,12 @@ ok("function nextSnapTop" in mb,
    "`nextSnapTop` is gone from MoreBelow. On a scroll-snap feed the pixel "
    "arithmetic lies on the last section (its own padding reads as 'more "
    "below') and a scrollBy is undone by the magnet.")
-ok(re.search(r"setMore\(nextSnapTop\(root\) != null\)", mb),
+# The literal `setMore(nextSnapTop(root) != null)` became two lines on 16 Sep
+# (fluoduo-main): the snap branch now ANDs the cover test in, because a lesson's
+# Form section grew taller than its screen and the band sat on MémoiRecall's
+# fold head. The question the clause asks is unchanged — does the snap branch
+# decide from nextSnapTop? — so the pattern follows the shape, not the line.
+ok(re.search(r"const another = nextSnapTop\(root\) != null;[\s\S]{0,700}setMore\(another", mb),
    "and the cue shows on a snapping feed only when another section exists",
    "the snapping branch of `read()` no longer asks nextSnapTop — the cue "
    "will draw on the last tab again, pointing at padding.")

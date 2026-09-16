@@ -145,7 +145,7 @@ export const ACTIVITY_HINTS: Record<string, ActivityHint> = {
       // source of truth.
       // Renamed again 2026-09-16 — Dan: *"should name consistently: Goal Idea
       // Form Exercise"* — and this line moved with the strip, as promised.
-      { text: "Idea and Form are to read. Exercise is where you answer.", selector: '[data-tour="lesson-tabs"]' },
+      { text: "Form and Idea are to read. Exercise is where you answer.", selector: '[data-tour="lesson-tabs"]' },
       // « Same 12 cards either way — harder, not shorter » is printed directly
       // under these four buttons, so the step does not say it again.
       { text: "You are in Exercise — choose a level to begin.", selector: '[data-tour="entry"]' },
