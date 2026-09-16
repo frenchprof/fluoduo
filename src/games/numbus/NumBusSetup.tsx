@@ -42,6 +42,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { primeSpeech } from "@/games/letris/speech";
 import {
   DEFAULT_NUMBUS_CONFIG,
   loadNumBusConfig,
@@ -69,6 +70,10 @@ export default function NumBusSetup({ onStart }: { onStart: (c: NumBusConfig) =>
   const ready = cfg.numbers || cfg.times || cfg.prices || cfg.phones;
 
   const start = () => {
+    // This tap is the one gesture the bus gets before it speaks: on an iPhone
+    // the first number arrives seconds later from a timer and would be silent
+    // without it (Dan, 2026-09-16). See primeSpeech.
+    primeSpeech();
     const c = normalizeConfig(cfg);
     saveNumBusConfig(c);
     onStart(c);

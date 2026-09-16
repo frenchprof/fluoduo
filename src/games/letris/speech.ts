@@ -440,6 +440,39 @@ export function speakMixed(
   };
 }
 
+/**
+ * SPEND THE TAP ON THE ENGINE, so the bus can speak later on its own.
+ *
+ * Dan, 2026-09-16, on his iPhone: the repeat 🔊 under the NumBus board speaks
+ * and the arriving bus does not. The two reach the same `speak()`; what
+ * differs is WHO started them. iOS Safari only starts speech that a user
+ * gesture began — until the page has spoken once from inside a tap, after
+ * which it may speak on its own for the rest of the document's life. The
+ * bus's first number is announced from a timer chain (credits → arrival →
+ * announce), seconds after the last touch, so on a phone it was silent while
+ * the same sentence from the 🔊 key was fine. Every other browser lets both
+ * through, which is why no desktop probe ever saw it.
+ *
+ * So the ▶ Start tap calls this: one empty, silent utterance, in the gesture,
+ * once per page. Nothing is heard, nothing is said before the learner has
+ * looked (the 13 Sep ruling is about greeting, and this greets nobody) — it
+ * only tells the engine that the person holding the phone asked for sound.
+ * `speak()` is deliberately not used for it: the bank, the mute check and the
+ * cancel() are all for real utterances, and a muted voice must still prime.
+ */
+let primed = false;
+export function primeSpeech(): void {
+  if (primed || typeof window === "undefined" || !window.speechSynthesis) return;
+  primed = true;
+  try {
+    const u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  } catch {
+    /* an engine that refuses a silent utterance is one that never needed it */
+  }
+}
+
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {
   if (typeof window === "undefined" || !window.speechSynthesis || isChannelMuted("voice")) return;
   // Autonomy instrument (input-seeking): log ONLY user-initiated plays —
