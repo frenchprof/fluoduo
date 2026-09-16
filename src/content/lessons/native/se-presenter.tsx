@@ -64,9 +64,9 @@ export const sePresenterLesson: NativeLesson = {
       </table>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <span lang="fr"><i>S&rsquo;appeler</i></span> carries a little pronoun that changes with the subject:
-        <span lang="fr"><i> je <b>m&rsquo;</b>appelle, tu <b>t&rsquo;</b>appelles, il <b>s&rsquo;</b>appelle</i></span>.
+        <span lang="fr"><i> je <span className="cahier-hl">m&rsquo;</span>appelle, tu <span className="cahier-hl">t&rsquo;</span>appelles, il <span className="cahier-hl">s&rsquo;</span>appelle</i></span>.
         With <span lang="fr"><i>vous</i></span> that pronoun is <span lang="fr"><i>vous</i></span> too, so the word really does appear twice:
-        <span lang="fr"><i> <b>vous vous</b> appelez</i></span>.
+        <span lang="fr"><i> vous <span className="cahier-hl">vous</span> appelez</i></span>.
       </p>
     </div>
   ),
@@ -79,8 +79,15 @@ export const sePresenterLesson: NativeLesson = {
       <>
         English has one phrase for this &mdash; <i>my name is</i>{" "}&mdash; and nothing in it
         moves. French carries a small extra pronoun that <b>changes with the subject</b>:{" "}
-        <i lang="fr">je m&rsquo;appelle</i>, <i lang="fr">tu t&rsquo;appelles</i>,{" "}
-        <i lang="fr">il s&rsquo;appelle</i>.
+        {/* THE MOVING PART WEARS THE HIGHLIGHTER (Dan, 2026-09-16: *"Demonstrate
+            with a colored background behind that extra pronoun"*). The sentence
+            says one word moves; the colour shows WHICH, so a learner does not
+            have to work out from the prose that m', t' and s' are the same slot.
+            `.cahier-hl` is the house highlighter the deck tables already use for
+            the part of an answer that matters. */}
+        <i lang="fr">je <span className="cahier-hl">m&rsquo;</span>appelle</i>,{" "}
+        <i lang="fr">tu <span className="cahier-hl">t&rsquo;</span>appelles</i>,{" "}
+        <i lang="fr">il <span className="cahier-hl">s&rsquo;</span>appelle</i>.
       </>
     ),
     question: (
