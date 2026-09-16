@@ -18,10 +18,10 @@
  * the slot structure; this component renders it inline so the learner can see
  * how each slot's choice constrains the next.
  *
- * SCOPE — first pass. Wired only to the `faire` lesson via LessonPager's
- * `exercise` prop. XP / SIO write / saveRun / Firestore activityLog are NOT
- * wired yet; the 🏁 finish button shows an inline summary. The next iteration
- * will thread those through `onFinish`.
+ * SCOPE — wired only to the `faire` lesson via LessonPager's `exercise` prop.
+ * 🏁 hands the run to the parent through `onFinish` — LessonPager's own end
+ * card owns the SIO write, XP and elapsed, so the cascade carries no score
+ * panel and no summary of its own.
  */
 import { useEffect, useMemo, useState } from "react";
 import type { DiceQuestion, NativeLesson } from "@/content/lessons/native/types";
@@ -83,9 +83,9 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
   const [freeText, setFreeText] = useState("");
   const [result, setResult] = useState<{ ok: boolean; correct: string; user: string } | null>(null);
 
-  const [score, setScore] = useState({ ok: 0, total: 0, streak: 0, best: 0 });
+  /** One answered item, handed to the parent on 🏁 — the pager's end card
+   *  computes its own accuracy from these. */
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [finished, setFinished] = useState(false);
 
   const blankableKeys = useMemo(() => {
     if (!question?.slots) return [];
@@ -146,13 +146,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
     const acceptable = [question.correct, ...(question.alternates ?? [])];
     const ok = acceptable.some((a) => norm(a) === norm(user));
     setResult({ ok, correct: question.correct, user });
-    const nextStreak = ok ? score.streak + 1 : 0;
-    setScore({
-      ok: score.ok + (ok ? 1 : 0),
-      total: score.total + 1,
-      streak: nextStreak,
-      best: Math.max(score.best, nextStreak),
-    });
     setEntries((e) => [
       ...e,
       { prompt: question.meta, user, correct: question.correct, ok, difficulty },
@@ -173,10 +166,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
   const handleRedo = () => generate();
 
-  const handleFinish = () => {
-    setFinished(true);
-    onFinish?.(entries);
-  };
+  const handleFinish = () => onFinish?.(entries);
 
   const cycleDifficulty = (d: Difficulty) => {
     setDifficulty(d);
@@ -184,69 +174,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
     setPicks([]);
     setFreeText("");
   };
-
-  const pct = score.total ? Math.round((score.ok / score.total) * 100) : 0;
-
-  // ── END SCREEN ──────────────────────────────────────────────────────────
-  if (finished) {
-    return (
-      <div className="space-y-4 pt-2">
-        <div className="text-center">
-          <span className="text-6xl" aria-hidden>
-            {pct === 100 ? "🏆" : pct >= 75 ? "🎉" : pct >= 50 ? "💪" : "📖"}
-          </span>
-        </div>
-        <div className="flex flex-wrap justify-center gap-2 text-sm font-bold text-[color:var(--cahier-ink)]">
-          <span className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1">
-            ✓ {pct}% ({score.ok}/{score.total})
-          </span>
-          <span className="rounded-full border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1">
-            🔥 Best streak: {score.best}
-          </span>
-        </div>
-        {entries.length > 0 && (
-          <div className="overflow-x-auto rounded-xl border-2 border-[color:var(--cahier-rule)]">
-            <table className="w-full text-sm">
-              <thead className="bg-[color:var(--cahier-rule)]/30">
-                <tr>
-                  <th className="px-2 py-1 text-left">#</th>
-                  <th className="px-2 py-1 text-left">Prompt</th>
-                  <th className="px-2 py-1 text-left">Your answer</th>
-                  <th className="px-2 py-1 text-left">Correct</th>
-                  <th className="px-2 py-1"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {entries.map((e, i) => (
-                  <tr key={i} className={e.ok ? "bg-green-50" : "bg-red-50"}>
-                    <td className="px-2 py-1">{i + 1}</td>
-                    <td className="px-2 py-1" lang="fr">{e.prompt}</td>
-                    <td className="px-2 py-1" lang="fr">{e.user || "—"}</td>
-                    <td className="px-2 py-1" lang="fr">{e.correct}</td>
-                    <td className="px-2 py-1">{e.ok ? "✔" : "✘"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <div className="flex justify-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setFinished(false);
-              setScore({ ok: 0, total: 0, streak: 0, best: 0 });
-              setEntries([]);
-              generate();
-            }}
-            className="cahier-btn"
-          >
-            ↺ Recommencer
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   // ── MAIN EXERCISE UI ─────────────────────────────────────────────────────
   return (
@@ -444,14 +371,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           )}
         </div>
       )}
-
-      {/* Score / streak bar */}
-      <div className="flex items-center justify-between rounded-lg bg-[color:var(--cahier-rule)]/30 px-3 py-1.5 text-sm font-bold text-[color:var(--cahier-ink)]">
-        <span>Score: {pct}%</span>
-        <span>🔥 Streak: {score.streak}</span>
-        <span>Best: {score.best}</span>
-        <span>Total: {score.total}</span>
-      </div>
 
       {/* Toolbar */}
       <div className="flex justify-center gap-2">

@@ -557,9 +557,25 @@ export default function LessonPager({
           // slug; `faire` is the reference implementation. Everything else
           // keeps the chooser until its generator carries a cumulative bank.
           exercise={
-            lesson?.slug === "faire"
-              ? <ExerciseSlotCascade lesson={lesson} activityKey={activityKey} />
-              : chooser
+            lesson?.slug === "faire" ? (
+              <ExerciseSlotCascade
+                lesson={lesson}
+                activityKey={activityKey}
+                // 🏁 lands on the pager's own end card: setScore feeds the
+                // accuracy the end effect writes, and setI past the queue
+                // flips `end` — the SIO write, XP and elapsed all live there.
+                onFinish={(entries) => {
+                  setScore({
+                    ok: entries.filter((e) => e.ok).length,
+                    total: entries.length,
+                  });
+                  setAsked(true);
+                  setI(queue?.length ?? 0);
+                }}
+              />
+            ) : (
+              chooser
+            )
           }
           // AN ATELIER OPENS ON FORMS (Dan, 2026-08-31: "Atelier's Memo is to
           // open on the range of sentences and vocabulary one is expected to
