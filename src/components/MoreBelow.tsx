@@ -259,7 +259,15 @@ export default function MoreBelow({
          section? — and it needs no dead band, because the answer does not
          depend on the cue's own height. See nextSnapTop. */
       if (snaps) {
-        setMore(nextSnapTop(root) != null);
+        const another = nextSnapTop(root) != null;
+        /* AND ON A SNAP FEED TOO IT NEVER COVERS A CONTROL. This branch used to
+           return before the cover test ran, which was fine while every snap
+           section fitted its screen. A lesson's Form section stopped fitting
+           on 16 Sep — the Mémo, the table, then MémoiRecall's fold — and the
+           band sat on the fold's head, « 🃏 MémoiRecall · 13 cards », the only
+           way to open it. Measured on the built lesson; fixed here, where the
+           snap branch decides. */
+        setMore(another && (flow || !coversAControl()));
         return;
       }
       const left = root.scrollHeight - root.scrollTop - root.clientHeight - grew;
