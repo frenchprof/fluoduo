@@ -140,9 +140,11 @@ formes = formes[: formes.find("\n}\n") + 3]
 # lives in a lesson — and the vocabulary is MémoiRecall's, one tap away on the
 # same goal, not drawn a second time here. The clause now pins that Form still
 # renders the Mémo and does NOT draw the deck again.
-ok("memo" in formes and "Lexique" not in formes,
-   "Form holds the pattern, and the words are MémoiRecall's (16 Sep)",
-   "Form draws the deck's word list again, or has lost the Mémo it opens on")
+ok("memo" in formes and "Lexique" not in formes and "/practice/flip-it/" in formes,
+   "Form holds the pattern, with MémoiRecall itself framed under it (16 Sep)",
+   "Form has lost the Mémo it opens on, draws the deck's words as a table again, or no "
+   "longer frames MémoiRecall — Dan: the station is part of the lesson, in the slot the "
+   "list held")
 ok(re.search(r'key:\s*"formes"', tabs) is not None,
    "\"formes\" is a real tab in the strip",
    "there is no formes tab; the pager would ask for one that does not exist")

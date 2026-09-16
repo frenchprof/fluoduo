@@ -821,6 +821,14 @@ html, body { overscroll-behavior-x: none; }
   box-decoration-break: clone;
 }
 
+/* MÉMOIRECALL INSIDE A LESSON'S FORM TAB (Dan, 2026-09-16: "bring MemoiRecall
+   back at where you removed the list"). The station runs in a frame under the
+   Mémo, so the frame needs a height of its own — a station fills whatever box
+   it is given and a box with no height is a box of nothing. Seven tenths of
+   the screen, floored on the ramp so a phone with a small viewport still gets
+   a whole card, never a pixel number (the 5 Sep and 12 Sep rulings). */
+.lesson-flip-frame { height: max(70vh, calc(24rem + var(--fs-step) * 24)); }
+
 /* Ruled-paper substrate. */
 .cahier-sheet {
   background-color: var(--cahier-paper);
