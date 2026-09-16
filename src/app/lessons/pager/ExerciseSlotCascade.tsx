@@ -36,10 +36,12 @@ const DLABEL: Record<Difficulty, string> = {
   3: "★★★ Difficile",
 };
 
+// The app's own three-level scale (good/medium/weak) IS the ★/★★/★★★ ladder
+// — never a second set of greens and reds (verify19b's ratchet holds this).
 const DIFF_HUE: Record<Difficulty, string> = {
-  1: "#1e7a1e", // green
-  2: "#b45309", // amber
-  3: "#a30000", // red
+  1: "var(--tier-good)",
+  2: "var(--tier-medium)",
+  3: "var(--tier-weak)",
 };
 
 /** How many blankable slots each difficulty withdraws.
@@ -186,8 +188,8 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             key={lv}
             type="button"
             onClick={() => cycleDifficulty(lv)}
-            style={{ background: DIFF_HUE[lv], color: "#fff" }}
-            className={`rounded-lg px-3 py-1.5 text-xs font-black shadow-sm transition ${
+              style={{ background: DIFF_HUE[lv] }}
+              className={`rounded-lg px-3 py-1.5 text-xs font-black text-white shadow-sm transition ${
               difficulty === lv ? "ring-2 ring-black ring-offset-1" : "opacity-70 hover:opacity-100"
             }`}
           >
@@ -337,7 +339,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         <button
           type="button"
           onClick={check}
-          className="rounded-lg bg-[#0a7d4f] px-4 py-2 text-sm font-bold text-white shadow-sm hover:bg-[#08603c]"
+          className="cahier-btn cahier-btn-primary"
         >
           ✅ Je vérifie
         </button>
@@ -346,18 +348,18 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
       {/* Feedback */}
       {result && (
         <div
-          className="rounded-lg border-2 p-3 text-center text-sm"
-          style={{
-            background: result.ok ? "#dcfce7" : "#fee2e2",
-            borderColor: result.ok ? "#16a34a" : "#dc2626",
-          }}
+          className={`rounded-lg border-2 p-3 text-center text-sm ${
+            result.ok
+              ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
+              : "border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]"
+          }`}
         >
           {result.ok ? (
-            <span className="font-bold text-green-700">
+            <span className={`font-bold text-[color:var(--drill-ok-ink)]`}>
               ✔ C&apos;est correct !
             </span>
           ) : (
-            <span className="font-bold text-red-700">
+            <span className={`font-bold text-[color:var(--drill-bad-ink)]`}>
               ✘ Pas correct. → <span lang="fr">{result.correct}</span>{" "}
               <button
                 type="button"
