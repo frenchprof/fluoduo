@@ -331,7 +331,10 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           }
           lang="en"
         >
-          {question.en}
+          {/* At Bonus the English sentence IS the task, and the task word
+              rides the same line (Dan, 2026-09-18: "add 'Translate…'" just
+              before it) — no second line, no label furniture. */}
+          {difficulty === 4 ? `Translate: ${question.en}` : question.en}
         </p>
       )}
 
