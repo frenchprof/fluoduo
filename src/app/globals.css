@@ -5309,3 +5309,14 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   font-weight: 800;
   color: var(--cahier-ink);
 }
+
+/* ── COMPACT MODIFIERS (Dan, 2026-09-18: "a lot of those buttons can be more
+   compact… I don't want them spilling over a single line when they are meant
+   for the same step", and the Exercise tab "remains within one screen view")
+   ─────────────────────────────────────────────────────────────────────────
+   A size down on the two workhorse controls, and a scale-down of the cue
+   family that keeps its shape — the orange, the stroked hand text, the three
+   staggered arrows — at a height a dense screen can afford. */
+.cahier-btn--compact { padding: calc(0.3rem + var(--fs-step) * 0.3) calc(0.7rem + var(--fs-step) * 0.7); font-size: calc(0.8rem + var(--fs-step) * 0.8); }
+.fluo-cue .fluo-nextq { font-size: calc(0.95rem + var(--fs-step) * 0.95); padding: calc(0.25rem + var(--fs-step) * 0.25) calc(0.8rem + var(--fs-step) * 0.8); }
+.fluo-cue .fluo-nextq-arrows { font-size: calc(1rem + var(--fs-step) * 1); gap: calc(0.45rem + var(--fs-step) * 0.45); margin-top: calc(0.1rem + var(--fs-step) * 0.1); }

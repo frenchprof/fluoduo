@@ -824,6 +824,10 @@ function ExerciseCard({
         // aloud. `bigLang` also stops English going out tagged lang="fr",
         // which made the 🔊 button read it with French phonics.
         const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
+        // THE TASK WORD RIDES THE PROMPT LINE (Dan, 2026-09-18: "that is what
+        // we are missing in the whole website, the word 'Translate'") — an
+        // English sentence that asks for French says so, on the same line.
+        const bigText = ex.kind === "translate" ? `Translate: ${ex.big}` : ex.big;
         return (
           <p
             className={
@@ -833,7 +837,7 @@ function ExerciseCard({
             }
             lang={english ? "en" : "fr"}
           >
-            {ex.big}
+            {bigText}
           </p>
         );
       })()}

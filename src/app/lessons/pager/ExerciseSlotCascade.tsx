@@ -8,20 +8,23 @@
  * slot-cascade prompt visual (subject + verb + activity), and a sentence area
  * whose shape changes with the difficulty: ★ blanks ONE gap — the learner
  * chooses which — ★★ blanks verb AND article, ★★★ is free text, and 🎁 Bonus
- * is the EN→FR round: the English sentence is the prompt and the whole French
+ * is the EN→FR round: "Translate: …" is the prompt and the whole French
  * sentence is typed. 🎲 Random (the main button) rolls every dropdown, 🔊
  * pronounces, ✏️ REDO deals again, 🏁 END hands the run to the pager.
  *
  * This component restores that shape, using the data the lesson already
  * declares: `lesson.dice.axes` are the dropdowns, `lesson.dice.newQuestion`
- * returns a `DiceQuestion` carrying `slots` (subject · verb · article · noun
- * in reading order, with `choices` on each blankable slot). The old
- * LessonPager wrapped that data in a one-card-at-a-time card flow that hid
- * the slot structure; this component renders it inline so the learner can see
- * how each slot's choice constrains the next.
+ * returns a `DiceQuestion` carrying `slots`. The old LessonPager wrapped that
+ * data in a one-card-at-a-time card flow that hid the slot structure; this
+ * component renders it inline so the learner can see how each slot's choice
+ * constrains the next.
  *
- * Two orange bands in the NEXT PART IS BELOW family point the way in (Dan,
- * 2026-09-18): PICK AS YOU WISH above the dropdowns, PICK FOR ME at Random.
+ * COMPACT (Dan, 2026-09-18: *"make sure the items on the page remain within
+ * one screen view"*): the whole tab is sized to one phone screen — a
+ * four-cell banner one row tall, the three axis dropdowns on ONE row each
+ * only as wide as its longest word, cue bands in `.fluo-cue`'s compact scale,
+ * and the buttons in `cahier-btn--compact` so a step's controls never spill
+ * past their line. Explanatory lines are POINT FORM, never prose.
  *
  * SCOPE — wired only to the `faire` lesson via LessonPager's `exercise` prop.
  * 🏁 hands the run to the parent through `onFinish` — LessonPager's own end
@@ -143,6 +146,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
   const buildUserSentence = (): string => {
     if (difficulty === 3) return freeText.trim();
+    if (difficulty === 4) return freeText.trim();
     if (slots.length === 0) return freeText.trim();
     const rebuilt = slots.map((s) => {
       const idx = pickIndex(s.key);
@@ -200,17 +204,15 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
   // ── MAIN EXERCISE UI ─────────────────────────────────────────────────────
   return (
-    <div className="space-y-4 pt-2">
+    <div className="space-y-2.5 pt-1">
       {/* Difficulty banner — cycleable mid-run, no one-shot chooser.
           FOUR EQUAL CELLS, STARS STACKED OVER NAME — the entry chooser's own
           shape (Dan, 2026-09-07: *"Can the choice of difficulty be in four
-          horizontal buttons"*; stacked because a quarter of a 390px phone is
-          ~85px and « ★★★ Difficile » on one line needs 120). A tier's colour
-          is its identity either way: the border and text when it stands,
-          the whole cell when it is chosen. 2026-09-18: the four content-sized
-          chips this replaces wrapped raggedly — "haphazard, not neat". */}
-      <div className="flex flex-col items-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2.5">
-        <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
+          horizontal buttons"*). A tier's colour is its identity either way:
+          the border and text when it stands, the whole cell when it is
+          chosen. */}
+      <div className="flex flex-col items-center gap-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
+        <p className="fluo-serif text-lg font-black leading-tight text-[color:var(--fluo-ink)]">
           Choose your difficulty
         </p>
         <div className="grid w-full max-w-sm grid-cols-4 gap-1.5">
@@ -225,7 +227,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                 style={sel
                   ? { background: DIFF_HUE[lv] }
                   : { borderColor: DIFF_HUE[lv], color: DIFF_HUE[lv] }}
-                className={`flex flex-col items-center gap-0 rounded-lg border-2 px-1 py-2.5 transition ${
+                className={`flex flex-col items-center gap-0 rounded-lg border-2 px-1 py-1.5 transition ${
                   sel
                     ? "text-white shadow-sm ring-2 ring-[color:var(--cahier-ink)] ring-offset-1"
                     : "bg-white hover:brightness-95"
@@ -244,48 +246,54 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
       {/* Live dropdowns for the lesson's declared axes. Two orange bands in
           the NEXT PART IS BELOW family point at the two ways in (Dan,
           2026-09-18): PICK AS YOU WISH at the dropdowns, PICK FOR ME at
-          Random — the main button, always. */}
+          Random — the main button, always. The dropdowns sit on ONE row, each
+          only as wide as its longest word (Dan, 2026-09-18: *"the drop down
+          does not have to be longer than the longest word within that
+          column"*). */}
       {axes.length > 0 && (
-        <div className="space-y-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2.5">
-          <div aria-hidden className="flex flex-col items-center">
+        <div className="space-y-1.5 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
+          <div aria-hidden className="fluo-cue flex flex-col items-center">
             <div className="fluo-nextq">PICK AS YOU WISH</div>
             <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
           </div>
-          {axes.map((ax) => (
-            <label key={ax.key} className="flex items-center justify-between gap-2 text-sm">
-              <span className="font-bold text-[color:var(--cahier-ink)]/70">{ax.label}</span>
-              <select
-                value={pinned[ax.key] ?? ""}
-                onChange={(e) => {
-                  const next = { ...pinned, [ax.key]: e.target.value };
-                  setPinned(next);
-                  generate(next);
-                }}
-                className="min-w-32 rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-2 py-1 font-bold text-[color:var(--cahier-ink)]"
-                lang="fr"
-              >
-                <option value="">— any —</option>
-                {ax.options.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ))}
-          <div className="flex flex-col items-center gap-1 pt-1">
-            <div aria-hidden className="flex flex-col items-center">
+          <div className="flex flex-wrap items-end justify-center gap-2">
+            {axes.map((ax) => (
+              <label key={ax.key} className="flex flex-col items-center gap-0.5">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">{ax.label}</span>
+                <select
+                  value={pinned[ax.key] ?? ""}
+                  onChange={(e) => {
+                    const next = { ...pinned, [ax.key]: e.target.value };
+                    setPinned(next);
+                    generate(next);
+                  }}
+                  className="rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-1.5 py-1 text-sm font-bold text-[color:var(--cahier-ink)]"
+                  lang="fr"
+                >
+                  <option value="">— any —</option>
+                  {ax.options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <div aria-hidden className="fluo-cue flex flex-col items-center">
               <div className="fluo-nextq">PICK FOR ME</div>
               <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
             </div>
-            <div className="flex justify-center gap-2">
+            <div className="flex flex-nowrap justify-center gap-2">
               {/* THE MAIN BUTTON (Dan, 2026-09-18: *"the main button to push
-                  is always the RANDOM"*) — primary and a size up; everything
-                  else on this tab is secondary to it. */}
+                  is always the RANDOM"*) — primary; everything else on this
+                  tab is secondary to it. Compact, so it never spills its
+                  line. */}
               <button
                 type="button"
                 onClick={handleRandom}
-                className="cahier-btn cahier-btn-primary px-4 py-2.5 text-base"
+                className="cahier-btn cahier-btn-primary cahier-btn--compact"
                 title="Pick random values for every dropdown"
               >
                 🎲🎲 Random
@@ -293,7 +301,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               <button
                 type="button"
                 onClick={handlePronounce}
-                className="cahier-btn"
+                className="cahier-btn cahier-btn--compact"
                 title="Hear the correct sentence"
               >
                 🔊 Listen
@@ -305,18 +313,18 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
       {/* Slot-cascade prompt visual: the prompt meta + the bare noun (the
           thing the rest of the sentence is built around) + the English
-          reference. AT BONUS NONE OF THIS SHOWS — the meta prints the
-          conjugated verb and the noun, which are the whole answer there;
-          the English sentence below becomes the prompt and everything the
-          learner must produce is withdrawn. */}
+          reference. AT BONUS NONE OF THE FRENCH SHOWS — the meta prints the
+          conjugated verb and the noun, which are the whole answer there; the
+          English sentence becomes the prompt ("Translate: …", Dan
+          2026-09-18) and everything the learner must produce is withdrawn. */}
       {difficulty !== 4 && question.meta && (
-        <p className="text-center text-xs uppercase tracking-wider text-[color:var(--cahier-ink)]/60">
+        <p className="text-center text-xs uppercase leading-tight tracking-wider text-[color:var(--cahier-ink)]/60">
           {question.meta}
         </p>
       )}
       {difficulty !== 4 && question.big && (
         <p
-          className="card-hand text-center text-2xl font-black leading-snug text-[color:var(--cahier-ink)]"
+          className="card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]"
           lang={question.bigLang ?? "fr"}
         >
           {question.big}
@@ -326,20 +334,17 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         <p
           className={
             difficulty === 4
-              ? "card-hand text-center text-2xl font-black leading-snug text-[color:var(--cahier-ink)]"
-              : "text-center text-sm italic text-[color:var(--cahier-ink)]/70"
+              ? "card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]"
+              : "text-center text-sm italic leading-tight text-[color:var(--cahier-ink)]/70"
           }
           lang="en"
         >
-          {/* At Bonus the English sentence IS the task, and the task word
-              rides the same line (Dan, 2026-09-18: "add 'Translate…'" just
-              before it) — no second line, no label furniture. */}
           {difficulty === 4 ? `Translate: ${question.en}` : question.en}
         </p>
       )}
 
       {/* At ★ the learner picks the ONE gap this question is about (Dan,
-          2026-09-18) — content-sized buttons, centred, never full width. */}
+          2026-09-18) — content-sized chips, centred, never full width. */}
       {difficulty === 1 && slots.length > 0 && (
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
           <span className="text-[color:var(--cahier-ink)]/70">Focus on:</span>
@@ -350,8 +355,8 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               onClick={() => chooseGap(g)}
               className={
                 facileGap === g
-                  ? "rounded-lg border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-rule)]/40 px-3 py-1 uppercase tracking-wide"
-                  : "rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1 uppercase tracking-wide text-[color:var(--cahier-ink)]/70"
+                  ? "rounded-lg border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-rule)]/40 px-2.5 py-0.5 uppercase tracking-wide"
+                  : "rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 uppercase tracking-wide text-[color:var(--cahier-ink)]/70"
               }
             >
               {g === "verb" ? "Verb" : "Article"}
@@ -362,7 +367,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
       {/* Sentence area — ★/★★ show inline dropdowns, ★★★ free text, 🎁 the
           Bonus round: the whole French sentence from the English prompt. */}
-      <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-3">
+      <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-2">
         {difficulty === 3 || difficulty === 4 ? (
           <input
             type="text"
@@ -373,16 +378,19 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               if (e.key === "Enter") check();
             }}
             placeholder={difficulty === 4 ? "Write the whole sentence in French…" : "Écrivez la phrase complète…"}
-            className="w-full rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-center text-lg font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none"
+            className="w-full rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1.5 text-center text-base font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none"
             autoCapitalize="sentences"
             spellCheck={false}
           />
         ) : slots.length === 0 ? (
-          <p className="text-center text-sm text-[color:var(--cahier-ink)]/60">
-            This lesson&apos;s generator has no slots; use ★★★ to type the sentence.
-          </p>
+          /* POINT FORM, NOT PROSE (Dan, 2026-09-18: "all explanatory texts
+             should be in point form rather than in paragraph prose"). */
+          <ul className="list-disc space-y-1 pl-5 text-left text-sm text-[color:var(--cahier-ink)]/70">
+            <li>This lesson has no slots to pick from.</li>
+            <li>Choose ★★★ and type the whole sentence.</li>
+          </ul>
         ) : (
-          <p className="card-hand text-center text-lg leading-loose text-[color:var(--cahier-ink)]" lang="fr">
+          <p className="card-hand text-center text-base leading-loose text-[color:var(--cahier-ink)]" lang="fr">
             {slots.map((s, i) => {
               // Fixed text slot — render as-is, with a trailing space unless
               // the chunk ends in an apostrophe (French elision: « l' », « d' »
@@ -398,7 +406,8 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                   </span>
                 );
               }
-              // Blanked slot — render a dropdown inline.
+              // Blanked slot — render a dropdown inline, no wider than its
+              // longest word (Dan, 2026-09-18).
               const idx = pickIndex(s.key)!;
               const value = picks[idx] ?? "";
               return (
@@ -413,7 +422,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                       return next;
                     })
                   }
-                  className="mx-1 inline-block min-w-32 rounded-md border-2 border-dashed border-[color:var(--cahier-ink)] bg-white px-2 py-0.5 align-baseline text-base font-bold"
+                  className="mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed border-[color:var(--cahier-ink)] bg-white px-1.5 py-0.5 align-baseline text-base font-bold"
                 >
                   <option value="">[{s.key}]</option>
                   {(s.choices ?? []).map((c) => (
@@ -430,21 +439,33 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
 
       {/* Check button — English chrome (Dan, 2026-09-18: "CHECK - REDO -
           END"), and deliberately secondary: Random is this tab's one
-          primary. */}
-      <div className="flex justify-center">
+          primary. The three sit on ONE line, compact — they are the same
+          step's controls and must not spill (Dan, 2026-09-18). */}
+      <div className="flex flex-nowrap justify-center gap-2">
         <button
           type="button"
           onClick={check}
-          className="cahier-btn"
+          className="cahier-btn cahier-btn--compact"
         >
           ✅ CHECK
+        </button>
+        <button type="button" onClick={handleRedo} className="cahier-btn cahier-btn--compact">
+          ✏️ REDO
+        </button>
+        <button
+          type="button"
+          onClick={handleFinish}
+          disabled={entries.length === 0}
+          className="cahier-btn cahier-btn--compact disabled:opacity-40"
+        >
+          🏁 END
         </button>
       </div>
 
       {/* Feedback */}
       {result && (
         <div
-          className={`rounded-lg border-2 p-3 text-center text-sm ${
+          className={`rounded-lg border-2 p-2 text-center text-sm leading-tight ${
             result.ok
               ? "border-[color:var(--drill-ok)] bg-[color:var(--drill-ok-bg)]"
               : "border-[color:var(--drill-bad)] bg-[color:var(--drill-bad-bg)]"
@@ -469,21 +490,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           )}
         </div>
       )}
-
-      {/* Toolbar */}
-      <div className="flex justify-center gap-2">
-        <button type="button" onClick={handleRedo} className="cahier-btn">
-          ✏️ REDO
-        </button>
-        <button
-          type="button"
-          onClick={handleFinish}
-          disabled={entries.length === 0}
-          className="cahier-btn disabled:opacity-40"
-        >
-          🏁 END
-        </button>
-      </div>
     </div>
   );
 }
