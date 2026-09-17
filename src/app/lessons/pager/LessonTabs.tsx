@@ -364,7 +364,11 @@ function Concept({ c }: { c?: LessonConcept }) {
       {pane === "claim" && (
         <>
           <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
-          <p className="mt-2">{c.contrast}</p>
+          {/* A DIV, NOT A P — a lesson's contrast may be POINT FORM (Dan,
+              2026-09-18: "all explanatory texts should be in point form"),
+              and a list cannot live inside a paragraph. String content
+              renders exactly as it did. */}
+          <div className="mt-2">{c.contrast}</div>
         </>
       )}
 

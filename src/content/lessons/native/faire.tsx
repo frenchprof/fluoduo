@@ -23,10 +23,16 @@ export const faireLesson: NativeLesson = {
       <p className="mt-2 text-sm text-[color:var(--cahier-ink)]" lang="fr">
         je fais · tu fais · il/elle fait · nous faisons · vous <b>faites</b> · ils/elles <b>font</b>
       </p>
-      <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
-        ⚠️ <b>In the negative, du / de la / des all become <span lang="fr">de</span></b> (<span lang="fr">d&rsquo;</span> before a vowel):{" "}
-        <span lang="fr">Je fais <u>du</u> yoga → Je ne fais pas <b>de</b> yoga. · Je ne fais pas <b>d&rsquo;</b>escalade.</span>
-      </p>
+      <div className="mt-3 space-y-1 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
+        <p className="font-bold">
+          ⚠️ In the negative, du / de la / des all become <span lang="fr">de</span>{" "}
+          (<span lang="fr">d&rsquo;</span> before a vowel)
+        </p>
+        <ul className="list-disc space-y-0.5 pl-5" lang="fr">
+          <li>Je fais <u>du</u> yoga → Je ne fais pas <b>de</b> yoga.</li>
+          <li>Je ne fais pas <b>d&rsquo;</b>escalade.</li>
+        </ul>
+      </div>
     </div>
   ),
   // TIER 1 · stop 24 (Dan's L09). Pairs with aimer: same sentence shape,
@@ -35,12 +41,13 @@ export const faireLesson: NativeLesson = {
   concept: {
     subtitle: "Why du becomes de the moment you say no",
     contrast: (
-      <>
-        <i lang="fr">Du</i> looks like a word of its own. It is not: it is{" "}
-        <i lang="fr">de</i> + <i lang="fr">le</i>, merged &mdash; and{" "}
-        <i lang="fr">des</i> is <i lang="fr">de</i> + <i lang="fr">les</i>. Once you can see
-        the two halves, the negative stops being a rule to memorise.
-      </>
+      /* POINT FORM (Dan, 2026-09-18) — the explanatory claim as halves the
+         eye can take one at a time, not a sentence to unpack. */
+      <ul className="list-disc space-y-1 pl-5">
+        <li><i lang="fr">Du</i> is not one word — it is <i lang="fr">de</i> + <i lang="fr">le</i>, merged.</li>
+        <li><i lang="fr">Des</i> is <i lang="fr">de</i> + <i lang="fr">les</i>.</li>
+        <li>See the two halves → the negative stops being a rule to memorise.</li>
+      </ul>
     ),
     question: (
       <>
@@ -49,13 +56,12 @@ export const faireLesson: NativeLesson = {
       </>
     ),
     answer: (
-      <>
-        <i lang="fr">Je ne fais pas <b>de</b> yoga.</i> The <i lang="fr">le</i>{" "}half names a
-        portion of something, and a negative leaves no portion to name &mdash; so that half
-        drops and the <i lang="fr">de</i> that was always there is what you hear. Compare{" "}
-        <i lang="fr">Je n&rsquo;aime pas le sport</i>, where the article stays: preference is
-        about the whole category, not a portion of it.
-      </>
+      <ul className="list-disc space-y-1 pl-5">
+        <li><i lang="fr">Je ne fais pas <b>de</b> yoga.</i></li>
+        <li>The <i lang="fr">le</i>{" "}half names a <b>portion</b> — a negative leaves no portion to name, so that half drops.</li>
+        <li>The <i lang="fr">de</i> was always there — it is what you hear.</li>
+        <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i>: the article stays — preference names the whole <b>category</b>, not a portion.</li>
+      </ul>
     ),
     pitfallHeads: ["the affirmative form", "after a negation"],
     pitfall: [
@@ -71,7 +77,12 @@ export const faireLesson: NativeLesson = {
       { q: <>She does not do dancing.</>,
         a: <><i lang="fr">Elle ne fait pas <b>de</b> danse.</i></> },
       { q: <>Why does <i lang="fr">aimer</i> not behave this way?</>,
-        a: <>Its article is not a portion &mdash; it names the category, which the negative does not remove.</> },
+        a: (
+          <ul className="list-disc space-y-1 pl-5">
+            <li>Its article names the <b>category</b>, not a portion.</li>
+            <li>A negative does not remove a category.</li>
+          </ul>
+        ) },
     ],
     remember: (
       <>
