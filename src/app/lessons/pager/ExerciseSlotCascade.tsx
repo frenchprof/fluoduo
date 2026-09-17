@@ -109,21 +109,17 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
     setResult(null);
   };
 
-  // Initial mount — generate the first question. Mount-only, so the learner's
-  // first impression is a real slot-cascade, not an empty slot.
+  // Initial mount — generate the first question. Mount-only: generation
+  // shuffles (Math.random), which must live in an effect so SSR and the first
+  // client render agree — the house rule every drill follows.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- randomness lives in effects (SSR hydration rule)
     generate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Re-generate when an axis pin changes — the slot-cascade should react to
-  // the dropdown. Skipped on initial mount (the effect above handles that).
-  const firstRun = useMemo(() => ({ done: false }), []);
-  useEffect(() => {
-    if (firstRun.done) generate();
-    firstRun.done = true;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pinned]);
+  // A pin change regenerates IN ITS HANDLER (setPinned + generate together),
+  // not in an effect on `pinned` — no first-run guard, no setState-in-effect.
 
   if (!question) return null;
 
@@ -164,6 +160,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
       next[ax.key] = pick(ax.options).value;
     });
     setPinned(next);
+    generate(next);
   };
 
   const handlePronounce = () => {
@@ -210,9 +207,11 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               <span className="font-bold text-[color:var(--cahier-ink)]/70">{ax.label}</span>
               <select
                 value={pinned[ax.key] ?? ""}
-                onChange={(e) =>
-                  setPinned((p) => ({ ...p, [ax.key]: e.target.value }))
-                }
+                onChange={(e) => {
+                  const next = { ...pinned, [ax.key]: e.target.value };
+                  setPinned(next);
+                  generate(next);
+                }}
                 className="min-w-32 rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-2 py-1 font-bold text-[color:var(--cahier-ink)]"
                 lang="fr"
               >
