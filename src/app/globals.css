@@ -4704,6 +4704,15 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
      clears AA against that orange. */
   --key-bg: var(--fam-tools);
   color: var(--fam-practice-ink);
+  /* THICK BY STROKE, NOT BY WEIGHT (Dan, 2026-09-18: *"on top of it being in
+     an orange band, the text on it should be thick and strong"*). The hand
+     face is a handwriting font with one stroke weight — font-weight: 900
+     changes nothing the eye can see in it. A stroke in the text's own colour
+     fattens the glyphs for real, and paint-order keeps the stroke behind the
+     fill so it thickens rather than hollows. Serves NEXT PART IS BELOW, PICK
+     AS YOU WISH and PICK FOR ME alike — one cue language, one weight. */
+  -webkit-text-stroke: calc(0.055rem + var(--fs-step) * 0.055) var(--fam-practice-ink);
+  paint-order: stroke fill;
 }
 /* THE ARROWS BLINK, THEY DO NOT SPIN OR SLIDE. Dan drew three of them under
    the button pointing down, which is the direction the feed moves — so the
