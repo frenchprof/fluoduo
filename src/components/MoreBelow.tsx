@@ -223,6 +223,16 @@ export default function MoreBelow({
            way to open it. */
         root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, summary, [role='button']"),
       )) {
+        /* THE CUE NEVER COUNTS ITSELF. The band is a button inside this
+           scroller, sitting in the very zone this test measures — counted, a
+           mounted cue always "covers a control", unmounts, re-measures with
+           itself gone, remounts: mount/unmount at frame rate, on every page
+           where the cue has room to appear. Measured 17 Sep on staging:
+           90 band mounts in 3 seconds on a lesson nobody had touched. The
+           Schmitt trigger below guards `left`; `covered` had no such guard,
+           and this line is it — the cue's own answer must not depend on the
+           cue's own presence. */
+        if (anchorEl?.contains(el)) continue;
         const r = el.getBoundingClientRect();
         if (r.width < 4 || r.height < 4) continue;
         if (r.bottom > top && r.top < rail.bottom && r.right > rail.left && r.left < rail.right) return true;
