@@ -58,7 +58,7 @@ export const faireLesson: NativeLesson = {
     answer: (
       <ul className="list-disc space-y-1 pl-5">
         <li><i lang="fr">Je ne fais pas <b>de</b> yoga.</i></li>
-        <li>The <i lang="fr">le</i> half names a <b>portion</b> — a negative leaves no portion to name, so that half drops.</li>
+        <li>The <i lang="fr">le</i>{" "}half names a <b>portion</b> — a negative leaves no portion to name, so that half drops.</li>
         <li>The <i lang="fr">de</i> was always there — it is what you hear.</li>
         <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i>: the article stays — preference names the whole <b>category</b>, not a portion.</li>
       </ul>
