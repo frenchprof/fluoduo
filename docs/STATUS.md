@@ -6,6 +6,57 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 17 Sep — the slot-cascade Exercise lands on faire, by patch and by hand (glm-lane, ZCode/GLM)
+
+**Two commits on `glm/rectification` (this session's only STATUS edit): `91ee964`
+and the strip below. PR open; not merged — integration is fluoduo-main's.**
+
+The chat.z.ai session's rectification arrived as patches, and the patch had
+lost its own integration: `0002` carried the three NEW files
+(`ExerciseSlotCascade.tsx`, `RECTIFICATION.md`, `AUDIT-SPEC.md`) but none of the
+three modifications its own message listed — the staging split had let the
+LessonPager gate, the aimer exports and the faire retrofit ride inside the
+TYPOGRAPHY commit, which Dan threw out whole (it rewrites 326 `text-[Npx]`
+literals per-file — the opposite of the 5 Sep ramp ruling). Re-derived all
+three from the specs on this machine; `git am` was never used.
+
+**`91ee964` — the cumulative bank.** `faire.gen.ts` imports aimer's
+`VERBS/NOUNS/END_EXPORT` (now exported, `conj` generalized) and builds
+`VERB_BANK` (Frame A liking + Frame B doing) and `NOUN_BANK` (definite and
+partitive on every noun; `NOT_FAIREABLE` = films, livres, concerts, piano,
+cinéma — « lecture » stays, « faire de la lecture » is French). The `verb`
+axis replaces the old `partitive` axis — the article is now the ANSWER asked
+at ★★, so pinning it would pin the answer. All ten articles are the article
+slot's choices, on the distractor ruling. **verify58's oracle caught the
+elision on the first run:** `sv` said « Ils n' adorent » where `sentence()`
+glues « n'adorent » — the correct sentence was not in `easyOptions`. The
+template now builds the glue the same way the slots do.
+
+**The strip (second commit).** The cascade shipped with a during-run
+Score/Streak/Best bar and its own inline summary — Look B, against the 16 Sep
+rulings. Both gone; 🏁 now hands `entries` to LessonPager through `onFinish`,
+which sets the score and flips `end` — so the SIO write, XP and elapsed are
+the END EFFECT'S, once, in one place. No fanfare is wired to the click
+(verify660's shape holds; the pager's own `next()` still plays stage on the
+card flow). **Kept, on Dan's instruction: the French pedagogical labels**
+« ✅ Je vérifie / ✏️ Refaire / 🏁 Terminer » — a deliberate slice of the
+english-chrome rule, the forty-free-repetitions argument from
+REGRESSIONS_VS_WITHDRCHAN §6, and Dan's call to make.
+
+**Verified here:** tsc clean · `verify58` 19/19 (both new-bank generators
+execute under it) · `verify41` 33/33 · `verify660` 13/13 · full build
+(check:short + check:sios + export) · 16/16 browser checks at 390px and
+1280px — the Verbe axis offers aimer/adorer/détester/faire, adorez + the
+noun's own definite is ✔, aime + du is ✘ (the frame check working).
+Screenshots in the PR body.
+
+**Not done, on purpose:** the ~14 Category A ports (aller first, Frame D —
+preposition + place, its slot layout changes with the verb's frame; the
+exports it needs are already on this branch), the 49-lesson content audit and
+the ~15-route UI/UX audit (AUDIT-SPEC.md is the shape), and the typography
+ramp (a proper `globals.css` ramp + verify106 update, never per-file
+conversions).
+
 ## 16 Sep, evening — MémoiRecall goes back into the lesson, Form moves ahead of Idea (fluoduo-main)
 
 **#397 → `992f965`, deploy 108.** Three of Dan's messages in an hour, each

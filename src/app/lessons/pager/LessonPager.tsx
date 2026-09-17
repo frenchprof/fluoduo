@@ -33,6 +33,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
 import { buildCards, type Exercise } from "./buildCards";
+import ExerciseSlotCascade from "./ExerciseSlotCascade";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
 import { loadProgress, markSioDone } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -523,6 +524,31 @@ export default function LessonPager({
         </div>
   );
 
+  // The Exercise tab's content: the slot-cascade for `faire` (the reference
+  // lesson, RECTIFICATION.md), the level chooser for everything else. Built
+  // as a variable so the LessonTabs mount below stays one prop per line —
+  // verify71 reads that mount up to its first `/>`, and an inline element
+  // would end its slice early.
+  const exerciseNode = lesson?.slug === "faire" ? (
+    <ExerciseSlotCascade
+      lesson={lesson}
+      activityKey={activityKey}
+      // 🏁 lands on the pager's own end card: setScore feeds the accuracy
+      // the end effect writes, and setI past the queue flips `end` — the SIO
+      // write, XP and elapsed all live there.
+      onFinish={(entries) => {
+        setScore({
+          ok: entries.filter((e) => e.ok).length,
+          total: entries.length,
+        });
+        setAsked(true);
+        setI(queue?.length ?? 0);
+      }}
+    />
+  ) : (
+    chooser
+  );
+
   return (
     <DrillShell
       exitHref={exitHref}
@@ -550,7 +576,17 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
-          exercise={chooser}
+          // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
+          // one-card chooser swaps, the moment a level is picked, to cards
+          // that hide the slot structure. Slotted lessons opt in here by
+          // slug; `faire` is the reference implementation. Everything else
+          // keeps the chooser until its generator carries a cumulative bank.
+          // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
+          // one-card chooser swaps, the moment a level is picked, to cards
+          // that hide the slot structure. Slotted lessons opt in by slug;
+          // `faire` is the reference implementation. Everything else keeps
+          // the chooser until its generator carries a cumulative bank.
+          exercise={exerciseNode}
           // AN ATELIER OPENS ON FORMS (Dan, 2026-08-31: "Atelier's Memo is to
           // open on the range of sentences and vocabulary one is expected to
           // use or understand. Simple as that"). Forms is exactly that pair —
