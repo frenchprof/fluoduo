@@ -6,6 +6,44 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 18 Sep — Dan reviews the Exercise tab; seven rulings, all shipped (glm-lane, ZCode/GLM)
+
+**One branch `glm/cascade-dan-rulings`, this session's only STATUS edit.** Dan
+walked the restored Exercise group by group and sent seven rulings in one
+sitting; every one is on the branch, browser-verified, and recorded in
+RECTIFICATION.md's 18 Sep update with his words.
+
+**FAIRE STANDS ALONE** (*"I prefer to keep Faire separate on its own"*): the
+Verbe axis now offers faire · écouter · lire · regarder — the partitive
+hobby-verb family — each verb with the nouns it genuinely takes, the pairing
+living in ONE `NOUNS_FOR` map (« écouter du sport » is not French, so the noun
+follows the verb; « faire des livres » isn't either, so livres belongs to
+lire). The aimer verbs are out of faire. verify58's oracle rolled the whole
+new bank clean.
+
+**THE CUE LANGUAGE GREW A SECOND AND THIRD SENTENCE.** PICK AS YOU WISH over
+the dropdowns and PICK FOR ME at Random — and Dan ruled the band text itself
+*"should be thick and strong"*, which `font-weight: 900` cannot deliver in the
+hand face (one stroke weight, weight changes nothing the eye can see). The
+bands are thick BY STROKE now — `-webkit-text-stroke` in the text's own
+colour, `paint-order: stroke fill` so it fattens rather than hollows — and
+NEXT PART IS BELOW inherits it, one cue language, one weight.
+
+**RANDOM IS THE MAIN BUTTON** — primary, a size up; CHECK is deliberately
+secondary. **The buttons went English**: ✅ CHECK · ✏️ REDO · 🏁 END (reversing
+the 17 Sep keep-French-labels note; the later ruling wins). **★ lets the
+learner choose the gap** — verb or article, two content-sized chips, since
+★★ takes both. **🎁 Bonus joined the ladder** at every stop, labels from
+ENTRY_LABELS, the reward pen for the fourth tier — and the Bonus round HAS
+ITS FIELD: the English sentence is the prompt, the whole French sentence is
+typed, the French meta and noun withdrawn because they are the answer.
+
+**Verified:** tsc clean · verify58 19/19 · verify41 33/33 · verify22 33/33 ·
+verify19b 13/13 (the bands reuse tokens; the stroke is a token colour too) ·
+13/13 browser checks at 390px — four tiers, both bands, stroked text, English
+labels, family-only Verbe axis, ★-ARTICLE blanking exactly the article gap,
+Bonus prompt + field + verdict. Screenshots in the PR.
+
 ## 17 Sep — the slot-cascade Exercise lands on faire, by patch and by hand (glm-lane, ZCode/GLM)
 
 **Two commits on `glm/rectification` (this session's only STATUS edit): `91ee964`

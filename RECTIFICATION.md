@@ -6,6 +6,37 @@
 > done with the user (Dr Daniel Chan) over one session; the architecture decisions
 > here are SETTLED unless Dan reopens them.
 >
+> **UPDATE 2026-09-18 (Dan's review of the restored Exercise, glm-lane).**
+> Seven rulings, all shipped the same day:
+>
+> 1. **FAIRE STANDS ALONE** — *"I prefer to keep Faire separate on its own to
+>    allow it to be worked on on its own."* Its Verbe dropdown drills the
+>    PARTITIVE HOBBY-VERB FAMILY — faire · écouter · lire · regarder — each
+>    with the nouns it genuinely takes (écouter → musique/chansons, lire →
+>    livres/BDs, regarder → films/vidéos, faire + every activity). The aimer
+>    verbs are OUT of faire and stay in the aimer lesson. **This supersedes
+>    the cumulative-bank-on-faire example in §"The buildup pattern" below**:
+>    the buildup pattern itself is not dead, but a lesson imports its FAMILY,
+>    not its predecessors, unless Dan asks otherwise. The 12-frame taxonomy
+>    and the migration table remain the map.
+> 2. **Two orange bands, one cue language** — PICK AS YOU WISH over the three
+>    dropdowns, PICK FOR ME at Random. Band text is THICK BY STROKE
+>    (`-webkit-text-stroke` + `paint-order`) because the hand face ignores
+>    font-weight — this thickens NEXT PART IS BELOW too, which Dan called
+>    "insufficient" as it was.
+> 3. **Random is THE main button** — primary and a size up; everything else
+>    on the tab is secondary to it.
+> 4. **English buttons**: ✅ CHECK · ✏️ REDO · 🏁 END (reversing the 17 Sep
+>    keep-French-labels instruction — Dan's later ruling wins).
+> 5. **★ lets the learner choose the gap** — verb or article ("if
+>    intermédiaire involves two gaps, Facile should allow users to decide if
+>    they want to focus on one or the other").
+> 6. **🎁 Bonus joins the ladder at every stop** — ★/★★/★★★/🎁, labels from
+>    ENTRY_LABELS, the reward pen for the fourth tier.
+> 7. **Bonus has a full-sentence field** — the English sentence is the
+>    prompt, the whole French sentence is typed; the French meta and noun are
+>    withdrawn (they are the answer).
+>
 > **UPDATE 2026-09-17 (late session)** — pulled latest main (`98f485d`, deploy
 > 108) which includes Claude's PRs #395–#398. These changed the lesson tab
 > structure: tabs are now English-named and reordered to `Goal · Form · Idea ·
