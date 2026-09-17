@@ -36,16 +36,6 @@ import { ENTRY_LABELS } from "@/lib/lessonEntry";
 
 type Difficulty = 1 | 2 | 3 | 4; // Facile / Moyen / Difficile / Bonus
 
-// Derived from ENTRY_LABELS, the one source (verify22: a second hand-built
-// picker is what the literal would mean). The cascade's banner is MID-RUN and
-// cycleable, unlike the entry chooser — but it wears the entry chooser's names.
-const DLABEL: Record<Difficulty, string> = {
-  1: `${ENTRY_LABELS[1].stars} ${ENTRY_LABELS[1].name}`,
-  2: `${ENTRY_LABELS[2].stars} ${ENTRY_LABELS[2].name}`,
-  3: `${ENTRY_LABELS[3].stars} ${ENTRY_LABELS[3].name}`,
-  4: `${ENTRY_LABELS[4].stars} ${ENTRY_LABELS[4].name}`,
-};
-
 // The app's own three-level scale (good/medium/weak) IS the ★/★★/★★★ ladder
 // — never a second set of greens and reds (verify19b's ratchet holds this).
 // Bonus wears the reward pen: it is the celebration tier, not a fourth danger.
@@ -211,22 +201,44 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
   // ── MAIN EXERCISE UI ─────────────────────────────────────────────────────
   return (
     <div className="space-y-4 pt-2">
-      {/* Difficulty banner — cycleable mid-run, no one-shot chooser */}
-      <div className="flex flex-wrap items-center justify-center gap-2 rounded-xl border-2 border-yellow-300 bg-yellow-50 p-2.5">
-        <span className="text-xs font-bold text-yellow-900">Choose your difficulty:</span>
-        {([1, 2, 3, 4] as Difficulty[]).map((lv) => (
-          <button
-            key={lv}
-            type="button"
-            onClick={() => cycleDifficulty(lv)}
-              style={{ background: DIFF_HUE[lv] }}
-              className={`rounded-lg px-3 py-1.5 text-xs font-black text-white shadow-sm transition ${
-              difficulty === lv ? "ring-2 ring-black ring-offset-1" : "opacity-70 hover:opacity-100"
-            }`}
-          >
-            {DLABEL[lv]}
-          </button>
-        ))}
+      {/* Difficulty banner — cycleable mid-run, no one-shot chooser.
+          FOUR EQUAL CELLS, STARS STACKED OVER NAME — the entry chooser's own
+          shape (Dan, 2026-09-07: *"Can the choice of difficulty be in four
+          horizontal buttons"*; stacked because a quarter of a 390px phone is
+          ~85px and « ★★★ Difficile » on one line needs 120). A tier's colour
+          is its identity either way: the border and text when it stands,
+          the whole cell when it is chosen. 2026-09-18: the four content-sized
+          chips this replaces wrapped raggedly — "haphazard, not neat". */}
+      <div className="flex flex-col items-center gap-3 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2.5">
+        <p className="fluo-serif text-xl font-black text-[color:var(--fluo-ink)]">
+          Choose your difficulty
+        </p>
+        <div className="grid w-full max-w-sm grid-cols-4 gap-1.5">
+          {([1, 2, 3, 4] as Difficulty[]).map((lv) => {
+            const sel = difficulty === lv;
+            return (
+              <button
+                key={lv}
+                type="button"
+                onClick={() => cycleDifficulty(lv)}
+                title={ENTRY_LABELS[lv].blurb}
+                style={sel
+                  ? { background: DIFF_HUE[lv] }
+                  : { borderColor: DIFF_HUE[lv], color: DIFF_HUE[lv] }}
+                className={`flex flex-col items-center gap-0 rounded-lg border-2 px-1 py-2.5 transition ${
+                  sel
+                    ? "text-white shadow-sm ring-2 ring-[color:var(--cahier-ink)] ring-offset-1"
+                    : "bg-white hover:brightness-95"
+                }`}
+              >
+                <span className="text-xs leading-none">{ENTRY_LABELS[lv].stars}</span>
+                <span className="mt-1 whitespace-nowrap text-[11px] font-black tracking-wide min-[390px]:text-xs">
+                  {ENTRY_LABELS[lv].name}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Live dropdowns for the lesson's declared axes. Two orange bands in
