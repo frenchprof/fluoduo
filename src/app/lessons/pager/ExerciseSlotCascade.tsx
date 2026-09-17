@@ -365,9 +365,17 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         </div>
       )}
 
-      {/* Sentence area — ★/★★ show inline dropdowns, ★★★ free text, 🎁 the
-          Bonus round: the whole French sentence from the English prompt. */}
-      <div className="rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-2">
+      {/* THE ANSWER SECTION IS THE HERO (Dan, 2026-09-18: *"the most important
+          section — where the answer is requested"*). Everything else on this
+          tab prepares this box; the hierarchy rule says the most important
+          thing is bigger and heavier, so it takes the strongest frame on the
+          page (the house ink, full white paper) and the largest French on the
+          tab, with a small caps label naming it — the one label that earns
+          its place by naming where the learner acts. */}
+      <div className="flex min-h-[6.5rem] flex-col justify-center rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-sm">
+        <p className="mb-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-[color:var(--cahier-ink)]/50">
+          Your answer
+        </p>
         {difficulty === 3 || difficulty === 4 ? (
           <input
             type="text"
@@ -378,7 +386,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               if (e.key === "Enter") check();
             }}
             placeholder={difficulty === 4 ? "Write the whole sentence in French…" : "Écrivez la phrase complète…"}
-            className="w-full rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-1.5 text-center text-base font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none"
+            className="w-full rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-center text-lg font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none"
             autoCapitalize="sentences"
             spellCheck={false}
           />
@@ -390,7 +398,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             <li>Choose ★★★ and type the whole sentence.</li>
           </ul>
         ) : (
-          <p className="card-hand text-center text-base leading-loose text-[color:var(--cahier-ink)]" lang="fr">
+          <p className="card-hand text-center text-xl leading-relaxed text-[color:var(--cahier-ink)]" lang="fr">
             {slots.map((s, i) => {
               // Fixed text slot — render as-is, with a trailing space unless
               // the chunk ends in an apostrophe (French elision: « l' », « d' »
@@ -407,7 +415,8 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                 );
               }
               // Blanked slot — render a dropdown inline, no wider than its
-              // longest word (Dan, 2026-09-18).
+              // longest word (Dan, 2026-09-18), but at the HERO size: this
+              // is where the answer is given.
               const idx = pickIndex(s.key)!;
               const value = picks[idx] ?? "";
               return (
@@ -422,7 +431,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                       return next;
                     })
                   }
-                  className="mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed border-[color:var(--cahier-ink)] bg-white px-1.5 py-0.5 align-baseline text-base font-bold"
+                  className="mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed border-[color:var(--cahier-ink)] bg-white px-2 py-0.5 align-baseline text-lg font-bold"
                 >
                   <option value="">[{s.key}]</option>
                   {(s.choices ?? []).map((c) => (
