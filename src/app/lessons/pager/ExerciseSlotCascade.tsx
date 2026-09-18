@@ -272,11 +272,47 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           no longer fits. */}
       {axes.length > 0 && (
         <div className="flex items-stretch gap-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
-          {/* LEFT · PICK AS YOU WISH */}
+          {/* LEFT · PICK AS YOU WISH — with POLARITÉ BESIDE IT (Dan,
+              2026-09-19: "the polarity switch up beside PICK AS YOU WISH"),
+              so the whole left half is one row of choices then the formula. */}
           <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
-            <div aria-hidden className="fluo-cue flex flex-col items-center">
-              <div className="fluo-nextq">PICK AS YOU WISH</div>
-              <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+            <div className="flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1">
+              <div aria-hidden className="fluo-cue flex flex-col items-center">
+                <div className="fluo-nextq">Your Pick</div>
+                <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+              </div>
+              {/* POLARITÉ — a split pill, not a dropdown. Tapping the selected
+                  side unpins it (back to the roll); −ve answers "négatif",
+                  +ve "affirmatif", straight into `pinned.polarity`. */}
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">Polarité</span>
+                <div className="flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)] text-xs font-black">
+                  {([["neg", "−ve."], ["aff", "+ve."]] as const).map(([val, label]) => {
+                    const on = pinned.polarity === val;
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => {
+                          const next = { ...pinned };
+                          if (on) delete next.polarity; else next.polarity = val;
+                          setPinned(next);
+                          generate(next);
+                        }}
+                        className={`px-2.5 py-1 leading-none transition ${
+                          on
+                            ? val === "neg"
+                              ? "bg-[color:var(--drill-bad)] text-white"
+                              : "bg-[color:var(--tier-good)] text-white"
+                            : "bg-white text-[color:var(--cahier-ink)]/60 hover:bg-[color:var(--cahier-rule)]/30"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
             {/* THE FORMULA ROW — Sujet + Verbe + Objet, "+" between */}
             <div className="flex flex-wrap items-end justify-center gap-1">
@@ -312,38 +348,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                 </div>
               ))}
             </div>
-            {/* POLARITÉ — a split pill, not a dropdown. Tapping the selected
-                side unpins it (back to the roll); −ve answers "négatif",
-                +ve "affirmatif", straight into `pinned.polarity`. */}
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">Polarité</span>
-              <div className="flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)] text-xs font-black">
-                {([["neg", "−ve."], ["aff", "+ve."]] as const).map(([val, label]) => {
-                  const on = pinned.polarity === val;
-                  return (
-                    <button
-                      key={val}
-                      type="button"
-                      onClick={() => {
-                        const next = { ...pinned };
-                        if (on) delete next.polarity; else next.polarity = val;
-                        setPinned(next);
-                        generate(next);
-                      }}
-                      className={`px-2.5 py-1 leading-none transition ${
-                        on
-                          ? val === "neg"
-                            ? "bg-[color:var(--drill-bad)] text-white"
-                            : "bg-[color:var(--tier-good)] text-white"
-                          : "bg-white text-[color:var(--cahier-ink)]/60 hover:bg-[color:var(--cahier-rule)]/30"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
 
           {/* THE DIVIDER */}
@@ -353,7 +357,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               button to push is always the RANDOM"). */}
           <div className="flex flex-col items-center justify-center gap-1">
             <div aria-hidden className="fluo-cue flex flex-col items-center">
-              <div className="fluo-nextq">PICK FOR ME</div>
+              <div className="fluo-nextq">Random Pick</div>
               <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
             </div>
             <button
@@ -368,50 +372,13 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         </div>
       )}
 
-      {/* LISTEN — standalone, centred between the picker and the answer
-          (Dan's mockup): one pill, its own line. */}
-      <div className="flex justify-center">
-        <button
-          type="button"
-          onClick={handlePronounce}
-          className="cahier-btn cahier-btn--compact"
-          title="Hear the correct sentence"
-        >
-          🔊 Listen
-        </button>
-      </div>
-
-      {/* Slot-cascade prompt visual: the prompt meta + the bare noun (the
-          thing the rest of the sentence is built around) + the English
-          reference. AT BONUS NONE OF THE FRENCH SHOWS — the meta prints the
-          conjugated verb and the noun, which are the whole answer there; the
-          English sentence becomes the prompt ("Translate: …", Dan
-          2026-09-18) and everything the learner must produce is withdrawn. */}
-      {difficulty !== 4 && question.meta && (
-        <p className="text-center text-xs uppercase leading-tight tracking-wider text-[color:var(--cahier-ink)]/60">
-          {question.meta}
-        </p>
-      )}
-      {difficulty !== 4 && question.big && (
-        <p
-          className="card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]"
-          lang={question.bigLang ?? "fr"}
-        >
-          {question.big}
-        </p>
-      )}
-      {question.en && (
-        <p
-          className={
-            difficulty === 4
-              ? "card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]"
-              : "text-center text-sm italic leading-tight text-[color:var(--cahier-ink)]/70"
-          }
-          lang="en"
-        >
-          {difficulty === 4 ? `Translate: ${question.en}` : question.en}
-        </p>
-      )}
+      {/* NO META, NO BARE NOUN (Dan, 2026-09-19: "delete those two redundant
+          lines") — the verb-gloss meta and the lone noun both duplicated what
+          the gapped sentence below already shows, and the meta printed the
+          conjugated verb the ★★ blank was about to ask for. The French
+          gapped sentence is the prompt now, with the English translation
+          directly beneath it ("english translation below the french gapped
+          sentence") — inside the answer box, one place, one reading order. */}
 
       {/* At ★ the learner picks the ONE gap this question is about (Dan,
           2026-09-18) — content-sized chips, centred, never full width. Each
@@ -454,6 +421,15 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         <p className="mb-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-[color:var(--cahier-ink)]/50">
           Your answer
         </p>
+        {/* AT BONUS the English sentence is the prompt — "Translate: …" rides
+            the top of this box (Dan, 2026-09-18) because nothing else may
+            show. At every other tier the FRENCH gapped sentence leads and the
+            English translation sits directly beneath it (Dan, 2026-09-19). */}
+        {difficulty === 4 && question.en && (
+          <p className="mb-2 card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]" lang="en">
+            Translate: {question.en}
+          </p>
+        )}
         {difficulty === 3 || difficulty === 4 ? (
           <input
             type="text"
@@ -529,6 +505,28 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             })}
           </p>
         )}
+        {/* THE ENGLISH TRANSLATION, directly beneath the French gapped
+            sentence (Dan, 2026-09-19) — one reading order: French target
+            first, reference under it, both inside the answer box. */}
+        {difficulty !== 4 && question.en && (
+          <p className="mt-2 text-center text-sm italic leading-tight text-[color:var(--cahier-ink)]/70" lang="en">
+            {question.en}
+          </p>
+        )}
+      </div>
+
+      {/* LISTEN — BELOW the answer box (Dan, 2026-09-19: "move the listen
+          button down"): the learner reads, answers, then hears. One pill,
+          its own line. */}
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={handlePronounce}
+          className="cahier-btn cahier-btn--compact"
+          title="Hear the correct sentence"
+        >
+          🔊 Listen
+        </button>
       </div>
 
       {/* Check button — English chrome (Dan, 2026-09-18: "CHECK - REDO -
