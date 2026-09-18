@@ -488,7 +488,7 @@ export default function LessonPager({
                           nobody is stuck in front of it; a select whose only
                           value you cannot read is a control you cannot use. */}
                       <option value="">Any</option>
-                      {ax.options.map((o) => (
+                      {(typeof ax.options === "function" ? ax.options(pinned) : ax.options).map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
@@ -501,10 +501,14 @@ export default function LessonPager({
                 onClick={() =>
                   setPinned(
                     Object.fromEntries(
-                      axes.map((ax) => [
-                        ax.key,
-                        ax.options[Math.floor(Math.random() * ax.options.length)].value,
-                      ]),
+                      axes.map((ax) => {
+                        // Cascaded axes are functions of the pins drawn so
+                        // far — resolve in order, as the cascade does.
+                        const opts = typeof ax.options === "function"
+                          ? ax.options(pinned)
+                          : ax.options;
+                        return [ax.key, opts[Math.floor(Math.random() * opts.length)].value];
+                      }),
                     ),
                   )
                 }
