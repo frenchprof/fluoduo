@@ -81,7 +81,10 @@ FIXED = [
     ("ca-secrit.tsx",      r"S&rsquo;écrire</i>",      r"is reflexive"),
     ("combien.tsx",        r"il y a</i>",              r"is not really"),
     ("conjugaison-u1.tsx", r"ils n&rsquo;ont pas</i>", r"looks irregular"),
-    ("faire.tsx",          'lang="fr">le</i>',         r"half names a"),
+    # RETIRED 2026-09-19 — Dan purged the Q&A's portion explanation ("the
+    # original Q&A should purge its current content, replacing with what is
+    # in SUM UP"), and the "le half names a" phrasing left the lesson with
+    # it. The SOME/ANY system that replaced it keeps its spaces plainly.
     ("langues-pays.tsx",   r"drops</b>",               r"its article"),
     ("negation.tsx",       r"M&rsquo;appelle</i>",     r"is one unit"),
     ("on-fait-quoi.tsx",   r"produce</b>",             "French. Classroom"),
