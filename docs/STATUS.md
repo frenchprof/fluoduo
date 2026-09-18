@@ -6,6 +6,39 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 18 Sep, later — Dan answers the open questions; five close, one builds (glm-lane, ZCode/GLM)
+
+**Asked one by one, as Dan requested ("I suspect some have already been
+resolved") — his answers, recorded:**
+
+- **Index legibility — DROPPED.** The 22 Aug "I really don't understand how
+  to read it" no longer stands; no legend will be built.
+- **Gender — the flashcards, and a principle: NO BARE NOUNS.** "On the
+  flashcards indeed, but bare nouns are never supposed to occur in French
+  anyway, so there will always be an indication of its gender (directly or
+  indirectly)." That principle is audit material — a lesson that prints a
+  noun without its article (or a partitive that implies one) is a fault.
+- **MémoiRecall's band inside a lesson — KEEP AS IS.** The ✕ and goal badge
+  stay.
+- **Two-column Mémo — ROLL IT OUT EVERYWHERE** (Se présenter's layout, one
+  lesson file at a time). Queued behind the bug button and NumBus.
+- **NumBus worded line — NEED TO SEE IT.** Build it on a branch and show,
+  never describe.
+- **Difficulty choice — SETTLED: the cascade's mid-run banner.** The
+  "abandoned three times" question closes.
+- **Question-aim — SETTLED: the cascade's three dropdowns.** Same closure.
+
+**THE BUG-COLLECTION UPGRADE SHIPS ("Build it now").** The 🐞 form's report
+now has TWO AGENT DOORS beside the Firestore send: 📋 **Copy for the agent**
+(the card's context, categories, details, URL and agent line as one plain
+text, one tap to the clipboard) and 🐙 **File it** (a new Pages Function,
+`functions/api/bugreport.js`, files the same text as a 🐞-prefixed issue on
+frenchprof/fluoduo with `bug`/`learner-report` labels). The function answers
+501 until Dan sets `GITHUB_ISSUE_TOKEN` on the Pages project — a fine-grained
+PAT, this repo only, Issues: Read and write — and the button says so and
+points at Copy until then. Firestore keeps working either way; verify32's
+send() shape is untouched.
+
 ## 18 Sep — Dan reviews the Exercise tab; seven rulings, all shipped (glm-lane, ZCode/GLM)
 
 **One branch `glm/cascade-dan-rulings`, this session's only STATUS edit.** Dan
