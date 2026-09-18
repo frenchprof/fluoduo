@@ -135,16 +135,20 @@ formes = tabs[tabs.find("function Formes("):]
 formes = formes[: formes.find("\n}\n") + 3]
 # REVERSED 2026-09-16 — Dan, of the word list under the Mémo: *"That is
 # actually the MemoiRecall section. We do not need to repeat it if it is
-# already in there."* So Form holds the MÉMO — the model sentences an atelier
-# opens on, which is the half of "the range of sentences and vocabulary" that
-# lives in a lesson — and the vocabulary is MémoiRecall's, one tap away on the
-# same goal, not drawn a second time here. The clause now pins that Form still
-# renders the Mémo and does NOT draw the deck again.
-ok("memo" in formes and "Lexique" not in formes and "/practice/flip-it/" in formes,
-   "Form holds the pattern, with MémoiRecall itself framed under it (16 Sep)",
-   "Form has lost the Mémo it opens on, draws the deck's words as a table again, or no "
-   "longer frames MémoiRecall — Dan: the station is part of the lesson, in the slot the "
-   "list held")
+# already in there."* REVERSED AGAIN 2026-09-19 — Dan, seeing the fold: *"Now
+# that i see what MemoiRecall flashcards look like, they should really be a
+# section of its own."* Form holds the MÉMO alone — the model sentences an
+# atelier opens on — and the flashcards live in the CARDS tab, their own
+# panel, framed there.
+cards_fn = tabs[tabs.find("function Cards("):]
+cards_fn = cards_fn[: cards_fn.find("\n}\n") + 3]
+ok("memo" in formes and "Lexique" not in formes and "/practice/flip-it/" not in formes,
+   "Form holds the Mémo alone (19 Sep) — the cards moved out to their own tab",
+   "Form is drawing the deck again, or a word table — the cards have their own "
+   "section since Dan's 19 Sep ruling")
+ok('key: "cards"' in tabs and "/practice/flip-it/" in cards_fn,
+   "the 🃏 Cards tab exists and frames MémoiRecall in its own panel",
+   "the cards tab is gone or no longer frames the flashcard station")
 ok(re.search(r'key:\s*"formes"', tabs) is not None,
    "\"formes\" is a real tab in the strip",
    "there is no formes tab; the pager would ask for one that does not exist")

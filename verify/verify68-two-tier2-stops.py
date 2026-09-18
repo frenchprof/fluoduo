@@ -375,11 +375,14 @@ if tabs_body:
     # Exercises"*, then, refusing a fifth tab for the cards: *"are cards and
     # forms not the same thing, they should be put under the same umbrella.
     # STOP MULTIPLYING CATEGORIES"*. Still four tabs; the cards are inside Form.
-    check(labels == ["Goal", "Form", "Idea", "Exercise"],
-          "four tabs: ← 🎯 Goal · Form · Idea · Exercise — Bonus parked, the cards under Form",
-          f"the tab strip reads {labels}. Four tabs, in English (Dan, 16 Sep), no tab of "
-          "its own for the word list (under Form) or the bonus (a level of the chooser "
-          "since #97).")
+    # REVERSED AGAIN 2026-09-19 — Dan, on SEEING the fold: *"Now that i see
+    # what MemoiRecall flashcards look like, they should really be a section
+    # of its own."* Five tabs; the cards left Form for the fifth, in the
+    # position his 16 Sep instinct named (after Form, before Idea/Exercise).
+    check(labels == ["Goal", "Form", "Cards", "Idea", "Exercise"],
+          "five tabs: ← 🎯 Goal · Form · 🃏 Cards · Idea · Exercise — Bonus parked, the cards a section of their own",
+          f"the tab strip reads {labels}. Five tabs, in English (Cards added by Dan, "
+          "19 Sep), the bonus still a level of the chooser since #97.")
     # THE SIX-CHARACTER RULE IS GONE, and what replaced it is the thing the rule
     # was standing in for. Six characters was a proxy for "fits a 320px column
     # in one row beside an emoji"; « Exercice » is eight and the proxy said no,
@@ -389,8 +392,8 @@ if tabs_body:
     # column at 320 / 360 / 390 / 430. So the assertion is now the stack, which
     # is what actually makes a long label safe, and a label of any length is
     # fine while it holds.
-    check("flex flex-col" in TABS and "grid-cols-4" in TABS,
-          "the strip stacks emoji over word in four fixed columns — measured to fit "
+    check("flex flex-col" in TABS and "grid-cols-5" in TABS,
+          "the strip stacks emoji over word in five fixed columns — measured to fit "
           "at 320, 360, 390 and 430px with no tab overflowing",
           "the tab strip is no longer a stacked four-column grid. Re-measure before "
           "changing this: in ONE row « 🏋️ Exercice » needs 67px and a 360px phone "
@@ -499,14 +502,15 @@ if formes:
           "the Form panel draws the deck's word list again. MémoiRecall is the deck's "
           "flashcards (Dan, 16 Sep); a table of its words under the Mémo is the duplicate "
           "he sent back.")
-    check("/practice/flip-it/" in f and "<iframe" in f,
-          "and MémoiRecall itself, framed, under the Mémo",
-          "Form no longer frames MémoiRecall (`/practice/flip-it/<deck>/embed`). Dan asked "
-          "for the station back in the slot the list held — it is part of the lesson.")
-    check(re.search(r"<Section[^>]*note=\{count\(", f) is not None,
-          "the flashcards fold says how many cards are behind it",
-          "the MémoiRecall fold carries no count. A closed fold with nothing on it is a "
-          "section nobody opens — deletion with extra steps (the collapse rule).")
+    # REVERSED AGAIN 2026-09-19 — Dan, seeing the fold: *"Now that i see what
+    # MemoiRecall flashcards look like, they should really be a section of its
+    # own."* The frame and the count moved to the Cards tab (its own panel);
+    # Form is the Mémo, full stop. No fold remains, so the count assertion
+    # retired with it — the tab itself is the disclosure now.
+    check("/practice/flip-it/" not in f,
+          "and nothing else — the flashcards moved to their own 🃏 Cards tab (19 Sep)",
+          "Form is framing MémoiRecall again — the cards have had a section of their "
+          "own since Dan's 19 Sep ruling")
 
 
 # ── 8 · long panels collapse, and the right half stays open ────────────────

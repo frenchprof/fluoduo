@@ -6,6 +6,28 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 19 Sep — the flashcards take the fifth tab (glm-lane, ZCode/GLM)
+
+**Dan, seeing the fold: *"Now that i see what MemoiRecall flashcards look
+like, they should really be a section of its own."*** — which reverses his
+own 16 Sep ruling (*"are cards and forms not the same thing… STOP
+MULTIPLYING CATEGORIES"*, #397/#398) and lands exactly where his 16 Sep
+instinct pointed (*"MeMoiRecall might be better even right after SpecuLearn,
+and before the Lesson Idea and Exercises"*).
+
+The strip is FIVE tabs now — 🎯 Goal · 📐 Form · **🃏 Cards** · 💡 Idea · 🏋️
+Exercise — `cards` a NEW key, the others never moved, the lesson still lands
+on Idea. Form holds the Mémo alone. The Cards panel frames the same
+`/practice/flip-it/<deck>/embed` station the fold did, standing OPEN — the
+tab is the disclosure, so there is no fold and no count to carry (the count
+assertion retired with it). verify68 and verify71 each record the reversal in
+place, with the quote.
+
+**Also this session:** faire's Mémo in two columns (rule | example) and the
+SOME/ANY system in Sum up, in Dan's own words (#408); G-Compris confirmed
+LIVE on staging AND production after a false alarm (the texts render inside
+the cahier's iframe — probes reading the host document see only the shell).
+
 ## 18 Sep, later — Dan answers the open questions; five close, one builds (glm-lane, ZCode/GLM)
 
 **Asked one by one, as Dan requested ("I suspect some have already been
