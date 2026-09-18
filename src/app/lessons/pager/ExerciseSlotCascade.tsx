@@ -39,14 +39,15 @@ import { ENTRY_LABELS } from "@/lib/lessonEntry";
 
 type Difficulty = 1 | 2 | 3 | 4; // Facile / Moyen / Difficile / Bonus
 
-// The app's own three-level scale (good/medium/weak) IS the ★/★★/★★★ ladder
-// — never a second set of greens and reds (verify19b's ratchet holds this).
-// Bonus wears the reward pen: it is the celebration tier, not a fourth danger.
+// The app's own scale, in Dan's stated order (2026-09-19: "Green, Yellow,
+// Orange, Red"): Facile green, Moyen yellow, Difficile ORANGE, Bonus RED.
+// The same colour fills the chosen banner cell AND the Your Answer box's
+// background — the box tells you the level you are in at a glance.
 const DIFF_HUE: Record<Difficulty, string> = {
   1: "var(--tier-good)",
   2: "var(--tier-medium)",
-  3: "var(--tier-weak)",
-  4: "var(--dopa-reward)",
+  3: "var(--dopa-reward)",
+  4: "var(--tier-weak)",
 };
 
 /** How many blankable slots each difficulty withdraws.
@@ -261,21 +262,21 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         </div>
       </div>
 
-      {/* THE PICKER, IN TWO HALVES (Dan's 19 Sep mockup): PICK AS YOU WISH on
-          the left — the formula SUJET + VERBE + OBJET, plus the POLARITÉ
-          toggle — and PICK FOR ME on the right, over Random, the main
-          button. A divider between them; one box, two ways in.
+      {/* THE PICKER, TWO OUTLINED BOXES (Dan, 2026-09-19: "the three boxes
+          must be clearly outlined: Your Answer below - Your pick above left -
+          Random pick above right"): Your Pick on the left — the formula
+          SUJET + VERBE + OBJET plus the POLARITÉ toggle — and Random Pick on
+          the right, each in its own ink-outlined box like Your Answer's.
 
           THE OBJET FOLLOWS THE VERB (Dan: "the objet is tied to the verb
           though, not any objet can go with any verb"): its options come from
           the generator's pairing, and changing the verb drops an object that
           no longer fits. */}
       {axes.length > 0 && (
-        <div className="flex items-stretch gap-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
-          {/* LEFT · PICK AS YOU WISH — with POLARITÉ BESIDE IT (Dan,
-              2026-09-19: "the polarity switch up beside PICK AS YOU WISH"),
-              so the whole left half is one row of choices then the formula. */}
-          <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
+        <div className="flex items-stretch gap-2">
+          {/* LEFT BOX · YOUR PICK — with POLARITÉ BESIDE the band (Dan,
+              2026-09-19: "the polarity switch up beside PICK AS YOU WISH"). */}
+          <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-2">
             <div className="flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <div aria-hidden className="fluo-cue flex flex-col items-center">
                 <div className="fluo-nextq">Your Pick</div>
@@ -350,12 +351,9 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             </div>
           </div>
 
-          {/* THE DIVIDER */}
-          <div aria-hidden className="w-0 self-stretch border-l-2 border-[color:var(--cahier-rule)]" />
-
-          {/* RIGHT · PICK FOR ME — Random, the main button (Dan: "the main
-              button to push is always the RANDOM"). */}
-          <div className="flex flex-col items-center justify-center gap-1">
+          {/* RIGHT BOX · RANDOM PICK — Random, the main button (Dan: "the
+              main button to push is always the RANDOM"). */}
+          <div className="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-2">
             <div aria-hidden className="fluo-cue flex flex-col items-center">
               <div className="fluo-nextq">Random Pick</div>
               <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
@@ -417,16 +415,29 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           page (the house ink, full white paper) and the largest French on the
           tab, with a small caps label naming it — the one label that earns
           its place by naming where the learner acts. */}
-      <div className="flex min-h-[6.5rem] flex-col justify-center rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-3 shadow-sm">
-        <p className="mb-1.5 text-center text-[10px] font-bold uppercase tracking-widest text-[color:var(--cahier-ink)]/50">
-          Your answer
+      {/* THE ANSWER BOX (Dan, 2026-09-18: "the most important section — where
+          the answer is requested"; 2026-09-19: one of the THREE clearly
+          outlined boxes, its header in the SAME HAND FONT as the two above
+          ("Use the same font for Your Answer, as copied from the above
+          two"), and its BACKGROUND THE DIFFICULTY'S OWN COLOUR — "Green,
+          Yellow, Orange, Red" — so the box itself says the level you are
+          in. Content in white on the colour; the blanks stay white pills. */}
+      <div
+        className="flex min-h-[6.5rem] flex-col justify-center rounded-xl border-2 border-[color:var(--cahier-ink)] p-3 text-white shadow-sm"
+        style={{ background: DIFF_HUE[difficulty] }}
+      >
+        <p
+          className="mb-1.5 text-center text-lg font-black leading-tight tracking-wide"
+          style={{ fontFamily: "var(--font-fluohand-stack)" }}
+        >
+          Your Answer
         </p>
         {/* AT BONUS the English sentence is the prompt — "Translate: …" rides
             the top of this box (Dan, 2026-09-18) because nothing else may
             show. At every other tier the FRENCH gapped sentence leads and the
             English translation sits directly beneath it (Dan, 2026-09-19). */}
         {difficulty === 4 && question.en && (
-          <p className="mb-2 card-hand text-center text-xl font-black leading-snug text-[color:var(--cahier-ink)]" lang="en">
+          <p className="mb-2 card-hand text-center text-xl font-black leading-snug text-white" lang="en">
             Translate: {question.en}
           </p>
         )}
@@ -447,12 +458,12 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         ) : slots.length === 0 ? (
           /* POINT FORM, NOT PROSE (Dan, 2026-09-18: "all explanatory texts
              should be in point form rather than in paragraph prose"). */
-          <ul className="list-disc space-y-1 pl-5 text-left text-sm text-[color:var(--cahier-ink)]/70">
+          <ul className="list-disc space-y-1 pl-5 text-left text-sm text-white/80">
             <li>This lesson has no slots to pick from.</li>
             <li>Choose ★★★ and type the whole sentence.</li>
           </ul>
         ) : (
-          <p className="card-hand text-center text-xl leading-relaxed text-[color:var(--cahier-ink)]" lang="fr">
+          <p className="card-hand text-center text-xl leading-relaxed text-white" lang="fr">
             {slots.map((s, i) => {
               // Fixed text slot — render as-is, with a trailing space unless
               // the chunk ends in an apostrophe (French elision: « l' », « d' »
@@ -491,7 +502,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                   className={`mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed px-2 py-0.5 align-baseline text-lg font-bold ${
                     hl
                       ? "border-[color:var(--fam-tools)] text-[color:var(--fam-tools)]"
-                      : "border-[color:var(--cahier-ink)]"
+                      : "border-[color:var(--cahier-ink)] text-[color:var(--cahier-ink)]"
                   } bg-white`}
                 >
                   <option value="">[{s.key}]</option>
@@ -509,16 +520,18 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             sentence (Dan, 2026-09-19) — one reading order: French target
             first, reference under it, both inside the answer box. */}
         {difficulty !== 4 && question.en && (
-          <p className="mt-2 text-center text-sm italic leading-tight text-[color:var(--cahier-ink)]/70" lang="en">
+          <p className="mt-2 text-center text-sm italic leading-tight text-white/80" lang="en">
             {question.en}
           </p>
         )}
       </div>
 
-      {/* LISTEN — BELOW the answer box (Dan, 2026-09-19: "move the listen
-          button down"): the learner reads, answers, then hears. One pill,
-          its own line. */}
-      <div className="flex justify-center">
+      {/* THE ACTION ROW — Listen in the SAME ROW as the three (Dan,
+          2026-09-19: "the Listen button should be in the same row as the
+          three below it"), then CHECK · REDO · END (English chrome, Dan
+          2026-09-18). Four compact controls, one line, never spilling;
+          Random remains the tab's one primary. */}
+      <div className="flex flex-wrap justify-center gap-2">
         <button
           type="button"
           onClick={handlePronounce}
@@ -527,13 +540,6 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         >
           🔊 Listen
         </button>
-      </div>
-
-      {/* Check button — English chrome (Dan, 2026-09-18: "CHECK - REDO -
-          END"), and deliberately secondary: Random is this tab's one
-          primary. The three sit on ONE line, compact — they are the same
-          step's controls and must not spill (Dan, 2026-09-18). */}
-      <div className="flex flex-nowrap justify-center gap-2">
         <button
           type="button"
           onClick={check}
