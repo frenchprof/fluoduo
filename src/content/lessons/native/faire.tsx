@@ -63,12 +63,43 @@ export const faireLesson: NativeLesson = {
       </>
     ),
     answer: (
-      <ul className="list-disc space-y-1 pl-5">
-        <li><i lang="fr">Je ne fais pas <b>de</b> yoga.</i></li>
-        <li>The <i lang="fr">le</i>{" "}half names a <b>portion</b> — a negative leaves no portion to name, so that half drops.</li>
-        <li>The <i lang="fr">de</i> was always there — it is what you hear.</li>
-        <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i>: the article stays — preference names the whole <b>category</b>, not a portion.</li>
-      </ul>
+      /* PURGED AND REPLACED (Dan, 2026-09-19): "The original Q&A in this
+         step should purge its current content, replacing with what is in
+         SUM UP" — the portion explanation gave way to the SOME/ANY system,
+         in the two columns of his mockup: SOME's four forms on the left,
+         ANY's four answers on the right. WHAT'S HAPPENING lives HERE too,
+         upstream of the sum-up (Dan: "Sum-up is sum-up, What's happening
+         should be upstream in Q&A or lesson") — examples first, then the
+         rule they add up to. */
+      <>
+        <div className="grid grid-cols-2 gap-x-4">
+          <div>
+            <p className="font-bold">If you do <u>some</u>&hellip;</p>
+            <ul className="mt-1 list-disc space-y-0.5 pl-4">
+              <li>SOME singing → <i lang="fr">Je fais <b>du</b> chant.</i></li>
+              <li>SOME reading → <i lang="fr">Je fais <b>de la</b> lecture.</i></li>
+              <li>SOME fencing → <i lang="fr">Je fais <b>de l&rsquo;</b>escrime.</i></li>
+              <li>SOME exercises → <i lang="fr">Je fais <b>des</b> exercices.</i></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-bold">If you don&rsquo;t do <u>any</u> of the above&hellip;</p>
+            <ul className="mt-1 list-disc space-y-0.5 pl-4" lang="fr">
+              <li>Je ne fais pas <b>de</b> yoga.</li>
+              <li>Je ne fais pas <b>de</b> lecture.</li>
+              <li>Je ne fais pas <b>d&rsquo;</b>escrime.</li>
+              <li>Je ne fais pas <b>d&rsquo;</b>exercices.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-3 font-bold">What&rsquo;s happening?</p>
+        <ul className="mt-1 list-disc space-y-0.5 pl-5">
+          <li>SOME occurs in the positive, ANY in the negative.</li>
+          <li>SOME has 4 forms — <i lang="fr">du · de la · de l&rsquo; · des</i>. ANY has one: <i lang="fr"><b>de</b></i>, which becomes <i lang="fr"><b>d&rsquo;</b></i> before a vowel.</li>
+          <li>Alternatively: ANY can be considered as having 2 forms — <i lang="fr">de</i> before a non-vowel, <i lang="fr">d&rsquo;</i> before one.</li>
+          <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i> — the article stays, positive or negative: it names the category of activity either way.</li>
+        </ul>
+      </>
     ),
     pitfallHeads: ["the affirmative form", "after a negation"],
     pitfall: [
@@ -91,33 +122,17 @@ export const faireLesson: NativeLesson = {
           </ul>
         ) },
     ],
-    /* THE WHOLE SYSTEM, IN DAN'S OWN WORDS (2026-09-19) — the SOME/ANY
-       frame: four forms of SOME, one form of ANY, and the aimer contrast
-       that closes the loop. Renders in the Sum-up pane. */
+    /* SUM-UP IS SUM-UP (Dan, 2026-09-19: "The real SUM UP is in Steps…
+       Sum-up is sum-up, What's happening should be upstream in Q&A or
+       lesson") — the SOME/ANY examples and their rule live in the Q & A
+       pane; what remains here is the decision itself, the flow the Steps
+       pane carries. Nothing else. */
     inShort: (
-      <>
-        <p className="font-bold">If you do <u>some</u>…</p>
-        <ul className="mt-1 list-disc space-y-0.5 pl-5">
-          <li>SOME singing → <i lang="fr">Je fais <b>du</b> chant.</i></li>
-          <li>SOME reading → <i lang="fr">Je fais <b>de la</b> lecture.</i></li>
-          <li>SOME fencing → <i lang="fr">Je fais <b>de l&rsquo;</b>escrime.</i></li>
-          <li>SOME exercises → <i lang="fr">Je fais <b>des</b> exercices.</i></li>
-        </ul>
-        <p className="mt-2 font-bold">If you don&rsquo;t do <u>any</u> of the above…</p>
-        <ul className="mt-1 list-disc space-y-0.5 pl-5" lang="fr">
-          <li>Je ne fais pas <b>de</b> yoga.</li>
-          <li>Je ne fais pas <b>de</b> lecture.</li>
-          <li>Je ne fais pas <b>d&rsquo;</b>escrime.</li>
-          <li>Je ne fais pas <b>d&rsquo;</b>exercices.</li>
-        </ul>
-        <p className="mt-2 font-bold">What&rsquo;s happening?</p>
-        <ul className="mt-1 list-disc space-y-0.5 pl-5">
-          <li>SOME occurs in the positive, ANY in the negative.</li>
-          <li>SOME has 4 forms — <i lang="fr">du · de la · de l&rsquo; · des</i>. ANY has one: <i lang="fr"><b>de</b></i>, which becomes <i lang="fr"><b>d&rsquo;</b></i> before a vowel.</li>
-          <li>(Another way to count: 2 forms — <i lang="fr">de</i> before a non-vowel, <i lang="fr">d&rsquo;</i> before one.)</li>
-          <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i> — the article stays, positive or negative: it names the category of activity either way.</li>
-        </ul>
-      </>
+      <div className="rounded-xl bg-[color:var(--cahier-paper-raised)] p-3 font-mono text-[13px] leading-6">
+        <p>Is the sentence negative?</p>
+        <p className="pl-[1.4rem]">no → du · de la · de l&rsquo; · des</p>
+        <p className="pl-[1.4rem]">yes → de, and d&rsquo; before a vowel</p>
+      </div>
     ),
     remember: (
       <>
