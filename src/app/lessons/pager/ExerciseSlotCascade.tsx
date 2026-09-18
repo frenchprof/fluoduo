@@ -225,7 +225,15 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         <p className="fluo-serif text-lg font-black leading-tight text-[color:var(--fluo-ink)]">
           Choose your difficulty
         </p>
-        <div className="grid w-full max-w-sm grid-cols-4 gap-1.5">
+        {/* THE COUNTED GRID (Dan, 2026-09-19: *"it does not have to be 4
+            columns, it can be as many columns as the screen width can fit,
+            and the screen size should naturally decide how many columns"*).
+            `auto-fit` with a content-derived floor: a phone's column (~270px)
+            fits the four tiers side by side at the size they already wore; a
+            screen too narrow for four WRAPS rather than crushes; a wider
+            screen grows the CELLS, never stretches four across the void. The
+            screen decides — the counted form the no-pixel ruling set. */}
+        <div className="grid w-full max-w-sm grid-cols-[repeat(auto-fit,minmax(min(100%,3.8rem),1fr))] gap-1.5">
           {([1, 2, 3, 4] as Difficulty[]).map((lv) => {
             const sel = difficulty === lv;
             return (
