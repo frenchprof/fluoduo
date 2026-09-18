@@ -70,8 +70,15 @@ export type DiceAxis = {
   key: string;
   /** Dropdown label ("Sujet", "Verbe"). */
   label: string;
-  /** `value` is what newQuestion receives; `label` is what the learner reads. */
-  options: { value: string; label: string }[];
+  /** `value` is what newQuestion receives; `label` is what the learner reads.
+   *
+   *  A FUNCTION makes the axis CASCADED — its options may depend on the pins
+   *  already chosen (Dan's 19 Sep mockup: the OBJET follows the VERB, never
+   *  any object with any verb). It receives the pins so far and answers for
+   *  the current state; a static array behaves exactly as before. */
+  options:
+    | { value: string; label: string }[]
+    | ((pinned: Record<string, string>) => { value: string; label: string }[]);
 };
 
 export type DiceConfig = {

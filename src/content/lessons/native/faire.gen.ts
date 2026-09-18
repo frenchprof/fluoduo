@@ -130,12 +130,25 @@ function slotsFor(
   return [elides ? { text: "J'" } : { text: s.disp }, verb, article, tail];
 }
 
-/** Sujet, Verbe and polarity shape the sentence; the article is the ANSWER
- *  asked at ★★, so it is never pinned. */
+/** The nouns a pinned verb may take — the OBJET picker's choices. A free
+ *  verb offers every noun; the generator still never pairs them wrongly. */
+export function objectChoices(verbPin?: string): { value: string; label: string }[] {
+  const v = VERB_BANK.find((x) => x.lemma === verbPin);
+  const pool = v ? NOUN_BANK.filter((n) => v.nouns.includes(n.fr)) : NOUN_BANK;
+  return pool.map((n) => ({ value: n.fr, label: n.fr }));
+}
+
+/** Sujet, Verbe, Objet and polarity shape the sentence; the article is the
+ *  ANSWER asked at ★★, so it is never pinned. THE OBJET FOLLOWS THE VERB
+ *  (Dan, 2026-09-19, on his mockup: *"the objet is tied to the verb though,
+ *  not any objet can go with any verb"*) — its options are a function of the
+ *  verb pin, and the question maker honours the tie from both sides. The
+ *  polarity axis stays in `pinned` (aff/neg) but renders as the ±ve toggle,
+ *  not a dropdown. */
 export const FAIRE_AXES: DiceAxis[] = [
   { key: "subject", label: "Sujet", options: SUBJECTS.map((s) => ({ value: s.disp, label: s.disp })) },
   { key: "verb", label: "Verbe", options: VERB_BANK.map((v) => ({ value: v.lemma, label: v.lemma })) },
-  POLARITY_AXIS,
+  { key: "object", label: "Objet", options: (pinned) => objectChoices(pinned.verb) },
 ];
 
 /* The English reference, as a WHOLE sentence — "He does yoga." / "She doesn't
@@ -157,14 +170,31 @@ function sentenceEn(s: (typeof SUBJECTS)[number], v: VerbEntry, n: NounEntry, ne
 
 /**
  * One question. Any axis in `pinned` is honoured; anything absent (or "") is
- * rolled. The verb is rolled from the family bank, and the noun follows the
- * verb — only the nouns that verb genuinely takes are in play.
+ * rolled. THE VERB↔OBJET TIE RUNS BOTH WAYS: a pinned verb narrows the nouns
+ * to its own, a pinned noun narrows the verbs to those that take it, and if
+ * both are pinned and incompatible the NOUN wins — the picker never offers an
+ * incompatible pair, so this is the fallback, not the rule.
  */
 export function faireQuestion(pinned?: Record<string, string>): DiceQuestion {
   const s = pinned1(SUBJECTS, pinned?.subject, (x) => x.disp);
-  const v = pinned1(VERB_BANK, pinned?.verb, (x) => x.lemma);
+  const pinnedVerb = pinned?.verb ? VERB_BANK.find((x) => x.lemma === pinned.verb) : undefined;
+  const pinnedNoun = pinned?.object ? NOUN_BANK.find((x) => x.fr === pinned.object) : undefined;
   const neg = pinnedNeg(pinned?.polarity, 0.4);
-  const n = roll(NOUN_BANK.filter((x) => v.nouns.includes(x.fr)));
+  let v: VerbEntry;
+  let n: NounEntry;
+  if (pinnedVerb && pinnedNoun) {
+    if (pinnedVerb.nouns.includes(pinnedNoun.fr)) { v = pinnedVerb; n = pinnedNoun; }
+    else { n = pinnedNoun; v = roll(VERB_BANK.filter((x) => x.nouns.includes(pinnedNoun.fr))); }
+  } else if (pinnedVerb) {
+    v = pinnedVerb;
+    n = roll(NOUN_BANK.filter((x) => pinnedVerb.nouns.includes(x.fr)));
+  } else if (pinnedNoun) {
+    n = pinnedNoun;
+    v = roll(VERB_BANK.filter((x) => x.nouns.includes(pinnedNoun.fr)));
+  } else {
+    v = roll(VERB_BANK);
+    n = roll(NOUN_BANK.filter((x) => v.nouns.includes(x.fr)));
+  }
   const c = v.conj[s.slot];
   // Built the way sentence() glues: « n'écoute » and « J'écoute » carry no
   // space across the apostrophe, or the correct answer is not in easyOptions.

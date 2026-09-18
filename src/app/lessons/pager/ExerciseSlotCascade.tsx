@@ -168,10 +168,20 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
     ]);
   };
 
+  /** An axis's options for the CURRENT pins — cascaded axes are functions
+   *  (the OBJET follows the VERB, Dan's mockup). */
+  const optionsOf = (
+    ax: (typeof axes)[number],
+    pins: Record<string, string>,
+  ) => (typeof ax.options === "function" ? ax.options(pins) : ax.options);
+
   const handleRandom = () => {
     const next: Record<string, string> = {};
+    // Sequential, so a cascaded axis sees the pins already drawn — Random
+    // rolls the verb BEFORE the objet, and the objet lands on a noun that
+    // verb genuinely takes.
     axes.forEach((ax) => {
-      next[ax.key] = pick(ax.options).value;
+      next[ax.key] = pick(optionsOf(ax, next)).value;
     });
     setPinned(next);
     generate(next);
@@ -243,73 +253,125 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         </div>
       </div>
 
-      {/* Live dropdowns for the lesson's declared axes. Two orange bands in
-          the NEXT PART IS BELOW family point at the two ways in (Dan,
-          2026-09-18): PICK AS YOU WISH at the dropdowns, PICK FOR ME at
-          Random — the main button, always. The dropdowns sit on ONE row, each
-          only as wide as its longest word (Dan, 2026-09-18: *"the drop down
-          does not have to be longer than the longest word within that
-          column"*). */}
+      {/* THE PICKER, IN TWO HALVES (Dan's 19 Sep mockup): PICK AS YOU WISH on
+          the left — the formula SUJET + VERBE + OBJET, plus the POLARITÉ
+          toggle — and PICK FOR ME on the right, over Random, the main
+          button. A divider between them; one box, two ways in.
+
+          THE OBJET FOLLOWS THE VERB (Dan: "the objet is tied to the verb
+          though, not any objet can go with any verb"): its options come from
+          the generator's pairing, and changing the verb drops an object that
+          no longer fits. */}
       {axes.length > 0 && (
-        <div className="space-y-1.5 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
-          <div aria-hidden className="fluo-cue flex flex-col items-center">
-            <div className="fluo-nextq">PICK AS YOU WISH</div>
-            <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+        <div className="flex items-stretch gap-2 rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/60 p-2">
+          {/* LEFT · PICK AS YOU WISH */}
+          <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
+            <div aria-hidden className="fluo-cue flex flex-col items-center">
+              <div className="fluo-nextq">PICK AS YOU WISH</div>
+              <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+            </div>
+            {/* THE FORMULA ROW — Sujet + Verbe + Objet, "+" between */}
+            <div className="flex flex-wrap items-end justify-center gap-1">
+              {axes.filter((ax) => ax.key !== "polarity").map((ax, i, all) => (
+                <div key={ax.key} className="flex items-end gap-1">
+                  {i > 0 && <span aria-hidden className="pb-1.5 text-base font-black text-[color:var(--cahier-ink)]/50">+</span>}
+                  <label className="flex flex-col items-center gap-0.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">{ax.label}</span>
+                    <select
+                      value={pinned[ax.key] ?? ""}
+                      onChange={(e) => {
+                        const next = { ...pinned, [ax.key]: e.target.value };
+                        // THE CASCADE: a new verb can orphan the pinned objet
+                        // — drop it rather than offer a pair the generator
+                        // would refuse.
+                        if (ax.key === "verb" && next.object && !optionsOf(axes.find((a) => a.key === "object")!, next).some((o) => o.value === next.object)) {
+                          delete next.object;
+                        }
+                        setPinned(next);
+                        generate(next);
+                      }}
+                      className="rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-1.5 py-1 text-sm font-bold text-[color:var(--cahier-ink)]"
+                      lang="fr"
+                    >
+                      <option value="">— any —</option>
+                      {optionsOf(ax, pinned).map((o) => (
+                        <option key={o.value} value={o.value}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              ))}
+            </div>
+            {/* POLARITÉ — a split pill, not a dropdown. Tapping the selected
+                side unpins it (back to the roll); −ve answers "négatif",
+                +ve "affirmatif", straight into `pinned.polarity`. */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">Polarité</span>
+              <div className="flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)] text-xs font-black">
+                {([["neg", "−ve."], ["aff", "+ve."]] as const).map(([val, label]) => {
+                  const on = pinned.polarity === val;
+                  return (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => {
+                        const next = { ...pinned };
+                        if (on) delete next.polarity; else next.polarity = val;
+                        setPinned(next);
+                        generate(next);
+                      }}
+                      className={`px-2.5 py-1 leading-none transition ${
+                        on
+                          ? val === "neg"
+                            ? "bg-[color:var(--drill-bad)] text-white"
+                            : "bg-[color:var(--tier-good)] text-white"
+                          : "bg-white text-[color:var(--cahier-ink)]/60 hover:bg-[color:var(--cahier-rule)]/30"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-          <div className="flex flex-wrap items-end justify-center gap-2">
-            {axes.map((ax) => (
-              <label key={ax.key} className="flex flex-col items-center gap-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">{ax.label}</span>
-                <select
-                  value={pinned[ax.key] ?? ""}
-                  onChange={(e) => {
-                    const next = { ...pinned, [ax.key]: e.target.value };
-                    setPinned(next);
-                    generate(next);
-                  }}
-                  className="rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-1.5 py-1 text-sm font-bold text-[color:var(--cahier-ink)]"
-                  lang="fr"
-                >
-                  <option value="">— any —</option>
-                  {ax.options.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
-          </div>
-          <div className="flex flex-col items-center gap-1">
+
+          {/* THE DIVIDER */}
+          <div aria-hidden className="w-0 self-stretch border-l-2 border-[color:var(--cahier-rule)]" />
+
+          {/* RIGHT · PICK FOR ME — Random, the main button (Dan: "the main
+              button to push is always the RANDOM"). */}
+          <div className="flex flex-col items-center justify-center gap-1">
             <div aria-hidden className="fluo-cue flex flex-col items-center">
               <div className="fluo-nextq">PICK FOR ME</div>
               <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
             </div>
-            <div className="flex flex-nowrap justify-center gap-2">
-              {/* THE MAIN BUTTON (Dan, 2026-09-18: *"the main button to push
-                  is always the RANDOM"*) — primary; everything else on this
-                  tab is secondary to it. Compact, so it never spills its
-                  line. */}
-              <button
-                type="button"
-                onClick={handleRandom}
-                className="cahier-btn cahier-btn-primary cahier-btn--compact"
-                title="Pick random values for every dropdown"
-              >
-                🎲🎲 Random
-              </button>
-              <button
-                type="button"
-                onClick={handlePronounce}
-                className="cahier-btn cahier-btn--compact"
-                title="Hear the correct sentence"
-              >
-                🔊 Listen
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleRandom}
+              className="cahier-btn cahier-btn-primary cahier-btn--compact"
+              title="Pick random values for every dropdown"
+            >
+              🎲🎲 Random
+            </button>
           </div>
         </div>
       )}
+
+      {/* LISTEN — standalone, centred between the picker and the answer
+          (Dan's mockup): one pill, its own line. */}
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={handlePronounce}
+          className="cahier-btn cahier-btn--compact"
+          title="Hear the correct sentence"
+        >
+          🔊 Listen
+        </button>
+      </div>
 
       {/* Slot-cascade prompt visual: the prompt meta + the bare noun (the
           thing the rest of the sentence is built around) + the English
@@ -344,24 +406,32 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
       )}
 
       {/* At ★ the learner picks the ONE gap this question is about (Dan,
-          2026-09-18) — content-sized chips, centred, never full width. */}
+          2026-09-18) — content-sized chips, centred, never full width. Each
+          chip wears its slot's colour (Dan's mockup, 2026-09-19): VERBE in
+          the practice blue, dashed; ARTICLE in the highlighter orange on a
+          cream wash. */}
       {difficulty === 1 && slots.length > 0 && (
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
           <span className="text-[color:var(--cahier-ink)]/70">Focus on:</span>
-          {(["verb", "article"] as const).map((g) => (
-            <button
-              key={g}
-              type="button"
-              onClick={() => chooseGap(g)}
-              className={
-                facileGap === g
-                  ? "rounded-lg border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-rule)]/40 px-2.5 py-0.5 uppercase tracking-wide"
-                  : "rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-2.5 py-0.5 uppercase tracking-wide text-[color:var(--cahier-ink)]/70"
-              }
-            >
-              {g === "verb" ? "Verb" : "Article"}
-            </button>
-          ))}
+          {(["verb", "article"] as const).map((g) => {
+            const on = facileGap === g;
+            return (
+              <button
+                key={g}
+                type="button"
+                onClick={() => chooseGap(g)}
+                className={
+                  on
+                    ? "rounded-lg border-2 border-[color:var(--cahier-ink)] bg-[color:var(--cahier-rule)]/40 px-2.5 py-0.5 uppercase tracking-wide"
+                    : g === "verb"
+                      ? "rounded-lg border-2 border-dashed border-[color:var(--fam-practice-ink)] bg-white px-2.5 py-0.5 uppercase tracking-wide text-[color:var(--fam-practice-ink)]"
+                      : "rounded-lg border-2 border-[color:var(--fam-tools)] bg-[color:var(--cahier-hl)]/30 px-2.5 py-0.5 uppercase tracking-wide text-[color:var(--fam-tools)]"
+                }
+              >
+                {g === "verb" ? "Verbe" : "Article"}
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -416,9 +486,12 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               }
               // Blanked slot — render a dropdown inline, no wider than its
               // longest word (Dan, 2026-09-18), but at the HERO size: this
-              // is where the answer is given.
+              // is where the answer is given. When ★ focuses the ARTICLE,
+              // the article blank wears the highlighter orange (Dan's
+              // mockup) — the chip and the gap it chooses are one colour.
               const idx = pickIndex(s.key)!;
               const value = picks[idx] ?? "";
+              const hl = s.key === "article" && difficulty === 1 && facileGap === "article";
               return (
                 <select
                   key={i}
@@ -431,7 +504,11 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                       return next;
                     })
                   }
-                  className="mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed border-[color:var(--cahier-ink)] bg-white px-2 py-0.5 align-baseline text-lg font-bold"
+                  className={`mx-1 inline-block min-w-[2.5em] rounded-md border-2 border-dashed px-2 py-0.5 align-baseline text-lg font-bold ${
+                    hl
+                      ? "border-[color:var(--fam-tools)] text-[color:var(--fam-tools)]"
+                      : "border-[color:var(--cahier-ink)]"
+                  } bg-white`}
                 >
                   <option value="">[{s.key}]</option>
                   {(s.choices ?? []).map((c) => (
