@@ -493,27 +493,55 @@ function Formes({ memo }: { memo?: ReactNode }) {
  * reasoning: a station in its own document cannot scroll the page it sits
  * on), pointed at the deck's own `/practice/flip-it/<deck>/embed`. Nothing
  * is duplicated: MémoiRecall's door on the goal and this tab open the same
- * page. The TAB is the disclosure now — no fold, the frame stands open, and
- * `loading="lazy"` still means the station loads when the learner arrives,
- * not with the lesson. */
+ * page. The TAB is the disclosure now — no fold, the frame stands open.
+ *
+ * THE FRAME MOUNTS WHEN THE PANEL IS SEEN, NOT WITH THE LESSON. `lazy` was
+ * not enough once the fold went: the feed keeps all five panels in the
+ * document, and a frame that is in the DOM near the viewport loads and draws
+ * the station's own strip beside the lesson's — the fault verify126 exists
+ * for (7 Sep: only one of them should). An IntersectionObserver mounts the
+ * frame the first time the panel itself crosses the learner's viewport —
+ * true laziness, and a lesson that never visits Cards carries no station. */
 function Cards({ deck }: { deck?: Collection }) {
   const cards = deck?.items?.length ?? 0;
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el || shown) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShown(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "200px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [shown]);
   if (cards === 0 || !deck) return <Empty what="No flashcards for this lesson." />;
   return (
     <Panel>
-      <div className="lesson-flip-frame overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-rule)]">
-        <iframe
-          src={`/practice/flip-it/${deck.id}/embed`}
-          title="MémoiRecall — this lesson's flashcards"
-          loading="lazy"
-          /* The host must grant full screen for a station's ⤢ key to work
-             inside a frame — see EmbedFrame. No focus-on-load here: this
-             frame sits in a lesson the learner is reading, and pulling the
-             keyboard into it would move them off the page. */
-          data-station-frame=""
-          allow="autoplay; fullscreen"
-          className="h-full w-full border-0 bg-transparent"
-        />
+      <div ref={hostRef} className="lesson-flip-frame overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-rule)]">
+        {shown ? (
+          <iframe
+            src={`/practice/flip-it/${deck.id}/embed`}
+            title="MémoiRecall — this lesson's flashcards"
+            /* The host must grant full screen for a station's ⤢ key to work
+               inside a frame — see EmbedFrame. No focus-on-load here: this
+               frame sits in a lesson the learner is reading, and pulling the
+               keyboard into it would move them off the page. */
+            data-station-frame=""
+            allow="autoplay; fullscreen"
+            className="h-full w-full border-0 bg-transparent"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-sm text-[color:var(--cahier-ink)]/50">
+            The flashcards load when you reach this tab.
+          </div>
+        )}
       </div>
     </Panel>
   );
