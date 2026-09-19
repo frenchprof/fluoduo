@@ -141,11 +141,14 @@ land in one row of the 2×2 and one of the four layouts without forcing a
 fifth. If it forces a fifth, the taxonomy grows that entry *before*
 stamping the remaining stops.
 
-## §9 Open rulings — Dan's queue
+## §9 Rulings — settled by Dan, 19 Sep
 
-1. **Cultural Concept:** stays one Concept label with pragmatic/cultural
-   content *(recommended)* — or a distinct label, which requires overriding
-   clause 7 explicitly.
-2. **Within-tier hint fading:** out by default *(the tier ladder is primary
-   and shipped)* — rule it in only as an optional within-tier detail, never
-   a second mechanic.
+1. **Cultural Concept: ONE LABEL, CULTURE ALLOWED.** A lesson's
+   one-sentence Idea may carry pragmatic, sociolinguistic or cultural
+   content — the "why" is the why, wherever it sits. No fifth label.
+
+2. **Hint fading: NO — PERMANENTLY.** Dan's own words: *"THE DIFFICULTY
+   LEVEL IS UNIQUE TO MNEMEMO PROGRESSIVE REMOVAL OF SCAFFOLDING AND HAS
+   NOTHING TO DO WITH FADING OR WHATEVER YOU ARE THINKING OF."* The
+   ★/★★/★★★ ladder is the one difficulty mechanic. There is no second
+   layer, no within-tier fading, and this ruling does not expire.
