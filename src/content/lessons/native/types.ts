@@ -161,6 +161,17 @@ export type LessonConcept = {
 export type NativeLesson = {
   slug: string;
   memo: ReactNode;
+  /** WHICH OF THE FOUR FORM TEMPLATES this lesson's Form tab wears
+   *  (LESSON_SPEC.md §3, Dan 2026-09-19: "let's go do it"). The CONTENT is
+   *  the authored memo JSX; the TEMPLATE is the container that displays it:
+   *
+   *    table    — grammar paradigms, rules in a grid (faire, aimer, aller)
+   *    list     — vocabulary sets, one pattern repeated (days, colours, nouns)
+   *    audio    — sound-based points, the EAR is the target (alphabet, on/n')
+   *    dialogue — functional language, short exchanges (greetings, ordering)
+   *
+   *  Untagged lessons default to table (today's shape). */
+  formLayout?: "table" | "list" | "audio" | "dialogue";
   dice: DiceConfig;
   bonus: { en: string; fr: string; alt?: string[] }[];
   concept?: LessonConcept;

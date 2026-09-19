@@ -28,6 +28,7 @@ import type { NativeLesson } from "./types";
 
 export const quelPrefereLesson: NativeLesson = {
   slug: "quel-prefere",
+  formLayout: "list",
   // TIER 1 CONCEPT — a question the FORMS cannot answer. The four spellings
   // are on the Mémo; what is not on it is WHY a question word has spellings at
   // all, which is the thing an English speaker has no slot for.

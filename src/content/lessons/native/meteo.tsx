@@ -42,6 +42,7 @@ const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)]
 
 export const meteoLesson: NativeLesson = {
   slug: "meteo",
+  formLayout: "list",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]" lang="fr">

@@ -49,6 +49,7 @@ const wrongArt = (np: string) =>
 
 export const alimentsLesson: NativeLesson = {
   slug: "aliments",
+  formLayout: "list",
   // TIER 2 CONCEPT — SIO-041, REPLACED 1 Sep on Dan's instruction ("put it
   // where we learn about food items"). What stood here argued *why the article
   // often hides the gender* — « de l'eau » and « des frites » say nothing, so

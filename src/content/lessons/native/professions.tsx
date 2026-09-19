@@ -31,6 +31,7 @@ const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)]
 
 export const professionsLesson: NativeLesson = {
   slug: "professions",
+  formLayout: "list",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer.
   //
   // Peers, 2026-08-31: the brief differs per tier. A Tier 1 concept answers a

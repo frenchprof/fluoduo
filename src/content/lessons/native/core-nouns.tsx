@@ -73,6 +73,7 @@ function others<T>(pool: readonly T[], not: T, n: number): T[] {
 
 export const coreNounsLesson: NativeLesson = {
   slug: "core-nouns",
+  formLayout: "list",
 
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. The list shows
   // eighteen articles; it cannot say why they are not predictable, which is

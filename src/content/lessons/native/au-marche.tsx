@@ -12,6 +12,7 @@ import { MARCHE_AXES, marcheQuestion } from "./au-marche.gen";
 
 export const auMarcheLesson: NativeLesson = {
   slug: "au-marche",
+  formLayout: "list",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.

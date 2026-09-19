@@ -5,6 +5,7 @@ import { COMBIEN_AXES, NUMBERS, combienQuestion } from "./combien.gen";
 
 export const combienLesson: NativeLesson = {
   slug: "combien",
+  formLayout: "table",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.
