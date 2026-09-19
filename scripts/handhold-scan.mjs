@@ -46,7 +46,10 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(PORT, r));
 const BASE = `http://localhost:${server.address().port}`;
 
-const exe = existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null;
+// ROAD_BROWSER lets a Mac without Google Chrome point the scan at another
+// Chromium (Brave) — same override road-scan and tour-scan take.
+const exe = process.env.ROAD_BROWSER
+  ?? (existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null);
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 
 /* THE TWO FAMILIES THAT ASK « How many …? », which is the only step in the app
@@ -97,6 +100,19 @@ async function open(page, route) {
 const report = [];
 for (const route of routes) {
   const ctx = await browser.newContext({ viewport: { width: 430, height: 860 } });
+  /* THE TOURS ARE SETTLED BEFORE THE FIRST PAINT (2026-09-19). A cold
+     arrival now starts the 8-step tour on its own — "it usually only appears
+     once and then user can say do not show me again" — and every first-run
+     card holds its turn while it walks. This scan measures the CARD, so it
+     meets the card the way a learner does once the tour is done: without
+     this, the first role="dialog" on the page is the tour sheet (no <ol>),
+     and the card this scan exists to read is not on the page at all. */
+  await ctx.addInitScript(() => {
+    try {
+      localStorage.setItem("fluolingo:tour.step", "done");
+      localStorage.setItem("fluolingo:tour.lesson", "done");
+    } catch { /* storage blocked — the card then opens as before */ }
+  });
   const page = await ctx.newPage();
   try {
     /* `load`, THEN WAIT FOR THE CARD — not `networkidle`, and the CI run that
