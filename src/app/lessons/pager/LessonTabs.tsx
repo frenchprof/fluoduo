@@ -304,10 +304,27 @@ function Parcours({ sio }: { sio?: Sio }) {
 }
 
 /* ── 1 · Le concept ────────────────────────────────────────────────────────
- * The slots are Dan's, read off his own concept tabs — see LessonConcept in
- * native/types.ts for which are required and why. */
+ * THE MERRILL SEQUENCE (Dan's research-agent spec, 2026-09-19): meaningful
+ * task → demonstration → application → integration, as the SHORTEST sequence
+ * that lets an absolute beginner perform the target task — Model → optional
+ * Cue → optional Contrast → Retrieve/Produce, no fixed pane count, and the
+ * anti-redundancy rule: no pane that only paraphrases the cue. The fields are
+ * unchanged; the sequence re-groups them:
+ *   See it  — the worked instance (question, then the answer's correct
+ *             sentences): the demonstration, and the question invites a
+ *             guess before the teaching (the pretesting effect).
+ *   The rule — the claim + the decision flow: the cue, only where a choice
+ *             must be made.
+ *   Traps   — the wrong/right contrast, only where the data says a
+ *             consequential confusion exists.
+ *   Try it  — the answer-hidden retrieval; the attempt comes before the
+ *             feedback (the engagement rule).
+ * THE SUM-UP PANE IS RETIRED by the anti-redundancy rule — it repeated the
+ * cue's decision flow. `inShort` and `remember` stay in the data, unrendered.
+ * The spec's DELAYED REVIEW is served by the app's own spaced station
+ * (ErroReview / DéjàRevu), not by a pane. */
 function Concept({ c }: { c?: LessonConcept }) {
-  const [pane, setPane] = useState<"claim" | "qa" | "traps" | "steps" | "check" | "sum">("claim");
+  const [pane, setPane] = useState<"model" | "cue" | "traps" | "try">("model");
   if (!c) {
     return <Empty what="Idea has not been written for this lesson yet. Form has the rules in the meantime." />;
   }
@@ -332,18 +349,15 @@ function Concept({ c }: { c?: LessonConcept }) {
      rather than a disclosure. The first pane renders server-side, so there is
      no hydration flash — the claim is in the static HTML either way. */
   const PANES = [
-    ["claim", "The idea", null],
-    ["qa", "Q & A", null],
+    ["model", "See it", null],
+    ["cue", "The rule", c.flow?.filter((l) => l.depth === 0).length ?? 0],
     ["traps", "Traps", c.pitfall?.length ?? 0],
-    ["steps", "Steps", c.flow?.filter((l) => l.depth === 0).length ?? 0],
-    ["check", "Check", c.check?.length ?? 0],
-    ["sum", "Sum up", null],
+    ["try", "Try it", c.check?.length ?? 0],
   ] as const;
   const shown = PANES.filter(([k]) =>
-    k === "claim" || k === "qa" || k === "sum"
+    k === "model" || k === "cue"
       ? true
       : k === "traps" ? !!c.pitfall?.length
-      : k === "steps" ? !!c.flow?.length
       : !!c.check?.length);
 
   return (
@@ -367,25 +381,40 @@ function Concept({ c }: { c?: LessonConcept }) {
         ))}
       </div>
 
-      {pane === "claim" && (
+      {/* SEE IT — the demonstration (Merrill's first principle after the
+          task): the question names a concrete, meaningful instance and
+          invites a guess; the answer shows the correct language. On
+          arrival, because a demonstration before the rule is the sequence's
+          whole point. */}
+      {pane === "model" && (
         <>
           <h2 className="cahier-display text-lg font-black leading-tight">{c.subtitle}</h2>
-          {/* A DIV, NOT A P — a lesson's contrast may be POINT FORM (Dan,
-              2026-09-18: "all explanatory texts should be in point form"),
-              and a list cannot live inside a paragraph. String content
-              renders exactly as it did. */}
-          <div className="mt-2">{c.contrast}</div>
+          <p className="fluo-label mt-2 text-[color:var(--fluo-ink-soft)]">One question</p>
+          <p className="mt-1 text-base font-bold">{c.question}</p>
+          <div className="mt-3">{c.answer}</div>
         </>
       )}
 
-      {/* The worked instance sits in its own pane. Kept with the claim it ran
-          to 666px in a 561px slot on the longest concepts — the reader was
-          scrolling again, which is the thing the strip exists to end. */}
-      {pane === "qa" && (
+      {/* THE RULE — the cue: the claim and, where a choice must be made,
+          the decision flow under it. A DIV, NOT A P — a lesson's contrast
+          may be POINT FORM (Dan, 2026-09-18), and a list cannot live inside
+          a paragraph. String content renders exactly as it did. */}
+      {pane === "cue" && (
         <>
-          <p className="fluo-label text-[color:var(--fluo-ink-soft)]">One question</p>
-          <p className="mt-1 text-base font-bold">{c.question}</p>
-          <div className="mt-3">{c.answer}</div>
+          <div>{c.contrast}</div>
+          {c.flow && (
+            <div className="mt-3 overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
+              {c.flow.map((line, n) => (
+                <p
+                  key={n}
+                  className="whitespace-pre font-mono text-[13px] leading-6"
+                  style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
+                >
+                  {line.text}
+                </p>
+              ))}
+            </div>
+          )}
         </>
       )}
 
@@ -412,21 +441,7 @@ function Concept({ c }: { c?: LessonConcept }) {
         </div>
       )}
 
-      {pane === "steps" && c.flow && (
-        <div className="overflow-x-auto rounded-xl bg-[color:var(--cahier-paper-raised)] p-3">
-          {c.flow.map((line, n) => (
-            <p
-              key={n}
-              className="whitespace-pre font-mono text-[13px] leading-6"
-              style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
-            >
-              {line.text}
-            </p>
-          ))}
-        </div>
-      )}
-
-      {pane === "check" && c.check && (
+      {pane === "try" && c.check && (
         <div className="flex flex-col gap-2">
           {c.check.map((x, n) => (
             // <details> here still: the ANSWER must stay hidden until asked for,
@@ -439,19 +454,10 @@ function Concept({ c }: { c?: LessonConcept }) {
         </div>
       )}
 
-      {pane === "sum" && (
-        <>
-          {c.inShort && (
-            <>
-              <p className="fluo-label text-[color:var(--fluo-ink-soft)]">The whole system</p>
-              <p className="mt-1">{c.inShort}</p>
-            </>
-          )}
-          <p className="mt-3 rounded-xl border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-3 font-bold">
-            If you remember only one thing: {c.remember}
-          </p>
-        </>
-      )}
+      {/* NO SUM PANE — retired by the spec's anti-redundancy rule
+          (2026-09-19): "a final Sum up pane is normally omitted." The
+          delayed review it cannot substitute for is the spaced station's
+          job. */}
     </Panel>
   );
 }
