@@ -410,7 +410,20 @@ function Concept({ c }: { c?: LessonConcept }) {
                   className="whitespace-pre font-mono text-[13px] leading-6"
                   style={{ paddingInlineStart: `${line.depth * 1.4}rem` }}
                 >
-                  {line.text}
+                  {/* A WORD NOT IN THE LINE'S LANGUAGE IS ITALICISED (Dan,
+                      2026-09-19). A flow line reads "English condition →
+                      French forms": everything after the arrow carries
+                      lang="fr" in italics; a line with no arrow stays as
+                      authored. */}
+                  {(() => {
+                    const at = line.text.indexOf("→");
+                    if (at < 0) return line.text;
+                    return (
+                      <>
+                        {line.text.slice(0, at + 1)} <i lang="fr">{line.text.slice(at + 2)}</i>
+                      </>
+                    );
+                  })()}
                 </p>
               ))}
             </div>
