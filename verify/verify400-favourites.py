@@ -463,19 +463,21 @@ check(m is not None and m.group(1) == "goals",
       "in — a yellow door opening a page of another colour is the exact "
       "mismatch Dan sent back")
 
-# AND THE BAND WEARS ★, NOT THE FAMILY'S GLYPH. The chain is
+# AND THE BAND NAMES ITS OWN GLYPH. The chain is
 # `band?.emoji ?? activity(active)?.emoji ?? familyEmoji(famKey)`, and this page
 # is in neither ACTIVITIES nor FAMILIES — so it takes whatever its family wears
 # unless it says otherwise. Going yellow put Lesson's 🧑‍🏫 on it (a teacher, on
 # a page that is not a lesson) until it named its own. Checked because the two
 # halves — the colour and the glyph — come from the same edit and the glyph is
 # the half nobody looks at.
+# REVERSED 2026-09-19 — Dan: "favourites are tied to the heart shaped emoji —
+# remove stars if they are referring to favourites. stars are for difficulty
+# level." The band and the ☰ tile both wear 🤍; the ★ is difficulty's alone.
 ROUTE = read("src/app/favourites/page.tsx")
-check('emoji: "★"' in ROUTE,
-      "the Favourites band names its own ★ rather than borrowing Lesson's 🧑‍🏫",
+check('emoji: "🤍"' in ROUTE,
+      "the Favourites band names its own 🤍 rather than borrowing Lesson's 🧑‍🏫 (Dan, 19 Sep)",
       "the Favourites band has no emoji of its own, so it falls back to its "
-      "family's — which is the Lesson teacher, on a page that is not a lesson "
-      "and whose ☰ tile wears ★")
+      "family's — which is the Lesson teacher, on a page that is not a lesson")
 
 check("w-full" not in page,
       "no control on the page wears the whole width",
