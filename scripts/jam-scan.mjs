@@ -47,7 +47,13 @@ const PORT = 4179;
 // document at once since 2026-09-07), but the strip is still what this scan
 // waits for as its hydration signal — see the waitFor below. verify68 pins the
 // names themselves against LessonTabs.tsx.
-const PANES = ["The idea", "Q&A", "Traps", "Steps", "Check", "Sum up"];
+// THE MERRILL PANES (2026-09-19): See it · The rule · Traps · Try it. And a
+// lesson this scan itself recorded on 1 Sep, now paid: the old list said
+// "Q&A" (no spaces) against a button labelled "Q & A" — a substring that
+// never matched, so the pane was SILENTLY skipped and its jams (two, found
+// the day the Model pane made them visible) went unscanned for weeks. A pane
+// that cannot be found now FAILS the scan instead.
+const PANES = ["See it", "The rule", "Traps", "Try it"];
 
 const MIME = {
   ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
@@ -194,7 +200,11 @@ for (const slug of slugs) {
   // Names are not exact: a pane button may carry its count ("Traps 3").
   for (const pane of PANES) {
     const b = page.getByRole("button", { name: pane });
-    if (await b.count()) {
+    if (!(await b.count())) {
+      console.error(`${slug}: pane "${pane}" not found — the scan cannot skip what it cannot see`);
+      process.exit(2);
+    }
+    {
       // `el.click()`, not Playwright's click. Playwright scrolls a target into
       // view and then waits for it to hold still — and the lesson is a
       // `snap-mandatory` scroller since 2026-09-07, so its scroll-snap pulls

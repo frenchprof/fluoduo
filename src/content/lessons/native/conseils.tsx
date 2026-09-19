@@ -119,7 +119,7 @@ export const conseilsLesson: NativeLesson = {
         Who it lands on. <i lang="fr">Tu dois</i> is aimed at you and is hard to
         refuse;{" "}
         <i lang="fr">il faut</i> is a general truth and lets nobody off, but names nobody
-        either. <i lang="fr">Tu peux go&ucirc;ter</i> is the soft one &mdash; a suggestion
+        either. <i lang="fr">Tu peux go&ucirc;ter</i>{" "}is the soft one &mdash; a suggestion
         you may decline.
       </>
     ),
