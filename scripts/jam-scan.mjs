@@ -53,7 +53,7 @@ const PORT = 4179;
 // never matched, so the pane was SILENTLY skipped and its jams (two, found
 // the day the Model pane made them visible) went unscanned for weeks. A pane
 // that cannot be found now FAILS the scan instead.
-const PANES = ["See it", "The rule", "Traps", "Try it"];
+const PANES = [["See it", false], ["The rule", false], ["Traps", true], ["Try it", true]];
 
 const MIME = {
   ".html": "text/html", ".js": "text/javascript", ".css": "text/css",
@@ -203,10 +203,14 @@ for (const slug of slugs) {
   // scan above already covered the page. Only a strip that EXISTS must carry
   // every pane.
   const anyPane = await page.locator('[data-tab="concept"] button[aria-pressed]').count();
-  for (const pane of PANES) {
+  for (const [pane, optional] of PANES) {
     const b = page.getByRole("button", { name: pane });
     if (!(await b.count())) {
-      if (anyPane) {
+      // See it and The rule are ALWAYS there when a strip exists; Traps and
+      // Try it are data-optional by the spec itself (a lesson with no
+      // authored contrast or check shows no such pane — a content gap, not
+      // a scan gap). A strip missing a MANDATORY pane fails loudly.
+      if (anyPane && !optional) {
         console.error(`${slug}: pane "${pane}" not found — the scan cannot skip what it cannot see`);
         process.exit(2);
       }
