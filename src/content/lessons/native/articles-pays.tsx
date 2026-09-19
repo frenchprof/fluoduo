@@ -24,6 +24,7 @@ const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
 
 export const articlesPaysLesson: NativeLesson = {
   slug: "articles-pays",
+  formLayout: "table",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer.
   //
   // Peers, 2026-08-31: the brief differs per tier. A Tier 1 concept answers a

@@ -75,6 +75,7 @@ function others<T>(pool: readonly T[], not: T, n: number): T[] {
 
 export const parceQueLesson: NativeLesson = {
   slug: "parce-que",
+  formLayout: "table",
 
   // TIER 3 · SIO-025, drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md and
   // pasted in unchanged once this file landed. Every French line is a deck

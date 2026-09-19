@@ -498,11 +498,50 @@ function Concept({ c }: { c?: LessonConcept }) {
  * is behind it (« 34 cards »), which is what makes a closed fold worth
  * opening. `loading="lazy"` means a closed fold costs nothing: the station
  * loads the first time the fold is opened, not with the lesson. */
-function Formes({ memo }: { memo?: ReactNode }) {
+function Formes({ memo, formLayout }: { memo?: ReactNode; formLayout?: string }) {
   if (!memo) return <Empty what="No Mémo for this lesson." />;
+  /* THE FOUR FORM TEMPLATES (LESSON_SPEC.md §3, Dan 2026-09-19: "let's go
+     do it") — different lessons teach different KINDS of things, so the Form
+     tab DISPLAYS them differently. The content is always the authored memo
+     JSX; the template is the container that says what shape the learner is
+     looking at:
+
+       table    — bordered grid, the grammar paradigm (the default)
+       list     — flowing items, one pattern repeated; no table borders
+       dialogue — chat-bubble treatment, short exchanges
+
+     The tag lives on each lesson (formLayout: "table" | "list" | ...),
+     declared per lesson from what it teaches — not from a schema lookup. */
+  const layout = formLayout ?? "table";
   return (
     <Panel>
-      {memo}
+      {/* THE TEMPLATE BADGE — a small, quiet label above the memo that names
+          the shape, so a learner moving between lessons sees the Form tab
+          change character honestly rather than just "look different." */}
+      <p className="mb-2 text-center text-[10px] font-bold uppercase tracking-[0.12em] text-[color:var(--cahier-ink)]/40">
+        {layout === "table" ? "📐 The pattern" : layout === "list" ? "📋 The set" : layout === "dialogue" ? "💬 The exchange" : layout === "audio" ? "🔊 The sound" : "📐 The pattern"}
+      </p>
+      {layout === "dialogue" ? (
+        /* DIALOGUE — the memo renders inside a speech-bubble treatment:
+           each turn indented alternately, the way a text conversation reads.
+           The authored memo already carries the lines; this wraps them. */
+        <div className="dialogue-frame rounded-xl border-2 border-[color:var(--cahier-rule)] bg-white/80 p-3 [&_p]:rounded-lg [&_p]:px-3 [&_p]:py-1.5 [&_p:nth-child(odd)]:bg-[color:var(--cahier-hl)]/30 [&_p:nth-child(odd)]:mr-8 [&_p:nth-child(even)]:ml-8 [&_p:nth-child(even)]:bg-white [&_p]:border [&_p]:border-[color:var(--cahier-rule)]/50">
+          {memo}
+        </div>
+      ) : layout === "list" ? (
+        /* LIST — the memo renders as a flowing set, no table borders; each
+           item gets breathing room and the pattern repeats visually. */
+        <div className="list-frame rounded-xl border-2 border-dashed border-[color:var(--cahier-rule)] bg-white/60 p-3">
+          {memo}
+        </div>
+      ) : (
+        /* TABLE — the grammar paradigm in its bordered grid. This is the
+           default and today's shape; the authored memo already carries the
+           two-column grid. */
+        <div className="table-frame">
+          {memo}
+        </div>
+      )}
     </Panel>
   );
 }
@@ -519,6 +558,7 @@ export default function LessonTabs({
   deck,
   concept,
   memo,
+  formLayout,
   exercise,
   open = "concept",
 }: {
@@ -527,6 +567,8 @@ export default function LessonTabs({
   concept?: LessonConcept;
   /** Les formes — the Mémo, exactly as the run's rule card renders it. */
   memo?: ReactNode;
+  /** Which of the four Form templates this lesson wears (LESSON_SPEC §3). */
+  formLayout?: "table" | "list" | "audio" | "dialogue";
   /** L'exercice — the entry-level chooser. Picking a level ends the tabs. */
   exercise: ReactNode;
   /**
@@ -863,7 +905,7 @@ export default function LessonTabs({
       {/* In TABS order: Goal, Form, Idea, Exercise (Dan, 16 Sep) — the feed
           and the strip must agree or a tap lands on the wrong panel. */}
       <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
-        <Formes memo={memo} />
+        <Formes memo={memo} formLayout={formLayout} />
       </section>
       <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Concept c={concept} />

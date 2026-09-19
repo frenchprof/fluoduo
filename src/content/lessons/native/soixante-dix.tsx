@@ -19,6 +19,7 @@ const Row = ({ n, fr, sum }: { n: number; fr: string; sum: string }) => (
 
 export const soixanteDixLesson: NativeLesson = {
   slug: "soixante-dix",
+  formLayout: "list",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.

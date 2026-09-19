@@ -12,6 +12,7 @@ import { MATIERE_AXES, matiereQuestion } from "./quelle-matiere.gen";
 
 export const quelleMatiereLesson: NativeLesson = {
   slug: "quelle-matiere",
+  formLayout: "list",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer.
   //
   // Peers, 2026-08-31: the brief differs per tier. A Tier 1 concept answers a

@@ -26,6 +26,7 @@ const frame = (art: string, noun: string) => `Qu'est-ce que tu fais ${art} ${nou
 
 export const demonstratifsLesson: NativeLesson = {
   slug: "demonstratifs",
+  formLayout: "table",
   // THE REFERENCE CONCEPT — the first of 47, and the worked example the rest
   // are drafted against. Every claim here comes from the Mémo below it;
   // nothing new was invented.

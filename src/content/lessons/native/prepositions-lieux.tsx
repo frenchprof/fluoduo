@@ -9,6 +9,7 @@ import { PLACES, buildDice } from "./prepositions-core";
 
 export const prepositionsLieuxLesson: NativeLesson = {
   slug: "prepositions-lieux",
+  formLayout: "table",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.

@@ -582,6 +582,7 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
+          formLayout={lesson?.formLayout}
           // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
           // one-card chooser swaps, the moment a level is picked, to cards
           // that hide the slot structure. Slotted lessons opt in here by
