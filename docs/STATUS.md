@@ -6,6 +6,40 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 19 Sep, evening — Bonus goes dark, the Exercise goes still and app-wide, and MémoiRecall leaves the lesson (glm-lane, ZCode/GLM)
+
+**Three rulings, one sitting.**
+
+**BONUS HIDES YOUR PICK** (*"to make it really challenging, we shall make
+the Your Pick section invisible — Only the Random pick button should remain
+visible"*): at 🎁 the left box is gone; Random deals, you translate, unaimed.
+
+**THE EXERCISE GOES STILL** (*"the sections within this exercise must remain
+static consistently — [no] box should be seen to move or reduce or get
+higher or lower between questions"*): the answer box takes a FIXED height
+(13rem) — a two-line sentence and a one-line sentence occupy the same box,
+and dealing a new question moves nothing.
+
+**THE CASCADE GOES APP-WIDE** (*"do the same for all the other
+MneMemos"*): the LessonPager gate opens from `slug === "faire"` to **every
+lesson with a generator** (`lesson.dice`). Slotted lessons (aimer · faire ·
+aller · envies-besoins · transport) get the full three-box cascade;
+slotless generators get the same boxes with their cue + English line and a
+free-text input at every tier, graded against the generator's own
+`correct`; deck-only lessons (no authored generator) keep the level
+chooser.
+
+**MÉMOIRECALL LEAVES THE LESSON — Dan undoing his own morning call, in his
+words:** *"please reinstate that a section of its own outside of MneMemo
+(Yes I am undoing an earlier call, and i am aware), so no more hiding
+MémoiRecall as an embedded page within MneMemo — it looks awful."* The 🃏
+Cards tab is gone (four tabs again), no lesson embeds the flip-it frame,
+and the standalone station — /practice/flip-it, with its doors in the ☰
+menu and on the goal page — is MémoiRecall's one home again. Nothing was
+copied from old deployments: the station never stopped existing or being
+maintained; only the embed is new, and only the embed was removed.
+verify68 and verify71 each record the reversal-of-the-reversal in place.
+
 ## 19 Sep — the flashcards take the fifth tab (glm-lane, ZCode/GLM)
 
 **Dan, seeing the fold: *"Now that i see what MemoiRecall flashcards look

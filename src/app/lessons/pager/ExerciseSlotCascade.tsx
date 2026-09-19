@@ -274,8 +274,12 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           no longer fits. */}
       {axes.length > 0 && (
         <div className="flex items-stretch gap-2">
-          {/* LEFT BOX · YOUR PICK — with POLARITÉ BESIDE the band (Dan,
-              2026-09-19: "the polarity switch up beside PICK AS YOU WISH"). */}
+          {/* LEFT BOX · YOUR PICK — HIDDEN AT BONUS (Dan, 2026-09-19: "for the
+              Bonus round, to make it really challenging, we shall make the
+              Your Pick section invisible — Only the Random pick button
+              should remain visible"). Bonus is dealt what Random gives,
+              unaimed. */}
+          {difficulty !== 4 && (
           <div className="flex min-w-0 flex-1 flex-col items-center gap-1.5 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-2">
             <div className="flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1">
               <div aria-hidden className="fluo-cue flex flex-col items-center">
@@ -350,6 +354,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               ))}
             </div>
           </div>
+          )}
 
           {/* RIGHT BOX · RANDOM PICK — Random, the main button (Dan: "the
               main button to push is always the RANDOM"). */}
@@ -423,7 +428,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           Yellow, Orange, Red" — so the box itself says the level you are
           in. Content in white on the colour; the blanks stay white pills. */}
       <div
-        className="flex min-h-[6.5rem] flex-col justify-center rounded-xl border-2 border-[color:var(--cahier-ink)] p-3 text-white shadow-sm"
+        className="flex h-[13rem] flex-col justify-center overflow-hidden rounded-xl border-2 border-[color:var(--cahier-ink)] p-3 text-white shadow-sm"
         style={{ background: DIFF_HUE[difficulty] }}
       >
         <p
@@ -456,12 +461,36 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             spellCheck={false}
           />
         ) : slots.length === 0 ? (
-          /* POINT FORM, NOT PROSE (Dan, 2026-09-18: "all explanatory texts
-             should be in point form rather than in paragraph prose"). */
-          <ul className="list-disc space-y-1 pl-5 text-left text-sm text-white/80">
-            <li>This lesson has no slots to pick from.</li>
-            <li>Choose ★★★ and type the whole sentence.</li>
-          </ul>
+          /* A LESSON WITHOUT SLOTS (the generator has no `slots`) still gets
+             the whole Exercise: its cue and English line lead, the input
+             stands at EVERY tier, and CHECK grades against the generator's
+             own `correct`. No bullets pointing elsewhere (Dan, 2026-09-19:
+             "do the same for all the other MneMemos"). */
+          <>
+            {question.meta && (
+              <p className="text-center text-xs uppercase leading-tight tracking-wider text-white/75">
+                {question.meta}
+              </p>
+            )}
+            {question.en && (
+              <p className="mt-1 text-center text-sm italic leading-tight text-white/85" lang="en">
+                {question.en}
+              </p>
+            )}
+            <input
+              type="text"
+              lang="fr"
+              value={freeText}
+              onChange={(e) => setFreeText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") check();
+              }}
+              placeholder="Écrivez la phrase complète…"
+              className="mt-2 w-full rounded-lg border-2 border-[color:var(--cahier-rule)] bg-white px-3 py-2 text-center text-lg font-bold text-[color:var(--cahier-ink)] focus:border-[color:var(--cahier-ink)] focus:outline-none"
+              autoCapitalize="sentences"
+              spellCheck={false}
+            />
+          </>
         ) : (
           <p className="card-hand text-center text-xl leading-relaxed text-white" lang="fr">
             {slots.map((s, i) => {
@@ -518,8 +547,9 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
         )}
         {/* THE ENGLISH TRANSLATION, directly beneath the French gapped
             sentence (Dan, 2026-09-19) — one reading order: French target
-            first, reference under it, both inside the answer box. */}
-        {difficulty !== 4 && question.en && (
+            first, reference under it, both inside the answer box. Slotless
+            lessons carry their English inside the fallback above. */}
+        {difficulty !== 4 && slots.length > 0 && question.en && (
           <p className="mt-2 text-center text-sm italic leading-tight text-white/80" lang="en">
             {question.en}
           </p>
