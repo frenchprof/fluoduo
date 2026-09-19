@@ -222,7 +222,7 @@ export const salutationsLesson: NativeLesson = {
     answer: (
       <>
         Because they are three different kinds. <i lang="fr">Bonjour</i> GREETS an
-        arrival. <i lang="fr">Salut</i> is the same greeting in the friends&rsquo;
+        arrival. <i lang="fr">Salut</i>{" "}is the same greeting in the friends&rsquo;
         register, and a register has no direction, so it serves both ways. And{" "}
         <i lang="fr">Bonne nuit</i> does not greet at all: it WISHES someone the
         time ahead — <i lang="fr">bon</i> or <i lang="fr">bonne</i> plus a noun —
