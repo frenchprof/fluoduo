@@ -28,6 +28,7 @@ import { auth } from "@/lib/firebase/client";
 import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import SiteTopBar from "@/components/SiteTopBar";
+import TourWalk from "@/components/TourWalk";
 // Only the TYPE now — the flap rail this file drew is gone (see below).
 // TabFlap itself lives on: SiteTopBar still draws flaps in the ☰ menu.
 import { type ShellTab } from "@/components/TabFlap";
@@ -253,6 +254,11 @@ export default function CahierShell({
               row in content/hints.ts and so draws nothing, which is Dan's
               "hub pages excluded" without a list of exclusions to maintain. */}
           <ActivityFirstRun activityKey={active} on="page" />
+          {/* THE 8-STEP TOUR (Dan, 2026-09-19) — takes the learner through
+              every activity with his own words. Appears only when the tour
+              is active (localStorage `fluolingo:tour.step` holds a step
+              number). Started from the ☰ menu's Help row. */}
+          <TourWalk />
         </main>
   );
 
