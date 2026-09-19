@@ -990,7 +990,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
            BIG !"*). What read as big was never the two cells but the dark box
            around them; on a phone the cells stand on the paper and the box
            exists only from `sm:` up, where a tablet has the room for it. */
-        className={`relative p-0 transition sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 sm:shadow-xl sm:focus-within:border-[#8ec5ff] ${
+        className={`relative flex items-center p-0 transition sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 sm:shadow-xl sm:focus-within:border-[#8ec5ff] ${
           mode === "price" ? "sm:border-[#ffb74d] sm:bg-[#3e2723]/95" : mode === "phone" ? "sm:border-[#78909c] sm:bg-[#37474f]/95" : "sm:border-white sm:bg-slate-900/90"
         }`}
       >
@@ -1030,12 +1030,16 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             if (next.length === width) armAutoSubmit(next);
           }}
         />
-        {stage === "revealed" && round && wordTier === 1 && (
-          <p className="mt-1 text-center text-sm font-black leading-tight sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
-            {round.words}
-          </p>
-        )}
       </div>
+      {/* THE WORDS BESIDE THE DIGITS, NOT BELOW (Dan, 2026-09-19: "can it not
+          be side by side") — the worded line used to render under the board,
+          which pushed the frame taller and lower. Now it sits in its own row
+          to the right of the digit strip, same height, nothing moves. */}
+      {stage === "revealed" && round && wordTier === 1 && (
+        <p className="ml-2 inline-block self-center align-middle text-sm font-black leading-tight sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
+          {round.words}
+        </p>
+      )}
 
       {/* See PHONE_ORDER: five across on a phone, the sound keys in the fifth
           column; on a desktop the three sound keys across the top and the
