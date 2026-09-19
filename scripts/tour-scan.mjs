@@ -1,7 +1,17 @@
 /**
  * Drive every surviving page tour, and every route that offers help on arrival.
  *
- * TWO QUESTIONS, BOTH OF WHICH ONLY THE RUNNING PAGE CAN ANSWER.
+ * THREE QUESTIONS NOW, ALL OF WHICH ONLY THE RUNNING PAGE CAN ANSWER.
+ *
+ * 0. DOES THE 8-STEP TOUR START ITSELF, AND DOES EVERYTHING ELSE WAIT ITS
+ *    TURN? (2026-09-19) Dan: *"it usually only appears once and then user
+ *    can say do not show me again"* — the app tour auto-starts on a cold
+ *    arrival, and while it walks, the page tours' invites and the activities'
+ *    first-run cards are HELD (held, never consumed: nothing is written, so
+ *    each returns the moment the tour is finished or refused). The lesson
+ *    route additionally walks ITS OWN four-tab tour before its card may
+ *    speak. This scan drives all three orders cold, then settles the tours
+ *    and requires everything held to come back.
  *
  * 1. DOES THE TOUR STILL POINT AT ANYTHING? FirstTour measures with
  *    `document.querySelectorAll` and SKIPS a step whose target it cannot find.
@@ -21,7 +31,10 @@
  *    MneMemo: two prompts arrived together — the activity's own instruction
  *    card and the page tour's « ✨ First time here? ». They are drawn by
  *    different components, mounted by different shells, in different documents,
- *    so nothing in the source puts them near each other.
+ *    so nothing in the source puts them near each other. Since 19 Sep the
+ *    8-step tour's sheet is a third such prompt, and the holds in
+ *    CahierShell/DrillShell/FirstTour are what keep every pair apart — this
+ *    scan is what tells you if one of them stops holding.
  *
  * THE EXPORT MUST BE OPEN, for the reason verify79 states — a signed-out build
  * shows the auth wall instead of the activity, and every assertion below would
@@ -110,12 +123,63 @@ async function textEverywhere(page) {
   return parts.join("\n");
 }
 
+/** The TourWalk sheets on screen, by aria-label ("Tour: step 1 of 8", "Tour:
+ *  step 2 of 4"), across every frame — the sheet is portalled to its own
+ *  document's body, so the top page and a lesson frame each carry their own. */
+async function tourSheets(page) {
+  const labels = [];
+  for (const f of page.frames()) {
+    try {
+      const found = await f.evaluate(() =>
+        [...document.querySelectorAll('[role="dialog"][aria-label^="Tour:"]')]
+          .map((n) => n.getAttribute("aria-label")));
+      labels.push(...found);
+    } catch {}
+  }
+  return labels;
+}
+
+/** Mark the tours done in this context and reload — the settled state every
+ *  held prompt must return to. `which` lists storage keys to settle. */
+async function settleTours(page, which) {
+  await page.evaluate((keys) => {
+    for (const k of keys) localStorage.setItem(k, "done");
+  }, which);
+  await page.reload({ waitUntil: "networkidle" });
+  await page.waitForTimeout(1600);
+}
+
 for (const r of ROUTES) {
   const page = await fresh(r.path);
-  const all = await textEverywhere(page);
+  let all = await textEverywhere(page);
+
+  // ── the 8-step tour starts itself, and is the only hand while it walks ───
+  // (2026-09-19) Cold means localStorage was cleared, so the app tour's key
+  // has never been written: the sheet must open at step 1, and everything
+  // that would otherwise offer help — the page tours' invites — must be
+  // HELD, not merely absent: after settling, each must come back.
+  const coldSheets = await tourSheets(page);
+  const appWalking = coldSheets.some((l) => /^Tour: step \d+ of 8$/.test(l));
+  if (!appWalking) {
+    fail.push(`${r.path}: the 8-step tour did not start itself on a cold arrival. Dan, ` +
+              `2026-09-19: "it usually only appears once and then user can say do not show ` +
+              `me again" — a cleared key is a learner the tour has never met, and the sheet ` +
+              `should already be open at step 1.`);
+  }
+  let tourOffer = all.includes("First time here");
+  if (appWalking && tourOffer) {
+    fail.push(`${r.path}: the page tour's invite opened WHILE the 8-step tour was walking. ` +
+              `FirstTour's hold is not holding — two offers on one screen is what this scan ` +
+              `has failed on since 11 Sep, and the tour sheet is now one of the two.`);
+  }
+  if (appWalking) {
+    // Held, not refused: settle the app tour, and the invite must return.
+    await settleTours(page, ["fluolingo:tour.step"]);
+    all = await textEverywhere(page);
+    tourOffer = all.includes("First time here");
+  }
 
   // ── one prompt at a time ────────────────────────────────────────────────
-  const tourOffer = all.includes("First time here");
   // The activity first-run card always carries this checkbox (FirstRunHint).
   const activityCard = all.includes("Do not show me again");
   if (tourOffer && activityCard) {
@@ -257,6 +321,32 @@ for (const key of guidedKeys) {
     continue;
   }
   const page = await fresh(route);
+
+  // ── cold: the tour(s) go first, the card is held ─────────────────────────
+  // (2026-09-19) The app tour starts itself on a cold arrival and every
+  // first-run card holds while it walks. The lesson waits on TWO tours: the
+  // app tour, then its own four-tab walk. Held means the card must come back
+  // the moment they are settled — asserted below by finding « Show me »
+  // immediately after settleTours.
+  const guidedColdSheets = await tourSheets(page);
+  if (!guidedColdSheets.some((l) => /^Tour: step \d+ of 8$/.test(l))) {
+    fail.push(`${route}: the 8-step tour did not start itself on a cold arrival ` +
+              `(found: ${JSON.stringify(guidedColdSheets)}).`);
+  }
+  const coldCard = await (async () => {
+    for (const f of page.frames()) {
+      try { if (await f.getByRole("button", { name: "Show me" }).count()) return true; } catch {}
+    }
+    return false;
+  })();
+  if (coldCard) {
+    fail.push(`${route}: the "${key}" card opened while the 8-step tour was walking. The ` +
+              `DrillShell/CahierShell hold is not holding — one hand at a time.`);
+  }
+  await settleTours(page, key === "lesson"
+    ? ["fluolingo:tour.step", "fluolingo:tour.lesson"]
+    : ["fluolingo:tour.step"]);
+
   // The card and the controls may be in different documents — that is the
   // whole point — so look for the button in every frame, and then watch the
   // frame it was found in.
@@ -267,8 +357,9 @@ for (const key of guidedKeys) {
     } catch {}
   }
   if (!host) {
-    fail.push(`${route}: "${key}" is a guided row but no « Show me » button appeared on a ` +
-              `cold arrival — the first-run card is not being mounted for this key.`);
+    fail.push(`${route}: "${key}" is a guided row but no « Show me » button appeared after the ` +
+              `tours were settled — the first-run card is not being mounted for this key, or ` +
+              `the hold consumed the every-visit offer instead of waiting its turn.`);
     await page.close();
     continue;
   }
@@ -306,6 +397,8 @@ if (fail.length) {
   process.exit(1);
 }
 const pinned = ROUTES.filter((r) => r.broken).length;
+console.log(`  ok   the 8-step tour starts itself on every cold arrival, and every page-tour ` +
+            `invite and first-run card holds its turn and returns once it is settled`);
 console.log(`  ok   ${guidedKeys.length} guided activities open their walk on a real control: ` +
             guidedKeys.join(", "));
 console.log(`  ok   ${ROUTES.length} routes: never two prompts at once on a cold arrival`);

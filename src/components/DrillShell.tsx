@@ -48,7 +48,8 @@ import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
-import { lessonTourDone } from "@/components/TourWalk";
+import { lessonTourDone, appTourDone } from "@/components/TourWalk";
+import TourWalk from "@/components/TourWalk";
 import { HOME_HREF, sioHref } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
 import MoreBelow from "@/components/MoreBelow";
@@ -893,18 +894,28 @@ export default function DrillShell({
           nothing. It portals to the body, because this root is
           `overflow-hidden` and would clip it to the paper.
 
-          THE LESSON'S CARD WAITS FOR ITS TOUR. The lesson's first visit now
-          walks the four tabs first (TourWalk, from LessonTabs — Dan,
-          2026-09-19: "A similar NavigaTour is needed within the MneMemo
-          too"); this card would open over that walk's first sheet, two
-          instructions at once. `hold` keeps it shut — without consuming the
-          every-visit offer — until that tour is finished or refused, and
-          then the card resumes exactly as before. No other activity holds. */}
+          THE LESSON'S CARD WAITS FOR ITS TOUR — and since 2026-09-19 every
+          drill's card waits for the app tour. The lesson's first visit walks
+          the four tabs first (TourWalk, from LessonTabs — Dan: "A similar
+          NavigaTour is needed within the MneMemo too"); the app tour starts
+          itself on a first visit and its sheet would sit under any card that
+          opened beside it. `hold` keeps the card shut — without consuming
+          the every-visit offer — until the tour(s) ahead of it are finished
+          or refused, and then the card resumes exactly as before. */}
       <ActivityFirstRun
         activityKey={activity}
         on="drill"
-        hold={activity === "lesson" ? () => !lessonTourDone() : undefined}
+        hold={activity === "lesson"
+          ? () => !(appTourDone() && lessonTourDone())
+          : () => !appTourDone()}
       />
+      {/* THE 8-STEP TOUR, mounted here for the drills no CahierShell covers
+          (say-it, grammarathon play as the top document themselves). On
+          routes where the drill sits inside a frame, the shell above already
+          mounts the tour — TourWalk's own `onlyTopDocument` gate keeps this
+          copy silent there, so there is exactly one sheet per learner and
+          one writer per storage key. */}
+      <TourWalk />
     </div>
     </div>
   );

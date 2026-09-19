@@ -101,6 +101,14 @@ export function startTour() {
   window.dispatchEvent(new Event("fluolingo:tour-start"));
 }
 
+/** Is THIS document a frame? The inline script in layout.tsx marks frame
+ *  documents `html[data-embed]`. The app tour renders only in the top one —
+ *  see `onlyTopDocument` below for why that decision lives here. */
+function inFrame(): boolean {
+  return typeof document !== "undefined"
+    && document.documentElement.dataset.embed === "1";
+}
+
 /** The default hold: never held. Hoisted so the effect's dependency on it
  *  is a stable reference, not a new arrow every render. */
 const NEVER: () => boolean = () => false;
@@ -110,6 +118,7 @@ export default function TourWalk({
   storageKey = KEY,
   onTryIt,
   holdAutoStart = NEVER,
+  onlyTopDocument = true,
 }: {
   steps?: TourStep[];
   storageKey?: string;
@@ -119,14 +128,26 @@ export default function TourWalk({
   /** While true, the auto-start holds — used by the lesson instance so it
    *  never opens over the app tour. */
   holdAutoStart?: () => boolean;
+  /** The APP tour renders only in the top document (default true): a drill
+   *  mounted inside a frame is quiet, because the CahierShell above the
+   *  frame already carries the sheet — one sheet per learner. The lesson
+   *  tour passes false: it lives inside the lesson's frame, where its
+   *  « Try it → » drives the tabs it is describing. */
+  onlyTopDocument?: boolean;
 }) {
   const [step, setStep] = useState(-1);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
+  // THE APP TOUR BELONGS TO THE TOP DOCUMENT. DrillShell mounts an instance
+  // on pages no CahierShell covers; on pages where the drill sits in a
+  // frame, the shell above already has one. Both instances share one storage
+  // key, so an ungated frame copy would race the top copy to the same write.
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is unreadable during SSR on a static export; this is the mount-only read the house pattern uses, and the once-only auto-start is decided by it
     setMounted(true);
+    if (onlyTopDocument && inFrame()) return;
     if (readRaw(storageKey) === null && !holdAutoStart()) {
       // FIRST TIME, SELF-STARTED (Dan, 2026-09-19: "it usually only appears
       // once and then user can say do not show me again"). No button, no
@@ -136,7 +157,7 @@ export default function TourWalk({
     } else {
       setStep(readStep(storageKey, steps.length));
     }
-  }, [storageKey, steps.length, holdAutoStart]);
+  }, [storageKey, steps.length, holdAutoStart, onlyTopDocument]);
 
   // Re-read on the tour-start ping (the storage event does not fire in the
   // tab that wrote the value — startTour() dispatches its own). Only the
@@ -153,6 +174,10 @@ export default function TourWalk({
   }, [storageKey, steps.length]);
 
   if (!mounted || step < 0 || step >= steps.length) return null;
+  // The reread listeners are not gated per document; the render is. A frame
+  // copy with a mid-tour step still draws nothing — the top document's sheet
+  // is the learner's one sheet.
+  if (onlyTopDocument && inFrame()) return null;
 
   const s = steps[step];
   const isLast = step === steps.length - 1;

@@ -28,7 +28,7 @@ import { auth } from "@/lib/firebase/client";
 import { logEvent } from "@/lib/firebase/usage";
 import { siteTabs, toolTabs, tabsWithActive } from "@/components/siteTabs";
 import SiteTopBar from "@/components/SiteTopBar";
-import TourWalk from "@/components/TourWalk";
+import TourWalk, { appTourDone } from "@/components/TourWalk";
 // Only the TYPE now — the flap rail this file drew is gone (see below).
 // TabFlap itself lives on: SiteTopBar still draws flaps in the ☰ menu.
 import { type ShellTab } from "@/components/TabFlap";
@@ -252,12 +252,16 @@ export default function CahierShell({
               activities that ARE a CahierShell page rather than a drill —
               VoixLà, ChaTutor, DéjàRevu. A hub, a picker or a landing has no
               row in content/hints.ts and so draws nothing, which is Dan's
-              "hub pages excluded" without a list of exclusions to maintain. */}
-          <ActivityFirstRun activityKey={active} on="page" />
+              "hub pages excluded" without a list of exclusions to maintain.
+              Held — never consumed — while the 8-step tour walks, for the
+              same reason it is held in DrillShell: the tour is the one hand
+              offered, and it starts itself now. */}
+          <ActivityFirstRun activityKey={active} on="page" hold={() => !appTourDone()} />
           {/* THE 8-STEP TOUR (Dan, 2026-09-19) — takes the learner through
-              every activity with his own words. Appears only when the tour
-              is active (localStorage `fluolingo:tour.step` holds a step
-              number). Started from the ☰ menu's Help row. */}
+              every activity with his own words. It starts ITSELF on a
+              learner's first visit (no button: "it usually only appears once
+              and then user can say do not show me again") and lives on every
+              page this shell draws. */}
           <TourWalk />
         </main>
   );

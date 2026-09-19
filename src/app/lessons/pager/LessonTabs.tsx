@@ -44,7 +44,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
-import TourWalk, { tourActive } from "@/components/TourWalk";
+import TourWalk, { tourActive, LESSON_KEY } from "@/components/TourWalk";
 import { LESSON_TOUR_STEPS } from "@/content/tourSteps";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
@@ -937,9 +937,10 @@ export default function LessonTabs({
           walk is the one that goes first. */}
       <TourWalk
         steps={LESSON_TOUR_STEPS}
-        storageKey="fluolingo:tour.lesson"
+        storageKey={LESSON_KEY}
         onTryIt={(s) => { if (s.tab) goTo(s.tab, true); }}
         holdAutoStart={tourActive}
+        onlyTopDocument={false}
       />
     </div>
   );
