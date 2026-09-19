@@ -48,6 +48,7 @@ function Board({
   showCursor,
   state,
   warm,
+  revealWords,
 }: {
   blind: Blind;
   value: string;
@@ -55,7 +56,24 @@ function Board({
   showCursor: boolean;
   state: "typing" | "ok" | "bad";
   warm?: boolean;
+  /** TIER B of the worded line (Dan, 2026-09-19, "need to see it"): at
+   *  reveal the WORDS take the digits' place on the flip display. */
+  revealWords?: string;
 }) {
+  if (revealWords) {
+    return (
+      <div
+        className="flex min-h-[2.25rem] items-center justify-center gap-1 overflow-hidden rounded-md border-2 border-black/60 px-3 py-1.5 font-mono font-black shadow-inner sm:min-h-[3.5rem]"
+        style={{
+          background: "linear-gradient(180deg,#1c222b 0 48%,#0a0e13 48% 52%,#1c222b 52%)",
+          color: state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : "#ffc233",
+        }}
+      >
+        <span lang="fr" className="text-center text-[calc(0.875rem+var(--fs-step)*0.88)] leading-tight sm:text-2xl">{revealWords}</span>
+        {suffix ? <span className="text-xs opacity-70">{suffix}</span> : null}
+      </div>
+    );
+  }
   const colour = state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : warm ? "#ffb84d" : "#ffc233";
   const wide = blindWidth(blind) <= 5;
   /* AND A SECOND NOTCH, WITH THE STRIP AROUND THEM (Dan, 2026-09-15, shown
@@ -185,11 +203,15 @@ function Vehicle({
   panel,
   state,
   train,
+  badgeWords,
 }: {
   spot: VehicleSpot;
   panel: string;
   state: "waiting" | "ok" | "bad";
   train?: boolean;
+  /** TIER C of the worded line (Dan, 2026-09-19, "need to see it"): at
+   *  reveal the words ride the bus's own destination sign. */
+  badgeWords?: string;
 }) {
   const skin = train ? "#dfe6ee" : "#f4b400";
   const trim = train ? "#1f5fa8" : "#d18f00";
@@ -213,12 +235,22 @@ function Vehicle({
             borderTopLeftRadius: train ? 34 : 16,
           }}
         >
+          {badgeWords ? (
+            <div
+              className="absolute left-1/2 top-1.5 max-w-[92%] -translate-x-1/2 rounded border border-black/50 bg-[#10151b] px-2 py-[2px] text-center font-mono text-[10px] font-black leading-tight shadow-inner"
+              style={{ color: state === "bad" ? "#ff7a7a" : state === "ok" ? "#8ce563" : "#ffc233" }}
+              lang="fr"
+            >
+              {badgeWords}
+            </div>
+          ) : (
           <div
             className="absolute left-1/2 top-1.5 -translate-x-1/2 rounded border border-black/50 bg-[#10151b] px-2 py-[2px] font-mono text-[13px] font-black tracking-[0.12em] shadow-inner"
             style={{ color: state === "bad" ? "#ff7a7a" : state === "ok" ? "#8ce563" : "#ffc233" }}
           >
             {panel}
           </div>
+          )}
           <div className="absolute inset-x-2 top-8 flex gap-1.5">
             {Array.from({ length: train ? 6 : 4 }).map((_, i) => (
               <span key={i} className="h-[1.375rem] flex-1 rounded-[3px]" style={{ background: "linear-gradient(180deg,#cfeaf8,#8dc2df)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)" }} />
@@ -266,6 +298,7 @@ function BusStopScene({
   timerHue,
   onRepeat,
   talking,
+  badgeWords,
 }: {
   mode: "bus" | "time";
   label: string;
@@ -278,6 +311,8 @@ function BusStopScene({
   timerHue: string;
   onRepeat: () => void;
   talking: boolean;
+  /** Tier C: the words ride the bus's destination sign at reveal. */
+  badgeWords?: string;
 }) {
   const train = mode === "time";
   const sky = train
@@ -324,7 +359,7 @@ function BusStopScene({
           <p className="mt-1 text-center font-mono text-2xl font-black text-[#ffc233]">{panel === "??" ? "--:--" : `${panel.slice(0, 2)}:${panel.slice(2, 4)}`}</p>
         </div>
       )}
-      {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} />}
+      {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} badgeWords={badgeWords} />}
       {/* On a phone the train and the departures board fight for the same
           strip, and the board is the one carrying the answer. */}
       {mode === "time" && spot !== "off" && spot !== "gone" && (
@@ -442,6 +477,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   const [round, setRound] = useState<NumBusRound | null>(null);
   const [stage, setStage] = useState<Stage>("arriving");
   const [typed, setTyped] = useState("");
+  /** THE WORDED LINE, TIERED (Dan, 2026-09-19, asked to SEE it): 1 = A, the
+   *  slim words line under the digits at reveal (today's behaviour, default);
+   *  2 = B, the words REPLACE the digits on the flip display; 3 = C, the
+   *  words ride the bus's destination badge; 0 = off. One key cycles. */
+  const [wordTier, setWordTier] = useState<0 | 1 | 2 | 3>(1);
   const [served, setServed] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -933,6 +973,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           label={stopLabel}
           spot={spot}
           panel={stage === "revealed" ? plate : "??"}
+          badgeWords={stage === "revealed" && wordTier === 3 ? round?.words : undefined}
           boardState={boardState === "typing" ? "waiting" : boardState}
           bubble={bubble}
           boarding={stage === "revealed" && correct}
@@ -961,6 +1002,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             showCursor={stage === "asking" && typingOpen}
             state={boardState}
             warm={mode === "price"}
+            revealWords={stage === "revealed" && wordTier === 2 ? round.words : undefined}
           />
         )}
         <input
@@ -988,7 +1030,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             if (next.length === width) armAutoSubmit(next);
           }}
         />
-        {stage === "revealed" && round && (
+        {stage === "revealed" && round && wordTier === 1 && (
           <p className="mt-1 text-center text-sm font-black leading-tight sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
             {round.words}
           </p>
@@ -1025,6 +1067,18 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           className="order-15 rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2 text-xl leading-none font-black text-amber-900 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           🐌
+        </button>
+        <button
+          type="button"
+          onClick={() => setWordTier((t) => ((t + 1) % 4) as 0 | 1 | 2 | 3)}
+          title="Where the number's words appear at reveal — A: under the digits · B: on the display · C: on the bus badge · off"
+          className={`order-20 rounded-2xl border-2 border-b-4 py-2 text-xs leading-none font-black transition active:translate-y-[2px] active:border-b-2 sm:order-none sm:col-span-4 sm:py-3 sm:text-sm sm:leading-normal ${
+            wordTier === 0
+              ? "border-slate-300 bg-slate-100 text-slate-500 hover:bg-slate-50"
+              : "border-teal-300 bg-teal-100 text-teal-900 hover:bg-teal-50"
+          }`}
+        >
+          words·{wordTier === 0 ? "off" : wordTier === 1 ? "A" : wordTier === 2 ? "B" : "C"}
         </button>
         {KEYPAD.map((k) => (
           <button
