@@ -2671,10 +2671,29 @@ h3.cahier-display { font-size: var(--fs-h3); }
    `optionGrid.ts` exists to stop the answer-option threshold doing the same —
    so the formula lives here and the call sites only choose `--tile-min`.
 
-   THE FLOOR DOES BOTH CAPS BY ITSELF, so there is no breakpoint anywhere:
+   THE FLOOR, NOT A COUNT — and 2026-09-19 took the last count out of it.
+   Dan: *"The SpecuLearn tiles are supposed to be adaptive but it seems to
+   not go beyond 4 columns"*, then the principle under it: *"it doesn't
+   [matter] what size MY phone is, it has to cater to all the phone size
+   possible, HENCE THE NEED TO HAVE RELATIVE / ADAPTIVE SIZING!"*
 
-     min(50% - gap/2, …)          no column wider than half     -> at least 2
-     max(--tile-min, 25% - …)     no column narrower than a 1/4 -> at most 4
+   The quarter term that used to sit here — max(--tile-min, 25% − …), the
+   11 Sep "maybe up to 4 per row" — was a cap wearing a formula's clothes:
+   no column narrower than a quarter means four columns is the most ANY
+   width can buy, so the grid was adaptive on the way down and pinned on the
+   way up. What is left asks the row, and only the row:
+
+     min(50% - gap/2, --tile-min)   two on the narrowest phone (Dan,
+                                    2026-09-07: "put buttons in two
+                                    columns"); on a wider row, AS MANY as
+                                    the floor admits — the count is the
+                                    room's answer, never a number anyone
+                                    wrote.
+
+   The floor rides the type ramp (`--fs-step`), the same step the tiles'
+   own names ride, so a desktop's larger type gets larger tiles rather than
+   clipped ones — the measured 1.36x of the menu grid, applied to the grid
+   that holds the names.
 
    A breakpoint would be wrong twice over: right only at the widths someone
    remembered to write, and these surfaces run INSIDE the cahier's iframe,
@@ -2684,7 +2703,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
    TWO ON A PHONE IS THE RULE (Dan, 2026-09-07: *"put buttons in two
    columns"*, looking at SpecuLearn at 390px). The half-floor holds it: at
-   320px the quarter-floor alone would give one column. */
+   320px the tile floor alone would give one column. */
 .fluo-tilegrid,
 .stop-grid,
 .sio-path {
@@ -2692,7 +2711,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
   gap: var(--tile-gap, 6px);
   grid-template-columns: repeat(auto-fit,
     minmax(min(calc(50% - var(--tile-gap, 6px) / 2),
-               max(var(--tile-min, 11rem), calc(25% - var(--tile-gap, 6px) * 0.75))), 1fr));
+               var(--tile-min, calc(11rem + var(--fs-step) * 11))), 1fr));
 }
 
 /* THE TEACHER CARD'S STAT ROW — COUNTED, NOT TOLD (Dan, 2026-09-15, sending
@@ -2735,9 +2754,12 @@ h3.cahier-display { font-size: var(--fs-h3); }
    at the screen's width"). `1fr` stops a long French title pushing its column
    wider than its neighbour.
 
-   The "two to a row" half of that 30 Aug note is superseded above — it is now
-   two to four, and 2026-08-30's reason survives as the LOWER bound. */
-.stop-grid { --tile-min: 11rem; }
+   The "two to a row" half of that 30 Aug note survives as the LOWER bound
+   only; the upper count went 2026-09-19 with the quarter cap above. The
+   floor rides the ramp for the same reason the names do — a fixed 11rem
+   under type that grows 1.36x to a desktop is the clipped-label fault the
+   teacher card's note describes, one grid over. */
+.stop-grid { --tile-min: calc(11rem + var(--fs-step) * 11); }
 
 .stop-grid a,
 .stop-grid a > span { align-items: stretch; }

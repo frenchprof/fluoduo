@@ -48,6 +48,7 @@ import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { lessonTourDone } from "@/components/TourWalk";
 import { HOME_HREF, sioHref } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
 import MoreBelow from "@/components/MoreBelow";
@@ -890,8 +891,20 @@ export default function DrillShell({
           its instruction by having a row in content/hints.ts and nothing
           else — the shape ACTIVITIES exists for. Drills with no row draw
           nothing. It portals to the body, because this root is
-          `overflow-hidden` and would clip it to the paper. */}
-      <ActivityFirstRun activityKey={activity} on="drill" />
+          `overflow-hidden` and would clip it to the paper.
+
+          THE LESSON'S CARD WAITS FOR ITS TOUR. The lesson's first visit now
+          walks the four tabs first (TourWalk, from LessonTabs — Dan,
+          2026-09-19: "A similar NavigaTour is needed within the MneMemo
+          too"); this card would open over that walk's first sheet, two
+          instructions at once. `hold` keeps it shut — without consuming the
+          every-visit offer — until that tour is finished or refused, and
+          then the card resumes exactly as before. No other activity holds. */}
+      <ActivityFirstRun
+        activityKey={activity}
+        on="drill"
+        hold={activity === "lesson" ? () => !lessonTourDone() : undefined}
+      />
     </div>
     </div>
   );

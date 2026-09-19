@@ -44,6 +44,8 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 import GoalCard from "@/components/GoalCard";
+import TourWalk, { tourActive } from "@/components/TourWalk";
+import { LESSON_TOUR_STEPS } from "@/content/tourSteps";
 import type { Collection } from "@/lib/collections/schema";
 import type { Sio } from "@/content/sios";
 import type { LessonConcept } from "@/content/lessons/native/types";
@@ -914,6 +916,31 @@ export default function LessonTabs({
         <Panel>{exercise}</Panel>
       </section>
 
+      {/* THE LESSON TOUR (Dan, 2026-09-19: *"A similar NavigaTour is needed
+          within the MneMemo too"*) — the same once-only sheet as the app
+          tour, walking the four tabs in the order the lesson teaches them.
+          It starts ITSELF on a learner's first lesson (no button — *"it
+          usually only appears once and then user can say do not show me
+          again"*), and « Don't show again » is final.
+
+          IT LIVES HERE, not in CahierShell, because its « Try it → » is
+          `goTo` — it opens the tab it is describing, scrolling the panel to
+          the top the way a tap on the strip does. And it lives with the TABS
+          phase: the moment a learner picks an entry level the tabs unmount
+          and the sheet goes with them, which is the tour leaving precisely
+          when the doing starts.
+
+          `holdAutoStart` is the app tour's test: while that tour is walking,
+          this one does not start — two sheets over one lesson is not
+          guidance. The lesson's own first-run hint card is held the same
+          way, from DrillShell; between the tab walk and the hint, the tab
+          walk is the one that goes first. */}
+      <TourWalk
+        steps={LESSON_TOUR_STEPS}
+        storageKey="fluolingo:tour.lesson"
+        onTryIt={(s) => { if (s.tab) goTo(s.tab, true); }}
+        holdAutoStart={tourActive}
+      />
     </div>
   );
 }

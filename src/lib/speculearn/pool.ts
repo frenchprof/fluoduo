@@ -103,6 +103,31 @@ export type PoolItem = {
   unit0?: Unit0Question;
 };
 
+/**
+ * A PARENTHETICAL THAT TRAILS THE SENTENCE IS A NOTE FOR THE EYE, NOT FRENCH
+ * FOR THE MOUTH (Dan, 2026-09-19: *"some of the TTS in the SpecuLearn are
+ * reading even things that are not meant to be read: '? (neutral, est-ce
+ * que)'"*). The authored questions end some sentences with a register note —
+ * « (spoken, casual) », « (neutral, est-ce que) » — that tells the learner
+ * WHICH French to pick; it is a hint, like Unit0's bracketed framing below
+ * ("a hint for the eye and is not said"), and the mouth has no business with
+ * it.
+ *
+ * THE RULE IS WHERE THE PARENTHETICAL SITS, not what it contains. One that
+ * follows TERMINAL PUNCTUATION stands after the sentence has ended, so it
+ * cannot be part of it — real French asides come before the full stop (« Je
+ * viens (mais en retard) ! ») and are left untouched. A fragment that is
+ * NOTHING BUT a parenthetical (sentenceAfter on an item whose whole sentence
+ * is the answer) is all note. Nothing else is touched.
+ */
+export function splitEyeNote(s: string): { fr: string; note: string } {
+  const only = s.trim().match(/^\([^()]*\)$/);
+  if (only) return { fr: "", note: only[0] };
+  const tail = s.match(/^([\s\S]*[.!?…])\s*(\([^()]*\))\s*$/);
+  if (tail) return { fr: tail[1], note: tail[2] };
+  return { fr: s, note: "" };
+}
+
 /** An authored pre-test item is already this shape bar the naming. */
 function fromAuthored(it: PretestItem, i: number): PoolItem {
   return {
@@ -117,7 +142,7 @@ function fromAuthored(it: PretestItem, i: number): PoolItem {
     answer: it.answer,
     options: [it.answer, ...it.distractors],
     whyWrong: it.whyWrong,
-    speak: it.fullSentence ?? `${it.sentenceBefore}${it.answer}${it.sentenceAfter}`,
+    speak: splitEyeNote(it.fullSentence ?? `${it.sentenceBefore}${it.answer}${it.sentenceAfter}`).fr,
     authored: it,
   };
 }

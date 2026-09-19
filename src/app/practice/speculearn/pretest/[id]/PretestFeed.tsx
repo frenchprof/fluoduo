@@ -82,7 +82,7 @@ import { awardActivityRun } from "@/lib/progress";
 import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
 import { HOME_HREF } from "@/lib/routes";
-import { speculearnPool, type PoolItem } from "@/lib/speculearn/pool";
+import { speculearnPool, type PoolItem, splitEyeNote } from "@/lib/speculearn/pool";
 import { getSio } from "@/content/sios";
 import { goalNumber } from "@/lib/stopTag";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -470,6 +470,11 @@ function ItemCard({
 }) {
   const bare = isBare(item);
   const hasSentence = item.sentenceBefore !== undefined;
+  // The suffix, split where the TTS splits it (splitEyeNote, pool.ts): the
+  // French in `fr`, the trailing register note — « (neutral, est-ce que) » —
+  // in `note`, rendered outside lang="fr" in the card's English styling so
+  // the eye and the ear are told the same thing.
+  const after = splitEyeNote(item.sentenceAfter ?? "");
   return (
     <>
     <article className="fluo-card speculearn-card fluo-h-1" data-hue={1}>
@@ -499,7 +504,8 @@ function ItemCard({
           >
             {submitted ? submitted.picked : "?"}
           </span>
-          <span lang="fr">{item.sentenceAfter}</span>
+          <span lang="fr">{after.fr}</span>
+          {after.note && <span className="ml-1 text-sm font-normal italic text-slate-500">{after.note}</span>}
         </p>
       )}
 

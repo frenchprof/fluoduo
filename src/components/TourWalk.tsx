@@ -1,127 +1,205 @@
 "use client";
 
 /**
- * THE 8-STEP TOUR WALK — takes the learner through every activity, one
- * round each, with Dan's own words for what each one is.
+ * THE TOUR SHEET — one walk at a time, offered once, on its own.
  *
  * Dan, 2026-09-19: *"instead of just pointing to what each of the steps
  * does, get users to actually click through one round of every single
- * activity."*
+ * activity"* — and then, of the button that started it: *"I am starting to
+ * question if we actually need a BUTTON for it. it usually only appears
+ * once and then user can say do not show me again."*
  *
- * SHAPE: a bottom sheet (the house's own BottomSheet pattern), one step
- * visible at a time. Each step names the activity, says what it is for
- * (Dan's copy), and has two buttons: « Try it → » navigates to the
- * activity's route and the tour remembers where the learner is; « Skip »
- * ends the tour. When the learner returns from the activity, the tour
- * picks up where it left off.
+ * So nothing starts a tour but the tour itself. The first time it could
+ * have helped — first app entry for the app tour, first lesson for the
+ * lesson tour — the sheet appears. « Don't show again » (or finishing) is
+ * final: the key turns "done" and the sheet never returns. A learner who
+ * closes the tab mid-walk is met where they left off, not at step one.
  *
- * THE PROGRESS IS REMEMBERED in localStorage (`fluolingo:tour.step`), so
- * a learner who does three activities today and five tomorrow is met at
- * step four, not step one. A completed tour sets the key to "done" and
- * never returns.
+ * TWO INSTANCES, ONE COMPONENT:
+ *   — CahierShell mounts the default export bare: the APP tour, whose
+ *     « Try it → » navigates to the step's route.
+ *   — LessonTabs passes its own steps, its own key, and an `onTryIt` that
+ *     switches the lesson's tab instead of navigating. It also passes
+ *     `holdAutoStart` = the app tour's active test, so the two never speak
+ *     at once: while the app tour is walking, a first lesson visit does not
+ *     start the lesson tour — it waits for the next one.
  *
- * WHERE IT LIVES: mounted from CahierShell, so it appears on every page
- * the learner visits — but only when the tour is active (the key holds a
- * step number, not "done" or absent).
+ * SHAPE: a bottom sheet, one step visible at a time. Each step names its
+ * subject, says what it is for (Dan's copy), and offers « Try it → » and
+ * « Next › ». Progress dots sit between the copy and the controls.
  */
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { TOUR_STEPS } from "@/content/tourSteps";
+import { TOUR_STEPS, type TourStep } from "@/content/tourSteps";
 
 const KEY = "fluolingo:tour.step";
+/** The lesson tour's own key — named here so DrillShell's hint-hold and
+ *  LessonTabs' instance cannot drift apart on the string. */
+export const LESSON_KEY = "fluolingo:tour.lesson";
 
-function readStep(): number {
-  try {
-    const v = window.localStorage.getItem(KEY);
-    if (v === null || v === "done") return -1;
-    const n = parseInt(v, 10);
-    return Number.isFinite(n) && n >= 0 && n < TOUR_STEPS.length ? n : -1;
-  } catch { return -1; }
+/**
+ * The raw key, three ways: `null` — the tour has never been shown, which is
+ * the auto-start's trigger; a number — mid-walk, resume there; "done" —
+ * finished or refused, never show again. The distinction between `null` and
+ * "done" is the whole difference between "first time here" and "asked and
+ * answered"; collapsing them re-offers a refused tour on every visit, which
+ * is the nag Dan's "do not show me again" exists to end.
+ */
+function readRaw(key: string): string | null {
+  try { return window.localStorage.getItem(key); } catch { return "done"; }
 }
 
-function writeStep(n: number) {
-  try { window.localStorage.setItem(KEY, String(n)); } catch { /* private mode */ }
+function readStep(key: string, len: number): number {
+  const v = readRaw(key);
+  if (v === null || v === "done") return -1;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) && n >= 0 && n < len ? n : -1;
 }
 
+function writeStep(key: string, n: number) {
+  try { window.localStorage.setItem(key, String(n)); } catch { /* private mode */ }
+}
+
+function endTour(key: string) {
+  try { window.localStorage.setItem(key, "done"); } catch { /* private mode */ }
+}
+
+/** Is the APP tour walking right now? The lesson tour holds its auto-start
+ *  while this is true — one sheet over a page is guidance, two is noise. */
 export function tourActive(): boolean {
   if (typeof window === "undefined") return false;
-  return readStep() >= 0;
+  return readStep(KEY, TOUR_STEPS.length) >= 0;
 }
 
+/** Has the lesson tour been FINISHED or REFUSED? While it has not, the
+ *  lesson's own first-run hint card holds — the tab walk goes first, and the
+ *  two cards saying two things over one lesson is the noise the hold exists
+ *  to prevent. */
+export function lessonTourDone(): boolean {
+  if (typeof window === "undefined") return false;
+  return readRaw(LESSON_KEY) === "done";
+}
+
+/** Has the APP tour been finished or refused? While it has not — fresh
+ *  learner or mid-walk — FirstTour's per-page invites hold: that invite used
+ *  to be the only hand offered on a first visit, and it opened on top of
+ *  this tour's own sheet (measured: its « No thanks » intercepted the sheet's
+ *  « Try it → »). One hand at a time. */
+export function appTourDone(): boolean {
+  if (typeof window === "undefined") return false;
+  return readRaw(KEY) === "done";
+}
+
+/** Restart the app tour by hand (kept for the manual's own door, should it
+ *  ever want one — no page calls it today, and the ☰ menu no longer does). */
 export function startTour() {
-  writeStep(0);
+  writeStep(KEY, 0);
   // THE STORAGE EVENT DOES NOT FIRE IN THE WRITING TAB — the `storage`
   // listener below catches other tabs, but the TourWalk in THIS document
   // needs its own ping.
   window.dispatchEvent(new Event("fluolingo:tour-start"));
 }
 
-export default function TourWalk() {
+/** The default hold: never held. Hoisted so the effect's dependency on it
+ *  is a stable reference, not a new arrow every render. */
+const NEVER: () => boolean = () => false;
+
+export default function TourWalk({
+  steps = TOUR_STEPS,
+  storageKey = KEY,
+  onTryIt,
+  holdAutoStart = NEVER,
+}: {
+  steps?: TourStep[];
+  storageKey?: string;
+  /** « Try it → » for this walk. Default: navigate to the step's href.
+   *  The lesson passes one that switches its tab instead. */
+  onTryIt?: (step: TourStep) => void;
+  /** While true, the auto-start holds — used by the lesson instance so it
+   *  never opens over the app tour. */
+  holdAutoStart?: () => boolean;
+}) {
   const [step, setStep] = useState(-1);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is unreadable during SSR on a static export; this is the mount-only read the house pattern uses
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is unreadable during SSR on a static export; this is the mount-only read the house pattern uses, and the once-only auto-start is decided by it
     setMounted(true);
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- same mount-only localStorage read
-    setStep(readStep());
-  }, []);
+    if (readRaw(storageKey) === null && !holdAutoStart()) {
+      // FIRST TIME, SELF-STARTED (Dan, 2026-09-19: "it usually only appears
+      // once and then user can say do not show me again"). No button, no
+      // entry in any menu — the sheet is the hand offered once.
+      writeStep(storageKey, 0);
+      setStep(0);
+    } else {
+      setStep(readStep(storageKey, steps.length));
+    }
+  }, [storageKey, steps.length, holdAutoStart]);
 
-  // Re-read on route change (the learner may have come back from an activity)
-  // and on the tour-start ping (the storage event does not fire in the tab
-  // that wrote the value — startTour() dispatches its own event).
+  // Re-read on the tour-start ping (the storage event does not fire in the
+  // tab that wrote the value — startTour() dispatches its own). Only the
+  // APP tour is ever started that way, so only its key answers the ping;
+  // the lesson instance hears it and re-reads a key the ping did not touch.
   useEffect(() => {
-    const reread = () => setStep(readStep());
+    const reread = () => setStep(readStep(storageKey, steps.length));
     window.addEventListener("storage", reread);
     window.addEventListener("fluolingo:tour-start", reread);
     return () => {
       window.removeEventListener("storage", reread);
       window.removeEventListener("fluolingo:tour-start", reread);
     };
-  }, []);
+  }, [storageKey, steps.length]);
 
-  if (!mounted || step < 0 || step >= TOUR_STEPS.length) return null;
+  if (!mounted || step < 0 || step >= steps.length) return null;
 
-  const s = TOUR_STEPS[step];
-  const isLast = step === TOUR_STEPS.length - 1;
+  const s = steps[step];
+  const isLast = step === steps.length - 1;
 
   const next = () => {
     const n = step + 1;
-    if (n >= TOUR_STEPS.length) {
-      writeStep(-1); // done — the localStorage key becomes "-1" (never returns)
-      try { window.localStorage.setItem(KEY, "done"); } catch { /* */ }
+    if (n >= steps.length) {
+      endTour(storageKey);
       setStep(-1);
     } else {
-      writeStep(n);
+      writeStep(storageKey, n);
       setStep(n);
     }
   };
 
-  const skip = () => {
-    writeStep(-1);
-    try { window.localStorage.setItem(KEY, "done"); } catch { /* */ }
+  // Dan's words for the way out, not the developer's: the sheet leaves and
+  // never comes back, so the button says what it does.
+  const dontShowAgain = () => {
+    endTour(storageKey);
     setStep(-1);
   };
 
   const go = () => {
-    router.push(s.href);
+    if (onTryIt) onTryIt(s);
+    else if (s.href) router.push(s.href);
   };
 
-  return (
-    <div className="fixed inset-x-0 bottom-0 z-[80] p-3" role="dialog" aria-label={`Tour: step ${step + 1} of ${TOUR_STEPS.length}`}>
+  // PORTALLED TO `body`, like the first-run hint card: the lesson instance
+  // is mounted deep inside DrillShell's scroller, where a `fixed` child can
+  // still be trapped by a transformed ancestor — and where the sheet's z
+  // would have to out-rank every wrapper it sits in. At `body` it is the
+  // same sheet in both places, over both frames' furniture. `mounted` above
+  // guarantees the document exists.
+  return createPortal(
+    <div className="fixed inset-x-0 bottom-0 z-[80] p-3" role="dialog" aria-label={`Tour: step ${step + 1} of ${steps.length}`}>
       <div className="mx-auto max-w-md rounded-2xl border-2 border-[color:var(--cahier-ink)] bg-white p-4 shadow-xl">
         {/* The step counter — quiet, just enough to say where you are */}
         <div className="mb-2 flex items-center justify-between">
           <span className="text-[10px] font-black uppercase tracking-[0.15em] text-[color:var(--cahier-ink)]/40">
-            Step {step + 1} of {TOUR_STEPS.length}
+            Step {step + 1} of {steps.length}
           </span>
           <button
             type="button"
-            onClick={skip}
+            onClick={dontShowAgain}
             className="text-[10px] font-bold text-[color:var(--cahier-ink)]/40 underline underline-offset-2 hover:text-[color:var(--cahier-ink)]"
           >
-            Skip the tour
+            Don&apos;t show again
           </button>
         </div>
 
@@ -138,13 +216,13 @@ export default function TourWalk() {
 
         {/* The progress dots */}
         <div className="mt-3 flex justify-center gap-1.5" aria-hidden>
-          {TOUR_STEPS.map((_, i) => (
+          {steps.map((_, i) => (
             <span
               key={i}
               className={`h-2 w-2 rounded-full transition ${
                 i < step ? "bg-[color:var(--tier-good)]"
-                : i === step ? "w-4 bg-[color:var(--cahier-ink)]"
-                : "bg-[color:var(--cahier-rule)]"
+                  : i === step ? "w-4 bg-[color:var(--cahier-ink)]"
+                  : "bg-[color:var(--cahier-rule)]"
               }`}
             />
           ))}
@@ -170,6 +248,7 @@ export default function TourWalk() {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
