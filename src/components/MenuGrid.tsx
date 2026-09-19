@@ -187,7 +187,11 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "help" },
     { kind: "goto" },
-    { kind: "one", emoji: "★", name: "Favourites", href: "/favourites" },
+    // 🤍, NOT ★ (Dan, 2026-09-19: "favourites are tied to the heart shaped
+    // emoji — remove stars if they are referring to favourites. stars are
+    // for difficulty level"). The band's save-mark is the heart; the door
+    // wears the same glyph now.
+    { kind: "one", emoji: "🤍", name: "Favourites", href: "/favourites" },
   ]},
   { band: PEN.practice, ink: INK.practice, label: familyName("practice"), cells: [
     { kind: "one", emoji: "💡", name: "SpecuLearn", href: "/practice/speculearn" },

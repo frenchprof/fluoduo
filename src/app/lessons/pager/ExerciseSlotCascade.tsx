@@ -108,6 +108,23 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
     return question.slots.filter((s) => s.key && Array.isArray(s.choices) && s.choices.length > 0).map((s) => s.key!);
   }, [question]);
 
+  /** ONLY THE BUILT FRAMES GET DROPDOWNS (Dan, 2026-09-19: "we have not
+   *  finished building all the various frames — there is nothing to do in
+   *  the other cases"). The dropdown Exercise exists for subject·verb·ARTICLE·noun
+   *  (aimer, faire) and subject·verb·PREPOSITION·place (aller). Any other
+   *  slot shape renders the free-text fallback — its cue, its English line,
+   *  an input at every tier — instead of a sentence with nothing to do or
+   *  dropdowns that blank the wrong thing. The guard is the SET of blankable
+   *  keys: exactly {verb, article} or exactly {verb, prep}. */
+  const frameBuilt = useMemo(() => {
+    const set = new Set(blankableKeys);
+    if (set.size === 0) return false;
+    return (
+      (set.has("verb") && set.has("article") && set.size === 2) ||
+      (set.has("verb") && set.has("prep") && set.size === 2)
+    );
+  }, [blankableKeys]);
+
   // Generate a fresh question for the current pin. Kept as a stable callback
   // so we can call it from initial mount, 🎲 random, and ✏️ redo.
   const generate = (nextPinned?: Record<string, string>) => {
@@ -138,8 +155,9 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
   // At ★ the blanked gap is the learner's CHOICE, not the leftmost — the
   // whole point of the tier (Dan, 2026-09-18). Above ★ the reading order
   // stands.
-  const blankedKeys =
-    difficulty === 1 ? [facileGap] : blankableKeys.slice(0, blankCount);
+  const blankedKeys = !frameBuilt
+    ? []
+    : difficulty === 1 ? [facileGap] : blankableKeys.slice(0, blankCount);
 
   // Map a slot's key to a pick index (the n-th blanked slot).
   const pickIndex = (key: string | undefined) =>
@@ -148,7 +166,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
   const buildUserSentence = (): string => {
     if (difficulty === 3) return freeText.trim();
     if (difficulty === 4) return freeText.trim();
-    if (slots.length === 0) return freeText.trim();
+    if (!frameBuilt) return freeText.trim();
     const rebuilt = slots.map((s) => {
       const idx = pickIndex(s.key);
       if (idx >= 0 && picks[idx]) return { ...s, text: picks[idx] };
@@ -388,7 +406,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           chip wears its slot's colour (Dan's mockup, 2026-09-19): VERBE in
           the practice blue, dashed; ARTICLE in the highlighter orange on a
           cream wash. */}
-      {difficulty === 1 && slots.length > 0 && (
+      {difficulty === 1 && frameBuilt && (
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs font-bold">
           <span className="text-[color:var(--cahier-ink)]/70">Focus on:</span>
           {(["verb", "article"] as const).map((g) => {
@@ -460,7 +478,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             autoCapitalize="sentences"
             spellCheck={false}
           />
-        ) : slots.length === 0 ? (
+        ) : !frameBuilt ? (
           /* A LESSON WITHOUT SLOTS (the generator has no `slots`) still gets
              the whole Exercise: its cue and English line lead, the input
              stands at EVERY tier, and CHECK grades against the generator's
@@ -549,7 +567,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             sentence (Dan, 2026-09-19) — one reading order: French target
             first, reference under it, both inside the answer box. Slotless
             lessons carry their English inside the fallback above. */}
-        {difficulty !== 4 && slots.length > 0 && question.en && (
+        {difficulty !== 4 && frameBuilt && question.en && (
           <p className="mt-2 text-center text-sm italic leading-tight text-white/80" lang="en">
             {question.en}
           </p>
