@@ -72,23 +72,27 @@ export const faireLesson: NativeLesson = {
          should be upstream in Q&A or lesson") — examples first, then the
          rule they add up to. */
       <>
+        {/* THE TWO SIDES EQUALLY STRUCTURED (Dan, 2026-09-19: "Keep the two
+            sides equally structured"): one heading each, then arrow + French
+            sentence, the SAME four nouns positive and negative — the
+            columns mirror line for line, and the contrast IS the lesson. */}
         <div className="grid grid-cols-2 gap-x-4">
           <div>
             <p className="font-bold">If you do <u>some</u>&hellip;</p>
-            <ul className="mt-1 list-disc space-y-0.5 pl-4">
-              <li>SOME singing → <i lang="fr">Je fais <b>du</b> chant.</i></li>
-              <li>SOME reading → <i lang="fr">Je fais <b>de la</b> lecture.</i></li>
-              <li>SOME fencing → <i lang="fr">Je fais <b>de l&rsquo;</b>escrime.</i></li>
-              <li>SOME exercises → <i lang="fr">Je fais <b>des</b> exercices.</i></li>
+            <ul className="mt-1 space-y-0.5 pl-0 [list-style:none]">
+              <li>→ <i lang="fr">Je fais <b>du</b> chant.</i></li>
+              <li>→ <i lang="fr">Je fais <b>de la</b> lecture.</i></li>
+              <li>→ <i lang="fr">Je fais <b>de l&rsquo;</b>escrime.</i></li>
+              <li>→ <i lang="fr">Je fais <b>des</b> exercices.</i></li>
             </ul>
           </div>
           <div>
-            <p className="font-bold">If you don&rsquo;t do <u>any</u> of the above&hellip;</p>
-            <ul className="mt-1 list-disc space-y-0.5 pl-4" lang="fr">
-              <li>Je ne fais pas <b>de</b> yoga.</li>
-              <li>Je ne fais pas <b>de</b> lecture.</li>
-              <li>Je ne fais pas <b>d&rsquo;</b>escrime.</li>
-              <li>Je ne fais pas <b>d&rsquo;</b>exercices.</li>
+            <p className="font-bold">If you don&rsquo;t do <u>any</u>&hellip;</p>
+            <ul className="mt-1 space-y-0.5 pl-0 [list-style:none]">
+              <li>→ <i lang="fr">Je ne fais pas <b>de</b> chant.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>de</b> lecture.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>d&rsquo;</b>escrime.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>d&rsquo;</b>exercices.</i></li>
             </ul>
           </div>
         </div>
