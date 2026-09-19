@@ -130,8 +130,8 @@ export const faireLesson: NativeLesson = {
     inShort: (
       <div className="rounded-xl bg-[color:var(--cahier-paper-raised)] p-3 font-mono text-[13px] leading-6">
         <p>Is the sentence negative?</p>
-        <p className="pl-[1.4rem]">no → du · de la · de l&rsquo; · des</p>
-        <p className="pl-[1.4rem]">yes → de, and d&rsquo; before a vowel</p>
+        <p className="pl-[1.4rem]">no → <i lang="fr">du · de la · de l&rsquo; · des</i></p>
+        <p className="pl-[1.4rem]">yes → <i lang="fr">de</i>, and <i lang="fr">d&rsquo;</i> before a vowel</p>
       </div>
     ),
     remember: (
