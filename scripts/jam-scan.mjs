@@ -198,11 +198,19 @@ for (const slug of slugs) {
   // The Idée panes ARE still switched (The Idea / Q & A / Traps / Check / Sum
   // up are one panel's tabs, `setPane`), so those still have to be clicked.
   // Names are not exact: a pane button may carry its count ("Traps 3").
+  // A lesson with no authored concept renders the Empty note and NO pane
+  // strip — that is a gap in content, not in the scan, and the whole-page
+  // scan above already covered the page. Only a strip that EXISTS must carry
+  // every pane.
+  const anyPane = await page.locator('[data-tab="concept"] button[aria-pressed]').count();
   for (const pane of PANES) {
     const b = page.getByRole("button", { name: pane });
     if (!(await b.count())) {
-      console.error(`${slug}: pane "${pane}" not found — the scan cannot skip what it cannot see`);
-      process.exit(2);
+      if (anyPane) {
+        console.error(`${slug}: pane "${pane}" not found — the scan cannot skip what it cannot see`);
+        process.exit(2);
+      }
+      continue;
     }
     {
       // `el.click()`, not Playwright's click. Playwright scrolls a target into
