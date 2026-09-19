@@ -105,7 +105,7 @@ id: 08
 title: "aimer + le/la/les"
 goal: "Say what people like and don't like doing"
 type: open-lexical          # from the 2×2 (§2)
-frame: subject → verb → article → noun   # RECTIFICATION Frame A
+frames: [subject → verb → article → noun, subject → verb → partitive → noun]  # Frames A + B
 banks:
   verbs: [aimer, adorer, détester]
   nouns: {le: sport, la: natation, "l'": équitation, les: "jeux vidéo"}
