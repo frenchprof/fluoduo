@@ -25,7 +25,6 @@
  */
 import Link from "next/link";
 import { useState } from "react";
-import { startTour } from "@/components/TourWalk";
 import { stopHref, type StopActivityKey } from "@/lib/activityStops";
 import { loadProgress } from "@/lib/progress";
 import { dueForReview } from "@/lib/reviser";
@@ -185,6 +184,12 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // count goes back to what Dan drew on 9 Sep.
   //
   // Order is his mock's, left to right: Help · GO TO · Favourites.
+  //
+  // GO TO IS BACK (Dan, 2026-09-19, same day he asked it gone: *"We had
+  // removed a button for the Goal because you added NavigaTour but perhaps
+  // that was not necessary if we didn't need one for the Tour"*. The tour
+  // needs no button — it appears once on its own and the learner can say
+  // "do not show me again" — so the cell it was given goes back to the goal.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "help" },
     { kind: "goto" },
@@ -464,29 +469,11 @@ export default function MenuGrid({
               // middle-click and long-press offer "open in new tab", which a
               // manual is exactly the sort of page to want open beside you.
               return (
-                <div key={key} className="flex flex-col gap-1">
-                  <Link href="/guide" onClick={onNavigate}
-                        className={TILE} style={{ borderColor: row.ink }}>
-                    <span aria-hidden className="text-lg leading-none">🆘</span>
-                    <span className={NAME}>Help</span>
-                  </Link>
-                  {/* THE 8-STEP TOUR (Dan, 2026-09-19) — "get users to
-                      actually click through one round of every single
-                      activity." Starts the TourWalk, which appears on every
-                      page from CahierShell until finished or skipped. */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      startTour();
-                      onNavigate?.();
-                    }}
-                    className={TILE}
-                    style={{ borderColor: row.ink }}
-                  >
-                    <span aria-hidden className="text-lg leading-none">🧭</span>
-                    <span className={NAME}>Take the tour</span>
-                  </button>
-                </div>
+                <Link key={key} href="/guide" onClick={onNavigate}
+                      className={TILE} style={{ borderColor: row.ink }}>
+                  <span aria-hidden className="text-lg leading-none">🆘</span>
+                  <span className={NAME}>Help</span>
+                </Link>
               );
             }
             /* THE "Numbers" TILE READS ITS NAME FROM THE REGISTRY, and the
