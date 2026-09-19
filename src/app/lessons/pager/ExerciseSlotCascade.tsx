@@ -292,7 +292,26 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           no longer fits. */}
       {axes.length > 0 && (
         <div className="flex items-stretch gap-2">
-          {/* LEFT BOX · YOUR PICK — HIDDEN AT BONUS (Dan, 2026-09-19: "for the
+          {/* LEFT BOX · RANDOM PICK — ALWAYS HERE, NEVER MOVES (Dan,
+              2026-09-19: "Let random pick be on the left so that it does not
+              have to switch side between levels"). Random is the main
+              button; it stays put at every tier including Bonus. */}
+          <div className="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-2">
+            <div aria-hidden className="fluo-cue flex flex-col items-center">
+              <div className="fluo-nextq">Random Pick</div>
+              <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
+            </div>
+            <button
+              type="button"
+              onClick={handleRandom}
+              className="cahier-btn cahier-btn-primary cahier-btn--compact"
+              title="Pick random values for every dropdown"
+            >
+              🎲🎲 Random
+            </button>
+          </div>
+
+          {/* RIGHT BOX · YOUR PICK — HIDDEN AT BONUS (Dan, 2026-09-19: "for the
               Bonus round, to make it really challenging, we shall make the
               Your Pick section invisible — Only the Random pick button
               should remain visible"). Bonus is dealt what Random gives,
@@ -307,6 +326,11 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
               {/* POLARITÉ — a split pill, not a dropdown. Tapping the selected
                   side unpins it (back to the roll); −ve answers "négatif",
                   +ve "affirmatif", straight into `pinned.polarity`. */}
+              {/* POLARITY ONLY WHERE THERE IS A VERB (Dan, 2026-09-19: "The
+                  POLARITY setting makes no sense in Countries" and other
+                  non-verb frames). A country name or a preposition chain has
+                  nothing to negate — the toggle hides. */}
+              {frameBuilt && (
               <div className="flex items-center gap-1.5">
                 <span className="text-[10px] font-bold uppercase tracking-wide text-[color:var(--cahier-ink)]/60">Polarité</span>
                 <div className="flex overflow-hidden rounded-lg border-2 border-[color:var(--cahier-ink)] text-xs font-black">
@@ -336,6 +360,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
                   })}
                 </div>
               </div>
+              )}
             </div>
             {/* THE FORMULA ROW — Sujet + Verbe + Objet, "+" between */}
             <div className="flex flex-wrap items-end justify-center gap-1">
@@ -374,22 +399,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
           </div>
           )}
 
-          {/* RIGHT BOX · RANDOM PICK — Random, the main button (Dan: "the
-              main button to push is always the RANDOM"). */}
-          <div className="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-[color:var(--cahier-ink)] bg-white p-2">
-            <div aria-hidden className="fluo-cue flex flex-col items-center">
-              <div className="fluo-nextq">Random Pick</div>
-              <div className="fluo-nextq-arrows"><span>↓</span><span>↓</span><span>↓</span></div>
-            </div>
-            <button
-              type="button"
-              onClick={handleRandom}
-              className="cahier-btn cahier-btn-primary cahier-btn--compact"
-              title="Pick random values for every dropdown"
-            >
-              🎲🎲 Random
-            </button>
-          </div>
+          {/* (Random Pick moved LEFT above — it never switches sides.) */}
         </div>
       )}
 

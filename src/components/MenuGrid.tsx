@@ -184,10 +184,11 @@ const ROWS: { band: string; ink: string; label: string; cells: Cell[] }[] = [
   // the Lesson family's business, so it takes the middle cell and the row
   // count goes back to what Dan drew on 9 Sep.
   //
-  // Order is his mock's, left to right: Help · GO TO · Favourites.
+  // Order (Dan, 2026-09-19: "remove the goals button to make room for the
+  // NavigaTour"): Help · NavigaTour · Favourites.
   { band: PEN.goals, ink: INK.goals, label: familyName("goals"), cells: [
     { kind: "help" },
-    { kind: "goto" },
+    // GO TO IS GONE — the 🧭 NavigaTour cell (rendered with Help) takes its room.
     // 🤍, NOT ★ (Dan, 2026-09-19: "favourites are tied to the heart shaped
     // emoji — remove stars if they are referring to favourites. stars are
     // for difficulty level"). The band's save-mark is the heart; the door
@@ -484,7 +485,7 @@ export default function MenuGrid({
                     style={{ borderColor: row.ink }}
                   >
                     <span aria-hidden className="text-lg leading-none">🧭</span>
-                    <span className={NAME}>Take the tour</span>
+                    <span className={NAME}>NavigaTour</span>
                   </button>
                 </div>
               );
