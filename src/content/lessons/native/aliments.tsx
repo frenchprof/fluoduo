@@ -220,11 +220,14 @@ export const alimentsLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         Les repas — <em>manger et boire</em>
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>4 repas — <i lang="fr">le petit-déjeuner, le déjeuner, le goûter, le dîner</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">manger</b> + food — <i lang="fr">Le midi, je mange <b className="text-[color:var(--gram-fem)]">de la</b> viande, <b className="text-[color:var(--gram-masc)]">du</b> pain, <b>des</b> pâtes.</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">boire</b> + drink — <i lang="fr">Je bois <b className="text-[color:var(--gram-masc)]">du</b> café, <b>de l&rsquo;</b>eau.</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div>4 repas</div>
+        <div><i lang="fr">le petit-déjeuner, le déjeuner, le goûter, le dîner</i></div>
+        <div><b className="text-[color:var(--gram-neutral)]">manger</b> + food</div>
+        <div><i lang="fr">Le midi, je mange <b className="text-[color:var(--gram-fem)]">de la</b> viande, <b className="text-[color:var(--gram-masc)]">du</b> pain, <b>des</b> pâtes.</i></div>
+        <div><b className="text-[color:var(--gram-neutral)]">boire</b> + drink</div>
+        <div><i lang="fr">Je bois <b className="text-[color:var(--gram-masc)]">du</b> café, <b>de l&rsquo;</b>eau.</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b lang="fr">à + le → au</b>: <span lang="fr"><b>Au</b> petit-déjeuner, je bois du café.</span> — never{" "}
         <i lang="fr">À le petit-déjeuner</i>.

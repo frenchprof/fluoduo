@@ -109,13 +109,18 @@ export const professionsLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         Les professions — <em>il est, elle est, c&rsquo;est un/une</em>
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--gram-masc)]">-eur</b> → <b className="text-[color:var(--gram-fem)]">-euse</b> — <i lang="fr">serveur / serveuse, chanteur / chanteuse</i></li>
-        <li><b className="text-[color:var(--gram-masc)]">-teur</b> → <b className="text-[color:var(--gram-fem)]">-trice</b> — <i lang="fr">acteur / actrice</i></li>
-        <li><b className="text-[color:var(--gram-masc)]">-ien</b> → <b className="text-[color:var(--gram-fem)]">-ienne</b> — <i lang="fr">musicien / musicienne</i></li>
-        <li>+ <b className="text-[color:var(--gram-fem)]">e</b> — <i lang="fr">étudiant / étudiant<b>e</b></i></li>
-        <li>ends in <b className="text-[color:var(--gram-neutral)]">-e</b> → no change — <i lang="fr">journaliste, artiste, architecte</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-[color:var(--gram-masc)]">-eur</b> → <b className="text-[color:var(--gram-fem)]">-euse</b></div>
+        <div><i lang="fr">serveur / serveuse, chanteur / chanteuse</i></div>
+        <div><b className="text-[color:var(--gram-masc)]">-teur</b> → <b className="text-[color:var(--gram-fem)]">-trice</b></div>
+        <div><i lang="fr">acteur / actrice</i></div>
+        <div><b className="text-[color:var(--gram-masc)]">-ien</b> → <b className="text-[color:var(--gram-fem)]">-ienne</b></div>
+        <div><i lang="fr">musicien / musicienne</i></div>
+        <div>+ <b className="text-[color:var(--gram-fem)]">e</b></div>
+        <div><i lang="fr">étudiant / étudiant<b>e</b></i></div>
+        <div>ends in <b className="text-[color:var(--gram-neutral)]">-e</b> → no change</div>
+        <div><i lang="fr">journaliste, artiste, architecte</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ No article after <i lang="fr">être</i>: <span lang="fr"><b>Il est</b> médecin.</span>{" "}
         The article returns with <i lang="fr">c&rsquo;est</i>: <span lang="fr"><b>C&rsquo;est un</b> médecin. <b>C&rsquo;est une</b> actrice.</span>

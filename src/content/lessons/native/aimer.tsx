@@ -18,12 +18,18 @@ export const aimerLesson: NativeLesson = {
       <p className="text-sm text-[color:var(--cahier-ink)]">
         With verbs of preference you talk about the thing <b>in general</b> — so the article is <b>definite</b>:
       </p>
-      <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--gram-masc)]">le</b> + masculin — <i lang="fr">J&rsquo;aime le sport.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-fem)]">la</b> + féminin — <i lang="fr">J&rsquo;adore la musique.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">l&rsquo;</b> + voyelle — <i lang="fr">J&rsquo;aime l&rsquo;art.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">les</b> + pluriel — <i lang="fr">Je déteste les films d&rsquo;horreur.</i></li>
-      </ul>
+      {/* TWO COLUMNS (Dan, 2026-09-19: roll it out everywhere) — the rule
+          left, its example right, faire's treatment. */}
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-lg text-[color:var(--gram-masc)]">le</b> + masculin</div>
+        <div><i lang="fr">J&rsquo;aime le sport.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-fem)]">la</b> + féminin</div>
+        <div><i lang="fr">J&rsquo;adore la musique.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">l&rsquo;</b> + voyelle</div>
+        <div><i lang="fr">J&rsquo;aime l&rsquo;art.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">les</b> + pluriel</div>
+        <div><i lang="fr">Je déteste les films d&rsquo;horreur.</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>Even in the negative the article stays le / la / les</b> (it does <u>not</u> become <i>de</i> — that&rsquo;s the partitive):{" "}
         <span lang="fr">J&rsquo;aime <u>le</u> sport → Je n&rsquo;aime <b>pas le</b> sport.</span>

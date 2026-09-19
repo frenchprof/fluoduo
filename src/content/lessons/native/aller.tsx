@@ -19,12 +19,18 @@ export const allerLesson: NativeLesson = {
       <p className="text-sm font-bold text-[color:var(--cahier-ink)]" lang="fr">
         je vais · tu vas · il/elle va · nous allons · vous allez · ils/elles vont
       </p>
-      <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>à + le → <b className="text-lg text-[color:var(--gram-masc)]">au</b> — <i lang="fr">Je vais au cinéma.</i></li>
-        <li>à + la → <b className="text-lg text-[color:var(--gram-fem)]">à la</b> — <i lang="fr">Elle va à la piscine.</i></li>
-        <li>à + l&rsquo; → <b className="text-lg text-[color:var(--gram-neutral)]">à l&rsquo;</b> — <i lang="fr">Il va à l&rsquo;école.</i></li>
-        <li>à + les → <b className="text-lg text-[color:var(--gram-neutral)]">aux</b> — <i lang="fr">Nous allons aux magasins.</i></li>
-      </ul>
+      {/* TWO COLUMNS (Dan, 2026-09-19: roll it out everywhere) — the fusion
+          left, its example right, faire's treatment. */}
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div>à + le → <b className="text-lg text-[color:var(--gram-masc)]">au</b></div>
+        <div><i lang="fr">Je vais au cinéma.</i></div>
+        <div>à + la → <b className="text-lg text-[color:var(--gram-fem)]">à la</b></div>
+        <div><i lang="fr">Elle va à la piscine.</i></div>
+        <div>à + l&rsquo; → <b className="text-lg text-[color:var(--gram-neutral)]">à l&rsquo;</b></div>
+        <div><i lang="fr">Il va à l&rsquo;école.</i></div>
+        <div>à + les → <b className="text-lg text-[color:var(--gram-neutral)]">aux</b></div>
+        <div><i lang="fr">Nous allons aux magasins.</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>The contraction is obligatory</b> — never <i lang="fr">*à le</i> / <i lang="fr">*à les</i>, and no <i lang="fr">*al</i> form: <span lang="fr">à l&rsquo;école stays <b>à l&rsquo;</b></span>.
       </p>
