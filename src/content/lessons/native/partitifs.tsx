@@ -31,12 +31,16 @@ export const partitifsLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         L&rsquo;article partitif — <em>une portion qu&rsquo;on ne compte pas</em>
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--gram-masc)]">du</b> + masculin — <i lang="fr">du pain, du fromage, du café</i></li>
-        <li><b className="text-lg text-[color:var(--gram-fem)]">de la</b> + féminin — <i lang="fr">de la salade, de la viande</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">de l&rsquo;</b> + voyelle — <i lang="fr">de l&rsquo;eau, de l&rsquo;ail</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">des</b> + pluriel — <i lang="fr">des œufs, des carottes</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-lg text-[color:var(--gram-masc)]">du</b> + masculin</div>
+        <div><i lang="fr">du pain, du fromage, du café</i></div>
+        <div><b className="text-lg text-[color:var(--gram-fem)]">de la</b> + féminin</div>
+        <div><i lang="fr">de la salade, de la viande</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">de l&rsquo;</b> + voyelle</div>
+        <div><i lang="fr">de l&rsquo;eau, de l&rsquo;ail</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">des</b> + pluriel</div>
+        <div><i lang="fr">des œufs, des carottes</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>After a negation everything becomes de / d&rsquo;</b>:{" "}
         <span lang="fr">Je mange <u>du</u> pain → Je ne mange <b>pas de</b> pain. ·

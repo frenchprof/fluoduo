@@ -89,12 +89,16 @@ export const nationalitiesLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         Les nationalités — <em>l&rsquo;accord</em>
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>+ <b className="text-[color:var(--gram-fem)]">e</b> for a woman — <i lang="fr">français → français<b>e</b></i></li>
-        <li>+ <b className="text-[color:var(--gram-neutral)]">s</b> for the plural — <i lang="fr">américain → américain<b>s</b></i></li>
-        <li><b className="text-[color:var(--gram-masc)]">-ien</b> → <b className="text-[color:var(--gram-fem)]">-ienne</b> — <i lang="fr">tunisien → tunis<b>ienne</b></i></li>
-        <li>ends in <b className="text-[color:var(--gram-neutral)]">-e</b> → no change — <i lang="fr">russe, suisse</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div>+ <b className="text-[color:var(--gram-fem)]">e</b> for a woman</div>
+        <div><i lang="fr">français → français<b>e</b></i></div>
+        <div>+ <b className="text-[color:var(--gram-neutral)]">s</b> for the plural</div>
+        <div><i lang="fr">américain → américain<b>s</b></i></div>
+        <div><b className="text-[color:var(--gram-masc)]">-ien</b> → <b className="text-[color:var(--gram-fem)]">-ienne</b></div>
+        <div><i lang="fr">tunisien → tunis<b>ienne</b></i></div>
+        <div>ends in <b className="text-[color:var(--gram-neutral)]">-e</b> → no change</div>
+        <div><i lang="fr">russe, suisse</i></div>
+      </div>
       <table className="mt-3 w-full border-collapse text-sm text-[color:var(--cahier-ink)]" lang="fr">
         <thead>
           <tr className="border-b-2 border-[color:var(--cahier-rule)] text-left">

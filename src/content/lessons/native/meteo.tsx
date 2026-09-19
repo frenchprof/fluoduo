@@ -47,12 +47,16 @@ export const meteoLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]" lang="fr">
         Quel temps fait-il ?
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-[color:var(--gram-neutral)]">Il fait</b> + adjective — <i lang="fr">Il fait beau, il fait froid, il fait 16 degrés.</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">Il y a</b> + <b className="text-[color:var(--gram-masc)]">du</b> / <b className="text-[color:var(--gram-fem)]">de la</b> / <b className="text-[color:var(--gram-neutral)]">des</b> + noun — <i lang="fr">Il y a du vent, de la pluie, des orages.</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">Il</b> + verb — <i lang="fr">Il pleut. Il neige. Il gèle.</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">C&rsquo;est</b> + adjective — <i lang="fr">C&rsquo;est nuageux. C&rsquo;est ensoleillé.</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-[color:var(--gram-neutral)]">Il fait</b> + adjective</div>
+        <div><i lang="fr">Il fait beau, il fait froid, il fait 16 degrés.</i></div>
+        <div><b className="text-[color:var(--gram-neutral)]">Il y a</b> + <b className="text-[color:var(--gram-masc)]">du</b> / <b className="text-[color:var(--gram-fem)]">de la</b> / <b className="text-[color:var(--gram-neutral)]">des</b> + noun</div>
+        <div><i lang="fr">Il y a du vent, de la pluie, des orages.</i></div>
+        <div><b className="text-[color:var(--gram-neutral)]">Il</b> + verb</div>
+        <div><i lang="fr">Il pleut. Il neige. Il gèle.</i></div>
+        <div><b className="text-[color:var(--gram-neutral)]">C&rsquo;est</b> + adjective</div>
+        <div><i lang="fr">C&rsquo;est nuageux. C&rsquo;est ensoleillé.</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ &ldquo;It is hot&rdquo; → <span lang="fr">Il <b>fait</b> chaud</span> — never{" "}
         <i lang="fr">Il est chaud</i>.

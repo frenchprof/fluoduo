@@ -114,12 +114,16 @@ export const demonstratifsLesson: NativeLesson = {
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         Ce · cet · cette = <em>this</em>
       </h2>
-      <ul className="mt-2 space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--gram-masc)]">ce</b> + masculin — <i lang="fr">ce soir, ce week-end</i></li>
-        <li><b className="text-lg text-[color:var(--gram-masc)]">cet</b> + masculin + voyelle — <i lang="fr">cet après-midi, cet été</i></li>
-        <li><b className="text-lg text-[color:var(--gram-fem)]">cette</b> + féminin — <i lang="fr">cette semaine, cette année</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">ces</b> + pluriel — <i lang="fr">ces week-ends</i></li>
-      </ul>
+      <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-lg text-[color:var(--gram-masc)]">ce</b> + masculin</div>
+        <div><i lang="fr">ce soir, ce week-end</i></div>
+        <div><b className="text-lg text-[color:var(--gram-masc)]">cet</b> + masculin + voyelle</div>
+        <div><i lang="fr">cet après-midi, cet été</i></div>
+        <div><b className="text-lg text-[color:var(--gram-fem)]">cette</b> + féminin</div>
+        <div><i lang="fr">cette semaine, cette année</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">ces</b> + pluriel</div>
+        <div><i lang="fr">ces week-ends</i></div>
+      </div>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>cet</b> before a masculine noun starting with a <b>vowel</b> (or silent h) — for the liaison:{" "}
         <i lang="fr">cet&nbsp;été, cet&nbsp;hiver, cet&nbsp;après-midi</i>.
