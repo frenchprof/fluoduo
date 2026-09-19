@@ -577,17 +577,23 @@ if conc:
     #
     # fluoduo-main: revert this hunk if the trade is wrong. Measured both ways —
     # with folds, 39 of 39 concepts exceeded one screen; with panes, 39 of 39 fit.
-    check('useState<"claim"' in conc,
-          "the concept opens on the claim, not on its apparatus",
-          "the Concept panel's first pane is not the claim. Apparatus is put away; the "
-          "argument never is — and a strip that opens on the traps breaks that while "
-          "looking perfectly fine in a diff.")
+    # REORDERED 2026-09-19 by Dan's research-agent spec (Merrill's First
+    # Principles): the strip opens on the MODEL — the worked instance — and
+    # the rule follows it. The old claim-first pin kept the argument on
+    # arrival; the model IS the argument now (question + answer together).
+    check('useState<"model"' in conc,
+          "the concept opens on the Model — the worked instance (Merrill, 19 Sep)",
+          "the Concept panel's first pane is not the model. Demonstration before "
+          "rule — the spec is explicit, and a strip that opens on the rule "
+          "breaks it while looking perfectly fine in a diff.")
     bare = strip_comments(conc)
     # The EXACT guard. A window search for `pane === "` matched a different
     # pane's guard and passed a pitfall table that had escaped its own.
+    # THE MERRILL REGROUPING (19 Sep): the flow lives in the CUE pane with
+    # the claim; the retrieval pane is "try".
     for guard, what in (('pane === "traps" && c.pitfall', "the pitfall table"),
-                        ('pane === "steps" && c.flow',    "the decision flow"),
-                        ('pane === "check" && c.check',   "the self-check")):
+                        ('pane === "cue"',                "the rule (claim + flow)"),
+                        ('pane === "try" && c.check',     "the retrieval")):
         check(guard in bare,
               f"{what} sits in its own pane",
               f"{what} is not behind `{guard}`, so it is on screen with everything else "
