@@ -79,7 +79,7 @@ export default function PathDoor({ className = "" }: { className?: string }) {
          size instead of staying 16px on a desktop that grew around it. */
       className={`neo-key flex shrink-0 items-center gap-1 rounded-lg px-1.5 py-0.5 leading-none ${className}`}
     >
-      <span aria-hidden className="text-[length:var(--fs-small)]">🚀</span>
+      <span aria-hidden className="text-[length:var(--fs-small)]">▶</span>
       {at && (
         <span className="fluo-mono text-[length:var(--fs-small)] font-black tabular-nums">
           {at.done}/{at.total}

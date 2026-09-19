@@ -48,6 +48,10 @@ import { createPortal } from "react-dom";
  *  applied to news — if the rest of the sentence does not change what you
  *  would do next, it is redundant. */
 const NEWS = {
+  // SILENT (Dan, 2026-09-19: "clear notifications"): this edition's unread
+  // dot stands down for every learner and the card never self-opens; the
+  // next real edition deletes this line and the bell speaks again.
+  silent: true,
   date: "2026-09-15",
   heading: "What's new",
   shown: "15 Sep 2026",
@@ -84,6 +88,7 @@ const KEY = `fluolingo:whatsnew.${NEWS.date}`;
 /** Has this edition been read? The 🔔 asks this to decide its dot, and it is
  *  the same key the card writes, so the two can never disagree. */
 export function newsUnread(): boolean {
+  if (NEWS.silent) return false;
   try { return window.localStorage.getItem(KEY) !== "1"; } catch { return false; }
 }
 

@@ -27,7 +27,7 @@ export const metadata = { title: "Favourites — FluOLinGo" };
 
 export default function Page() {
   return (
-    <CahierShell active="favourites" band={{ title: "Favourites", emoji: "★" }}>
+    <CahierShell active="favourites" band={{ title: "Favourites", emoji: "🤍" }}>
       <EmbedFrame src="/favourites/embed" title="Favourites" />
     </CahierShell>
   );
