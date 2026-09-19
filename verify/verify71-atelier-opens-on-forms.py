@@ -140,15 +140,16 @@ formes = formes[: formes.find("\n}\n") + 3]
 # section of its own."* Form holds the MÉMO alone — the model sentences an
 # atelier opens on — and the flashcards live in the CARDS tab, their own
 # panel, framed there.
-cards_fn = tabs[tabs.find("function Cards("):]
-cards_fn = cards_fn[: cards_fn.find("\n}\n") + 3]
+# REVERSED BACK THE SAME EVENING (19 Sep) — Dan: "no more hiding MémoiRecall
+# as an embedded page within MneMemo — it looks awful." The flashcards are
+# the standalone /practice/flip-it station: no lesson tab, no embedded frame.
 ok("memo" in formes and "Lexique" not in formes and "/practice/flip-it/" not in formes,
-   "Form holds the Mémo alone (19 Sep) — the cards moved out to their own tab",
+   "Form holds the Mémo alone — the flashcards are a standalone station again",
    "Form is drawing the deck again, or a word table — the cards have their own "
    "section since Dan's 19 Sep ruling")
-ok('key: "cards"' in tabs and "/practice/flip-it/" in cards_fn,
-   "the 🃏 Cards tab exists and frames MémoiRecall in its own panel",
-   "the cards tab is gone or no longer frames the flashcard station")
+ok("/practice/flip-it/" not in tabs,
+   "no lesson tab frames MémoiRecall — it lives outside the lesson (19 Sep evening, undoing the morning's call)",
+   "MémoiRecall is embedded in the lesson again — Dan reversed that the same evening")
 ok(re.search(r'key:\s*"formes"', tabs) is not None,
    "\"formes\" is a real tab in the strip",
    "there is no formes tab; the pager would ask for one that does not exist")

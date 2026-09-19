@@ -528,12 +528,14 @@ export default function LessonPager({
         </div>
   );
 
-  // The Exercise tab's content: the slot-cascade for `faire` (the reference
-  // lesson, RECTIFICATION.md), the level chooser for everything else. Built
-  // as a variable so the LessonTabs mount below stays one prop per line —
-  // verify71 reads that mount up to its first `/>`, and an inline element
-  // would end its slice early.
-  const exerciseNode = lesson?.slug === "faire" ? (
+  // The Exercise tab's content: THE SLOT-CASCADE FOR EVERY MNEEMO THAT HAS A
+  // GENERATOR (Dan, 2026-09-19: "do the same for all the other MneMemos") —
+  // any lesson with `dice` gets the three-box Exercise; deck-only lessons
+  // (no authored generator) keep the level chooser. Built as a variable so
+  // the LessonTabs mount below stays one prop per line — verify71 reads that
+  // mount up to its first `/>`, and an inline element would end its slice
+  // early.
+  const exerciseNode = lesson?.dice ? (
     <ExerciseSlotCascade
       lesson={lesson}
       activityKey={activityKey}

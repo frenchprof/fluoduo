@@ -377,12 +377,14 @@ if tabs_body:
     # STOP MULTIPLYING CATEGORIES"*. Still four tabs; the cards are inside Form.
     # REVERSED AGAIN 2026-09-19 — Dan, on SEEING the fold: *"Now that i see
     # what MemoiRecall flashcards look like, they should really be a section
-    # of its own."* Five tabs; the cards left Form for the fifth, in the
-    # position his 16 Sep instinct named (after Form, before Idea/Exercise).
-    check(labels == ["Goal", "Form", "Cards", "Idea", "Exercise"],
-          "five tabs: ← 🎯 Goal · Form · 🃏 Cards · Idea · Exercise — Bonus parked, the cards a section of their own",
-          f"the tab strip reads {labels}. Five tabs, in English (Cards added by Dan, "
-          "19 Sep), the bonus still a level of the chooser since #97.")
+    # of its own."* AND REVERSED BACK THE SAME DAY: *"please reinstate that
+    # a section of its own OUTSIDE of MneMemo (Yes I am undoing an earlier
+    # call, and i am aware)… it looks awful."* Four tabs again; the cards
+    # are the standalone /practice/flip-it station, never an embedded frame.
+    check(labels == ["Goal", "Form", "Idea", "Exercise"],
+          "four tabs: ← 🎯 Goal · Form · Idea · Exercise — Bonus parked, the cards their own station outside the lesson",
+          f"the tab strip reads {labels}. Four tabs, in English (Dan, 19 Sep "
+          "evening); MémoiRecall lives at /practice/flip-it, not in a lesson tab.")
     # THE SIX-CHARACTER RULE IS GONE, and what replaced it is the thing the rule
     # was standing in for. Six characters was a proxy for "fits a 320px column
     # in one row beside an emoji"; « Exercice » is eight and the proxy said no,
@@ -392,8 +394,8 @@ if tabs_body:
     # column at 320 / 360 / 390 / 430. So the assertion is now the stack, which
     # is what actually makes a long label safe, and a label of any length is
     # fine while it holds.
-    check("flex flex-col" in TABS and "grid-cols-5" in TABS,
-          "the strip stacks emoji over word in five fixed columns — measured to fit "
+    check("flex flex-col" in TABS and "grid-cols-4" in TABS,
+          "the strip stacks emoji over word in four fixed columns — measured to fit "
           "at 320, 360, 390 and 430px with no tab overflowing",
           "the tab strip is no longer a stacked four-column grid. Re-measure before "
           "changing this: in ONE row « 🏋️ Exercice » needs 67px and a 360px phone "

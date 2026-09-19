@@ -53,7 +53,7 @@ import type { LessonConcept } from "@/content/lessons/native/types";
 // not a destination, so it has no tab key and nothing can route to it.
 // "bonus" is not here either: #97 parked it under practice the same day —
 // the ⭐ Bonus level of the chooser serves those sentences.
-type TabKey = "parcours" | "concept" | "formes" | "cards" | "exercice";
+type TabKey = "parcours" | "concept" | "formes" | "exercice";
 
 /* THE STRIP'S HEIGHT IS NO LONGER A NUMBER ANYONE KEEPS. It used to be 56px in
    three places — `scroll-mt-14` on every row, the jump's offset and the line the
@@ -112,15 +112,15 @@ const TABS: { key: TabKey; emoji: string; label: string; does: string; back?: bo
   // CATEGORIES"*. So the cards stayed inside Form, and Form — the Mémo with
   // MémoiRecall folded under it — is the tab right after Goal.
   //
-  // REVERSED 2026-09-19 — and the reversal is Dan's, on SEEING the fold:
-  // *"Now that i see what MemoiRecall flashcards look like, they should
-  // really be a section of its own."* The cards leave Form and take the
-  // fifth tab, in the position his 16 Sep instinct named — after Form,
-  // before Idea and Exercise. `cards` is a NEW key, not a rename; the others
-  // never move. The lesson still LANDS on Idea (13 Sep).
+  // REVERSED AGAIN 2026-09-19, LATER THE SAME DAY — Dan: *"please reinstate
+  // that a section of its own outside of MneMemo (Yes I am undoing an
+  // earlier call, and i am aware), so no more hiding MémoiRecall as an
+  // embedded page within MneMemo — it looks awful."* The cards tab is GONE;
+  // MémoiRecall is a standalone station again (/practice/flip-it, with its
+  // doors in the ☰ menu and on the goal page), never an embedded frame in
+  // the lesson. Four tabs, as ever. The lesson still LANDS on Idea (13 Sep).
   { key: "parcours", emoji: "🎯", label: "Goal", back: true, does: "the goal this lesson serves" },
   { key: "formes", emoji: "📐", label: "Form", does: "the forms themselves" },
-  { key: "cards", emoji: "🃏", label: "Cards", does: "this lesson's flashcards — flip, bucket, sort" },
   { key: "concept", emoji: "💡", label: "Idea", does: "why French does it this way" },
   { key: "exercice", emoji: "🏋️", label: "Exercise", does: "use them, one card at a time — 🎁 Bonus included" },
 ];
@@ -488,64 +488,6 @@ function Formes({ memo }: { memo?: ReactNode }) {
   );
 }
 
-/* ── 2b · Cards — MémoiRecall, a section of its own (Dan, 2026-09-19) ──────
- * The deck's flashcards, framed exactly as every station is (EmbedFrame's
- * reasoning: a station in its own document cannot scroll the page it sits
- * on), pointed at the deck's own `/practice/flip-it/<deck>/embed`. Nothing
- * is duplicated: MémoiRecall's door on the goal and this tab open the same
- * page. The TAB is the disclosure now — no fold, the frame stands open.
- *
- * THE FRAME MOUNTS WHEN THE PANEL IS SEEN, NOT WITH THE LESSON. `lazy` was
- * not enough once the fold went: the feed keeps all five panels in the
- * document, and a frame that is in the DOM near the viewport loads and draws
- * the station's own strip beside the lesson's — the fault verify126 exists
- * for (7 Sep: only one of them should). An IntersectionObserver mounts the
- * frame the first time the panel itself crosses the learner's viewport —
- * true laziness, and a lesson that never visits Cards carries no station. */
-function Cards({ deck }: { deck?: Collection }) {
-  const cards = deck?.items?.length ?? 0;
-  const hostRef = useRef<HTMLDivElement | null>(null);
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const el = hostRef.current;
-    if (!el || shown) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setShown(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [shown]);
-  if (cards === 0 || !deck) return <Empty what="No flashcards for this lesson." />;
-  return (
-    <Panel>
-      <div ref={hostRef} className="lesson-flip-frame overflow-hidden rounded-2xl border-2 border-[color:var(--cahier-rule)]">
-        {shown ? (
-          <iframe
-            src={`/practice/flip-it/${deck.id}/embed`}
-            title="MémoiRecall — this lesson's flashcards"
-            /* The host must grant full screen for a station's ⤢ key to work
-               inside a frame — see EmbedFrame. No focus-on-load here: this
-               frame sits in a lesson the learner is reading, and pulling the
-               keyboard into it would move them off the page. */
-            data-station-frame=""
-            allow="autoplay; fullscreen"
-            className="h-full w-full border-0 bg-transparent"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-sm text-[color:var(--cahier-ink)]/50">
-            The flashcards load when you reach this tab.
-          </div>
-        )}
-      </div>
-    </Panel>
-  );
-}
 
 /** "1 card" / "34 cards" — a fold's note is learner-facing text, and "1 cards"
  *  on a language-learning app undermines the product it labels. */
@@ -814,7 +756,7 @@ export default function LessonTabs({
            teach this strip ran in the document OUTSIDE the frame and could
            never see it; see the note in FirstTour.tsx. */
         data-tour="lesson-tabs"
-        className="sticky top-0 z-10 grid grid-cols-5 gap-1 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-[color:var(--cahier-paper)] pb-2"
+        className="sticky top-0 z-10 grid grid-cols-4 gap-1 border-b-2 border-dashed border-[color:var(--cahier-ink)]/35 bg-[color:var(--cahier-paper)] pb-2"
       >
         {TABS.map((t) => {
           const on = t.key === tab;
@@ -903,11 +845,6 @@ export default function LessonTabs({
           and the strip must agree or a tap lands on the wrong panel. */}
       <section data-tab="formes" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Formes memo={memo} />
-      </section>
-      {/* In TABS order: Goal, Form, Cards, Idea, Exercise (Cards added 19 Sep) —
-          the feed and the strip must agree or a tap lands on the wrong panel. */}
-      <section data-tab="cards" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
-        <Cards deck={deck} />
       </section>
       <section data-tab="concept" className="flex snap-start flex-col justify-start pt-3 [min-height:var(--row-min,60vh)]">
         <Concept c={concept} />
