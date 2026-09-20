@@ -16,6 +16,7 @@ import { useRef, useState } from "react";
 import { useDragFloat } from "@/lib/useDragFloat";
 import { awardBugReport } from "@/lib/progress";
 import { createPortal } from "react-dom";
+import { readBugContext } from "@/lib/bugContext";
 // Firebase is imported DYNAMICALLY inside send(): this button sits in the root
 // layout, and a static import would ship the whole Firestore bundle (~184 KB gz)
 // on every page for a form almost nobody opens.
@@ -30,6 +31,8 @@ const ISSUES = [
 ];
 
 type Status = "idle" | "sending" | "sent" | "error";
+/** The agent-facing half: COPY is pure client-side, FILE posts /api/bugreport. */
+type FileStatus = "idle" | "filing" | "filed" | "not-configured" | "error";
 
 function compressImage(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -62,6 +65,9 @@ export default function FeedbackButton() {
   /** Gems this report earned — 0 once today's two paid reports are spent. */
   const [paid, setPaid] = useState(0);
   const [status, setStatus] = useState<Status>("idle");
+  const [copied, setCopied] = useState(false);
+  const [fileStatus, setFileStatus] = useState<FileStatus>("idle");
+  const [fileUrl, setFileUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const categories = [...ISSUES.filter((i) => checked[i]), ...(other ? ["Other"] : [])];
@@ -69,8 +75,66 @@ export default function FeedbackButton() {
 
   function reset() {
     setChecked({}); setOther(false); setDetails(""); setScreenshot(null); setStatus("idle");
+    setCopied(false); setFileStatus("idle"); setFileUrl("");
   }
   function close() { setOpen(false); reset(); }
+
+  /** ONE REPORT, TWO DOORS (Dan, 2026-09-18: "Build it now"). The same text
+   *  goes to the clipboard (paste it to any agent) and to GitHub (filed as an
+   *  issue by /api/bugreport). The card's context rides along either way —
+   *  that was the whole point of bugContext. */
+  function reportText() {
+    const context = readBugContext();
+    const lines = [
+      "🐞 FluOLinGo bug report",
+      `URL: ${typeof window !== "undefined" ? window.location.pathname : ""}`,
+    ];
+    if (context) {
+      const bits = [
+        context.station && `station ${context.station}`,
+        context.deck && `deck ${context.deck}`,
+        context.level && `level ${context.level}`,
+        context.kind && `kind ${context.kind}`,
+        context.itemId && `item ${context.itemId}`,
+        context.position && `position ${context.position}`,
+      ].filter(Boolean).join(" · ");
+      if (bits) lines.push(`Screen: ${bits}`);
+      if (context.prompt) lines.push(`Card: « ${context.prompt} »`);
+    }
+    if (categories.length > 0) lines.push(`Categories: ${categories.join("; ")}`);
+    if (details.trim()) lines.push(`Details: ${details.trim()}`);
+    if (typeof navigator !== "undefined") lines.push(`Agent: ${navigator.userAgent.slice(0, 200)}`);
+    lines.push("(screenshot, if attached, is in the Firestore report)");
+    return lines.join("\n");
+  }
+
+  async function copyForAgent() {
+    try {
+      await navigator.clipboard.writeText(reportText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2400);
+    } catch { /* clipboard unavailable — the FILE button is the other door */ }
+  }
+
+  async function fileIssue() {
+    if (fileStatus === "filing") return;
+    setFileStatus("filing");
+    try {
+      const r = await fetch("/api/bugreport", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          title: categories[0] || details.trim().slice(0, 80) || "Bug report",
+          body: reportText(),
+        }),
+      });
+      if (r.status === 501) { setFileStatus("not-configured"); return; }
+      if (!r.ok) { setFileStatus("error"); return; }
+      const data = await r.json();
+      setFileUrl(typeof data.url === "string" ? data.url : "");
+      setFileStatus("filed");
+    } catch { setFileStatus("error"); }
+  }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -91,7 +155,7 @@ export default function FeedbackButton() {
         import("firebase/firestore"),
         import("@/lib/firebase/db").then(async (m) => ({ db: m.db, auth: (await import("@/lib/firebase/client")).auth })),
       ]);
-      await addDoc(collection(db, "feedback"), {
+      const report = {
         categories,
         details: details.trim().slice(0, 2000),
         url: typeof window !== "undefined" ? window.location.pathname : "",
@@ -99,7 +163,26 @@ export default function FeedbackButton() {
         uid: auth.currentUser?.uid ?? null,
         createdAt: serverTimestamp(),
         ...(screenshot ? { screenshot } : {}),
-      });
+      };
+      // WHAT WAS ON SCREEN — the card's own id and prompt, written by the
+      // drill that drew it (lib/bugContext). The learner types nothing extra;
+      // the report just arrives knowing which card it is about.
+      const context = readBugContext();
+      // THE RULE IS DEPLOYED BY HAND, and this client may ship first. The live
+      // `feedback` rule lists every allowed key (`hasOnly`), so until the
+      // console carries `context` a report that includes it is refused
+      // outright — and a refused bug report is the one outcome worse than a
+      // report without its card. So: once more, without it. Nothing is lost
+      // either way, and the day the rule lands, contexts start arriving.
+      // (A promise `.catch`, not a nested try: verify32 reads this function up
+      // to its first catch clause to prove the bounty is paid after the write
+      // — and it greps the raw text, so even naming that clause here tripped it.)
+      await addDoc(collection(db, "feedback"), context ? { ...report, context } : report).catch(
+        async (e: { code?: string }) => {
+          if (!context || e?.code !== "permission-denied") throw e;
+          await addDoc(collection(db, "feedback"), report);
+        },
+      );
       // PAID ONLY ON A SUCCESSFUL WRITE (Dan, 2026-09-14: "we also want to
       // reward bug reporters"). Inside the try, after addDoc resolves: a report
       // that never reached Firestore is not a report, and paying for one would
@@ -202,6 +285,37 @@ export default function FeedbackButton() {
                   </button>
                   <button type="button" onClick={close} className="fluo-btn fluo-btn-ghost">Cancel</button>
                 </div>
+
+                {/* THE AGENT DOORS (Dan, 2026-09-18). Content-sized, one line,
+                    never full width — and the Firestore Send above is still
+                    the primary. Copy is instant and works everywhere; File
+                    needs the Pages function's token and says so plainly when
+                    it is not there yet. */}
+                <div className="mt-2 flex flex-nowrap justify-center gap-2">
+                  <button type="button" onClick={copyForAgent}
+                    className="text-xs font-bold text-[color:var(--fluo-ink-soft)] underline underline-offset-2 hover:text-[color:var(--fluo-ink)]">
+                    {copied ? "📋 Copied ✔" : "📋 Copy for the agent"}
+                  </button>
+                  <button type="button" onClick={fileIssue}
+                    className="text-xs font-bold text-[color:var(--fluo-ink-soft)] underline underline-offset-2 hover:text-[color:var(--fluo-ink)]">
+                    {fileStatus === "filing" ? "🐙 Filing…" : "🐙 File it"}
+                  </button>
+                </div>
+                {fileStatus === "filed" && (
+                  <p className="mt-1 text-center text-xs font-bold text-emerald-600">
+                    Filed{fileUrl ? <> — <a href={fileUrl} target="_blank" rel="noreferrer" className="underline">see the issue</a></> : " ✔"}
+                  </p>
+                )}
+                {fileStatus === "not-configured" && (
+                  <p className="mt-1 text-center text-xs text-[color:var(--fluo-ink-soft)]">
+                    Issue filing isn&rsquo;t configured yet — use 📋 Copy and hand it to an agent.
+                  </p>
+                )}
+                {fileStatus === "error" && (
+                  <p className="mt-1 text-center text-xs font-bold text-rose-600">
+                    Couldn&rsquo;t file it — the Firestore report above still goes through.
+                  </p>
+                )}
               </>
             )}
           </div>

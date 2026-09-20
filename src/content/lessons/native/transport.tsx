@@ -74,6 +74,7 @@ const frameBlock = (f: (typeof FRAMES)[number]) => (
 
 export const transportLesson: NativeLesson = {
   slug: "transport",
+  formLayout: "table",
 
   // TIER 1 · SIO-038, drafted by the concepts lane on the Mémo above.
   //

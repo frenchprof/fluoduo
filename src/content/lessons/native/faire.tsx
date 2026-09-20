@@ -9,24 +9,38 @@ import { FAIRE_AXES, faireQuestion } from "./faire.gen";
 
 export const faireLesson: NativeLesson = {
   slug: "faire",
+  formLayout: "table",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
         Faire <em>du / de la / de l&rsquo; / des</em>
       </h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li><b className="text-lg text-[color:var(--gram-masc)]">du</b> + masculin — <i lang="fr">Je fais du sport.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-fem)]">de la</b> + féminin — <i lang="fr">Elle fait de la danse.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">de l&rsquo;</b> + voyelle — <i lang="fr">Nous faisons de l&rsquo;escalade.</i></li>
-        <li><b className="text-lg text-[color:var(--gram-neutral)]">des</b> + pluriel — <i lang="fr">Ils font des arts martiaux.</i></li>
-      </ul>
+      {/* TWO COLUMNS (Dan, 2026-09-19): the rule in the first, its example
+          in the second — the same treatment Se présenter's Mémo set and the
+          same one the rollout will carry. */}
+      <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-1 text-[15px] text-[color:var(--cahier-ink)]">
+        <div><b className="text-lg text-[color:var(--gram-masc)]">du</b> + masculin</div>
+        <div><i lang="fr">Je fais du sport.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-fem)]">de la</b> + féminin</div>
+        <div><i lang="fr">Elle fait de la danse.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">de l&rsquo;</b> + voyelle</div>
+        <div><i lang="fr">Nous faisons de l&rsquo;escalade.</i></div>
+        <div><b className="text-lg text-[color:var(--gram-neutral)]">des</b> + pluriel</div>
+        <div><i lang="fr">Ils font des arts martiaux.</i></div>
+      </div>
       <p className="mt-2 text-sm text-[color:var(--cahier-ink)]" lang="fr">
         je fais · tu fais · il/elle fait · nous faisons · vous <b>faites</b> · ils/elles <b>font</b>
       </p>
-      <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
-        ⚠️ <b>In the negative, du / de la / des all become <span lang="fr">de</span></b> (<span lang="fr">d&rsquo;</span> before a vowel):{" "}
-        <span lang="fr">Je fais <u>du</u> yoga → Je ne fais pas <b>de</b> yoga. · Je ne fais pas <b>d&rsquo;</b>escalade.</span>
-      </p>
+      <div className="mt-3 space-y-1 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
+        <p className="font-bold">
+          ⚠️ In the negative, du / de la / des all become <span lang="fr">de</span>{" "}
+          (<span lang="fr">d&rsquo;</span> before a vowel)
+        </p>
+        <ul className="list-disc space-y-0.5 pl-5" lang="fr">
+          <li>Je fais <u>du</u> yoga → Je ne fais pas <b>de</b> yoga.</li>
+          <li>Je ne fais pas <b>d&rsquo;</b>escalade.</li>
+        </ul>
+      </div>
     </div>
   ),
   // TIER 1 · stop 24 (Dan's L09). Pairs with aimer: same sentence shape,
@@ -35,12 +49,13 @@ export const faireLesson: NativeLesson = {
   concept: {
     subtitle: "Why du becomes de the moment you say no",
     contrast: (
-      <>
-        <i lang="fr">Du</i> looks like a word of its own. It is not: it is{" "}
-        <i lang="fr">de</i> + <i lang="fr">le</i>, merged &mdash; and{" "}
-        <i lang="fr">des</i> is <i lang="fr">de</i> + <i lang="fr">les</i>. Once you can see
-        the two halves, the negative stops being a rule to memorise.
-      </>
+      /* POINT FORM (Dan, 2026-09-18) — and 2026-09-19: the third bullet is
+         DELETED on his ruling ("THIS SENTENCE MAKES NO SENSE"), the second
+         gains its "Similarly". */
+      <ul className="list-disc space-y-1 pl-5">
+        <li><i lang="fr">Du</i> is not one word — it is <i lang="fr">de</i> + <i lang="fr">le</i>, merged.</li>
+        <li>Similarly, <i lang="fr">des</i> is <i lang="fr">de</i> + <i lang="fr">les</i>, merged.</li>
+      </ul>
     ),
     question: (
       <>
@@ -49,12 +64,46 @@ export const faireLesson: NativeLesson = {
       </>
     ),
     answer: (
+      /* PURGED AND REPLACED (Dan, 2026-09-19): "The original Q&A in this
+         step should purge its current content, replacing with what is in
+         SUM UP" — the portion explanation gave way to the SOME/ANY system,
+         in the two columns of his mockup: SOME's four forms on the left,
+         ANY's four answers on the right. WHAT'S HAPPENING lives HERE too,
+         upstream of the sum-up (Dan: "Sum-up is sum-up, What's happening
+         should be upstream in Q&A or lesson") — examples first, then the
+         rule they add up to. */
       <>
-        <i lang="fr">Je ne fais pas <b>de</b> yoga.</i> The <i lang="fr">le</i>{" "}half names a
-        portion of something, and a negative leaves no portion to name &mdash; so that half
-        drops and the <i lang="fr">de</i> that was always there is what you hear. Compare{" "}
-        <i lang="fr">Je n&rsquo;aime pas le sport</i>, where the article stays: preference is
-        about the whole category, not a portion of it.
+        {/* THE TWO SIDES EQUALLY STRUCTURED (Dan, 2026-09-19: "Keep the two
+            sides equally structured"): one heading each, then arrow + French
+            sentence, the SAME four nouns positive and negative — the
+            columns mirror line for line, and the contrast IS the lesson. */}
+        <div className="grid grid-cols-2 gap-x-4">
+          <div>
+            <p className="font-bold">If you do <u>some</u>&hellip;</p>
+            <ul className="mt-1 space-y-0.5 pl-0 [list-style:none]">
+              <li>→ <i lang="fr">Je fais <b>du</b> chant.</i></li>
+              <li>→ <i lang="fr">Je fais <b>de la</b> lecture.</i></li>
+              <li>→ <i lang="fr">Je fais <b>de l&rsquo;</b>escrime.</i></li>
+              <li>→ <i lang="fr">Je fais <b>des</b> exercices.</i></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-bold">If you don&rsquo;t do <u>any</u>&hellip;</p>
+            <ul className="mt-1 space-y-0.5 pl-0 [list-style:none]">
+              <li>→ <i lang="fr">Je ne fais pas <b>de</b> chant.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>de</b> lecture.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>d&rsquo;</b>escrime.</i></li>
+              <li>→ <i lang="fr">Je ne fais pas <b>d&rsquo;</b>exercices.</i></li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-3 font-bold">What&rsquo;s happening?</p>
+        <ul className="mt-1 list-disc space-y-0.5 pl-5">
+          <li>SOME occurs in the positive, ANY in the negative.</li>
+          <li>SOME has 4 forms — <i lang="fr">du · de la · de l&rsquo; · des</i>. ANY has one: <i lang="fr"><b>de</b></i>, which becomes <i lang="fr"><b>d&rsquo;</b></i> before a vowel.</li>
+          <li>Alternatively: ANY can be considered as having 2 forms — <i lang="fr">de</i> before a non-vowel, <i lang="fr">d&rsquo;</i> before one.</li>
+          <li>Compare <i lang="fr">Je n&rsquo;aime pas <b>le</b> sport</i> — the article stays, positive or negative: it names the category of activity either way.</li>
+        </ul>
       </>
     ),
     pitfallHeads: ["the affirmative form", "after a negation"],
@@ -71,8 +120,25 @@ export const faireLesson: NativeLesson = {
       { q: <>She does not do dancing.</>,
         a: <><i lang="fr">Elle ne fait pas <b>de</b> danse.</i></> },
       { q: <>Why does <i lang="fr">aimer</i> not behave this way?</>,
-        a: <>Its article is not a portion &mdash; it names the category, which the negative does not remove.</> },
+        a: (
+          <ul className="list-disc space-y-1 pl-5">
+            <li>Its article names the <b>category</b>, not a portion.</li>
+            <li>A negative does not remove a category.</li>
+          </ul>
+        ) },
     ],
+    /* SUM-UP IS SUM-UP (Dan, 2026-09-19: "The real SUM UP is in Steps…
+       Sum-up is sum-up, What's happening should be upstream in Q&A or
+       lesson") — the SOME/ANY examples and their rule live in the Q & A
+       pane; what remains here is the decision itself, the flow the Steps
+       pane carries. Nothing else. */
+    inShort: (
+      <div className="rounded-xl bg-[color:var(--cahier-paper-raised)] p-3 font-mono text-[13px] leading-6">
+        <p>Is the sentence negative?</p>
+        <p className="pl-[1.4rem]">no → <i lang="fr">du · de la · de l&rsquo; · des</i></p>
+        <p className="pl-[1.4rem]">yes → <i lang="fr">de</i>, and <i lang="fr">d&rsquo;</i> before a vowel</p>
+      </div>
+    ),
     remember: (
       <>
         <i lang="fr">Du</i> is <i lang="fr">de</i> + <i lang="fr">le</i>. A negative takes away

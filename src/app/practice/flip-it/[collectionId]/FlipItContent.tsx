@@ -504,7 +504,15 @@ function StudyCard({ row, hasArt, flipped, onFlip }: { row: Row; hasArt: boolean
     // two are the same size and it looked perfect. (content/hints.ts, `flip`.)
     <button type="button" data-tour="flip-card" className="mx-auto block w-full max-w-sm cursor-pointer select-none" style={{ perspective: "1200px" }}
       onClick={onFlip} aria-label={flipped ? "Turn the card back" : "Turn the card over"}>
-      <div className="relative h-64" style={{ transformStyle: "preserve-3d", transition: "transform .5s", transform: flipped ? "rotateY(180deg)" : "none" }}>
+      {/* KEYED BY THE CARD (learner report, 16 Sep 23:35, /practice/flip-it/
+          revision: *"the answer of the next card is briefly shown after
+          pressing 'yes i know it'"*). advance() resets `flipped` and swaps
+          the content in one batch — but the .5s transition is ON the rotator,
+          so the UN-FLIP animated with the NEW card's faces: the answer
+          rotated away in plain sight for half a second. A fresh div per card
+          is born at `none` with nothing to animate; WITHIN a card the key
+          holds and the flip still turns. */}
+      <div key={row.item.id} className="relative h-64" style={{ transformStyle: "preserve-3d", transition: "transform .5s", transform: flipped ? "rotateY(180deg)" : "none" }}>
         <Face>
           {/* Quiet ↻ cue, front only. The card is the control — this chip
               does not capture clicks (Variant B). No bounce loop; reduced

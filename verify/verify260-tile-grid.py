@@ -37,17 +37,27 @@ rot, because a wrong reason in a check's rationale is worse than no reason at
 all — which is also why this parenthesis says what actually happened rather
 than repeating that it was lost.)
 
-THE FLOOR DOES BOTH CAPS BY ITSELF, which is the whole point:
+THE FLOOR DOES THE COUNTING BY ITSELF, which is the whole point:
 
-    min(50% - gap/2, …)          no column wider than half     -> at least 2
-    max(--tile-min, 25% - …)     no column narrower than a 1/4 -> at most 4
+    min(50% - gap/2, --tile-min)   two on the narrowest phone; on a wider
+                                   row, as many as the floor admits
 
 At least two is Dan's 2026-09-07 rule ("put buttons in two columns", looking at
-SpecuLearn at 390px). At most four is his 11 Sep one. Neither is a breakpoint,
-and that matters twice over: a breakpoint is only right at the widths someone
-remembered to write, and these surfaces run INSIDE the cahier's iframe, where a
-media query measures the FRAME and not the phone — 390px of device is 313px of
-frame. GameGallery was carrying exactly that mistake as `sm:grid-cols-3`.
+SpecuLearn at 390px). THE FOUR-COLUMN CAP IS GONE (2026-09-19, Dan: *"The
+SpecuLearn tiles are supposed to be adaptive but it seems to not go beyond 4
+columns"*, then the principle under it: *"it has to cater to all the phone
+size possible, HENCE THE NEED TO HAVE RELATIVE / ADAPTIVE SIZING!"*). The 11
+Sep "maybe up to 4 per row" was implemented as a quarter-of-the-row floor,
+which is a ceiling wearing a formula's clothes: no column narrower than a
+quarter means four columns is the most ANY width can buy. The reversal is
+pinned below as `"25%" not in body` — the cap must not come back wearing a
+new formula. The floor also rides the type ramp (--fs-step), so desktop type
+grows the tiles instead of clipping their names. Neither rule is a
+breakpoint, and that matters twice over: a breakpoint is only right at the
+widths someone remembered to write, and these surfaces run INSIDE the
+cahier's iframe, where a media query measures the FRAME and not the phone —
+390px of device is 313px of frame. GameGallery was carrying exactly that
+mistake as `sm:grid-cols-3`.
 
 WHY ONE DEFINITION. The formula was written once for the stop tiles and was
 about to be copied into four more files. `gapSentence` drifted into five
@@ -112,9 +122,12 @@ ok("auto-fit" in body,
 ok("50%" in body,
    "no column may be wider than half, so a phone always gets two",
    "the at-least-two floor (min(50% - gap/2, …)) has gone — Dan, 2026-09-07")
-ok("25%" in body,
-   "no column may be narrower than a quarter, so it never exceeds four",
-   "the at-most-four cap (25%) has gone — Dan, 2026-09-11")
+ok("25%" not in body,
+   "no quarter cap: the count is the room's answer, not four — Dan, 2026-09-19",
+   "a quarter-of-the-row term is back in the floor. The 11 Sep cap was a "
+   "ceiling in a formula's clothes — four columns was the most ANY width "
+   "could buy — and Dan reversed it 19 Sep: \"supposed to be adaptive but "
+   "it seems to not go beyond 4 columns\".")
 ok("--tile-min" in body,
    "call sites choose only --tile-min; the formula lives in one place",
    "--tile-min is gone, so each call site must restate the whole formula")

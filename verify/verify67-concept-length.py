@@ -65,25 +65,40 @@ ok("setPane" in code, "the panel is driven by a pane state",
    "no pane state in the Concept panel — it has gone back to one stack, which is "
    "what put 39 of 39 concepts over one screen")
 
-ok('useState<"claim"' in code, "the claim is the pane you land on",
-   'the default pane is not "claim". The strip may not open on the pitfall table '
-   "or the steps: the argument must be what a learner sees on arrival, and a strip "
-   "can break that promise while still passing a no-<Section> test.")
+# REVERSED 2026-09-19 — Dan's research-agent spec (Merrill's First
+# Principles): "Model → optional cue → optional diagnostic contrast →
+# retrieve/produce". The MODEL (the worked instance: question then answer) is
+# the pane you land on — demonstration before rule. The claim+flow became the
+# second pane, "The rule".
+ok('useState<"model"' in code, "the Model is the pane you land on (the worked instance, Merrill, 19 Sep)",
+   'the default pane is not "model". The demonstration must be what a learner '
+   "sees on arrival — the rule follows it, never precedes it.")
 
 # The EXACT pairing, not "a pane guard somewhere in the preceding 800
 # characters". That window found `pane === "` belonging to a DIFFERENT pane and
 # passed a pitfall table that had escaped its own — the same too-wide-window
 # fault verify68's comments warn about two screens further down.
+# THE MERRILL REGROUPING (19 Sep): model carries the question AND the answer;
+# the cue carries the contrast AND the flow; traps and the retrieval keep
+# their guards under the new keys. THE SUM PANE IS GONE — the spec's
+# anti-redundancy rule retired it ("a final Sum up pane is normally omitted"),
+# so the pin now asserts its ABSENCE, and inShort/remember stay in the data,
+# unrendered.
 for guard, field, what in (
-        ('pane === "traps" && c.pitfall', "c.pitfall", "the pitfall table"),
-        ('pane === "steps" && c.flow',    "c.flow",    "the decision flow"),
-        ('pane === "check" && c.check',   "c.check",   "the self-check"),
-        ('pane === "qa"',                 "c.question", "the question"),
-        ('pane === "sum"',                "c.remember", "the one-sentence takeaway")):
+        ('pane === "model"',              "c.question", "the worked instance's question"),
+        ('pane === "model"',              "c.answer",   "the worked instance's answer"),
+        ('pane === "cue"',                "c.contrast", "the claim"),
+        ('pane === "cue"',                "c.flow",     "the decision flow"),
+        ('pane === "traps" && c.pitfall', "c.pitfall",  "the pitfall table"),
+        ('pane === "try" && c.check',     "c.check",    "the retrieval")):
     ok(guard in code,
        f"{what} renders behind `{guard}`",
        f"{what} is not behind its pane guard `{guard}`, so it sits on screen with "
-       f"everything else and the tab is as long as it was before Dan asked for the strip.")
+       "everything else and the tab is as long as it was before Dan asked for the strip.")
+ok('pane === "sum"' not in code,
+   "the Sum-up pane is retired (anti-redundancy, 19 Sep)",
+   "a Sum-up pane is back — the spec omits it unless it is a genuinely smaller "
+   "representation than the cue, and repeating the decision flow is not.")
 
 ok("<details" in code and "{x.a}" in code,
    "the mini-check answers are still a disclosure",

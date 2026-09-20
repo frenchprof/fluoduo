@@ -120,6 +120,11 @@ if (typeof window !== "undefined") {
   // Voices load asynchronously — a cast chosen from an early partial list
   // must be re-chosen once the full list arrives.
   window.speechSynthesis?.addEventListener("voiceschanged", () => voiceCache.clear());
+  // ASKING IS WHAT STARTS THE LOADING on several engines: `getVoices()` kicks
+  // off the fetch and returns [] the first time. Calling it once here means
+  // the table is usually ready by the time a learner presses 🔊, rather than
+  // the first press being the one that starts it.
+  window.speechSynthesis?.getVoices();
 }
 export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoice | null {
   const key = `${lang.split("-")[0]}:${profile}`;
@@ -132,7 +137,24 @@ export function castVoice(lang: string, profile: "f" | "m"): SpeechSynthesisVoic
   const named = inLang.filter((x) => rx.test(x.name));
   const pool = named.length ? named : inLang;
   const v = pool.find((x) => /premium|enhanced|natural|neural/i.test(x.name)) ?? pool[0] ?? null;
-  voiceCache.set(key, v);
+  /* A MISS IS NEVER CACHED, and that is the whole of this fix.
+     Angelina Ong, a learner, 2026-09-15: *"the audio reads out in english, not
+     with the accurate french accent"*.
+     `getVoices()` RETURNS AN EMPTY LIST until the browser has loaded its voice
+     table — it is populated asynchronously and announced by `voiceschanged`.
+     Ask before that and `inLang` is empty, `v` is null, and the null was
+     written into the cache: every later call returned it from the map without
+     ever looking again, `u.voice` was left unset, and the engine fell back to
+     its DEFAULT voice, which on an English-locale device reads French with
+     English phonics. For the rest of the session.
+     The `voiceschanged` listener above clears the cache and was meant to cover
+     this — but it only helps if the event still fires after this module is
+     imported, and this module arrives in a route chunk, well after page start.
+     Chrome fires it once, early. So the listener healed the case that was
+     already fine and missed the one that was not.
+     Not caching a miss costs one `getVoices()` filter per utterance until a
+     voice appears, and nothing at all afterwards. */
+  if (v) voiceCache.set(key, v);
   return v;
 }
 
@@ -416,6 +438,39 @@ export function speakMixed(
       speakPart(Math.max(0, Math.min(parts.length - 1, Math.floor(frac * parts.length))));
     },
   };
+}
+
+/**
+ * SPEND THE TAP ON THE ENGINE, so the bus can speak later on its own.
+ *
+ * Dan, 2026-09-16, on his iPhone: the repeat 🔊 under the NumBus board speaks
+ * and the arriving bus does not. The two reach the same `speak()`; what
+ * differs is WHO started them. iOS Safari only starts speech that a user
+ * gesture began — until the page has spoken once from inside a tap, after
+ * which it may speak on its own for the rest of the document's life. The
+ * bus's first number is announced from a timer chain (credits → arrival →
+ * announce), seconds after the last touch, so on a phone it was silent while
+ * the same sentence from the 🔊 key was fine. Every other browser lets both
+ * through, which is why no desktop probe ever saw it.
+ *
+ * So the ▶ Start tap calls this: one empty, silent utterance, in the gesture,
+ * once per page. Nothing is heard, nothing is said before the learner has
+ * looked (the 13 Sep ruling is about greeting, and this greets nobody) — it
+ * only tells the engine that the person holding the phone asked for sound.
+ * `speak()` is deliberately not used for it: the bank, the mute check and the
+ * cancel() are all for real utterances, and a muted voice must still prime.
+ */
+let primed = false;
+export function primeSpeech(): void {
+  if (primed || typeof window === "undefined" || !window.speechSynthesis) return;
+  primed = true;
+  try {
+    const u = new SpeechSynthesisUtterance(" ");
+    u.volume = 0;
+    window.speechSynthesis.speak(u);
+  } catch {
+    /* an engine that refuses a silent utterance is one that never needed it */
+  }
 }
 
 export function speak(text: string, lang = "fr-FR", opts: SpeakOpts = {}) {

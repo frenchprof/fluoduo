@@ -203,8 +203,9 @@ export default function GameGallery({
     <CahierShell active={activityKey} band={{ title: name }}>
       {/* TWO WIDTHS, ON PURPOSE. The suggestion is one card and stays
           card-width; the list of sets takes the room the page actually has,
-          so `.fluo-tilegrid` can give a desktop four columns and a phone two
-          (Dan, 2026-09-11: "maybe up to 4 per row"). One `max-w-md` around
+          so `.fluo-tilegrid` gives a phone two columns and a wider row as
+          many as its floor admits — uncapped since 2026-09-19 (Dan: the
+          tiles are "supposed to be adaptive"). One `max-w-md` around
           both would have pinned the list to two columns at every width —
           which is what the bottom sheet used to do. */}
       <div className="mx-auto max-w-3xl px-4 pb-6 pt-4">

@@ -12,6 +12,7 @@ import { reviewItemByFrench } from "@/lib/reviser";
 import { logEvent } from "@/lib/firebase/usage";
 import { shuffle } from "@/lib/shuffle";
 import { buildEvidence } from "@/lib/evidence";
+import { typingInField } from "@/lib/useChoiceKeys";
 
 export type LetrisCategory = {
   key: string;
@@ -498,6 +499,9 @@ export default function LetrisGame({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      /* Typing into a field (the 🐞 form, a search box) is never a shortcut —
+         see typingInField's note (Dan, 15 Sep). */
+      if (typingInField(e)) return;
       if (gameOver) {
         if (e.key === "Enter" || e.key === " ") restart();
         return;

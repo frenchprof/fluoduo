@@ -36,11 +36,12 @@
  * beyond the one thing that differs on screen: what sits above the options —
  * a sentence with a gap, a bare prompt, or a picture.
  *
- * THE ORDER IS THE POOL'S, NOT SHUFFLED. This runner used to shuffle its
- * questions. It cannot any more and the reason is Dan's bookmark: `#q9` has to
- * be the same question tomorrow as it was today, and a shuffle at mount makes
- * the address point somewhere new on every load. Options are still shuffled
- * once per mount, which is the part a learner could otherwise memorise.
+ * QUESTIONS AND OPTIONS BOTH SHUFFLE, ONCE PER MOUNT (Dan, 2026-09-19:
+ * "randomise the order of questions and of choices"). This reverses the
+ * bookmark ruling that kept the pool's order — #q9 staying the same
+ * question tomorrow mattered less than a learner meeting the deck in a new
+ * order every run. The address holds within one session; a bookmark is a
+ * pointer into THIS visit, which is all a pre-test needs.
  *
  * A PRE-TEST IS STILL A COLD GUESS. No accuracy, no review queue, and NOTHING
  * AN ANSWER CAN EARN OR COST — verify40's rule for every pre-test surface, and
@@ -81,7 +82,7 @@ import { awardActivityRun } from "@/lib/progress";
 import { judgePretestAnswer, judgeUnit0Answer, shuffle } from "@/lib/pretests/runner";
 import { buildItems } from "@/lib/speculearn/deckWords";
 import { HOME_HREF } from "@/lib/routes";
-import { speculearnPool, type PoolItem } from "@/lib/speculearn/pool";
+import { speculearnPool, type PoolItem, splitEyeNote } from "@/lib/speculearn/pool";
 import { getSio } from "@/content/sios";
 import { goalNumber } from "@/lib/stopTag";
 import { optionGridClass } from "@/lib/optionGrid";
@@ -203,10 +204,14 @@ function Run({ pool, pretest, sioId, deck }: {
     // Options shuffled AFTER mount on purpose: this is a static page, so
     // shuffling during render would give the server one order and the first
     // client render another, and the hydration mismatch would swap the options
-    // under the learner's finger. The QUESTIONS keep the pool's order — see
-    // the note at the top: the bookmark is what depends on it.
+    // under the learner's finger.
+    // THE QUESTIONS SHUFFLE TOO (Dan, 2026-09-19: "SpecuLearn questions —
+    // randomise the order of questions and of choices"), ONCE PER MOUNT —
+    // this reverses the bookmark ruling that kept the pool's order (#q9 had
+    // to be the same question tomorrow); the address still holds within a
+    // session, and the ruling that replaced it is the one that stands.
     // eslint-disable-next-line react-hooks/set-state-in-effect -- SSR determinism, see above
-    setRows(pool.map((item) => ({ item, choices: shuffle(item.options) })));
+    setRows(shuffle([...pool]).map((item) => ({ item, choices: shuffle(item.options) })));
     setVerdicts({});
   }, [pool, run]);
 
@@ -465,6 +470,11 @@ function ItemCard({
 }) {
   const bare = isBare(item);
   const hasSentence = item.sentenceBefore !== undefined;
+  // The suffix, split where the TTS splits it (splitEyeNote, pool.ts): the
+  // French in `fr`, the trailing register note — « (neutral, est-ce que) » —
+  // in `note`, rendered outside lang="fr" in the card's English styling so
+  // the eye and the ear are told the same thing.
+  const after = splitEyeNote(item.sentenceAfter ?? "");
   return (
     <>
     <article className="fluo-card speculearn-card fluo-h-1" data-hue={1}>
@@ -494,7 +504,8 @@ function ItemCard({
           >
             {submitted ? submitted.picked : "?"}
           </span>
-          <span lang="fr">{item.sentenceAfter}</span>
+          <span lang="fr">{after.fr}</span>
+          {after.note && <span className="ml-1 text-sm font-normal italic text-slate-500">{after.note}</span>}
         </p>
       )}
 

@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 import { fmtWhen, str } from "./data";
 import { useSortedSections, type SortOption } from "./ui";
+import { describeBugContext, type BugContext } from "@/lib/bugContext";
 
 type Report = {
   id: string;
@@ -16,7 +17,46 @@ type Report = {
   createdAt: Date | null;
   screenshot: string | null;
   done: boolean;
+  /** The browser string the report was sent from. It was always recorded
+   *  and never shown — and for "the audio reads in English" it is the one
+   *  fact that matters (does this device even have a French voice?). */
+  userAgent: string | null;
+  /** What was on screen when 🐞 was pressed — see lib/bugContext. */
+  context: (BugContext & { path?: string }) | null;
 };
+
+/** A browser string, shortened to what a person needs: « Chrome 128 ·
+ *  Android » rather than 200 characters of Mozilla/5.0 compatibility. */
+function shortUA(ua: string | null): string {
+  if (!ua) return "";
+  const os = /iPhone|iPad/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "macOS" : /Linux/.test(ua) ? "Linux" : "";
+  const m = ua.match(/(Edg|OPR|SamsungBrowser|Firefox|CriOS|Chrome|Safari)\/(\d+)/);
+  const name = m ? ({ Edg: "Edge", OPR: "Opera", CriOS: "Chrome", SamsungBrowser: "Samsung" } as Record<string, string>)[m[1]] ?? m[1] : "";
+  return [name && m ? `${name} ${m[2]}` : name, os].filter(Boolean).join(" · ");
+}
+
+/** THE HAND-OFF, AS TEXT (Dan, 2026-09-15: *"is there a better way to collect
+ *  bugs?"*). Until reports file themselves as GitHub issues, the way a report
+ *  reached an agent was a screenshot of this inbox — which dropped the browser
+ *  string and the card, the two things the agent most needed. This puts every
+ *  OPEN report on the clipboard as plain text with both, ready to paste. */
+function exportText(reports: Report[], nameOf: Map<string, string>): string {
+  return reports
+    .map((r) => {
+      const who = r.uid ? nameOf.get(r.uid) ?? r.uid.slice(0, 8) : "anonymous";
+      const lines = [
+        `— ${fmtWhen(r.createdAt)} · ${who} · ${r.categories.join(", ") || "Other"}`,
+        `  on ${r.url}`,
+      ];
+      const ctx = describeBugContext(r.context);
+      if (ctx) lines.push(`  card: ${ctx}`);
+      if (r.userAgent) lines.push(`  browser: ${shortUA(r.userAgent)}  (${r.userAgent})`);
+      if (r.details) lines.push(`  "${r.details.replace(/\s+/g, " ").trim()}"`);
+      if (r.screenshot) lines.push(`  screenshot: attached in the inbox`);
+      return lines.join("\n");
+    })
+    .join("\n\n");
+}
 
 export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map<string, string>; canWrite?: boolean }) {
   const [reports, setReports] = useState<Report[] | null>(null);
@@ -59,6 +99,8 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
             createdAt: d.createdAt?.toDate?.() ?? null,
             screenshot: str(d.screenshot),
             done: d.done === true,
+            userAgent: str(d.userAgent),
+            context: d.context && typeof d.context === "object" ? (d.context as Report["context"]) : null,
           });
         });
         out.sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0));
@@ -91,12 +133,15 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
       {bar}
       <div className="flex items-center justify-between text-xs">
         <span className="font-bold text-slate-500">{visible.length} open{doneCount > 0 && !showDone ? ` · ${doneCount} completed hidden` : ""}</span>
-        {doneCount > 0 && (
-          <button type="button" onClick={() => setShowDone((v) => !v)}
-            className="rounded-full border border-slate-300 px-3 py-1 font-bold text-slate-600 hover:bg-slate-50">
-            {showDone ? "Hide completed" : `Show completed (${doneCount})`}
-          </button>
-        )}
+        <span className="flex flex-wrap items-center gap-2">
+          <CopyForAgent text={exportText(visible.filter((r) => !r.done), nameOf)} count={visible.filter((r) => !r.done).length} />
+          {doneCount > 0 && (
+            <button type="button" onClick={() => setShowDone((v) => !v)}
+              className="rounded-full border border-slate-300 px-3 py-1 font-bold text-slate-600 hover:bg-slate-50">
+              {showDone ? "Hide completed" : `Show completed (${doneCount})`}
+            </button>
+          )}
+        </span>
       </div>
       {sorted.map((r) => (
         <div key={r.id} className={`rounded-xl border-2 bg-white p-4 ${r.done ? "border-emerald-200 opacity-60" : "border-slate-200"}`}>
@@ -118,6 +163,12 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
             ))}
           </div>
           {r.details && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-900">{r.details}</p>}
+          {describeBugContext(r.context) && (
+            <p className="mt-1 text-xs text-slate-700"><span className="font-bold">card:</span> {describeBugContext(r.context)}</p>
+          )}
+          {r.userAgent && (
+            <p className="mt-1 text-xs text-slate-500" title={r.userAgent}><span className="font-bold">browser:</span> {shortUA(r.userAgent) || r.userAgent.slice(0, 60)}</p>
+          )}
           {r.url && <p className="mt-1 text-xs text-slate-500 break-all">on <a href={r.url} target="_blank" rel="noreferrer" className="font-bold text-blue-700 underline underline-offset-2 hover:text-blue-900">{r.url}</a></p>}
           {r.screenshot && (
             // eslint-disable-next-line @next/next/no-img-element -- data URL from Firestore, not an optimizable asset
@@ -126,5 +177,27 @@ export default function FeedbackPanel({ nameOf, canWrite = true }: { nameOf: Map
         </div>
       ))}
     </div>
+  );
+}
+
+/** One key; content-sized, never the row's width (5 Sep). Says what it did
+ *  for two seconds, then goes back to its label. */
+function CopyForAgent({ text, count }: { text: string; count: number }) {
+  const [state, setState] = useState<"idle" | "done" | "fail">("idle");
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setState("done");
+    } catch {
+      setState("fail");
+    }
+    window.setTimeout(() => setState("idle"), 2000);
+  };
+  return (
+    <button type="button" onClick={copy} disabled={count === 0}
+      title="Copies every open report as plain text — browser and on-screen card included — to paste to an agent"
+      className="rounded-full border border-slate-300 px-2.5 py-0.5 font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40">
+      {state === "done" ? "✓ Copied" : state === "fail" ? "Could not copy" : `📋 Copy ${count} for the agent`}
+    </button>
   );
 }

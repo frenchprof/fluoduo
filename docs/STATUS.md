@@ -6,6 +6,359 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 19 Sep, evening — Bonus goes dark, the Exercise goes still and app-wide, and MémoiRecall leaves the lesson (glm-lane, ZCode/GLM)
+
+**Three rulings, one sitting.**
+
+**BONUS HIDES YOUR PICK** (*"to make it really challenging, we shall make
+the Your Pick section invisible — Only the Random pick button should remain
+visible"*): at 🎁 the left box is gone; Random deals, you translate, unaimed.
+
+**THE EXERCISE GOES STILL** (*"the sections within this exercise must remain
+static consistently — [no] box should be seen to move or reduce or get
+higher or lower between questions"*): the answer box takes a FIXED height
+(13rem) — a two-line sentence and a one-line sentence occupy the same box,
+and dealing a new question moves nothing.
+
+**THE CASCADE GOES APP-WIDE** (*"do the same for all the other
+MneMemos"*): the LessonPager gate opens from `slug === "faire"` to **every
+lesson with a generator** (`lesson.dice`). Slotted lessons (aimer · faire ·
+aller · envies-besoins · transport) get the full three-box cascade;
+slotless generators get the same boxes with their cue + English line and a
+free-text input at every tier, graded against the generator's own
+`correct`; deck-only lessons (no authored generator) keep the level
+chooser.
+
+**MÉMOIRECALL LEAVES THE LESSON — Dan undoing his own morning call, in his
+words:** *"please reinstate that a section of its own outside of MneMemo
+(Yes I am undoing an earlier call, and i am aware), so no more hiding
+MémoiRecall as an embedded page within MneMemo — it looks awful."* The 🃏
+Cards tab is gone (four tabs again), no lesson embeds the flip-it frame,
+and the standalone station — /practice/flip-it, with its doors in the ☰
+menu and on the goal page — is MémoiRecall's one home again. Nothing was
+copied from old deployments: the station never stopped existing or being
+maintained; only the embed is new, and only the embed was removed.
+verify68 and verify71 each record the reversal-of-the-reversal in place.
+
+## 19 Sep — the flashcards take the fifth tab (glm-lane, ZCode/GLM)
+
+**Dan, seeing the fold: *"Now that i see what MemoiRecall flashcards look
+like, they should really be a section of its own."*** — which reverses his
+own 16 Sep ruling (*"are cards and forms not the same thing… STOP
+MULTIPLYING CATEGORIES"*, #397/#398) and lands exactly where his 16 Sep
+instinct pointed (*"MeMoiRecall might be better even right after SpecuLearn,
+and before the Lesson Idea and Exercises"*).
+
+The strip is FIVE tabs now — 🎯 Goal · 📐 Form · **🃏 Cards** · 💡 Idea · 🏋️
+Exercise — `cards` a NEW key, the others never moved, the lesson still lands
+on Idea. Form holds the Mémo alone. The Cards panel frames the same
+`/practice/flip-it/<deck>/embed` station the fold did, standing OPEN — the
+tab is the disclosure, so there is no fold and no count to carry (the count
+assertion retired with it). verify68 and verify71 each record the reversal in
+place, with the quote.
+
+**Also this session:** faire's Mémo in two columns (rule | example) and the
+SOME/ANY system in Sum up, in Dan's own words (#408); G-Compris confirmed
+LIVE on staging AND production after a false alarm (the texts render inside
+the cahier's iframe — probes reading the host document see only the shell).
+
+## 18 Sep, later — Dan answers the open questions; five close, one builds (glm-lane, ZCode/GLM)
+
+**Asked one by one, as Dan requested ("I suspect some have already been
+resolved") — his answers, recorded:**
+
+- **Index legibility — DROPPED.** The 22 Aug "I really don't understand how
+  to read it" no longer stands; no legend will be built.
+- **Gender — the flashcards, and a principle: NO BARE NOUNS.** "On the
+  flashcards indeed, but bare nouns are never supposed to occur in French
+  anyway, so there will always be an indication of its gender (directly or
+  indirectly)." That principle is audit material — a lesson that prints a
+  noun without its article (or a partitive that implies one) is a fault.
+- **MémoiRecall's band inside a lesson — KEEP AS IS.** The ✕ and goal badge
+  stay.
+- **Two-column Mémo — ROLL IT OUT EVERYWHERE** (Se présenter's layout, one
+  lesson file at a time). Queued behind the bug button and NumBus.
+- **NumBus worded line — NEED TO SEE IT.** Build it on a branch and show,
+  never describe.
+- **Difficulty choice — SETTLED: the cascade's mid-run banner.** The
+  "abandoned three times" question closes.
+- **Question-aim — SETTLED: the cascade's three dropdowns.** Same closure.
+
+**THE BUG-COLLECTION UPGRADE SHIPS ("Build it now").** The 🐞 form's report
+now has TWO AGENT DOORS beside the Firestore send: 📋 **Copy for the agent**
+(the card's context, categories, details, URL and agent line as one plain
+text, one tap to the clipboard) and 🐙 **File it** (a new Pages Function,
+`functions/api/bugreport.js`, files the same text as a 🐞-prefixed issue on
+frenchprof/fluoduo with `bug`/`learner-report` labels). The function answers
+501 until Dan sets `GITHUB_ISSUE_TOKEN` on the Pages project — a fine-grained
+PAT, this repo only, Issues: Read and write — and the button says so and
+points at Copy until then. Firestore keeps working either way; verify32's
+send() shape is untouched.
+
+## 18 Sep — Dan reviews the Exercise tab; seven rulings, all shipped (glm-lane, ZCode/GLM)
+
+**One branch `glm/cascade-dan-rulings`, this session's only STATUS edit.** Dan
+walked the restored Exercise group by group and sent seven rulings in one
+sitting; every one is on the branch, browser-verified, and recorded in
+RECTIFICATION.md's 18 Sep update with his words.
+
+**FAIRE STANDS ALONE** (*"I prefer to keep Faire separate on its own"*): the
+Verbe axis now offers faire · écouter · lire · regarder — the partitive
+hobby-verb family — each verb with the nouns it genuinely takes, the pairing
+living in ONE `NOUNS_FOR` map (« écouter du sport » is not French, so the noun
+follows the verb; « faire des livres » isn't either, so livres belongs to
+lire). The aimer verbs are out of faire. verify58's oracle rolled the whole
+new bank clean.
+
+**THE CUE LANGUAGE GREW A SECOND AND THIRD SENTENCE.** PICK AS YOU WISH over
+the dropdowns and PICK FOR ME at Random — and Dan ruled the band text itself
+*"should be thick and strong"*, which `font-weight: 900` cannot deliver in the
+hand face (one stroke weight, weight changes nothing the eye can see). The
+bands are thick BY STROKE now — `-webkit-text-stroke` in the text's own
+colour, `paint-order: stroke fill` so it fattens rather than hollows — and
+NEXT PART IS BELOW inherits it, one cue language, one weight.
+
+**RANDOM IS THE MAIN BUTTON** — primary, a size up; CHECK is deliberately
+secondary. **The buttons went English**: ✅ CHECK · ✏️ REDO · 🏁 END (reversing
+the 17 Sep keep-French-labels note; the later ruling wins). **★ lets the
+learner choose the gap** — verb or article, two content-sized chips, since
+★★ takes both. **🎁 Bonus joined the ladder** at every stop, labels from
+ENTRY_LABELS, the reward pen for the fourth tier — and the Bonus round HAS
+ITS FIELD: the English sentence is the prompt, the whole French sentence is
+typed, the French meta and noun withdrawn because they are the answer.
+
+**Verified:** tsc clean · verify58 19/19 · verify41 33/33 · verify22 33/33 ·
+verify19b 13/13 (the bands reuse tokens; the stroke is a token colour too) ·
+13/13 browser checks at 390px — four tiers, both bands, stroked text, English
+labels, family-only Verbe axis, ★-ARTICLE blanking exactly the article gap,
+Bonus prompt + field + verdict. Screenshots in the PR.
+
+## 17 Sep — the slot-cascade Exercise lands on faire, by patch and by hand (glm-lane, ZCode/GLM)
+
+**Two commits on `glm/rectification` (this session's only STATUS edit): `91ee964`
+and the strip below. PR open; not merged — integration is fluoduo-main's.**
+
+The chat.z.ai session's rectification arrived as patches, and the patch had
+lost its own integration: `0002` carried the three NEW files
+(`ExerciseSlotCascade.tsx`, `RECTIFICATION.md`, `AUDIT-SPEC.md`) but none of the
+three modifications its own message listed — the staging split had let the
+LessonPager gate, the aimer exports and the faire retrofit ride inside the
+TYPOGRAPHY commit, which Dan threw out whole (it rewrites 326 `text-[Npx]`
+literals per-file — the opposite of the 5 Sep ramp ruling). Re-derived all
+three from the specs on this machine; `git am` was never used.
+
+**`91ee964` — the cumulative bank.** `faire.gen.ts` imports aimer's
+`VERBS/NOUNS/END_EXPORT` (now exported, `conj` generalized) and builds
+`VERB_BANK` (Frame A liking + Frame B doing) and `NOUN_BANK` (definite and
+partitive on every noun; `NOT_FAIREABLE` = films, livres, concerts, piano,
+cinéma — « lecture » stays, « faire de la lecture » is French). The `verb`
+axis replaces the old `partitive` axis — the article is now the ANSWER asked
+at ★★, so pinning it would pin the answer. All ten articles are the article
+slot's choices, on the distractor ruling. **verify58's oracle caught the
+elision on the first run:** `sv` said « Ils n' adorent » where `sentence()`
+glues « n'adorent » — the correct sentence was not in `easyOptions`. The
+template now builds the glue the same way the slots do.
+
+**The strip (second commit).** The cascade shipped with a during-run
+Score/Streak/Best bar and its own inline summary — Look B, against the 16 Sep
+rulings. Both gone; 🏁 now hands `entries` to LessonPager through `onFinish`,
+which sets the score and flips `end` — so the SIO write, XP and elapsed are
+the END EFFECT'S, once, in one place. No fanfare is wired to the click
+(verify660's shape holds; the pager's own `next()` still plays stage on the
+card flow). **Kept, on Dan's instruction: the French pedagogical labels**
+« ✅ Je vérifie / ✏️ Refaire / 🏁 Terminer » — a deliberate slice of the
+english-chrome rule, the forty-free-repetitions argument from
+REGRESSIONS_VS_WITHDRCHAN §6, and Dan's call to make.
+
+**Verified here:** tsc clean · `verify58` 19/19 (both new-bank generators
+execute under it) · `verify41` 33/33 · `verify660` 13/13 · full build
+(check:short + check:sios + export) · 16/16 browser checks at 390px and
+1280px — the Verbe axis offers aimer/adorer/détester/faire, adorez + the
+noun's own definite is ✔, aime + du is ✘ (the frame check working).
+Screenshots in the PR body.
+
+**Not done, on purpose:** the ~14 Category A ports (aller first, Frame D —
+preposition + place, its slot layout changes with the verb's frame; the
+exports it needs are already on this branch), the 49-lesson content audit and
+the ~15-route UI/UX audit (AUDIT-SPEC.md is the shape), and the typography
+ramp (a proper `globals.css` ramp + verify106 update, never per-file
+conversions).
+
+## 16 Sep, evening — MémoiRecall goes back into the lesson, Form moves ahead of Idea (fluoduo-main)
+
+**#397 → `992f965`, deploy 108.** Three of Dan's messages in an hour, each
+reversing part of the afternoon, and the lesson is better for all three:
+
+- *"bring MemoiRecall back at where you removed the list, because honestly you
+  created MemoiRecall out of that list in the first place and moved it out of
+  my lesson when it was supposed to be a part of it."* The Form tab frames the
+  REAL station — `/practice/flip-it/<deck>/embed` — under the Mémo, in a
+  `<details>` fold that says « 13 cards » and loads lazily. Not the words
+  drawn again: the flashcards themselves, one copy, one door.
+- *"are cards and forms not the same thing, they should be put under the same
+  umbrella. STOP MULTIPLYING CATEGORIES"* — said to two mock-ups, one of
+  which was a fifth tab. No fifth tab. The cards stay under Form, and Form —
+  Mémo plus cards — is the tab right after Goal, before Idea and Exercise,
+  per his *"right after SpecuLearn, and before the Lesson Idea and
+  Exercises"*. The lesson still LANDS on Idea (13 Sep); order and landing are
+  two rulings.
+- *"alignment means that in the section before the table, you can put each
+  line in two columns."* The Mémo's examples are a `<dl>` grid: signpost left,
+  French right, every sentence on one vertical line, the shape of the table
+  beneath. (I had first read "alignment" as my composite pictures and
+  re-aligned those; the columns he meant were on the page.)
+
+**A CUE THAT COVERED THE ONLY WAY IN, twice.** With the fold under the Mémo the
+Form section grew taller than a phone screen, and « NEXT PART IS BELOW » sat
+on « 🃏 MémoiRecall · 13 cards ». First fix: `summary` joined the cover
+test's control list — and the band stayed, because a lesson is a SNAP feed
+and that branch of `measure()` returned before the cover test ever ran (peers'
+15 Sep flicker fix, correct for sections that fit their screen). Second fix,
+in the snap branch itself. `verify780`'s literal-line clause follows the
+shape now. *Measured on the built lesson both times; the first fix looked
+right in the source and did nothing on the screen.*
+
+**verify68 and verify71 record all of it in place** — the framed station, the
+fold's count, the order. The manual and the first-run hint say the same.
+The `gender` gap from the afternoon (recorded, drawn nowhere) is unchanged:
+the flashcards do not show it either.
+
+**Gates:** three full gates on the branch as the commits landed — 150/150,
+150/150, 150/150 — and CI green on the head before the merge.
+
+## 16 Sep, afternoon — NumBus on one screen, SpecuLearn says the sentence, the lesson goes English (fluoduo-main)
+
+**Landed, in order, each verified on `fluolingo.com` by pulling real content:**
+#391 → `0b73055` (peers' third round, deploy 104 — the bug-context key in the
+live JS at t+78s) · #392 → `a027deb` (the ▶ tap primes speech, deploy 105 —
+the priming utterance in the NumBus route's chunk; the first probe scanned
+`/games/numbus/embed`, which does not exist, and said "no") · #393 →
+`b4eaec7` and #394 → `66fb04f` (deploy 106, one run for both — `order-15`, the
+🐌 key's phone slot, in the live chunk at t+161s).
+
+**NUMBUS FITS ON DAN'S PHONE NOW, and the pad was the reason it never did.**
+Dan: *"Do the number pad keys need this much space?"*, then *"i think you can
+make the number pad even more compact so as to show the bus or whatever image
+at the top"*. Measured at his phone's shape (390 wide, root font one notch up):
+
+    pad, before      281px · keys 63px · 70% of the visible column
+    pad, after       161px · keys 49px · 40%
+    whole game       column 403 · content 507  →  column 403 · content 403
+
+One grid, five across: the dial rows 1-2-3 / 4-5-6 / 7-8-9 stay rows, ⌫ 0 ✓
+down a fourth column, 🔊 ⏸ 🐌 down a fifth — three rows where there were
+five. `order` places each control per screen (`PHONE_ORDER`), so `sm:` keeps
+the layout it had. The slab around the digits is gone on a phone (the 26px
+strip), and the bus-stop scene is 8.5rem from 11.625 — everything in it hangs
+from the bottom, so what went is sky. Scene, digits and pad on one screen, no
+scroll. *The pad's seven tenths of the column was the room the bus never had;
+every earlier fix moved the symptom.*
+
+**THE BUS WAS SILENT ON AN iPHONE; THE 🔊 KEY WAS NOT.** Same `speak()`, a
+different starter: iOS only begins speech from inside a tap until the page has
+spoken once from one, and the first number arrives from a timer chain seconds
+after ▶. `primeSpeech()` spends the ▶ Start tap on one silent, empty
+utterance, once per page — not through `speak()`, whose bank, mute check and
+`cancel()` are for real speech. Nothing greets; `verify660` passes.
+
+**SPECULEARN'S « Hear the full sentence » SPOKE ONE WORD** (Dan: *"it is not
+playing the full sentence"*). A unit-0 stem — « [Moi,] Je ___ Dan. » — has no
+`tts`, so the pool spoke `right.v`: « m'appelle ». Now the stem with the
+bracketed hint dropped and the gap filled, the recipe Unit0Pretest's `ttsFor`
+always used. All eight of SIO-001.
+
+**THE LESSON WENT ENGLISH, AND THREE CHECKS HAD TO BE TOLD** (PR #395). In one
+sitting Dan sent: *"Demonstrate with a colored background behind that extra
+pronoun"* (m' t' s' on `.cahier-hl`, in the Idea paragraph and the Mémo's
+warning); *"should name consistently: Goal Idea Form Exercise"* (reversing
+the 5 Sep cognate ruling — keys `formes`/`exercice` stay); *"there is
+something called Every Word in This Lesson, That is actually the MemoiRecall
+section. We do not need to repeat it"* (the deck reveal table under the Mémo
+is gone from Form, with `Lexique`, the gender helpers and the `lexique` prop
+no lesson ever passed); and *"way too much french in there for a beginner"*
+(the Mémo's signposts — « Quelqu'un d'autre », « Poliment » — are English; the
+sentences stay French).
+
+The gate came back 147/150 and CI red twice, each time on a check that had
+pinned the thing Dan just removed: `verify59` pinned the gender column in the
+retired list; `verify71` pinned Form holding "both halves"; and
+`scripts/jam-scan.mjs` waited for a tab literally named « Exercice », so every
+lesson "did not hydrate". Each records the reversal in place. **A GAP IS OPEN
+AND NAMED: `gender` is now recorded and drawn nowhere** — the deck page never
+had the column, only the retired list did. Flagged to Dan; the deck page is
+the obvious home. The manual (docs/guide = public/manual) names the tabs and
+moved with them.
+
+**A process note:** the container's browser cannot reach `fluolingo.com`
+(the proxy's certificate is not in Chromium's store), so a "live today"
+screenshot is a build of `origin/main` in a worktree — `cp -al node_modules`
+satisfies Turbopack where a symlink did not.
+
+## 16 Sep — peers' third round lands, the pad is measured, and the bus learns to speak on an iPhone (fluoduo-main)
+
+**#390 → `08f4c63`, deploy 103.** The transient verify46 probe is ignored and
+the 15–16 Sep STATUS is on main. Deploy 103 took three tries to fire: the
+container's token cannot dispatch a workflow (a 415 without a JSON header, then
+a 403 with one) — the GitHub tool is the one door that works from here.
+
+**PEERS' THIRD ROUND — eight commits on `claude/peers-vd2h6h` since #384 took
+from it, merged on `peers-r3`.** Five conflicts; four were one-sided
+additions and one was real: `MoreBelow.tsx`, where peers' two-threshold
+flicker fix (Angelina's *"constantly flickering and blinking"*) and main's
+"never cover a control" test had both been written into the same `read()`.
+Both are kept in one `measure()`: the snap-feed branch first, then the two
+thresholds against the previous answer, then the cover test — and it is still
+coalesced into one frame, because that coalescing is what ended the 38-second
+click lock-up on 15 Sep.
+
+**THE FIRST SHAPE OF THAT MERGE WAS CORRECT AND FAILED THE CHECK.** It mirrored
+the last decision in a closure variable and set state from it; peers'
+`verify780` looks for `setMore((was) => …)` and for `setMore(nextSnapTop(root)
+!= null)` by name, and read the mirrored form as "a bare comparison again".
+The behaviour was identical; the shape was not. Reshaped to the updater form
+the check expects — which is also the better form, since it has no second
+copy of the state to drift — with the cover test computed OUTSIDE the updater
+(it forces a layout per control, and React may call an updater twice) and
+skipped below OFF_AT, where the answer is "off" whatever it was before. *A
+check that reads a shape is a check that fails an equivalent shape; when the
+equivalent is no better, take the one the check names.*
+
+`NumBus.tsx` merged clean and KEEPS everything #389 shipped — checked by grep
+after the merge, because the two-dot diff against peers' branch showed the
+scene `shrink-0`, the ghost input and the slimmer cells as if peers had
+reverted them. They had not; their branch was merely older than #389 there.
+
+**THE NUMBER PAD (Dan: *"Do the number pad keys need this much space? Or is
+this the optimal amount of space?"*).** Measured at his phone's shape,
+390×640 with the root font one notch up, on the built app:
+
+    now                keys 63px · pad 281px · 70% of the visible column
+    tighter, 3 cols    keys 54px · pad 235px · 58%
+    four across        keys 54px · pad 175px · 43%   (1-2-3 rows kept,
+                                                       ⌫ 0 ✓ down a 4th column)
+
+A finger reliably hits 44px; the keys were half again that, and the pad's
+seven tenths of the column is the room the bus never had. The three were put
+to Dan as one picture — the real page with only the pad's spacing changed by
+injected style, labelled as such — and the four-across pad brings the bus
+AND the digit strip back on screen without a scroll. His call; nothing shipped.
+
+**THE BUS WAS SILENT ON AN iPHONE, AND THE 🔊 KEY WAS NOT.** Dan confirmed the
+shape put to him on 15 Sep and approved the fix: *"ok for if the repeat 🔊
+speaks but the arriving bus is silent, the first utterance moves onto the ▶
+tap."* Both reach the same `speak()`; what differs is who started them. iOS
+Safari only starts speech begun inside a user gesture until the page has
+spoken once from a tap; the bus's first number comes from a timer chain —
+credits → arrival → announce — seconds after the last touch. `primeSpeech()`
+in `speech.ts` spends the ▶ Start tap on one silent, empty utterance, once
+per page. It is NOT routed through `speak()`: the bank, the mute check and
+`cancel()` are for real utterances, and a muted voice must still prime.
+Nothing is heard, nothing greets — the 13 Sep ruling is about greeting, and
+`verify660` passes. On `fix/numbus-prime`, waiting behind the merge.
+
+**Still Dan's, unshipped:** the strip (B1 33px / B2 26px on
+`fix/numbus-strip2`), the pad (above), the worded line (A/B/C).
+
 ## 15 Sep — the peers lane lands ON main instead of beside it, and LexicaLocker fits (fluoduo-main)
 
 **Dan: *"peers pushed https://79fa0564.fluoduo.pages.dev/ but it is missing
@@ -85,7 +438,7 @@ now; measured at 430×860, the whole board ends inside the frame.
 
   tsc clean · build green · eslint clean on the touched files ·
   148/148 verify · verify-wiring 10/10 · walked in the built app
-## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376, NOT merged)
+## 15 Sep — G-Compris!, no more minute promises, and the path inside the test (peers lane, `claude/peers-vd2h6h`, PR #376 — merged onto main by #391 on 16 Sep)
 
 ### 15 Sep · three things Dan asked for, in his order
 
@@ -437,6 +790,37 @@ was Dan's to draw: it looks like a `.neo-key`, so a learner was always going to
 press it, and a key that DOES something beats both. It scrolls a screenful less
 the reserve, smoothly, so the reader lands on the next part rather than at the
 end. Measured on MneMemo: scrollTop 681 → 1354.
+## 14 Sep — the keyboard opened the retired popup a week after the finger stopped (fluoduo-main)
+
+**Dan: *"typing on numbers in the map view is bringing up old popup SIOs"*.**
+It was not the map. `KeyNav` gives the app a two-digit shortcut — type 2, 3
+anywhere and jump to goal 23 — and it did that by setting
+`location.hash = "SIO-023"`, which `MapBody`'s hashchange listener answers by
+drawing **StopPopup**.
+
+**THE STALE COMMENT IS THE WHOLE STORY, and it is the third one to bite today.**
+The line above it read:
+
+> *"The outcome lives on The Map now (/sio/[id] is only a redirect):
+> `?unit=N#SIO-0NN` opens its popup."*
+
+True when written. **Wrong since 7 Sep**, the day Dan said *"WE ARE STILL SEEING
+THE POPUPS FROM CLICKING THE MAP, WHERE ARE THE FULL PAGED SIOS"* and
+`/sio/[id]` became the real one-goal-per-screen page. `MapBody`'s own `openSio`
+was changed to push it; this shortcut was not. So the FINGER opened the page and
+the KEYBOARD opened the retired popup, and the comment made that look
+deliberate to every session that read it.
+
+It pushes `sioHref(sio.id)` now — the same door a tap opens. Driven at 1280px:
+typing 2 then 3 on the map lands on `/sio/SIO-023` with zero dialogs.
+
+**MapBody KEEPS parsing `#SIO-nnn` and keeps drawing the popup for it**, on
+purpose: a QR code or a bookmark in the wild has to land somewhere. What
+changed is that nothing in the app MINTS one of those any more.
+
+**Also: `.tmp-verify-gems/` is gitignored**, like the two scratch directories
+listed beside it. It was the only one of the three missing, so a clean tree
+read as dirty after any full verify sweep.
 
 ## 14 Sep — GramMarathon's last clue is what the sentence MEANS, and the ladder was capped at two (fluoduo-main)
 
@@ -471,6 +855,198 @@ them would print a one-word clue that reads like the answer. It comes from
 drilled: some decks gap `fr` and some gap `example`, and the English has to
 match the one on screen. Opt-in, so it changes nothing for the kinds that share
 that branch — on a typed card the English IS the prompt.
+
+## 15 Sep — the bus was being deleted, not hidden; four learner reports; the audit names its check (fluoduo-main)
+
+**Dan, with a photo of his iPhone: *"Numbus in general looks broken on my
+phone. because it is not in full screen so the bus is not visible"*.** In the
+photo the scene is a thin white bar — its 4px border and nothing else.
+Saraphina Bay had filed the same screen through the 🐞 as *"The layout looks
+broken on my screen"*.
+
+**THE BUS WAS THE FIRST THING THE LAYOUT WAS ALLOWED TO THROW AWAY.** The
+scenes sit in a `flex-col overflow-y-auto` column and each scene root is
+`overflow-hidden` — and a flex item whose overflow is not `visible` has an
+automatic minimum size of ZERO. So when the column runs short the scene
+collapses all the way down, while the digit board (`overflow: visible`) keeps
+its content height and refuses. Reproduced in Chromium at 390×640 with the
+root font one notch up — the shape of an iPhone with Safari's toolbar and a
+larger text size:
+
+    before   column 403 · content 507 · scene   8px · flex-shrink 1
+    after    column 403 · content 705 · scene 221px · flex-shrink 0
+
+`shrink-0` on all three scene roots. The column is `overflow-y-auto` precisely
+so that a short screen SCROLLS; a scene that cannot shrink is what makes it.
+Chromium at 390×844 had spared it only because 40px were left over — which is
+why a phone-size probe on this runner said "fine" while Dan's phone said
+"broken". *A measurement that does not reproduce the reporter's shape is a
+measurement of something else.*
+
+**⛶ IS A RED KEY THAT SAYS FULL** (Dan: *"The full screen buttons need to be
+made MUCH MORE PROMINENT (MAYBE IN RED?) so users know they can resort to
+that"*). It was a 60%-ink glyph at the same weight as ⋯ — the least visible
+control on the bar and the one that fixes the screen. Out of full screen it is
+filled `--dopa-miss` with a word on it; in full screen it goes quiet, because
+then it is only the way out. The one place red does not mean a wrong answer,
+and the label is what keeps that unambiguous. The phone digit cells also come
+down a notch (98 → 84px at that text size); `sm:` untouched.
+
+**NUMBUS AUDIO: the code path is sound, the risk is the iPhone's rules.** In
+the driven build `speak()` is reached twice with « Le bus numéro dix. ». But
+the first number is spoken from an effect-and-timer chain — ▶ Start → credits
+(3s) → bus arrives (2.2s) → speak — ~5s after the last touch on a first visit,
+and iOS only honours speech begun inside a user-activation window. The check
+for Dan's phone: if the repeat 🔊 under the board speaks and the arriving bus
+does not, that is it, and the first utterance moves onto the ▶ tap. The bank
+of studio clips is NOT in `public/` in this build, so `tryBank` always falls
+through to the browser voice — the `a.play().catch(() => {})` swallow in that
+path is a real hazard for the day the bank ships to a phone.
+
+### Four 🐞 reports, and two of them were one bug
+
+**Angelina Ong: *"showed 2 blanks when it should just be one for salut, showed
+3 blanks when it should just be 2 for ca va"*.** French puts a space before
+« ! ? : ; », so « Salut ! » splits on whitespace into two tokens and the second
+has no letters; ÉcouTexte drew a box for it anyway. Her OTHER report — *"a
+question's marked answer seems wrong"* — is the same fault: her screenshot has
+an unfillable empty box before the « ? », so the sentence is never full, the
+silent auto-check never fires, and Check marks it wrong. A stray mark now folds
+into the previous word's printed `post`; the box count matches the words a
+learner can hear.
+
+**Jack Chua: *"the typing cursor should remain on the textbox so I don't need
+to click it again"*.** Typing walked box to box inside a sentence and stopped
+dead at the boundary — `refs` is per-row. A finished sentence now hands the
+cursor to the next one's first box, ONLY when it was right: a wrong sentence
+is the one about to be corrected. His report did not carry its route;
+ÉcouTexte is where the description fits.
+
+### The teacher card
+
+**Dan: *"i am asaking for help with XP Audit check"*.** The badge read
+« ⚠️ check » for two faults with opposite answers — OUT OF SYNC (stale
+leaderboard publish; harmless, clears when the learner opens the app signed
+in) and BELOW FLOOR (a real discrepancy). It names the failing one now.
+
+**And a ×20 that looked like a bug and is not, recorded so nobody chases it
+again:** this learner's 3534 XP matches 3/1 against 1477 answers where the
+rate is 60/20 — a ratio of 20.07, the retune factor. Arithmetic, not a fault:
+the app pays once per item per run, re-attempts record `xp: 0`, and the audit
+already excludes them. 1477 answers over 237 items are mostly re-attempts.
+
+**The stat row asked the viewport, not the card.** `lg:grid-cols-8` fired
+because the PAGE is wide while the modal is 750px: eight tiles at 83px, minus
+32px of padding, and « ANSWERS » cannot be drawn in 51px. Counted with
+`auto-fit`, `align-items: start` so one wrapped date no longer sets the height
+of all eight, and `--font-body-stack` (Dan: *"use FluoLingo fonts"*) — the
+panels had been falling through to `system-ui`. Tiles 83 → 175px, row 515 →
+276px, every label on one line.
+
+### Shipped this morning, for the record
+
+#383 (the peers lane on top of main, LexicaLocker fits), #384 (G-Compris!,
+Write → Texts, the path scoped to stops 1–30, the ring outline), #385 (the 🔔
+and its What's New card) — deploys 97, 98, 99, each verified by pulling real
+content off `fluolingo.com`, not by a green workflow.
+
+**Landed, in order:** #386 → `fd7c31a` (deploy 100, the teacher card, verified
+in the live stylesheet) · #387 → `443889b` (deploy 101, ÉcouTexte, verified by
+`data-box` in the live chunk — on the EMBED route, which is the one that loads
+the component; the first probe scanned the topic-picker page and said "no" on
+both hosts, the fourth false negative of the week) · #389 → `f038dbe` (NumBus:
+the bus, the key, the strip, the ghost input — Dan opened the PR himself;
+deploy 102 succeeded on it once main's own verify was green, and the
+`fluo-ghost-input` rule was watched into the live stylesheet).
+
+**The transient file that tripped the stop hook three times** was named by a
+sampler polling `git status` every five seconds through a full sweep:
+`verify46-lesson-axes.py` writes `verify/.verify46-probe.mjs` while it runs
+and deletes it after. Ignored on `chore/ignore-verify-probe`, the way its three
+`.tmp-verify-*` siblings are — a `git add -A` inside that window would sweep
+it in. *A file that is gone by the time anyone looks needs a watcher, not a
+look.* Every merge checked with
+`git merge-tree` first, which needs no working tree and so could run while a
+gate was reading this one.
+
+**Then a container restart, and the audit that followed it:** working tree
+clean, no stashes, no worktrees, every branch of the day at 0 unpushed
+commits, the drafts and gate logs intact in the scratchpad. Nothing lost. The
+one "1 unpushed" line was the superseded `feat/whats-new-bell`, whose commits
+had been cherry-picked onto `whatsnew` before #385.
+
+**"IT IS STILL TOO BIG" — the strip, a third time.** What reads as big is the
+dark SLAB around two small cells, not the cells. Two variants were built on
+`fix/numbus-strip2` and photographed at Dan's phone shape rather than guessed
+at a fourth time: B1 drops the slab on a phone (the cells stand on the paper,
+`sm:` keeps the box) with 1.75rem cells — strip **33px**, from 61; B2 the same
+with 1.375rem cells — strip **26px**. Put to him side by side. B2 gated
+149/149 on `0c942cc` while he looked; B1 gated after, so whichever he points
+at is one cherry-pick and one deploy.
+
+**Deploy 102 verified on `fluolingo.com`** — `fluo-ghost-input` in the live
+stylesheet at t+150s, the same lag as every deploy this week. With it, #386,
+#387 and #389 are all live: the teacher card, ÉcouTexte's blanks and cursor,
+and NumBus — the bus that cannot be crushed, the red FULL / SCREEN key, the
+slimmer strip, and the digit cells visible for the first time on any phone.
+
+**The worded line under NumBus's digits is Dan's call, not mine.** He asked
+*"DO WE REALLY NEED TO ADD ANOTHER LINE"*; the words are the teaching moment
+(the French beside the digits is the one instant the two meet), the second
+LINE is not. Three shapes were put to him — a slimmer line (what is on the
+branch), the words replacing the digits in the same row on reveal, or the
+words in the bus's own « ?? » badge. Until he answers, the slimmer line ships.
+
+**THE WHITE BOX IN DAN'S PHOTO WAS NEVER THE DIGIT BOARD.** NumBus types
+through an `<input>` laid over the board, meant to be invisible —
+`bg-transparent text-transparent caret-transparent`. It sits inside
+`.cahier-sheet`, whose form skin paints EVERY text input white with a 1.5px
+border, a 9px radius and `0.55rem 0.75rem` of padding, at class + type + two
+pseudo-classes — which outranks any utility. So the "invisible" overlay
+rendered as a white form field ON TOP of the digit cells. Measured in the
+built app: computed background `rgb(255,255,255)`, computed colour the ink, on
+an element whose classes ask for transparent. Not one screenshot today showed
+a digit cell, on any device, including Dan's — and nobody noticed, because a
+white box where the digits go LOOKS like a digit board.
+
+Two fixes, and slimming the strip is what exposed the second: `fluo-ghost-input`,
+an opt-out at the skin's own weight (the `.fluo-stepper` precedent — match its
+`:not()` pair, add one class, win on specificity rather than on file order;
+Safari also needs `-webkit-text-fill-color`); and `inset-0` instead of a
+height of its own, because the overlay was `h-[4.25rem]` from the strip's top
+and once the strip was slimmed it hung 33px out of the bottom, over the
+🔊 ⏸ 🐌 row — input 81px in a 61px strip. Two frozen sizes fewer; verify270's
+ratchet moves down.
+
+    before   input bg rgb(255,255,255) · 81px in a 61px strip · 0 cells visible
+    after    input bg transparent      · 57px in a 61px strip · 2 cells, and the
+             hit-test at the first cell's centre lands on the CELL
+
+Measured on the built `4ab3065` at 390×640 with the root font one notch up —
+Dan's phone's shape. The digit cells appeared in a screenshot for the first
+time today. *A control that is styled by a skin it never asked for is
+the specificity trap this file has recorded three times now; this is the
+fourth, and the first where the victim was meant to be invisible.*
+
+**⛶ reads FULL / SCREEN on two lines, on the ramp** (Dan: *"write FULL SCREEN
+in smaller font to fit within the same height (REMEMBER RELATIVE FONT SIZES
+PLS)"*). Same h-8 / sm:h-9 key; the size is a calc written in the class,
+`calc(0.625rem + var(--fs-step) * 0.62)`. The first cut was `text-[13px]` —
+the pixel he has banned twice — and the digit cells had been cut to 26px and
+17px, neither on the ramp table. verify106 refused both, run in a worktree
+BEFORE the gate.
+
+**THREE TIMES TODAY A FIX TRIPPED ITS OWN CHECK BY QUOTING WHAT IT REMOVED.**
+NewsBell's hex survived in the comment explaining its removal; `#211` read as
+a hex earlier; and the NumBus comment that said "text-[26px] / text-[17px]
+are gone" was itself matched by verify106. The checks read `src/` as code and
+cannot tell prose from it — which is correct, and the rule for the writer is:
+when you remove a thing a check forbids, describe it in WORDS, never by name.
+
+**A process note that cost two turns today:** a trailing `&` on an
+`&&`-chain backgrounds the WHOLE chain, not the last command. Twice this
+session a commit or a checkout ran unobserved because of it. Background one
+command, in parentheses, or use the runner's own background mode.
 
 ## 15 Sep — the ★ leaves the top bar, because the 🤍 is what made it removable (fluoduo-main)
 
@@ -612,6 +1188,7 @@ of it. Say so in the letter rather than build one.
   **144/144 verify** · path walked and screenshotted at 880px
 
 ## 14 Sep — NumBus and NumBourse: a floor and a ceiling (peers lane, `claude/peers-vd2h6h`, merged by fluoduo-main)
+
 
 
 **Dan, shown the old NumBus setup: *"NumBus and NumBourse interfaces are not at

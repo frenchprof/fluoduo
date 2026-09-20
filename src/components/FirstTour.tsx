@@ -25,6 +25,7 @@ import { SIOS } from "@/content/sios";
 import { loadProgress } from "@/lib/progress";
 import { continueSioId } from "@/lib/continuer";
 import { HOME_HREF } from "@/lib/routes";
+import { appTourDone } from "@/components/TourWalk";
 
 const SEEN_KEY = "fluolingo:tours.v2"; // JSON map { [tourKey]: 1 }
 const NEVER_KEY = "fluolingo:tours.never"; // "1" = never auto-offer anywhere
@@ -312,7 +313,16 @@ export default function FirstTour() {
       const never = window.localStorage.getItem(NEVER_KEY) === "1";
       // SEEN OR OPTED OUT = NOTHING. This used to be "chip" — the floating ✨
       // replay button — which Dan deleted on 13 Sep (see below).
-      setMode(never || readSeen()[tour.key] ? "hidden" : "offer");
+      //
+      // THE 8-STEP TOUR GOES FIRST (Dan, 2026-09-19: the app tour now starts
+      // ITSELF, once, on a learner's first visit — no button anywhere). This
+      // page-type invite used to be the only hand offered; on that same first
+      // visit it now opened ON TOP of the tour sheet's controls, two offers
+      // fighting over one screen. Held here, not refused: nothing is written,
+      // so the invite returns on a later page once the tour is finished or
+      // refused — one hand at a time.
+      const waitOurTurn = !appTourDone();
+      setMode(never || waitOurTurn || readSeen()[tour.key] ? "hidden" : "offer");
     } catch {
       setMode("hidden");
     }

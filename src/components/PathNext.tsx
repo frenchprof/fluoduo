@@ -74,7 +74,16 @@ export default function PathNext({ className = "" }: { className?: string }) {
       // end of a run. markDone re-reads, so the `run` above may be stale by a
       // line; that is why `after` is read fresh rather than patched.
       const here = stepAtPlace(run, path, window.location.pathname);
-      if (here) markDone(here.id);
+      /* ONLY WHERE A STEP WAS JUST FINISHED (Dan, 2026-09-15, shown the push
+         on a goal-2 SpecuLearn pretest: *"The Continue button is misleading,
+         it should not appear here if I have not gone through the revision
+         route"*). A run switched on once stays on in the browser, and this
+         drew « Step 1 of 10 · Continue » at the end of EVERY activity — a
+         pretest that is not on the path offering to continue a path the
+         learner had not started walking. The push is the reward for finishing
+         a step; on any other screen the path page is the way back. */
+      if (!here) return setView(null);
+      markDone(here.id);
 
       const after = readRun();
       if (!after) return setView(null);

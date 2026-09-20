@@ -133,9 +133,23 @@ ok(re.search(r'startsWith\("atelier', mount) is None,
 # ---- 4 · Forms holds BOTH halves -----------------------------------------
 formes = tabs[tabs.find("function Formes("):]
 formes = formes[: formes.find("\n}\n") + 3]
-ok("memo" in formes and ("lexique" in formes or "Lexique" in formes),
-   "Forms holds the pattern AND the words — the pair Dan named",
-   "Forms no longer holds both; 'the range of sentences and vocabulary' would be split across two tabs again")
+# REVERSED 2026-09-16 — Dan, of the word list under the Mémo: *"That is
+# actually the MemoiRecall section. We do not need to repeat it if it is
+# already in there."* REVERSED AGAIN 2026-09-19 — Dan, seeing the fold: *"Now
+# that i see what MemoiRecall flashcards look like, they should really be a
+# section of its own."* Form holds the MÉMO alone — the model sentences an
+# atelier opens on — and the flashcards live in the CARDS tab, their own
+# panel, framed there.
+# REVERSED BACK THE SAME EVENING (19 Sep) — Dan: "no more hiding MémoiRecall
+# as an embedded page within MneMemo — it looks awful." The flashcards are
+# the standalone /practice/flip-it station: no lesson tab, no embedded frame.
+ok("memo" in formes and "Lexique" not in formes and "/practice/flip-it/" not in formes,
+   "Form holds the Mémo alone — the flashcards are a standalone station again",
+   "Form is drawing the deck again, or a word table — the cards have their own "
+   "section since Dan's 19 Sep ruling")
+ok("/practice/flip-it/" not in tabs,
+   "no lesson tab frames MémoiRecall — it lives outside the lesson (19 Sep evening, undoing the morning's call)",
+   "MémoiRecall is embedded in the lesson again — Dan reversed that the same evening")
 ok(re.search(r'key:\s*"formes"', tabs) is not None,
    "\"formes\" is a real tab in the strip",
    "there is no formes tab; the pager would ask for one that does not exist")

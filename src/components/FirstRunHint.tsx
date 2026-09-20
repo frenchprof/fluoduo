@@ -101,6 +101,7 @@ export default function FirstRunHint({
   children,
   ctaLabel = "Got it",
   onGot,
+  hold,
 }: {
   /** Stable, and never a display name — a rename must not re-open a hint the
    *  learner has already dismissed (the Memo-rename precedent). */
@@ -116,6 +117,11 @@ export default function FirstRunHint({
    *  a learner who ticks the box and is then walked through it once is not
    *  asked again next time. */
   onGot?: () => void;
+  /** While true, the card stays shut THIS VISIT — nothing is consumed, so it
+   *  opens again as soon as the hold lifts. Used by the lesson, whose
+   *  first-visit tab walk (TourWalk) goes first; the hint card resumes its
+   *  every-visit behaviour once that tour is finished or refused. */
+  hold?: () => boolean;
 }) {
   // Starts CLOSED and opens from an effect: localStorage cannot be read
   // during render, and a server-rendered "open" would flash on every visit
@@ -134,7 +140,10 @@ export default function FirstRunHint({
     /* eslint-disable react-hooks/set-state-in-effect */
     let claimed = false;
     try {
-      if (window.localStorage.getItem(keyFor(hintKey)) !== "1") {
+      if (hold && hold()) {
+        // Held, not dismissed: this visit draws nothing and writes nothing,
+        // so the card returns exactly as before once the hold lifts.
+      } else if (window.localStorage.getItem(keyFor(hintKey)) !== "1") {
         claimed = claimHint(hintKey);
         if (claimed) setOpen(true);
       }
@@ -148,6 +157,7 @@ export default function FirstRunHint({
     // Release on unmount so leaving and returning offers it again, and so the
     // copy that lost the race can win it next time rather than being dead.
     return () => { if (claimed) releaseHint(hintKey); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the hold is a this-visit, mount-time decision: a hold lifting mid-visit (the tour finishing behind it) must not pop the card over a walk that just ended — the card returns on the NEXT arrival
   }, [hintKey]);
 
   // Focus lands on the way out, so the keyboard can dismiss it with Enter
@@ -241,7 +251,7 @@ export default function FirstRunHint({
  * decks. It is also what excludes the hubs Dan exempted, by having no row at
  * all rather than a list of exceptions to keep in step.
  */
-export function ActivityFirstRun({ activityKey, on }: { activityKey: string | undefined; on: "drill" | "page" }) {
+export function ActivityFirstRun({ activityKey, on, hold }: { activityKey: string | undefined; on: "drill" | "page"; hold?: () => boolean }) {
   const hint = activityKey ? ACTIVITY_HINTS[activityKey] : undefined;
   // The card's own "Got it" is what starts a guided run: read the two lines,
   // then be walked through them. Kept in one state here rather than inside
@@ -344,7 +354,7 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
     return phase === "walking"
       ? <GuidedSteps steps={guided} onDone={() => setPhase("done")} />
       : (
-        <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setPhase("walking")}>
+        <FirstRunHint hintKey={activityKey!} title={hint.title} ctaLabel="Show me" onGot={() => setPhase("walking")} hold={hold}>
           <ol className="ml-4 list-decimal space-y-1.5">
             {steps.map((s) => <li key={stepText(s)}>{stepText(s)}</li>)}
           </ol>
@@ -353,7 +363,7 @@ export function ActivityFirstRun({ activityKey, on }: { activityKey: string | un
   }
 
   return (
-    <FirstRunHint hintKey={activityKey!} title={hint.title}>
+    <FirstRunHint hintKey={activityKey!} title={hint.title} hold={hold}>
       <ol className="ml-4 list-decimal space-y-1.5">
         {steps.map((s) => (
           <li key={stepText(s)}>{stepText(s)}</li>

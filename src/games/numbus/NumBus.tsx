@@ -19,6 +19,7 @@ import { reviewItemByFrench } from "@/lib/reviser";
 import { notePracticeDay } from "@/lib/progress";
 import { logEvent } from "@/lib/firebase/usage";
 import { claimDigitKeys } from "@/lib/useChoiceKeys";
+import { typingInField } from "@/lib/useChoiceKeys";
 import { blindWidth, configKey, dealRound, type Blind, type NumBusConfig, type NumBusMode, type NumBusRound } from "./config";
 import { buildEvidence } from "@/lib/evidence";
 import { HOME_HREF } from "@/lib/routes";
@@ -47,6 +48,7 @@ function Board({
   showCursor,
   state,
   warm,
+  revealWords,
 }: {
   blind: Blind;
   value: string;
@@ -54,7 +56,24 @@ function Board({
   showCursor: boolean;
   state: "typing" | "ok" | "bad";
   warm?: boolean;
+  /** TIER B of the worded line (Dan, 2026-09-19, "need to see it"): at
+   *  reveal the WORDS take the digits' place on the flip display. */
+  revealWords?: string;
 }) {
+  if (revealWords) {
+    return (
+      <div
+        className="flex min-h-[2.25rem] items-center justify-center gap-1 overflow-hidden rounded-md border-2 border-black/60 px-3 py-1.5 font-mono font-black shadow-inner sm:min-h-[3.5rem]"
+        style={{
+          background: "linear-gradient(180deg,#1c222b 0 48%,#0a0e13 48% 52%,#1c222b 52%)",
+          color: state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : "#ffc233",
+        }}
+      >
+        <span lang="fr" className="text-center text-[calc(0.875rem+var(--fs-step)*0.88)] leading-tight sm:text-2xl">{revealWords}</span>
+        {suffix ? <span className="text-xs opacity-70">{suffix}</span> : null}
+      </div>
+    );
+  }
   const colour = state === "ok" ? "#8ce563" : state === "bad" ? "#ff7a7a" : warm ? "#ffb84d" : "#ffc233";
   const wide = blindWidth(blind) <= 5;
   /* AND A SECOND NOTCH, WITH THE STRIP AROUND THEM (Dan, 2026-09-15, shown
@@ -77,8 +96,8 @@ function Board({
      enormous on Dan's — 3.5rem at his text size was 66px per cell before any
      border or padding. The `sm:` sizes are untouched; a tablet has the room. */
   const cellCls = wide
-    ? "h-[2.25rem] w-[2rem] text-[calc(1.375rem+var(--fs-step)*1.4)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
-    : "h-[1.875rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
+    ? "h-[1.375rem] w-[1.25rem] text-[calc(0.9375rem+var(--fs-step)*0.94)] sm:h-[4.125rem] sm:w-[3.375rem] sm:text-[38px]"
+    : "h-[1.25rem] w-[0.9375rem] text-[calc(0.6875rem+var(--fs-step)*0.69)] sm:h-[3.375rem] sm:w-[2.375rem] sm:text-[28px]";
   const glyphCls = wide ? "text-3xl sm:text-4xl" : "text-lg sm:text-2xl";
   let cell = 0;
   const parts: React.ReactNode[] = [];
@@ -129,6 +148,24 @@ function Board({
 
 const KEYPAD = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "⌫", "0", "✓"];
 
+/* ONE GRID ON A PHONE, FIVE ACROSS (Dan, 2026-09-16: *"i think you can make
+   the number pad even more compact so as to show the bus or whatever image at
+   the top"*). Measured at his phone's shape before this: the pad alone was
+   281px, 70% of the visible column, and the bus was what got scrolled away.
+
+   The dial rows every thumb knows stay as rows — 1-2-3 / 4-5-6 / 7-8-9 — and
+   the fourth and fifth columns take what used to be two more rows: ⌫ 0 ✓ down
+   one side, 🔊 ⏸ 🐌 down the other. Three rows instead of five, and the keys
+   come down to the finger floor rather than half again above it. On `sm:` the
+   grid is the same one it always was: the three sound keys across the top,
+   the twelve keys in one row under them — `order` puts each control where its
+   screen wants it, and nothing is rendered twice. */
+const PHONE_ORDER: Record<string, string> = {
+  "1": "order-1", "2": "order-2", "3": "order-3", "⌫": "order-4",
+  "4": "order-6", "5": "order-7", "6": "order-8", "0": "order-9",
+  "7": "order-11", "8": "order-12", "9": "order-13", "✓": "order-14",
+};
+
 /* ── bus + time scenery ────────────────────────────────────────────────── */
 
 type VehicleSpot = "off" | "stop" | "gone";
@@ -166,11 +203,15 @@ function Vehicle({
   panel,
   state,
   train,
+  badgeWords,
 }: {
   spot: VehicleSpot;
   panel: string;
   state: "waiting" | "ok" | "bad";
   train?: boolean;
+  /** TIER C of the worded line (Dan, 2026-09-19, "need to see it"): at
+   *  reveal the words ride the bus's own destination sign. */
+  badgeWords?: string;
 }) {
   const skin = train ? "#dfe6ee" : "#f4b400";
   const trim = train ? "#1f5fa8" : "#d18f00";
@@ -194,12 +235,22 @@ function Vehicle({
             borderTopLeftRadius: train ? 34 : 16,
           }}
         >
+          {badgeWords ? (
+            <div
+              className="absolute left-1/2 top-1.5 max-w-[92%] -translate-x-1/2 rounded border border-black/50 bg-[#10151b] px-2 py-[2px] text-center font-mono text-[10px] font-black leading-tight shadow-inner"
+              style={{ color: state === "bad" ? "#ff7a7a" : state === "ok" ? "#8ce563" : "#ffc233" }}
+              lang="fr"
+            >
+              {badgeWords}
+            </div>
+          ) : (
           <div
             className="absolute left-1/2 top-1.5 -translate-x-1/2 rounded border border-black/50 bg-[#10151b] px-2 py-[2px] font-mono text-[13px] font-black tracking-[0.12em] shadow-inner"
             style={{ color: state === "bad" ? "#ff7a7a" : state === "ok" ? "#8ce563" : "#ffc233" }}
           >
             {panel}
           </div>
+          )}
           <div className="absolute inset-x-2 top-8 flex gap-1.5">
             {Array.from({ length: train ? 6 : 4 }).map((_, i) => (
               <span key={i} className="h-[1.375rem] flex-1 rounded-[3px]" style={{ background: "linear-gradient(180deg,#cfeaf8,#8dc2df)", boxShadow: "inset 0 -2px 0 rgba(0,0,0,.12)" }} />
@@ -247,6 +298,7 @@ function BusStopScene({
   timerHue,
   onRepeat,
   talking,
+  badgeWords,
 }: {
   mode: "bus" | "time";
   label: string;
@@ -259,6 +311,8 @@ function BusStopScene({
   timerHue: string;
   onRepeat: () => void;
   talking: boolean;
+  /** Tier C: the words ride the bus's destination sign at reveal. */
+  badgeWords?: string;
 }) {
   const train = mode === "time";
   const sky = train
@@ -268,7 +322,14 @@ function BusStopScene({
     ? "linear-gradient(180deg,#5a5f66 0%,#3a3e44 100%)"
     : "linear-gradient(180deg,#5c6470 0%,#3f4650 100%)";
   return (
-    <div className="relative h-[11.625rem] shrink-0 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
+    /* 8.5rem ON A PHONE, from 11.625 (Dan, 2026-09-16: *"make the number pad
+       even more compact so as to show the bus or whatever image at the top"*).
+       The bus, the queue and the road are all anchored to the BOTTOM of the
+       scene, so what a shorter scene loses is sky: at his text size the
+       tallest building's roof now sits a pixel or two under the top edge.
+       Together with the five-across pad below this is what lets the whole
+       game — scene, digits, pad — stand on one phone screen without a scroll. */
+    <div className="relative h-[8.5rem] shrink-0 overflow-hidden rounded-3xl border-4 border-white shadow-xl sm:h-[15.5rem]" style={{ background: sky }}>
       <div className="pointer-events-none absolute inset-x-0 bottom-[3.25rem] flex items-end gap-[0.3125rem] px-2 opacity-85">
         {Array.from({ length: 11 }).map((_, i) => (
           <div key={i} className="rounded-t-[4px] bg-[#7f96ad]" style={{ height: 34 + ((i * 43) % 68), width: 34 + ((i * 29) % 36), boxShadow: "inset -5px 0 0 rgba(0,0,0,.2)" }} />
@@ -298,7 +359,7 @@ function BusStopScene({
           <p className="mt-1 text-center font-mono text-2xl font-black text-[#ffc233]">{panel === "??" ? "--:--" : `${panel.slice(0, 2)}:${panel.slice(2, 4)}`}</p>
         </div>
       )}
-      {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} />}
+      {mode === "bus" && <Vehicle spot={spot} panel={panel} state={boardState} badgeWords={badgeWords} />}
       {/* On a phone the train and the departures board fight for the same
           strip, and the board is the one carrying the answer. */}
       {mode === "time" && spot !== "off" && spot !== "gone" && (
@@ -416,6 +477,11 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   const [round, setRound] = useState<NumBusRound | null>(null);
   const [stage, setStage] = useState<Stage>("arriving");
   const [typed, setTyped] = useState("");
+  /** THE WORDED LINE, TIERED (Dan, 2026-09-19, asked to SEE it): 1 = A, the
+   *  slim words line under the digits at reveal (today's behaviour, default);
+   *  2 = B, the words REPLACE the digits on the flip display; 3 = C, the
+   *  words ride the bus's destination badge; 0 = off. One key cycles. */
+  const [wordTier, setWordTier] = useState<0 | 1 | 2 | 3>(1);
   const [served, setServed] = useState(0);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
@@ -747,6 +813,9 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
+      /* Typing into a field (the 🐞 form, a search box) is never a shortcut —
+         see typingInField's note (Dan, 15 Sep). */
+      if (typingInField(e)) return;
       if (e.key === "Enter") {
         e.preventDefault();
         if (stage === "asking") resolve(typed);
@@ -904,6 +973,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           label={stopLabel}
           spot={spot}
           panel={stage === "revealed" ? plate : "??"}
+          badgeWords={stage === "revealed" && wordTier === 3 ? round?.words : undefined}
           boardState={boardState === "typing" ? "waiting" : boardState}
           bubble={bubble}
           boarding={stage === "revealed" && correct}
@@ -916,8 +986,12 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
       )}
 
       <div
-        className={`relative rounded-2xl border-2 px-1.5 py-1.5 shadow-xl transition focus-within:border-[#8ec5ff] sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 ${
-          mode === "price" ? "border-[#ffb74d] bg-[#3e2723]/95" : mode === "phone" ? "border-[#78909c] bg-[#37474f]/95" : "border-white bg-slate-900/90"
+        /* NO SLAB ON A PHONE (Dan, 2026-09-15, a third time: *"it is still TOO
+           BIG !"*). What read as big was never the two cells but the dark box
+           around them; on a phone the cells stand on the paper and the box
+           exists only from `sm:` up, where a tablet has the room for it. */
+        className={`relative flex items-center p-0 transition sm:rounded-3xl sm:border-4 sm:px-4 sm:py-3 sm:shadow-xl sm:focus-within:border-[#8ec5ff] ${
+          mode === "price" ? "sm:border-[#ffb74d] sm:bg-[#3e2723]/95" : mode === "phone" ? "sm:border-[#78909c] sm:bg-[#37474f]/95" : "sm:border-white sm:bg-slate-900/90"
         }`}
       >
         {round && (
@@ -928,6 +1002,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             showCursor={stage === "asking" && typingOpen}
             state={boardState}
             warm={mode === "price"}
+            revealWords={stage === "revealed" && wordTier === 2 ? round.words : undefined}
           />
         )}
         <input
@@ -938,7 +1013,13 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           autoComplete="off"
           aria-label="Answer digits"
           style={{ outline: "none" }}
-          className="absolute inset-x-2 top-2.5 h-[4.25rem] w-auto cursor-pointer bg-transparent text-transparent caret-transparent pointer-coarse:pointer-events-none sm:inset-x-4 sm:top-3 sm:h-[4.875rem]"
+          /* `inset-0`, NOT a height of its own. The overlay used to be h-[4.25rem]
+             from the strip's top — a frozen box — so when the strip was slimmed
+             the overlay hung 33px out of the bottom of it, over the 🔊 ⏸ 🐌 row.
+             Filling the strip means it is exactly as tall as the digits, always.
+             `fluo-ghost-input` is what stops the form skin painting it white —
+             see globals.css. */
+          className="fluo-ghost-input absolute inset-0 cursor-pointer pointer-coarse:pointer-events-none"
           onChange={(e) => {
             if (stage !== "asking") return;
             if (!typingOpen) setTypingOpen(true);
@@ -949,20 +1030,27 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
             if (next.length === width) armAutoSubmit(next);
           }}
         />
-        {stage === "revealed" && round && (
-          <p className="mt-1 text-center text-sm font-black leading-tight sm:mt-3 sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
-            {round.words}
-          </p>
-        )}
       </div>
+      {/* THE WORDS BESIDE THE DIGITS, NOT BELOW (Dan, 2026-09-19: "can it not
+          be side by side") — the worded line used to render under the board,
+          which pushed the frame taller and lower. Now it sits in its own row
+          to the right of the digit strip, same height, nothing moves. */}
+      {stage === "revealed" && round && wordTier === 1 && (
+        <p className="ml-2 inline-block self-center align-middle text-sm font-black leading-tight sm:text-lg" lang="fr" style={{ color: correct ? "#8ce563" : "#ff9d9d" }}>
+          {round.words}
+        </p>
+      )}
 
-      <div className="grid grid-cols-3 gap-2">
+      {/* See PHONE_ORDER: five across on a phone, the sound keys in the fifth
+          column; on a desktop the three sound keys across the top and the
+          twelve keys in one row, as before. */}
+      <div ref={keypadRef} className="grid grid-cols-5 gap-1.5 sm:grid-cols-12 sm:gap-2">
         <button
           type="button"
           onClick={() => round && repeatSay(round.say)}
           disabled={!round || stage !== "asking"}
           title="Repeat"
-          className="rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-2.5 text-xl font-black text-sky-800 sm:py-3 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-5 rounded-2xl border-2 border-b-4 border-sky-300 bg-sky-100 py-2 text-xl leading-none font-black text-sky-800 transition hover:bg-sky-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           🔊
         </button>
@@ -971,7 +1059,7 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={togglePause}
           disabled={!round || stage !== "asking" || !talking && !speechPaused}
           title={speechPaused ? "Resume" : "Pause"}
-          className="rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2.5 text-xl font-black text-violet-800 sm:py-3 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-10 rounded-2xl border-2 border-b-4 border-violet-300 bg-violet-100 py-2 text-xl leading-none font-black text-violet-800 transition hover:bg-violet-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           {speechPaused ? "▶" : "⏸"}
         </button>
@@ -980,22 +1068,29 @@ export default function NumBus({ config, onQuit }: { config: NumBusConfig; onQui
           onClick={() => round && repeatSay(round.say, SLOWER_RATE)}
           disabled={!round || stage !== "asking"}
           title="Repeat slowly"
-          className="rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2.5 text-xl font-black text-amber-900 sm:py-3 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40"
+          className="order-15 rounded-2xl border-2 border-b-4 border-amber-300 bg-amber-100 py-2 text-xl leading-none font-black text-amber-900 transition hover:bg-amber-50 active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-none sm:col-span-4 sm:py-3 sm:leading-normal"
         >
           🐌
         </button>
-      </div>
-
-      {/* Three columns on a phone is the dial pad every thumb already knows
-          (1-2-3 / … / ⌫-0-✓); one row on a desktop, where width is free. */}
-      <div ref={keypadRef} className="grid grid-cols-3 gap-2 sm:grid-cols-12">
+        <button
+          type="button"
+          onClick={() => setWordTier((t) => ((t + 1) % 4) as 0 | 1 | 2 | 3)}
+          title="Where the number's words appear at reveal — A: under the digits · B: on the display · C: on the bus badge · off"
+          className={`order-20 rounded-2xl border-2 border-b-4 py-2 text-xs leading-none font-black transition active:translate-y-[2px] active:border-b-2 sm:order-none sm:col-span-4 sm:py-3 sm:text-sm sm:leading-normal ${
+            wordTier === 0
+              ? "border-slate-300 bg-slate-100 text-slate-500 hover:bg-slate-50"
+              : "border-teal-300 bg-teal-100 text-teal-900 hover:bg-teal-50"
+          }`}
+        >
+          words·{wordTier === 0 ? "off" : wordTier === 1 ? "A" : wordTier === 2 ? "B" : "C"}
+        </button>
         {KEYPAD.map((k) => (
           <button
             key={k}
             type="button"
             onClick={() => key(k)}
             disabled={stage !== "asking"}
-            className={`rounded-2xl border-2 border-b-4 py-2.5 text-xl font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:py-3 ${
+            className={`${PHONE_ORDER[k]} rounded-2xl border-2 border-b-4 py-2 text-xl leading-none font-black transition active:translate-y-[2px] active:border-b-2 disabled:opacity-40 sm:order-1 sm:py-3 sm:leading-normal ${
               k === "✓" ? "border-[#46a302] bg-[#58cc02] text-white" : k === "⌫" ? "border-slate-400 bg-slate-200 text-slate-700" : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
             }`}
           >

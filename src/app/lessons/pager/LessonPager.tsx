@@ -33,6 +33,7 @@ import { lessonsForDeck } from "@/content/lessons";
 import { getNativeLesson } from "@/content/lessons/native";
 import { memoForDeck } from "@/content/memos";
 import { buildCards, type Exercise } from "./buildCards";
+import ExerciseSlotCascade from "./ExerciseSlotCascade";
 import { gradeAnswer, gradeGap, type Grade } from "@/lib/practice/cloze";
 import { loadProgress, markSioDone } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -46,6 +47,7 @@ import { ENTRY_LABELS, ENTRY_LEVELS, type EntryLevel } from "@/lib/lessonEntry";
 import { sfx } from "@/games/audio/sfx";
 import { speak } from "@/games/letris/speech";
 import { HOME_HREF } from "@/lib/routes";
+import { setBugContext } from "@/lib/bugContext";
 
 type QueuedEx = { ex: Exercise; requeued: boolean };
 
@@ -213,6 +215,31 @@ export default function LessonPager({
     : ex?.kind === "mcq"
       ? selected ?? ""
       : value;
+
+  /* THE CARD, FOR THE 🐞 BUTTON (lib/bugContext). Angelina's report read
+     "e.g. __ bien"; this is the line that would have said « tu-vous · ★★ ·
+     gap · tu-vous-05 · « ___ bien ? » ». The prompt is rebuilt from the
+     frame with the blank in it, never from the answer — a report must not
+     carry what the learner was meant to type. Runs AFTER DrillShell's own
+     effect for the same card (children mount first, parents' effects run
+     after), so the card line wins over the shell's coarser one. */
+  useEffect(() => {
+    if (!ex) return;
+    const frame = ex.before != null || ex.after != null
+      ? `${ex.before ?? ""} ___ ${ex.after ?? ""}`.replace(/\s+/g, " ").trim()
+      : ex.segments
+        ? ex.segments.map((sg) => (sg.kind === "text" ? sg.text : "___")).join("").replace(/\s+/g, " ").trim()
+        : ex.big;
+    setBugContext({
+      station: "lesson",
+      deck: activityKey,
+      level: ENTRY_LABELS[entry].stars,
+      kind: ex.kind,
+      itemId: ex.itemId,
+      prompt: frame,
+      position: `${done + 1} of ${denom}`,
+    });
+  }, [ex, entry, activityKey, done, denom]);
 
   // The help ladder (Track D): mcq → struck picks; gap → cloze rungs;
   // build/translate → typed rungs (first letter / skeleton). Every graded
@@ -461,7 +488,7 @@ export default function LessonPager({
                           nobody is stuck in front of it; a select whose only
                           value you cannot read is a control you cannot use. */}
                       <option value="">Any</option>
-                      {ax.options.map((o) => (
+                      {(typeof ax.options === "function" ? ax.options(pinned) : ax.options).map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
@@ -474,10 +501,14 @@ export default function LessonPager({
                 onClick={() =>
                   setPinned(
                     Object.fromEntries(
-                      axes.map((ax) => [
-                        ax.key,
-                        ax.options[Math.floor(Math.random() * ax.options.length)].value,
-                      ]),
+                      axes.map((ax) => {
+                        // Cascaded axes are functions of the pins drawn so
+                        // far — resolve in order, as the cascade does.
+                        const opts = typeof ax.options === "function"
+                          ? ax.options(pinned)
+                          : ax.options;
+                        return [ax.key, opts[Math.floor(Math.random() * opts.length)].value];
+                      }),
                     ),
                   )
                 }
@@ -495,6 +526,33 @@ export default function LessonPager({
             </div>
           )}
         </div>
+  );
+
+  // The Exercise tab's content: THE SLOT-CASCADE FOR EVERY MNEEMO THAT HAS A
+  // GENERATOR (Dan, 2026-09-19: "do the same for all the other MneMemos") —
+  // any lesson with `dice` gets the three-box Exercise; deck-only lessons
+  // (no authored generator) keep the level chooser. Built as a variable so
+  // the LessonTabs mount below stays one prop per line — verify71 reads that
+  // mount up to its first `/>`, and an inline element would end its slice
+  // early.
+  const exerciseNode = lesson?.dice ? (
+    <ExerciseSlotCascade
+      lesson={lesson}
+      activityKey={activityKey}
+      // 🏁 lands on the pager's own end card: setScore feeds the accuracy
+      // the end effect writes, and setI past the queue flips `end` — the SIO
+      // write, XP and elapsed all live there.
+      onFinish={(entries) => {
+        setScore({
+          ok: entries.filter((e) => e.ok).length,
+          total: entries.length,
+        });
+        setAsked(true);
+        setI(queue?.length ?? 0);
+      }}
+    />
+  ) : (
+    chooser
   );
 
   return (
@@ -524,7 +582,18 @@ export default function LessonPager({
           deck={deck}
           concept={lesson?.concept}
           memo={lesson?.memo ?? (collectionId ? memoForDeck(collectionId) : undefined)}
-          exercise={chooser}
+          formLayout={lesson?.formLayout}
+          // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
+          // one-card chooser swaps, the moment a level is picked, to cards
+          // that hide the slot structure. Slotted lessons opt in here by
+          // slug; `faire` is the reference implementation. Everything else
+          // keeps the chooser until its generator carries a cumulative bank.
+          // SLOT-CASCADE EXERCISE TAB (RECTIFICATION.md, 2026-09-17) — the
+          // one-card chooser swaps, the moment a level is picked, to cards
+          // that hide the slot structure. Slotted lessons opt in by slug;
+          // `faire` is the reference implementation. Everything else keeps
+          // the chooser until its generator carries a cumulative bank.
+          exercise={exerciseNode}
           // AN ATELIER OPENS ON FORMS (Dan, 2026-08-31: "Atelier's Memo is to
           // open on the range of sentences and vocabulary one is expected to
           // use or understand. Simple as that"). Forms is exactly that pair —
@@ -762,6 +831,10 @@ function ExerciseCard({
         // aloud. `bigLang` also stops English going out tagged lang="fr",
         // which made the 🔊 button read it with French phonics.
         const english = ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build";
+        // THE TASK WORD RIDES THE PROMPT LINE (Dan, 2026-09-18: "that is what
+        // we are missing in the whole website, the word 'Translate'") — an
+        // English sentence that asks for French says so, on the same line.
+        const bigText = ex.kind === "translate" ? `Translate: ${ex.big}` : ex.big;
         return (
           <p
             className={
@@ -771,7 +844,7 @@ function ExerciseCard({
             }
             lang={english ? "en" : "fr"}
           >
-            {ex.big}
+            {bigText}
           </p>
         );
       })()}
@@ -857,8 +930,19 @@ function ExerciseCard({
           <span lang="fr">{tightPunct(ex.after ?? "")}</span>
         </p>
       )}
-      {/* The segmented card renders its own reference line above the rows. */}
-      {ex.en && !ex.big && !ex.segments && (
+      {/* The segmented card renders its own reference line above the rows.
+          THE REFERENCE IS HIDDEN ONLY WHEN `big` ALREADY IS THE REFERENCE.
+          This read `!ex.big` until 2026-09-15, which hid `en` under EVERY big
+          — and on a generated card `big` is usually the SITUATION in French
+          (« le professeur », « Mr Moreau ») while `en` is the INSTRUCTION
+          ("greet Mr Moreau politely", "ask with « tu »"). A learner reported
+          « ___ bien ? » with *"not any indication of the context"*, and Dan
+          hit « Bonjour, ___. » under « Mr Moreau » the same afternoon: *"There
+          is no context"*. Thirty-odd generators write their instruction into
+          `en`; the pager was dropping all of them. Now `en` is hidden only
+          when `big` is itself English (bigLang "en", translate, build), where
+          showing both really would be the same line twice. */}
+      {ex.en && !ex.segments && !(ex.big && (ex.bigLang === "en" || ex.kind === "translate" || ex.kind === "build")) && (
         // Equal size to the French frame above it, italic and unbolded so it
         // reads as the reference rather than competing with the target (Dan,
         // 31 Aug: "of equal size (but italics non bold)").

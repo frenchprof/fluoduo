@@ -18,10 +18,13 @@ const SUBJECTS = [
   { disp: "Vous", slot: "vous" }, { disp: "Ils", slot: "ils" }, { disp: "Elles", slot: "ils" },
 ] as const;
 const END: Record<string, string> = { je: "e", tu: "es", il: "e", nous: "ons", vous: "ez", ils: "ent" };
-const VERBS = [
+// Exported (2026-09-17) so the faire lesson can build its cumulative verb bank
+// on aimer's stems — the buildup pattern, RECTIFICATION.md.
+export const END_EXPORT = END;
+export const VERBS = [
   { stem: "aim", en: "like" }, { stem: "ador", en: "love" }, { stem: "détest", en: "hate" },
 ] as const;
-const NOUNS: { fr: string; art: "le" | "la" | "l'" | "les"; en: string }[] = [
+export const NOUNS: { fr: string; art: "le" | "la" | "l'" | "les"; en: string }[] = [
   { fr: "sport", art: "le", en: "sport" }, { fr: "football", art: "le", en: "football" },
   { fr: "tennis", art: "le", en: "tennis" }, { fr: "yoga", art: "le", en: "yoga" },
   { fr: "piano", art: "le", en: "piano" }, { fr: "cinéma", art: "le", en: "cinema" },
@@ -36,7 +39,10 @@ const NOUNS: { fr: string; art: "le" | "la" | "l'" | "les"; en: string }[] = [
 const ARTS = ["le", "la", "l'", "les"];
 
 const np = (art: string, fr: string) => art + (art === "l'" ? "" : " ") + fr;
-const conj = (s: (typeof SUBJECTS)[number], v: (typeof VERBS)[number]) => v.stem + END[s.slot];
+// Generalized (2026-09-17): callers outside this module pass their own subject
+// and stem shapes, so the parameters say what the function needs rather than
+// who defined the tables.
+export const conj = (s: { slot: string }, v: { stem: string; en: string }) => v.stem + END[s.slot];
 
 /* The English reference, as a WHOLE sentence — "He loves athletics." A bare
  * noun gloss cannot pin the verb, and at Difficile the meta (which named it)

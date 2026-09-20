@@ -365,10 +365,26 @@ if tabs_body:
     # need no decoding. GOAL stays English because it is not one of the
     # lesson's parts: it is the 🎯 Goals family's name, spelled once in
     # FAMILIES for the whole app, and its ← says it leaves the lesson.
-    check(labels == ["Goal", "Idée", "Formes", "Exercice"],
-          "four tabs: ← 🎯 Goal · Idée · Formes · Exercice — Bonus parked, Words under Forms",
-          f"the tab strip reads {labels}. Four tabs, no tab of its own for the word list "
-          "(under Formes) or the bonus (a level of the chooser since #97).")
+    # REVERSED AGAIN 2026-09-16, TO ENGLISH, and again the reversal is Dan's:
+    # *"should name consistently: Goal Idea Form Exercise"* — sent the same day
+    # as the Forms page being *"way too much french in there for a beginner"*.
+    # Consistency won over the cognate argument: four tabs in one language, the
+    # one the chrome is in. Keys (`formes`, `exercice`) do not move.
+    # AND FORM MOVED AHEAD OF IDEA the same evening — Dan: *"MeMoiRecall might
+    # be better even right after SpecuLearn, and before the Lesson Idea and
+    # Exercises"*, then, refusing a fifth tab for the cards: *"are cards and
+    # forms not the same thing, they should be put under the same umbrella.
+    # STOP MULTIPLYING CATEGORIES"*. Still four tabs; the cards are inside Form.
+    # REVERSED AGAIN 2026-09-19 — Dan, on SEEING the fold: *"Now that i see
+    # what MemoiRecall flashcards look like, they should really be a section
+    # of its own."* AND REVERSED BACK THE SAME DAY: *"please reinstate that
+    # a section of its own OUTSIDE of MneMemo (Yes I am undoing an earlier
+    # call, and i am aware)… it looks awful."* Four tabs again; the cards
+    # are the standalone /practice/flip-it station, never an embedded frame.
+    check(labels == ["Goal", "Form", "Idea", "Exercise"],
+          "four tabs: ← 🎯 Goal · Form · Idea · Exercise — Bonus parked, the cards their own station outside the lesson",
+          f"the tab strip reads {labels}. Four tabs, in English (Dan, 19 Sep "
+          "evening); MémoiRecall lives at /practice/flip-it, not in a lesson tab.")
     # THE SIX-CHARACTER RULE IS GONE, and what replaced it is the thing the rule
     # was standing in for. Six characters was a proxy for "fits a 320px column
     # in one row beside an emoji"; « Exercice » is eight and the proxy said no,
@@ -392,9 +408,9 @@ if tabs_body:
     # « Le concept » is a page title someone pasted into a tab.
     check(not french,
           "no tab has slipped back to the old article-prefixed French name",
-          f"these tabs read as page titles rather than labels: {french}. The short forms "
-          "are Idée · Formes · Exercice; « Le concept » and « Les formes » are what they "
-          "replaced.")
+          f"these tabs read as page titles rather than labels: {french}. The labels are "
+          "Idea · Form · Exercise (16 Sep); « Le concept » and « Les formes » are what the "
+          "short forms replaced.")
 
 # The learner-facing empty states name the tabs too — a rename that leaves
 # those behind tells a learner to go to a tab that no longer exists.
@@ -473,13 +489,30 @@ check(formes is not None, "the Forms panel parsed",
       "there is no Formes component — the merge did not happen")
 if formes:
     f = formes
-    check("{memo}" in f and "Lexique" in f,
-          "Forms renders the Mémo AND the word list",
-          "the Forms panel does not render both halves, so the move dropped one of them")
-    check(f.count("<Section") >= 2,
-          "each half of Forms is its own titled section",
-          "the word list runs straight on out of the bottom of the Mémo with nothing to say "
-          "it has started — the same fault Dan reported on the concept page")
+    # REVERSED 2026-09-16 — Dan, of the word list under the Mémo: *"That is
+    # actually the MemoiRecall section. We do not need to repeat it if it is
+    # already in there."* The deck is drawn ONCE, by MémoiRecall; Form is the
+    # Mémo and nothing else, so the two assertions that pinned the second half
+    # now pin its absence.
+    # AND AN HOUR LATER, THE SLOT IS FILLED WITH THE REAL THING — Dan: *"bring
+    # MemoiRecall back at where you removed the list, because honestly you
+    # created MemoiRecall out of that list in the first place and moved it out
+    # of my lesson when it was supposed to be a part of it."* Not the words
+    # drawn again: the station itself, framed, folded, counted.
+    check("{memo}" in f and "Lexique" not in f,
+          "Form renders the Mémo and no second copy of the deck's words",
+          "the Form panel draws the deck's word list again. MémoiRecall is the deck's "
+          "flashcards (Dan, 16 Sep); a table of its words under the Mémo is the duplicate "
+          "he sent back.")
+    # REVERSED AGAIN 2026-09-19 — Dan, seeing the fold: *"Now that i see what
+    # MemoiRecall flashcards look like, they should really be a section of its
+    # own."* The frame and the count moved to the Cards tab (its own panel);
+    # Form is the Mémo, full stop. No fold remains, so the count assertion
+    # retired with it — the tab itself is the disclosure now.
+    check("/practice/flip-it/" not in f,
+          "and nothing else — the flashcards moved to their own 🃏 Cards tab (19 Sep)",
+          "Form is framing MémoiRecall again — the cards have had a section of their "
+          "own since Dan's 19 Sep ruling")
 
 
 # ── 8 · long panels collapse, and the right half stays open ────────────────
@@ -544,30 +577,33 @@ if conc:
     #
     # fluoduo-main: revert this hunk if the trade is wrong. Measured both ways —
     # with folds, 39 of 39 concepts exceeded one screen; with panes, 39 of 39 fit.
-    check('useState<"claim"' in conc,
-          "the concept opens on the claim, not on its apparatus",
-          "the Concept panel's first pane is not the claim. Apparatus is put away; the "
-          "argument never is — and a strip that opens on the traps breaks that while "
-          "looking perfectly fine in a diff.")
+    # REORDERED 2026-09-19 by Dan's research-agent spec (Merrill's First
+    # Principles): the strip opens on the MODEL — the worked instance — and
+    # the rule follows it. The old claim-first pin kept the argument on
+    # arrival; the model IS the argument now (question + answer together).
+    check('useState<"model"' in conc,
+          "the concept opens on the Model — the worked instance (Merrill, 19 Sep)",
+          "the Concept panel's first pane is not the model. Demonstration before "
+          "rule — the spec is explicit, and a strip that opens on the rule "
+          "breaks it while looking perfectly fine in a diff.")
     bare = strip_comments(conc)
     # The EXACT guard. A window search for `pane === "` matched a different
     # pane's guard and passed a pitfall table that had escaped its own.
+    # THE MERRILL REGROUPING (19 Sep): the flow lives in the CUE pane with
+    # the claim; the retrieval pane is "try".
     for guard, what in (('pane === "traps" && c.pitfall', "the pitfall table"),
-                        ('pane === "steps" && c.flow',    "the decision flow"),
-                        ('pane === "check" && c.check',   "the self-check")):
+                        ('pane === "cue"',                "the rule (claim + flow)"),
+                        ('pane === "try" && c.check',     "the retrieval")):
         check(guard in bare,
               f"{what} sits in its own pane",
               f"{what} is not behind `{guard}`, so it is on screen with everything else "
               f"and the tab is as long as it was when Dan asked for this.")
 
 formes_body = _decl(TABS, "Formes") or ""
-check('folds={false}' in formes_body,
-      "Forms keeps the pattern open",
-      "the Mémo is behind a fold. It is the pattern the word list is evidence FOR — "
-      "collapsing it leaves a learner opening two folds to read one idea.")
-check('note={deck?.items?.length' in formes_body,
-      "the folded word list says how many words are behind it",
-      "the word list folds with no count, so nothing tells a learner it is worth opening")
+check("{memo}" in formes_body and "folds={true}" not in formes_body and "<details" not in formes_body,
+      "Form keeps the pattern open",
+      "the Mémo is behind a fold. It is the lesson, not the apparatus — the collapse rule's "
+      "one exception — and since 16 Sep it is the only thing on the tab.")
 
 
 print("\n".join(f"  ok   {m}" for m in OK))

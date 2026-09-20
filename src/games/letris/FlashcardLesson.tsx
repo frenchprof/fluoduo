@@ -5,6 +5,7 @@ import { buildSentence, speak } from "./speech";
 import type { LetrisSet } from "./LetrisGame";
 
 import { shuffle as shuffleArr } from "@/lib/shuffle";
+import { typingInField } from "@/lib/useChoiceKeys";
 
 type Card = {
   sentence: string;
@@ -241,6 +242,9 @@ export default function FlashcardLesson({
   // ---- Keyboard ----
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      /* Typing into a field (the 🐞 form, a search box) is never a shortcut —
+         see typingInField's note (Dan, 15 Sep). */
+      if (typingInField(e)) return;
       if (stage === "pass-complete") {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();

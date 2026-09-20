@@ -13,6 +13,7 @@ import { CA_SECRIT_AXES, caSecritQuestion, spelledOut } from "./ca-secrit.gen";
 
 export const caSecritLesson: NativeLesson = {
   slug: "ca-secrit",
+  formLayout: "table",
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Lifted from the
   // Mémo below; no grammar introduced that it does not teach. DRAFTED —
   // `contrast` and `remember` are the pedagogical claim and go to Dan first.

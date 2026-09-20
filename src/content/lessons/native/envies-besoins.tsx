@@ -62,6 +62,7 @@ const SPEECH_ACTS: { frame: string; act: string; tone: string }[] = [
 
 export const enviesBesoinsLesson: NativeLesson = {
   slug: "envies-besoins",
+  formLayout: "table",
 
   // TIER 3 · SIO-039, drafted by the concepts lane on the Mémo below.
   //

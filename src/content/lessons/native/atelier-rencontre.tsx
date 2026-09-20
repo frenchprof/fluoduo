@@ -48,6 +48,7 @@ const DECK = `atelier-${SIO.toLowerCase()}`;
 
 export const atelierRencontreLesson: NativeLesson = {
   slug: "atelier-rencontre",
+  formLayout: "dialogue",
 
   // Not a copy of the model — the model itself, the same element memos.tsx
   // builds from ATELIER_DIALOGUES. A line edited in the dialogue reaches this

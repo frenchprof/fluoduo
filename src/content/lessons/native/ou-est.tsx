@@ -28,6 +28,7 @@ const Row = ({ label, words, tint }: { label: string; words: readonly string[]; 
 
 export const ouEstLesson: NativeLesson = {
   slug: "ou-est",
+  formLayout: "list",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

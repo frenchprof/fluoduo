@@ -48,10 +48,13 @@ import { goalNumberForDeck, stopForDeck } from "@/lib/stopTag";
 import BottomBar from "@/components/BottomBar";
 import SiteTopBar from "@/components/SiteTopBar";
 import { ActivityFirstRun } from "@/components/FirstRunHint";
+import { lessonTourDone, appTourDone } from "@/components/TourWalk";
+import TourWalk from "@/components/TourWalk";
 import { HOME_HREF, sioHref } from "@/lib/routes";
 import ActivityUsher from "@/components/ActivityUsher";
 import MoreBelow from "@/components/MoreBelow";
 import { usherFor } from "@/lib/usher";
+import { clearBugContext, setBugContext } from "@/lib/bugContext";
 
 export type DrillCta = {
   label: string;
@@ -236,6 +239,17 @@ export default function DrillShell({
     html.style.overflow = "hidden";
     return () => { html.style.overflow = prev; };
   }, [snapRows]);
+  /* WHAT THE 🐞 BUTTON WILL SAY WAS ON SCREEN (lib/bugContext). The shell
+     knows the activity, the deck and where in the run the learner is, which
+     is most of what a report needs and nothing any learner could be asked to
+     type. A card-level line (the prompt itself) is added by the drills that
+     have one — LessonPager — on top of this. Cleared on unmount, so a report
+     sent from the map does not carry the drill before it. */
+  const position = progress ? `${progress.done + 1} of ${progress.total}` : undefined;
+  useEffect(() => {
+    setBugContext({ station: activity, deck, position });
+  }, [activity, deck, position]);
+  useEffect(() => () => clearBugContext(), []);
   const act = activity ? activityInfo(activity) : undefined;
   const famKey = activity ? familyOf(activity) : null;
   // The band over a drill is coloured by what the drill ASKS, not by which
@@ -878,8 +892,30 @@ export default function DrillShell({
           its instruction by having a row in content/hints.ts and nothing
           else — the shape ACTIVITIES exists for. Drills with no row draw
           nothing. It portals to the body, because this root is
-          `overflow-hidden` and would clip it to the paper. */}
-      <ActivityFirstRun activityKey={activity} on="drill" />
+          `overflow-hidden` and would clip it to the paper.
+
+          THE LESSON'S CARD WAITS FOR ITS TOUR — and since 2026-09-19 every
+          drill's card waits for the app tour. The lesson's first visit walks
+          the four tabs first (TourWalk, from LessonTabs — Dan: "A similar
+          NavigaTour is needed within the MneMemo too"); the app tour starts
+          itself on a first visit and its sheet would sit under any card that
+          opened beside it. `hold` keeps the card shut — without consuming
+          the every-visit offer — until the tour(s) ahead of it are finished
+          or refused, and then the card resumes exactly as before. */}
+      <ActivityFirstRun
+        activityKey={activity}
+        on="drill"
+        hold={activity === "lesson"
+          ? () => !(appTourDone() && lessonTourDone())
+          : () => !appTourDone()}
+      />
+      {/* THE 8-STEP TOUR, mounted here for the drills no CahierShell covers
+          (say-it, grammarathon play as the top document themselves). On
+          routes where the drill sits inside a frame, the shell above already
+          mounts the tour — TourWalk's own `onlyTopDocument` gate keeps this
+          copy silent there, so there is exactly one sheet per learner and
+          one writer per storage key. */}
+      <TourWalk />
     </div>
     </div>
   );

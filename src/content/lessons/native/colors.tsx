@@ -68,6 +68,7 @@ function others<T>(pool: readonly T[], not: T, n: number): T[] {
 
 export const colorsLesson: NativeLesson = {
   slug: "colors",
+  formLayout: "list",
 
   // TIER 2 CONCEPT — a question the WORD LIST cannot answer. Knowing all
   // twelve colour words leaves the ORDER unknown, and the order is the one

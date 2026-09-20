@@ -105,6 +105,36 @@ function scrollerOf(from: Element | null): HTMLElement | null {
   return null;
 }
 
+/** ON A SNAPPING SCROLLER, "MORE BELOW" MEANS ANOTHER SECTION — the top of
+ *  the next snap-aligned descendant, measured against the scroller's own box,
+ *  or null when the section on screen is the last.
+ *
+ *  WHY PIXELS ARE THE WRONG QUESTION HERE, measured on the built lesson
+ *  (Dan, 2026-09-15: *"THE ORANGE NEXT PART BELOW KEEPS BLINKING AND CANNOT
+ *  BE CLICKED ON"*): on the LAST tab the feed still had 136px below the
+ *  section — its own bottom padding — so the arithmetic said "more below",
+ *  the cue drew, and a tap could travel 64px before the magnet pulled it
+ *  back. A cue on the last section, pointing at padding, is the cue lying,
+ *  which is the one thing this file promised never to do.
+ *
+ *  The snap points are NOT the scroller's children (the feed has one child,
+ *  2951px tall, with the sections inside it), and `offsetTop` is measured
+ *  against whatever the containing block happens to be — so this walks every
+ *  descendant that declares a snap alignment and measures each against the
+ *  scroller. Shared by the measurement and the tap, so what the cue promises
+ *  is exactly where the tap goes. */
+function nextSnapTop(root: HTMLElement): number | null {
+  if (getComputedStyle(root).scrollSnapType === "none") return null;
+  const rootTop = root.getBoundingClientRect().top;
+  const here = root.scrollTop;
+  const tops = Array.from(root.querySelectorAll<HTMLElement>("*"))
+    .filter((el) => getComputedStyle(el).scrollSnapAlign !== "none")
+    .map((el) => Math.round(el.getBoundingClientRect().top - rootTop + here))
+    .filter((t) => t > here + 1)
+    .sort((a, b) => a - b);
+  return tops.length ? tops[0] : null;
+}
+
 export default function MoreBelow({
   label = "NEXT PART IS BELOW",
   flow,
@@ -187,8 +217,22 @@ export default function MoreBelow({
       if (!rail) return false;
       const top = rail.bottom - BAND_H;
       for (const el of Array.from(
-        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, [role='button']"),
+        /* `summary` is a control too: the head of a fold, and the one this
+           test missed until MémoiRecall went under a lesson's Mémo (16 Sep) —
+           the band sat squarely on « 🃏 MémoiRecall · 13 cards », the only
+           way to open it. */
+        root.querySelectorAll<HTMLElement>("button, a, input, select, textarea, summary, [role='button']"),
       )) {
+        /* THE CUE NEVER COUNTS ITSELF. The band is a button inside this
+           scroller, sitting in the very zone this test measures — counted, a
+           mounted cue always "covers a control", unmounts, re-measures with
+           itself gone, remounts: mount/unmount at frame rate, on every page
+           where the cue has room to appear. Measured 17 Sep on staging:
+           90 band mounts in 3 seconds on a lesson nobody had touched. The
+           Schmitt trigger below guards `left`; `covered` had no such guard,
+           and this line is it — the cue's own answer must not depend on the
+           cue's own presence. */
+        if (anchorEl?.contains(el)) continue;
         const r = el.getBoundingClientRect();
         if (r.width < 4 || r.height < 4) continue;
         if (r.bottom > top && r.top < rail.bottom && r.right > rail.left && r.left < rail.right) return true;
@@ -196,13 +240,55 @@ export default function MoreBelow({
       return false;
     };
 
+    /* TWO THRESHOLDS, NOT ONE — and the single threshold is what made the cue
+       flicker (Angelina Ong, a learner, 2026-09-15: *"the bottom of the page
+       'next page' is constantly flickering and blinking"*).
+
+       THE LOOP, which is not the blink: the cue's own height is part of what
+       is being measured. Showing it lengthens the scroller (in `flow` it is a
+       real child; as an overlay it reserves padding whose cost `grew` is
+       measured ONCE, before the cue has ever rendered). So near the bottom the
+       arithmetic crosses FLOOR one way, the cue mounts, the length changes,
+       the arithmetic crosses back, the cue unmounts — every frame. A
+       MutationObserver on the subtree keeps the wheel turning, because the
+       cue's own mount is a mutation.
+
+       A Schmitt trigger breaks it. The cue APPEARS only when clearly more is
+       hidden, and having appeared it stays until the learner is clearly at the
+       end. The dead band between the two is RESERVE — the cue's own height —
+       so the cue appearing can never be what flips the decision back.
+
+       It cannot lie in either direction: 96px hidden is a real paragraph, and
+       24px is rounding. */
+    const ON_AT = FLOOR + RESERVE;   // clearly more below — turn it on
+    const OFF_AT = FLOOR;            // clearly at the end — turn it off
+    const snaps = getComputedStyle(root).scrollSnapType !== "none";
+
     const measure = () => {
-      const below = root.scrollHeight - root.scrollTop - root.clientHeight - grew > FLOOR;
-      // In FLOW the band has a row of its own and covers nothing by
-      // construction, so the geometric test would only ever cost it a frame.
-      // `&&` short-circuits, so the per-control sweep below never runs at all
-      // on a page with nothing under the fold.
-      setMore(below && (flow || !coversAControl()));
+      /* A snapping feed answers a different question — is there another
+         section? — and it needs no dead band, because the answer does not
+         depend on the cue's own height. See nextSnapTop. */
+      if (snaps) {
+        const another = nextSnapTop(root) != null;
+        /* AND ON A SNAP FEED TOO IT NEVER COVERS A CONTROL. This branch used to
+           return before the cover test ran, which was fine while every snap
+           section fitted its screen. A lesson's Form section stopped fitting
+           on 16 Sep — the Mémo, the table, then MémoiRecall's fold — and the
+           band sat on the fold's head, « 🃏 MémoiRecall · 13 cards », the only
+           way to open it. Measured on the built lesson; fixed here, where the
+           snap branch decides. */
+        setMore(another && (flow || !coversAControl()));
+        return;
+      }
+      const left = root.scrollHeight - root.scrollTop - root.clientHeight - grew;
+      /* THE COVER TEST RUNS HERE, NOT INSIDE THE UPDATER — it forces a layout
+         per control, and React may call an updater twice. It is skipped
+         outright below OFF_AT, where the answer is "off" whatever it was
+         before, so the per-control sweep never runs on a page with nothing
+         under the fold. In FLOW the band has a row of its own and covers
+         nothing by construction. */
+      const covered = left > OFF_AT && !flow && coversAControl();
+      setMore((was) => (was ? left > OFF_AT : left > ON_AT) && !covered);
     };
 
     /* ONE MEASUREMENT PER FRAME, AND THE MERGE IS WHY (2026-09-15).
@@ -259,9 +345,12 @@ export default function MoreBelow({
       mo.disconnect();
       if (!flow) host.style.paddingBottom = had;
     };
-    // `flow` is a constant of the call site, never a value that changes under
-    // a learner: re-running this effect would tear down the observers and the
-    // reserve padding to arrive at the same answer.
+    /* `flow` is a constant of the call site, never a value that changes under a
+       learner, so the empty array is deliberate. THE DIRECTIVE HAS TO BE ONE
+       LINE: it was written across two, which makes its "next line" the second
+       comment line rather than the code, so it suppressed nothing and eslint
+       reported the directive itself as unused. The same trap this repo already
+       records for `set-state-in-effect`. */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -280,6 +369,22 @@ export default function MoreBelow({
   const goDown = () => {
     const root = scrollerOf(anchor.current);
     if (!root) return;
+    /* IN A SNAP FEED, GO TO THE NEXT SECTION'S TOP — never "a screenful less
+       a little" (Dan, 2026-09-15, on the live lesson: *"THE ORANGE NEXT PART
+       BELOW KEEPS BLINKING AND CANNOT BE CLICKED ON"*). It could be clicked;
+       nothing visible happened. A MneMemo tab is a `scroll-snap-type: y
+       mandatory` feed, and a programmatic scroll that lands between two snap
+       points is pulled to the NEAREST one once it settles — with a section
+       taller than the screen, or a tall pinned card, that nearest point is
+       the section the learner is already on. The scroll ran and the magnet
+       undid it. So when the scroller snaps, the destination is the next snap
+       child's own top, which is a snap point by definition and cannot be
+       undone. A plain scroller keeps the screenful. */
+    const target = nextSnapTop(root);
+    if (target != null) {
+      root.scrollTo({ top: target, behavior: "smooth" });
+      return;
+    }
     root.scrollBy({ top: Math.max(root.clientHeight - RESERVE, 120), behavior: "smooth" });
   };
 

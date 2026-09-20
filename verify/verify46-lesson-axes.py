@@ -99,14 +99,18 @@ for (const slug of SLUGS) {
   const byAxis = {};
   for (const ax of axes) {
     byAxis[ax.key] = {};
-    for (const o of ax.options) {
+    // A cascaded axis carries its options as a function of the current pins
+    // (faire's OBJET follows the VERB, 19 Sep) — resolve with empty pins for
+    // the full catalogue, as a free verb offers every noun.
+    const OPTS = typeof ax.options === "function" ? ax.options({}) : ax.options;
+    for (const o of OPTS) {
       const s = new Set();
       for (let i = 0; i < 200; i++) { const v = sample({ [ax.key]: o.value }); if (v) s.add(v); }
       byAxis[ax.key][o.value] = [...s];
     }
   }
   out[slug] = {
-    axes: axes.map((a) => ({ key: a.key, label: a.label, options: a.options })),
+    axes: axes.map((a) => ({ key: a.key, label: a.label, options: typeof a.options === "function" ? a.options({}) : a.options })),
     free: free.size,
     byAxis,
   };

@@ -8,6 +8,7 @@ import { AIMER_INFINITIF_AXES, aimerInfinitifQuestion } from "./aimer-infinitif.
 
 export const aimerInfinitifLesson: NativeLesson = {
   slug: "aimer-infinitif",
+  formLayout: "table",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">

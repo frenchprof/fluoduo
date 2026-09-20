@@ -36,16 +36,37 @@ import { CONJ_ROWS, SE_PRESENTER_AXES, sePresenterQuestion } from "./se-presente
 
 export const sePresenterLesson: NativeLesson = {
   slug: "se-presenter",
+  formLayout: "dialogue",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">Se présenter</h2>
-      <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
-        <li>Moi — <i lang="fr"><b>Je m&rsquo;appelle</b> Thomas.</i></li>
-        <li>Quelqu&rsquo;un d&rsquo;autre — <i lang="fr"><b>Il s&rsquo;appelle</b> Lucas. <b>Elle s&rsquo;appelle</b> Emma.</i></li>
-        <li>Demander (tu) — <i lang="fr"><b>Comment tu t&rsquo;appelles ?</b></i></li>
-        <li>Demander (vous) — <i lang="fr"><b>Comment vous vous appelez ?</b></i></li>
-        <li>Poliment — <i lang="fr">Bonjour, <b>Madame</b> Martin. Au revoir, <b>Monsieur</b> Dubois.</i></li>
-      </ul>
+      {/* THE LABELS ARE ENGLISH, THE EXAMPLES ARE FRENCH (Dan, 2026-09-16:
+          *"The Forms page is very unclear because there is way too much
+          french in there for a beginner french"*). « Quelqu'un d'autre » and
+          « Poliment » were signposts a first-week learner had to decode
+          before reaching the sentence they point at; the sentence is the
+          lesson, the signpost is furniture, and furniture is English.
+
+          AND THE TWO SIT IN TWO COLUMNS (Dan, the same day, of the list as
+          lines: *"alignment means that in the section before the table, you
+          can put each line in two columns"*). Signpost left, sentence right,
+          every sentence starting on the same vertical line — the shape of the
+          conjugation table under it, so the two read as one sheet. A dash in
+          running text made a learner find where each French sentence began
+          five times over; a column does it once. `max-content` sizes the left
+          column to its longest signpost and the French takes the rest. */}
+      <dl className="grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1.5 text-[15px] text-[color:var(--cahier-ink)]">
+        <dt className="text-[color:var(--fluo-ink-soft)]">Yourself</dt>
+        <dd className="m-0"><i lang="fr"><b>Je m&rsquo;appelle</b> Thomas.</i></dd>
+        <dt className="text-[color:var(--fluo-ink-soft)]">Someone else</dt>
+        <dd className="m-0"><i lang="fr"><b>Il s&rsquo;appelle</b> Lucas. <b>Elle s&rsquo;appelle</b> Emma.</i></dd>
+        <dt className="text-[color:var(--fluo-ink-soft)]">Asking, to a friend</dt>
+        <dd className="m-0"><i lang="fr"><b>Comment tu t&rsquo;appelles ?</b></i></dd>
+        <dt className="text-[color:var(--fluo-ink-soft)]">Asking, politely</dt>
+        <dd className="m-0"><i lang="fr"><b>Comment vous vous appelez ?</b></i></dd>
+        <dt className="text-[color:var(--fluo-ink-soft)]">Addressing someone</dt>
+        <dd className="m-0"><i lang="fr">Bonjour, <b>Madame</b> Martin. Au revoir, <b>Monsieur</b> Dubois.</i></dd>
+      </dl>
       <table className="mt-3 w-full border-collapse text-sm text-[color:var(--cahier-ink)]" lang="fr">
         <thead>
           <tr className="border-b-2 border-[color:var(--cahier-rule)] text-left">
@@ -64,9 +85,9 @@ export const sePresenterLesson: NativeLesson = {
       </table>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <span lang="fr"><i>S&rsquo;appeler</i></span> carries a little pronoun that changes with the subject:
-        <span lang="fr"><i> je <b>m&rsquo;</b>appelle, tu <b>t&rsquo;</b>appelles, il <b>s&rsquo;</b>appelle</i></span>.
+        <span lang="fr"><i> je <span className="cahier-hl">m&rsquo;</span>appelle, tu <span className="cahier-hl">t&rsquo;</span>appelles, il <span className="cahier-hl">s&rsquo;</span>appelle</i></span>.
         With <span lang="fr"><i>vous</i></span> that pronoun is <span lang="fr"><i>vous</i></span> too, so the word really does appear twice:
-        <span lang="fr"><i> <b>vous vous</b> appelez</i></span>.
+        <span lang="fr"><i> vous <span className="cahier-hl">vous</span> appelez</i></span>.
       </p>
     </div>
   ),
@@ -79,8 +100,15 @@ export const sePresenterLesson: NativeLesson = {
       <>
         English has one phrase for this &mdash; <i>my name is</i>{" "}&mdash; and nothing in it
         moves. French carries a small extra pronoun that <b>changes with the subject</b>:{" "}
-        <i lang="fr">je m&rsquo;appelle</i>, <i lang="fr">tu t&rsquo;appelles</i>,{" "}
-        <i lang="fr">il s&rsquo;appelle</i>.
+        {/* THE MOVING PART WEARS THE HIGHLIGHTER (Dan, 2026-09-16: *"Demonstrate
+            with a colored background behind that extra pronoun"*). The sentence
+            says one word moves; the colour shows WHICH, so a learner does not
+            have to work out from the prose that m', t' and s' are the same slot.
+            `.cahier-hl` is the house highlighter the deck tables already use for
+            the part of an answer that matters. */}
+        <i lang="fr">je <span className="cahier-hl">m&rsquo;</span>appelle</i>,{" "}
+        <i lang="fr">tu <span className="cahier-hl">t&rsquo;</span>appelles</i>,{" "}
+        <i lang="fr">il <span className="cahier-hl">s&rsquo;</span>appelle</i>.
       </>
     ),
     question: (

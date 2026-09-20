@@ -43,6 +43,7 @@ import GameBar, { type GameHearts, type GameProgress } from "@/components/GameBa
 import BottomSheet from "@/components/BottomSheet";
 import FirstRunHint from "@/components/FirstRunHint";
 import GuidedSteps, { type GuidedStep } from "@/components/GuidedSteps";
+import { readBugContext, setBugContext } from "@/lib/bugContext";
 
 export type { GameHearts, GameProgress };
 
@@ -153,6 +154,13 @@ export default function GameFrame({
   guide?: GuidedStep[];
   children: ReactNode;
 }) {
+  /* The round the learner is on, for the 🐞 report (lib/bugContext). Merged
+     over GameLanding's station/deck line rather than replacing it. */
+  const position = progress ? `${progress.done + 1} of ${progress.total}` : undefined;
+  useEffect(() => {
+    if (!position) return;
+    setBugContext({ ...(readBugContext() ?? {}), position });
+  }, [position]);
   const [menuOpen, setMenuOpenRaw] = useState(false);
   const [helpOpen, setHelpOpenRaw] = useState(false);
   // Either sheet up = the game is "away"; the toggle callback sees one bit.

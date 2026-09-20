@@ -634,6 +634,9 @@ jobs:
       - name: "G-Compris! — a reading answer is what the document says (15 Sep)"
         run: python3 verify/verify770-gcompris.py
 
+      - name: "Four bugs a learner found — word count, context, voice, flicker (15 Sep)"
+        run: python3 verify/verify780-learner-bugs.py
+
       - name: "The hand-hold points at something that is on the screen (14 Sep)"
         run: python3 verify/verify800-handhold-points.py
 

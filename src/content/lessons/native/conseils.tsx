@@ -63,6 +63,7 @@ function others<T>(a: readonly T[], not: T, n: number): T[] {
 
 export const conseilsLesson: NativeLesson = {
   slug: "conseils",
+  formLayout: "table",
   memo: (
     <div className="rounded-2xl border-2 border-[color:var(--cahier-rule)] bg-white/70 p-4">
       <h2 className="cahier-display mb-2 text-lg font-black text-[color:var(--cahier-ink)]">
@@ -119,7 +120,7 @@ export const conseilsLesson: NativeLesson = {
         Who it lands on. <i lang="fr">Tu dois</i> is aimed at you and is hard to
         refuse;{" "}
         <i lang="fr">il faut</i> is a general truth and lets nobody off, but names nobody
-        either. <i lang="fr">Tu peux go&ucirc;ter</i> is the soft one &mdash; a suggestion
+        either. <i lang="fr">Tu peux go&ucirc;ter</i>{" "}is the soft one &mdash; a suggestion
         you may decline.
       </>
     ),

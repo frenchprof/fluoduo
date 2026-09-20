@@ -68,6 +68,9 @@ work/**/*.png
 # here while it runs. Committed by accident on 2026-09-09 by a `git add -A`
 # that ran while a sweep was mid-flight; ignored so it cannot happen again.
 .tmp-verify-vslastweek/
+# verify116's scratch, the same shape as the two below it — it was the only
+# one of the three not listed, so a clean tree read as dirty after any run.
+.tmp-verify-gems/
 
 # Scratch from verify109-lucky-find.py, which transpiles src/lib and
 # src/content here to run them. Same hazard as the line above, found the
@@ -82,6 +85,15 @@ work/**/*.png
 # files, which is the same near-miss a third time — so it is ignored before a
 # `git add -A` sweeps it in, not after.
 .tmp-verify-levels/
+
+# Scratch from verify46-lesson-axes.py, which writes its browser probe here
+# while it runs and deletes it after. Caught by a sampler polling `git status`
+# every five seconds during a full sweep on 16 Sep, after the stop hook had
+# reported "untracked files" three times in a day and found the tree clean
+# each time it was looked at — the file lives for the length of one check.
+# Ignored for the reason the three entries above are: a `git add -A` that
+# happens to run inside that window would sweep it in.
+verify/.verify46-probe.mjs
 
 # Firebase emulator logs, written into the repo root by `firebase emulators:*`
 # whenever the rules suite runs (scripts/rules-test/run.mjs). Same hazard as

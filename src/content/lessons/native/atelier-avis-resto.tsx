@@ -27,6 +27,7 @@ const DECK = `atelier-${SIO.toLowerCase()}`;
 
 export const atelierAvisRestoLesson: NativeLesson = {
   slug: "atelier-avis-resto",
+  formLayout: "dialogue",
 
   // TIER 3 · drafted 1 Sep in docs/ATELIER_CONCEPTS_DRAFT.md against this
   // stop's own dialogue, before this file existed; pasted in unchanged once

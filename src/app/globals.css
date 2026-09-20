@@ -821,6 +821,14 @@ html, body { overscroll-behavior-x: none; }
   box-decoration-break: clone;
 }
 
+/* MÉMOIRECALL INSIDE A LESSON'S FORM TAB (Dan, 2026-09-16: "bring MemoiRecall
+   back at where you removed the list"). The station runs in a frame under the
+   Mémo, so the frame needs a height of its own — a station fills whatever box
+   it is given and a box with no height is a box of nothing. Seven tenths of
+   the screen, floored on the ramp so a phone with a small viewport still gets
+   a whole card, never a pixel number (the 5 Sep and 12 Sep rulings). */
+.lesson-flip-frame { height: max(70vh, calc(24rem + var(--fs-step) * 24)); }
+
 /* Ruled-paper substrate. */
 .cahier-sheet {
   background-color: var(--cahier-paper);
@@ -846,6 +854,49 @@ html, body { overscroll-behavior-x: none; }
   width: 100%;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
+/* A GHOST INPUT IS NOT A FORM FIELD (Dan, 2026-09-15, a photo of NumBus on
+   his iPhone: *"the field for entering mumbers is way too high and big"*, and
+   later, shown the slimmed strip: *"The blank strip really needs to be much
+   slimmer"*).
+
+   THE WHITE BOX HE PHOTOGRAPHED WAS NEVER THE DIGIT BOARD. NumBus types
+   through an <input> laid over the board — meant to be invisible: the markup
+   says bg-transparent, text-transparent, caret-transparent. But it sits inside
+   .cahier-sheet, and the form skin above paints EVERY text input white, with a
+   1.5px border, a 9px radius and 0.55rem 0.75rem of padding, at class + type +
+   two pseudo-classes. That outranks any Tailwind utility, so the "invisible"
+   overlay rendered as a white form field sitting ON TOP of the digit cells.
+   Measured in the built app: computed background rgb(255,255,255), computed
+   colour the ink, on an element whose classes ask for transparent. No cell
+   was ever visible in a single screenshot today, on any device.
+
+   THE SAME WEIGHT, ONE CLASS HEAVIER — the .fluo-stepper precedent, for the
+   reason it records: matching the skin's :not() pair puts this above it
+   without depending on which block sits later in the file. Position is not a
+   plan. -webkit-text-fill-color is the half Safari needs; iOS ignores
+   `color: transparent` on a focused input and paints the digits anyway. */
+.cahier-sheet input.fluo-ghost-input:not([type="checkbox"]):not([type="radio"]),
+.cahier-page input.fluo-ghost-input:not([type="checkbox"]):not([type="radio"]),
+input.fluo-ghost-input {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  width: auto;
+  font-size: inherit;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.cahier-sheet input.fluo-ghost-input:focus,
+.cahier-page input.fluo-ghost-input:focus {
+  border: 0;
+  box-shadow: none;
+  outline: none;
+}
+
 .cahier-sheet input:focus,
 .cahier-sheet select:focus,
 .cahier-sheet textarea:focus {
@@ -2620,10 +2671,29 @@ h3.cahier-display { font-size: var(--fs-h3); }
    `optionGrid.ts` exists to stop the answer-option threshold doing the same —
    so the formula lives here and the call sites only choose `--tile-min`.
 
-   THE FLOOR DOES BOTH CAPS BY ITSELF, so there is no breakpoint anywhere:
+   THE FLOOR, NOT A COUNT — and 2026-09-19 took the last count out of it.
+   Dan: *"The SpecuLearn tiles are supposed to be adaptive but it seems to
+   not go beyond 4 columns"*, then the principle under it: *"it doesn't
+   [matter] what size MY phone is, it has to cater to all the phone size
+   possible, HENCE THE NEED TO HAVE RELATIVE / ADAPTIVE SIZING!"*
 
-     min(50% - gap/2, …)          no column wider than half     -> at least 2
-     max(--tile-min, 25% - …)     no column narrower than a 1/4 -> at most 4
+   The quarter term that used to sit here — max(--tile-min, 25% − …), the
+   11 Sep "maybe up to 4 per row" — was a cap wearing a formula's clothes:
+   no column narrower than a quarter means four columns is the most ANY
+   width can buy, so the grid was adaptive on the way down and pinned on the
+   way up. What is left asks the row, and only the row:
+
+     min(50% - gap/2, --tile-min)   two on the narrowest phone (Dan,
+                                    2026-09-07: "put buttons in two
+                                    columns"); on a wider row, AS MANY as
+                                    the floor admits — the count is the
+                                    room's answer, never a number anyone
+                                    wrote.
+
+   The floor rides the type ramp (`--fs-step`), the same step the tiles'
+   own names ride, so a desktop's larger type gets larger tiles rather than
+   clipped ones — the measured 1.36x of the menu grid, applied to the grid
+   that holds the names.
 
    A breakpoint would be wrong twice over: right only at the widths someone
    remembered to write, and these surfaces run INSIDE the cahier's iframe,
@@ -2633,7 +2703,7 @@ h3.cahier-display { font-size: var(--fs-h3); }
 
    TWO ON A PHONE IS THE RULE (Dan, 2026-09-07: *"put buttons in two
    columns"*, looking at SpecuLearn at 390px). The half-floor holds it: at
-   320px the quarter-floor alone would give one column. */
+   320px the tile floor alone would give one column. */
 .fluo-tilegrid,
 .stop-grid,
 .sio-path {
@@ -2641,16 +2711,55 @@ h3.cahier-display { font-size: var(--fs-h3); }
   gap: var(--tile-gap, 6px);
   grid-template-columns: repeat(auto-fit,
     minmax(min(calc(50% - var(--tile-gap, 6px) / 2),
-               max(var(--tile-min, 11rem), calc(25% - var(--tile-gap, 6px) * 0.75))), 1fr));
+               var(--tile-min, calc(11rem + var(--fs-step) * 11))), 1fr));
+}
+
+/* THE TEACHER CARD'S STAT ROW — COUNTED, NOT TOLD (Dan, 2026-09-15, sending
+   the learner card: labels clipped to « ANSWER », 1477 spilling into its
+   neighbour, and every tile stretched to six empty lines).
+
+   IT WAS `grid-cols-2 sm:grid-cols-4 lg:grid-cols-8`, and the fault is the one
+   the 12 Sep ruling names — a box told a number instead of counting the room —
+   with a twist worth writing down: a Tailwind breakpoint asks the VIEWPORT,
+   and these tiles do not live in the viewport. They live in a ~750px modal on
+   a >1024px page, so `lg:` fired and eight columns divided 750px into 85px
+   each, of which `px-4` takes 32. « ANSWERS » cannot be drawn in 53px, so it
+   was cut; a `text-2xl` 1477 cannot either, so it overflowed.
+
+   `auto-fit` + `minmax` asks the ROW how wide it actually is, which is the only
+   question with a right answer here. The floor is on the type ramp, so the
+   tiles grow with the text they hold instead of clipping it on a desktop.
+
+   `align-items: start` is the other half. Grid stretches its children by
+   default, so « Last sync », whose value is a wrapped date and whose sub-line
+   is the longest of the eight, was setting the height of all eight — which is
+   the empty space in Dan's screenshot, not padding. */
+.teacher-kpis {
+  display: grid;
+  align-items: start;
+  /* THE APP'S OWN FACE, NOT THE BROWSER'S (Dan, 2026-09-15: *"for the overflow
+     texts, the soltuion is to use FluoLingo fonts"*). The teacher panels are
+     built from stock Tailwind and were falling through to whatever the OS
+     hands `system-ui` — which is not FluOLinGo's face, and on a Mac is wider
+     per character than Roboto, so the same eight labels that fit elsewhere ran
+     out of their tiles here. `--font-body-stack` is the house body font the
+     rest of the app is set in; it is both the right look and the narrower
+     one. */
+  font-family: var(--font-body-stack);
+  gap: calc(0.75rem + var(--fs-step) * 0.75);
+  grid-template-columns: repeat(auto-fit, minmax(calc(7.5rem + var(--fs-step) * 7.5), 1fr));
 }
 
 /* Ten stops to a unit (Dan, 2026-08-30: "the columns are to be split halfway
    at the screen's width"). `1fr` stops a long French title pushing its column
    wider than its neighbour.
 
-   The "two to a row" half of that 30 Aug note is superseded above — it is now
-   two to four, and 2026-08-30's reason survives as the LOWER bound. */
-.stop-grid { --tile-min: 11rem; }
+   The "two to a row" half of that 30 Aug note survives as the LOWER bound
+   only; the upper count went 2026-09-19 with the quarter cap above. The
+   floor rides the ramp for the same reason the names do — a fixed 11rem
+   under type that grows 1.36x to a desktop is the clipped-label fault the
+   teacher card's note describes, one grid over. */
+.stop-grid { --tile-min: calc(11rem + var(--fs-step) * 11); }
 
 .stop-grid a,
 .stop-grid a > span { align-items: stretch; }
@@ -4617,6 +4726,15 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
      clears AA against that orange. */
   --key-bg: var(--fam-tools);
   color: var(--fam-practice-ink);
+  /* THICK BY STROKE, NOT BY WEIGHT (Dan, 2026-09-18: *"on top of it being in
+     an orange band, the text on it should be thick and strong"*). The hand
+     face is a handwriting font with one stroke weight — font-weight: 900
+     changes nothing the eye can see in it. A stroke in the text's own colour
+     fattens the glyphs for real, and paint-order keeps the stroke behind the
+     fill so it thickens rather than hollows. Serves NEXT PART IS BELOW, PICK
+     AS YOU WISH and PICK FOR ME alike — one cue language, one weight. */
+  -webkit-text-stroke: calc(0.055rem + var(--fs-step) * 0.055) var(--fam-practice-ink);
+  paint-order: stroke fill;
 }
 /* THE ARROWS BLINK, THEY DO NOT SPIN OR SLIDE. Dan drew three of them under
    the button pointing down, which is the direction the feed moves — so the
@@ -5213,3 +5331,14 @@ html[data-embed], html[data-embed] body { overscroll-behavior: contain; }
   font-weight: 800;
   color: var(--cahier-ink);
 }
+
+/* ── COMPACT MODIFIERS (Dan, 2026-09-18: "a lot of those buttons can be more
+   compact… I don't want them spilling over a single line when they are meant
+   for the same step", and the Exercise tab "remains within one screen view")
+   ─────────────────────────────────────────────────────────────────────────
+   A size down on the two workhorse controls, and a scale-down of the cue
+   family that keeps its shape — the orange, the stroked hand text, the three
+   staggered arrows — at a height a dense screen can afford. */
+.cahier-btn--compact { padding: calc(0.3rem + var(--fs-step) * 0.3) calc(0.7rem + var(--fs-step) * 0.7); font-size: calc(0.8rem + var(--fs-step) * 0.8); }
+.fluo-cue .fluo-nextq { font-size: calc(0.95rem + var(--fs-step) * 0.95); padding: calc(0.25rem + var(--fs-step) * 0.25) calc(0.8rem + var(--fs-step) * 0.8); }
+.fluo-cue .fluo-nextq-arrows { font-size: calc(1rem + var(--fs-step) * 1); gap: calc(0.45rem + var(--fs-step) * 0.45); margin-top: calc(0.1rem + var(--fs-step) * 0.1); }
