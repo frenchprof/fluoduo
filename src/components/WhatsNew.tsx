@@ -129,6 +129,16 @@ export default function WhatsNew({ openNow, onClose }: { openNow?: boolean; onCl
        arriving-unbidden belongs to Home. */
     if (window.location.pathname.replace(/\/$/, "") !== "/home") return;
 
+    /* SILENT MEANS SILENT (Dan, 2026-09-19: "clear notifications" — the
+       edition "never self-opens"). This effect read the storage key directly
+       and missed the flag, and nothing noticed for a day — the 8-step tour's
+       sheet (a div[role=dialog]) was standing in this card's way on a cold
+       /home arrival, so the stand-down guard at the end of this effect was
+       doing the silencing by accident. The tour moved off the home map on
+       2026-09-20 and the card opened straight back over it, dead-centring
+       the map under a modal the bell was meant to carry alone. */
+    if (NEWS.silent) return;
+
     // localStorage cannot be read during render on a static export, so whether
     // this opens is not knowable until after mount. The accepted resolution in
     // this repo, with the reason written out (AGENTS.md).
