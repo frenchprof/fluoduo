@@ -68,6 +68,9 @@ work/**/*.png
 # here while it runs. Committed by accident on 2026-09-09 by a `git add -A`
 # that ran while a sweep was mid-flight; ignored so it cannot happen again.
 .tmp-verify-vslastweek/
+# verify116's scratch, the same shape as the two below it — it was the only
+# one of the three not listed, so a clean tree read as dirty after any run.
+.tmp-verify-gems/
 
 # Scratch from verify109-lucky-find.py, which transpiles src/lib and
 # src/content here to run them. Same hazard as the line above, found the
