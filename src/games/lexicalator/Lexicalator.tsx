@@ -25,6 +25,8 @@ import GameFrame from "@/components/GameFrame";
 import GameOver, { type GameMiss } from "@/components/GameOver";
 import { recordItemResult } from "@/lib/progress";
 import { shuffle } from "@/lib/shuffle";
+import { stopForDeck } from "@/lib/stopTag";
+import { sioHref } from "@/lib/routes";
 
 export type LexEntry = {
   id: string;
@@ -179,6 +181,15 @@ export default function Lexicalator({
   // `deckId` is optional (the mixed board passes none), so the tag falls back
   // to a stable literal rather than the string "lexicalater:undefined".
   const LEX_ACTIVITY = `lexicalater:${deckId ?? "mixed"}`;
+  /* THE BAR'S ✕ GOES UP ONE LEVEL (Dan, 2026-09-20: "to the level before
+     it" — home, then the 🎯 page, then the content). The band above the game
+     already answers for the stop via GameLanding's `deck`; this is the bar
+     inside the game, and with a deck that serves a stop it went to the
+     gallery — a second ✕ on the same page pointing somewhere else. A deck
+     with a stop goes to its 🎯 page; anything else keeps the caller's
+     `exitHref`, which for the gallery and the mixed board IS the level
+     above. */
+  const upLevel = deckId && stopForDeck(deckId) ? sioHref(stopForDeck(deckId)!.id) : exitHref;
   const [level, setLevel] = useState(1);
   const [score, setScore] = useState(0);
   const [cleared, setCleared] = useState(0);
@@ -668,7 +679,7 @@ export default function Lexicalator({
   return (
     <GameFrame
       title={<><ChestArt tint={CHEST_GOLD} className="inline-block h-[1.15em] w-auto align-[-0.24em]" /> LexicaLocker</>}
-      exitHref={exitHref}
+      exitHref={upLevel}
       progress={{ done: cleared, total: quota }}
       hearts={{ left: lives, total: START_LIVES }}
       score={<>{score} · L{level}{level >= SPELL_LEVEL ? " ✍️" : ""}</>}
@@ -918,7 +929,7 @@ export default function Lexicalator({
           won={false}
           misses={misses}
           onReplay={reset}
-          exitHref={exitHref}
+          exitHref={upLevel}
         />
       )}
 

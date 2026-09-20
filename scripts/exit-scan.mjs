@@ -42,7 +42,11 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(PORT, r));
 const BASE = `http://localhost:${server.address().port}`;
 
-const exe = existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null;
+// ROAD_BROWSER lets a Mac without Google Chrome point the scan at another
+// Chromium (Brave) — the same override road-scan, tour-scan and handhold-scan
+// take.
+const exe = process.env.ROAD_BROWSER
+  ?? (existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null);
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 
 const games = existsSync(join(ROOT, "games"))
@@ -53,6 +57,14 @@ const routes = [
   "/tts", "/tutor", "/reviser", "/conjugaison",
   "/practice/speculearn", "/practice/wordrill", "/practice/ecoutexte",
   "/profil", "/guide", "/path",
+  // STOP-SCOPED PLAYS (2026-09-20: Dan's levels — the ✕ goes "to the level
+  // before it", and for content that belongs to ONE stop that level is the
+  // stop's 🎯 page, not Home). Driven so the pin in verify820 sees the real
+  // rendered ✕, not the prop-threading that produced it.
+  "/practice/speculearn/goal/SIO-024",
+  "/practice/speculearn/pretest/u3-sio034",
+  "/games/vocabularain/faire-activites",
+  "/games/lexicalater/faire-activites",
 ];
 
 const exits = {};
