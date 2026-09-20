@@ -18,7 +18,8 @@
 import CahierShell from "@/components/CahierShell";
 import EmbedFrame from "@/components/EmbedFrame";
 import { SIOS } from "@/content/sios";
-import { goalNumber, stopForDeck } from "@/lib/stopTag";
+import { goalNumber } from "@/lib/stopTag";
+import { sioHref } from "@/lib/routes";
 
 export function generateStaticParams() {
   return SIOS.map((s) => ({ sioId: s.id }));
@@ -30,7 +31,14 @@ export default async function Page({ params }: { params: Promise<{ sioId: string
   return (
     <CahierShell
       active="speculearn"
-      band={{ title: "SpecuLearn", goal: sio ? goalNumber(sio) : undefined }}
+      /* THE ✕ GOES UP ONE LEVEL (Dan, 2026-09-20: not "the page you came
+         from" but "the level before it" — home, then the 🎯 page, then the
+         content). This run belongs to ONE stop, so its level above is that
+         stop's page, where the rest of the stop's chain lives — the same
+         rule drillExitHref gives the drills. It fell to CahierShell's Home
+         default before, which skipped the whole stop level for a page that
+         is opened from it. */
+      band={{ title: "SpecuLearn", goal: sio ? goalNumber(sio) : undefined, exitHref: sio ? sioHref(sio.id) : undefined }}
     >
       <EmbedFrame src={`/practice/speculearn/goal/${sioId}/embed`} title="SpecuLearn" />
     </CahierShell>

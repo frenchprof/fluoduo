@@ -164,10 +164,15 @@ export default function LetrisGame({
   set,
   onGameEnd,
   speech = true,
+  exitHref = "/games/vocabularain",
 }: {
   set: LetrisSet;
   onGameEnd?: (score: number) => void;
   speech?: boolean;
+  /** Where the bar's ✕ leads. The deck page passes the stop this set serves
+   *  (Dan, 2026-09-20: the ✕ goes up one level); the default is the gallery,
+   *  which for a gallery-opened set IS the level above. */
+  exitHref?: string;
 }) {
   const cols = set.categories.length;
   const catIndex = useMemo(() => {
@@ -662,7 +667,14 @@ export default function LetrisGame({
   return (
     <GameFrame
       title={`🌧️ ${set.title}`}
-      exitHref="/games/vocabularain"
+      /* THE BAR'S ✕ GOES UP ONE LEVEL TOO (Dan, 2026-09-20: the ✕ takes you
+         "to the level before it" — home, then the 🎯 page, then the content).
+         The band above already answers for the stop via GameLanding's `deck`;
+         this is the bar inside the game, and it went to the gallery whatever
+         the set serves — a second ✕ on the same page pointing somewhere
+         else. The deck page passes the stop's 🎯 page; anything else keeps
+         the gallery, which for it IS the level above. */
+      exitHref={exitHref}
       progress={null}
       score={score}
       help={help}

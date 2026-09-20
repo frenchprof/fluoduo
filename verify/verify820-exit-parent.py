@@ -65,6 +65,23 @@ PARKED = {
     "/games/numbourse": "/games/numbers",
 }
 
+# STOP-SCOPED CONTENT goes up to its STOP'S 🎯 PAGE, not Home (Dan,
+# 2026-09-20: *"It is not so much to the page one came from, but to the level
+# before it"* — home, then the 🎯 page where "MneMemo and SpecuLearn are
+# located", then the content itself). Four surfaces skipped the stop level
+# before this pin: SpecuLearn's per-goal run, its pre-test hosting page, and
+# the two deck-scoped games (VocabulaRain's page never passed `deck` to
+# GameLanding; LexicaLocker's band was right but its game-bar ✕ went to the
+# gallery). The drills and the lesson already went to the stop via
+# drillExitHref — these are the rest of the stop's chain, caught by driving
+# them rather than by reading the prop-threading.
+STOP_CONTENT = {
+    "/practice/speculearn/goal/SIO-024": "/sio/SIO-024",
+    "/practice/speculearn/pretest/u3-sio034": "/sio/SIO-034",
+    "/games/vocabularain/faire-activites": "/sio/SIO-024",
+    "/games/lexicalater/faire-activites": "/sio/SIO-024",
+}
+
 PASS, FAIL = [], []
 
 
@@ -97,6 +114,16 @@ ok(not wrong,
    + ", ".join(f"{r} → {h}" for r, h in PARKED.items()),
    "the ✕ steps over the page above it on: "
    + ", ".join(f"{r} → {got} (wanted {PARKED[r]})" for r, got in wrong.items()))
+
+# ── 1b · stop-scoped content returns to its stop ────────────────────────────
+wrong_stop = {r: exits.get(r) for r, want in STOP_CONTENT.items() if exits.get(r) != want}
+ok(not wrong_stop,
+   "stop-scoped content's ✕ returns to the stop's 🎯 page "
+   + ", ".join(f"{r.rsplit('/', 1)[-1]} → {h}" for r, h in STOP_CONTENT.items()),
+   "the ✕ skips the stop level on: "
+   + ", ".join(f"{r} → {got} (wanted {STOP_CONTENT[r]})" for r, got in wrong_stop.items())
+   + ". Dan, 2026-09-20: the ✕ goes to the level before it, and for content "
+   "that belongs to one stop that level is the stop's page.")
 
 # ── 2 · no way out is a dead link ──────────────────────────────────────────
 found = {r: h for r, h in exits.items() if h and not h.startswith("ERROR")}

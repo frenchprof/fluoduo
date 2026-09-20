@@ -13,6 +13,7 @@ import CahierShell from "@/components/CahierShell";
 import EmbedFrame from "@/components/EmbedFrame";
 import { PRETESTS } from "@/content/pretests";
 import { goalNumber, stopForPretestId } from "@/lib/stopTag";
+import { sioHref } from "@/lib/routes";
 
 export function generateStaticParams() {
   return PRETESTS.map((p) => ({ id: p.id }));
@@ -20,6 +21,9 @@ export function generateStaticParams() {
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  // The pre-test's own stop — the ✕ goes up ONE LEVEL to its 🎯 page (Dan,
+  // 2026-09-20), not Home: a pre-test is stop content, opened from the stop.
+  const stop = stopForPretestId(id);
   return (
     /* THE HOST DRAWS THE BAND (Dan, 2026-09-07: *"we also need to make it a
        point that pages never lose their coloured strip at the top, which means
@@ -32,7 +36,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
        with no strip at all, which is what Dan was looking at. */
     <CahierShell
       active="pretest"
-      band={{ title: "SpecuLearn", goal: goalNumber(stopForPretestId(id)) }}
+      band={{ title: "SpecuLearn", goal: goalNumber(stop), exitHref: stop ? sioHref(stop.id) : undefined }}
     >
       <EmbedFrame src={`/practice/speculearn/pretest/${id}/embed`} title="SpecuLearn" />
     </CahierShell>
