@@ -659,6 +659,7 @@ function unscrambleBank(deckId: string, title: string, unit: number): ComposeBan
 }
 
 export const UNSCRAMBLE_BANKS: ComposeBank[] = [
+  unscrambleBank("sappeler", "Remettre dans l'ordre · je m'appelle", 0),
   unscrambleBank("negation-pas", "Remettre dans l'ordre · la négation", 2),
   unscrambleBank("quand-time", "Remettre dans l'ordre · quand ?", 2),
   unscrambleBank("aller-destinations", "Remettre dans l'ordre · où ?", 2),

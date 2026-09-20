@@ -46,6 +46,7 @@ import modauxPlans from "./modaux-plans.json";
 import modauxAvis from "./modaux-avis.json";
 
 import sappeler from "./sappeler.json";
+import transparents from "./transparents.json";
 import tuVous from "./tu-vous.json";
 import alphabet from "./alphabet.json";
 import consignes from "./consignes.json";
@@ -106,6 +107,7 @@ export const CURATED: Collection[] = [
   pouvoir as Collection,
   enviesBesoins as Collection,
   sappeler as Collection,
+  transparents as Collection,
   tuVous as Collection,
   alphabet as Collection,
   consignes as Collection,

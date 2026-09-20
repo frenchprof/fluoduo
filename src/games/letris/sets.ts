@@ -18,6 +18,7 @@ import demonstratifs from "@/content/demonstratifs.json";
 import commerces from "@/content/commerces.json";
 import tuVous from "@/content/tu-vous.json";
 import salutations from "@/content/salutations.json";
+import transparents from "@/content/transparents-letris.json";
 import alimentsLetris from "@/content/aliments-letris.json";
 import transportLetris from "@/content/transport-letris.json";
 import partitifsLetris from "@/content/partitifs-letris.json";
@@ -63,6 +64,7 @@ const REGISTRY: Record<string, LetrisSet> = {
   commerces: commerces as LetrisSet,
   "tu-vous": tuVous as LetrisSet,
   salutations: salutations as LetrisSet,
+  transparents: transparents as LetrisSet,
   // Unit 4's third rain (Dan, 2026-07-13): food GROUPS, partitives spoken.
   aliments: alimentsLetris as LetrisSet,
   // Units 3-4 expansion (Dan, 2026-07-14: "more vocabularain items for
@@ -110,6 +112,7 @@ const META: Record<string, { emoji: string }> = {
   commerces: { emoji: "🛍️" },
   "tu-vous": { emoji: "🤝" },
   salutations: { emoji: "👋" },
+  transparents: { emoji: "🪞" },
   aliments: { emoji: "🍽️" },
   transport: { emoji: "🚌" },
   partitifs: { emoji: "🥖" },

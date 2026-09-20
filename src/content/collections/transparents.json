@@ -1,0 +1,277 @@
+{
+  "id": "transparents",
+  "title": "Les mots transparents",
+  "subtitle": "Lesson Zero — French you can already read",
+  "langPair": "fr-en",
+  "owner": "curated",
+  "visibility": "public",
+  "unit": 0,
+  "lessonNo": 1,
+  "lessonSlug": "introductions",
+  "tags": [],
+  "seq": 1,
+  "items": [
+    {
+      "id": "transp-01",
+      "fr": "le restaurant",
+      "en": "the restaurant",
+      "tags": [
+        "col:lieux"
+      ],
+      "syllables": [
+        "le",
+        "res",
+        "tau",
+        "rant"
+      ]
+    },
+    {
+      "id": "transp-02",
+      "fr": "l'hôtel",
+      "en": "the hotel",
+      "tags": [
+        "col:lieux"
+      ],
+      "syllables": [
+        "l'hô",
+        "tel"
+      ]
+    },
+    {
+      "id": "transp-03",
+      "fr": "le musée",
+      "en": "the museum",
+      "tags": [
+        "col:lieux"
+      ],
+      "syllables": [
+        "le",
+        "mu",
+        "sée"
+      ]
+    },
+    {
+      "id": "transp-04",
+      "fr": "le café",
+      "en": "the café",
+      "tags": [
+        "col:lieux"
+      ],
+      "syllables": [
+        "le",
+        "ca",
+        "fé"
+      ]
+    },
+    {
+      "id": "transp-05",
+      "fr": "la banque",
+      "en": "the bank",
+      "tags": [
+        "col:lieux"
+      ],
+      "syllables": [
+        "la",
+        "banque"
+      ]
+    },
+    {
+      "id": "transp-06",
+      "fr": "le professeur",
+      "en": "the teacher (professor)",
+      "tags": [
+        "col:personnes"
+      ],
+      "syllables": [
+        "le",
+        "pro",
+        "fes",
+        "seur"
+      ]
+    },
+    {
+      "id": "transp-07",
+      "fr": "le docteur",
+      "en": "the doctor",
+      "tags": [
+        "col:personnes"
+      ],
+      "syllables": [
+        "le",
+        "doc",
+        "teur"
+      ]
+    },
+    {
+      "id": "transp-08",
+      "fr": "le touriste",
+      "en": "the tourist",
+      "tags": [
+        "col:personnes"
+      ],
+      "syllables": [
+        "le",
+        "tou",
+        "riste"
+      ]
+    },
+    {
+      "id": "transp-09",
+      "fr": "l'artiste",
+      "en": "the artist",
+      "tags": [
+        "col:personnes"
+      ],
+      "syllables": [
+        "l'ar",
+        "tiste"
+      ]
+    },
+    {
+      "id": "transp-10",
+      "fr": "le président",
+      "en": "the president",
+      "tags": [
+        "col:personnes"
+      ],
+      "syllables": [
+        "le",
+        "pré",
+        "si",
+        "dent"
+      ]
+    },
+    {
+      "id": "transp-11",
+      "fr": "le téléphone",
+      "en": "the telephone",
+      "tags": [
+        "col:objets"
+      ],
+      "syllables": [
+        "le",
+        "té",
+        "lé",
+        "phone"
+      ]
+    },
+    {
+      "id": "transp-12",
+      "fr": "la télévision",
+      "en": "the television",
+      "tags": [
+        "col:objets"
+      ],
+      "syllables": [
+        "la",
+        "té",
+        "lé",
+        "vi",
+        "sion"
+      ]
+    },
+    {
+      "id": "transp-13",
+      "fr": "le taxi",
+      "en": "the taxi",
+      "tags": [
+        "col:objets"
+      ],
+      "syllables": [
+        "le",
+        "ta",
+        "xi"
+      ]
+    },
+    {
+      "id": "transp-14",
+      "fr": "la photo",
+      "en": "the photo",
+      "tags": [
+        "col:objets"
+      ],
+      "syllables": [
+        "la",
+        "pho",
+        "to"
+      ]
+    },
+    {
+      "id": "transp-15",
+      "fr": "la table",
+      "en": "the table",
+      "tags": [
+        "col:objets"
+      ],
+      "syllables": [
+        "la",
+        "table"
+      ]
+    },
+    {
+      "id": "transp-16",
+      "fr": "la banane",
+      "en": "the banana",
+      "tags": [
+        "col:manger"
+      ],
+      "syllables": [
+        "la",
+        "ba",
+        "nane"
+      ]
+    },
+    {
+      "id": "transp-17",
+      "fr": "la tomate",
+      "en": "the tomato",
+      "tags": [
+        "col:manger"
+      ],
+      "syllables": [
+        "la",
+        "to",
+        "mate"
+      ]
+    },
+    {
+      "id": "transp-18",
+      "fr": "l'orange",
+      "en": "the orange",
+      "tags": [
+        "col:manger"
+      ],
+      "syllables": [
+        "l'o",
+        "range"
+      ]
+    },
+    {
+      "id": "transp-19",
+      "fr": "le chocolat",
+      "en": "the chocolate",
+      "tags": [
+        "col:manger"
+      ],
+      "syllables": [
+        "le",
+        "cho",
+        "co",
+        "lat"
+      ]
+    },
+    {
+      "id": "transp-20",
+      "fr": "la salade",
+      "en": "the salad",
+      "tags": [
+        "col:manger"
+      ],
+      "syllables": [
+        "la",
+        "sa",
+        "lade"
+      ]
+    }
+  ]
+}

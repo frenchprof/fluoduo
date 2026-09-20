@@ -1,0 +1,169 @@
+{
+  "id": "transparents",
+  "title": "Les mots transparents",
+  "subtitle": "you can already read these",
+  "categories": [
+    {
+      "key": "lieux",
+      "label": "LIEUX · places",
+      "prefix": ""
+    },
+    {
+      "key": "personnes",
+      "label": "PERSONNES · people",
+      "prefix": ""
+    },
+    {
+      "key": "objets",
+      "label": "OBJETS · things",
+      "prefix": ""
+    },
+    {
+      "key": "manger",
+      "label": "À MANGER · food",
+      "prefix": ""
+    }
+  ],
+  "tiles": [
+    {
+      "text": "LE RESTAURANT",
+      "displayName": "le restaurant",
+      "category": "lieux",
+      "meaning": "the restaurant",
+      "emoji": "🍽️"
+    },
+    {
+      "text": "L'HÔTEL",
+      "displayName": "l'hôtel",
+      "category": "lieux",
+      "meaning": "the hotel",
+      "emoji": "🏨"
+    },
+    {
+      "text": "LE MUSÉE",
+      "displayName": "le musée",
+      "category": "lieux",
+      "meaning": "the museum",
+      "emoji": "🖼️"
+    },
+    {
+      "text": "LE CAFÉ",
+      "displayName": "le café",
+      "category": "lieux",
+      "meaning": "the café",
+      "emoji": "☕"
+    },
+    {
+      "text": "LA BANQUE",
+      "displayName": "la banque",
+      "category": "lieux",
+      "meaning": "the bank",
+      "emoji": "🏦"
+    },
+    {
+      "text": "LE PROFESSEUR",
+      "displayName": "le professeur",
+      "category": "personnes",
+      "meaning": "the teacher (professor)",
+      "emoji": "👩‍🏫"
+    },
+    {
+      "text": "LE DOCTEUR",
+      "displayName": "le docteur",
+      "category": "personnes",
+      "meaning": "the doctor",
+      "emoji": "🩺"
+    },
+    {
+      "text": "LE TOURISTE",
+      "displayName": "le touriste",
+      "category": "personnes",
+      "meaning": "the tourist",
+      "emoji": "🧳"
+    },
+    {
+      "text": "L'ARTISTE",
+      "displayName": "l'artiste",
+      "category": "personnes",
+      "meaning": "the artist",
+      "emoji": "🎨"
+    },
+    {
+      "text": "LE PRÉSIDENT",
+      "displayName": "le président",
+      "category": "personnes",
+      "meaning": "the president",
+      "emoji": "🏛️"
+    },
+    {
+      "text": "LE TÉLÉPHONE",
+      "displayName": "le téléphone",
+      "category": "objets",
+      "meaning": "the telephone",
+      "emoji": "📱"
+    },
+    {
+      "text": "LA TÉLÉVISION",
+      "displayName": "la télévision",
+      "category": "objets",
+      "meaning": "the television",
+      "emoji": "📺"
+    },
+    {
+      "text": "LE TAXI",
+      "displayName": "le taxi",
+      "category": "objets",
+      "meaning": "the taxi",
+      "emoji": "🚕"
+    },
+    {
+      "text": "LA PHOTO",
+      "displayName": "la photo",
+      "category": "objets",
+      "meaning": "the photo",
+      "emoji": "📷"
+    },
+    {
+      "text": "LA TABLE",
+      "displayName": "la table",
+      "category": "objets",
+      "meaning": "the table",
+      "emoji": "🪑"
+    },
+    {
+      "text": "LA BANANE",
+      "displayName": "la banane",
+      "category": "manger",
+      "meaning": "the banana",
+      "emoji": "🍌"
+    },
+    {
+      "text": "LA TOMATE",
+      "displayName": "la tomate",
+      "category": "manger",
+      "meaning": "the tomato",
+      "emoji": "🍅"
+    },
+    {
+      "text": "L'ORANGE",
+      "displayName": "l'orange",
+      "category": "manger",
+      "meaning": "the orange",
+      "emoji": "🍊"
+    },
+    {
+      "text": "LE CHOCOLAT",
+      "displayName": "le chocolat",
+      "category": "manger",
+      "meaning": "the chocolate",
+      "emoji": "🍫"
+    },
+    {
+      "text": "LA SALADE",
+      "displayName": "la salade",
+      "category": "manger",
+      "meaning": "the salad",
+      "emoji": "🥗"
+    }
+  ]
+}
