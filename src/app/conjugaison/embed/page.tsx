@@ -52,7 +52,6 @@ import { speak } from "@/games/letris/speech";
 import { sfx } from "@/games/audio/sfx";
 import { shuffle } from "@/lib/shuffle";
 import { HOME_HREF } from "@/lib/routes";
-import PathNext from "@/components/PathNext";
 
 // ── Phrases complètes (Dan, 2026-07-21): "what is genuinely missing from
 // ConjugaZone is the possibility to hear the conjugations in simple complete
@@ -401,7 +400,6 @@ function StudyTable({
           Found by WALKING the path in the built app. Every check was green and
           the walk still stalled, because the two screens that had to tick
           drew nothing at all. */}
-      {score.total > 0 && <PathNext />}
 
       {/* TWO MODES ON A SWITCH (Dan, 2026-09-11: *"one for reveal the verb
           form, the other for typing it in. there should be a switch to toggle

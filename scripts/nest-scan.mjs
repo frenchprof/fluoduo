@@ -54,7 +54,6 @@ const WALKS = [
   { hub: "/games/numbers", link: /NumBus$/ },
   { hub: "/games/lexicalater", link: /^▶ Play/ },
   { hub: "/games/vocabularain", link: /^▶ Play/ },
-  { hub: "/path", link: /^▶ Continue/ },
 ];
 
 const report = [];

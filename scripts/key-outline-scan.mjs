@@ -55,7 +55,6 @@ const PORT = 0;
    key — not to be a sweep of every page. A route that renders no key at all
    is fine; the floor below is what catches a build that renders none. */
 const ROUTES = [
-  "/path/embed",                       // the repeated row key, on a pale wash
   "/reviser/embed",
   "/map",                              // the ± steppers and the 2D/3D knob
   "/profil",
