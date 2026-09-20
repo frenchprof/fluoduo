@@ -56,7 +56,7 @@ const routes = [
   ...games.map((g) => `/games/${g}`),
   "/tts", "/tutor", "/reviser", "/conjugaison",
   "/practice/speculearn", "/practice/wordrill", "/practice/ecoutexte",
-  "/profil", "/guide", "/path",
+  "/profil", "/guide",
   // STOP-SCOPED PLAYS (2026-09-20: Dan's levels — the ✕ goes "to the level
   // before it", and for content that belongs to ONE stop that level is the
   // stop's 🎯 page, not Home). Driven so the pin in verify820 sees the real

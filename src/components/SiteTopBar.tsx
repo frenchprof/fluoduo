@@ -32,7 +32,6 @@ import { readUiPrefs } from "@/lib/uiPrefs";
 import { dueForReview } from "@/lib/reviser";
 import type { ReactNode } from "react";
 import MenuGrid from "@/components/MenuGrid";
-import PathDoor from "@/components/PathDoor";
 import AccountButton from "@/components/AccountButton";
 import SoundControl from "@/components/SoundControl";
 import NewsBell from "@/components/NewsBell";
@@ -227,18 +226,16 @@ export default function SiteTopBar({
             <span className="sr-only">FluOLinGo</span>
           </span>
         </Link>
-        {/* THE MIDDLE SLOT (Dan, 2026-09-14: "between the menu burger and
-            buttons, in the middle"). flex-1 so it takes the slack the wordmark
-            used to absorb, justify-center so the key sits in the middle of
-            that slack rather than against either neighbour — which is what
-            "in the middle" has to mean on a row whose two ends are pinned.
-
-            min-w-0 so this slot, not the icon strip, is what gives way when
-            the row is tight: verify31's whole finding is that navigation must
-            never be pushed off the edge. */}
-        <div className="flex min-w-0 flex-1 justify-center">
-          <PathDoor />
-        </div>
+        {/* THE MIDDLE SLOT IS EMPTY NOW (Dan, 2026-09-20: *"I said to remove
+            the rocket but i did not say to replace it with an arrow or
+            triangle button"*). The 14 Sep key that lived here — 🚀, swapped
+            for ▶ by a ruling it misheard on 19 Sep — is gone, and nothing
+            takes its place: removing the rocket meant removing the key, not
+            re-glyphing it. The slack this slot absorbed goes back to the
+            wordmark. `/path` itself stays (it remains reachable by its own
+            address and from PathNext once a run is going); it simply has no
+            door in the bar any more. */}
+        <div className="flex min-w-0 flex-1 justify-center" aria-hidden />
         {/* Yield slot 1 — shrinks and truncates before anything else. */}
         {topRight && (
           <div className="cahier-topslot min-w-0 flex-shrink truncate text-right">{topRight}</div>

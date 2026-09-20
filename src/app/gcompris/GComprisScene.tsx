@@ -28,11 +28,11 @@
  * it (« française », not « francaise ») and one that does not, forgives —
  * Dan, 2026-09-14: *"français (pls don't accept francais)"*.
  *
- * ── IT BELONGS TO NO STOP, AND THAT IS WHY IT CAN TICK ────────────────────
+ * ── IT BELONGS TO NO STOP ─────────────────────────────────────────────────
  * A scene is not a deck, so `usherFor` has no compass to compute and returns
- * null. `ActivityUsher` draws `<PathNext />` BEFORE its own null-guard, which
- * is the whole reason a curated path can walk through a screen like this one
- * — the trap that silently stopped the path at step 2 on 14 Sep.
+ * null. (The curated path that used to walk this screen retired whole on
+ * 2026-09-20 — Dan: "not just remove the door, but remove the entire path";
+ * its successor is the playlists idea in STATUS.md.)
  */
 
 import { useMemo, useRef, useState } from "react";

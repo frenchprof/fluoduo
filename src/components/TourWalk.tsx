@@ -30,8 +30,9 @@
  */
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { TOUR_STEPS, type TourStep } from "@/content/tourSteps";
+import { HOME_HREF } from "@/lib/routes";
 
 const KEY = "fluolingo:tour.step";
 /** The lesson tour's own key — named here so DrillShell's hint-hold and
@@ -138,6 +139,14 @@ export default function TourWalk({
   const [step, setStep] = useState(-1);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  /* NOT ON THE HOME MAP (Dan, 2026-09-20: *"the eight-stop tour that takes
+     you from SpecuLearn appears like a sore thumb on the home (map)
+     page"*). The map is the app's front door and its own subject — a sheet
+     over it teaching activities reads as clutter the moment the app opens.
+     The tour neither shows nor starts there: a first-time learner is met on
+     their first page BEYOND home, and a mid-walk learner who passes through
+     home finds the sheet waiting quietly at their step on the next page. */
+  const onHome = (usePathname() ?? "").replace(/\.html$/, "") === HOME_HREF;
 
   // THE APP TOUR BELONGS TO THE TOP DOCUMENT. DrillShell mounts an instance
   // on pages no CahierShell covers; on pages where the drill sits in a
@@ -147,6 +156,8 @@ export default function TourWalk({
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage is unreadable during SSR on a static export; this is the mount-only read the house pattern uses, and the once-only auto-start is decided by it
     setMounted(true);
+    // Home is skipped entirely — no key write, no resume (see `onHome` above).
+    if (onHome) return;
     if (onlyTopDocument && inFrame()) return;
     if (readRaw(storageKey) === null && !holdAutoStart()) {
       // FIRST TIME, SELF-STARTED (Dan, 2026-09-19: "it usually only appears
@@ -157,7 +168,7 @@ export default function TourWalk({
     } else {
       setStep(readStep(storageKey, steps.length));
     }
-  }, [storageKey, steps.length, holdAutoStart, onlyTopDocument]);
+  }, [storageKey, steps.length, holdAutoStart, onlyTopDocument, onHome]);
 
   // Re-read on the tour-start ping (the storage event does not fire in the
   // tab that wrote the value — startTour() dispatches its own). Only the
@@ -173,7 +184,7 @@ export default function TourWalk({
     };
   }, [storageKey, steps.length]);
 
-  if (!mounted || step < 0 || step >= steps.length) return null;
+  if (!mounted || onHome || step < 0 || step >= steps.length) return null;
   // The reread listeners are not gated per document; the render is. A frame
   // copy with a mid-tour step still draws nothing — the top document's sheet
   // is the learner's one sheet.

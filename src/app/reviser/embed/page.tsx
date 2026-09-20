@@ -28,7 +28,6 @@ import Link from "next/link";
 import CahierShell from "@/components/CahierShell";
 import SectionBand from "@/components/SectionBand";
 import AuthGate from "@/components/AuthGate";
-import PathNext from "@/components/PathNext";
 import { speak } from "@/games/letris/speech";
 import { loadProgress, recordItemResult } from "@/lib/progress";
 import { useActivityPlay } from "@/lib/firebase/activityLog";
@@ -143,7 +142,6 @@ export default function ReviserPage() {
                 arrives with nothing due has finished with this screen either
                 way, and freezing their walk because the SRS had nothing to
                 offer would be the worse of the two answers. */}
-            <PathNext />
           </div>
         ) : done ? (
           <div className="space-y-4">
@@ -176,7 +174,6 @@ export default function ReviserPage() {
                 reading it. Every check passed, the map page drew all eighteen
                 rows, and the walk still stalled at step 2 forever — because
                 the one screen that had to tick it drew nothing at all. */}
-            <PathNext />
           </div>
         ) : card ? (
           <>

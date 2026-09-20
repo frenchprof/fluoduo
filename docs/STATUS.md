@@ -6,6 +6,42 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 20 Sep — the ✕ finds its level, the rocket's key is gone, and the curated path retires whole (glm-lane, ZCode/GLM)
+
+**THE ✕ GOES UP ONE NAVIGATIONAL LEVEL** (*"not so much to the page one came
+from, but to the level before it — home, then the 🎯 page where MneMemo and
+SpecuLearn are located, then the content"*). The drills and lesson already
+did; four surfaces did not and were fixed: SpecuLearn's per-goal run and its
+pre-test page (both went Home), VocabulaRain's deck play (its page never
+passed `deck`), and LexicaLocker's game-bar ✕ (the band was right, the bar
+went to the gallery). Pinned in verify820's STOP_CONTENT.
+
+**THE ROCKET'S KEY IS REMOVED, NOT RE-GLYPHED** (*"I said to remove the rocket
+but i did not say to replace it with an arrow or triangle button"*). The ▶
+that a 19 Sep pass put in PathDoor's place is gone with the key; the bar's
+middle slot is empty. verify31 still green.
+
+**THE TOUR STAYS OFF THE HOME MAP** (*"the eight-stop tour... appears like a
+sore thumb on the home (map) page"*). TourWalk neither shows nor starts on
+/home; a first-time learner is met on their first page beyond it. tour-scan
+pins /home (and its /map, /unit/1 redirects) as quiet.
+
+**THE CURATED PATH RETIRES WHOLE** (*"not just remove the door, but remove
+the entire path"*): /path, PathNext, paths.ts, pathRun.ts and verify760 are
+gone; the end-of-activity pushes (ActivityUsher, ConjugaZone, ErroReview)
+with them. **The successor is named and on record: a BACKEND for curating
+"playlists" of activities according to specific purposes** (Dan, same
+message) — teacher-curated sequences served from data, not hardcoded in
+`content/paths.ts`. When that work starts, the question to answer first is
+what a playlist's step may point at (a stop, an activity, a deck?) and who
+curates; the retired path's verify760 (in git history) already wrote the
+acceptance bar for "every step lands somewhere".
+
+**Also merged today:** #380 (two-digit jump → goal page), #388 (NumBus phone
+fixes; main already carried their evolution, the red FULL SCREEN key is what
+survived), #426 (tour auto-start + four preview bugs), #427 (the ✕ level
+rule above).
+
 ## 19 Sep, evening — Bonus goes dark, the Exercise goes still and app-wide, and MémoiRecall leaves the lesson (glm-lane, ZCode/GLM)
 
 **Three rulings, one sitting.**

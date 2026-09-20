@@ -29,7 +29,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 
-import PathNext from "@/components/PathNext";
 import type { Usher } from "@/lib/usher";
 
 /** One key on the row. The colour is passed as `--key-bg` for the reason
@@ -63,18 +62,16 @@ export default function ActivityUsher({
   onRedo?: () => void;
   className?: string;
 }) {
-  /* THE PATH'S PUSH SITS ABOVE THE COMPASS, AND OUTSIDE THE `usher` GUARD.
-     A learner walking a path must be moved on even from a screen that has no
-     compass to draw — SpecuLearn's recap and ÉcouTexte both hand this
-     component a null usher, and both are steps on a path. Returning early
-     before drawing the push is how the path would silently stop on exactly
-     the screens that needed it most. */
-  const push = <PathNext />;
-  if (!usher) return push;
+  /* THE CURATED PATH IS RETIRED (Dan, 2026-09-20: *"not just remove the
+     door, but remove the entire path"*), and with it the push that used to
+     sit here above the compass. Its successor — curated "playlists" of
+     activities served from a backend — is recorded in STATUS.md; this
+     component went back to answering only the question it is asked: where
+     to next, from a screen that has a compass to draw. */
+  if (!usher) return null;
   const { prev, next, goal, onward } = usher;
   return (
     <>
-      {push}
       <nav className={`fluo-usher ${className}`} aria-label="Where to next">
       {prev && (
         <Key href={prev.href} bg="var(--fam-practice-wash)">

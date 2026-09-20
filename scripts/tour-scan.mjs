@@ -98,10 +98,15 @@ const note = [];
  * arrive somewhere that teaches them something.
  */
 const ROUTES = [
-  { path: "/home", tour: "home" },
+  /* `quiet` — the 8-step tour neither shows nor starts on the home map
+   * (Dan, 2026-09-20: it "appears like a sore thumb on the home (map)
+   * page"). Everywhere else a cold arrival must have started it. /map and
+   * /unit/1 are quiet because they REDIRECT onto /home — they are the same
+   * page wearing two old addresses, not two rulings. */
+  { path: "/home", tour: "home", quiet: true },
   { path: "/lessons/deck/aliments", tour: null },
-  { path: "/map", tour: "map" },
-  { path: "/unit/1", tour: "map" },
+  { path: "/map", tour: "map", quiet: true },
+  { path: "/unit/1", tour: "map", quiet: true },
 ];
 
 async function fresh(path) {
@@ -160,7 +165,14 @@ for (const r of ROUTES) {
   // HELD, not merely absent: after settling, each must come back.
   const coldSheets = await tourSheets(page);
   const appWalking = coldSheets.some((l) => /^Tour: step \d+ of 8$/.test(l));
-  if (!appWalking) {
+  if (r.quiet) {
+    // HOME IS QUIET (2026-09-20): no tour sheet at all, cold or mid-walk.
+    if (appWalking) {
+      fail.push(`${r.path}: the 8-step tour showed on the home map. Dan, 2026-09-20: ` +
+                `"it appears like a sore thumb on the home (map) page" — the map is ` +
+                `the app's own subject, and the tour is met on the first page beyond it.`);
+    }
+  } else if (!appWalking) {
     fail.push(`${r.path}: the 8-step tour did not start itself on a cold arrival. Dan, ` +
               `2026-09-19: "it usually only appears once and then user can say do not show ` +
               `me again" — a cleared key is a learner the tour has never met, and the sheet ` +
@@ -174,6 +186,14 @@ for (const r of ROUTES) {
   }
   if (appWalking) {
     // Held, not refused: settle the app tour, and the invite must return.
+    await settleTours(page, ["fluolingo:tour.step"]);
+    all = await textEverywhere(page);
+    tourOffer = all.includes("First time here");
+  } else if (r.quiet) {
+    // On a quiet route the app tour never started, so nothing of ITS is held
+    // — but the page-tour invite was held all the same (the hold is "while
+    // the app tour is not done", and an absent key is not done). Settle, and
+    // the invite must appear here too.
     await settleTours(page, ["fluolingo:tour.step"]);
     all = await textEverywhere(page);
     tourOffer = all.includes("First time here");
