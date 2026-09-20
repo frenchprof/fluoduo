@@ -25,7 +25,7 @@
 //
 //   1  ZERO un-outlined keys. Not a ratchet: the app is at zero, and a ratchet
 //      waves the next one through (verify540's reasoning, unchanged).
-//   2  A FLOOR ON THE CENSUS — fewer than 30 keys found is a FAIL, not a pass.
+//   2  A FLOOR ON THE CENSUS — fewer keys than the floor is a FAIL, not a pass.
 //      A wall build or a route that stopped rendering would otherwise report
 //      "all clear" over an empty page. verify79, verify126 and verify540 each
 //      record that mistake; this is the fourth.
@@ -41,7 +41,12 @@ import { extname, join } from "node:path";
 import { chromium } from "playwright-core";
 
 const OUT = "out";
-const FLOOR = 30;
+/* 30 until 2026-09-20, when the curated path retired whole (Dan: "not just
+   remove the door, but remove the entire path") and /path/embed — the
+   census's richest page, a grid of raised row keys — went with it. The
+   remaining eleven routes measure 17; the floor keeps its job (a wall build
+   or a dead route still falls under it) at a number the real surface owns. */
+const FLOOR = 15;
 /* THE OS PICKS THE PORT, and that is not fastidiousness — `qc/frame-breakout`
    spent two diagnoses today on exactly this. A driven scan that binds a fixed
    port fails when a second scan is already on it, and it fails by reporting
@@ -87,7 +92,11 @@ const server = http.createServer((q, r) => {
 await new Promise((r) => server.listen(PORT, r));
 const port = server.address().port;
 
-const exe = existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null;
+// ROAD_BROWSER lets a Mac without Google Chrome point the scan at another
+// Chromium (Brave) — the same override road-scan, tour-scan and handhold-scan
+// take.
+const exe = process.env.ROAD_BROWSER
+  ?? (existsSync("/opt/pw-browsers/chromium") ? "/opt/pw-browsers/chromium" : null);
 const browser = await chromium.launch(exe ? { executablePath: exe } : { channel: "chrome" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
