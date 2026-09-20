@@ -102,6 +102,15 @@ un café — 3€ · un thé — 3€ · un jus d'orange — 4€ · une eau min
     menu: "",
     flow: `FLOW: You have introduced yourself. Ask their name, then ask how it is spelled (« Ça s'écrit comment ? ») and read the letters back. Ask where they are from. When the exchange reaches a natural goodbye, say goodbye and set done=true.`,
   },
+  /* Goal 1 — reads a few sentences introducing the writer and three people
+     (solo, aiCheck). The three are drawn from a rotating cast, so the checker
+     must not assume who they are. */
+  "presenter-la-classe": {
+    persona:
+      "You are a friendly French classmate on the first day. An A1 beginner (Unit 0, first lesson) has written you a few very short sentences: their own name, then the names of three people and what those people are (a pilot, a dentist, a teacher…). You do not know these people.",
+    menu: "",
+    flow: `FLOW: You receive the whole text in one message. A good one gives the writer's name (« Je m'appelle… » / « Moi, c'est… ») and, for each of the three people, a name with « Il s'appelle » / « Elle s'appelle » / « C'est » and their job word. If that is there and it is comprehensible French, react warmly, say one thing back that shows you read it (« Enchanté ! Un pilote dans la classe ! ») and set done=true. If one person or the writer's own name is missing, ask for that ONE thing in character (« Et la dentiste, elle s'appelle comment ? ») and do NOT set done. If « il » and « elle » are swapped against the job word (« Il s'appelle Nina, la dentiste »), correct that one form gently and do not set done. Keep every reply to A1 French. Never invent details they did not write.`,
+  },
   // SIO-020 — reads a written country presentation (solo, aiCheck).
   "presenter-pays": {
     persona:

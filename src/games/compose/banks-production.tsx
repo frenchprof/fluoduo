@@ -664,12 +664,88 @@ export const UNSCRAMBLE_BANKS: ComposeBank[] = [
   unscrambleBank("aller-destinations", "Remettre dans l'ordre · où ?", 2),
 ];
 
+/* ═══ JE VOUS PRÉSENTE — goal 1 (draft, 2026-09-20) ═══════════════════════
+
+   THE FIRST LESSON'S WRITTEN TASK, built on TRANSPARENT WORDS. A learner on
+   day one owns almost no French, so the people they introduce are named by a
+   job an English reader recognises at sight — pilote, dentiste, pianiste,
+   professeur, docteur, touriste, photographe, président(e). The grammar being
+   trained is the goal's own: s'appeler in the third person, il/elle chosen
+   from the ending on the job word, and Monsieur/Madame for the adults.
+
+   THE THREE PEOPLE ROTATE (the 14 Sep rule): each run deals three of the cast
+   below, so nobody rehearses one fixed paragraph, and the chips are generated
+   from the same cast so a person cannot be added without their chip. */
+type Guest = { name: string; g: "m" | "f"; role: string; emoji: string };
+const GUESTS = [
+  { name: "Monsieur Dupont", g: "m", role: "le professeur",  emoji: "🧑‍🏫" },
+  { name: "Madame Rossi",    g: "f", role: "la pianiste",    emoji: "🎹" },
+  { name: "Marc",            g: "m", role: "le pilote",      emoji: "✈️" },
+  { name: "Nina",            g: "f", role: "la dentiste",    emoji: "🦷" },
+  { name: "Léo",             g: "m", role: "le photographe", emoji: "📷" },
+  { name: "Ana",             g: "f", role: "la touriste",    emoji: "🧳" },
+  { name: "Monsieur Diallo", g: "m", role: "le docteur",     emoji: "🩺" },
+  { name: "Madame Chen",     g: "f", role: "la présidente",  emoji: "🏛️" },
+] as const satisfies readonly Guest[];
+
+const elle = (p: Guest) => (p.g === "f" ? "Elle" : "Il");
+
+export const INTRODUCE_CLASS_BANK: ComposeBank = {
+  id: "presenter-la-classe",
+  title: "Je vous présente…",
+  emoji: "🪪",
+  unit: 0,
+  deckId: "sappeler",
+  mode: "solo",
+  aiCheck: true,
+  required: {
+    min: 4,
+    words: [
+      { label: "s'appeler", verb: "sappeler" },
+      { label: "Monsieur" },
+      { label: "Madame" },
+      { label: "c'est" },
+      { label: "et" },
+    ],
+  },
+  lengthGoal: { min: 20, max: 40 },
+  categories: withPalette([
+    { label: "Moi", phrases: ["Bonjour", "Je m'appelle", "Moi, c'est", "Enchanté", "Enchantée"] },
+    { label: "Présenter", phrases: ["Je vous présente", "Il s'appelle", "Elle s'appelle", "Ils s'appellent", "C'est", "Voici"] },
+    { label: "Qui ?", phrases: [...new Set(GUESTS.map((p) => p.role))] },
+    { label: "Les noms", phrases: [...GUESTS.map((p) => p.name), "Monsieur", "Madame"] },
+    { label: "Continuer", phrases: ["et", "aussi", "il s'appelle", "elle s'appelle", "c'est"] },
+  ]),
+  newScenario() {
+    const i = Math.floor(Date.now() / 60000) % GUESTS.length;
+    const three = [0, 1, 2].map((k) => GUESTS[(i + k * 3) % GUESTS.length]);
+    const m = GUESTS[(i + 1) % GUESTS.length];
+    const m2 = GUESTS[(i + 2) % GUESTS.length];
+    return {
+      headline: `${three.map((p) => p.emoji).join(" ")} Je vous présente…`,
+      instructionEn:
+        `First day of class. Give your name, then introduce these three people, one at a time: `
+        + three.map((p) => `${p.emoji} ${p.name} (${p.role.replace(/^l[ae] /, "")})`).join(", ")
+        + `. Use at least 4 words from the list.`,
+      prompts: [
+        { ask: "Et toi, comment tu t'appelles ?", use: "Moi" },
+        ...three.map((p) => ({ ask: `${p.emoji} ${p.name} — c'est qui ?`, use: "Présenter" })),
+      ],
+      model: {
+        label: "Un modèle (deux autres personnes)",
+        text: `Bonjour, je m'appelle Sam. Je vous présente ${m.name} : ${elle(m).toLowerCase()} s'appelle ${m.name.replace(/^(Monsieur|Madame) /, "")}, c'est ${m.role}. Et voici ${m2.name}, c'est ${m2.role}.`,
+      },
+    };
+  },
+};
+
 /** The production banks, in curriculum order. Register these in banks.tsx's
  *  BANKS array so getComposeBank() and the SIO activity rail can find them.
  *  ORDER MATTERS on a shared deck: the FIRST bank with a deckId is the rail's
  *  registry-chrome ComposeIt flap and the Index's compose cell — the itinerary
  *  keeps that slot on atelier-sio-040; the e-carte rides behind it. */
 export const PRODUCTION_BANKS: ComposeBank[] = [
+  INTRODUCE_CLASS_BANK,
   FIRST_MEETING_BANK,
   PRESENT_COUNTRY_BANK,
   EMAIL_BANK,

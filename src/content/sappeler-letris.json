@@ -1,0 +1,156 @@
+{
+  "id": "sappeler-letris",
+  "title": "Il ou elle ? Ils ou elles ?",
+  "subtitle": "present the people by name — the job tells you who they are",
+  "language": "fr",
+  "categories": [
+    {
+      "key": "il",
+      "label": "IL",
+      "prefix": "Il s'appelle "
+    },
+    {
+      "key": "elle",
+      "label": "ELLE",
+      "prefix": "Elle s'appelle "
+    },
+    {
+      "key": "ils",
+      "label": "ILS",
+      "prefix": "Ils s'appellent "
+    },
+    {
+      "key": "elles",
+      "label": "ELLES",
+      "prefix": "Elles s'appellent "
+    }
+  ],
+  "tiles": [
+    {
+      "text": "MARC, LE PILOTE",
+      "displayName": "Marc",
+      "category": "il",
+      "meaning": "Marc, the pilote",
+      "emoji": "✈️"
+    },
+    {
+      "text": "M. DUPONT, LE PROFESSEUR",
+      "displayName": "Monsieur Dupont",
+      "category": "il",
+      "meaning": "M. Dupont, the professeur",
+      "emoji": "🧑‍🏫"
+    },
+    {
+      "text": "LÉO, LE PHOTOGRAPHE",
+      "displayName": "Léo",
+      "category": "il",
+      "meaning": "Léo, the photographe",
+      "emoji": "📷"
+    },
+    {
+      "text": "M. DIALLO, LE DOCTEUR",
+      "displayName": "Monsieur Diallo",
+      "category": "il",
+      "meaning": "M. Diallo, the docteur",
+      "emoji": "🩺"
+    },
+    {
+      "text": "HUGO, LE DENTISTE",
+      "displayName": "Hugo",
+      "category": "il",
+      "meaning": "Hugo, the dentiste",
+      "emoji": "🦷"
+    },
+    {
+      "text": "M. LOPEZ, LE PRÉSIDENT",
+      "displayName": "Monsieur Lopez",
+      "category": "il",
+      "meaning": "M. Lopez, the président",
+      "emoji": "🏛️"
+    },
+    {
+      "text": "NINA, LA DENTISTE",
+      "displayName": "Nina",
+      "category": "elle",
+      "meaning": "Nina, the dentiste",
+      "emoji": "🦷"
+    },
+    {
+      "text": "MME ROSSI, LA PIANISTE",
+      "displayName": "Madame Rossi",
+      "category": "elle",
+      "meaning": "Mme Rossi, the pianiste",
+      "emoji": "🎹"
+    },
+    {
+      "text": "ANA, LA TOURISTE",
+      "displayName": "Ana",
+      "category": "elle",
+      "meaning": "Ana, the touriste",
+      "emoji": "🧳"
+    },
+    {
+      "text": "MME CHEN, LA PRÉSIDENTE",
+      "displayName": "Madame Chen",
+      "category": "elle",
+      "meaning": "Mme Chen, the présidente",
+      "emoji": "🏛️"
+    },
+    {
+      "text": "ZOÉ, LA PILOTE",
+      "displayName": "Zoé",
+      "category": "elle",
+      "meaning": "Zoé, the pilote",
+      "emoji": "✈️"
+    },
+    {
+      "text": "MME MARTIN, LA PROFESSEURE",
+      "displayName": "Madame Martin",
+      "category": "elle",
+      "meaning": "Mme Martin, the professeure",
+      "emoji": "👩‍🏫"
+    },
+    {
+      "text": "PAUL ET LÉO, PILOTES",
+      "displayName": "Paul et Léo",
+      "category": "ils",
+      "meaning": "Paul and Léo, pilots",
+      "emoji": "✈️"
+    },
+    {
+      "text": "MARC ET NINA, DENTISTES",
+      "displayName": "Marc et Nina",
+      "category": "ils",
+      "meaning": "Marc and Nina, dentists (a mixed group)",
+      "emoji": "🦷"
+    },
+    {
+      "text": "HUGO ET ANA, TOURISTES",
+      "displayName": "Hugo et Ana",
+      "category": "ils",
+      "meaning": "Hugo and Ana, tourists (a mixed group)",
+      "emoji": "🧳"
+    },
+    {
+      "text": "ANA ET ZOÉ, TOURISTES",
+      "displayName": "Ana et Zoé",
+      "category": "elles",
+      "meaning": "Ana and Zoé, tourists (two women)",
+      "emoji": "🧳"
+    },
+    {
+      "text": "NINA ET SARA, PIANISTES",
+      "displayName": "Nina et Sara",
+      "category": "elles",
+      "meaning": "Nina and Sara, pianists (two women)",
+      "emoji": "🎹"
+    },
+    {
+      "text": "MME ROSSI ET MME CHEN",
+      "displayName": "Madame Rossi et Madame Chen",
+      "category": "elles",
+      "meaning": "Mrs Rossi and Mrs Chen",
+      "emoji": "👒"
+    }
+  ]
+}

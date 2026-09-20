@@ -110,6 +110,205 @@
       "note": "(formal)",
       "gap": "Madame",
       "tags": []
+    },
+    {
+      "id": "sappeler-14",
+      "fr": "Monsieur",
+      "en": "Mr / Sir",
+      "syllables": [
+        "Mon",
+        "sieur"
+      ],
+      "emoji": "🎩",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-15",
+      "fr": "Madame",
+      "en": "Mrs / Ma'am",
+      "syllables": [
+        "Ma",
+        "dame"
+      ],
+      "emoji": "👒",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-16",
+      "fr": "le professeur",
+      "en": "the teacher (m)",
+      "syllables": [
+        "le",
+        "pro",
+        "fes",
+        "seur"
+      ],
+      "emoji": "🧑‍🏫",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-17",
+      "fr": "la professeure",
+      "en": "the teacher (f)",
+      "syllables": [
+        "la",
+        "pro",
+        "fes",
+        "seure"
+      ],
+      "emoji": "👩‍🏫",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-18",
+      "fr": "le docteur",
+      "en": "the doctor",
+      "syllables": [
+        "le",
+        "doc",
+        "teur"
+      ],
+      "emoji": "🩺",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-19",
+      "fr": "le pilote",
+      "en": "the pilot (m)",
+      "syllables": [
+        "le",
+        "pi",
+        "lote"
+      ],
+      "emoji": "✈️",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-20",
+      "fr": "la pilote",
+      "en": "the pilot (f)",
+      "syllables": [
+        "la",
+        "pi",
+        "lote"
+      ],
+      "emoji": "✈️",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-21",
+      "fr": "la dentiste",
+      "en": "the dentist (f)",
+      "syllables": [
+        "la",
+        "den",
+        "tiste"
+      ],
+      "emoji": "🦷",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-22",
+      "fr": "le dentiste",
+      "en": "the dentist (m)",
+      "syllables": [
+        "le",
+        "den",
+        "tiste"
+      ],
+      "emoji": "🦷",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-23",
+      "fr": "la pianiste",
+      "en": "the pianist (f)",
+      "syllables": [
+        "la",
+        "pia",
+        "niste"
+      ],
+      "emoji": "🎹",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-24",
+      "fr": "le photographe",
+      "en": "the photographer (m)",
+      "syllables": [
+        "le",
+        "pho",
+        "to",
+        "graphe"
+      ],
+      "emoji": "📷",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-25",
+      "fr": "la touriste",
+      "en": "the tourist (f)",
+      "syllables": [
+        "la",
+        "tou",
+        "riste"
+      ],
+      "emoji": "🧳",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-26",
+      "fr": "le président",
+      "en": "the president (m)",
+      "syllables": [
+        "le",
+        "pré",
+        "si",
+        "dent"
+      ],
+      "emoji": "🏛️",
+      "tags": [
+        "transparent"
+      ]
+    },
+    {
+      "id": "sappeler-27",
+      "fr": "la présidente",
+      "en": "the president (f)",
+      "syllables": [
+        "la",
+        "pré",
+        "si",
+        "dente"
+      ],
+      "emoji": "🏛️",
+      "tags": [
+        "transparent"
+      ]
     }
   ]
 }

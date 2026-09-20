@@ -31,6 +31,7 @@ import numbers7099Letris from "@/content/numbers-70-99-letris.json";
 import languagesLetris from "@/content/languages-letris.json";
 import nationalitiesLetris from "@/content/nationalities-letris.json";
 import aimerActivitesLetris from "@/content/aimer-activites-letris.json";
+import sappelerLetris from "@/content/sappeler-letris.json";
 import type { LetrisSet } from "./LetrisGame";
 
 export type LetrisSetMeta = {
@@ -87,6 +88,9 @@ const REGISTRY: Record<string, LetrisSet> = {
   languages: languagesLetris as LetrisSet,
   nationalities: nationalitiesLetris as LetrisSet,
   "aimer-activites": aimerActivitesLetris as LetrisSet,
+  // Goal 1 (2026-09-20): il/elle/ils/elles + s'appeler, sorted by a job word
+  // an English reader recognises at sight (pilote, dentiste, pianiste…).
+  sappeler: sappelerLetris as LetrisSet,
 };
 
 const META: Record<string, { emoji: string }> = {
@@ -123,6 +127,7 @@ const META: Record<string, { emoji: string }> = {
   languages: { emoji: "🗣️" },
   nationalities: { emoji: "🪪" },
   "aimer-activites": { emoji: "❤️" },
+  sappeler: { emoji: "🪪" },
 };
 
 // Out-of-syllabus pools — reachable by slug, but hidden from the default lesson
