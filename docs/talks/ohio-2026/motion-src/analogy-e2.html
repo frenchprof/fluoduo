@@ -1,0 +1,19 @@
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:Arial,Helvetica,"PingFang SC","Noto Sans CJK SC",sans-serif;color:#1f2430}*{box-sizing:border-box;margin:0}.a{position:absolute}@keyframes show{to{opacity:1}}
+.vf{left:620px;top:20px;width:1040px;height:600px;border:6px solid #1f2430;border-radius:24px;background:#eef3f6;overflow:hidden}
+.ph{left:0;right:0;top:200px;text-align:center;font-size:68px;filter:blur(10px);opacity:.45;transform:scale(.7)}
+.go .ph{animation:ph 9s forwards}
+@keyframes ph{0%,30%{filter:blur(10px);opacity:.45;transform:scale(.7)}45%,100%{filter:blur(0);opacity:1;transform:scale(1.15)}}
+.gl{left:0;right:0;top:330px;text-align:center;font-size:36px;color:#6a7179;font-style:italic;opacity:0}
+.go .gl{animation:show .5s 4.2s forwards}
+.fl{inset:0;background:#fff;opacity:0}.go .fl{animation:fl .6s 6.2s}
+@keyframes fl{0%{opacity:0}20%{opacity:1}100%{opacity:0}}
+.st{right:40px;bottom:30px;font-size:46px;font-weight:700;color:#00715a;border:5px solid #00715a;padding:6px 20px;border-radius:12px;transform:rotate(-8deg);opacity:0}
+.go .st{animation:show .3s 6.6s forwards}
+.s{left:0;font-size:48px;opacity:.25;line-height:1.2}.s span{display:block;font-size:32px;color:#4a5160}
+.go .s{animation:on .4s forwards}@keyframes on{to{opacity:1}}
+</style>
+<p class="a s" style="top:60px;animation-delay:.4s">👁️ <b>Seen</b><span>in the picture, out of focus</span></p>
+<p class="a s" style="top:250px;animation-delay:3.4s">🔍 <b>Focus</b><span>pulled sharp</span></p>
+<p class="a s" style="top:440px;animation-delay:6.2s">📸 <b>Scored</b><span>the shot is taken</span></p>
+<div class="a vf"><p class="a ph">« mon père, ma mère »</p><p class="a gl">my father, my mother</p><div class="a fl"></div><p class="a st">✓ scored</p></div>
+<script>const go=()=>{const b=document.body;b.classList.remove("go");void b.offsetWidth;b.classList.add("go")};new IntersectionObserver(e=>{if(e[0].isIntersecting)go()}).observe(document.body);</script>

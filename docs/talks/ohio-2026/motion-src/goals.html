@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style></head><body><section id="goals" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">Move 3</p>
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">Goals re-authored: the teacher writes them</h2>
+<table style="font-size:30px;color:#1f2430">
+<tr><th style="width:16%">Unit</th><th style="width:50%">L'atelier+ A1 · French</th><th style="width:34%">NPCR Book 1 · Chinese</th></tr>
+<tr style="background:#ffffff"><td>0</td><td><b>Bienvenue</b> <i><span style="color:#6a7179">(Welcome)</span></i></td><td>L1–2</td></tr>
+<tr><td>1</td><td><b>C'est qui ?</b> <i><span style="color:#6a7179">(Who is it?)</span></i></td><td>L3–6</td></tr>
+<tr style="background:#ffffff"><td>2</td><td><b>On fait quoi ce week-end ?</b> <i><span style="color:#6a7179">(What shall we do this weekend?)</span></i></td><td>L7–9</td></tr>
+<tr><td>3</td><td><b>On va où cet été ?</b> <i><span style="color:#6a7179">(Where are we going this summer?)</span></i></td><td>L10–11</td></tr>
+<tr style="background:#ffffff"><td>4</td><td><b>On mange quoi cette semaine ?</b> <i><span style="color:#6a7179">(What are we eating this week?)</span></i></td><td>L12–14</td></tr>
+</table>
+<div style="display:flex;gap:32px">
+<p style="flex:1;font-size:28px;line-height:1.4;background:#eff8ff;padding:20px 28px;border-radius:16px">🎭 Situations from the book, split, plus the ateliers d'expression <i><span style="color:#6a7179">(short practical workshops)</span></i> · 🏁 the Mission</p>
+<p style="flex:1;font-size:28px;line-height:1.4;background:#fff4ed;padding:20px 28px;border-radius:16px">🎭 26 situations drafted by the teacher · 🏁 review lessons L6 and L14 as unit tasks</p>
+</div>
+
+</section>
+<style>
+#goals table tr th{opacity:0}
+.go #goals table tr th{animation:fade .6s ease .3s forwards}
+@keyframes fade{to{opacity:1}}
+#goals table tr:not(:first-child) td{opacity:0}
+.go #goals table tr:not(:first-child) td:nth-child(1),
+.go #goals table tr:not(:first-child) td:nth-child(2){animation:fromL .6s cubic-bezier(.2,.8,.3,1.1) forwards}
+.go #goals table tr:not(:first-child) td:nth-child(3){animation:fromR .6s cubic-bezier(.2,.8,.3,1.1) forwards}
+@keyframes fromL{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:none}}
+@keyframes fromR{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:none}}
+#goals table tr:not(:first-child){opacity:0}
+.go #goals table tr:not(:first-child){animation:fade .4s ease forwards}
+#goals>div>p{opacity:0}
+.go #goals>div>p:first-child{animation:up .6s cubic-bezier(.2,.8,.3,1.1) 5.0s forwards}
+.go #goals>div>p:last-child{animation:up .6s cubic-bezier(.2,.8,.3,1.1) 5.6s forwards}
+@keyframes up{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+</style>
+<script>
+[...document.querySelectorAll('#goals table tr')].slice(1).forEach((tr,i)=>{
+  const t=1.0+i*0.75, c=tr.children;tr.style.animationDelay=t.toFixed(2)+'s';
+  c[0].style.animationDelay=c[1].style.animationDelay=t.toFixed(2)+'s';
+  c[2].style.animationDelay=(t+0.3).toFixed(2)+'s';
+});
+</script>
+</body></html>

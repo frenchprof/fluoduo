@@ -1,0 +1,33 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style><style>@keyframes fan{from{opacity:0;transform:translateX(var(--dx,0)) scale(.55)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(60px)}to{opacity:1;transform:none}}
+@keyframes dot{0%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.6)}}
+#useit>div:nth-of-type(1)>p{opacity:0}
+#useit>div:nth-of-type(2)>img{opacity:0}
+.go #useit>div:nth-of-type(1)>p{animation:fan .7s cubic-bezier(.2,.8,.3,1) forwards}
+.go #useit>div:nth-of-type(1)>p:nth-child(1){animation-delay:.9s}
+.go #useit>div:nth-of-type(1)>p:nth-child(2){animation-delay:1.15s}
+.go #useit>div:nth-of-type(1)>p:nth-child(3){animation-delay:1.4s}
+.go #useit>div:nth-of-type(1)>p:nth-child(4){animation-delay:1.65s}
+#origin{position:absolute;width:56px;height:56px;border-radius:50%;background:#fcdf00;opacity:0;pointer-events:none}
+.go #origin{animation:dot 1.2s ease-out .3s forwards}
+.go #useit>div:nth-of-type(2)>img:nth-child(1){animation:up .8s cubic-bezier(.2,.8,.3,1) 3.0s forwards}
+.go #useit>div:nth-of-type(2)>img:nth-child(2){animation:up .8s cubic-bezier(.2,.8,.3,1) 4.0s forwards}
+</style></head><body><section id="useit" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">🎭 Use it</p>
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">🎭 One situation: heard, read, said, written</h2>
+<div style="display:flex;gap:20px;flex-wrap:wrap">
+<p style="font-size:30px;padding:12px 28px;border-radius:999px;background:#ffffff;border:3px solid #9398ff">🎧 ÉcouTexte · listen</p><p style="font-size:30px;padding:12px 28px;border-radius:999px;background:#ffffff;border:3px solid #ff9037">📖 G-Compris! · read</p><p style="font-size:30px;padding:12px 28px;border-radius:999px;background:#ffffff;border:3px solid #9398ff">🎙️ WorDrill · speak</p><p style="font-size:30px;padding:12px 28px;border-radius:999px;background:#ffffff;border:3px solid #ff9037">🧩 ComposeIt · write</p>
+</div>
+<div style="display:flex;gap:40px">
+<img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/slots/gc.png" alt="Screenshot: 📖 G-Compris! reading activity (French)" style="width:812px;height:500px;object-fit:contain;background:#eceae0;border-radius:20px">
+<img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/slots/compose.png" alt="Screenshot: 🧩 ComposeIt writing activity (French)" style="width:812px;height:500px;object-fit:contain;background:#eceae0;border-radius:20px">
+</div>
+
+</section>
+<script>const sec=document.getElementById('useit'),row=sec.querySelector('div');
+const o=document.createElement('div');o.id='origin';sec.appendChild(o);
+document.fonts.ready.then(()=>{const ps=[...row.children],sr=sec.getBoundingClientRect();
+const l=ps[0].getBoundingClientRect().left,r=ps[3].getBoundingClientRect().right,cx=(l+r)/2,cy=ps[0].getBoundingClientRect().top+ps[0].offsetHeight/2;
+ps.forEach(p=>{const b=p.getBoundingClientRect();p.style.setProperty('--dx',(cx-(b.left+b.width/2))+'px')});
+o.style.left=(cx-28-sr.left)+'px';o.style.top=(cy-28-sr.top)+'px';});
+</script></body></html>

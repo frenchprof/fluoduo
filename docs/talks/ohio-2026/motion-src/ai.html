@@ -1,0 +1,50 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style><style>@keyframes card{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes in{from{opacity:0}to{opacity:1}}
+@keyframes one{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:scale(1)}}
+@keyframes split{from{transform:translateX(var(--from))}to{transform:none}}
+@keyframes gone{from{opacity:1}to{opacity:0}}
+@keyframes draw{to{stroke-dashoffset:0}}
+#ai .C{opacity:0}
+.go #ai .C1{animation:card .6s ease-out .3s forwards}
+.go #ai .C2{animation:card .6s ease-out 4.0s forwards}
+#ai .H{opacity:0}
+.go #ai .H{animation:in .5s ease-out forwards}
+.go #ai .H0{animation-delay:4.6s}.go #ai .H1{animation-delay:5.4s}.go #ai .H2{animation-delay:6.2s}
+#fx{position:absolute;left:0;top:0;width:1920px;height:1080px;pointer-events:none}
+#tiles{position:absolute;left:176px;top:740px;width:716px;height:90px;opacity:0}
+.go #tiles{animation:one .5s ease-out 1.1s forwards,gone .6s ease-in 7.6s forwards}
+#tiles i{position:absolute;top:0;width:104px;height:90px;border-radius:14px;background:#ffd9bd;border:3px solid #ff9037;box-sizing:border-box;left:calc(var(--k)*122px)}
+.go #tiles i{animation:split .35s cubic-bezier(.2,.8,.3,1) calc(1.8s + var(--k)*.06s) both}
+#pen{position:absolute;left:150px;top:705px;width:770px;height:160px;overflow:visible}
+#pen path{fill:none;stroke:#c8322b;stroke-width:9;stroke-linecap:round;stroke-dasharray:1000;stroke-dashoffset:1000}
+.go #pen path{animation:draw .7s ease-in-out 2.9s forwards}
+.go #pen{animation:gone .6s ease-in 7.6s forwards}
+.tk{position:absolute;width:36px;height:36px;overflow:visible}
+.tk path{fill:none;stroke:#00715a;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:50;stroke-dashoffset:50}
+.go .tk path{animation:draw .35s ease-out forwards}
+.go .tk{animation:gone .6s ease-in 7.6s forwards}
+.go .tk0 path{animation-delay:5.0s}.go .tk1 path{animation-delay:5.8s}.go .tk2 path{animation-delay:6.6s}
+</style></head><body><section id="ai" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">Building with AI</p>
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">AI builds fast. The teacher stays the author.</h2>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#fff4ed;padding:48px;border-radius:20px;border-top:12px solid #ff9037">
+<h3 style="font-size:40px;font-weight:700">The risk</h3>
+<p style="font-size:34px;line-height:1.4">AI can misunderstand the teaching. Earlier AI helpers split one exercise into many separate activities.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px;background:#eafbf8;padding:48px;border-radius:20px;border-top:12px solid #00c197">
+<h3 style="font-size:40px;font-weight:700">The habit</h3>
+<p style="font-size:34px;line-height:1.4">Write every teaching decision down.<br>Check the real screen, not the AI's description of it.<br>Keep a catalogue the build checks.</p>
+</div>
+</div>
+
+</section>
+<script>const s=document.getElementById('ai'),cards=s.querySelectorAll(':scope>div>div');cards[0].classList.add('C','C1');cards[1].classList.add('C','C2');
+const p=cards[1].querySelector('p');p.innerHTML=p.innerHTML.split(/<br\s*\/?>/).map((t,i)=>`<span class="H H${i}">${t}</span>`).join('<br>');
+const fx=document.createElement('div');fx.id='fx';s.appendChild(fx);
+// one exercise tile that splits into six (all start stacked at the left: the "one")
+let t='<div id="tiles">';for(let k=0;k<6;k++)t+=`<i style="--k:${k};--from:${-k*122}px"></i>`;fx.innerHTML=t+'</div>'+
+'<svg id="pen" viewBox="0 0 770 160"><path d="M10 120 C 200 60, 420 40, 760 30"/><path d="M30 30 C 260 70, 520 110, 750 140" style="animation-delay:3.4s"/></svg>';
+document.fonts.ready.then(()=>{const sr=s.getBoundingClientRect();s.querySelectorAll('.H').forEach((h,i)=>{const r=h.getClientRects()[0];
+fx.insertAdjacentHTML('beforeend',`<svg class="tk tk${i}" viewBox="0 0 36 36" style="left:${r.left-sr.left-44}px;top:${r.top-sr.top+(r.height-36)/2}px"><path d="M6 19 L14 27 L30 9"/></svg>`)})});
+</script></body></html>

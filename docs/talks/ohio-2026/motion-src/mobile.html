@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style><style>@keyframes fade{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(140px)}to{opacity:1;transform:none}}
+#mobile .L>p,#mobile .P img,#mobile .P p{opacity:0}
+.go #mobile .L>p:nth-of-type(1){animation:fade .7s ease-out .4s forwards}
+.go #mobile .L>p:nth-of-type(2){animation:fade .7s ease-out 1.3s forwards}
+.go #mobile .P img{animation:rise .8s cubic-bezier(.2,.8,.3,1) forwards}
+.go #mobile .P p{animation:fade .5s ease-out forwards}
+.go #mobile .P:nth-child(1) img{animation-delay:2.3s}.go #mobile .P:nth-child(1) p{animation-delay:2.9s}
+.go #mobile .P:nth-child(2) img{animation-delay:3.1s}.go #mobile .P:nth-child(2) p{animation-delay:3.7s}
+.go #mobile .P:nth-child(3) img{animation-delay:3.9s}.go #mobile .P:nth-child(3) p{animation-delay:4.5s}
+</style></head><body><section id="mobile" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:96px 128px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">📱 On a phone</p>
+<div style="display:flex;gap:72px;align-items:center">
+<div style="width:520px;display:flex;flex-direction:column;gap:32px">
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">The same course, in your pocket</h2>
+<p style="font-size:32px;line-height:1.4">Every screen is built for a phone first, then grows on a laptop.</p>
+<p style="font-size:32px;line-height:1.4">No app to install: it opens in the browser.</p>
+</div>
+<div style="flex:1;display:flex;gap:40px;justify-content:center">
+<div style="display:flex;flex-direction:column;gap:16px;align-items:center"><img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/mobile/m-welcome.jpg" alt="Phone screenshot: the FluOLinGo entrance, a path of numbered stops" style="width:330px;height:660px;object-fit:cover;object-position:top;border:12px solid #1f2430;border-radius:44px;background:#1f2430"><p style="font-size:28px;font-weight:500">the path</p></div>
+<div style="display:flex;flex-direction:column;gap:16px;align-items:center"><img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/mobile/m-gcompris_carte-postale.jpg" alt="Phone screenshot: 📖 G-Compris! reading a postcard" style="width:330px;height:660px;object-fit:cover;object-position:top;border:12px solid #1f2430;border-radius:44px;background:#1f2430"><p style="font-size:28px;font-weight:500">📖 G-Compris! · read</p></div>
+<div style="display:flex;flex-direction:column;gap:16px;align-items:center"><img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/mobile/m-games_compose.jpg" alt="Phone screenshot: 🧩 ComposeIt writing activity, unit list" style="width:330px;height:660px;object-fit:cover;object-position:top;border:12px solid #1f2430;border-radius:44px;background:#1f2430"><p style="font-size:28px;font-weight:500">🧩 ComposeIt · write</p></div>
+</div>
+</div>
+
+</section>
+<script>const s=document.getElementById('mobile'),row=s.children[1];row.children[0].classList.add('L');[...row.children[1].children].forEach(c=>c.classList.add('P'));
+</script></body></html>

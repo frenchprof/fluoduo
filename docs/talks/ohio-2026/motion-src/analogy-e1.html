@@ -1,0 +1,23 @@
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:Arial,Helvetica,"PingFang SC","Noto Sans CJK SC",sans-serif;color:#1f2430}*{box-sizing:border-box;margin:0}.a{position:absolute}@keyframes show{to{opacity:1}}
+.loom{left:760px;top:10px;width:660px;height:630px;border:18px solid #8a5a2b;border-radius:10px;background:#fff}
+.w{position:absolute;top:0;bottom:0;width:4px;background:#d7d9de}
+.r{position:absolute;left:18px;right:18px;height:44px;display:flex;gap:6px;opacity:0;transform:translateX(-60px)}
+.r i{flex:1;border-radius:6px}
+.go .r{animation:weave .5s forwards}
+@keyframes weave{to{opacity:1;transform:none}}
+.fr i{background:#1ca6ff}.fr i:nth-child(odd){background:#006baa}
+.zh i{background:#ff4d4d}.zh i:nth-child(3n){background:#fcdf00}
+.lab{font-size:36px;font-weight:700;opacity:0}
+.cap{left:0;width:700px;text-align:center;font-size:44px;opacity:0;line-height:1.25}.cap span{display:block;font-size:32px;color:#4a5160}
+.go .lab,.go .cap{animation:show .5s forwards}
+</style>
+<div class="a loom" id="L"></div>
+<p class="a lab" style="left:1450px;top:150px;color:#006baa;animation-delay:.3s">Français</p>
+<p class="a lab" style="left:1450px;top:440px;color:#d4351c;animation-delay:3.2s">中文</p>
+<p class="a cap" style="top:60px;animation-delay:1.2s">① <b>The loom stays</b><span>engine transferred</span></p>
+<p class="a cap" style="top:250px;animation-delay:3.6s">② <b>The weave changes</b><span>mechanics adapted</span></p>
+<p class="a cap" style="top:440px;animation-delay:5.6s">③ <b>The pattern is new</b><span>goals re-authored</span></p>
+<script>const L=document.getElementById("L");let h="";for(let i=0;i<12;i++)h+='<div class="w" style="left:'+(26+i*52)+'px"></div>';
+for(let r=0;r<5;r++)h+='<div class="r fr" style="top:'+(16+r*58)+'px;animation-delay:'+(0.3+r*.25)+'s">'+"<i></i>".repeat(6)+'</div>';
+for(let r=0;r<5;r++)h+='<div class="r zh" style="top:'+(306+r*58)+'px;animation-delay:'+(3.2+r*.25)+'s">'+"<i></i>".repeat(9)+'</div>';L.innerHTML=h;</script>
+<script>const go=()=>{const b=document.body;b.classList.remove("go");void b.offsetWidth;b.classList.add("go")};new IntersectionObserver(e=>{if(e[0].isIntersecting)go()}).observe(document.body);</script>

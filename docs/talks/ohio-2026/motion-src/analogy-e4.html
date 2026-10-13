@@ -1,0 +1,22 @@
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:Arial,Helvetica,"PingFang SC","Noto Sans CJK SC",sans-serif;color:#1f2430}*{box-sizing:border-box;margin:0}.a{position:absolute}@keyframes show{to{opacity:1}}
+.row{left:0;display:flex;gap:36px;align-items:center;font-size:58px;font-weight:500}
+.lock{position:relative;width:110px;height:110px;font-size:90px;line-height:110px}
+.lock span{position:absolute;inset:0}
+.op{opacity:0}.go .sh{animation:hide .1s 3s forwards}.go .op{animation:show .1s 3s forwards}
+@keyframes hide{to{opacity:0}}
+.ans{opacity:0;color:#00715a;font-weight:700}.go .ans{animation:pop .5s 3.2s forwards}
+@keyframes pop{0%{opacity:0;transform:scale(.6)}100%{opacity:1;transform:none}}
+.rule{left:0;top:400px;font-size:46px;display:flex;gap:20px;align-items:center}
+.key{display:inline-block;font-size:76px}
+.go .key{animation:fly 1.4s 1.4s forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(-30deg);opacity:0}}
+.gl{left:0;font-size:34px;color:#6a7179;font-style:italic}
+.note{left:0;top:560px;font-size:42px;font-weight:700;opacity:0}.go .note{animation:show .5s 4.2s forwards}
+</style>
+<div class="a row" style="top:10px"><span>taught:</span><span>chinois → chinoise</span><span class="gl" style="position:static">Chinese (m. → f.)</span></div>
+<div class="a row" style="top:170px"><span>never taught:</span><span>luxembourgeois →</span><div class="lock" id="lk"><span class="sh">🔒</span><span class="op">🔓</span></div><span class="ans">luxembourgeoise</span></div>
+<p class="a gl" style="top:280px">Luxembourgish (m. → f.)</p>
+<div class="a rule"><span class="key" id="ky">🔑</span><span>the rule: ends in -s → add -e</span></div>
+<p class="a note">Asked once. Not scored. The feedback is the rule.</p>
+<script>const k=document.getElementById("ky").getBoundingClientRect(),l=document.getElementById("lk").getBoundingClientRect();document.body.style.setProperty("--dx",(l.left-k.left)+"px");document.body.style.setProperty("--dy",(l.top-k.top)+"px");</script>
+<script>const go=()=>{const b=document.body;b.classList.remove("go");void b.offsetWidth;b.classList.add("go")};new IntersectionObserver(e=>{if(e[0].isIntersecting)go()}).observe(document.body);</script>

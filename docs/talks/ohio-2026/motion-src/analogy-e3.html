@@ -1,0 +1,18 @@
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:transparent;font-family:Arial,Helvetica,"PingFang SC","Noto Sans CJK SC",sans-serif;color:#1f2430}*{box-sizing:border-box;margin:0}.a{position:absolute}@keyframes show{to{opacity:1}}
+.ln{left:0;font-size:88px;font-weight:500;display:flex;gap:30px;align-items:center}
+.sl{width:190px;height:116px;border:6px dashed #9ca3af;border-radius:18px;position:relative}
+.c{position:absolute;left:0;top:0;width:178px;height:104px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:66px;font-weight:700;color:#fff;opacity:0}
+.b{background:#d4351c}.k{background:#00a07a}
+.go .b1{animation:bo 1.2s 1s forwards}.go .k1{animation:dr .6s 2.4s forwards}
+.go .b2{animation:bo 1.2s 4.6s forwards}.go .k2{animation:dr .6s 6s forwards}
+@keyframes dr{0%{opacity:0;transform:translateY(-110px)}20%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes bo{0%{opacity:0;transform:translateY(-110px)}15%{opacity:1}40%{opacity:1;transform:none}55%{transform:translate(30px,-30px) rotate(12deg)}100%{opacity:0;transform:translate(260px,160px) rotate(40deg)}}
+.g{left:0;font-size:34px;color:#6a7179;font-style:italic}
+.cap{left:0;top:570px;font-size:42px;font-weight:500;opacity:0}.go .cap{animation:show .5s 7s forwards}
+</style>
+<div class="a ln" style="top:20px"><span>faire</span><div class="sl"><div class="c b b1">le</div><div class="c k k1">du</div></div><span>yoga</span></div>
+<p class="a g" style="top:150px">to do yoga</p>
+<div class="a ln" style="top:270px"><span>一</span><div class="sl"><div class="c b b2">个</div><div class="c k k2">件</div></div><span>衣服</span></div>
+<p class="a g" style="top:400px">yí jiàn yīfu · an item of clothing</p>
+<p class="a cap">The machine keeps the slot. The language decides the key.</p>
+<script>const go=()=>{const b=document.body;b.classList.remove("go");void b.offsetWidth;b.classList.add("go")};new IntersectionObserver(e=>{if(e[0].isIntersecting)go()}).observe(document.body);</script>

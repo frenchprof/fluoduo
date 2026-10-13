@@ -1,0 +1,70 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style></head><body><section id="walk" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">🎭 One situation, start to finish</p>
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">« dire ce qu'on aime » · French Unit 2</h2>
+<p style="font-size:30px;color:#6a7179"><i>saying what you like</i></p>
+<div style="display:flex;gap:20px;align-items:center">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#eff8ff;padding:24px 28px;border-radius:20px;border-top:10px solid #1ca6ff"><h3 style="font-size:34px;font-weight:700">① Lesson page</h3><p style="font-size:28px;line-height:1.35">aimer + le beside faire + du <i><span style="color:#6a7179">(like + the · do + some)</span></i></p><p style="font-size:28px;line-height:1.35">★ · ★★ · ★★★ · Bonus</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:28px;background:#9ca3af"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#faf7e2;padding:24px 28px;border-radius:20px;border-top:10px solid #fcdf00"><h3 style="font-size:34px;font-weight:700">🎭 Use it</h3><p style="font-size:28px;line-height:1.35">🎧 ÉcouTexte · 📖 G-Compris!</p><p style="font-size:28px;line-height:1.35">🎙️ WorDrill · 🧩 ComposeIt</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:28px;background:#9ca3af"></x-shape>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#fff4ed;padding:24px 28px;border-radius:20px;border-top:10px solid #ff9037"><h3 style="font-size:34px;font-weight:700">🏁 Mission</h3><p style="font-size:28px;line-height:1.35">« identifier la sortie du week-end » <i><span style="color:#6a7179">(work out the weekend outing)</span></i></p></div>
+</div>
+<div style="display:flex;gap:40px">
+<img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/slots/l08wide.png" alt="Screenshot: original L08 lesson page, Exercice tab (aimer + le beside faire + du)" style="width:812px;height:320px;object-fit:contain;background:#eceae0;border-radius:20px">
+<img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/slots/gc-wide.png" alt="Screenshot: 📖 G-Compris! reading screen (French)" style="width:812px;height:320px;object-fit:contain;background:#eceae0;border-radius:20px">
+</div>
+
+</section>
+<style>
+#walk{--dim:.22}
+#walk .step{opacity:var(--dim)}
+.go #walk .step{animation:lit .6s cubic-bezier(.2,.8,.3,1.2) forwards}
+.go #walk .step.s1{animation-delay:.4s}
+.go #walk .step.s2{animation-delay:3.0s}
+.go #walk .step.s3{animation-delay:6.2s}
+@keyframes lit{0%{opacity:var(--dim);transform:none}55%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:none}}
+#walk x-shape{transform-origin:left center;transform:scaleX(0)}
+.go #walk x-shape.a1{animation:draw .8s ease-in-out 2.2s forwards}
+.go #walk x-shape.a2{animation:draw .8s ease-in-out 5.4s forwards}
+@keyframes draw{to{transform:scaleX(1)}}
+#walk .act{display:inline-block;opacity:0}
+.go #walk .act{animation:pop .5s cubic-bezier(.2,.8,.3,1.3) forwards}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.85)}to{opacity:1;transform:none}}
+#walk .sep{opacity:0}
+.go #walk .sep{animation:fade .3s ease forwards}
+@keyframes fade{to{opacity:1}}
+#walk>div:nth-of-type(2)>img{opacity:0}
+.go #walk>div:nth-of-type(2)>img:first-child{animation:imgIn .8s ease 1.2s forwards}
+.go #walk>div:nth-of-type(2)>img:last-child{animation:imgIn .8s ease 4.2s forwards}
+@keyframes imgIn{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+#walk .token{position:absolute;width:36px;height:36px;border-radius:50%;background:#ff9037;border:5px solid #fbfaf4;box-shadow:0 2px 8px rgba(31,36,48,.3);opacity:0;z-index:5}
+</style>
+<script>
+document.fonts.ready.then(()=>{
+  const sec=document.getElementById('walk');
+  const row=sec.querySelector(':scope>div:nth-of-type(1)');
+  const steps=[...row.querySelectorAll(':scope>div')];
+  steps.forEach((s,i)=>s.classList.add('step','s'+(i+1)));
+  row.querySelectorAll('x-shape').forEach((a,i)=>a.classList.add('a'+(i+1)));
+  // the four Use-it activities, one by one
+  let d=3.5;
+  steps[1].querySelectorAll('p').forEach(p=>{
+    const parts=p.textContent.split(' · ');
+    p.innerHTML=parts.map(t=>'<span class="act">'+t+'</span>').join('<span class="sep"> · </span>');
+    p.querySelectorAll('.act').forEach(a=>{a.style.animationDelay=d.toFixed(2)+'s';d+=0.45;});
+    p.querySelectorAll('.sep').forEach(s=>{s.style.animationDelay=(d-0.45).toFixed(2)+'s';});
+  });
+  // token rides the top edge of the row, card to card
+  const sr=sec.getBoundingClientRect();
+  const xs=steps.map(s=>{const r=s.getBoundingClientRect();return r.left-sr.left+r.width/2-23;});
+  const ys=steps.map(s=>s.getBoundingClientRect().top-sr.top-23+5);const y=ys[0];
+  const tok=document.createElement('div');tok.className='token';tok.style.left=xs[0]+'px';tok.style.top=y+'px';sec.appendChild(tok);
+  const T=7.8,at=s=>(s/T*100).toFixed(2)+'%',X=i=>'translate('+(xs[i]-xs[0])+'px,'+(ys[i]-ys[0])+'px)';
+  const k='@keyframes ride{0%{opacity:0;transform:'+X(0)+' scale(.3)}'+at(.3)+'{opacity:0;transform:'+X(0)+' scale(.3)}'+at(.8)+'{opacity:1;transform:'+X(0)+' scale(1)}'
+   +at(2.1)+'{transform:'+X(0)+'}'+at(3.0)+'{transform:'+X(1)+'}'+at(5.3)+'{transform:'+X(1)+'}'+at(6.2)+'{opacity:1;transform:'+X(2)+'}'
+   +at(7.2)+'{opacity:1;transform:'+X(2)+'}'+at(7.8)+'{opacity:0;transform:'+X(2)+' scale(.3)}100%{opacity:0;transform:'+X(2)+' scale(.3)}}'
+   +'.go #walk .token{animation:ride '+T+'s linear forwards}';
+  const st=document.createElement('style');st.textContent=k;document.head.appendChild(st);
+});
+</script>
+</body></html>

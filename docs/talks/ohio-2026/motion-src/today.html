@@ -1,0 +1,66 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style><style>
+.hid{opacity:0}
+body.go .hid{opacity:1}
+svg circle,svg .ring{transform-box:fill-box;transform-origin:center}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes fromL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:none}}
+@keyframes ring{0%{opacity:0;transform:scale(1.6)}45%{opacity:1;transform:scale(.95)}70%{transform:scale(1.15)}100%{opacity:1;transform:none}}
+@keyframes land{0%{opacity:0;transform:translateY(-40px) scale(.9)}70%{opacity:1;transform:translateY(4px) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.go .a-fade{animation:fade .5s ease-out var(--d) backwards}
+.go .a-up{animation:up .55s ease-out var(--d) backwards}
+.go .a-fromL{animation:fromL .5s ease-out var(--d) backwards}
+.go .a-pop{animation:pop .3s ease-out var(--d) backwards}
+.go .a-ring{animation:ring .8s ease-out var(--d) backwards}
+.go .a-land{animation:land .6s ease-out var(--d) backwards}
+.drawn{stroke-dasharray:1 0}
+.go .a-draw{stroke-dasharray:1 1;animation:draw var(--len,.6s) ease-in-out var(--d) backwards}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+ const sec=document.querySelector('section'), ch=[...sec.children];
+ const A=(el,kind,d,len)=>{el.classList.add('a-'+kind);el.style.setProperty('--d',d+'s');if(len)el.style.setProperty('--len',len+'s');};
+ const [svg1,svg2,kick,h2,before,now,legend,pc1,pc2,pc3,pl1,pl2,pl3,mission,capL,capR,n24,n29,n30,cards]=ch;
+ // left: path + 50 dots in order along the snake
+ const snake=svg1.querySelector('path'); snake.setAttribute('pathLength','1'); A(snake,'draw',0.6,1.5);
+ A(before,'fade',0.3);
+ const dots=[...svg1.querySelectorAll('circle')].filter(c=>c.getAttribute('r')==='20');
+ dots.forEach((c,i)=>A(c,'pop',0.6+i*0.03));
+ const rings=[...svg1.querySelectorAll('circle')].filter(c=>c.getAttribute('r')==='26');
+ rings.forEach((c,i)=>A(c,'ring',2.4+i*0.15));
+ [n24,n29,n30].forEach((n,i)=>A(n,'fade',2.5+i*0.15));
+ [...cards.children].forEach((c,i)=>A(c,'up',3.1+i*0.3));
+ A(capL,'fade',4.1);
+ // right
+ A(now,'fade',4.6); A(legend,'fade',4.8);
+ [pc1,pc2,pc3].forEach((c,i)=>A(c,'fromL',5.1+i*0.2));
+ [pl1,pl2,pl3].forEach((c,i)=>A(c,'fromL',5.8+i*0.2));
+ const paths=[...svg2.querySelectorAll('path')];
+ paths.forEach(p=>p.setAttribute('pathLength','1'));
+ paths.filter(p=>p.getAttribute('stroke')==='#9ca3af').forEach((p,i)=>A(p,'draw',6.5+i*0.06,0.5));
+ paths.filter(p=>p.getAttribute('stroke')==='#ff9037').forEach((p,i)=>A(p,'draw',7.2+i*0.08,0.4));
+ A(mission,'land',7.6);
+ A(capR,'fade',8.3);
+});
+</script></head><body><section id="today" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px">
+<svg style="position:absolute;left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080"><path d="M150 420 L212 420 L274 420 L336 420 L398 420 L460 420 L522 420 L584 420 L646 420 L708 420 L708 512 L646 512 L584 512 L522 512 L460 512 L398 512 L336 512 L274 512 L212 512 L150 512 L150 604 L212 604 L274 604 L336 604 L398 604 L460 604 L522 604 L584 604 L646 604 L708 604 L708 696 L646 696 L584 696 L522 696 L460 696 L398 696 L336 696 L274 696 L212 696 L150 696 L150 788 L212 788 L274 788 L336 788 L398 788 L460 788 L522 788 L584 788 L646 788 L708 788" stroke="#c9cbd3" stroke-width="6" fill="none"/><circle cx="150" cy="420" r="20" fill="#fcdf00"/><circle cx="212" cy="420" r="20" fill="#fcdf00"/><circle cx="274" cy="420" r="20" fill="#fcdf00"/><circle cx="336" cy="420" r="20" fill="#fcdf00"/><circle cx="398" cy="420" r="20" fill="#fcdf00"/><circle cx="460" cy="420" r="20" fill="#fcdf00"/><circle cx="522" cy="420" r="20" fill="#fcdf00"/><circle cx="584" cy="420" r="20" fill="#fcdf00"/><circle cx="646" cy="420" r="20" fill="#fcdf00"/><circle cx="708" cy="420" r="20" fill="#fcdf00"/><circle cx="708" cy="512" r="20" fill="#1ca6ff"/><circle cx="646" cy="512" r="20" fill="#1ca6ff"/><circle cx="584" cy="512" r="20" fill="#1ca6ff"/><circle cx="522" cy="512" r="20" fill="#1ca6ff"/><circle cx="460" cy="512" r="20" fill="#1ca6ff"/><circle cx="398" cy="512" r="20" fill="#1ca6ff"/><circle cx="336" cy="512" r="20" fill="#1ca6ff"/><circle cx="274" cy="512" r="20" fill="#1ca6ff"/><circle cx="212" cy="512" r="20" fill="#1ca6ff"/><circle cx="150" cy="512" r="20" fill="#1ca6ff"/><circle cx="150" cy="604" r="20" fill="#00c197"/><circle cx="212" cy="604" r="20" fill="#00c197"/><circle cx="274" cy="604" r="20" fill="#00c197"/><circle cx="336" cy="604" r="20" fill="#00c197"/><circle cx="398" cy="604" r="20" fill="#00c197"/><circle cx="460" cy="604" r="20" fill="#00c197"/><circle cx="522" cy="604" r="20" fill="#00c197"/><circle cx="584" cy="604" r="20" fill="#00c197"/><circle cx="646" cy="604" r="20" fill="#00c197"/><circle cx="708" cy="604" r="20" fill="#00c197"/><circle cx="708" cy="696" r="20" fill="#b17eff"/><circle cx="646" cy="696" r="20" fill="#b17eff"/><circle cx="584" cy="696" r="20" fill="#b17eff"/><circle cx="522" cy="696" r="20" fill="#b17eff"/><circle cx="460" cy="696" r="20" fill="#b17eff"/><circle cx="398" cy="696" r="20" fill="#b17eff"/><circle cx="336" cy="696" r="20" fill="#b17eff"/><circle cx="274" cy="696" r="20" fill="#b17eff"/><circle cx="212" cy="696" r="20" fill="#b17eff"/><circle cx="150" cy="696" r="20" fill="#b17eff"/><circle cx="150" cy="788" r="20" fill="#ff9037"/><circle cx="212" cy="788" r="20" fill="#ff9037"/><circle cx="274" cy="788" r="20" fill="#ff9037"/><circle cx="336" cy="788" r="20" fill="#ff9037"/><circle cx="398" cy="788" r="20" fill="#ff9037"/><circle cx="460" cy="788" r="20" fill="#ff9037"/><circle cx="522" cy="788" r="20" fill="#ff9037"/><circle cx="584" cy="788" r="20" fill="#ff9037"/><circle cx="646" cy="788" r="20" fill="#ff9037"/><circle cx="708" cy="788" r="20" fill="#ff9037"/><circle cx="336" cy="604" r="26" fill="none" stroke="#1f2430" stroke-width="4"/><circle cx="646" cy="604" r="26" fill="none" stroke="#1f2430" stroke-width="4"/><circle cx="708" cy="604" r="26" fill="none" stroke="#1f2430" stroke-width="4"/><line x1="900" y1="330" x2="900" y2="900" stroke="#d7d9de" stroke-width="3"/></svg><svg style="position:absolute;left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080"><path d="M1300 490 C1335 490,1335 490,1370 490" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1300 490 C1335 490,1335 810,1370 810" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1300 650 C1335 650,1335 650,1370 650" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1300 650 C1335 650,1335 810,1370 810" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1300 810 C1335 810,1335 490,1370 490" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1300 810 C1335 810,1335 650,1370 650" stroke="#9ca3af" stroke-width="4" fill="none"/><path d="M1620 490 L1660 610" stroke="#ff9037" stroke-width="4" fill="none"/><path d="M1620 650 L1660 610" stroke="#ff9037" stroke-width="4" fill="none"/><path d="M1620 810 L1660 610" stroke="#ff9037" stroke-width="4" fill="none"/></svg>
+<p style="position:absolute;left:128px;top:96px;font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">Where it started · where it is going</p>
+<h2 style="position:absolute;left:128px;top:140px;width:1664px;font-family:'Patrick Hand',cursive;font-size:72px;font-weight:400;-webkit-text-stroke:2px #1f2430">From 50 look-alike stops to three kinds of step</h2>
+<p style="position:absolute;left:128px;top:300px;font-size:30px;font-weight:700">BEFORE · 50 goals in one line</p>
+<p style="position:absolute;left:1000px;top:300px;font-size:30px;font-weight:700">NOW · each unit</p>
+<p style="position:absolute;left:1000px;top:345px;font-size:24px;color:#4a5160">① pieces · 🎭 situations · 🏁 one task</p>
+
+<div style="position:absolute;left:1000px;top:440px;width:300px;height:100px;background:#fff;border-radius:16px;border-left:12px solid #1ca6ff;box-shadow:0 4px 12px rgba(31,36,48,.08);display:flex;align-items:center;gap:14px;padding:0 18px"><p style="font-family:'Patrick Hand',cursive;font-size:48px;color:#1ca6ff">①</p><p style="font-size:26px;font-weight:500">aimer + le</p></div><div style="position:absolute;left:1000px;top:600px;width:300px;height:100px;background:#fff;border-radius:16px;border-left:12px solid #00c197;box-shadow:0 4px 12px rgba(31,36,48,.08);display:flex;align-items:center;gap:14px;padding:0 18px"><p style="font-family:'Patrick Hand',cursive;font-size:48px;color:#00c197">②</p><p style="font-size:26px;font-weight:500">faire + du</p></div><div style="position:absolute;left:1000px;top:760px;width:300px;height:100px;background:#fff;border-radius:16px;border-left:12px solid #b17eff;box-shadow:0 4px 12px rgba(31,36,48,.08);display:flex;align-items:center;gap:14px;padding:0 18px"><p style="font-family:'Patrick Hand',cursive;font-size:48px;color:#b17eff">③</p><p style="font-size:26px;font-weight:500">négation</p></div>
+<div style="position:absolute;left:1370px;top:440px;width:250px;height:100px;background:#fcdf00;border-radius:50px;display:flex;align-items:center;gap:10px;padding:0 22px"><p style="font-size:32px">🎭</p><p style="font-family:'Patrick Hand',cursive;font-size:32px;line-height:1.05">dire ce qu'on aime</p></div><div style="position:absolute;left:1370px;top:600px;width:250px;height:100px;background:#fcdf00;border-radius:50px;display:flex;align-items:center;gap:10px;padding:0 22px"><p style="font-size:32px">🎭</p><p style="font-family:'Patrick Hand',cursive;font-size:32px;line-height:1.05">dire ce qu'on fait</p></div><div style="position:absolute;left:1370px;top:760px;width:250px;height:100px;background:#fcdf00;border-radius:50px;display:flex;align-items:center;gap:10px;padding:0 22px"><p style="font-size:32px">🎭</p><p style="font-family:'Patrick Hand',cursive;font-size:32px;line-height:1.05">dire pourquoi</p></div>
+<div style="position:absolute;left:1660px;top:470px;width:150px;height:280px;background:#ff9037;border-radius:20px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;padding:16px"><p style="font-size:64px">🏁</p><p style="font-size:24px;font-weight:700;text-align:center">Mission</p></div>
+<p style="position:absolute;left:128px;top:960px;width:760px;font-size:28px;color:#4a5160">All three looked the same: one stop each.</p>
+<p style="position:absolute;left:1000px;top:960px;width:800px;font-size:28px;color:#4a5160">Each kind of step now looks — and works — differently.</p>
+<p style="position:absolute;left:316px;top:589px;width:40px;text-align:center;font-size:24px;font-weight:700;color:#1f2430">24</p><p style="position:absolute;left:626px;top:589px;width:40px;text-align:center;font-size:24px;font-weight:700;color:#1f2430">29</p><p style="position:absolute;left:688px;top:589px;width:40px;text-align:center;font-size:24px;font-weight:700;color:#1f2430">30</p><div style="position:absolute;left:128px;top:830px;width:760px;display:flex;gap:14px">
+<p style="flex:1;font-size:24px;line-height:1.3;background:#fff;border:2px solid #1f2430;border-radius:12px;padding:8px 12px"><b>24</b> « faire + du » <i><span style="color:#6a7179">(a grammar piece)</span></i></p>
+<p style="flex:1;font-size:24px;line-height:1.3;background:#fff;border:2px solid #1f2430;border-radius:12px;padding:8px 12px"><b>29</b> « inviter, refuser » <i><span style="color:#6a7179">(a situation)</span></i></p>
+<p style="flex:1;font-size:24px;line-height:1.3;background:#fff;border:2px solid #1f2430;border-radius:12px;padding:8px 12px"><b>30</b> « écrire un courriel » <i><span style="color:#6a7179">(a writing task)</span></i></p>
+</div>
+</section>
+</body></html>

@@ -1,0 +1,70 @@
+{
+ "an-key": {
+  "asset_id": "642eee87aa554c07afd7b987f1e63dcc",
+  "video_id": "f198dfa8170441680d92c3f22173e0b5"
+ },
+ "today": {
+  "asset_id": "2278e1d2d5fc441184da513c7d5ebab3",
+  "video_id": "659abc11b14830c5f06638d55e89238f"
+ },
+ "lesson": {
+  "asset_id": "8b92a26bdd404243af38a3b64402288f",
+  "video_id": "5f8733a7f9bec85033c8034e1a540e4d"
+ },
+ "axes": {
+  "asset_id": "0a6301fe4ce64963a4f2654b11589ed0",
+  "video_id": "700ecda0b3e9233969771fa286523987"
+ },
+ "walk": {
+  "asset_id": "bc5431d555ad42308921695391db2765",
+  "video_id": "3cedaf5a91fb6942cee17fc32e80d1b0"
+ },
+ "engine": {
+  "asset_id": "acdb162ef75c4afb99584c7d5e9c6b0c",
+  "video_id": "31c98a28e4be497c149a61bed412f082"
+ },
+ "catalogue": {
+  "asset_id": "1239a53003504990b62d3501cc6e48a7",
+  "video_id": "6ddd27ae6dda7be7e13607d1c8f4c0fd"
+ },
+ "spiral": {
+  "asset_id": "28b3c371ac0243ba93aeea0bf4dd5256",
+  "video_id": "6568c65fbd38245897b0a28827c07c62"
+ },
+ "mechanics": {
+  "asset_id": "6bd348ad22bf44f69a9054ff7c0111f1",
+  "video_id": "454028fe1c4c35b1754d3e0330086ed4"
+ },
+ "an-slot": {
+  "asset_id": "abc42d71be1c47359d4ad5d662dba505",
+  "video_id": "cd6b3e039cfd5108b62f700404712414"
+ },
+ "transfer": {
+  "asset_id": "7cec7367203b4967afb5fb57802ba397",
+  "video_id": "4edf38535ff1eb7a9509a15b1310029a"
+ },
+ "reauthor": {
+  "asset_id": "db494d81d7c947ce86ed7aa6d03b5982",
+  "video_id": "713363dfeb9a25b1808a5fae21a53df4"
+ },
+ "goals": {
+  "asset_id": "a7626696ec5343dba2403419d1164cb6",
+  "video_id": "e78a953fc3bfe3661dfef9546b48a462"
+ },
+ "bonus": {
+  "asset_id": "a27adcfcd5074d82abc4428a75ae6b43",
+  "video_id": "f2b5cdbe0ea8d15a0f58520380d3388a"
+ },
+ "useit": {
+  "asset_id": "01efe50b59fa47ef9a56a3f1462be2e3",
+  "video_id": "f90c73db7b94d2df7cf050c0a3d66723"
+ },
+ "mobile": {
+  "asset_id": "ab6327b972be4e63a653aa320c5661a6",
+  "video_id": "7ecce757dfa7b24d0d9ec63ec43e4d0e"
+ },
+ "status": {
+  "asset_id": "72ba918eb85841a7af9eef08c68fe1e3",
+  "video_id": "5ed06cefa6ca2e1df76066c56c6c4b0d"
+ }
+}

@@ -1,0 +1,972 @@
+{
+ "cover": [
+  [
+   "en",
+   "Before we begin: the presenter in this video is an AI version of me, made with HeyGen. The words, the ideas and the course are mine. Hello, and thank you for watching. My name is Daniel Chan, and I teach at the NUS Centre for Language Studies. This talk is about FluOLinGo — capital F, O, L, G — which stands for Fluency On Linguistic Goals. It is a beginner platform I built for my French course. The question of this talk is how that platform is being re-specified for a language that is very far from French: Mandarin Chinese. If you teach a less commonly taught language, or an Indigenous language, this talk is for you. I will keep it plain, and I will keep it concrete."
+  ]
+ ],
+ "scene": [
+  [
+   "en",
+   "This is the first thing a learner sees when they open FluOLinGo: a path of numbered stops, one after another. Each stop is one step of the course. Keep this picture in mind, because everything in this talk hangs on that path."
+  ]
+ ],
+ "claim": [
+  [
+   "en",
+   "Here is the claim, and the question. I am a language teacher, with no coding background and no development team. Even so, working with AI tools, I built a beginner platform for my French course. The real question is whether it can move to a language that is typologically distant — one that works very differently from French. Chinese has no articles and no verb endings. It has tones, characters and measure words. If the platform only works for French, it is a classroom project. If it can move to Chinese, it can probably move to your language too. My answer is a review of three moves: transfer the engine, adapt the mechanics, and re-author the goals. To be clear from the start: the Chinese version is designed, not built yet. Here is the plan for the next twenty-five minutes. First, the French course as it is, and one situation walked through from start to finish. Then the three moves, one at a time, with real examples from both textbooks. And at the end, a recipe you can take to your own language."
+  ]
+ ],
+ "today": [
+  [
+   "en",
+   "This is where FluOLinGo started. It teaches beginner French with our course textbook, Lah-tuh-liay plus A1. The first version cut the course into fifty small goals, in five units, and put them on a map: on the left, fifty stops in one line. Every exercise belonged to a goal; nothing was French in general. That is what objective-driven means here: the goal comes first. But look at three of those stops. Stop twenty-four is"
+  ],
+  [
+   "fr",
+   "faire du"
+  ],
+  [
+   "en",
+   ", to do some of an activity: a piece of grammar. Stop twenty-nine is"
+  ],
+  [
+   "fr",
+   "inviter, refuser"
+  ],
+  [
+   "en",
+   ", inviting someone and saying no: a situation. Stop thirty is"
+  ],
+  [
+   "fr",
+   "écrire un courriel"
+  ],
+  [
+   "en",
+   ", writing an email: a whole task. On the map, all three looked exactly the same, one stop each. Planning the Chinese version forced me to see that. On the right is what came out of the rethink. In each unit there are pieces of language, the situations that use them, and one task at the end. That structure is the rest of this talk, for both languages."
+  ]
+ ],
+ "lesson": [
+  [
+   "en",
+   "Here is the heart of it: the lesson page, which I designed myself, as a teacher, before any of the technology. Every piece of language gets one lesson page. When two pieces are easiest to learn side by side, they share one. My original page puts"
+  ],
+  [
+   "fr",
+   "aimer le"
+  ],
+  [
+   "en",
+   ", to like the, beside"
+  ],
+  [
+   "fr",
+   "faire du"
+  ],
+  [
+   "en",
+   ", to do some:"
+  ],
+  [
+   "fr",
+   "j'aime le yoga"
+  ],
+  [
+   "en",
+   ", I like yoga, and"
+  ],
+  [
+   "fr",
+   "je fais du yoga"
+  ],
+  [
+   "en",
+   ", I do yoga. The page has six tabs."
+  ],
+  [
+   "fr",
+   "Parcours"
+  ],
+  [
+   "en",
+   ", the path, shows where you are in the course. Concept explains the idea."
+  ],
+  [
+   "fr",
+   "Formes"
+  ],
+  [
+   "en",
+   ", the forms, shows the forms."
+  ],
+  [
+   "fr",
+   "Exercice"
+  ],
+  [
+   "en",
+   ", the exercise, is where you practise. Bonus is the hardest step."
+  ],
+  [
+   "fr",
+   "Lexique"
+  ],
+  [
+   "en",
+   "is the word list. The"
+  ],
+  [
+   "fr",
+   "Exercice"
+  ],
+  [
+   "en",
+   "tab is one sentence generator with three settings. At one star, you pick the verb form:"
+  ],
+  [
+   "fr",
+   "j'aime"
+  ],
+  [
+   "en",
+   ", I like, not the misspelt"
+  ],
+  [
+   "fr",
+   "j'aimes"
+  ],
+  [
+   "en",
+   ". At two stars, you pick the verb and the article together. At three stars, you type the whole sentence. The Bonus gives you the English and asks for the French, with no help. The lesson I learned: levels are settings of one exercise, not separate exercises. Notice what is not there: no separate easy activity and hard activity. One page, one generator, three settings."
+  ]
+ ],
+ "axes": [
+  [
+   "en",
+   "Each unit is built from two kinds of thing, and both come from the textbook. The first is pieces: grammar, words and sounds — and, for Chinese, characters. Each piece gets its own lesson page. The second is situations — that is Lah-tuh-liay's own word. A situation is one thing you can do with the language, such as"
+  ],
+  [
+   "fr",
+   "dire ce qu'on aime"
+  ],
+  [
+   "en",
+   ", saying what you like. Where the book bundles several things into one situation, I split them, so each has one purpose. The two meet in a grid: pieces down the side, situations across the top. Here is part of Unit 2."
+  ],
+  [
+   "fr",
+   "Aimer le"
+  ],
+  [
+   "en",
+   ", to like the, serves saying what you like, and saying why. The negation serves several situations at once. A piece can serve many situations, and a situation can need many pieces, so the grid shows me, at a glance, what a learner needs before each situation. Each unit ends with one task that uses all its situations; Lah-tuh-liay calls it the Mission. In the new plan, the French course has thirty-seven situations and about sixty pieces."
+  ]
+ ],
+ "walk": [
+  [
+   "en",
+   "Let me walk through one situation from start to finish, so you can see how the parts fit together. French Unit 2. The situation is"
+  ],
+  [
+   "fr",
+   "dire ce qu'on aime"
+  ],
+  [
+   "en",
+   ", saying what you like. First come the pieces, each on its lesson page. The learner opens the page for"
+  ],
+  [
+   "fr",
+   "aimer le"
+  ],
+  [
+   "en",
+   ", to like the, shown beside"
+  ],
+  [
+   "fr",
+   "faire du"
+  ],
+  [
+   "en",
+   ", to do some:"
+  ],
+  [
+   "fr",
+   "j'aime le cinéma"
+  ],
+  [
+   "en",
+   ", I like the cinema, and"
+  ],
+  [
+   "fr",
+   "je fais du ski"
+  ],
+  [
+   "en",
+   ", I go skiing. They work through the exercise at one star, then two, then three, and finish with the Bonus, English to French with no help. On the left is that exercise tab, from my original page. Then the situation itself, used four ways. In"
+  ],
+  [
+   "fr",
+   "Écoutexte"
+  ],
+  [
+   "en",
+   "they hear it. In"
+  ],
+  [
+   "fr",
+   "J'ai compris !"
+  ],
+  [
+   "en",
+   "they read a short message — on the right — and answer questions about it. In WorDrill they say it aloud. In ComposeIt they write a few lines of their own. Finally, at the end of the unit, the Mission:"
+  ],
+  [
+   "fr",
+   "identifier la sortie du week-end"
+  ],
+  [
+   "en",
+   ", working out the weekend outing. It draws on every situation in the unit, not just this one. On the map, the learner sees each of these steps, one after another, in the order they do them. Nothing is a separate app; it is one path."
+  ]
+ ],
+ "moves": [
+  [
+   "en",
+   "With that structure, moving to Chinese comes down to three moves. Move one: the engine is transferred. Everything not tied to one language is built once and filled twice. Move one also carries the two rules that turned out to matter most: the catalogue and the spiral. Move two: the mechanics are adapted. The exercises keep their shape, but what the learner must choose changes, because Chinese learners go wrong in different places. Move three: the goals are re-authored. The situations are written again, from the new language's own textbook. That is where a teacher of any language does the real work, so it gets a worked example. One move at a time."
+  ]
+ ],
+ "an-loom": [
+  [
+   "en",
+   "If you keep one picture from this part, make it a loom. The loom stays: that is the engine. The weave changes: that is the mechanics. And the pattern is new: those are the goals."
+  ]
+ ],
+ "engine": [
+  [
+   "en",
+   "Move one. The engine is everything that does not care which language it holds. The lesson page, one per piece. Four exercise machines: sentences, words, set phrases, and sounds. The star levels and the Bonus. The use-it activities for each situation. The unit task. And a map that shows every step of the path, in order. The last card is the newest part, settled only this week: the catalogue. Its rule is simple: never teach or test beyond what the book covers. In the plan, the website reads the catalogue in four places: a check that stops anything above the limit from being built; each lesson's"
+  ],
+  [
+   "fr",
+   "Parcours"
+  ],
+  [
+   "en",
+   "tab; a page per unit; and the search. Type"
+  ],
+  [
+   "fr",
+   "minuit"
+  ],
+  [
+   "en",
+   ", midnight, and it answers: Unit 2, Situation 2. Type"
+  ],
+  [
+   "fr",
+   "et demie"
+  ],
+  [
+   "en",
+   ", half past, and it answers: not in this course. All of it is built once and filled twice: with Lah-tuh-liay for French, and with New Practical Chinese Reader, Book 1, for Chinese. The next two slides look at how the catalogue is made, and at the rule that keeps it from becoming a cage."
+  ]
+ ],
+ "catalogue": [
+  [
+   "en",
+   "How is a catalogue built? From three sources: the textbook itself, the teacher's guide, and the publisher's own unit tests. If a unit test asks for a form, that form counts as taught in that unit. Every limit points back to one of them, never to what I happen to know about French. Some examples."
+  ],
+  [
+   "fr",
+   "Et quart"
+  ],
+  [
+   "en",
+   "and"
+  ],
+  [
+   "fr",
+   "et demie"
+  ],
+  [
+   "en",
+   ", quarter past and half past, are not in this course: the book tells the time as"
+  ],
+  [
+   "fr",
+   "neuf heures quinze"
+  ],
+  [
+   "en",
+   ", nine fifteen, and"
+  ],
+  [
+   "fr",
+   "neuf heures trente"
+  ],
+  [
+   "en",
+   ", nine thirty."
+  ],
+  [
+   "fr",
+   "Midi"
+  ],
+  [
+   "en",
+   "and"
+  ],
+  [
+   "fr",
+   "minuit"
+  ],
+  [
+   "en",
+   ", noon and midnight, are in, in Unit 2. Every verb the book teaches is learned with all nine subject pronouns, from"
+  ],
+  [
+   "fr",
+   "je"
+  ],
+  [
+   "en",
+   ", I, to"
+  ],
+  [
+   "fr",
+   "elles"
+  ],
+  [
+   "en",
+   ", they. And in Chinese, the book teaches the time with"
+  ],
+  [
+   "zh",
+   "一刻"
+  ],
+  [
+   "zh",
+   "三刻"
+  ],
+  [
+   "en",
+   "and"
+  ],
+  [
+   "zh",
+   "半"
+  ],
+  [
+   "en",
+   "in lesson 11, so the Chinese course will teach them. Now the honest part. When I measured the first French version against the book, it reached well beyond it. Twelve colours in the first unit, where the book has two."
+  ],
+  [
+   "fr",
+   "Pourquoi"
+  ],
+  [
+   "en",
+   ", why, taught four units before the book teaches it. And a pre-test that scored"
+  ],
+  [
+   "fr",
+   "deux heures et demie"
+  ],
+  [
+   "en",
+   ", half past two, a form the book never teaches. Each choice looked helpful at the time. But learners were being marked on things the course had not taught them. That is why the catalogue exists, and why, in the plan, it is checked automatically every time the site is built."
+  ]
+ ],
+ "spiral": [
+  [
+   "en",
+   "The catalogue raises a fair worry: does this mean learners never meet anything new? No. The French method I follow is a spiral — the"
+  ],
+  [
+   "fr",
+   "méthode spirale"
+  ],
+  [
+   "en",
+   ". Learners meet things early, as whole phrases, and discover how they work later. So the catalogue treats three levels differently. Seen: a whole phrase that appears, but is never explained, drilled or scored. That is allowed early. Focus: explained and practised on its own lesson page. Only from the unit that teaches it. Scored: pre-tests, exercise scores, the final test. Also only from that unit. Some examples."
+  ],
+  [
+   "fr",
+   "Je suis né à…"
+  ],
+  [
+   "en",
+   ", I was born in, can be seen long before the past tense."
+  ],
+  [
+   "fr",
+   "Ça va ?"
+  ],
+  [
+   "en",
+   ", how are you, long before the verb"
+  ],
+  [
+   "fr",
+   "aller"
+  ],
+  [
+   "en",
+   ", to go."
+  ],
+  [
+   "fr",
+   "Mon père, ma mère, mon amie"
+  ],
+  [
+   "en",
+   ", my father, my mother, my friend, before the family and the possessives. And a second rule sits beside it: about one part in five may be new. Learners learn by struggling a little. All familiar is too easy; half unknown is too hard. The limit is that no answer may be the unknown, or depend on it."
+  ],
+  [
+   "fr",
+   "Le week-end, je fais … ski."
+  ],
+  [
+   "en",
+   "At weekends, I go skiing. The answer is"
+  ],
+  [
+   "fr",
+   "du"
+  ],
+  [
+   "en",
+   ", so it does not matter that"
+  ],
+  [
+   "fr",
+   "week-end"
+  ],
+  [
+   "en",
+   "is new."
+  ],
+  [
+   "fr",
+   "Il est deux heures …."
+  ],
+  [
+   "en",
+   "It is two blank. The answer would be"
+  ],
+  [
+   "fr",
+   "et demie"
+  ],
+  [
+   "en",
+   ", half past, which is never taught. That one is out."
+  ]
+ ],
+ "an-camera": [
+  [
+   "en",
+   "Think of a camera. A phrase can be in the picture but out of focus: that is Seen. Then you pull it sharp: that is Focus. Only then do you take the shot: that is Scored."
+  ]
+ ],
+ "mechanics": [
+  [
+   "en",
+   "Move two is where the two languages really differ. The machines keep their shape, but the key choice inside them moves. In French, at two stars, the key choice is the article. You like yoga:"
+  ],
+  [
+   "fr",
+   "aimer le yoga"
+  ],
+  [
+   "en",
+   ". You do yoga:"
+  ],
+  [
+   "fr",
+   "faire du yoga"
+  ],
+  [
+   "fr",
+   "Le"
+  ],
+  [
+   "en",
+   ", the, or"
+  ],
+  [
+   "fr",
+   "du"
+  ],
+  [
+   "en",
+   ", some, is exactly where a beginner goes wrong, so that is the slot the learner has to pick. Mandarin has no articles at all. So what goes in the slot? In this example, it is the verb that the object takes — all taken from the first textbook."
+  ],
+  [
+   "zh",
+   "打球"
+  ],
+  [
+   "en",
+   "play ball."
+  ],
+  [
+   "zh",
+   "看电影"
+  ],
+  [
+   "en",
+   "see a film."
+  ],
+  [
+   "zh",
+   "喝咖啡"
+  ],
+  [
+   "en",
+   "drink coffee. The learner picks which verb goes with which object. The other classic slot is the measure word. An item of clothing is"
+  ],
+  [
+   "zh",
+   "一件衣服"
+  ],
+  [
+   "en",
+   "The classic beginner error is"
+  ],
+  [
+   "zh",
+   "一个衣服"
+  ],
+  [
+   "en",
+   "with the all-purpose measure word. Chinese also needs two new kinds of piece that French does not have: tones, which go to the sound machine, and characters."
+  ]
+ ],
+ "an-slot": [
+  [
+   "en",
+   "So the machine keeps the slot, and the language decides which key fits. In French,"
+  ],
+  [
+   "fr",
+   "du"
+  ],
+  [
+   "en",
+   "fits, and"
+  ],
+  [
+   "fr",
+   "le"
+  ],
+  [
+   "en",
+   "bounces out. In Chinese,"
+  ],
+  [
+   "zh",
+   "件"
+  ],
+  [
+   "en",
+   "fits, and"
+  ],
+  [
+   "zh",
+   "个"
+  ],
+  [
+   "en",
+   "bounces out."
+  ]
+ ],
+ "transfer": [
+  [
+   "en",
+   "A second idea moves across unchanged, and I think it is useful for any language. I call it the transfer test. At the end of a run, the learner is asked, once, about a word the course never taught. In French, the course teaches"
+  ],
+  [
+   "fr",
+   "chinois, chinoise"
+  ],
+  [
+   "en",
+   "— Chinese, masculine and feminine. Then it asks:"
+  ],
+  [
+   "fr",
+   "luxembourgeois"
+  ],
+  [
+   "en",
+   ", Luxembourgish? Nobody taught Luxembourg. But the rule was taught: a word ending in -s adds -e. So the answer is"
+  ],
+  [
+   "fr",
+   "luxembourgeoise"
+  ],
+  [
+   "en",
+   ". The answer is not scored, because you cannot mark someone wrong for something you never told them. The feedback is the rule, not a verdict. Chinese works the same way, and the rule is even simpler."
+  ],
+  [
+   "zh",
+   "中国"
+  ],
+  [
+   "en",
+   "China, gives"
+  ],
+  [
+   "zh",
+   "中国人"
+  ],
+  [
+   "en",
+   "a Chinese person."
+  ],
+  [
+   "zh",
+   "英国"
+  ],
+  [
+   "en",
+   "Britain, gives"
+  ],
+  [
+   "zh",
+   "英国人"
+  ],
+  [
+   "en",
+   "Then:"
+  ],
+  [
+   "zh",
+   "卢森堡"
+  ],
+  [
+   "en",
+   "Luxembourg? The answer is"
+  ],
+  [
+   "zh",
+   "卢森堡人"
+  ],
+  [
+   "en",
+   ". The test tells me whether the learner knows the rule, or has only memorised a list."
+  ]
+ ],
+ "an-key": [
+  [
+   "en",
+   "The rule is a key. If the learner really holds it, it opens a lock nobody showed them:"
+  ],
+  [
+   "fr",
+   "luxembourgeois"
+  ],
+  [
+   "en",
+   "becomes"
+  ],
+  [
+   "fr",
+   "luxembourgeoise"
+  ]
+ ],
+ "reauthor": [
+  [
+   "en",
+   "Here is Move three up close, on a real lesson: New Practical Chinese Reader, Book 1, lesson 3,"
+  ],
+  [
+   "zh",
+   "她是哪国人"
+  ],
+  [
+   "en",
+   "The book gives a text, notes and pronunciation work. It gives no situations and no task, and this lesson has no grammar section at all. So I start from what the text does. Its first dialogue goes:"
+  ],
+  [
+   "zh",
+   "力波，那是谁？"
+  ],
+  [
+   "en",
+   "Libo, who is that?"
+  ],
+  [
+   "zh",
+   "那是我们老师。"
+  ],
+  [
+   "en",
+   "That's our teacher."
+  ],
+  [
+   "zh",
+   "她是哪国人？"
+  ],
+  [
+   "en",
+   "What country is she from?"
+  ],
+  [
+   "zh",
+   "她是中国人。"
+  ],
+  [
+   "en",
+   "She's Chinese."
+  ],
+  [
+   "zh",
+   "我们老师都是中国人。"
+  ],
+  [
+   "en",
+   "Our teachers are all Chinese. That text does two things, so it gives two situations: say who someone is, and say someone's nationality. Then the pieces."
+  ],
+  [
+   "zh",
+   "是"
+  ],
+  [
+   "en",
+   "and"
+  ],
+  [
+   "zh",
+   "不是"
+  ],
+  [
+   "en",
+   ". The question word"
+  ],
+  [
+   "zh",
+   "谁"
+  ],
+  [
+   "en",
+   ", who."
+  ],
+  [
+   "zh",
+   "哪国人"
+  ],
+  [
+   "en",
+   ", and country plus"
+  ],
+  [
+   "zh",
+   "人"
+  ],
+  [
+   "zh",
+   "都"
+  ],
+  [
+   "en",
+   ", all — already met in lesson 2, though the book only explains where it goes in lesson 7, so here it is used, not drilled. And a sound:"
+  ],
+  [
+   "zh",
+   "不"
+  ],
+  [
+   "en",
+   "changes tone before a fourth tone, so"
+  ],
+  [
+   "zh",
+   "不是"
+  ],
+  [
+   "en",
+   "is said with a rising first tone. The grid is the same grid as in French. Only the content is new, and every item in it comes from the book."
+  ]
+ ],
+ "goals": [
+  [
+   "en",
+   "Now step back to the whole course. Here are the two courses side by side. French follows Lah-tuh-liay:"
+  ],
+  [
+   "fr",
+   "Bienvenue"
+  ],
+  [
+   "en",
+   ", welcome, then four units, each with a theme —"
+  ],
+  [
+   "fr",
+   "C'est qui ?"
+  ],
+  [
+   "en",
+   ", who is it?,"
+  ],
+  [
+   "fr",
+   "On fait quoi ce week-end ?"
+  ],
+  [
+   "en",
+   ", what shall we do this weekend?,"
+  ],
+  [
+   "fr",
+   "On va où cet été ?"
+  ],
+  [
+   "en",
+   ", where are we going this summer?, and"
+  ],
+  [
+   "fr",
+   "On mange quoi cette semaine ?"
+  ],
+  [
+   "en",
+   ", what are we eating this week? Chinese follows New Practical Chinese Reader, Book 1: fourteen lessons, grouped into five units of the same shape — lessons 1 and 2, then 3 to 6, 7 to 9, 10 and 11, and 12 to 14. The French book names its situations, adds short workshops built on a real document — the"
+  ],
+  [
+   "fr",
+   "ateliers d'expression"
+  ],
+  [
+   "en",
+   ", the expression workshops — and ends each unit with a Mission. I mostly split and sorted what was there. The Chinese book has none of that, so every Chinese situation is drafted by the teacher, the way you just saw: twenty-six in all. Where the book has a review lesson at the end of a unit, lesson 6 and lesson 14, it becomes the unit task. That is the whole of Move three: the same shape, the teacher's own situations, and the book still setting the limit."
+  ]
+ ],
+ "bonus": [
+  [
+   "en",
+   "Two more labels make the catalogue livable for a real teacher. The first is bonus material: things beyond the book that are still useful. They are labelled bonus on screen, never scored, never in a pre-test or the final test, and never needed to finish a step. One example: the book has almost no school subjects, but my students want to introduce themselves —"
+  ],
+  [
+   "fr",
+   "J'étudie la physique"
+  ],
+  [
+   "en",
+   ", I study physics. So school subjects stay, as bonus. Another: the book teaches"
+  ],
+  [
+   "fr",
+   "mon, ton, son, votre"
+  ],
+  [
+   "en",
+   ", my, your, his or her, your, now, but"
+  ],
+  [
+   "fr",
+   "notre"
+  ],
+  [
+   "en",
+   "and"
+  ],
+  [
+   "fr",
+   "leur"
+  ],
+  [
+   "en",
+   ", our and their, only much later. They stay visible, as bonus, and are not scored. The second label is the teacher addition: something I always teach, even though the book does not. It is taught and scored like book content. My first one is"
+  ],
+  [
+   "fr",
+   "Enchanté"
+  ],
+  [
+   "en",
+   ", pleased to meet you. The book never teaches it, and I teach it in the very first lesson. The catalogue marks each one — bonus, or teacher addition — so the automatic check accepts it, and nobody mistakes a deliberate choice for over-teaching."
+  ]
+ ],
+ "useit": [
+  [
+   "en",
+   "You have already seen the four ways a situation is used, so here they are side by side."
+  ],
+  [
+   "fr",
+   "Écoutexte"
+  ],
+  [
+   "en",
+   "is for listening."
+  ],
+  [
+   "fr",
+   "J'ai compris !"
+  ],
+  [
+   "en",
+   ", I understood, is for reading. WorDrill is for speaking. ComposeIt is for writing. On the left,"
+  ],
+  [
+   "fr",
+   "J'ai compris !"
+  ],
+  [
+   "en",
+   ": a short, ordinary document, like a note, with questions that test what the course teaches, not whether you can spot a matching word. On the right, ComposeIt: the learner writes a short text and gets feedback. These activities are part of the engine. For Chinese, only the texts and words inside them change — and every text stays inside what the book has taught, with about one part in five new, as the spiral allows."
+  ]
+ ],
+ "mobile": [
+  [
+   "en",
+   "One practical point. Learners do most of this on their phones, on the bus or between classes. So every screen is built for a phone first, and simply grows on a laptop. There is nothing to install; it opens in the browser. On the left, the path of numbered stops. In the middle,"
+  ],
+  [
+   "fr",
+   "J'ai compris !"
+  ],
+  [
+   "en",
+   ", reading a postcard. On the right, ComposeIt. The Chinese site will be the same: phone first."
+  ]
+ ],
+ "ai": [
+  [
+   "en",
+   "A word about how this was built, because the title promises an AI platform and no development team. I built FluOLinGo with AI coding tools. They are fast, and they made this possible for someone who cannot code. But they can misunderstand the teaching. A real example: remember the lesson page, one exercise with three settings. Earlier AI helpers split that into many separate activities. Each looked fine on its own, but the teaching idea was lost, and only a teacher could see it. Two habits fixed this. First, write every teaching decision down, in plain words, where the AI reads it every time. Second, check the real screen, not the AI's description of it. And this is where the catalogue earns its keep. The catalogue and the written rules are what keep the AI inside the teacher's decisions. When every limit has a source, and every rule is on paper, an AI helper's work can be checked against them automatically — and so can mine. The teacher must stay the author."
+  ]
+ ],
+ "recipe": [
+  [
+   "en",
+   "So here is the recipe, for a teacher of any less commonly taught or Indigenous language. One: take your textbook's two sides — the situations, what learners do, and the pieces, what they learn. Two: catalogue what your book covers, and never teach or test beyond it. Every limit should point to the book, not to what you happen to know about the language. Learners may still meet a little more — I aim for about one part in five to be new — as long as the answer to a question never depends on it. Three: build one lesson page per piece, and a few exercise machines that you fill many times. Four: write your own situations where your book has none. No tool can do that part for you. Five: one exercise, more levels — never more activities. When something is too easy or too hard, add a setting, not a new screen. Six: write every decision down, and check the screen. Whether you work with AI or with a person, the decisions are yours, and the screen is the proof they were followed. French to Chinese tests these steps on a hard case. If they hold there, they are worth trying for your language."
+  ]
+ ],
+ "status": [
+  [
+   "en",
+   "Where does this stand? The French version is live, and planning the Chinese version has given it a new plan too. The Chinese version is designed: the units, the situations, the pieces and the adapted machines are written down, and the build starts after this conference. So I cannot show you a Chinese screen today, and I will not pretend to. What I can show is a clear path for a teacher: transfer the engine, adapt the mechanics, re-author the goals — and never test beyond the book. If you teach a language the big platforms do not cover, I would be glad to hear from you. My contact details are on the screen."
+  ],
+  [
+   "fr",
+   "Merci"
+  ],
+  [
+   "zh",
+   "谢谢"
+  ],
+  [
+   "en",
+   ", and thank you for watching."
+  ]
+ ]
+}

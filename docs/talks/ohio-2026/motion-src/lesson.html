@@ -1,0 +1,73 @@
+<!doctype html><html><head><meta charset="utf-8"><link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>body{margin:0;background:#fbfaf4}section{width:1920px;height:1080px;box-sizing:border-box;position:relative;overflow:hidden}section *{margin:0}aside{display:none}table{border-collapse:collapse;width:100%}td,th{padding:10px 16px;border-bottom:1px solid #ddd;text-align:left}x-shape{display:block}x-shape[kind=arrow-right]{clip-path:polygon(0 30%,60% 30%,60% 0,100% 50%,60% 100%,60% 70%,0 70%)}</style></head><body><section id="lesson" data-transition="fade" style="background:#fbfaf4;color:#1f2430;font-family:Roboto, Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:40px">
+<p style="font-size:28px;color:#006baa;letter-spacing:3px;text-transform:uppercase;font-weight:700">① Lesson page · one per piece</p>
+<h2 style="font-family:'Patrick Hand', 'Trebuchet MS', cursive;font-size:72px;font-weight:400;line-height:1.1;color:#1f2430;-webkit-text-stroke:2px #1f2430">One lesson page per piece</h2>
+<div style="display:flex;gap:48px;align-items:start">
+<div style="width:820px;display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+<p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#ffffff;color:#1f2430;border:2px solid #d7d9de">Parcours</p><p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#ffffff;color:#1f2430;border:2px solid #d7d9de">Concept</p><p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#ffffff;color:#1f2430;border:2px solid #d7d9de">Formes</p><p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#1f2430;color:#fcdf00">Exercice</p><p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#ffffff;color:#1f2430;border:2px solid #d7d9de">Bonus</p><p style="font-size:30px;font-weight:500;text-align:center;padding:8px 0;border-radius:999px;background:#ffffff;color:#1f2430;border:2px solid #d7d9de">Lexique</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:#ffffff;padding:28px 32px;border:2px solid #d7d9de;border-radius:20px">
+<p style="font-size:26px;color:#4a5160">Exercice: one sentence generator, three settings</p>
+<div style="display:flex;gap:20px;align-items:center"><p style="font-size:30px;color:#9f5100;width:110px;font-weight:700">★</p><p style="font-size:30px">pick the verb form</p></div>
+<div style="display:flex;gap:20px;align-items:center"><p style="font-size:30px;color:#9f5100;width:110px;font-weight:700">★★</p><p style="font-size:30px">pick verb + article</p></div>
+<div style="display:flex;gap:20px;align-items:center"><p style="font-size:30px;color:#9f5100;width:110px;font-weight:700">★★★</p><p style="font-size:30px">type the whole sentence</p></div>
+<div style="display:flex;gap:20px;align-items:center"><p style="font-size:30px;color:#9f5100;width:110px;font-weight:700">Bonus</p><p style="font-size:30px">English → French, no help</p></div>
+</div>
+<p style="font-size:24px;color:#6a7179"><i>Parcours = your path · Formes = forms · Exercice = exercise · Lexique = word list</i></p>
+<p style="font-size:32px;line-height:1.35;background:#eafbf8;padding:24px 32px;border-radius:16px;border-left:10px solid #00c197"><b>Levels are settings of one exercise</b>, not separate exercises.</p>
+</div>
+<img src="/tmp/claude-0/-home-user-fluoduo/03573aa2-b73d-5a65-81b4-48446cede89a/scratchpad/slots/l08.png" alt="Screenshot: original L08/L09 lesson page, aimer + le beside faire + du, Exercice tab, level ★★" style="width:796px;height:600px;object-fit:contain;background:#eceae0;border-radius:20px">
+</div>
+
+</section>
+<style>
+#lesson>div>div>div:first-child>p{opacity:0}
+.go #lesson>div>div>div:first-child>p{animation:pillIn .5s cubic-bezier(.2,.8,.3,1.2) forwards}
+.go #lesson>div>div>div:first-child>p:nth-child(1){animation-delay:.3s}
+.go #lesson>div>div>div:first-child>p:nth-child(2){animation-delay:.55s}
+.go #lesson>div>div>div:first-child>p:nth-child(3){animation-delay:.8s}
+.go #lesson>div>div>div:first-child>p:nth-child(4){animation:pillIn .5s cubic-bezier(.2,.8,.3,1.2) 1.05s forwards,lightUp .6s ease 2.0s both}
+.go #lesson>div>div>div:first-child>p:nth-child(5){animation-delay:1.3s}
+.go #lesson>div>div>div:first-child>p:nth-child(6){animation-delay:1.55s}
+@keyframes pillIn{from{opacity:0;transform:translateY(24px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes lightUp{from{background:#ffffff;color:#1f2430;box-shadow:inset 0 0 0 2px #d7d9de}60%{transform:scale(1.08)}to{background:#1f2430;color:#fcdf00;box-shadow:inset 0 0 0 2px transparent;transform:none}}
+/* exercise box */
+#lesson .xbox{position:relative;opacity:0}
+.go #lesson .xbox{animation:boxIn .6s ease 2.6s forwards}
+@keyframes boxIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+#lesson .xbox>div:not(.dialbar){position:relative}
+#lesson .dialbar{position:absolute;left:14px;right:14px;border-radius:12px;background:#fcdf00;opacity:0}
+/* gloss + statement + image */
+#lesson>div>div>p{opacity:0}
+.go #lesson>div>div>p:nth-last-child(2){animation:fadeIn .6s ease 7.4s forwards}
+.go #lesson>div>div>p:last-child{animation:landIn .7s cubic-bezier(.2,.8,.3,1.15) 7.9s forwards}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes landIn{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+#lesson>div>img{opacity:0}
+.go #lesson>div>img{animation:imgIn .8s ease .6s forwards}
+@keyframes imgIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+</style>
+<script>
+document.fonts.ready.then(()=>{
+  const box=document.querySelector('#lesson>div>div>div:nth-child(2)');box.classList.add('xbox');
+  const rows=[...box.querySelectorAll(':scope>div')];
+  const bar=document.createElement('div');bar.className='dialbar';box.prepend(bar);
+  const T=7.4, at=s=>(s/T*100).toFixed(2)+'%';
+  const steps=[3.3,4.2,5.1,6.0], end=6.9; // dial positions
+  const ys=rows.map(r=>r.offsetTop-6), h=rows[0].offsetHeight+12;
+  bar.style.height=h+'px';bar.style.top=ys[0]+'px';
+  let k='@keyframes dial{0%{opacity:0;transform:translateY(0)}'+at(steps[0]-.2)+'{opacity:0;transform:translateY(0)}'+at(steps[0])+'{opacity:.55;transform:translateY(0)}';
+  for(let i=1;i<4;i++){k+=at(steps[i]-.45)+'{transform:translateY(0px) translateY('+(ys[i-1]-ys[0])+'px)}'+at(steps[i])+'{transform:translateY('+(ys[i]-ys[0])+'px)}';}
+  k+=at(end-.3)+'{opacity:.55}'+at(end)+'{opacity:0;transform:translateY('+(ys[3]-ys[0])+'px)}100%{opacity:0;transform:translateY('+(ys[3]-ys[0])+'px)}}';
+  // rows dim while the dial runs; the lit row is full strength
+  rows.forEach((r,i)=>{
+    let rk='@keyframes row'+i+'{0%{opacity:1}'+at(steps[0]-.2)+'{opacity:1}'+at(steps[0])+'{opacity:'+(i==0?1:.35)+'}';
+    for(let j=1;j<4;j++){rk+=at(steps[j]-.45)+'{opacity:'+(i==j-1?1:.35)+'}'+at(steps[j])+'{opacity:'+(i==j?1:.35)+'}';}
+    rk+=at(end-.3)+'{opacity:'+(i==3?1:.35)+'}'+at(end)+'{opacity:1}100%{opacity:1}}';
+    k+=rk+'.go #lesson .xbox>div:nth-of-type('+(i+2)+'){animation:row'+i+' '+T+'s linear forwards}';
+  });
+  k+='.go #lesson .dialbar{animation:dial '+T+'s linear forwards}';
+  const s=document.createElement('style');s.textContent=k;document.head.appendChild(s);
+});
+</script>
+</body></html>
