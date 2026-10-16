@@ -83,8 +83,6 @@ And you’ll see that same structure in both languages.
 
 This is the core of it: the lesson page.
 
-I designed it myself, as a teacher, before any of the tech came in.
-
 Every linguistic goal gets its own page. If two goals are easier to learn side by side, they share a page.
 
 On my original page, “to like the” sits next to “to do some.”
