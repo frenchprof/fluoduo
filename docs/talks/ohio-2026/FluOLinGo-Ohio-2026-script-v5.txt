@@ -39,9 +39,9 @@ This matters because language learning isn't simply a matter of accumulating gra
 
 5. The learning cycle
 
-When learners first select a goal on the map, they can attempt a task before receiving any instruction. I call this the try-first approach. It activates what they already know and helps them notice what they still need to learn. They then receive explanations and practise through activities suited to that goal. Their responses generate feedback, and areas of difficulty can be revisited later.
+When learners first select a goal on the map, they start by guessing, before receiving any instruction. In an activity called SpecuLearn, they see a picture and choose the French word for it, or see the word and choose the picture, and the correct answer appears straight away. I call this the try-first approach. It draws on what researchers call the pretesting effect: guessing first and then seeing the correct answer helps learners remember it better than simply reading it. A recent study by Chua and Pan, at NUS, found this effect with exactly this kind of word-and-picture guessing, even when learners knew none of the language beforehand. They then receive explanations and practise through activities suited to that goal. Their responses generate feedback, and areas of difficulty can be revisited later.
 
-So the sequence is: identify a goal, try, learn, practise, receive feedback and revisit.
+So the sequence is: identify a goal, guess, learn, practise, receive feedback and revisit.
 
 6. Different goals, different activities
 
@@ -97,7 +97,7 @@ If this works, the architecture might be independent not only of the language, b
 
 14. What can remain unchanged?
 
-Several elements are candidates for transfer. First, the organisation around explicit learning goals: learners still need to know what they're expected to achieve. Second, the relationship between linguistic and functional goals. Third, the learning cycle of initial attempt, explanation, practice, feedback and revision. And fourth, the distinction between practising individual resources and using them in integrated communicative activities.
+Several elements are candidates for transfer. First, the organisation around explicit learning goals: learners still need to know what they're expected to achieve. Second, the relationship between linguistic and functional goals. Third, the learning cycle of guessing first, explanation, practice, feedback and revision. And fourth, the distinction between practising individual resources and using them in integrated communicative activities.
 
 Their usefulness in Mandarin still needs to be tested.
 
