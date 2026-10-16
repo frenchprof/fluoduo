@@ -1,0 +1,64 @@
+<section id="s20">
+<h2 class="hd">Bonus material and teacher additions</h2>
+
+<!-- s1: two empty slots, both outside the textbook -->
+<div id="cb" class="card abs" data-in="1:two" data-fx="fade" style="left:128px;top:250px"><p class="q hand">?</p><p class="beyond" data-in="1:textbooks" data-fx="fade">beyond 📘</p></div>
+<div id="ct" class="card abs" data-in="1:two+0.2" data-fx="fade" style="left:992px;top:250px"><p class="q hand">?</p><p class="beyond" data-in="1:textbooks+0.2" data-fx="fade">beyond 📘</p></div>
+
+<!-- bonus card -->
+<div id="bonus" class="abs fill" data-in="2:bonus" data-fx="pop" style="left:128px;top:250px;background:#f8f4ff;border-top:14px solid #b17eff">
+  <p class="abs ttl" style="left:40px;top:22px">Bonus</p>
+  <p class="abs tag vtag" data-in="3:labelled" data-fx="pop" style="left:40px;top:104px">on screen: bonus</p>
+  <p class="abs tag vtag" data-in="3:marked" data-fx="pop" style="left:340px;top:104px">never marked</p>
+  <p class="abs tag vtag" data-in="3:finish" data-fx="pop" style="left:40px;top:180px">never needed to finish</p>
+  <!-- example: school subjects -->
+  <p class="abs" id="nosub" data-in="4:subjects" data-fx="fade" style="left:40px;top:280px;font-size:30px;color:#6a7179">📘 school subjects <b style="color:#b04848">✗</b></p>
+  <p class="abs" data-in="4:introduce" data-fx="left" style="left:400px;top:280px;font-size:30px;color:#6a7179">🙋 introduce myself</p>
+  <p class="abs" id="phys" data-in="5:physics" data-fx="rise" style="left:40px;top:340px;font-size:44px;font-weight:700">« J'étudie la physique » <span class="gl" style="font-size:30px;font-weight:400">I study physics</span></p>
+</div>
+
+<!-- teacher addition card -->
+<div id="teach" class="abs fill" data-in="7:teacher" data-fx="pop" style="left:992px;top:250px;background:#eafbf8;border-top:14px solid #00c197">
+  <p class="abs ttl" style="left:40px;top:22px">Teacher addition</p>
+  <p class="abs tag" data-in="8:choose" data-fx="pop" style="left:40px;top:104px;border-color:#00c197">🧑‍🏫 my choice</p>
+  <p class="abs tag" data-in="8:textbook" data-fx="pop" style="left:300px;top:104px;border-color:#d7d9de;color:#6a7179">📘 not in the book</p>
+  <p class="abs tag" data-in="9:taught" data-fx="pop" style="left:40px;top:180px;border-color:#00c197;background:#00c197;color:#fff;font-weight:700">taught and marked ✓</p>
+  <p class="abs" id="ench" data-in="10:pleased" data-fx="rise" style="left:40px;top:300px;font-size:44px;font-weight:700">« Enchanté(e) » <span class="gl" style="font-size:30px;font-weight:400">pleased to meet you</span></p>
+  <p class="abs tag" data-in="10:first" data-fx="pop" style="left:520px;top:180px;border-color:#00c197">lesson 1</p>
+</div>
+
+<!-- s11-12: the catalogue entry -->
+<div id="cat" class="abs" data-in="11:catalogue" data-fx="rise" style="left:128px;top:730px;width:1380px;height:230px;border-radius:24px;background:#fff;border:3px solid #d7d9de">
+  <p class="abs" style="left:36px;top:22px;font-size:28px;color:#6a7179;font-weight:700">📒 catalogue</p>
+  <p class="abs row" style="left:36px;top:76px">« J'étudie la physique »</p>
+  <p class="abs tag vtag" data-in="11:bonus" data-fx="pop" style="left:520px;top:72px;padding:6px 22px">bonus</p>
+  <p class="abs row" style="left:36px;top:146px">« Enchanté(e) »</p>
+  <p class="abs tag" data-in="11:addition" data-fx="pop" style="left:520px;top:142px;padding:6px 22px;border-color:#00c197">teacher addition</p>
+  <div class="abs" id="ok" data-in="12:deliberately" data-fx="pop" style="left:960px;top:70px;width:380px;height:130px;border-radius:20px;background:#eafbf8;border:4px solid #00c197;display:flex;align-items:center;justify-content:center;gap:16px;font-size:30px;font-weight:700;color:#00715a">⚙️ check <span style="font-size:60px;line-height:1">✓</span></div>
+</div>
+
+<p class="part">Part 3 · Fill the slots</p>
+<style>
+.card{width:800px;height:450px;border-radius:28px;border:4px dashed #9ca3af;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.q{font-size:150px;color:#9ca3af;line-height:1}
+.beyond{font-size:34px;color:#6a7179}
+.fill{width:800px;height:450px;border-radius:28px}
+.ttl{font-size:46px;font-weight:700}
+.tag{font-size:30px;padding:10px 26px;border-radius:999px;background:#fff;border:3px solid;white-space:nowrap}
+.vtag{border-color:#b17eff;color:#6b3fb5}
+.row{font-size:36px;font-weight:700}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // "so school subjects stay in, as bonus": the physics line takes a violet ring
+  A($('phys'), [{color:'#1f2430'},{color:'#6b3fb5'}], CUE('6:stay'), 0.6, 'forwards');
+  A($('bonus'), [{boxShadow:'0 0 0 0 rgba(177,126,255,0)'},{boxShadow:'0 0 0 12px rgba(177,126,255,.35)'},{boxShadow:'0 0 0 0 rgba(177,126,255,0)'}], CUE('6:bonus'), 1.2, 'none');
+  // "unlike bonus material": the bonus card steps back while the teacher card speaks
+  A($('bonus'), [{opacity:1},{opacity:.45}], CUE('7'), 0.6, 'forwards');
+  A($('bonus'), [{opacity:.45},{opacity:1}], CUE('11'), 0.6, 'forwards');
+  // the two examples are paired with their catalogue rows
+  A($('ok'), [{boxShadow:'0 0 0 0 rgba(0,193,151,0)'},{boxShadow:'0 0 0 12px rgba(0,193,151,.3)'},{boxShadow:'0 0 0 0 rgba(0,193,151,0)'}], CUE('12:deliberately')+0.6, 1.2, 'none');
+};
+</script>
+</section>

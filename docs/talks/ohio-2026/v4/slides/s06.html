@@ -1,0 +1,134 @@
+<section id="s06">
+<h2 class="hd">Fifty goals that all looked alike</h2>
+
+<!-- LEFT: the old map, five units of ten stops (built in SLIDE) -->
+<div id="map" class="abs" style="left:0;top:0;width:900px;height:1080px"></div>
+
+<!-- how the old course was built: a goal, then its exercises -->
+<div id="exo" class="abs" data-out="7" style="left:150px;top:800px;width:700px;height:140px">
+  <div id="exoG" class="abs" data-in="5:goal" data-fx="pop" style="left:0;top:30px;width:80px;height:80px;border-radius:50%;background:#fff;border:5px solid #1f2430"></div>
+  <svg class="abs" data-in="6:built" data-fx="draw" style="left:80px;top:0" width="200" height="140"><path d="M0 70 L190 22 M0 70 L190 70 M0 70 L190 118" stroke="#9ca3af" stroke-width="4" fill="none"/></svg>
+  <div class="ex abs" data-in="6:exercises" data-fx="right" style="left:280px;top:0">✎</div>
+  <div class="ex abs" data-in="6:exercises+0.15" data-fx="right" style="left:280px;top:48px">✎</div>
+  <div class="ex abs" data-in="6:exercises+0.3" data-fx="right" style="left:280px;top:96px">✎</div>
+</div>
+
+<!-- RIGHT, scene 0: the course book -->
+<img id="cov0" class="abs" data-in="2:book" data-fx="pop" data-out="4" src="../img/atelier-cover.png" style="left:1150px;top:300px;height:420px;border-radius:10px;box-shadow:0 10px 30px rgba(31,36,48,.18)">
+
+<!-- RIGHT, scene 1: three stops that are not the same kind of thing -->
+<div id="three" class="abs" data-out="16" style="left:960px;top:0;width:900px;height:1080px">
+  <div class="card abs" data-in="8" data-fx="left" style="top:300px;border-color:#1ca6ff;background:#eff8ff"><b style="background:#1ca6ff">28</b>« la négation »</div>
+  <div class="card abs" data-in="9" data-fx="left" style="top:440px;border-color:#fcdf00;background:#faf7e2"><b style="background:#fcdf00">29</b>« inviter, refuser »</div>
+  <div class="card abs" data-in="10" data-fx="left" style="top:580px;border-color:#ff9037;background:#fff4ed"><b style="background:#ff9037">30</b>« écrire un courriel »</div>
+  <!-- one brick / a wall of bricks -->
+  <div id="brick1" class="brick abs" data-in="13:block" data-fx="drop" style="left:540px;top:333px"></div>
+  <div id="wall" class="abs" style="left:520px;top:568px;width:260px;height:124px"></div>
+  <p class="abs hand" data-in="15:tell" data-fx="pop" style="left:600px;top:390px;font-size:110px;line-height:1;color:#9ca3af">?</p>
+</div>
+
+<!-- RIGHT, scene 2: the two books -->
+<div id="books" class="abs" data-out="21" style="left:0;top:0;width:1920px;height:1080px">
+  <img class="abs" data-in="16:French" data-fx="pop" src="../img/atelier-cover.png" style="left:990px;top:290px;height:340px;border-radius:8px;box-shadow:0 8px 24px rgba(31,36,48,.18)">
+  <p class="abs ok" data-in="16:situations" data-fx="rise" style="left:990px;top:660px">✓ situations</p>
+  <p class="abs ok" data-in="16:tasks" data-fx="rise" style="left:990px;top:715px">✓ tasks</p>
+  <img class="abs" data-in="17:Chinese" data-fx="pop" src="../img/npcr-cover.png" style="left:1280px;top:290px;height:340px;border-radius:8px;box-shadow:0 8px 24px rgba(31,36,48,.18)">
+  <p class="abs no" data-in="18:situations" data-fx="rise" style="left:1280px;top:660px">✗ situations</p>
+  <p class="abs no" data-in="18:tasks" data-fx="rise" style="left:1280px;top:715px">✗ tasks</p>
+</div>
+
+<!-- RIGHT, scene 3: the revised structure -->
+<div id="rev" class="abs" style="left:960px;top:0;width:900px;height:1080px">
+  <p class="abs colh" data-in="22:linguistic" data-fx="fade" style="left:130px;width:240px;color:#006baa">linguistic</p>
+  <p class="abs colh" data-in="22:communicative" data-fx="fade" style="left:380px;width:220px;color:#8a7700">communicative</p>
+  <p class="abs colh" data-in="22:task" data-fx="fade" style="left:600px;width:120px;color:#9f5100">task</p>
+  <div class="row abs" style="top:340px">
+    <p class="tag abs" data-in="23:both" data-fx="pop" style="left:0">FR</p>
+    <div class="lg abs" data-in="22:linguistic" data-fx="pop" style="left:130px"></div>
+    <div class="lg abs" data-in="22:linguistic+0.15" data-fx="pop" style="left:210px"></div>
+    <div class="lg abs" data-in="22:linguistic+0.3" data-fx="pop" style="left:290px"></div>
+    <div class="sit abs" data-in="22:communicative" data-fx="pop" style="left:390px"></div>
+    <div class="sit abs" data-in="22:communicative+0.15" data-fx="pop" style="left:490px"></div>
+    <div class="flag abs" data-in="22:task" data-fx="pop" style="left:610px">🏁</div>
+  </div>
+  <div class="row abs" data-in="23:both" data-fx="rise" style="top:500px">
+    <p class="tag abs zh" style="left:0">中文</p>
+    <div class="lg abs" style="left:130px"></div>
+    <div class="lg abs" style="left:210px"></div>
+    <div class="lg abs" style="left:290px"></div>
+    <div class="sit abs" style="left:390px"></div>
+    <div class="sit abs" style="left:490px"></div>
+    <div class="flag abs" style="left:610px">🏁</div>
+  </div>
+</div>
+
+<p class="part">Part 1 · The French course</p>
+<style>
+#s06 .dot{width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid #9ca3af;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;color:#1f2430}
+#s06 .ex{width:70px;height:42px;border-radius:8px;background:#fff;border:3px solid #9ca3af;font-size:26px;line-height:36px;text-align:center;color:#6a7179}
+#s06 .card{left:0;width:500px;height:110px;border-radius:22px;border:4px solid;display:flex;align-items:center;gap:22px;padding:0 24px;font-size:36px;font-weight:500}
+#s06 .card b{flex:none;width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;color:#1f2430}
+#s06 .brick{width:66px;height:34px;border-radius:5px;background:#1ca6ff;border:2px solid #006baa}
+#s06 .ok,#s06 .no{font-size:32px;font-weight:700}
+#s06 .ok{color:#00715a} #s06 .no{color:#c2410c}
+#s06 .colh{top:280px;font-size:28px;font-weight:700}
+#s06 .row{left:0;width:760px;height:110px}
+#s06 .tag{top:20px;width:100px;height:70px;border-radius:14px;background:#1f2430;color:#fff;font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center}
+#s06 .lg{top:10px;width:66px;height:90px;border-radius:12px;background:#eff8ff;border:4px solid #1ca6ff}
+#s06 .sit{top:10px;width:90px;height:90px;border-radius:45px;background:#faf7e2;border:4px solid #fcdf00}
+#s06 .flag{top:0;width:110px;height:110px;border-radius:20px;background:#fff4ed;border:4px solid #ff9037;font-size:56px;display:flex;align-items:center;justify-content:center}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const map = $('map');
+  const X = i => 150 + i*76, Y = r => 300 + r*96;
+  // the five unit lines
+  for (let r = 0; r < 5; r++){
+    const ln = document.createElement('div');
+    ln.className = 'abs';
+    ln.style.cssText = `left:${X(0)+27}px;top:${Y(r)+25}px;width:${9*76}px;height:4px;background:#d7d9de;border-radius:2px`;
+    map.appendChild(ln);
+    A(ln, [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], CUE('3:fifty') + r*0.35, 0.6);
+  }
+  const dots = {};
+  for (let n = 1; n <= 50; n++){
+    const r = Math.floor((n-1)/10), i = (n-1)%10;
+    const d = document.createElement('div');
+    d.className = 'dot abs'; d.textContent = n;
+    d.style.left = X(i)+'px'; d.style.top = Y(r)+'px';
+    map.appendChild(d); dots[n] = d;
+    A(d, [{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'none'}], CUE('3:fifty') + r*0.35 + i*0.04, 0.4);
+  }
+  // "fifty numbered goals in a row": a ripple along the stops
+  for (let n = 1; n <= 50; n++)
+    A(dots[n], [{transform:'none'},{transform:'translateY(-10px)'},{transform:'none'}], CUE('4:numbered') + (n-1)*0.03, 0.4, 'none');
+  // the goal under the map pulses when the goals come first
+  A($('exoG'), [{transform:'none'},{transform:'scale(1.2)'},{transform:'none'}], CUE('6:goal'), 0.6, 'none');
+  // 28, 29, 30 light up in their colours
+  const col = {28:['#1ca6ff','#eff8ff','8'], 29:['#fcdf00','#faf7e2','9'], 30:['#ff9037','#fff4ed','10']};
+  for (const n of [28,29,30]){
+    A(dots[n], [{borderColor:'#9ca3af',background:'#fff',borderWidth:'3px'},{borderColor:col[n][0],background:col[n][1],borderWidth:'6px'}], CUE(col[n][2]), 0.5, 'forwards');
+    A(dots[n], [{transform:'none'},{transform:'scale(1.35)'},{transform:'none'}], CUE(col[n][2]), 0.7, 'none');
+    // all three the same: one equal pulse together
+    A(dots[n], [{transform:'none'},{transform:'scale(1.35)'},{transform:'none'},{transform:'scale(1.35)'},{transform:'none'}], CUE('11:same'), 1.4, 'none');
+    // the map mixed three kinds
+    A(dots[n], [{transform:'none'},{transform:'scale(1.35)'},{transform:'none'}], CUE('20:three'), 0.8, 'none');
+  }
+  // the other stops fade back as the right side takes over
+  for (let n = 1; n <= 50; n++) if (![28,29,30].includes(n))
+    A(dots[n], [{opacity:1},{opacity:.45}], CUE('21'), 0.6, 'forwards');
+  // the email: a wall of many bricks
+  const wall = $('wall');
+  let k = 0;
+  for (let r = 2; r >= 0; r--) for (let c = 0; c < 4 - (r%2 ? 1 : 0); c++){
+    const b = document.createElement('div');
+    b.className = 'brick abs';
+    b.style.left = (c*64 + (r%2 ? 32 : 0))+'px'; b.style.top = (r*42)+'px';
+    wall.appendChild(b);
+    A(b, [{opacity:0,transform:'translateY(-30px)'},{opacity:1,transform:'none'}], CUE('14:many') + k*0.12, 0.45);
+    k++;
+  }
+};
+</script>
+</section>
