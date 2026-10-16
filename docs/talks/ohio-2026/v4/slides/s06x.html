@@ -1,0 +1,26 @@
+<section id="s06x">
+<h2 class="hd">Fifty goals that all looked alike</h2>
+<div id="grid" class="abs" style="left:0;top:0;width:1000px;height:1080px"></div>
+<img class="abs" src="../img/atelier-cover.png" style="left:990px;top:290px;height:340px;border-radius:8px;box-shadow:0 8px 24px rgba(31,36,48,.18)">
+<p class="abs ok" style="left:990px;top:660px">✓ situations</p>
+<p class="abs ok" style="left:990px;top:715px">✓ tasks</p>
+<img id="npcr" class="abs" src="../img/npcr-cover.png" style="left:1280px;top:290px;height:340px;border-radius:8px;box-shadow:0 8px 24px rgba(31,36,48,.18)">
+<p class="abs dlg" data-in="1:dialogues" data-fx="pop" style="left:1280px;top:660px">💬 dialogues</p>
+<p class="abs no" data-in="1:situations" data-fx="rise" style="left:1280px;top:725px">✗ situations</p>
+<p class="abs no" data-in="1:tasks" data-fx="rise" style="left:1280px;top:780px">✗ tasks</p>
+<p class="part">Part 1 · The French course</p>
+<style>
+.ok{font-size:30px;font-weight:700;color:#00715a}
+.no{font-size:30px;font-weight:700;color:#9f5100}
+.dlg{font-size:30px;font-weight:700;color:#1f2430;padding:6px 18px;border-radius:999px;background:#fff4ed;border:3px solid #ff9037}
+.c{position:absolute;width:62px;height:62px;border-radius:50%;border:3px solid #d7d9de;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;color:#1f2430}
+</style>
+<script>
+window.SLIDE = function(){
+  const g=document.getElementById('grid'), col={28:'#1ca6ff',29:'#fcdf00',30:'#ff9037'};
+  for(let i=1;i<=50;i++){const r=Math.floor((i-1)/10),k=(i-1)%10,d=document.createElement('div');d.className='c';d.textContent=i;
+    d.style.left=(142+k*80)+'px';d.style.top=(302+r*120)+'px';if(col[i]){d.style.borderColor=col[i];d.style.borderWidth='5px';}g.appendChild(d);}
+  A(document.getElementById('npcr'),[{transform:'none',boxShadow:'0 8px 24px rgba(31,36,48,.18)'},{transform:'translateY(-10px)',boxShadow:'0 0 0 8px rgba(255,144,55,.45)'},{transform:'none',boxShadow:'0 0 0 6px rgba(255,144,55,.35)'}],CUE('1:Chinese'),0.8,'forwards');
+};
+</script>
+</section>
