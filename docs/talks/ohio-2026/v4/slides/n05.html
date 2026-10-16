@@ -48,7 +48,7 @@ window.SLIDE = function(){
     const p = document.createElementNS(NS, 'path');
     p.setAttribute('d', `M${ax} ${ay} A${R} ${R} 0 0 1 ${bx} ${by}`);
     p.setAttribute('stroke', '#9ca3af'); p.setAttribute('stroke-width', '6'); p.setAttribute('fill', 'none');
-    p.setAttribute('stroke-linecap', 'round'); p.setAttribute('pathLength', '100'); p.setAttribute('stroke-dasharray', '100');
+    p.setAttribute('stroke-linecap', 'butt'); p.setAttribute('pathLength', '100'); p.setAttribute('stroke-dasharray', '100');
     // arrow head at the end, pointing along the tangent
     const t = a1 + Math.PI/2, hx = Math.cos(t), hy = Math.sin(t), nx = Math.cos(a1), ny = Math.sin(a1);
     const h = document.createElementNS(NS, 'path');

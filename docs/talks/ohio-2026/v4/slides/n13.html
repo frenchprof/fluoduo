@@ -1,0 +1,140 @@
+<section id="n13">
+<h2 class="hd">A common representation</h2>
+
+<!-- shared network drawing (used in scene 1 and scene 4) -->
+<template id="netT">
+  <g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
+    <line x1="80" y1="90" x2="250" y2="60"/><line x1="80" y1="90" x2="110" y2="250"/>
+    <line x1="250" y1="60" x2="110" y2="250"/><line x1="250" y1="60" x2="300" y2="220"/>
+    <line x1="110" y1="250" x2="300" y2="220"/><line x1="110" y1="250" x2="200" y2="320"/><line x1="300" y1="220" x2="200" y2="320"/>
+  </g>
+  <g stroke-width="6">
+    <circle class="nb" cx="80" cy="90" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="nb" cx="110" cy="250" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="nb" cx="200" cy="320" r="26" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="ny" cx="250" cy="60" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+    <circle class="ny" cx="300" cy="220" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+  </g>
+</template>
+
+<!-- scene 1: two directions, one network -->
+<div id="sc1" class="abs" style="left:128px;top:240px;width:1664px;height:640px">
+  <img class="abs cov" data-in="1:either" data-fx="pop" src="../img/atelier-cover.png" style="left:0;top:0;width:130px">
+  <p class="abs pill py" data-in="1:purpose" data-fx="pop" style="left:170px;top:10px">purpose</p>
+  <p class="abs dn" data-in="1:=to" data-fx="drop" style="left:270px;top:92px">↓</p>
+  <p class="abs pill pb" data-in="1:resources" data-fx="pop" style="left:170px;top:190px">resources</p>
+
+  <img class="abs cov" data-in="1:grammatical" data-fx="pop" src="../img/npcr-cover.png" style="left:1260px;top:0;width:130px">
+  <p class="abs pill pb" data-in="1:structure" data-fx="pop" style="left:960px;top:10px">structure</p>
+  <p class="abs dn" data-in="1:structure+0.5" data-fx="drop" style="left:1060px;top:92px">↓</p>
+  <p class="abs pill py" data-in="1:function" data-fx="pop" style="left:960px;top:190px">function</p>
+
+  <svg id="n1" class="abs" style="left:560px;top:100px" width="380" height="370" viewBox="0 0 380 370"></svg>
+  <svg class="abs" style="left:0;top:0" width="1400" height="640">
+    <defs><marker id="ah13" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6a7179"/></marker></defs>
+    <path id="c1" d="M380 280 C 480 300, 520 300, 590 290" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
+    <path id="c2" d="M950 280 C 920 300, 900 300, 880 300" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
+  </svg>
+</div>
+
+<!-- scene 2+3: the Mandarin example as two linked goals -->
+<div id="sc2" class="abs" data-in="2" data-fx="fade" style="left:128px;top:240px;width:1664px;height:660px">
+  <p class="abs" data-in="2:Mandarin" data-fx="fade" style="left:0;top:0;font-size:36px;font-weight:700;color:#9f5100"><span class="zh">中文</span> <span class="zh" style="font-weight:500;color:#1f2430;margin-left:12px">餐厅在哪儿？</span></p>
+  <div class="abs card cb" id="cb" data-in="3:linguistic" data-fx="left" style="left:0;top:110px">
+    <p class="ctag" style="background:#1ca6ff;color:#fff">linguistic goal</p>
+    <p class="ct" data-in="3:forming" data-fx="fade">question about location</p>
+    <p class="zh" data-in="3:forming" data-fx="fade" style="font-size:52px;font-weight:700;margin-top:10px">……在<span style="color:#006baa">哪儿</span>？</p>
+  </div>
+  <div class="abs card cy" id="cy" data-in="4:functional" data-fx="right" style="left:840px;top:110px">
+    <p class="ctag" style="background:#fcdf00">functional goal</p>
+    <p class="ct" data-in="4:asking" data-fx="fade">ask where a place is</p>
+    <p class="ct" data-in="4:understanding" data-fx="fade" style="margin-top:6px">and understand the answer</p>
+  </div>
+  <svg class="abs" style="left:0;top:0" width="1400" height="660"><line id="lk" x1="580" y1="250" x2="840" y2="250" stroke="#6a7179" stroke-width="8" stroke-linecap="round"/></svg>
+  <!-- what Mandarin adds to the linguistic goal -->
+  <svg class="abs" style="left:0;top:0" width="700" height="660"><path id="tk1" d="M120 390 L120 450" stroke="#1ca6ff" stroke-width="5"/><path id="tk2" d="M400 390 L400 450" stroke="#1ca6ff" stroke-width="5"/></svg>
+  <div class="abs add" id="addT" data-in="5:pronunciation" data-fx="rise" style="left:20px;top:450px">🔊 <span>c<b id="t1">ā</b>nt<b id="t2">ī</b>ng</span></div>
+  <div class="abs add zh" id="addC" data-in="5:characters" data-fx="rise" style="left:320px;top:450px">✍️ 餐厅</div>
+  <!-- the activities around them -->
+  <div class="abs" id="act" data-in="6:activities" data-fx="rise" style="left:860px;top:440px;width:520px;height:130px;border:4px dashed #9ca3af;border-radius:24px;display:flex;align-items:center;justify-content:center;gap:34px;font-size:56px">
+    <span>🏋️</span><span>🎮</span><span>💬</span><span id="rc" style="color:#ff9037;font-weight:700">↻</span>
+  </div>
+  <p class="abs stamp hand" id="stamp" style="left:600px;top:-12px">re-specification</p>
+</div>
+
+<!-- scene 4: independent of the language, and partly of the textbook -->
+<div id="sc4" class="abs" data-in="8" data-fx="fade" style="left:128px;top:240px;width:1664px;height:640px">
+  <svg id="n2" class="abs" style="left:520px;top:60px" width="380" height="370" viewBox="0 0 380 370"></svg>
+  <p class="abs lang" data-in="8:language" data-fx="left" style="left:0;top:40px;border-color:#1ca6ff;color:#006baa">Français</p>
+  <p class="abs lang zh" data-in="8:language+0.3" data-fx="left" style="left:0;top:230px;border-color:#ff9037;color:#9f5100">中文</p>
+  <img class="abs cov" data-in="8:textbook" data-fx="right" src="../img/atelier-cover.png" style="left:1100px;top:20px;width:120px">
+  <img class="abs cov" data-in="8:textbook+0.3" data-fx="right" src="../img/npcr-cover.png" style="left:1260px;top:20px;width:120px">
+  <svg class="abs" style="left:0;top:0" width="1400" height="640">
+    <path id="l1" d="M290 85 C 400 85, 440 150, 560 170" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path id="l2" d="M290 275 C 400 275, 440 280, 590 300" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path id="l3" d="M1160 200 C 1100 260, 960 240, 880 220" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="14 14"/>
+    <path id="l4" d="M1320 200 C 1300 330, 980 330, 860 300" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="14 14"/>
+  </svg>
+  <!-- a Chinese version of the app is the smaller ambition -->
+  <div class="abs" id="ver" data-in="9:Chinese" data-fx="rise" style="left:0;top:460px;padding:18px 30px;border-radius:20px;background:#fff;border:3px solid #d7d9de;font-size:34px;font-weight:700;white-space:nowrap">FluOLinGo <span class="zh" style="color:#9f5100">中文</span></div>
+  <p class="abs" id="mag" style="left:820px;top:20px;font-size:110px;line-height:1">🔍</p>
+</div>
+
+<p class="part">A common representation</p>
+<style>
+#n13 .cov{border-radius:6px;box-shadow:0 6px 18px rgba(31,36,48,.18)}
+#n13 .pill{width:220px;padding:18px 0;border-radius:999px;font-size:38px;font-weight:700;text-align:center;border:4px solid}
+#n13 .py{background:#faf7e2;border-color:#fcdf00}
+#n13 .pb{background:#eff8ff;border-color:#1ca6ff;color:#006baa}
+#n13 .dn{font-size:64px;line-height:1;color:#9ca3af}
+#n13 .card{width:580px;height:280px;border-radius:28px;padding:28px 36px;border:5px solid}
+#n13 .cb{background:#eff8ff;border-color:#1ca6ff}
+#n13 .cy{background:#faf7e2;border-color:#fcdf00}
+#n13 .ctag{display:inline-block;font-size:28px;font-weight:700;border-radius:999px;padding:6px 20px;margin-bottom:22px}
+#n13 .ct{font-size:42px;font-weight:700;line-height:1.15}
+#n13 .add{height:110px;padding:0 34px;border-radius:24px;background:#fff;border:4px solid #1ca6ff;font-size:52px;font-weight:500;display:flex;align-items:center;gap:16px;white-space:nowrap}
+#n13 .add b{font-weight:500;border-radius:8px}
+#n13 .stamp{font-size:60px;color:#9f5100;border:4px solid #ff9037;border-radius:16px;padding:0 24px;background:#fff4ed;transform:rotate(-3deg);opacity:0;white-space:nowrap}
+#n13 .lang{width:280px;padding:22px 0;border-radius:24px;border:5px solid;background:#fff;font-size:44px;font-weight:700;text-align:center}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
+  const draw = (p, at, d) => { const L = p.getTotalLength(); p.style.strokeDasharray = p.getAttribute('stroke-dasharray') ? p.getAttribute('stroke-dasharray') : L;
+    if (p.getAttribute('stroke-dasharray')) A(p, [{opacity:0},{opacity:1}], at, d||0.6, 'both');
+    else A(p, [{strokeDashoffset:L},{strokeDashoffset:0}], at, d||0.7, 'both'); };
+  ['n1','n2'].forEach(id => $(id).innerHTML = $('netT').innerHTML);
+  out($('sc1'), CUE('2')-0.2);
+  out($('sc2'), CUE('8')-0.2);
+
+  // scene 1: both paths lead into the same network
+  A($('n1'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('1:represent'), 0.8, 'both');
+  draw($('c1'), CUE('1:represent')); draw($('c2'), CUE('1:represent')+0.2);
+  const glow = (sel, col, at) => q(sel).forEach((c,i) => A(c, [{strokeWidth:6},{strokeWidth:14, stroke:col},{strokeWidth:6}], at+i*0.08, 0.8, 'none'));
+  glow('#n1 .nb', '#006baa', CUE('1:linguistic+0') > CUE('1:network') ? CUE('1:network')+0.8 : CUE('1:network')+0.8);
+  glow('#n1 .ny', '#e0c400', CUE('1:network')+1.7);
+
+  // scene 2: the link between the two goals
+  draw($('lk'), CUE('4:connect'), 0.6);
+  // scene 3: tones and characters hang off the linguistic goal
+  draw($('tk1'), CUE('5:pronunciation')-0.2, 0.3); draw($('tk2'), CUE('5:characters')-0.2, 0.3);
+  ['t1','t2'].forEach((id,i) => A($(id), [{color:'#1f2430', background:'rgba(255,144,55,0)'},{color:'#9f5100', background:'#ffe2c8'}], CUE('5:tones')+i*0.2, 0.4, 'forwards'));
+  // the relationship holds: the link pulses
+  A($('lk'), [{strokeWidth:8, stroke:'#6a7179'},{strokeWidth:16, stroke:'#00c197'},{strokeWidth:8, stroke:'#00c197'}], CUE('6:relationship'), 1.2, 'forwards');
+  // ...but the competencies change
+  [$('addT'), $('addC')].forEach((el,i) => A(el, [{boxShadow:'0 0 0 0 rgba(255,144,55,0)'},{boxShadow:'0 0 0 12px rgba(255,144,55,.35)'},{boxShadow:'0 0 0 0 rgba(255,144,55,0)'}], CUE('6:competencies')+i*0.2, 1.0, 'none'));
+  A($('rc'), [{opacity:0, transform:'scale(.5)'},{opacity:1, transform:'none'}], CUE('6:reconsidered'), 0.5, 'both');
+  A($('stamp'), [{opacity:0, transform:'rotate(-3deg) scale(1.3)'},{opacity:1, transform:'rotate(-3deg)'}], CUE('7:re-specification'), 0.5, 'forwards');
+
+  // scene 4
+  A($('n2'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('8:architecture'), 0.8, 'both');
+  draw($('l1'), CUE('8:language')); draw($('l2'), CUE('8:language')+0.3);
+  draw($('l3'), CUE('8:extent')+0.3); draw($('l4'), CUE('8:extent')+0.5);
+  A($('ver'), [{opacity:1},{opacity:.4}], CUE('9:gives'), 0.6, 'forwards');
+  A($('n2'), [{filter:'none'},{filter:'drop-shadow(0 0 14px rgba(0,193,151,.6))'}], CUE('9:demanding'), 0.8, 'forwards');
+  A($('mag'), [{opacity:0, transform:'scale(.6)'},{opacity:1, transform:'none'}], CUE('9:investigate'), 0.5, 'both');
+};
+</script>
+</section>

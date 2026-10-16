@@ -3,6 +3,9 @@
 
 <!-- scene A (s1-5): three stacked layers -->
 <div id="scA" class="abs" style="left:128px;top:250px;width:1412px;height:560px">
+  <div class="ph abs" data-in="1:three+0.00" data-fx="fade" style="top:0px"><b class="hand">1</b></div>
+  <div class="ph abs" data-in="1:three+0.15" data-fx="fade" style="top:190px"><b class="hand">2</b></div>
+  <div class="ph abs" data-in="1:three+0.30" data-fx="fade" style="top:380px"><b class="hand">3</b></div>
   <div class="ly abs" id="L1" data-in="2:first" data-fx="rise" style="top:0;background:#eafbf8;border-color:#00c197">
     <p class="nm"><b class="hand">1</b>pedagogical architecture</p>
     <div class="cs">
@@ -57,6 +60,8 @@
 
 <p class="part">Three levels of re-specification</p>
 <style>
+#n19 .ph{left:0;width:1412px;height:160px;border-radius:24px;border:4px dashed #d7d9de;display:flex;align-items:center;padding-left:40px}
+#n19 .ph b{font-size:80px;font-weight:400;color:#d7d9de}
 #n19 .ly{left:0;width:1412px;height:160px;border-radius:24px;border:4px solid;border-left-width:16px}
 #n19 .nm{position:absolute;left:26px;top:0;width:430px;height:152px;display:flex;align-items:center;gap:18px;font-size:34px;font-weight:700;line-height:1.15}
 #n19 .nm b{font-size:80px;font-weight:400;line-height:1}
@@ -73,7 +78,8 @@
 window.SLIDE = function(){
   const $ = id => document.getElementById(id);
   const glow = (el, c, at) => A(el, [{boxShadow:`0 0 0 0 ${c}`},{boxShadow:`0 0 0 12px ${c}`},{boxShadow:'0 0 0 0 rgba(0,0,0,0)'}], at, 1.2, 'none');
-  // s1: three empty shelves wait for the three levels
+  // s1: three empty shelves wait for the three levels; each gives way to its layer
+  document.querySelectorAll('#n19 .ph').forEach((ph,i) => A(ph, [{opacity:1},{opacity:0}], CUE(['2:first','3:second','4:third'][i])-0.1, 0.3, 'forwards'));
   glow($('L1'), 'rgba(0,193,151,.3)', CUE('2:architecture'));
   glow($('L2'), 'rgba(177,126,255,.3)', CUE('3:configuration'));
   glow($('L3'), 'rgba(156,163,175,.35)', CUE('4:implementation'));

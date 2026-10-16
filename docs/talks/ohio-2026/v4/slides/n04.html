@@ -51,7 +51,7 @@ window.SLIDE = function(){
     const p = document.createElementNS(NS, 'path');
     p.setAttribute('d', `M${x1} ${y1} L${x2} ${y2}`);
     p.setAttribute('stroke', col || '#9ca3af'); p.setAttribute('stroke-width', '5');
-    p.setAttribute('stroke-linecap', 'round'); p.setAttribute('fill', 'none');
+    p.setAttribute('stroke-linecap', 'butt'); p.setAttribute('fill', 'none');
     p.setAttribute('pathLength', '100'); p.setAttribute('stroke-dasharray', '100');
     svg.appendChild(p);
     A(p, [{strokeDashoffset:100},{strokeDashoffset:0}], at, 0.7);
