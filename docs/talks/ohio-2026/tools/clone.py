@@ -2,7 +2,7 @@
 ~$0.0365 per second. Refuses to start if the wallet cannot cover every slide asked for."""
 import json, os, subprocess, sys, time
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-AVATAR = "5f06a739dafd4e7ca246686f541a8272"
+AVATAR = "b2ef1c44e3b74996876ff773bef15247"  # "Daniel in a professional suit" (Dan, 16 Oct). NOT 5f06a739… (office look, wrong)
 LOG = f"{R}/v4/clone-log.json"
 log = json.load(open(LOG)) if os.path.exists(LOG) else {}
 def curl(*a):

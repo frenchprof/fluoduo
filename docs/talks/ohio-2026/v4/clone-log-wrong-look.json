@@ -1,0 +1,82 @@
+{
+ "s01": {
+  "asset_id": "b1e652fac4974805af069854a9ef3df3",
+  "video_id": "8cdbb7ceb8dbe55447304668c619045c"
+ },
+ "s02": {
+  "asset_id": "20b9634a15f942bc809b8cfcf9be8274",
+  "video_id": "09f3537b05750ad41ccfeb3d07097ad4"
+ },
+ "s03": {
+  "asset_id": "c8553ca41c174686bcaba38402d14204",
+  "video_id": "2c52f9a15aab6a88f4f2f0a3b18bc50d"
+ },
+ "s04": {
+  "asset_id": "edcae49a6cad424dbc4888b46092032b",
+  "video_id": "629b9e9df6336c7648cd4faad10f87f1"
+ },
+ "s05": {
+  "asset_id": "0ced87f3bf9c4c9d99f9c59fb8078915",
+  "video_id": "5e929c821b3214b9963c3afe24fe5398"
+ },
+ "s06": {
+  "asset_id": "f2ea06be336c40f397a5192ed91781f3",
+  "video_id": "c1f6a07f5a0088308ff3f26421bdf7cd"
+ },
+ "s07": {
+  "asset_id": "a8ba99310a52462c94ca1da9a3d8fcde",
+  "video_id": "62b4c2bafb478e81b017e1b5cb39de4d"
+ },
+ "s08": {
+  "asset_id": "268358ece03c430bb23fc195836994a8",
+  "video_id": "145f06ef1e9bfad2e379ac1be02e44b1"
+ },
+ "s09": {
+  "asset_id": "2dab2e98878944b996b90c411339ef7f",
+  "video_id": "df4ec017c38d2174cf95b9cebe4a08f0"
+ },
+ "s11": {
+  "asset_id": "36d11d35a6a84ec6b5b045a7789c6c3d",
+  "video_id": "ba2b9af35c2171b31f8bd4525f69a5a6"
+ },
+ "s12": {
+  "asset_id": "2e48bc58e8e14dad95323cebfa28bd2f",
+  "video_id": "c1a41b388c4854416e18cc65f6f1caa5"
+ },
+ "s13": {
+  "asset_id": "0965b2f3d54844a2bb6fe69f09070aec",
+  "video_id": "50b9afa0978247230048a80b7964de5d"
+ },
+ "s14": {
+  "asset_id": "dadb9d0b617148aba266e08bb58b94f0",
+  "video_id": "415290b28a09bce11b61043e7018915d"
+ },
+ "s15": {
+  "asset_id": "0a909f9063024f3cabe158e04d94c784",
+  "video_id": "08c11de32336fb1e676d6a80468fb678"
+ },
+ "s16": {
+  "asset_id": "bbbf390c90e84f38bbdc7caed45df91f",
+  "video_id": "3cd2a01b09b2725507a42142484fb8a8"
+ },
+ "s18": {
+  "asset_id": "5044d23811714511b2e1fba8a5c58bb7",
+  "video_id": "c16c7bda6dc169c4a400a9930dbb4740"
+ },
+ "s19": {
+  "asset_id": "23569d265d5c484890850c5ee7de5b8a",
+  "video_id": "4e1199907ce7a2d78bd853ee0de6f7a1"
+ },
+ "s21": {
+  "asset_id": "18d209cf99e34842b098694fa9d4c8b5",
+  "video_id": "3ce013e9887ee065a51fd5f003696700"
+ },
+ "s22": {
+  "asset_id": "10f7992cb72b4e68b851937eb08028a8",
+  "video_id": "fa2f98d4f378c76aaa70b9a17278df14"
+ },
+ "s23": {
+  "asset_id": "964546af157143df93fa84465ddae80d",
+  "video_id": "fc94ba22b2688491132930c77e98f6b7"
+ }
+}
