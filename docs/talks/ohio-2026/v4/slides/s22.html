@@ -1,0 +1,58 @@
+<section id="s22">
+<h2 class="hd">A recipe for your language</h2>
+
+<!-- six recipe cards, 3 x 2, kept left of x=1540 -->
+<div id="grid" class="abs" style="left:128px;top:240px;width:1400px;height:640px">
+  <!-- s1: six empty places for the recipe -->
+  <div class="abs ph" data-in="1:recipe+0.0" data-fx="fade" style="left:0px;top:0px"></div>
+  <div class="abs ph" data-in="1:recipe+0.1" data-fx="fade" style="left:480px;top:0px"></div>
+  <div class="abs ph" data-in="1:recipe+0.2" data-fx="fade" style="left:960px;top:0px"></div>
+  <div class="abs ph" data-in="1:recipe+0.3" data-fx="fade" style="left:0px;top:330px"></div>
+  <div class="abs ph" data-in="1:recipe+0.4" data-fx="fade" style="left:480px;top:330px"></div>
+  <div class="abs ph" data-in="1:recipe+0.5" data-fx="fade" style="left:960px;top:330px"></div>
+  <div class="abs rc" id="r1" data-in="2" data-fx="pop" style="left:0;top:0;border-color:#fcdf00"><b>1</b><i>📘</i><span>start with your textbook</span></div>
+  <div class="abs rc" id="r2" data-in="5" data-fx="pop" style="left:480px;top:0;border-color:#9ca3af"><b>2</b><i>📋</i><span>list what it teaches</span></div>
+  <div class="abs rc" id="r3" data-in="8" data-fx="pop" style="left:960px;top:0;border-color:#1ca6ff"><b>3</b><i>📄</i><span>one lesson page per linguistic goal</span></div>
+  <div class="abs rc" id="r4" data-in="10" data-fx="pop" style="left:0;top:330px;border-color:#ff9037"><b>4</b><i>🎭</i><span>write your own situations</span></div>
+  <div class="abs rc" id="r5" data-in="13" data-fx="pop" style="left:480px;top:330px;border-color:#00c197"><b>5</b><i>★★★</i><span>one exercise, more levels</span></div>
+  <div class="abs rc" id="r6" data-in="16" data-fx="pop" style="left:960px;top:330px;border-color:#b17eff"><b>6</b><i>📝👀</i><span>write it down, check the screen</span></div>
+  <!-- small additions as the narration explains each card -->
+  <p class="abs note" data-in="4:learn" data-fx="fade" style="left:30px;top:244px"><span style="color:#006baa">● learn</span> · <span style="color:#9f8a00">● do</span></p>
+  <p class="abs note" data-in="12:tool" data-fx="fade" style="left:30px;top:574px">🧑‍🏫 only you</p>
+  <p class="abs note" data-in="15:level" data-fx="fade" style="left:510px;top:574px">+ ★ · same screen</p>
+  <p class="abs note" data-in="18:author" data-fx="fade" style="left:990px;top:574px">🧑‍🏫 = author</p>
+</div>
+
+<!-- s19-20: French and Chinese, then others -->
+<div id="bridge" class="abs" data-in="19" data-fx="fade" style="left:128px;top:300px;width:1400px;height:560px">
+  <div class="abs lang" data-in="19:French" data-fx="pop" style="left:0;top:40px;background:#eff8ff;border-color:#1ca6ff">Français</div>
+  <div class="abs lang" data-in="19:Chinese" data-fx="pop" style="left:900px;top:40px;background:#fff4ed;border-color:#ff9037"><span class="zh">中文</span></div>
+  <p class="abs" data-in="19:different" data-fx="pop" style="left:480px;top:50px;width:420px;text-align:center;font-size:110px;color:#9ca3af;line-height:1">⇄</p>
+  <p class="abs" data-in="20:works" data-fx="pop" style="left:480px;top:220px;width:420px;text-align:center;font-size:40px;font-weight:700;color:#00715a">same recipe ✓</p>
+  <div class="abs other" data-in="20:others" data-fx="rise" style="left:180px;top:360px">?</div>
+  <div class="abs other" data-in="20:others+0.15" data-fx="rise" style="left:500px;top:360px">?</div>
+  <div class="abs other" data-in="20:others+0.3" data-fx="rise" style="left:820px;top:360px">?</div>
+  <p class="abs" data-in="20:others+0.5" data-fx="fade" style="left:1120px;top:390px;font-size:34px;color:#6a7179">your language</p>
+</div>
+
+<p class="part">Part 4 · Closing</p>
+<style>
+.rc{width:440px;height:300px;border-radius:24px;background:#fff;border:4px solid;border-left-width:16px;padding:24px 28px}
+.rc b{position:absolute;left:24px;top:8px;font-family:'Patrick Hand',cursive;font-size:96px;font-weight:400;color:#1f2430;line-height:1}
+.rc i{position:absolute;right:26px;top:22px;font-style:normal;font-size:56px;line-height:1;color:#006baa}
+.rc span{position:absolute;left:28px;right:24px;top:118px;font-size:38px;font-weight:700;line-height:1.2}
+.ph{width:440px;height:300px;border-radius:24px;border:4px dashed #d7d9de}
+.note{font-size:28px;color:#6a7179;white-space:nowrap}
+.lang{width:480px;padding:40px;border-radius:28px;border:5px solid;font-size:80px;font-weight:700;text-align:center;line-height:1.1}
+.other{width:260px;height:150px;border-radius:24px;border:4px dashed #9ca3af;display:flex;align-items:center;justify-content:center;font-family:'Patrick Hand',cursive;font-size:90px;color:#9ca3af}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // the card being explained lifts; the others rest
+  const spans = [['r1','2','5'],['r2','5','8'],['r3','8','10'],['r4','10','13'],['r5','13','16'],['r6','16','19']];
+  spans.forEach(([id,a]) => A($(id), [{transform:'none',boxShadow:'0 0 0 0 rgba(31,36,48,0)'},{transform:'translateY(-12px)',boxShadow:'0 14px 30px rgba(31,36,48,.12)'},{transform:'none',boxShadow:'0 0 0 0 rgba(31,36,48,0)'}], CUE(a)+0.2, 1.0, 'none'));
+  A($('grid'), [{opacity:1},{opacity:0}], CUE('19')-0.2, 0.5, 'forwards');
+};
+</script>
+</section>

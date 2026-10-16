@@ -1,0 +1,132 @@
+<section id="s19">
+<h2 class="hd">When the book gives you nothing: NPCR Lesson 3</h2>
+
+<!-- scene 1: the book, what it has and what it lacks -->
+<div id="sc1" class="abs" style="left:128px;top:230px;width:1400px;height:720px">
+  <img data-in="1" data-fx="pop" class="abs" src="../img/npcr-cover.png" style="left:0;top:0;width:420px;border-radius:10px;box-shadow:0 10px 30px rgba(31,36,48,.2)">
+  <div class="abs" style="left:500px;top:10px">
+    <p class="zh" data-in="2:title" data-fx="fade" style="font-size:64px;font-weight:700">她是哪国人？</p>
+    <p class="gl" data-in="2:title+0.4" data-fx="fade" style="font-size:32px;margin-top:6px">What country is she from?</p>
+  </div>
+  <div class="abs" style="left:500px;top:230px;display:flex;flex-direction:column;gap:20px">
+    <p class="has" data-in="2:text" data-fx="left">📄 text <b>✓</b></p>
+    <p class="has" data-in="2:notes" data-fx="left">📝 notes <b>✓</b></p>
+    <p class="has" data-in="2:pronunciation" data-fx="left">🔊 pronunciation <b>✓</b></p>
+  </div>
+  <div class="abs" style="left:980px;top:230px;display:flex;flex-direction:column;gap:20px">
+    <p class="no" data-in="3:situations" data-fx="right">🎭 situations <b>✗</b></p>
+    <p class="no" data-in="3:task" data-fx="right">🏁 task <b>✗</b></p>
+    <p class="no" data-in="3:grammar" data-fx="right">⚙️ grammar <b>✗</b></p>
+  </div>
+</div>
+
+<!-- scene 2: the dialogue, line by line; scene 3 keeps it and adds the goals -->
+<div id="dlg" class="abs" data-in="5" data-fx="fade" style="left:128px;top:230px;width:900px;height:740px">
+  <div class="ln" data-in="6" data-fx="rise" style="top:0"><p class="zh z">力波，那<i class="g1">是</i><i class="g2">谁</i>？</p><p class="py">Lìbō, nà shì shéi?</p><p class="gl">Libo, who is that?</p></div>
+  <div class="ln" data-in="7" data-fx="rise" style="top:140px"><p class="zh z">那<i class="g1">是</i>我们老师。</p><p class="py">Nà shì wǒmen lǎoshī.</p><p class="gl">That's our teacher.</p></div>
+  <div class="ln" data-in="8" data-fx="rise" style="top:280px"><p class="zh z">她<i class="g1">是</i><i class="g3">哪国人</i>？</p><p class="py">Tā shì nǎ guó rén?</p><p class="gl">What country is she from?</p></div>
+  <div class="ln" data-in="9" data-fx="rise" style="top:420px"><p class="zh z">她<i class="g1">是</i><i class="g4">中国人</i>。</p><p class="py">Tā shì Zhōngguó rén.</p><p class="gl">She's Chinese.</p></div>
+  <div class="ln" data-in="10" data-fx="rise" style="top:560px"><p class="zh z">我们老师<i class="g5">都</i><i class="g1">是</i><i class="g4">中国人</i>。</p><p class="py">Wǒmen lǎoshī dōu shì Zhōngguó rén.</p><p class="gl">Our teachers are all Chinese.</p></div>
+  <!-- situation brackets -->
+  <div id="br1" class="abs br" style="top:10px;height:240px"></div>
+  <div id="br2" class="abs br" style="top:290px;height:380px"></div>
+</div>
+
+<!-- situations -->
+<div id="sit" class="abs" style="left:1060px;top:240px;width:720px;height:440px">
+  <div class="abs sc" data-in="11:someone-0.8" data-fx="pop" style="top:0">🎭 identify someone</div>
+  <div class="abs sc" data-in="11:say" data-fx="pop" style="top:200px">🎭 say where someone is from</div>
+</div>
+
+<!-- linguistic goals -->
+<div id="gl" class="abs" style="left:1060px;top:230px;width:480px;height:740px">
+  <div class="abs gc" data-in="13:verb" data-fx="right" style="top:0"><span class="zh">是</span><span class="zh" data-in="13:negative" data-fx="fade" style="margin-left:14px">· 不是</span></div>
+  <div class="abs gc" data-in="14:who" data-fx="right" style="top:110px"><span class="zh">谁</span></div>
+  <div class="abs gc" data-in="14:nationality" data-fx="right" style="top:220px"><span class="zh">哪国人</span><span data-in="14:plus" data-fx="fade" style="font-size:30px;margin-left:16px;color:#006baa">country + <span class="zh">人</span></span></div>
+  <div class="abs gc" data-in="14:all" data-fx="right" style="top:330px"><span class="zh">都</span>
+    <span class="abs tg" data-in="14:seen" data-fx="pop" style="left:110px;top:16px">L2</span>
+    <span class="abs" data-in="14:until" data-fx="fade" style="left:186px;top:14px;font-size:32px;color:#9ca3af">→</span>
+    <span class="abs tg" data-in="14:7" data-fx="pop" style="left:236px;top:16px">L7</span>
+  </div>
+  <p class="abs" data-in="15:encounter" data-fx="fade" style="left:20px;top:432px;font-size:28px;color:#6a7179">used, not drilled</p>
+  <!-- the sound -->
+  <div class="abs gc snd" data-in="16:sound" data-fx="right" style="top:500px;height:200px">
+    <p class="zh" style="font-size:60px;font-weight:700;line-height:1">🔊 不是</p>
+    <p style="font-size:44px;margin-top:14px;position:relative">b<span id="u4">ù</span><span id="u2" class="abs" style="left:22px;top:0;opacity:0;color:#ff9037">ú</span>shì</p>
+    <p class="abs" data-in="16:fourth" data-fx="pop" style="left:260px;top:106px;font-size:28px;color:#6a7179">← 4th tone</p>
+  </div>
+</div>
+
+<!-- scene 4: the same grid as in French -->
+<div id="grid" class="abs" data-in="19" data-fx="fade" style="left:128px;top:240px;width:1400px;height:720px">
+  <div class="gh" style="left:560px">🎭 identify someone</div>
+  <div class="gh" style="left:960px">🎭 say where someone is from</div>
+  <div class="gr" style="top:120px"><span class="zh">是 · 不是</span></div>
+  <div class="gr" style="top:230px"><span class="zh">谁</span></div>
+  <div class="gr" style="top:340px"><span class="zh">哪国人 · country + 人</span></div>
+  <div class="gr" style="top:450px"><span class="zh">都</span></div>
+  <div class="gr" style="top:560px"><span class="zh">不 bù → bú</span></div>
+  <i class="dot" style="left:720px;top:150px"></i>
+  <i class="dot" style="left:1120px;top:150px"></i>
+  <i class="dot" style="left:720px;top:260px"></i>
+  <i class="dot" style="left:1120px;top:370px"></i>
+  <i class="dot" style="left:1120px;top:480px"></i>
+  <i class="dot" style="left:720px;top:590px"></i>
+</div>
+<img id="bk" class="abs" data-in="20:book" data-fx="pop" src="../img/npcr-cover.png" style="left:1620px;top:250px;width:170px;border-radius:6px;box-shadow:0 6px 18px rgba(31,36,48,.18)">
+
+<p class="part">Part 3 · Fill the slots</p>
+<style>
+#s19 .has,#s19 .no{font-size:40px;padding:16px 28px;border-radius:18px;background:#fff;border:3px solid #d7d9de;white-space:nowrap;width:420px}
+#s19 .has b{color:#00c197;float:right}
+#s19 .no{color:#6a7179}
+#s19 .no b{color:#ff9037;float:right}
+#s19 .ln{position:absolute;left:44px}
+#s19 .ln .z{font-size:52px;font-weight:500;line-height:1.15}
+#s19 .ln .z i{font-style:normal;border-radius:8px}
+#s19 .ln .py{font-size:26px;color:#1f2430;margin-top:2px}
+#s19 .ln .gl{font-size:26px}
+#s19 .br{left:0;width:16px;border-radius:8px;background:#fcdf00;opacity:0}
+#s19 .sc{left:0;width:700px;padding:40px 36px;border-radius:26px;background:#faf7e2;border:4px solid #fcdf00;white-space:nowrap;font-size:40px;font-weight:700}
+#s19 .gc{left:0;width:470px;height:92px;border-radius:20px;background:#eff8ff;border:4px solid #1ca6ff;padding:0 24px;display:flex;align-items:center;font-size:52px;font-weight:500}
+#s19 .gc.snd{display:block;padding:24px}
+#s19 .tg{font-size:28px;font-weight:700;color:#006baa;background:#fff;border:3px solid #1ca6ff;border-radius:999px;padding:4px 14px}
+#s19 .gh{position:absolute;top:0;width:360px;height:96px;border-radius:20px;background:#faf7e2;border:4px solid #fcdf00;font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.1;padding:0 16px}
+#s19 .gr{position:absolute;left:0;width:1320px;height:96px;border-radius:18px;background:#fff;border:3px solid #d7d9de;display:flex;align-items:center;padding:0 0 0 24px;font-size:40px;font-weight:500}
+#s19 .gr span{background:#eff8ff;border:3px solid #1ca6ff;border-radius:14px;padding:4px 18px}
+#s19 .dot{position:absolute;width:40px;height:40px;border-radius:50%;background:#006baa;margin-left:0}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
+  out($('sc1'), CUE('5')-0.2);
+  // situations: brackets on the dialogue
+  A($('br1'), [{opacity:0},{opacity:1}], CUE('11:someone-0.8'), 0.5, 'forwards');
+  A($('br2'), [{opacity:0},{opacity:1}], CUE('11:say'), 0.5, 'forwards');
+  out($('sit'), CUE('12')-0.2);
+  out($('br1'), CUE('12')-0.2); out($('br2'), CUE('12')-0.2);
+  // linguistic goals light up in the dialogue as they are named
+  const hl = (cls, at) => q('#s19 .'+cls).forEach(el =>
+    A(el, [{background:'rgba(28,166,255,0)', color:'#1f2430'},{background:'#cfe9ff', color:'#006baa'}], at, 0.4, 'forwards'));
+  hl('g1', CUE('13:verb'));
+  hl('g2', CUE('14:who'));
+  hl('g3', CUE('14:nationality'));
+  hl('g4', CUE('14:plus'));
+  hl('g5', CUE('14:all'));
+  // the tone mark changes
+  A($('u4'), [{opacity:1},{opacity:0}], CUE('18:change'), 0.5, 'forwards');
+  A($('u2'), [{opacity:0, transform:'translateY(-10px)'},{opacity:1, transform:'none'}], CUE('18:change'), 0.5, 'forwards');
+  // scene 4: the grid
+  out($('dlg'), CUE('19')-0.2);
+  out($('gl'), CUE('19')-0.2);
+  q('#s19 .dot').forEach((d,i) => A(d, [{opacity:0, transform:'scale(.3)'},{opacity:1, transform:'none'}], CUE('19:grid')+0.3+i*0.12, 0.4, 'both'));
+  // adapt the goals ... and situations
+  q('#s19 .gr span').forEach((el,i) => A(el, [{transform:'none'},{transform:'translateX(12px)'},{transform:'none'}], CUE('21:goals')+i*0.08, 0.6, 'none'));
+  q('#s19 .gh').forEach((el,i) => A(el, [{transform:'none'},{transform:'translateY(-12px)'},{transform:'none'}], CUE('21:situations')+i*0.1, 0.6, 'none'));
+  // the textbook decides: the cover glows
+  A($('bk'), [{boxShadow:'0 6px 18px rgba(31,36,48,.18)'},{boxShadow:'0 0 0 12px rgba(255,144,55,.35)'},{boxShadow:'0 6px 18px rgba(31,36,48,.18)'}], CUE('22:textbook'), 1.0, 'none');
+};
+</script>
+</section>

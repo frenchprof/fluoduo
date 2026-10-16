@@ -1,0 +1,121 @@
+<section id="s12">
+<h2 class="hd">Frame, slots, settings</h2>
+
+<!-- scene 1: the three steps -->
+<div id="steps" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs" data-in="1:French" data-fx="pop" style="left:128px;top:222px"><span class="lchip" style="background:#eff8ff;border-color:#1ca6ff">Français</span></div>
+  <p class="abs" data-in="1:adapt" data-fx="left" style="left:380px;top:212px;font-size:60px;color:#9ca3af;line-height:1">→</p>
+  <div class="abs" data-in="1:Chinese" data-fx="pop" style="left:470px;top:222px"><span class="lchip zh" style="background:#fff4ed;border-color:#ff9037">中文</span></div>
+
+  <!-- card 1 -->
+  <div id="c1" class="card abs" data-in="3" data-fx="rise" style="left:128px">
+    <p class="num hand">1</p><p class="ttl">keep the frame</p>
+    <div class="abs" style="left:70px;top:170px;width:300px;height:210px;border:8px solid #1f2430;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px">
+      <i class="slot"></i><i class="slot"></i><i class="slot"></i><i class="slot"></i>
+    </div>
+    <p class="abs hand" data-in="4:once" data-fx="pop" style="left:320px;top:140px;font-size:64px;color:#006baa;background:#eff8ff;border:4px solid #1ca6ff;border-radius:999px;padding:0 22px;line-height:1.2">×1</p>
+  </div>
+  <!-- the two rules clip onto card 1 -->
+  <div class="abs" data-in="5:catalogue" data-fx="drop" style="left:150px;top:768px"><i class="pin"></i><span class="tag">« catalogue »</span></div>
+  <div class="abs" data-in="5:spiral" data-fx="drop" style="left:420px;top:768px"><i class="pin"></i><span class="tag">« spiral »</span></div>
+
+  <!-- card 2 -->
+  <div id="c2" class="card abs" data-in="7" data-fx="rise" style="left:608px">
+    <p class="num hand">2</p><p class="ttl">change the settings</p>
+    <div id="frEx" class="abs ex" data-in="8:exercises" data-fx="fade" style="left:40px;top:190px">
+      <p class="gap">« <u>&nbsp;?&nbsp;</u> sport »</p>
+      <p class="opts"><span>le</span><span>la</span></p>
+    </div>
+    <div id="zhEx" class="abs ex zh" data-in="8:different" data-fx="fade" style="left:40px;top:190px">
+      <p class="gap">一<u>&nbsp;?&nbsp;</u>照片</p>
+      <p class="opts"><span>张</span><span>瓶</span></p>
+    </div>
+  </div>
+
+  <!-- card 3 -->
+  <div id="c3" class="card abs" data-in="9" data-fx="rise" style="left:1088px">
+    <p class="num hand">3</p><p class="ttl">fill the slots</p>
+    <img class="abs" data-in="10:textbook" data-fx="pop" src="../img/npcr-cover.png" style="left:32px;top:160px;width:120px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.18)">
+    <div class="abs zh" style="left:176px;top:150px;width:236px;display:flex;flex-direction:column;gap:10px">
+      <p class="fill"><span data-in="10:work" data-fx="pop">是</span></p>
+      <p class="fill"><span data-in="10:need" data-fx="pop">谁</span></p>
+      <p class="fill"><span data-in="10:able" data-fx="pop">哪国人</span></p>
+    </div>
+  </div>
+  <div class="abs" data-in="11:teacher" data-fx="pop" style="left:1120px;top:688px;display:flex;align-items:center;gap:14px;background:#fff4ed;border:4px solid #ff9037;border-radius:999px;padding:6px 28px 6px 14px">
+    <span style="font-size:56px;line-height:1">🧑‍🏫</span><span style="font-size:34px;font-weight:700;color:#9f5100">real work</span>
+  </div>
+</div>
+
+<!-- scene 2: the loom -->
+<div id="loom" class="abs" style="left:460px;top:250px;width:1000px;height:700px"></div>
+<p class="abs hand" data-in="14:frame" data-fx="left" style="left:1480px;top:232px;font-size:60px;color:#1f2430;line-height:1">← frame</p>
+<p class="abs" data-in="15:thread" data-fx="left" style="left:150px;top:744px;font-size:44px;font-weight:700;color:#006baa">Français</p>
+<p class="abs zh" data-in="15:change" data-fx="left" style="left:150px;top:552px;font-size:48px;font-weight:700;color:#9f5100">中文</p>
+
+<p class="part">Part 3 · Moving the template to Chinese</p>
+<style>
+.lchip{display:inline-block;font-size:40px;font-weight:700;padding:8px 30px;border-radius:999px;border:4px solid}
+.card{top:330px;width:440px;height:440px;border-radius:28px;background:#fff;border:4px solid #d7d9de}
+.card .num{position:absolute;left:26px;top:26px;width:68px;height:68px;border-radius:50%;border:4px solid #006baa;font-size:50px;color:#006baa;line-height:58px;text-align:center}
+.card .ttl{position:absolute;left:112px;top:32px;width:310px;font-size:38px;font-weight:700;line-height:1.1}
+.slot{display:block;border:4px dashed #9ca3af;border-radius:6px}
+.pin{display:block;width:4px;height:26px;background:#6a7179;margin-left:60px}
+.tag{display:inline-block;font-size:34px;padding:8px 22px;border-radius:12px;background:#eafbf8;border:3px solid #00c197;color:#00715a;font-weight:700}
+.ex{width:380px}
+.ex .gap{font-size:48px;font-weight:700;margin-bottom:24px}
+.ex .gap u{text-decoration:none;border-bottom:5px solid #1f2430;color:#9ca3af}
+.ex .opts{display:flex;gap:22px}
+.ex .opts span{font-size:44px;padding:6px 30px;border-radius:14px;background:#eff8ff;border:3px solid #1ca6ff}
+.zh .opts span{background:#fff4ed;border-color:#ff9037}
+.fill{height:56px;border:4px dashed #9ca3af;border-radius:12px;font-size:36px;font-weight:700;display:flex;align-items:center;padding-left:18px}
+.fill span{display:inline-block}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // card 2: the French version gives way to the Chinese one
+  A($('frEx'), [{opacity:1},{opacity:0}], CUE('8:different')-0.1, 0.4, 'forwards');
+  // the slots go solid as they fill
+  document.querySelectorAll('.fill').forEach((f,i) =>
+    A(f, [{borderStyle:'dashed',borderColor:'#9ca3af',background:'transparent'},{borderStyle:'solid',borderColor:'#ff9037',background:'#fff4ed'}], CUE(['10:work','10:need','10:able'][i]), 0.4, 'forwards'));
+  // step 3 is where the work is
+  A($('c3'), [{borderColor:'#d7d9de',borderWidth:'4px'},{borderColor:'#ff9037',borderWidth:'8px'}], CUE('11:teacher'), 0.6, 'forwards');
+  // light each card as it is named
+  [['c1','3:keep'],['c2','7:change']].forEach(([id,c]) =>
+    A($(id), [{borderColor:'#d7d9de'},{borderColor:'#1ca6ff'}], CUE(c), 0.5, 'forwards'));
+  // scene change to the loom
+  A($('steps'), [{opacity:1},{opacity:0}], CUE('12')-0.2, 0.6, 'forwards');
+
+  // build the loom
+  const L = $('loom');
+  const mk = (css, parent) => { const d = document.createElement('div'); d.style.cssText = 'position:absolute;' + css; (parent||L).appendChild(d); return d; };
+  const wood = 'background:#9f5100;border-radius:8px;';
+  const frame = mk('left:0;top:0;width:1000px;height:700px');
+  const parts = [mk('left:60px;top:0;width:34px;height:700px;'+wood, frame), mk('left:906px;top:0;width:34px;height:700px;'+wood, frame),
+                 mk('left:30px;top:24px;width:940px;height:40px;'+wood, frame), mk('left:30px;top:636px;width:940px;height:40px;'+wood, frame)];
+  const t0 = CUE('12:loom');
+  A(parts[0], [{opacity:0,transform:'translateY(-40px)'},{opacity:1,transform:'none'}], t0-0.6, 0.5);
+  A(parts[1], [{opacity:0,transform:'translateY(-40px)'},{opacity:1,transform:'none'}], t0-0.45, 0.5);
+  A(parts[2], [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], t0-0.2, 0.6);
+  A(parts[3], [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], t0, 0.6);
+  const N = 15, xs = [...Array(N)].map((_,i) => 130 + i*(740/(N-1)));
+  xs.forEach((x,i) => A(mk(`left:${x-2}px;top:64px;width:4px;height:572px;background:#6a7179`), [{clipPath:'inset(0 0 100% 0)'},{clipPath:'inset(0 0 0 0)'}], t0+0.4+i*0.04, 0.6));
+  // the frame stays the same
+  A(frame, [{filter:'none'},{filter:'drop-shadow(0 0 14px rgba(28,166,255,.9))'},{filter:'none'}], CUE('13:stays'), 1.2, 'none');
+  A(frame, [{filter:'none'},{filter:'drop-shadow(0 0 14px rgba(28,166,255,.9))'},{filter:'none'}], CUE('14:frame'), 1.2, 'none');
+  // weave: six French rows, then six Chinese rows in another pattern
+  const colors = r => r < 6 ? (r%2 ? '#006baa' : '#1ca6ff') : (r%2 ? '#d9402b' : '#ff9037');
+  for (let r = 0; r < 12; r++){
+    const top = 592 - r*32;
+    const row = mk(`left:110px;top:${top}px;width:780px;height:26px;background:${colors(r)};border-radius:4px`);
+    xs.forEach((x,i) => {
+      const over = r < 6 ? (i+r)%2 === 0 : Math.floor((i+r)/2)%2 === 0;
+      if (over) mk(`left:${x-110-3}px;top:-3px;width:6px;height:32px;background:#4b5260;border-radius:3px`, row);
+    });
+    const at = r < 6 ? CUE('15:thread') + r*0.22 : CUE('15:change') + (r-6)*0.22;
+    A(row, [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], at, 0.5);
+  }
+};
+</script>
+</section>

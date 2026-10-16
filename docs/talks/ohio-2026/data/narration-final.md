@@ -125,11 +125,6 @@ Finally, at the end of the unit, there’s the Mission: planning a weekend outin
 
 All along, on the map, learners see each step in order. That way, everything follows the same learning path.
 
-## 10. The same course, in your pocket
-
-Learners do most of this on their phones, on the bus, between classes. So every screen is designed for the phone first, and stretches out on a laptop. What’s more, there’s nothing to install. It opens in the browser.
-
-As you can see, on the left is the path with its numbered goals. In the middle, G-Compris, with learners reading a postcard. And on the right, ComposeIt.
 
 # Part 2. Two typologically distant languages
 
@@ -160,7 +155,8 @@ In short, Chinese has plenty of grammar. It’s just moved out of the word endin
 Fifth and last, writing is a different story altogether. For Chinese, it’s a whole track of its own. But some languages, including many Indigenous languages, are learned mostly by listening, so they have few script goals, or none.
 
 # Part 3. Moving the template to Chinese
-# Sub-groups (Dan, 16 Oct): 12 opens Part 3 · Keep the frame 13–15 · Change the settings 16–17 · Fill the slots 18–20
+# Sub-groups (Dan, 16 Oct): 12 opens Part 3 · Keep the frame 13–15 · Change the settings 16 · Fill the slots 18–19
+# Cut for time (Dan, 16 Oct): slides 10, 17, 20 and the second half of 14
 
 ## 12. Frame, slots, settings
 
@@ -196,10 +192,6 @@ So whenever I decide that something belongs in a particular unit, I need evidenc
 
 Here are some examples. “Quarter past” and “half past” aren’t in the French course, because the book tells the time as “nine fifteen” and “nine thirty.” On the other hand, “noon” and “midnight” are in, in Unit 2. Also, whenever the book introduces a verb, learners practise it with all nine subject pronouns. And in Chinese, Lesson 11 teaches the time with its own words for “a quarter,” “three quarters” and “half.” So the Chinese course will teach them.
 
-Now, I have to be honest here. When I checked the first French version against the book, it went way past it. For instance, twelve colours in the first unit, when the book has two. “Why” taught four units before the book gets to it. And a pre-test that marked learners on “half past two,” which the book never teaches.
-
-Every one of those choices seemed helpful at the time. But learners were being marked on things the course hadn’t taught them. That’s why I introduced the catalogue. And from now on, I want the site to check those limits automatically whenever I update it.
-
 ## 15. Seen, Focus, Scored
 
 Now, you might be thinking: so learners never come across anything new? In fact, they do. That’s because the French approach I follow is a spiral. In a spiral, learners meet things early, as whole phrases, and figure out how they work later.
@@ -228,17 +220,6 @@ So I can reuse the same exercise format, but change the answer depending on the 
 
 Beyond that, Chinese also needs exercises for tones and characters, but these still fit into the same categories.
 
-## 17. A word never taught, asked once
-
-There’s another idea I can use in both languages, and I think it could work in others too. I call it the transfer test.
-
-Here’s how it works. At the end of an exercise run, I ask learners about a word they’ve never seen before. In French, for example, the course teaches the masculine and feminine words for “a Chinese person.” Then it asks: what about Luxembourgish? Nobody taught that one. But learners know the rule: if the word ends in -s, you add -e. So they can work out the answer by applying the rule. You can see it happening here.
-
-However, that answer isn’t marked. After all, you can’t mark someone wrong on something you never told them. Instead, the feedback simply gives them the rule.
-
-Chinese works the same way, and the rule’s even simpler: country plus the word for “person” gives you the nationality. For example, China gives you “a Chinese person.” And Britain gives you “a British person.” Then: Luxembourg? Same pattern, and here’s the answer.
-
-In the end, that helps me see whether learners have understood the rule or simply memorised the examples.
 
 ## 18. Filling the slots: the teacher writes them
 
@@ -268,15 +249,6 @@ Finally, one sound: the negative word changes its tone before a fourth tone. So 
 
 As you can see, it’s the same grid as in French. Only the content is new, and everything comes from the book. In other words, I keep the same basic structure, but adapt the goals, exercises and situations to Chinese. And the textbook determines what learners are expected to know. That’s how the French template becomes a Chinese one.
 
-## 20. Bonus material and teacher additions
-
-Still, there are two more categories I need, because textbooks don’t cover everything teachers want to teach.
-
-The first is bonus material: things beyond the book that are still useful. They’re labelled “bonus” on screen, never marked, and never needed to finish a step. For example, the book has almost no school subjects, but my students want to introduce themselves. They want to say things like “I study physics,” in French, as you can see here. So school subjects stay in, as bonus.
-
-The second category is the teacher addition. That’s something I choose to teach, even though it isn’t in the textbook. Unlike bonus material, it’s taught and marked just like book content. My first example is “pleased to meet you.” The book never teaches it, but I teach it in the very first lesson.
-
-Either way, the catalogue marks each item as either bonus or a teacher addition. That way, the system knows I’ve included it deliberately, rather than by mistake.
 
 # Part 4. Closing
 

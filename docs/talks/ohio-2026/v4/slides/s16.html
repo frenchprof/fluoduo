@@ -1,0 +1,185 @@
+<section id="s16">
+<h2 class="hd">The settings: the key choice moves</h2>
+
+<!-- scene 0: same exercise, different choice -->
+<div id="sc0" class="abs" style="left:128px;top:260px;width:1664px;height:600px">
+  <p class="abs" data-in="1:settings" data-fx="pop" data-out="2" style="left:640px;top:180px;width:300px;text-align:center;font-size:200px;line-height:1">⚙️</p>
+  <div class="abs lng" data-in="2:French" data-fx="pop" style="left:150px;top:20px;background:#eff8ff;border-color:#1ca6ff">Français</div>
+  <p class="abs" data-in="2:different" data-fx="pop" style="left:740px;top:10px;width:180px;text-align:center;font-size:110px;line-height:1;color:#9ca3af">≠</p>
+  <div class="abs lng zh" data-in="2:Chinese" data-fx="pop" style="left:960px;top:20px;background:#fff4ed;border-color:#ff9037">中文</div>
+  <!-- the same exercise card, a gap, keys that change -->
+  <div class="abs card" data-in="3:exercise" data-fx="rise" style="left:420px;top:240px;width:820px;height:260px">
+    <div class="gap abs" style="left:330px;top:70px"></div>
+    <p class="abs" style="left:60px;top:84px;font-size:64px;color:#d7d9de">▬▬▬</p>
+    <p class="abs" style="left:540px;top:84px;font-size:64px;color:#d7d9de">▬▬▬</p>
+  </div>
+  <div id="k0a" class="abs key" data-in="3:change" data-fx="drop" style="left:600px;top:540px">?</div>
+  <div id="k0b" class="abs key" data-in="3:choose" data-fx="drop" style="left:860px;top:540px">?</div>
+</div>
+
+<!-- scene 1: French, the article -->
+<div id="sc1" class="abs" data-in="4" data-fx="fade" style="left:128px;top:240px;width:1664px;height:640px">
+  <p class="abs" style="left:0;top:0;font-size:36px;font-weight:700;color:#006baa">Français <span style="color:#fcb900;letter-spacing:4px" data-in="4:stars" data-fx="pop">★★</span></p>
+  <div class="abs" data-in="5:like" data-fx="rise" style="left:0;top:110px">
+    <p class="sent">« J'aime <span class="gap gi" id="g1"></span> yoga. »</p>
+    <p class="gl" style="font-size:30px;margin-top:8px">I like yoga</p>
+  </div>
+  <div class="abs" data-in="5:do" data-fx="rise" style="left:0;top:340px">
+    <p class="sent">« Je fais <span class="gap gi" id="g2"></span> yoga. »</p>
+    <p class="gl" style="font-size:30px;margin-top:8px">I do yoga</p>
+  </div>
+  <!-- the two keys start in a tray on the right -->
+  <div id="kle" class="abs key" data-in="4:article" data-fx="pop" style="left:1100px;top:120px">le</div>
+  <div id="kdu" class="abs key" data-in="4:article+0.2" data-fx="pop" style="left:1300px;top:120px">du</div>
+</div>
+
+<!-- scene 2: Chinese, verb + object -->
+<div id="sc2" class="abs" data-in="7" data-fx="fade" style="left:128px;top:240px;width:1664px;height:700px">
+  <p class="abs zh" style="left:0;top:0;font-size:36px;font-weight:700;color:#9f5100">中文</p>
+  <div id="noart" class="abs" data-in="7:articles" data-fx="pop" style="left:200px;top:-6px;display:flex;gap:16px;align-items:center">
+    <span class="key sm" style="position:relative">le</span><span class="key sm" style="position:relative">du</span>
+    <svg width="200" height="70" style="position:absolute;left:-10px;top:0"><line x1="10" y1="62" x2="190" y2="8" stroke="#ff9037" stroke-width="7" stroke-linecap="round"/></svg>
+  </div>
+  <img data-in="10:textbook" data-fx="pop" class="abs" src="../img/npcr-cover.png" style="left:1250px;top:0;width:150px;border-radius:6px;box-shadow:0 6px 18px rgba(31,36,48,.18)">
+  <!-- objects with a gap before each -->
+  <div class="abs obj" data-in="9:object" data-fx="fade" style="top:120px"><span class="gap gz" id="gz1"></span><span class="zh">球</span><p class="gl">play ball</p></div>
+  <div class="abs obj" data-in="9:object+0.15" data-fx="fade" style="top:290px"><span class="gap gz" id="gz2"></span><span class="zh">电影</span><p class="gl">see a film</p></div>
+  <div class="abs obj" data-in="9:object+0.3" data-fx="fade" style="top:460px"><span class="gap gz" id="gz3"></span><span class="zh">咖啡</span><p class="gl">drink coffee</p></div>
+  <p id="q8" class="abs" data-in="8:gap" data-fx="pop" style="left:620px;top:120px;font-size:72px;font-weight:700;color:#ff9037">?</p>
+  <!-- verb tiles, shuffled, on the left -->
+  <div id="v1" class="abs key zh" data-in="9:verb" data-fx="pop" style="left:60px;top:470px">打</div>
+  <div id="v2" class="abs key zh" data-in="9:verb+0.15" data-fx="pop" style="left:60px;top:130px">看</div>
+  <div id="v3" class="abs key zh" data-in="9:verb+0.3" data-fx="pop" style="left:60px;top:300px">喝</div>
+  <svg class="abs" style="left:0;top:0" width="1664" height="700">
+    <path id="l1" d="M190 512 C 420 512, 420 172, 640 172" stroke="#1ca6ff" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path id="l2" d="M190 172 C 420 172, 420 342, 640 342" stroke="#1ca6ff" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <path id="l3" d="M190 342 C 420 342, 420 512, 640 512" stroke="#1ca6ff" stroke-width="6" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<!-- scene 3: Chinese, the measure word -->
+<div id="sc3" class="abs" data-in="13" data-fx="fade" style="left:128px;top:240px;width:1664px;height:700px">
+  <p class="abs zh" style="left:0;top:0;font-size:36px;font-weight:700;color:#9f5100">中文 <span class="gl" style="font-size:30px;font-weight:400">· measure word</span></p>
+  <div class="abs" style="left:200px;top:200px">
+    <p class="sent zh">一 <span class="gap gi" id="gm"></span> 衣服</p>
+    <p class="gl" style="font-size:30px;margin-top:8px">a piece of clothing</p>
+  </div>
+  <div id="kjian" class="abs key zh" data-in="14:clothing" data-fx="pop" style="left:1000px;top:110px">件</div>
+  <div id="kge" class="abs key zh" data-in="15:general" data-fx="pop" style="left:1000px;top:380px">个</div>
+  <p class="abs" data-in="15:general+0.4" data-fx="fade" style="left:1160px;top:398px;font-size:48px;color:#9f5100">一个衣服 ✗</p>
+</div>
+
+<!-- scene 4: same format, the answer depends on the language -->
+<div id="sc4" class="abs" data-in="16" data-fx="fade" style="left:128px;top:240px;width:1400px;height:700px">
+  <div class="abs" style="left:0;top:90px">
+    <p class="sent sm2">« faire <span class="gap gi" id="h1"></span> yoga »</p>
+  </div>
+  <div class="abs" style="left:0;top:420px">
+    <p class="sent sm2 zh">一 <span class="gap gi" id="h2"></span> 衣服</p>
+  </div>
+  <div id="f_du" class="abs key" style="left:850px;top:60px">du</div>
+  <div id="f_le" class="abs key" style="left:1050px;top:60px">le</div>
+  <div id="c_jian" class="abs key zh" style="left:850px;top:390px">件</div>
+  <div id="c_ge" class="abs key zh" style="left:1050px;top:390px">个</div>
+  <p id="x1" class="abs bad">✗</p>
+  <p id="x2" class="abs bad">✗</p>
+</div>
+
+<!-- scene 5: tones and characters join the same categories -->
+<div id="sc5" class="abs" data-in="19" data-fx="fade" style="left:128px;top:300px;width:1400px;height:560px">
+  <div class="cat abs" id="cs" style="left:0">🔊<b>sounds</b></div>
+  <div class="cat abs" style="left:290px">📖<b>vocabulary</b></div>
+  <div class="cat abs" style="left:580px">🔤<b>word forms</b></div>
+  <div class="cat abs" style="left:870px">↔️<b>sentence structure</b></div>
+  <div class="cat abs" id="cw" style="left:1160px">✍️<b>script</b></div>
+  <div id="tones" class="abs chip2" style="left:10px;top:0">mā má mǎ mà</div>
+  <div id="chars" class="abs chip2 zh" style="left:1170px;top:0">汉字</div>
+</div>
+
+<p class="part">Part 3 · Change the settings</p>
+<style>
+#s16 .lng{width:500px;padding:26px 30px;border-radius:28px;border:5px solid;font-size:64px;font-weight:700;text-align:center;line-height:1.1}
+#s16 .card{background:#fff;border:4px solid #d7d9de;border-radius:28px}
+#s16 .gap{display:inline-block;width:150px;height:110px;border:5px dashed #9ca3af;border-radius:18px;background:#fff;vertical-align:middle}
+#s16 .gi{width:130px;height:96px;margin:0 6px}
+#s16 .key{width:130px;height:96px;border-radius:18px;background:#1ca6ff;color:#fff;font-size:56px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 #006baa}
+#s16 .key.sm{width:96px;height:66px;font-size:40px;background:#d7d9de;color:#6a7179;box-shadow:none}
+#s16 .sent{font-size:72px;font-weight:500;line-height:1.2;white-space:nowrap}
+#s16 .sent.sm2{font-size:68px}
+#s16 .obj{left:640px;display:flex;align-items:center;gap:10px;font-size:80px;font-weight:500}
+#s16 .obj .gl{font-size:30px;margin-left:30px;font-weight:400}
+#s16 .gz{width:130px;height:104px}
+#s16 .bad{font-size:56px;color:#ff9037;font-weight:700;opacity:0}
+#s16 .cat{top:170px;width:270px;height:320px;border-radius:22px;background:#eff8ff;border:3px solid #9fd3ff;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:10px;padding-bottom:30px;font-size:56px;text-align:center}
+#s16 .cat b{font-size:32px;line-height:1.15;padding:0 10px}
+#s16 .chip2{white-space:nowrap;width:250px;height:80px;border-radius:999px;background:#fff;border:4px solid #006baa;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:#006baa}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
+  const R = el => { let x=0,y=0,e=el; while(e && e.tagName!=='SECTION'){ x+=e.offsetLeft; y+=e.offsetTop; e=e.offsetParent; } return {left:x, top:y, width:el.offsetWidth, height:el.offsetHeight}; };
+  // move a key so it sits exactly in a gap
+  const into = (k, g) => { const a = R(k), b = R(g); return `translate(${b.left + (b.width-a.width)/2 - a.left}px, ${b.top + (b.height-a.height)/2 - a.top}px)`; };
+  out($('sc0'), CUE('4')-0.2);
+  out($('sc1'), CUE('7')-0.2);
+  out($('sc2'), CUE('13')-0.2);
+  out($('sc3'), CUE('16')-0.2);
+  out($('sc4'), CUE('19')-0.2);
+
+  // scene 0: the two "?" keys flicker into place under the gap
+  A($('k0a'), [{transform:'none'},{transform:'translateY(-12px)'},{transform:'none'}], CUE('3:choose')+0.4, 0.6, 'none');
+
+  // scene 1: le drops into the first gap on "the", du into the second on "some"
+  const t1 = into($('kle'), $('g1')), t2 = into($('kdu'), $('g2'));
+  A($('kle'), [{transform:'none'},{transform:t1}], CUE('5:the'), 0.7, 'forwards');
+  A($('kdu'), [{transform:'none'},{transform:t2}], CUE('5:some'), 0.7, 'forwards');
+  // "the" versus "some": both keys glow; then the gaps
+  [['kle','6:the'],['kdu','6:some']].forEach(([id,c]) =>
+    A($(id), [{boxShadow:'0 6px 0 #006baa'},{boxShadow:'0 6px 0 #006baa, 0 0 0 12px rgba(28,166,255,.35)'},{boxShadow:'0 6px 0 #006baa'}], CUE(c), 0.8, 'none'));
+
+  // scene 2: lines draw on each pair, then the verbs slide into their gaps
+  [['l1','11:play'],['l2','11:see'],['l3','11:drink']].forEach(([id,c]) => {
+    const p = $(id), L = p.getTotalLength(); p.style.strokeDasharray = L;
+    A(p, [{strokeDashoffset:L, opacity:1},{strokeDashoffset:0, opacity:1}], CUE(c), 0.7, 'both');
+    A(p, [{opacity:1},{opacity:0}], CUE('12:matches'), 0.4, 'forwards');
+  });
+  A($('q8'), [{opacity:1},{opacity:0}], CUE('9:verb'), 0.3, 'forwards');
+  const m1 = into($('v1'), $('gz1')), m2 = into($('v2'), $('gz2')), m3 = into($('v3'), $('gz3'));
+  A($('v1'), [{transform:'none'},{transform:m1}], CUE('12:matches'), 0.8, 'forwards');
+  A($('v2'), [{transform:'none'},{transform:m2}], CUE('12:matches')+0.25, 0.8, 'forwards');
+  A($('v3'), [{transform:'none'},{transform:m3}], CUE('12:matches')+0.5, 0.8, 'forwards');
+
+  // scene 3: 件 clicks in; 个 is the beginner's mistake
+  const mj = into($('kjian'), $('gm'));
+  A($('kjian'), [{transform:'none'},{transform:mj}], CUE('14:see'), 0.7, 'forwards');
+  A($('kge'), [{background:'#1ca6ff',boxShadow:'0 6px 0 #006baa'},{background:'#ff9037',boxShadow:'0 6px 0 #9f5100'}], CUE('15:mistake'), 0.5, 'forwards');
+
+  // scene 4: the right key fits, the wrong one bounces off
+  const fit = (k, g, at) => A(k, [{transform:'none'},{transform:into(k, g)}], at, 0.7, 'forwards');
+  const bounce = (k, g, x, at, hit) => {
+    const a = R(k), b = R(g);
+    const dy = (b.top - 40) - a.top, dx = (b.left + b.width/2 - a.width/2) - a.left;
+    A(k, [{transform:'none', opacity:1, offset:0},
+          {transform:`translate(${dx}px,${dy}px)`, opacity:1, offset:.5},
+          {transform:`translate(${dx+80}px,${dy-60}px)`, opacity:1, offset:.75},
+          {transform:`translate(${dx+140}px,${dy-40}px)`, opacity:.35, offset:1}], at, 1.4, 'forwards');
+    x.style.left = (b.left - R(x.offsetParent).left + b.width/2 + 240) + 'px';
+    x.style.top = (b.top - R(x.offsetParent).top - 90) + 'px';
+    A(x, [{opacity:0, transform:'scale(.6)'},{opacity:1, transform:'none'}], hit, 0.4, 'forwards');
+  };
+  fit($('f_du'), $('h1'), CUE('17:fits')-0.5);
+  bounce($('f_le'), $('h1'), $('x1'), CUE('17:the')+0.1, CUE('17:bounces'));
+  fit($('c_jian'), $('h2'), CUE('18:fits')-0.5);
+  bounce($('c_ge'), $('h2'), $('x2'), CUE('18:general'), CUE('18:bounces'));
+
+  // scene 5: tones drop into sounds, characters into script
+  const drop = (c, box, at) => { const a = R(c), b = R(box);
+    A(c, [{opacity:0, transform:'translateY(-30px)'},{opacity:1, transform:'none', offset:.3},{opacity:1, transform:`translate(${b.left + (b.width-a.width)/2 - a.left}px, ${b.top + 40 - a.top}px)`}], at, 1.2, 'both'); };
+  drop($('tones'), $('cs'), CUE('19:tones'));
+  drop($('chars'), $('cw'), CUE('19:characters'));
+  document.querySelectorAll('#s16 .cat').forEach((c,i) =>
+    A(c, [{borderColor:'#9fd3ff'},{borderColor:'#006baa', transform:'translateY(-10px)'},{borderColor:'#006baa', transform:'none'}], CUE('19:categories')+i*0.1, 0.6, 'forwards'));
+};
+</script>
+</section>

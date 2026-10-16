@@ -1,0 +1,131 @@
+<section id="s08">
+<h2 class="hd">Each unit: linguistic goals, situations, one task</h2>
+
+<!-- scene 1: the two kinds -->
+<div id="sc1" class="abs" data-out="5" style="left:0;top:0;width:1920px;height:1080px">
+  <p class="abs pill" data-in="1:linguistic" data-fx="pop" style="left:128px;top:280px;background:#eff8ff;border-color:#1ca6ff">linguistic goals</p>
+  <div class="abs lg" data-in="1:linguistic+0.2" data-fx="pop" style="left:128px;top:390px"></div>
+  <div class="abs lg" data-in="1:linguistic+0.35" data-fx="pop" style="left:248px;top:390px"></div>
+  <div class="abs lg" data-in="1:linguistic+0.5" data-fx="pop" style="left:368px;top:390px"></div>
+  <p class="abs arr" data-in="2:lesson" data-fx="left" style="left:480px;top:400px">→</p>
+  <div class="abs page" data-in="2:page" data-fx="pop" style="left:580px;top:370px">
+    <div class="tabs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div><div class="ln" style="width:70%"></div>
+  </div>
+
+  <p class="abs pill" data-in="1:communicative" data-fx="pop" style="left:960px;top:280px;background:#faf7e2;border-color:#fcdf00">communicative goals</p>
+  <p class="abs" data-in="1:situations" data-fx="fade" style="left:1000px;top:352px;font-size:30px;color:#8a7700">= « situations »</p>
+  <div class="abs sit" data-in="1:situations+0.2" data-fx="pop" style="left:960px;top:420px"></div>
+  <div class="abs sit" data-in="1:situations+0.35" data-fx="pop" style="left:1090px;top:420px"></div>
+  <div class="abs sit" data-in="1:situations+0.5" data-fx="pop" style="left:1220px;top:420px"></div>
+  <p class="abs" data-in="2:do" data-fx="rise" style="left:1360px;top:430px;font-size:34px;font-weight:500">🗣️ can do</p>
+
+  <!-- one situation packed with several things, then split -->
+  <div id="pack" class="abs sitbig" data-in="3:packs" data-fx="pop" style="left:300px;top:660px;width:380px"><span>●</span><span>▲</span><span>■</span></div>
+  <p class="abs arr" data-in="4:split" data-fx="left" style="left:720px;top:676px">→</p>
+  <div class="abs sitbig" data-in="4:split+0.2" data-fx="pop" style="left:840px;top:660px;width:150px"><span>●</span></div>
+  <div class="abs sitbig" data-in="4:split+0.4" data-fx="pop" style="left:1020px;top:660px;width:150px"><span>▲</span></div>
+  <div class="abs sitbig" data-in="4:split+0.6" data-fx="pop" style="left:1200px;top:660px;width:150px"><span>■</span></div>
+</div>
+
+<!-- scene 2: the grid, part of Unit 2 -->
+<div id="grid" class="abs" data-in="6" data-fx="fade" data-out="13" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="rb1" class="abs band" style="left:128px;top:440px;width:1372px;height:120px"></div>
+  <div id="rb3" class="abs band" style="left:128px;top:680px;width:1372px;height:120px"></div>
+  <div id="cb1" class="abs band" style="left:690px;top:290px;width:270px;height:510px"></div>
+  <div id="cb3" class="abs band" style="left:1230px;top:290px;width:270px;height:510px;background:#faf7e2"></div>
+  <svg class="abs" data-in="6:grid" data-fx="draw" data-dur="0.9" style="left:128px;top:290px" width="1380" height="520">
+    <g stroke="#d7d9de" stroke-width="3"><path d="M0 150 H1372 M0 270 H1372 M0 390 H1372 M0 510 H1372 M562 0 V510 M832 0 V510 M1102 0 V510"/></g>
+  </svg>
+  <p class="abs" data-in="8:Unit" data-fx="pop" style="left:150px;top:330px;font-size:30px;font-weight:700;color:#6a7179;background:#f1f2f4;padding:8px 22px;border-radius:12px">Unit 2</p>
+  <!-- situations across the top -->
+  <div class="abs ch" data-in="7:across" data-fx="drop" style="left:690px">« dire ce qu'on aime »<span class="gl">say what you like</span></div>
+  <div class="abs ch" data-in="7:across+0.2" data-fx="drop" style="left:960px">« dire ce qu'on fait »<span class="gl">say what you do</span></div>
+  <div class="abs ch" data-in="7:across+0.4" data-fx="drop" style="left:1230px">« dire pourquoi »<span class="gl">say why</span></div>
+  <!-- linguistic goals down the side -->
+  <div class="abs rh" data-in="7:down" data-fx="left" style="top:440px">① aimer + le / la / les<span class="gl">like + the</span></div>
+  <div class="abs rh" data-in="7:down+0.2" data-fx="left" style="top:560px">② faire + du / de la<span class="gl">do + some</span></div>
+  <div class="abs rh" data-in="7:down+0.4" data-fx="left" style="top:680px">③ négation : pas de, ne… plus<span class="gl">not any, no longer</span></div>
+  <!-- dots -->
+  <div class="abs dot" data-in="9:say" data-fx="pop" style="left:803px;top:478px"></div>
+  <div class="abs dot" data-in="9:why" data-fx="pop" style="left:1343px;top:478px"></div>
+  <div class="abs dot" data-in="10:several" data-fx="pop" style="left:803px;top:718px"></div>
+  <div class="abs dot" data-in="10:several+0.3" data-fx="pop" style="left:1073px;top:718px"></div>
+  <div class="abs dot" data-in="11:words" data-fx="pop" style="left:1073px;top:598px"></div>
+  <div class="abs dot" data-in="11:words+0.3" data-fx="pop" style="left:1343px;top:598px"></div>
+</div>
+
+<!-- scene 3: Wilkins, synthetic and analytic; Yalden -->
+<div id="wil" class="abs" data-in="13" data-fx="fade" data-out="15" style="left:0;top:0;width:1920px;height:1080px">
+  <p class="abs" style="left:128px;top:250px;font-size:30px;color:#6a7179">Wilkins</p>
+  <div id="stack" class="abs" style="left:200px;top:320px;width:360px;height:280px"></div>
+  <p class="abs lab" data-in="13:synthetic" data-fx="rise" style="left:128px;top:610px;width:560px"><b>synthetic</b>build up piece by piece</p>
+  <div class="abs" data-in="13:starting" data-fx="pop" style="left:1080px;top:330px;width:240px;height:240px;border-radius:50%;background:#faf7e2;border:5px solid #fcdf00;display:flex;align-items:center;justify-content:center;font-size:120px">🎯</div>
+  <p class="abs lab" data-in="13:analytic" data-fx="rise" style="left:930px;top:610px;width:560px"><b>analytic</b>start from what learners need to do</p>
+  <svg class="abs" data-in="14:proportional" data-fx="fade" style="left:128px;top:740px" width="1372" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M300 0 L520 80 M1072 0 L852 80"/><path d="M500 60 L520 80 L492 86 M872 60 L852 80 L880 86"/></g></svg>
+  <div class="abs" data-in="14:proportional" data-fx="pop" style="left:648px;top:830px;width:600px;padding:18px 0;border-radius:24px;background:#fff;border:5px solid #1f2430;text-align:center;font-size:40px;font-weight:700">proportional syllabus <span style="font-size:28px;font-weight:400;color:#6a7179">· Yalden 1983</span></div>
+</div>
+
+<!-- scene 4: the Mission, then the counts -->
+<div id="mis" class="abs" data-in="15" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs sitbig" data-in="15:situations" data-fx="pop" style="left:200px;top:330px;width:150px"></div>
+  <div class="abs sitbig" data-in="15:situations+0.15" data-fx="pop" style="left:380px;top:330px;width:150px"></div>
+  <div class="abs sitbig" data-in="15:situations+0.3" data-fx="pop" style="left:560px;top:330px;width:150px"></div>
+  <svg class="abs" data-in="15:uses" data-fx="draw" style="left:740px;top:330px" width="220" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H190 M165 35 L195 60 L165 85"/></g></svg>
+  <div id="flag" class="abs" data-in="15:task" data-fx="pop" style="left:1000px;top:280px;width:260px;height:220px;border-radius:28px;background:#fff4ed;border:5px solid #ff9037;display:flex;align-items:center;justify-content:center;font-size:110px">🏁</div>
+  <p class="abs" data-in="16:Mission" data-fx="rise" style="left:1000px;top:520px;width:260px;text-align:center;font-size:44px;font-weight:700;color:#9f5100">« Mission »</p>
+  <div class="abs count" data-in="17:thirty" data-fx="rise" style="left:200px;top:660px"><p class="hand num" id="n37"></p><p>situations</p></div>
+  <div class="abs count" data-in="17:sixty" data-fx="rise" style="left:740px;top:660px"><p class="hand num" id="n60">~</p><p>linguistic goals</p></div>
+</div>
+
+<p class="part">Part 1 · The French course</p>
+<style>
+#s08 .pill{font-size:36px;font-weight:700;padding:14px 30px;border-radius:999px;border:4px solid}
+#s08 .arr{font-size:70px;color:#9ca3af;line-height:1}
+#s08 .lg{width:100px;height:140px;border-radius:16px;background:#eff8ff;border:5px solid #1ca6ff}
+#s08 .sit{width:110px;height:110px;border-radius:55px;background:#faf7e2;border:5px solid #fcdf00}
+#s08 .page{width:220px;height:170px;border-radius:18px;background:#fff;border:5px solid #1ca6ff;padding:0 22px;overflow:hidden}
+#s08 .page .tabs{display:flex;gap:6px;margin:0 -22px 22px;padding:12px 14px;background:#eff8ff}
+#s08 .page .tabs i{flex:1;height:18px;border-radius:5px;background:#9fd3ff}
+#s08 .ln{height:12px;border-radius:6px;background:#d7d9de;margin-bottom:16px}
+#s08 .sitbig{height:110px;border-radius:55px;background:#faf7e2;border:5px solid #fcdf00;display:flex;align-items:center;justify-content:center;gap:40px;font-size:44px;color:#8a7700}
+#s08 .band{background:#eff8ff;opacity:0;border-radius:12px}
+#s08 .ch{top:290px;width:270px;height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:30px;font-weight:500;line-height:1.15;padding:0 10px}
+#s08 .ch .gl,#s08 .rh .gl{font-size:26px;font-weight:400;margin-top:6px}
+#s08 .rh{left:150px;width:540px;height:120px;display:flex;flex-direction:column;justify-content:center;font-size:32px;font-weight:500}
+#s08 .dot{width:44px;height:44px;border-radius:50%;background:#1ca6ff;border:4px solid #006baa}
+#s08 .brick{width:110px;height:50px;border-radius:8px;background:#1ca6ff;border:3px solid #006baa}
+#s08 .lab{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:32px;color:#1f2430}
+#s08 .lab b{font-size:42px;margin-bottom:4px}
+#s08 .count{display:flex;align-items:baseline;gap:20px;font-size:40px;font-weight:500}
+#s08 .num{font-size:130px;line-height:1;color:#1f2430;counter-reset:c var(--n)}
+#s08 #n37{color:#8a7700} #s08 #n60{color:#006baa}
+#s08 .num::after{content:counter(c)}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  try { CSS.registerProperty({name:'--n', syntax:'<integer>', inherits:false, initialValue:'0'}); } catch(e){}
+  // the packed situation goes when it is split
+  A($('pack'), [{opacity:1},{opacity:.3}], CUE('4:split'), 0.5, 'forwards');
+  // grid highlights
+  const band = (el, at, d) => A(el, [{opacity:0},{opacity:1,offset:.2},{opacity:1,offset:.8},{opacity:0}], at, d, 'none');
+  band($('rb1'), CUE('9'), CUE('10') - CUE('9'));
+  band($('rb3'), CUE('10'), CUE('11:and') - CUE('10'));
+  band($('cb1'), CUE('11:and'), CUE('12') - CUE('11:and'));
+  band($('cb3'), CUE('12:tackling') - 1.2, 3.2);
+  // synthetic: bricks stack up piece by piece
+  const st = $('stack'); let k = 0;
+  for (let r = 0; r < 4; r++) for (let c = 0; c < 3 - (r%2); c++){
+    const b = document.createElement('div'); b.className = 'brick abs';
+    b.style.left = (c*120 + (r%2 ? 60 : 0))+'px'; b.style.top = (230 - r*58)+'px';
+    st.appendChild(b);
+    A(b, [{opacity:0,transform:'translateY(-40px)'},{opacity:1,transform:'none'}], CUE('13:building') + k*0.3, 0.45);
+    k++;
+  }
+  // the counts
+  $('n37').animate([{'--n':0},{'--n':37}], {delay:CUE('17:thirty')*1000, duration:1200, fill:'both', easing:'ease-out'});
+  $('n60').animate([{'--n':0},{'--n':60}], {delay:CUE('17:sixty')*1000, duration:1200, fill:'both', easing:'ease-out'});
+};
+</script>
+</section>

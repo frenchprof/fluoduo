@@ -1,0 +1,74 @@
+<section id="s14">
+<h2 class="hd">Every limit has a source</h2>
+
+<!-- scene A: three sources feed the catalogue -->
+<div id="src" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="bk" class="book abs" data-in="1:catalogue" data-fx="pop" style="left:820px;top:300px"><p class="hand">catalogue</p>
+    <p id="taught" class="abs" data-in="3:taught" data-fx="pop" style="left:0;top:330px;width:100%;text-align:center;font-size:32px;font-weight:700;color:#00715a">asked ⇒ taught</p>
+  </div>
+  <div class="sc abs" id="s1" data-in="2:textbook" data-fx="left" style="top:330px">📕<b>textbook</b><i class="ar"></i></div>
+  <div class="sc abs" id="s2" data-in="2:teacher" data-fx="left" style="top:480px">📘<b>teacher’s guide</b><i class="ar"></i></div>
+  <div class="sc abs" id="s3" data-in="2:tests" data-fx="left" style="top:630px">📝<b>unit tests</b><i class="ar"></i></div>
+  <div id="know" class="abs" data-in="5:just" data-fx="pop" style="left:1330px;top:450px;display:flex;align-items:center;gap:14px;padding:18px 34px;border-radius:999px;background:#fff;border:4px dashed #9ca3af;font-size:40px">💭<b style="font-size:36px">I know it</b></div>
+  <p id="no" class="abs" data-in="5:know" data-fx="pop" style="left:1260px;top:420px;font-size:110px;line-height:1;color:#d9402b;font-weight:700">✗</p>
+</div>
+
+<!-- scene B: examples, each with its source -->
+<div id="ex" class="abs" data-in="6" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="row abs" style="top:260px">
+    <span class="fr no" data-in="7:Quarter" data-fx="pop">« et quart » · « et demie »</span>
+    <span class="mk" data-in="7:French" data-fx="pop" style="color:#d9402b">✗</span>
+    <span class="arr" data-in="7:nine" data-fx="left">→ 📖</span>
+    <span class="fr ok" data-in="7:fifteen" data-fx="pop">« neuf heures quinze » · « neuf heures trente »</span>
+    <span class="mk" data-in="7:thirty" data-fx="pop" style="color:#00715a">✓</span>
+  </div>
+  <div class="row abs" style="top:420px">
+    <span class="fr ok" data-in="7:noon" data-fx="pop">« midi » · « minuit »</span>
+    <span class="mk" data-in="7:midnight+0.9" data-fx="pop" style="color:#00715a">✓</span>
+    <span class="tg" data-in="7:Unit" data-fx="pop">Unit 2</span>
+  </div>
+  <div class="row abs" style="top:580px">
+    <span class="pr" data-in="8:nine">je</span><span class="pr" data-in="8:nine+0.12">tu</span><span class="pr" data-in="8:nine+0.24">il</span><span class="pr" data-in="8:nine+0.36">elle</span><span class="pr" data-in="8:nine+0.48">on</span><span class="pr" data-in="8:nine+0.6">nous</span><span class="pr" data-in="8:nine+0.72">vous</span><span class="pr" data-in="8:nine+0.84">ils</span><span class="pr" data-in="8:nine+0.96">elles</span>
+    <span class="tg" data-in="8:verb" data-fx="pop" style="margin-left:12px">every verb</span>
+  </div>
+  <div class="row abs" style="top:740px">
+    <span class="tg" data-in="9:Lesson" data-fx="pop" style="background:#fff4ed;border-color:#ff9037;color:#9f5100">NPCR Lesson 11</span>
+    <span class="fr ok zh" data-in="9:quarter" data-fx="pop" style="border-color:#ff9037;background:#fff4ed">一刻</span>
+    <span class="fr ok zh" data-in="9:three" data-fx="pop" style="border-color:#ff9037;background:#fff4ed">三刻</span>
+    <span class="fr ok zh" data-in="9:half" data-fx="pop" style="border-color:#ff9037;background:#fff4ed">半</span>
+    <span class="mk" data-in="9:half+0.3" data-fx="pop" style="color:#00715a">✓</span>
+  </div>
+</div>
+
+<p class="part">Part 3 · Keep the frame</p>
+<style>
+.book{width:370px;height:460px;border-radius:10px 22px 22px 10px;background:#eafbf8;border:5px solid #00715a;border-left:34px solid #00715a;box-shadow:6px 8px 0 #d7d9de;display:flex;align-items:center;justify-content:center}
+.book p.hand{font-size:64px;color:#00715a}
+.sc{left:150px;width:440px;height:110px;border-radius:22px;background:#fff;border:4px solid #d7d9de;display:flex;align-items:center;gap:18px;padding:0 26px;font-size:50px}
+.sc b{font-size:36px;font-weight:700}
+.sc .ar{position:absolute;left:440px;top:48px;width:186px;height:6px;background:#00c197}
+.sc .ar::after{content:'';position:absolute;right:-4px;top:-11px;border:14px solid transparent;border-left:20px solid #00c197;border-right:0}
+.row{left:128px;display:flex;align-items:center;gap:22px;white-space:nowrap}
+.row>span{display:inline-block}
+.fr{font-size:42px;font-weight:700;padding:14px 28px;border-radius:18px;border:4px solid}
+.fr.no{background:#fff4ed;border-color:#ff9037;color:#9f5100}
+.fr.ok{background:#eafbf8;border-color:#00c197}
+.mk{font-size:64px;font-weight:700;line-height:1}
+.arr{font-size:44px;color:#6a7179}
+.tg{font-size:32px;font-weight:700;padding:10px 24px;border-radius:999px;background:#eff8ff;border:3px solid #1ca6ff;color:#006baa}
+.pr{font-size:40px;font-weight:700;padding:10px 22px;border-radius:14px;background:#eff8ff;border:3px solid #1ca6ff}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  A($('src'), [{opacity:1},{opacity:0}], CUE('6')-0.2, 0.5, 'forwards');
+  // the unit-test arrow lights for the example
+  A($('s3'), [{borderColor:'#d7d9de'},{borderColor:'#00c197'}], CUE('3:unit'), 0.5, 'forwards');
+  // evidence: all three sources light together
+  ['s1','s2','s3'].forEach((id,i) => A($(id), [{borderColor:i==2?'#00c197':'#d7d9de',transform:'none'},{borderColor:'#00c197',transform:'translateX(16px)'},{borderColor:'#00c197',transform:'none'}], CUE('4:evidence')+i*0.15, 0.7, 'forwards'));
+  // "I know it" tries to get in and is turned away
+  A($('know'), [{transform:'none'},{transform:'translateX(-60px)'},{transform:'translateX(30px)'}], CUE('5:include'), 0.9, 'forwards');
+  A($('know'), [{opacity:1},{opacity:.35}], CUE('5:know'), 0.5, 'forwards');
+};
+</script>
+</section>

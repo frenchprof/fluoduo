@@ -5,7 +5,7 @@
 <div id="map" class="abs" style="left:0;top:0;width:900px;height:1080px"></div>
 
 <!-- how the old course was built: a goal, then its exercises -->
-<div id="exo" class="abs" data-out="7" style="left:150px;top:800px;width:700px;height:140px">
+<div id="exo" class="abs" data-out="7" style="left:1060px;top:420px;width:700px;height:140px;transform:scale(1.6);transform-origin:0 0">
   <div id="exoG" class="abs" data-in="5:goal" data-fx="pop" style="left:0;top:30px;width:80px;height:80px;border-radius:50%;background:#fff;border:5px solid #1f2430"></div>
   <svg class="abs" data-in="6:built" data-fx="draw" style="left:80px;top:0" width="200" height="140"><path d="M0 70 L190 22 M0 70 L190 70 M0 70 L190 118" stroke="#9ca3af" stroke-width="4" fill="none"/></svg>
   <div class="ex abs" data-in="6:exercises" data-fx="right" style="left:280px;top:0">✎</div>
@@ -39,55 +39,55 @@
 
 <!-- RIGHT, scene 3: the revised structure -->
 <div id="rev" class="abs" style="left:960px;top:0;width:900px;height:1080px">
-  <p class="abs colh" data-in="22:linguistic" data-fx="fade" style="left:130px;width:240px;color:#006baa">linguistic</p>
-  <p class="abs colh" data-in="22:communicative" data-fx="fade" style="left:380px;width:220px;color:#8a7700">communicative</p>
-  <p class="abs colh" data-in="22:task" data-fx="fade" style="left:600px;width:120px;color:#9f5100">task</p>
-  <div class="row abs" style="top:340px">
+  <p class="abs colh" data-in="22:linguistic" data-fx="fade" style="left:120px;width:260px;color:#006baa">linguistic</p>
+  <p class="abs colh" data-in="22:communicative" data-fx="fade" style="left:410px;width:240px;color:#8a7700">communicative</p>
+  <p class="abs colh" data-in="22:task" data-fx="fade" style="left:680px;width:120px;color:#9f5100">task</p>
+  <div class="row abs" style="top:350px">
     <p class="tag abs" data-in="23:both" data-fx="pop" style="left:0">FR</p>
-    <div class="lg abs" data-in="22:linguistic" data-fx="pop" style="left:130px"></div>
+    <div class="lg abs" data-in="22:linguistic" data-fx="pop" style="left:120px"></div>
     <div class="lg abs" data-in="22:linguistic+0.15" data-fx="pop" style="left:210px"></div>
-    <div class="lg abs" data-in="22:linguistic+0.3" data-fx="pop" style="left:290px"></div>
-    <div class="sit abs" data-in="22:communicative" data-fx="pop" style="left:390px"></div>
-    <div class="sit abs" data-in="22:communicative+0.15" data-fx="pop" style="left:490px"></div>
-    <div class="flag abs" data-in="22:task" data-fx="pop" style="left:610px">🏁</div>
+    <div class="lg abs" data-in="22:linguistic+0.3" data-fx="pop" style="left:300px"></div>
+    <div class="sit abs" data-in="22:communicative" data-fx="pop" style="left:410px"></div>
+    <div class="sit abs" data-in="22:communicative+0.15" data-fx="pop" style="left:540px"></div>
+    <div class="flag abs" data-in="22:task" data-fx="pop" style="left:670px">🏁</div>
   </div>
-  <div class="row abs" data-in="23:both" data-fx="rise" style="top:500px">
+  <div class="row abs" data-in="23:both" data-fx="rise" style="top:540px">
     <p class="tag abs zh" style="left:0">中文</p>
-    <div class="lg abs" style="left:130px"></div>
+    <div class="lg abs" style="left:120px"></div>
     <div class="lg abs" style="left:210px"></div>
-    <div class="lg abs" style="left:290px"></div>
-    <div class="sit abs" style="left:390px"></div>
-    <div class="sit abs" style="left:490px"></div>
-    <div class="flag abs" style="left:610px">🏁</div>
+    <div class="lg abs" style="left:300px"></div>
+    <div class="sit abs" style="left:410px"></div>
+    <div class="sit abs" style="left:540px"></div>
+    <div class="flag abs" style="left:670px">🏁</div>
   </div>
 </div>
 
 <p class="part">Part 1 · The French course</p>
 <style>
-#s06 .dot{width:54px;height:54px;border-radius:50%;background:#fff;border:3px solid #9ca3af;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:500;color:#1f2430}
+#s06 .dot{width:62px;height:62px;border-radius:50%;background:#fff;border:3px solid #9ca3af;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:500;color:#1f2430}
 #s06 .ex{width:70px;height:42px;border-radius:8px;background:#fff;border:3px solid #9ca3af;font-size:26px;line-height:36px;text-align:center;color:#6a7179}
 #s06 .card{left:0;width:500px;height:110px;border-radius:22px;border:4px solid;display:flex;align-items:center;gap:22px;padding:0 24px;font-size:36px;font-weight:500}
 #s06 .card b{flex:none;width:70px;height:70px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;color:#1f2430}
 #s06 .brick{width:66px;height:34px;border-radius:5px;background:#1ca6ff;border:2px solid #006baa}
 #s06 .ok,#s06 .no{font-size:32px;font-weight:700}
 #s06 .ok{color:#00715a} #s06 .no{color:#c2410c}
-#s06 .colh{top:280px;font-size:28px;font-weight:700}
+#s06 .colh{top:290px;font-size:28px;font-weight:700}
 #s06 .row{left:0;width:760px;height:110px}
-#s06 .tag{top:20px;width:100px;height:70px;border-radius:14px;background:#1f2430;color:#fff;font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center}
-#s06 .lg{top:10px;width:66px;height:90px;border-radius:12px;background:#eff8ff;border:4px solid #1ca6ff}
-#s06 .sit{top:10px;width:90px;height:90px;border-radius:45px;background:#faf7e2;border:4px solid #fcdf00}
-#s06 .flag{top:0;width:110px;height:110px;border-radius:20px;background:#fff4ed;border:4px solid #ff9037;font-size:56px;display:flex;align-items:center;justify-content:center}
+#s06 .tag{top:25px;width:100px;height:80px;border-radius:14px;background:#1f2430;color:#fff;font-size:32px;font-weight:700;display:flex;align-items:center;justify-content:center}
+#s06 .lg{top:0;width:80px;height:130px;border-radius:12px;background:#eff8ff;border:4px solid #1ca6ff}
+#s06 .sit{top:10px;width:110px;height:110px;border-radius:55px;background:#faf7e2;border:4px solid #fcdf00}
+#s06 .flag{top:0;width:130px;height:130px;border-radius:20px;background:#fff4ed;border:4px solid #ff9037;font-size:56px;display:flex;align-items:center;justify-content:center}
 </style>
 <script>
 window.SLIDE = function(){
   const $ = id => document.getElementById(id);
   const map = $('map');
-  const X = i => 150 + i*76, Y = r => 300 + r*96;
+  const X = i => 140 + i*80, Y = r => 300 + r*120;
   // the five unit lines
   for (let r = 0; r < 5; r++){
     const ln = document.createElement('div');
     ln.className = 'abs';
-    ln.style.cssText = `left:${X(0)+27}px;top:${Y(r)+25}px;width:${9*76}px;height:4px;background:#d7d9de;border-radius:2px`;
+    ln.style.cssText = `left:${X(0)+31}px;top:${Y(r)+29}px;width:${9*80}px;height:4px;background:#d7d9de;border-radius:2px`;
     map.appendChild(ln);
     A(ln, [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], CUE('3:fifty') + r*0.35, 0.6);
   }

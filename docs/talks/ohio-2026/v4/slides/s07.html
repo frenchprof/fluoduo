@@ -1,0 +1,137 @@
+<section id="s07">
+<h2 class="hd">One lesson page per linguistic goal</h2>
+
+<!-- scene 1: linguistic goal -> a page; communicative goal -> four activities -->
+<div id="sc1" class="abs" data-out="4" style="left:0;top:0;width:1920px;height:1080px">
+  <p class="abs pill" data-in="1:linguistic" data-fx="pop" style="left:128px;top:290px;background:#eff8ff;border-color:#1ca6ff">linguistic goal</p>
+  <p class="abs arr" data-in="1:lesson" data-fx="drop" style="left:250px;top:370px">↓</p>
+  <div class="abs page" data-in="1:page" data-fx="pop" style="left:128px;top:470px;width:460px;height:320px">
+    <div class="tabs"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="ln" style="width:80%"></div><div class="ln" style="width:65%"></div><div class="ln" style="width:72%"></div><div class="ln" style="width:50%"></div>
+  </div>
+  <p class="abs pill" data-in="2:Communicative" data-fx="pop" style="left:760px;top:290px;background:#faf7e2;border-color:#fcdf00">communicative goal</p>
+  <p class="abs arr" data-in="2:four" data-fx="drop" style="left:900px;top:370px">↓</p>
+  <div class="abs act" data-in="2:listening" data-fx="pop" style="left:760px;top:470px">🎧<b>listen</b></div>
+  <div class="abs act" data-in="2:reading" data-fx="pop" style="left:960px;top:470px">📖<b>read</b></div>
+  <div class="abs act" data-in="2:speaking" data-fx="pop" style="left:1160px;top:470px">🗣️<b>speak</b></div>
+  <div class="abs act" data-in="2:writing" data-fx="pop" style="left:1360px;top:470px">✍️<b>write</b></div>
+</div>
+
+<!-- scene 2: one stop, two concepts that overlap -->
+<div id="sc2" class="abs" data-in="4" data-fx="fade" data-out="7" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs" style="left:300px;top:290px;width:1100px;height:480px;border:4px dashed #1ca6ff;border-radius:28px;background:#f7fbff"></div>
+  <p class="abs" style="left:330px;top:306px;font-size:28px;color:#006baa;font-weight:700">Unit 0 · one stop</p>
+  <p id="lun" class="abs fr" data-in="5:days" data-fx="pop" style="left:420px;top:400px">« lundi »</p>
+  <p id="mat" class="abs fr" data-in="5:moments" data-fx="pop" style="left:1000px;top:400px">« matin »</p>
+  <p id="soi" class="abs fr" data-in="5:evening" data-fx="pop" style="left:1000px;top:520px">« soir »</p>
+  <svg class="abs" data-in="6:Monday" data-fx="fade" style="left:300px;top:290px" width="1100" height="480"><path d="M230 175 L450 330 M800 175 L560 330" stroke="#1ca6ff" stroke-width="5" fill="none" stroke-linecap="round"/></svg>
+  <p class="abs fr" data-in="6:Monday+0.3" data-fx="pop" style="left:600px;top:640px;background:#1ca6ff;color:#fff;border-color:#006baa">« lundi matin »</p>
+  <p class="abs gl" data-in="6:Monday+0.6" data-fx="fade" style="left:960px;top:664px;font-size:34px">Monday morning</p>
+</div>
+
+<!-- scene 3: six tabs, then the exercise tab of the aimer page -->
+<div id="sc3" class="abs" data-in="7" data-fx="fade" data-out="11" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="tabs" class="abs" style="left:128px;top:300px;width:1664px">
+    <p class="tab" id="tb1">Le parcours</p><p class="tab" id="tb2">Le concept</p><p class="tab" id="tb3">Les formes</p>
+    <p class="tab" id="tb4">L'exercice</p><p class="tab" id="tb5">Le bonus</p><p class="tab" id="tb6">Le lexique</p>
+  </div>
+  <div id="body" class="abs" data-out="10" style="left:128px;top:384px;width:1380px;height:300px;background:#fff;border:3px solid #d7d9de;border-radius:0 0 22px 22px;padding:40px">
+    <div class="ln" style="width:70%"></div><div class="ln" style="width:55%"></div><div class="ln" style="width:62%"></div>
+  </div>
+  <img class="abs" data-in="10:Here" data-fx="rise" src="../img/l08.png" style="left:128px;top:400px;height:580px;border-radius:12px;border:3px solid #d7d9de;box-shadow:0 10px 30px rgba(31,36,48,.15)">
+  <p class="abs fr" data-in="10:like" data-fx="pop" style="left:840px;top:520px;background:#eff8ff;border-color:#1ca6ff">« aimer »</p>
+  <p class="abs gl" data-in="10:like+0.3" data-fx="fade" style="left:1100px;top:540px;font-size:36px">to like</p>
+</div>
+
+<!-- scene 4: the generator -->
+<div id="gen" class="abs" data-in="11" data-fx="fade" data-out="17" style="left:128px;top:270px;width:1380px;height:710px;border-radius:28px;background:#fff;border:4px solid #1ca6ff">
+  <div class="abs" style="left:30px;top:26px;display:flex;gap:14px">
+    <p class="lv" id="lv1">★</p><p class="lv" id="lv2">★★</p><p class="lv" id="lv3">★★★</p><p class="lv" id="lv4" style="opacity:0">Le bonus</p>
+  </div>
+  <!-- prompts -->
+  <div id="pr1" class="abs prompt" data-in="12:pictures" data-fx="pop" data-out="15">Nous <s>+</s> 💔 <s>+</s> 🎹</div>
+  <div id="pr3" class="abs prompt" data-in="15" data-fx="pop" data-out="16">Il <s>+</s> ❤️❤️❤️ <s>+</s> 🎹</div>
+  <div id="pr4" class="abs prompt" data-in="16:English" data-fx="pop" style="font-size:44px"><span class="gl">She quite likes piano.</span></div>
+  <!-- one star -->
+  <div id="a1" class="abs ans" data-in="13" data-fx="fade" data-out="14">Nous
+    <span class="sel" style="width:320px"><span id="a1f" class="selv">n'aimons pas</span><i>▾</i></span> le piano.</div>
+  <div id="list" class="abs" data-in="13:list" data-fx="wipe" data-out="14" style="left:368px;top:450px;width:320px;background:#fff;border:3px solid #9ca3af;border-radius:12px;box-shadow:0 10px 24px rgba(31,36,48,.15);overflow:hidden">
+    <p class="opt">n'aime pas</p><p class="opt">n'aimes pas</p><p class="opt" id="ok1">n'aimons pas</p><p class="opt">n'aimez pas</p><p class="opt">n'aiment pas</p>
+  </div>
+  <!-- two stars -->
+  <div id="a2" class="abs ans" data-in="14" data-fx="fade" data-out="15">Nous
+    <span class="sel" style="width:320px"><span id="a2f" class="selv">n'aimons pas</span><i>▾</i></span>
+    <span class="sel" style="width:140px"><span id="a2g" class="selv">le</span><i>▾</i></span> piano.</div>
+  <!-- three stars, then the bonus -->
+  <div id="a3" class="abs ans" data-in="15" data-fx="fade" data-out="16"><span class="typ"><span id="a3t">Il adore le piano.</span></span></div>
+  <div id="a4" class="abs ans" data-in="16" data-fx="fade"><span class="typ"><span id="a4t">Elle aime bien le piano.</span></span></div>
+</div>
+
+<!-- scene 5: one exercise, three levels, one generator -->
+<div id="sc5" class="abs" data-in="17" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="pg" class="abs" data-in="18:page" data-fx="fade" style="left:440px;top:290px;width:800px;height:520px;border:4px dashed #9ca3af;border-radius:28px"></div>
+  <div class="abs" style="left:540px;top:360px;width:600px;height:380px;border-radius:28px;background:#eff8ff;border:5px solid #1ca6ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px">
+    <p style="font-size:110px;line-height:1">⚙️</p>
+    <div style="display:flex;gap:18px"><p class="lv on">★</p><p class="lv on">★★</p><p class="lv on">★★★</p></div>
+  </div>
+  <p class="abs hand" data-in="17:exercise" data-fx="rise" style="left:440px;top:840px;width:800px;text-align:center;font-size:54px">one exercise · three levels</p>
+</div>
+
+<p class="part">Part 1 · The French course</p>
+<style>
+#s07 .pill{font-size:36px;font-weight:700;padding:14px 30px;border-radius:999px;border:4px solid}
+#s07 .arr{font-size:70px;color:#9ca3af;line-height:1}
+#s07 .page{border-radius:22px;background:#fff;border:5px solid #1ca6ff;padding:0 30px 30px;overflow:hidden}
+#s07 .page .tabs{display:flex;gap:8px;margin:0 -30px 34px;padding:16px 20px;background:#eff8ff}
+#s07 .page .tabs i{flex:1;height:26px;border-radius:6px;background:#9fd3ff}
+#s07 .ln{height:16px;border-radius:8px;background:#d7d9de;margin-bottom:22px}
+#s07 .act{width:180px;height:200px;border-radius:24px;background:#faf7e2;border:4px solid #fcdf00;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:70px}
+#s07 .act b{font-size:30px;font-weight:500}
+#s07 .fr{font-size:46px;font-weight:500;padding:14px 30px;border-radius:18px;background:#eff8ff;border:4px solid #1ca6ff;white-space:nowrap}
+#s07 #tabs{display:flex;gap:10px}
+#s07 .tab{flex:1;text-align:center;font-size:30px;font-weight:500;padding:20px 0;border-radius:18px 18px 0 0;background:#f1f2f4;border:3px solid #d7d9de;border-bottom:none;color:#6a7179}
+#s07 .lv{font-size:30px;padding:10px 24px;border-radius:14px;border:3px solid #d7d9de;color:#9ca3af;background:#fff;white-space:nowrap}
+#s07 .lv.on{border-color:#1ca6ff;color:#006baa;background:#eff8ff}
+#s07 .prompt{left:0;top:120px;width:100%;text-align:center;font-size:64px;font-weight:700;color:#003a6b}
+#s07 .prompt s{text-decoration:none;color:#9ca3af;font-weight:400}
+#s07 .ans{left:0;top:330px;width:100%;display:flex;justify-content:center;align-items:center;gap:18px;font-size:48px;font-weight:700;color:#003a6b}
+#s07 .sel{position:relative;display:inline-flex;align-items:center;height:80px;border:3px solid #9ca3af;border-radius:12px;background:#fff;padding:0 50px 0 20px;font-size:40px;font-weight:500}
+#s07 .sel i{position:absolute;right:14px;font-style:normal;font-size:30px;color:#6a7179}
+#s07 .selv{opacity:0;white-space:nowrap}
+#s07 .opt{font-size:34px;padding:8px 20px;white-space:nowrap}
+#s07 .typ{display:inline-flex;align-items:center;width:760px;height:92px;border:3px solid #9ca3af;border-radius:14px;background:#fff;padding:0 26px}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // tabs light up as they are named
+  const on = [{background:'#f1f2f4',borderColor:'#d7d9de',color:'#6a7179',transform:'none'},{background:'#eff8ff',borderColor:'#1ca6ff',color:'#003a6b',transform:'translateY(-12px)'},{background:'#eff8ff',borderColor:'#1ca6ff',color:'#003a6b',transform:'none'}];
+  [['tb1','8:path'],['tb2','8:explanations'],['tb3','8:forms'],['tb4','8:exercises'],['tb5','8:bonus'],['tb6','8:word']].forEach(([id,c]) => A($(id), on, CUE(c), 0.6, 'forwards'));
+  // the other tabs step back, L'exercice stays
+  ['tb1','tb2','tb3','tb5','tb6'].forEach(id => A($(id), [{opacity:1},{opacity:.35}], CUE('9:one'), 0.5, 'forwards'));
+  A($('tb4'), [{boxShadow:'0 0 0 0 rgba(28,166,255,0)'},{boxShadow:'0 0 0 10px rgba(28,166,255,.35)'},{boxShadow:'0 0 0 0 rgba(28,166,255,0)'}], CUE('9:tabs'), 1.2, 'none');
+  // level dial
+  const lvOn = [{borderColor:'#d7d9de',color:'#9ca3af',background:'#fff'},{borderColor:'#1ca6ff',color:'#006baa',background:'#eff8ff'}];
+  const lvOff = [{borderColor:'#1ca6ff',color:'#006baa',background:'#eff8ff'},{borderColor:'#d7d9de',color:'#9ca3af',background:'#fff'}];
+  A($('lv1'), lvOn, CUE('13:one'), 0.4, 'forwards');
+  A($('lv1'), lvOff, CUE('14:two'), 0.4, 'forwards');
+  A($('lv2'), lvOn, CUE('14:two'), 0.4, 'forwards');
+  A($('lv2'), lvOff, CUE('15:three'), 0.4, 'forwards');
+  A($('lv3'), lvOn, CUE('15:three'), 0.4, 'forwards');
+  A($('lv3'), lvOff, CUE('16:Bonus'), 0.4, 'forwards');
+  A($('lv4'), [{opacity:0},{opacity:1}], CUE('16:Bonus'), 0.4, 'forwards');
+  A($('lv4'), lvOn, CUE('16:Bonus'), 0.4, 'forwards');
+  // one star: the right form is picked from the list
+  A($('ok1'), [{background:'#fff',color:'#1f2430'},{background:'#1ca6ff',color:'#fff'}], CUE('13:forms')-0.6, 0.4, 'forwards');
+  A($('a1f'), [{opacity:0},{opacity:1}], CUE('13:forms')+0.4, 0.4, 'forwards');
+  A($('list'), [{opacity:1},{opacity:0}], CUE('13:forms')+0.9, 0.4, 'forwards');
+  // two stars: verb, then article
+  A($('a2f'), [{opacity:0},{opacity:1}], CUE('14:verb'), 0.4, 'forwards');
+  A($('a2g'), [{opacity:0},{opacity:1}], CUE('14:article'), 0.4, 'forwards');
+  // three stars and bonus: typed in
+  const type = (el, at, dur, n) => el.animate([{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], {delay:at*1000, duration:dur*1000, fill:'both', easing:`steps(${n})`});
+  type($('a3t'), CUE('15:type'), 1.8, 18);
+  type($('a4t'), CUE('16:French'), 2.0, 24);
+};
+</script>
+</section>
