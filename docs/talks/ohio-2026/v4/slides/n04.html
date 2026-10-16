@@ -23,7 +23,7 @@
   <p class="res abs" data-in="3:polite" data-fx="left" style="top:650px">polite expressions</p>
   <div class="fg abs" id="g1" data-in="3:Ordering" data-fx="pop" style="top:300px">« Commander au restaurant »<span class="gl">order at a restaurant</span></div>
   <div class="fg abs" id="g2" data-in="3:other" data-fx="pop" style="top:560px">« Faire ses courses »<span class="gl">do the shopping</span></div>
-  <p class="abs hand" data-in="4:many" data-fx="pop" style="left:560px;top:800px;font-size:72px;line-height:1">many-to-many</p>
+  <p class="abs hand" data-in="4:goals" data-fx="pop" style="left:560px;top:800px;font-size:72px;line-height:1">many-to-many</p>
   <p class="abs zh" id="zh" style="left:1020px;top:808px;font-size:48px;font-weight:700;padding:6px 24px;border-radius:14px;background:#1f2430;color:#fff">中文 ?</p>
 </div>
 
@@ -71,7 +71,7 @@ window.SLIDE = function(){
   document.querySelectorAll('#n04 .res').forEach(el =>
     A(el, [{transform:'none'},{transform:'translateX(14px)'},{transform:'none'}], CUE('3:same'), 0.7, 'none'));
   // many-to-many: every line lights up
-  L.forEach(p => A(p, [{stroke:'#9ca3af'},{stroke:'#1f2430'},{stroke:'#9ca3af'}], CUE('4:many'), 1.2, 'none'));
+  L.forEach(p => A(p, [{stroke:'#9ca3af'},{stroke:'#1f2430'},{stroke:'#9ca3af'}], CUE('4:goals'), 1.2, 'none'));
   // scene 2 steps aside for scene 3, and returns for Mandarin
   A($('sc2'), [{opacity:1},{opacity:0}], CUE('5')-0.2, 0.5, 'forwards');
   A($('sc2'), [{opacity:0},{opacity:1}], CUE('7'), 0.6, 'forwards');

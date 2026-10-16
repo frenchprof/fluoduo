@@ -2,20 +2,7 @@
 <h2 class="hd">A common representation</h2>
 
 <!-- shared network drawing (used in scene 1 and scene 4) -->
-<template id="netT">
-  <g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
-    <line x1="80" y1="90" x2="250" y2="60"/><line x1="80" y1="90" x2="110" y2="250"/>
-    <line x1="250" y1="60" x2="110" y2="250"/><line x1="250" y1="60" x2="300" y2="220"/>
-    <line x1="110" y1="250" x2="300" y2="220"/><line x1="110" y1="250" x2="200" y2="320"/><line x1="300" y1="220" x2="200" y2="320"/>
-  </g>
-  <g stroke-width="6">
-    <circle class="nb" cx="80" cy="90" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
-    <circle class="nb" cx="110" cy="250" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
-    <circle class="nb" cx="200" cy="320" r="26" fill="#eff8ff" stroke="#1ca6ff"/>
-    <circle class="ny" cx="250" cy="60" r="34" fill="#faf7e2" stroke="#fcdf00"/>
-    <circle class="ny" cx="300" cy="220" r="34" fill="#faf7e2" stroke="#fcdf00"/>
-  </g>
-</template>
+<!-- shared network drawing: NET in the script (used in scene 1 and scene 4) -->
 
 <!-- scene 1: two directions, one network -->
 <div id="sc1" class="abs" style="left:128px;top:240px;width:1664px;height:640px">
@@ -45,18 +32,18 @@
     <p class="ct" data-in="3:forming" data-fx="fade">question about location</p>
     <p class="zh" data-in="3:forming" data-fx="fade" style="font-size:52px;font-weight:700;margin-top:10px">……在<span style="color:#006baa">哪儿</span>？</p>
   </div>
-  <div class="abs card cy" id="cy" data-in="4:functional" data-fx="right" style="left:840px;top:110px">
+  <div class="abs card cy" id="cy" data-in="4:functional" data-fx="right" style="left:800px;top:110px">
     <p class="ctag" style="background:#fcdf00">functional goal</p>
     <p class="ct" data-in="4:asking" data-fx="fade">ask where a place is</p>
     <p class="ct" data-in="4:understanding" data-fx="fade" style="margin-top:6px">and understand the answer</p>
   </div>
-  <svg class="abs" style="left:0;top:0" width="1400" height="660"><line id="lk" x1="580" y1="250" x2="840" y2="250" stroke="#6a7179" stroke-width="8" stroke-linecap="round"/></svg>
+  <svg class="abs" style="left:0;top:0" width="1400" height="660"><line id="lk" x1="600" y1="250" x2="800" y2="250" stroke="#6a7179" stroke-width="8" stroke-linecap="round"/></svg>
   <!-- what Mandarin adds to the linguistic goal -->
-  <svg class="abs" style="left:0;top:0" width="700" height="660"><path id="tk1" d="M120 390 L120 450" stroke="#1ca6ff" stroke-width="5"/><path id="tk2" d="M400 390 L400 450" stroke="#1ca6ff" stroke-width="5"/></svg>
+  <svg class="abs" style="left:0;top:0" width="700" height="660"><path id="tk1" d="M120 390 L120 450" stroke="#1ca6ff" stroke-width="5"/><path id="tk2" d="M480 390 L480 450" stroke="#1ca6ff" stroke-width="5"/></svg>
   <div class="abs add" id="addT" data-in="5:pronunciation" data-fx="rise" style="left:20px;top:450px">🔊 <span>c<b id="t1">ā</b>nt<b id="t2">ī</b>ng</span></div>
-  <div class="abs add zh" id="addC" data-in="5:characters" data-fx="rise" style="left:320px;top:450px">✍️ 餐厅</div>
+  <div class="abs add zh" id="addC" data-in="5:characters" data-fx="rise" style="left:400px;top:450px">✍️ 餐厅</div>
   <!-- the activities around them -->
-  <div class="abs" id="act" data-in="6:activities" data-fx="rise" style="left:860px;top:440px;width:520px;height:130px;border:4px dashed #9ca3af;border-radius:24px;display:flex;align-items:center;justify-content:center;gap:34px;font-size:56px">
+  <div class="abs" id="act" data-in="6:activities" data-fx="rise" style="left:840px;top:440px;width:520px;height:130px;border:4px dashed #9ca3af;border-radius:24px;display:flex;align-items:center;justify-content:center;gap:34px;font-size:56px">
     <span>🏋️</span><span>🎮</span><span>💬</span><span id="rc" style="color:#ff9037;font-weight:700">↻</span>
   </div>
   <p class="abs stamp hand" id="stamp" style="left:600px;top:-12px">re-specification</p>
@@ -87,11 +74,11 @@
 #n13 .py{background:#faf7e2;border-color:#fcdf00}
 #n13 .pb{background:#eff8ff;border-color:#1ca6ff;color:#006baa}
 #n13 .dn{font-size:64px;line-height:1;color:#9ca3af}
-#n13 .card{width:580px;height:280px;border-radius:28px;padding:28px 36px;border:5px solid}
+#n13 .card{width:600px;height:280px;border-radius:28px;padding:28px 36px;border:5px solid}
 #n13 .cb{background:#eff8ff;border-color:#1ca6ff}
 #n13 .cy{background:#faf7e2;border-color:#fcdf00}
 #n13 .ctag{display:inline-block;font-size:28px;font-weight:700;border-radius:999px;padding:6px 20px;margin-bottom:22px}
-#n13 .ct{font-size:42px;font-weight:700;line-height:1.15}
+#n13 .ct{font-size:38px;font-weight:700;line-height:1.15}
 #n13 .add{height:110px;padding:0 34px;border-radius:24px;background:#fff;border:4px solid #1ca6ff;font-size:52px;font-weight:500;display:flex;align-items:center;gap:16px;white-space:nowrap}
 #n13 .add b{font-weight:500;border-radius:8px}
 #n13 .stamp{font-size:60px;color:#9f5100;border:4px solid #ff9037;border-radius:16px;padding:0 24px;background:#fff4ed;transform:rotate(-3deg);opacity:0;white-space:nowrap}
@@ -105,7 +92,19 @@ window.SLIDE = function(){
   const draw = (p, at, d) => { const L = p.getTotalLength(); p.style.strokeDasharray = p.getAttribute('stroke-dasharray') ? p.getAttribute('stroke-dasharray') : L;
     if (p.getAttribute('stroke-dasharray')) A(p, [{opacity:0},{opacity:1}], at, d||0.6, 'both');
     else A(p, [{strokeDashoffset:L},{strokeDashoffset:0}], at, d||0.7, 'both'); };
-  ['n1','n2'].forEach(id => $(id).innerHTML = $('netT').innerHTML);
+  const NET = `<g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
+    <line x1="80" y1="90" x2="250" y2="60"/><line x1="80" y1="90" x2="110" y2="250"/>
+    <line x1="250" y1="60" x2="110" y2="250"/><line x1="250" y1="60" x2="300" y2="220"/>
+    <line x1="110" y1="250" x2="300" y2="220"/><line x1="110" y1="250" x2="200" y2="320"/><line x1="300" y1="220" x2="200" y2="320"/>
+  </g>
+  <g stroke-width="6">
+    <circle class="nb" cx="80" cy="90" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="nb" cx="110" cy="250" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="nb" cx="200" cy="320" r="26" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="ny" cx="250" cy="60" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+    <circle class="ny" cx="300" cy="220" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+  </g>`;
+  ['n1','n2'].forEach(id => $(id).innerHTML = NET);
   out($('sc1'), CUE('2')-0.2);
   out($('sc2'), CUE('8')-0.2);
 
@@ -120,7 +119,7 @@ window.SLIDE = function(){
   draw($('lk'), CUE('4:connect'), 0.6);
   // scene 3: tones and characters hang off the linguistic goal
   draw($('tk1'), CUE('5:pronunciation')-0.2, 0.3); draw($('tk2'), CUE('5:characters')-0.2, 0.3);
-  ['t1','t2'].forEach((id,i) => A($(id), [{color:'#1f2430', background:'rgba(255,144,55,0)'},{color:'#9f5100', background:'#ffe2c8'}], CUE('5:tones')+i*0.2, 0.4, 'forwards'));
+  ['t1','t2'].forEach((id,i) => A($(id), [{color:'#1f2430'},{color:'#ff9037'}], CUE('5:tones')+i*0.2, 0.4, 'forwards'));
   // the relationship holds: the link pulses
   A($('lk'), [{strokeWidth:8, stroke:'#6a7179'},{strokeWidth:16, stroke:'#00c197'},{strokeWidth:8, stroke:'#00c197'}], CUE('6:relationship'), 1.2, 'forwards');
   // ...but the competencies change
