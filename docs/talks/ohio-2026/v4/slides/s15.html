@@ -1,0 +1,155 @@
+<section id="s15">
+<h2 class="hd">Seen, Focus, Scored</h2>
+
+<!-- scene 0: "anything new?" -->
+<p id="newq" class="abs hand" data-in="1:new" data-fx="pop" style="left:640px;top:380px;width:640px;text-align:center;font-size:200px;color:#ff9037;line-height:1">new?</p>
+
+<!-- scene A: the spiral + the three stages -->
+<div id="scA" class="abs" style="left:128px;top:220px;width:1400px;height:640px">
+  <svg id="spi" class="abs" data-in="3:spiral-0.3" data-fx="fade" data-dur="0.2" style="left:20px;top:0" width="560" height="520" viewBox="-280 -260 560 520">
+    <path id="spath" fill="none" stroke="#1ca6ff" stroke-width="12" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+    <circle id="sdot" r="16" fill="#006baa" cx="0" cy="0"/>
+  </svg>
+  <p class="abs" data-in="3:spiral+1.2" data-fx="fade" style="left:0;top:548px;width:600px;text-align:center;font-size:28px;color:#6a7179">Bruner (1960) · spiral curriculum</p>
+  <!-- early phrase → later how it works -->
+  <p id="early" class="abs" data-in="4:early" data-fx="pop" style="left:690px;top:20px;font-size:34px;color:#6a7179">early · <b style="color:#1f2430">whole phrase</b></p>
+  <p id="later" class="abs" data-in="4:later" data-fx="pop" style="left:690px;top:90px;font-size:34px;color:#6a7179">later · <b style="color:#1f2430">how it works</b></p>
+  <!-- three stages -->
+  <div class="abs stage" id="st1" data-in="6:seen" data-fx="left" style="top:200px;border-color:#9ca3af;background:#fff"><span class="hand" style="color:#6a7179">Seen</span><i>👁</i></div>
+  <div class="abs stage" id="st2" data-in="7:focus" data-fx="left" style="top:340px;border-color:#1ca6ff;background:#eff8ff"><span class="hand" style="color:#006baa">Focus</span><i>📖</i></div>
+  <div class="abs stage" id="st3" data-in="8:scored" data-fx="left" style="top:480px;border-color:#00c197;background:#eafbf8"><span class="hand" style="color:#00715a">Scored</span><i>✓</i></div>
+  <p class="abs nott" data-in="6:tested" data-fx="pop" style="left:1180px;top:228px">not tested</p>
+  <p class="abs nott" data-in="8:taught" data-fx="pop" style="left:1180px;top:508px;color:#00715a;border-color:#00c197">once taught</p>
+</div>
+
+<!-- scene B: the camera -->
+<div id="scB" class="abs" data-in="9:camera" data-fx="fade" style="left:330px;top:230px;width:1100px;height:620px">
+  <div id="vf" class="abs" style="left:0;top:0;width:1100px;height:460px;border-radius:30px;background:#1f2430">
+    <div class="corner" style="left:40px;top:40px;border-width:6px 0 0 6px"></div>
+    <div class="corner" style="right:40px;top:40px;border-width:6px 6px 0 0"></div>
+    <div class="corner" style="left:40px;bottom:40px;border-width:0 0 6px 6px"></div>
+    <div class="corner" style="right:40px;bottom:40px;border-width:0 6px 6px 0"></div>
+    <p id="phr" class="abs" data-in="10:shot" data-fx="fade" style="left:0;top:180px;width:1100px;text-align:center;font-size:84px;font-weight:700;color:#fbfaf4">« mon père, ma mère »</p>
+    <div id="flash" class="abs" style="left:0;top:0;width:1100px;height:460px;border-radius:30px;background:#fff;opacity:0"></div>
+    <p id="stamp" class="abs hand" style="left:740px;top:300px;font-size:64px;color:#00c197;border:5px solid #00c197;border-radius:16px;padding:0 22px;transform:rotate(-8deg);opacity:0;background:rgba(31,36,48,.6)">scored ✓</p>
+  </div>
+  <div class="abs cl" id="c1" style="left:120px">Seen</div>
+  <div class="abs cl" id="c2" style="left:420px">Focus</div>
+  <div class="abs cl" id="c3" style="left:720px">Scored</div>
+</div>
+
+<!-- scene C: examples -->
+<div id="scC" class="abs" data-in="16" data-fx="fade" style="left:128px;top:270px;width:1400px;height:500px">
+  <div class="abs ex" data-in="16:born" data-fx="left" style="top:0">« Je suis né à… »<span class="gl"> I was born in…</span></div>
+  <p class="abs arr" data-in="16:before" data-fx="draw" style="top:30px">→</p>
+  <div class="abs foc" data-in="16:past" data-fx="pop" style="top:0">past tense</div>
+  <div class="abs ex" data-in="16:how" data-fx="left" style="top:260px">« Ça va ? »<span class="gl"> How are you?</span></div>
+  <p class="abs arr" data-in="16:verb-0.6" data-fx="draw" style="top:290px">→</p>
+  <div class="abs foc" data-in="16:go" data-fx="pop" style="top:260px">« aller »</div>
+  <p class="abs" data-in="16:born+0.4" data-fx="fade" style="left:20px;top:-50px;font-size:28px;color:#6a7179">Seen</p>
+  <p class="abs" data-in="16:past+0.3" data-fx="fade" style="left:960px;top:-50px;font-size:28px;color:#006baa">Focus</p>
+</div>
+
+<!-- scene D: twenty percent -->
+<div id="scD" class="abs" data-in="17" data-fx="fade" style="left:128px;top:270px;width:1400px;height:560px">
+  <div class="abs wt" data-in="17:unfamiliar-0.6" data-fx="pop" style="left:0">Le<i>✓</i></div>
+  <div class="abs wt nw" id="wnew" data-in="17:unfamiliar" data-fx="pop" style="left:260px">week-end<i>new</i></div>
+  <div class="abs wt" data-in="17:unfamiliar-0.45" data-fx="pop" style="left:520px">je<i>✓</i></div>
+  <div class="abs wt" data-in="17:unfamiliar-0.3" data-fx="pop" style="left:780px">fais<i>✓</i></div>
+  <div class="abs wt" data-in="17:unfamiliar-0.15" data-fx="pop" style="left:1040px">du ski<i>✓</i></div>
+  <p class="abs hand" data-in="17:twenty" data-fx="pop" style="left:0;top:270px;font-size:110px;color:#ff9037;line-height:1">≈ 20%</p>
+  <!-- too easy / too hard -->
+  <div class="abs mini" data-in="19:familiar" data-fx="rise" style="left:420px;top:290px"><b></b><b></b><b></b><b></b><b></b><span>too easy</span></div>
+  <div class="abs mini" data-in="20:unknown" data-fx="rise" style="left:420px;top:400px"><b></b><b></b><b class="o"></b><b class="o"></b><b class="o"></b><span>too hard</span></div>
+</div>
+
+<!-- scene E: two cards -->
+<div id="scE" class="abs" data-in="22" data-fx="fade" style="left:128px;top:260px;width:1400px;height:600px">
+  <div class="abs card" id="k1" data-in="22:first" data-fx="rise" style="top:0">
+    <p>« Le <u id="wk">week-end</u>, je fais <span class="blank"><span id="b1">…</span><b class="fill" id="a1" data-in="22:some" data-fx="drop">du</b></span> ski. »</p>
+    <p class="abs tagnew" data-in="22:weekend" data-fx="pop" style="left:150px;top:-26px">new</p>
+    <p class="abs mark" data-in="22:some+0.2" data-fx="pop" style="color:#00c197">✓</p>
+  </div>
+  <div class="abs card" id="k2" data-in="23:second" data-fx="rise" style="top:270px">
+    <p>« Il est deux heures <span class="blank" style="min-width:300px"><span id="b2">…</span><b class="fill" id="a2" data-in="23:half" data-fx="drop" style="color:#9f5100">et demie</b></span> »</p>
+    <p class="abs mark" data-in="23:taught" data-fx="pop" style="color:#9f5100">✗</p>
+    <p class="abs tagnew" data-in="23:never" data-fx="pop" style="left:auto;right:150px;top:-26px">never taught</p>
+  </div>
+</div>
+
+<p class="part">Part 3 · Keep the frame</p>
+<style>
+#s15 .stage{left:690px;width:440px;height:110px;border:4px solid;border-radius:24px;display:flex;align-items:center;justify-content:space-between;padding:0 34px}
+#s15 .stage span{font-size:64px;line-height:1}
+#s15 .stage i{font-style:normal;font-size:44px}
+#s15 .nott{font-size:30px;color:#6a7179;border:3px dashed #9ca3af;border-radius:999px;padding:8px 22px}
+#s15 .corner{position:absolute;width:70px;height:70px;border-style:solid;border-color:#fbfaf4}
+#s15 .cl{top:500px;width:260px;height:90px;border-radius:999px;border:4px solid #d7d9de;background:#fff;color:#9ca3af;font-family:'Patrick Hand',cursive;font-size:52px;display:flex;align-items:center;justify-content:center}
+#s15 .ex{left:0;width:860px;height:150px;border-radius:24px;background:#fff;border:4px dashed #9ca3af;display:flex;align-items:center;padding:0 36px;font-size:52px;font-weight:700;gap:20px}
+#s15 .ex .gl{font-size:30px;font-weight:400}
+#s15 .arr{left:880px;font-size:80px;color:#9ca3af;line-height:1}
+#s15 .foc{left:960px;width:420px;height:150px;border-radius:24px;background:#eff8ff;border:4px solid #1ca6ff;display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;color:#006baa}
+#s15 .wt{top:0;width:230px;height:200px;border-radius:24px;background:#f1f2f4;border:4px solid #d7d9de;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:44px;font-weight:700;color:#6a7179}
+#s15 .wt i{font-style:normal;font-size:34px;color:#9ca3af}
+#s15 .wt.nw{background:#fff4ed;border-color:#ff9037;color:#9f5100}
+#s15 .wt.nw i{color:#ff9037;font-size:30px}
+#s15 .mini{display:flex;align-items:center;gap:10px}
+#s15 .mini b{width:60px;height:60px;border-radius:12px;background:#d7d9de}
+#s15 .mini b.o{background:#ff9037}
+#s15 .mini span{margin-left:24px;font-size:36px;color:#6a7179}
+#s15 .card{left:0;width:1360px;height:200px;border-radius:28px;background:#fff;border:4px solid #d7d9de;display:flex;align-items:center;padding:0 50px;font-size:60px;font-weight:500}
+#s15 .card u{text-decoration:none;border-bottom:6px solid #ff9037}
+#s15 .blank{display:inline-block;min-width:200px;text-align:center;border-bottom:5px solid #9ca3af;color:#9ca3af}
+#s15 .tagnew{font-size:28px;color:#9f5100;background:#fff4ed;border:3px solid #ff9037;border-radius:999px;padding:4px 18px}
+#s15 .mark{right:50px;top:50px;font-size:90px;line-height:1;font-weight:700}
+#s15 .blank{position:relative}
+#s15 .fill{position:absolute;left:0;right:0;bottom:4px;text-align:center;color:#006baa;font-weight:700;white-space:nowrap}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // build the spiral path
+  let d = '', N = 400, turns = 3.2;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, a = t * turns * 2 * Math.PI, r = 12 + t * 230;
+    d += (i ? 'L' : 'M') + (r * Math.cos(a)).toFixed(1) + ' ' + (r * Math.sin(a) * 0.95).toFixed(1);
+  }
+  $('spath').setAttribute('d', d);
+  A($('spath'), [{strokeDashoffset:1},{strokeDashoffset:0}], CUE('3:spiral'), 2.6, 'both');
+  A($('sdot'), [{opacity:0},{opacity:1}], CUE('3:spiral'), 0.3, 'both');
+
+  // scene changes
+  A($('newq'), [{opacity:1},{opacity:0}], CUE('3')-0.3, 0.4, 'forwards');
+  A($('scA'), [{opacity:1},{opacity:0}], CUE('9')-0.2, 0.5, 'forwards');
+  A($('scB'), [{opacity:1},{opacity:0}], CUE('16')-0.3, 0.5, 'forwards');
+  A($('scC'), [{opacity:1},{opacity:0}], CUE('17')-0.3, 0.5, 'forwards');
+  A($('scD'), [{opacity:1},{opacity:0}], CUE('22')-0.3, 0.5, 'forwards');
+
+  // stage cards glow as they are named
+  [['st1','6:seen'],['st2','7:focus'],['st3','8:scored']].forEach(([id,c]) =>
+    A($(id), [{transform:'none'},{transform:'translateX(16px)'},{transform:'none'}], CUE(c)+0.6, 0.7, 'none'));
+
+  // camera: blurry -> sharp -> flash + stamp
+  const phr = $('phr');
+  A(phr, [{filter:'blur(14px)'},{filter:'blur(14px)'}], 0, CUE('12:focus'), 'both');
+  A(phr, [{filter:'blur(14px)'},{filter:'blur(0px)'}], CUE('12:focus')-0.2, 0.9, 'forwards');
+  A($('flash'), [{opacity:0},{opacity:.95},{opacity:0}], CUE('14:picture'), 0.5, 'none');
+  A($('stamp'), [{opacity:0,transform:'rotate(-8deg) scale(1.6)'},{opacity:1,transform:'rotate(-8deg) scale(1)'}], CUE('14:picture')+0.3, 0.5, 'both');
+  const lit = {c1:['11:seen','#9ca3af','#6a7179','#fff'], c2:['13:focus','#1ca6ff','#006baa','#eff8ff'], c3:['15:scored','#00c197','#00715a','#eafbf8']};
+  Object.entries(lit).forEach(([id,[c,b,f,bg]]) =>
+    A($(id), [{borderColor:'#d7d9de',color:'#9ca3af',background:'#fff',transform:'none'},{borderColor:b,color:f,background:bg,transform:'translateY(-10px)'},{borderColor:b,color:f,background:bg,transform:'none'}], CUE(c), 0.6, 'forwards'));
+
+  // twenty percent: the new tile pulses
+  A($('wnew'), [{transform:'none'},{transform:'translateY(-14px)'},{transform:'none'}], CUE('17:twenty'), 0.7, 'none');
+
+  // cards: answers fill blanks
+  A($('b1'), [{opacity:1},{opacity:0}], CUE('22:some'), 0.3, 'forwards');
+  A($('b2'), [{opacity:1},{opacity:0}], CUE('23:half'), 0.3, 'forwards');
+  A($('k1'), [{borderColor:'#d7d9de'},{borderColor:'#00c197'}], CUE('22:some')+0.2, 0.5, 'forwards');
+  A($('k2'), [{borderColor:'#d7d9de'},{borderColor:'#ff9037'}], CUE('23:taught'), 0.5, 'forwards');
+  // that one's out
+  const out = [{opacity:1,transform:'none'},{opacity:0,transform:'translateX(-260px)'}];
+  A($('k2'), out, CUE('24:out')-0.2, 0.7, 'forwards');
+};
+</script>
+</section>

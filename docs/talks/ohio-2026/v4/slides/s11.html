@@ -1,0 +1,177 @@
+<section id="s11">
+<h2 class="hd">Where French and Chinese put the weight</h2>
+
+<!-- scene A (s1–2): what Chinese lacks, what it has instead -->
+<div id="scA" class="abs" data-out="3" style="left:128px;top:270px;width:1400px;height:440px">
+  <p class="abs zh" data-in="1" data-fx="fade" style="left:0;top:20px;font-size:72px;font-weight:700;color:#ff9037">中文</p>
+  <div class="abs chip off" data-in="1:articles" data-fx="pop" style="left:260px;top:30px">articles</div>
+  <div class="abs strike" data-in="1:articles+0.5" data-fx="draw" style="left:250px;top:72px;width:270px"></div>
+  <div class="abs chip off" data-in="1:conjugations" data-fx="pop" style="left:600px;top:30px">conjugations</div>
+  <div class="abs strike" data-in="1:conjugations+0.5" data-fx="draw" style="left:590px;top:72px;width:350px"></div>
+  <div class="abs card" data-in="2:measure" data-fx="rise" style="left:0;top:220px">measure words<span class="zh ex">张</span></div>
+  <div class="abs card" data-in="2:aspect" data-fx="rise" style="left:470px;top:220px">aspect markers<span class="zh ex">了</span></div>
+  <div class="abs card" data-in="2:tones" data-fx="rise" style="left:940px;top:220px">tones<span class="ex">mā má mǎ mà</span></div>
+</div>
+
+<!-- scene B (s3–13): five categories, two rows of bars; the S·V·O overlap -->
+<div id="scB" class="abs" data-out="14" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs" data-in="3" data-fx="fade" style="left:128px;top:300px">
+    <p class="leg"><i style="background:#1ca6ff"></i>Français</p>
+    <p class="leg"><i style="background:#ff9037"></i><span class="zh">中文</span></p>
+  </div>
+  <div id="ov1" class="abs ovl" style="left:639px"></div>
+  <div id="ov2" class="abs ovl" style="left:1083px"></div>
+  <div id="bars"></div>
+  <div class="abs" data-in="8" data-fx="fade" style="left:0;top:0">
+    <p class="abs tag" style="left:400px;top:712px">S</p>
+    <p class="abs tag" style="left:620px;top:712px">V</p>
+    <p class="abs tag" style="left:820px;top:712px">O</p>
+  </div>
+  <div class="abs" data-in="9:skiing" data-fx="left" style="left:0;top:0">
+    <p class="abs fr" style="left:400px;top:760px">« Je</p>
+    <p class="abs fr" style="left:620px;top:760px">fais</p>
+    <p class="abs fr" style="left:820px;top:760px">du ski. »</p>
+  </div>
+  <div class="abs" data-in="9:coffee" data-fx="left" style="left:0;top:0">
+    <p class="abs zh cn" style="left:400px;top:836px">我</p>
+    <p class="abs zh cn" style="left:620px;top:836px">喝</p>
+    <p class="abs zh cn" style="left:820px;top:836px">咖啡。</p>
+  </div>
+</div>
+
+<!-- scene C (s14–19): sounds -->
+<div id="scC" class="abs" data-out="20" style="left:128px;top:250px;width:1420px;height:640px">
+  <p class="abs ctag" data-in="14" data-fx="pop" style="left:0;top:0">🔊 sounds</p>
+  <div id="tones"></div>
+  <p class="abs" data-in="19:Chinese" data-fx="rise" style="left:0;top:540px;font-size:54px"><span class="zh">mā 妈</span> <b style="color:#ff9037">≠</b> <span class="zh">mà 骂</span></p>
+</div>
+
+<!-- scene D (s20–22): vocabulary -->
+<div id="scD" class="abs" data-out="23" style="left:128px;top:250px;width:1420px;height:600px">
+  <p class="abs ctag" data-in="20" data-fx="pop" style="left:0;top:0">📖 vocabulary</p>
+  <div class="abs row" data-in="21:cognates" data-fx="left" style="left:0;top:130px;border-color:#1ca6ff;background:#eff8ff">« étudiant » <b style="color:#006baa">≈</b> <span class="gl">student</span></div>
+  <div class="abs row" data-in="21:cognates+0.8" data-fx="left" style="left:0;top:300px;border-color:#ff9037;background:#fff4ed"><span class="zh">学生</span> <span style="font-size:40px">xuésheng</span> <span class="gl" style="font-size:36px">student</span></div>
+  <p class="abs hand" data-in="22:twice" data-fx="fade" style="left:840px;top:110px;font-size:48px;color:#6a7179">× 2</p>
+  <div class="abs twice" data-in="22:=ear" data-fx="pop" style="left:840px;top:190px">👂<span style="font-size:44px">xuésheng</span></div>
+  <div class="abs twice" data-in="22:writing" data-fx="pop" style="left:840px;top:350px">✍️<span class="zh" style="font-size:60px">学生</span></div>
+</div>
+
+<!-- scene E (s23–29): word forms | sentence structure -->
+<div id="scE" class="abs" data-out="30" style="left:128px;top:250px;width:1420px;height:640px">
+  <p class="abs ctag" data-in="23" data-fx="pop" style="left:0;top:0">🔤 word forms</p>
+  <div class="abs" data-in="23:simpler" data-fx="rise" style="left:0;top:110px;font-size:44px;line-height:1.5">
+    « je bo<b class="end">is</b> »<br>« tu bo<b class="end">is</b> »<br>« il bo<b class="end">it</b> »
+  </div>
+  <div class="abs zh" data-in="23:simpler+0.6" data-fx="rise" style="left:340px;top:106px;font-size:48px;line-height:1.38">我喝<br>你喝<br>他喝</div>
+  <div class="abs" data-in="24:particles" data-fx="rise" style="left:0;top:420px;font-size:56px"><span class="zh">买</span> <span style="color:#9ca3af">→</span> <span class="zh">买<b style="color:#00715a">了</b></span> <span class="gl" style="font-size:34px">bought</span></div>
+  <div class="abs" data-in="25" data-fx="fade" style="left:660px;top:-10px;width:6px;height:620px;background:#d7d9de;border-radius:3px"></div>
+  <p class="abs ctag" data-in="25" data-fx="pop" style="left:740px;top:0">↔️ sentence structure</p>
+  <p class="abs zh sen" data-in="27:pair" data-fx="left" style="left:740px;top:130px">一斤苹果<b class="mv">多少钱</b>？</p>
+  <p class="abs zh sen" data-in="27:sentences" data-fx="left" style="left:740px;top:250px"><b class="mv">多少钱</b>一斤？</p>
+  <p class="abs gl" data-in="28" data-fx="fade" style="left:740px;top:380px;font-size:32px">How much is a jin of apples?</p>
+</div>
+
+<!-- scene F (s30–36): measure words as agreement -->
+<div id="scF" class="abs" data-out="37" style="left:128px;top:250px;width:1420px;height:640px">
+  <p class="abs ctag" data-in="30" data-fx="pop" style="left:0;top:0">measure words</p>
+  <div class="abs" data-in="31:gender" data-fx="rise" style="left:0;top:130px;font-size:52px;line-height:1.6">
+    « <b style="color:#006baa">le</b> sport »<br>« <b style="color:#b17eff">la</b> danse »
+  </div>
+  <p class="abs gl" data-in="31:gender+0.4" data-fx="fade" style="left:0;top:310px;font-size:32px">gender</p>
+  <div class="abs" data-in="32" data-fx="fade" style="left:500px;top:110px;width:6px;height:460px;background:#d7d9de;border-radius:3px"></div>
+  <p class="abs mw" data-in="33:photo" data-fx="pop" style="left:580px;top:120px"><span class="zh">一<b>张</b>照片</span> <span class="gl">a photo</span></p>
+  <p class="abs mw" data-in="33:bottle" data-fx="pop" style="left:580px;top:260px"><span class="zh">一<b>瓶</b>水</span> <span class="gl">a bottle of water</span></p>
+  <p class="abs mw" data-in="33:room" data-fx="pop" style="left:580px;top:400px"><span class="zh">一<b>间</b>房子</span> <span class="gl">a room</span></p>
+</div>
+
+<!-- scene G (s37–39): script, its own track -->
+<div id="scG" class="abs" style="left:128px;top:250px;width:1420px;height:640px">
+  <p class="abs ctag" data-in="37" data-fx="pop" style="left:0;top:0">✍️ script</p>
+  <p class="abs zh" data-in="38" data-fx="fade" style="left:0;top:150px;font-size:52px;font-weight:700;color:#ff9037">中文</p>
+  <div class="abs track" data-in="38:Chinese" data-fx="draw" data-dur="0.8" style="left:300px;top:130px;width:500px;border-color:#00c197;background:#eafbf8">👂</div>
+  <div class="abs track" data-in="38:track" data-fx="draw" data-dur="0.8" style="left:830px;top:130px;width:590px;border-color:#ff9037;background:#fff4ed">✍️ <span class="zh" style="font-size:60px;font-weight:700">汉字</span></div>
+  <p class="abs" data-in="39:Indigenous" data-fx="fade" style="left:0;top:350px;font-size:34px;line-height:1.2;width:280px;color:#1f2430;font-weight:700">many Indigenous languages</p>
+  <div class="abs track" data-in="39:listening" data-fx="draw" data-dur="0.8" style="left:300px;top:330px;width:500px;border-color:#00c197;background:#eafbf8">👂</div>
+  <div class="abs track" data-in="39:none" data-fx="fade" style="left:830px;top:330px;width:590px;border:4px dashed #d7d9de;background:transparent;color:#9ca3af"><span style="opacity:.35">✍️</span></div>
+</div>
+
+<p class="part">Part 2 · Two typologically distant languages</p>
+<style>
+#s11 .chip{font-size:44px;font-weight:700;padding:14px 32px;border-radius:999px;border:4px solid}
+#s11 .off{color:#6a7179;border-color:#d7d9de;background:#fff}
+#s11 .strike{height:8px;background:#ff9037;border-radius:4px;transform:rotate(-4deg)}
+#s11 .card{width:430px;height:200px;border-radius:26px;background:#fff4ed;border:4px solid #ff9037;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-size:38px;font-weight:700}
+#s11 .card .ex{font-size:56px;font-weight:500;color:#9f5100}
+#s11 .leg{font-size:34px;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+#s11 .leg i{display:inline-block;width:36px;height:36px;border-radius:8px}
+#s11 .ovl{top:286px;width:206px;height:416px;border-radius:22px;background:#eafbf8;border:4px solid #00c197;opacity:0}
+#s11 .bar{position:absolute;width:80px;border-radius:12px 12px 0 0;transform-origin:50% 100%}
+#s11 .blab{position:absolute;top:612px;width:200px;text-align:center;font-size:28px;font-weight:700;line-height:1.15}
+#s11 .tag{font-size:28px;font-weight:700;color:#00715a;letter-spacing:2px}
+#s11 .fr{font-size:48px;white-space:nowrap}
+#s11 .cn{font-size:52px;white-space:nowrap}
+#s11 .ctag{font-size:40px;font-weight:700;padding:10px 28px;border-radius:999px;background:#eff8ff;border:3px solid #1ca6ff;color:#006baa}
+#s11 .tone{position:absolute;top:110px;width:320px;height:400px;border-radius:24px;background:#fff;border:4px solid #d7d9de;text-align:center}
+#s11 .tone svg{display:block;margin:20px auto 0}
+#s11 .tone .py{font-size:56px;font-weight:500;color:#9f5100;margin-top:4px;height:72px;line-height:72px}
+#s11 .tone .hz{font-size:100px;line-height:1.15}
+#s11 .tone .gl{font-size:32px}
+#s11 .row{padding:22px 40px;border-radius:24px;border:4px solid;font-size:56px;white-space:nowrap}
+#s11 .twice{width:440px;height:130px;border-radius:24px;background:#fff;border:4px solid #00c197;display:flex;align-items:center;gap:30px;padding:0 36px;font-size:64px}
+#s11 .end{color:#ff9037}
+#s11 .sen{font-size:64px}
+#s11 .mv{color:#ff9037;font-weight:700}
+#s11 .mw{font-size:64px;white-space:nowrap}
+#s11 .mw b{color:#ff9037;font-weight:700;background:#fff4ed;border-radius:10px;padding:0 4px}
+#s11 .mw .gl{font-size:32px;margin-left:24px}
+#s11 .track{height:130px;border-radius:24px;border:4px solid;display:flex;align-items:center;gap:20px;padding:0 36px;font-size:60px}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // --- scene B bars (heights illustrative only)
+  const cats = ['sounds','vocabulary','word forms','sentence structure','script'];
+  const FR = [110,150,280,150,70], ZH = [280,260,60,250,290];
+  const bars = $('bars');
+  const fr = [], zh = [];
+  cats.forEach((c,i) => {
+    const x = 420 + i*222;
+    const lab = document.createElement('p'); lab.className = 'blab'; lab.style.left = x+'px'; lab.textContent = c; bars.appendChild(lab);
+    A(lab, [{opacity:0},{opacity:1}], CUE('3:five') + i*0.25, 0.5);
+    [[FR,'#1ca6ff',12,fr],[ZH,'#ff9037',108,zh]].forEach(([H,col,dx,arr]) => {
+      const b = document.createElement('div'); b.className = 'bar';
+      b.style.cssText += `left:${x+dx}px;top:${600-H[i]}px;height:${H[i]}px;background:${col}`;
+      bars.appendChild(b); arr.push(b);
+      A(b, [{transform:'scaleY(0)'},{transform:'scaleY(1)'}], CUE('5:important') + i*0.15, 0.8);
+    });
+  });
+  // overlap: vocabulary and sentence structure
+  A($('ov1'), [{opacity:0},{opacity:1}], CUE('7:vocabulary'), 0.6);
+  A($('ov2'), [{opacity:0},{opacity:1}], CUE('7:structure'), 0.6);
+  A($('ov1'), [{opacity:1},{opacity:0}], CUE('10'), 0.5, 'forwards');
+  A($('ov2'), [{opacity:1},{opacity:0}], CUE('10'), 0.5, 'forwards');
+  const pulse = (el, at) => A(el, [{filter:'none',transform:'none'},{filter:'drop-shadow(0 0 14px rgba(31,36,48,.45))',transform:'scaleY(1.06)'},{filter:'none',transform:'none'}], at, 1.0, 'none');
+  pulse(fr[2], CUE('11:endings'));
+  pulse(zh[0], CUE('12:sounds')); pulse(zh[1], CUE('12:vocabulary')); pulse(zh[3], CUE('12:order'));
+  // --- scene C: one syllable in four tones
+  const T4 = [['mā','妈','mother','M40 32 L280 32','Mother'],
+              ['má','麻','hemp','M40 100 L280 28','hemp'],
+              ['mǎ','马','horse','M40 62 Q150 130 280 30','horse'],
+              ['mà','骂','scold','M40 26 L280 104','scold']];
+  T4.forEach(([py,hz,en,d,w],i) => {
+    const c = document.createElement('div'); c.className = 'tone'; c.style.left = (i*350)+'px';
+    c.innerHTML = `<svg width="320" height="130" viewBox="0 0 320 130"><path d="${d}" fill="none" stroke="#ff9037" stroke-width="10" stroke-linecap="round"/></svg>`+
+      `<div class="inner"><p class="py">${py}</p><p class="zh hz">${hz}</p><p class="gl">${en}</p></div>`;
+    $('tones').appendChild(c);
+    A(c, [{opacity:0},{opacity:1}], CUE('16:four') + i*0.15, 0.5);
+    A(c.querySelector('svg'), [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], CUE('16:tones') + i*0.2, 0.7);
+    A(c.querySelector('.inner'), [{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'scale(1.06)',offset:.7},{opacity:1,transform:'none'}], CUE('17:'+w), 0.6);
+    A(c, [{borderColor:'#d7d9de'},{borderColor:'#ff9037'}], CUE('17:'+w), 0.4);
+  });
+  // --- scene E: 多少钱 moves
+  document.querySelectorAll('#s11 .mv').forEach(m => A(m, [{background:'transparent'},{background:'#fff4ed'}], CUE('28'), 0.6));
+  // --- scene F: classifier learned with its noun
+  document.querySelectorAll('#s11 .mw b').forEach((m,i) => A(m, [{boxShadow:'0 0 0 0 rgba(255,144,55,0)'},{boxShadow:'0 0 0 6px rgba(255,144,55,.6)'},{boxShadow:'0 0 0 0 rgba(255,144,55,0)'}], CUE('34:classifier') + i*0.2, 1.0, 'none'));
+};
+</script>
+</section>
