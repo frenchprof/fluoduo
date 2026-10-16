@@ -102,3 +102,4 @@ verify/.verify46-probe.mjs
 firestore-debug.log
 firebase-debug.log
 ui-debug.log
+docs/talks/ohio-2026/v4/slides/_*.html
