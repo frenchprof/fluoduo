@@ -16,7 +16,7 @@ ids = [s for s in sys.argv[1:] if not os.path.exists(f"{R}/v4/av/{s}.mp4")]
 need = sum(dur(f"{R}/v4/audio/{s}.wav") for s in ids) * 0.0365
 bal = curl("https://api.heygen.com/v3/users/me")["data"]["wallet"]["remaining_balance"]
 print(f"{len(ids)} slides, ~${need:.2f}, balance ${bal:.2f}", flush=True)
-if need > bal - 1: raise SystemExit("not enough in the wallet")
+if need > bal: raise SystemExit("not enough in the wallet")
 os.makedirs(f"{R}/v4/av", exist_ok=True); os.makedirs(f"{R}/v4/mp3", exist_ok=True)
 running = {}
 for s in ids:
