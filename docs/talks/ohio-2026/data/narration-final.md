@@ -225,7 +225,7 @@ In French, every noun has a gender, and the article and adjective have to match 
 
 In Chinese, every noun has its own classifier.
 
-Here you’ve got a fish, a book and a table, and each takes a different one.
+Here you’ve got a photo, a bottle and a room, and each takes a different one.
 
 You basically have to learn the classifier along with the noun.
 
@@ -238,6 +238,7 @@ For Chinese, it’s a whole track of its own.
 But some languages, including many Indigenous languages, are learned mostly by listening, so they have few script goals, or none.
 
 # Part 3. Moving the template to Chinese
+# Sub-groups (Dan, 16 Oct): 12 opens Part 3 · Keep the frame 13–15 · Change the settings 16–17 · Fill the slots 18–20
 
 ## 12. Frame, slots, settings
 
