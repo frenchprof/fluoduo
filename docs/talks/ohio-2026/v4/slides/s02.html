@@ -1,0 +1,27 @@
+<section id="s02">
+<h2 class="hd" data-in="1" data-fx="fade">Introduction</h2>
+<div class="abs" style="left:128px;top:300px;width:1664px;text-align:center">
+  <p data-in="1:FluOLinGo" data-fx="pop" class="hand" style="font-size:220px;line-height:1;letter-spacing:4px"><span id="F">F</span>lu<span id="O">O</span><span id="L">L</span>in<span id="G">G</span>o</p>
+  <p data-in="2:stands" data-fx="rise" style="margin-top:40px;font-size:64px;font-weight:500;letter-spacing:1px"><b class="k1">F</b>luency <b class="k2">O</b>n <b class="k3">L</b>inguistic <b class="k4">G</b>oals</p>
+</div>
+<div class="abs" style="left:128px;top:760px;width:1400px;display:flex;gap:28px;align-items:center">
+  <p class="chip" data-in="3:beginners" data-fx="pop">🌱 for beginners</p>
+  <p class="chip" data-in="3:French" data-fx="pop">🇫🇷 French</p>
+  <p class="chip" data-in="3:myself" data-fx="pop">👤 one teacher</p>
+  <p class="chip no" data-in="3:coding" data-fx="pop">&lt;/&gt; coding background</p>
+  <p class="chip no" data-in="3:development" data-fx="pop">👥 team</p>
+</div>
+<p class="part">Opening</p>
+<style>
+.chip{font-size:34px;padding:12px 28px;border-radius:999px;background:#fff;border:3px solid #d7d9de;white-space:nowrap}
+.chip.no{position:relative;color:#9ca3af}
+.chip.no::after{content:"";position:absolute;left:14px;right:14px;top:50%;height:5px;background:#ff9037;border-radius:3px;transform:rotate(-6deg)}
+</style>
+<script>
+window.SLIDE = function(){
+  const c = {F:'#fcdf00', O:'#1ca6ff', L:'#00c197', G:'#b17eff'};
+  ['F','O','L','G'].forEach(k => A(document.getElementById(k), [{color:'#1f2430',transform:'none'},{color:c[k],transform:'translateY(-30px)'},{color:c[k],transform:'none'}], CUE('2:='+k), 0.5, 'forwards'));
+  ['k1','k2','k3','k4'].forEach((k,i) => A(document.querySelector('.'+k), [{color:'#1f2430'},{color:Object.values(c)[i]}], CUE('2:stands')+0.6, 0.4, 'forwards'));
+};
+</script>
+</section>

@@ -9,13 +9,14 @@
   const T = window.T || {dur: 60, sent: []};
   const norm = s => s.toLowerCase().replace(/[^\p{L}\p{N}-]/gu, '');
   window.CUE = function(spec){
-    const m = String(spec).match(/^(\d+)(?::([^+\-]+(?:-[^+\-\d][^+\-]*)*))?([+\-][\d.]+)?$/);
+    const m = String(spec).match(/^(\d+)(?::(=?[^+\-]+(?:-[^+\-\d][^+\-]*)*))?([+\-][\d.]+)?$/);
     if(!m) throw new Error('bad cue '+spec);
     const k = +m[1], word = m[2], off = m[3] ? +m[3] : 0;
     const s = T.sent[k-1]; if(!s) throw new Error('no sentence '+k);
     let t = s.start;
     if(word){
-      const w = norm(word); const hit = (s.words||[]).find(x => norm(x.w).includes(w));
+      const exact = word.startsWith('='); const w = norm(exact ? word.slice(1) : word);
+      const hit = (s.words||[]).find(x => exact ? norm(x.w) === w : norm(x.w).includes(w));
       if(!hit) throw new Error('no word "'+word+'" in sentence '+k);
       t = hit.s;
     }

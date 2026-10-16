@@ -1,0 +1,36 @@
+<section id="s05">
+<h2 class="hd" data-in="1" data-fx="fade">The question</h2>
+<!-- scene 1: the question -->
+<div id="q" class="abs" style="left:128px;top:260px;width:1664px;height:560px">
+  <div class="abs lang" data-in="1:European" data-fx="pop" style="left:60px;top:40px;background:#eff8ff;border-color:#1ca6ff">Français<p class="gl" style="font-size:30px">European languages · Wilkins</p></div>
+  <div class="abs" data-in="2:different" data-fx="draw" data-dur="0.8" style="left:640px;top:120px;width:300px;height:12px;background:#9ca3af;border-radius:6px"></div>
+  <p class="abs" data-in="2:different+0.6" data-fx="pop" style="left:940px;top:72px;font-size:90px;color:#9ca3af;line-height:1">▶</p>
+  <div class="abs lang" data-in="2:Chinese" data-fx="pop" style="left:1060px;top:40px;background:#fff4ed;border-color:#ff9037"><span class="zh">中文</span><p class="gl" style="font-size:30px">typologically distant</p></div>
+  <p class="abs hand" data-in="2:Chinese+0.4" data-fx="pop" style="left:1600px;top:-30px;font-size:150px;color:#ff9037">?</p>
+  <div class="abs half" data-in="5:same" data-fx="left" style="left:60px;top:330px;border-color:#00c197">✓ what can stay the same</div>
+  <div class="abs half" data-in="5:change" data-fx="right" style="left:840px;top:330px;border-color:#ff9037">↻ what has to change</div>
+</div>
+<!-- scene 2: the plan, the four parts lit as he names them -->
+<div id="plan" class="abs" data-in="6" data-fx="fade" style="left:128px;top:300px;width:1664px">
+  <div class="part4" id="p1"><b>1</b>The French course</div>
+  <div class="part4" id="p2"><b>2</b>Two typologically distant languages</div>
+  <div class="part4" id="p3"><b>3</b>Moving the template to Chinese</div>
+  <div class="part4" id="p4"><b>4</b>A recipe for your language</div>
+</div>
+<p class="part">Opening</p>
+<style>
+.lang{width:520px;padding:30px 40px;border-radius:28px;border:5px solid;font-size:80px;font-weight:700;text-align:center;line-height:1.1}
+.half{width:720px;padding:34px 40px;border-radius:24px;background:#fff;border:4px solid;font-size:44px;font-weight:700}
+#plan{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.part4{opacity:.25;background:#fff;border:4px solid #d7d9de;border-radius:24px;padding:34px 30px;font-size:38px;font-weight:700;line-height:1.2;min-height:300px}
+.part4 b{display:block;font-family:'Patrick Hand',cursive;font-size:110px;font-weight:400;color:#006baa;line-height:1}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  A($('q'), [{opacity:1},{opacity:0}], CUE('6')-0.2, 0.5, 'forwards');
+  [['p1','6:French'],['p2','6:different'],['p3','7:adapted'],['p4','7:own']].forEach(([id,c]) =>
+    A($(id), [{opacity:.25,borderColor:'#d7d9de',transform:'none'},{opacity:1,borderColor:'#1ca6ff',transform:'translateY(-16px)'},{opacity:1,borderColor:'#1ca6ff',transform:'none'}], CUE(c), 0.7, 'forwards'));
+};
+</script>
+</section>
