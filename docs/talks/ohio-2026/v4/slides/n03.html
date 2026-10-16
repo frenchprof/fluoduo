@@ -68,7 +68,7 @@ window.SLIDE = function(){
     ln.className = 'abs';
     ln.style.cssText = `left:${X(0)+31}px;top:${Y(r)+29}px;width:${9*80}px;height:4px;background:#d7d9de;border-radius:2px`;
     map.appendChild(ln);
-    A(ln, [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], CUE('3:fifty') + r*0.35, 0.6);
+    A(ln, [{clipPath:'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}], CUE('3:version') + r*0.35, 0.6);
   }
   const dots = {};
   for (let n = 1; n <= 50; n++){
@@ -77,7 +77,7 @@ window.SLIDE = function(){
     d.className = 'dot abs'; d.textContent = n;
     d.style.left = X(i)+'px'; d.style.top = Y(r)+'px';
     map.appendChild(d); dots[n] = d;
-    A(d, [{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'none'}], CUE('3:fifty') + r*0.35 + i*0.04, 0.4);
+    A(d, [{opacity:0,transform:'scale(.5)'},{opacity:1,transform:'none'}], CUE('3:version') + r*0.35 + i*0.04, 0.4);
   }
   // numbered stops: a ripple along the map
   for (let n = 1; n <= 50; n++)

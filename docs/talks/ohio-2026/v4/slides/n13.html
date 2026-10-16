@@ -16,11 +16,11 @@
   <p class="abs dn" data-in="1:structure+0.5" data-fx="drop" style="left:1060px;top:92px">↓</p>
   <p class="abs pill py" data-in="1:function" data-fx="pop" style="left:960px;top:190px">function</p>
 
-  <svg id="n1" class="abs" style="left:560px;top:100px" width="380" height="370" viewBox="0 0 380 370"></svg>
+  <svg id="n1" class="abs" style="left:520px;top:100px" width="380" height="370" viewBox="0 0 380 370"></svg>
   <svg class="abs" style="left:0;top:0" width="1400" height="640">
     <defs><marker id="ah13" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6a7179"/></marker></defs>
-    <path id="c1" d="M380 280 C 480 300, 520 300, 590 290" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
-    <path id="c2" d="M950 280 C 920 300, 900 300, 880 300" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
+    <path id="c1" d="M380 280 C 440 300, 480 300, 540 290" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
+    <path id="c2" d="M955 270 C 945 280, 935 285, 905 290" stroke="#6a7179" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah13)"/>
   </svg>
 </div>
 
@@ -50,7 +50,7 @@
 </div>
 
 <!-- scene 4: independent of the language, and partly of the textbook -->
-<div id="sc4" class="abs" data-in="8" data-fx="fade" style="left:128px;top:240px;width:1664px;height:640px">
+<div id="sc4" class="abs" data-in="8:architecture-0.3" data-fx="fade" style="left:128px;top:240px;width:1664px;height:640px">
   <svg id="n2" class="abs" style="left:520px;top:60px" width="380" height="370" viewBox="0 0 380 370"></svg>
   <p class="abs lang" data-in="8:language" data-fx="left" style="left:0;top:40px;border-color:#1ca6ff;color:#006baa">Français</p>
   <p class="abs lang zh" data-in="8:language+0.3" data-fx="left" style="left:0;top:230px;border-color:#ff9037;color:#9f5100">中文</p>
@@ -91,7 +91,7 @@ window.SLIDE = function(){
   const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
   const draw = (p, at, d) => { const L = p.getTotalLength(); p.style.strokeDasharray = p.getAttribute('stroke-dasharray') ? p.getAttribute('stroke-dasharray') : L;
     if (p.getAttribute('stroke-dasharray')) A(p, [{opacity:0},{opacity:1}], at, d||0.6, 'both');
-    else A(p, [{strokeDashoffset:L},{strokeDashoffset:0}], at, d||0.7, 'both'); };
+    else A(p, [{strokeDashoffset:L, opacity:0},{strokeDashoffset:L, opacity:1, offset:0.02},{strokeDashoffset:0, opacity:1}], at, d||0.7, 'both'); };
   const NET = `<g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
     <line x1="80" y1="90" x2="250" y2="60"/><line x1="80" y1="90" x2="110" y2="250"/>
     <line x1="250" y1="60" x2="110" y2="250"/><line x1="250" y1="60" x2="300" y2="220"/>
@@ -106,7 +106,7 @@ window.SLIDE = function(){
   </g>`;
   ['n1','n2'].forEach(id => $(id).innerHTML = NET);
   out($('sc1'), CUE('2')-0.2);
-  out($('sc2'), CUE('8')-0.2);
+  out($('sc2'), CUE('8:architecture')-0.5);
 
   // scene 1: both paths lead into the same network
   A($('n1'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('1:represent'), 0.8, 'both');
@@ -125,7 +125,7 @@ window.SLIDE = function(){
   // ...but the competencies change
   [$('addT'), $('addC')].forEach((el,i) => A(el, [{boxShadow:'0 0 0 0 rgba(255,144,55,0)'},{boxShadow:'0 0 0 12px rgba(255,144,55,.35)'},{boxShadow:'0 0 0 0 rgba(255,144,55,0)'}], CUE('6:competencies')+i*0.2, 1.0, 'none'));
   A($('rc'), [{opacity:0, transform:'scale(.5)'},{opacity:1, transform:'none'}], CUE('6:reconsidered'), 0.5, 'both');
-  A($('stamp'), [{opacity:0, transform:'rotate(-3deg) scale(1.3)'},{opacity:1, transform:'rotate(-3deg)'}], CUE('7:re-specification'), 0.5, 'forwards');
+  A($('stamp'), [{opacity:0, transform:'rotate(-3deg) scale(1.3)'},{opacity:1, transform:'rotate(-3deg)'}], CUE('7:example'), 0.5, 'forwards');
 
   // scene 4
   A($('n2'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('8:architecture'), 0.8, 'both');

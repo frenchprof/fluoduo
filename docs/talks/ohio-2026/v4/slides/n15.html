@@ -1,0 +1,115 @@
+<section id="n15">
+<h2 class="hd">What needs to be reconfigured?</h2>
+
+<!-- scene 0: the architecture stays, parts move -->
+<div id="sc0" class="abs" style="left:128px;top:240px;width:1400px;height:640px">
+  <svg id="net" class="abs" style="left:510px;top:60px" width="380" height="370" viewBox="0 0 380 370"></svg>
+</div>
+
+<!-- 1 the goal inventory -->
+<div class="abs card" id="k1" data-in="2" data-fx="rise" style="left:128px;top:240px">
+  <p class="hdr"><b class="hand">1</b> goal inventory</p>
+  <div class="row" id="f1" data-in="2:articles" data-fx="left" style="top:92px">« le sport · la danse »</div>
+  <div class="row" id="f2" data-in="2:gender" data-fx="left" style="top:162px">« chinois · chinoise »</div>
+  <div class="row" id="f3" data-in="2:conjugation" data-fx="left" style="top:232px">« je bois · il boit »</div>
+  <div class="row" id="m1" style="top:92px;opacity:0">mā · má · mǎ · mà</div>
+  <div class="row zh" id="m2" style="top:162px;opacity:0">一张照片 · 一瓶水</div>
+  <div class="row zh" id="m3" style="top:232px;opacity:0">买 → 买了</div>
+  <p class="abs flag" id="frT" data-in="2:French" data-fx="pop" style="left:470px;top:20px">Français</p>
+  <p class="abs flag zh" id="zhT" style="left:470px;top:20px;opacity:0;border-color:#ff9037;color:#9f5100">中文</p>
+</div>
+
+<!-- 2 the links between goals -->
+<div class="abs card" id="k2" data-in="3" data-fx="rise" style="left:868px;top:240px">
+  <p class="hdr"><b class="hand">2</b> links between goals</p>
+  <svg class="abs" style="left:40px;top:78px" width="580" height="220" viewBox="0 -15 580 220">
+    <g id="la" stroke="#6a7179" stroke-width="6" stroke-linecap="round">
+      <line x1="90" y1="30" x2="440" y2="95"/><line x1="90" y1="95" x2="440" y2="95"/>
+    </g>
+    <g id="lb" stroke="#ff9037" stroke-width="6" stroke-linecap="round" opacity="0">
+      <line x1="260" y1="20" x2="440" y2="95"/><line x1="90" y1="160" x2="440" y2="95"/><line x1="260" y1="170" x2="440" y2="95"/>
+    </g>
+    <g stroke="#1ca6ff" stroke-width="6" fill="#eff8ff">
+      <circle cx="90" cy="30" r="24"/><circle cx="90" cy="95" r="24"/><circle cx="90" cy="160" r="24"/>
+      <circle cx="260" cy="20" r="24"/><circle cx="260" cy="170" r="24"/>
+    </g>
+    <circle id="fy" cx="460" cy="95" r="44" fill="#faf7e2" stroke="#fcdf00" stroke-width="7"/>
+  </svg>
+</div>
+
+<!-- 3 the progression -->
+<div class="abs card" id="k3" data-in="4" data-fx="rise" style="left:128px;top:580px">
+  <p class="hdr"><b class="hand">3</b> progression</p>
+  <div class="abs" style="left:40px;top:100px;width:580px;height:170px">
+    <div class="tk" id="p1" style="left:0">●</div>
+    <div class="tk" id="p2" style="left:150px">▲</div>
+    <div class="tk" id="p3" style="left:300px">■</div>
+    <div class="tk" id="p4" style="left:450px">◆</div>
+    <svg class="abs" style="left:0;top:118px" width="580" height="40"><line x1="10" y1="20" x2="560" y2="20" stroke="#9ca3af" stroke-width="5" marker-end="url(#ah15)"/>
+      <defs><marker id="ah15" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#9ca3af"/></marker></defs></svg>
+  </div>
+</div>
+
+<!-- 4 the activities attached to each goal -->
+<div class="abs card" id="k4" data-in="5" data-fx="rise" style="left:868px;top:580px">
+  <p class="hdr"><b class="hand">4</b> activities</p>
+  <svg class="abs" style="left:40px;top:90px" width="580" height="190">
+    <path class="al" d="M140 95 L330 35"/><path class="al" d="M140 95 L330 95"/><path class="al" d="M140 95 L330 155"/>
+    <circle cx="110" cy="95" r="44" fill="#eff8ff" stroke="#1ca6ff" stroke-width="7"/>
+  </svg>
+  <p class="act" data-in="5:attached" data-fx="right" style="top:100px">🏋️</p>
+  <p class="act" data-in="5:attached+0.2" data-fx="right" style="top:160px">🎮</p>
+  <p class="act" data-in="5:attached+0.4" data-fx="right" style="top:220px">💬</p>
+</div>
+
+<p class="part">What needs to be reconfigured?</p>
+<style>
+#n15 .card{width:660px;height:310px;border-radius:28px;background:#fff4ed;border:5px solid #ff9037}
+#n15 .hdr{position:absolute;left:32px;top:16px;font-size:36px;font-weight:700;white-space:nowrap}
+#n15 .hdr b{font-size:56px;font-weight:400;color:#9f5100;margin-right:12px}
+#n15 .row{position:absolute;left:40px;height:56px;padding:0 22px;border-radius:14px;background:#eff8ff;border:4px solid #1ca6ff;font-size:34px;font-weight:500;display:flex;align-items:center;white-space:nowrap}
+#n15 .flag{font-size:30px;font-weight:700;padding:4px 18px;border-radius:12px;background:#fff;border:3px solid #1ca6ff;color:#006baa;white-space:nowrap}
+#n15 .tk{position:absolute;top:0;width:120px;height:100px;border-radius:18px;background:#eff8ff;border:5px solid #1ca6ff;color:#006baa;font-size:52px;display:flex;align-items:center;justify-content:center}
+#n15 .al{stroke:#6a7179;stroke-width:6;fill:none;stroke-linecap:round}
+#n15 .act{position:absolute;left:390px;font-size:48px;line-height:1;width:84px;height:56px;display:flex;align-items:center;justify-content:center;background:#fff;border:3px solid #d7d9de;border-radius:14px}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  $('net').innerHTML = `<g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
+    <line x1="80" y1="90" x2="250" y2="60"/><line x1="80" y1="90" x2="110" y2="250"/>
+    <line x1="250" y1="60" x2="110" y2="250"/><line x1="250" y1="60" x2="300" y2="220"/>
+    <line x1="110" y1="250" x2="300" y2="220"/><line x1="110" y1="250" x2="200" y2="320"/><line x1="300" y1="220" x2="200" y2="320"/></g>
+    <g stroke-width="6"><circle class="nd" cx="80" cy="90" r="30" fill="#eff8ff" stroke="#1ca6ff"/><circle class="nd" cx="110" cy="250" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+    <circle class="nd" cx="200" cy="320" r="26" fill="#eff8ff" stroke="#1ca6ff"/><circle class="nd" cx="250" cy="60" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+    <circle class="nd" cx="300" cy="220" r="34" fill="#faf7e2" stroke="#fcdf00"/></g>`;
+  // scene 0
+  A($('net'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('1:parts'), 0.6, 'both');
+  q('#n15 .nd').forEach((c,i) => A(c, [{transform:'none'},{transform:'translate('+(i%2?14:-14)+'px,'+(i%3?-12:12)+'px)'},{transform:'none'}], CUE('1:change')+i*0.08, 0.9, 'none'));
+  A($('net'), [{filter:'none'},{filter:'drop-shadow(0 0 14px rgba(0,193,151,.7))'},{filter:'drop-shadow(0 0 6px rgba(0,193,151,.4))'}], CUE('1:architecture'), 1.0, 'forwards');
+  A($('sc0'), [{opacity:1},{opacity:0}], CUE('2')-0.3, 0.4, 'forwards');
+
+  // 1: French goals give way to Mandarin ones
+  const swap = (a, b, at) => { A($(a), [{opacity:1, transform:'none'},{opacity:0, transform:'translateY(-20px)'}], at, 0.45, 'forwards');
+    A($(b), [{opacity:0, transform:'translateY(20px)'},{opacity:1, transform:'none'}], at+0.3, 0.5, 'forwards'); };
+  const r = CUE('2:replaced');
+  swap('f1','m1', r); swap('f2','m2', r+0.25); swap('f3','m3', r+0.5); swap('frT','zhT', CUE('2:Mandarin'));
+
+  // 2: the same function, reached through different resources
+  A($('la'), [{opacity:1},{opacity:0}], CUE('3:differ'), 0.5, 'forwards');
+  A($('lb'), [{opacity:0},{opacity:1}], CUE('3:differ')+0.3, 0.6, 'forwards');
+  A($('fy'), [{strokeWidth:7},{strokeWidth:14},{strokeWidth:7}], CUE('3:function'), 0.8, 'none');
+
+  // 3: the order changes
+  const at = CUE('4:different');
+  const moves = {p1:300, p2:300, p3:-300, p4:-300};
+  Object.entries(moves).forEach(([id,dx],i) => A($(id), [{transform:'none'},{transform:`translate(${dx/2}px, ${i%2?-26:26}px)`, offset:.5},{transform:`translateX(${dx}px)`}], at, 1.0, 'forwards'));
+  A($('p2'), [{transform:'translateX(300px)'},{transform:'translateX(300px)'}], at+1.0, 0.1, 'forwards');
+
+  // 4: the links to each activity draw on "attached"
+  q('#n15 .al').forEach((p,i) => { const L = p.getTotalLength(); p.style.strokeDasharray = L;
+    A(p, [{strokeDashoffset:L},{strokeDashoffset:0}], CUE('5:attached')+i*0.2-0.2, 0.5, 'both'); });
+};
+</script>
+</section>

@@ -1,0 +1,93 @@
+<section id="n14">
+<h2 class="hd">What can remain unchanged?</h2>
+
+<!-- four slots appear on "several elements", each fills in as it is named -->
+<div class="abs slot" data-in="1:elements" data-fx="fade" style="left:128px"></div>
+<div class="abs slot" data-in="1:elements+0.12" data-fx="fade" style="left:552px"></div>
+<div class="abs slot" data-in="1:elements+0.24" data-fx="fade" style="left:976px"></div>
+<div class="abs slot" data-in="1:elements+0.36" data-fx="fade" style="left:1400px"></div>
+
+<!-- 1 explicit learning goals -->
+<div class="abs card" id="k1" data-in="2" data-fx="rise" style="left:128px">
+  <p class="num hand">1</p>
+  <div class="gfx" style="font-size:150px;line-height:1">🎯</div>
+  <p class="lab">explicit learning goals</p>
+</div>
+
+<!-- 2 linguistic ↔ functional -->
+<div class="abs card" id="k2" data-in="3" data-fx="rise" style="left:552px">
+  <p class="num hand">2</p>
+  <svg class="gfx" width="330" height="180" viewBox="0 0 330 180">
+    <line id="lk" x1="85" y1="90" x2="245" y2="90" stroke="#6a7179" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="70" cy="90" r="58" fill="#eff8ff" stroke="#1ca6ff" stroke-width="7"/>
+    <circle cx="260" cy="90" r="58" fill="#faf7e2" stroke="#fcdf00" stroke-width="7"/>
+  </svg>
+  <p class="lab"><span style="color:#006baa">linguistic</span> ↔ functional</p>
+</div>
+
+<!-- 3 the learning cycle -->
+<div class="abs card" id="k3" data-in="4" data-fx="rise" style="left:976px">
+  <p class="num hand">3</p>
+  <div class="gfx" style="position:relative;width:330px;height:240px">
+    <p class="cy" data-in="4:attempt" data-fx="left" style="top:0">attempt</p>
+    <p class="cy" data-in="4:explanation" data-fx="left" style="top:48px">explanation</p>
+    <p class="cy" data-in="4:practice" data-fx="left" style="top:96px">practice</p>
+    <p class="cy" data-in="4:feedback" data-fx="left" style="top:144px">feedback</p>
+    <p class="cy" data-in="4:revision" data-fx="left" style="top:192px">revision</p>
+    <svg class="abs" style="left:230px;top:0" width="100" height="240"><path id="loop" d="M10 214 C 90 214, 90 22, 22 22" stroke="#00c197" stroke-width="6" fill="none" stroke-linecap="round" marker-end="url(#ah14)"/>
+      <defs><marker id="ah14" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#00c197"/></marker></defs></svg>
+  </div>
+  <p class="lab">the learning cycle</p>
+</div>
+
+<!-- 4 practise resources, then use them together -->
+<div class="abs card" id="k4" data-in="5" data-fx="rise" style="left:1400px">
+  <p class="num hand">4</p>
+  <div class="gfx" style="position:relative;width:330px;height:220px">
+    <div data-in="5:practising" data-fx="fade" class="abs" style="left:0;top:0;width:330px;height:90px">
+      <i class="blk" style="left:10px"></i><i class="blk" style="left:125px"></i><i class="blk" style="left:240px"></i>
+    </div>
+    <p data-in="5:using" data-fx="fade" class="abs" style="left:145px;top:82px;font-size:40px;line-height:1;color:#9ca3af">↓</p>
+    <div data-in="5:integrated" data-fx="pop" class="abs" style="left:10px;top:128px;width:310px;height:90px;border-radius:18px;background:#faf7e2;border:5px solid #fcdf00;display:flex;gap:8px;align-items:center;justify-content:center">
+      <i class="blk2"></i><i class="blk2"></i><i class="blk2"></i>
+    </div>
+  </div>
+  <p class="lab">practise · use together</p>
+</div>
+
+<!-- still to be tested -->
+<div class="abs" data-in="6:usefulness" data-fx="rise" style="left:128px;top:740px;display:flex;align-items:center;gap:24px;padding:22px 40px;border-radius:24px;background:#fff4ed;border:4px dashed #ff9037;white-space:nowrap">
+  <span style="font-size:48px">🧪</span>
+  <span style="font-size:40px;font-weight:700;color:#9f5100">still to be tested</span>
+  <span class="zh" style="font-size:40px;font-weight:700;color:#9f5100;background:#fff;border:3px solid #ff9037;border-radius:14px;padding:2px 16px">中文</span>
+</div>
+
+<p class="part">What can remain unchanged?</p>
+<style>
+#n14 .slot,#n14 .card{top:250px;width:390px;height:440px;border-radius:28px}
+#n14 .slot{border:4px dashed #d7d9de}
+#n14 .card{background:#eafbf8;border:5px solid #00c197;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22px 24px 30px}
+#n14 .num{align-self:flex-start;font-size:64px;line-height:.9;color:#00715a;height:50px}
+#n14 .lab{font-size:34px;font-weight:700;text-align:center;line-height:1.15}
+#n14 .cy{position:absolute;left:10px;font-size:32px;font-weight:500;line-height:44px;white-space:nowrap}
+#n14 .blk{position:absolute;top:10px;width:80px;height:70px;border-radius:14px;background:#eff8ff;border:5px solid #1ca6ff}
+#n14 .blk2{width:80px;height:56px;border-radius:12px;background:#eff8ff;border:5px solid #1ca6ff}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  // the line between the two goals draws on "between"
+  const p = $('lk'), L = 160; p.style.strokeDasharray = L;
+  A(p, [{strokeDashoffset:L},{strokeDashoffset:0}], CUE('3:between'), 0.6, 'both');
+  // the cycle loops back after revision
+  const lp = $('loop'), LL = lp.getTotalLength(); lp.style.strokeDasharray = LL;
+  A(lp, [{strokeDashoffset:LL, opacity:0},{strokeDashoffset:LL, opacity:1, offset:.02},{strokeDashoffset:0, opacity:1}], CUE('4:revision')+0.3, 0.8, 'both');
+  // each card lifts when it is named, then settles
+  [['k1','2:explicit'],['k2','3:relationship'],['k3','4:cycle'],['k4','5:distinction']].forEach(([id,c]) =>
+    A($(id), [{transform:'none'},{transform:'translateY(-12px)', boxShadow:'0 14px 30px rgba(0,113,90,.18)'},{transform:'none'}], CUE(c), 1.0, 'none'));
+  // all four still to be tested: borders go dashed
+  q('#n14 .card').forEach((el,i) => A(el, [{borderStyle:'solid'},{borderStyle:'dashed'}], CUE('6:tested')+i*0.1, 0.3, 'forwards'));
+};
+</script>
+</section>

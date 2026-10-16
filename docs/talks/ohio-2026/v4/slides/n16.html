@@ -1,0 +1,116 @@
+<section id="n16">
+<h2 class="hd">What might need to be redesigned?</h2>
+
+<!-- scene 1: beyond reconfiguring -->
+<div id="sc1" class="abs" style="left:128px;top:240px;width:1400px;height:640px">
+  <p class="abs chip" data-in="1:reconfiguration" data-fx="pop" style="left:120px;top:200px;background:#f3f4f6;border-color:#9ca3af;color:#6a7179">⚙️ reconfigure</p>
+  <p class="abs" data-in="1:limitations" data-fx="left" style="left:620px;top:196px;font-size:110px;line-height:1;color:#9ca3af">→</p>
+  <p class="abs chip" data-in="1:activity" data-fx="pop" style="left:800px;top:200px;background:#fff4ed;border-color:#ff9037;color:#9f5100">✏️ redesign</p>
+</div>
+
+<!-- scene 2: the same verb, two languages -->
+<div id="sc2" class="abs" data-in="2" data-fx="fade" style="left:128px;top:240px;width:1400px;height:660px">
+  <p class="abs lg" data-in="3:French" data-fx="fade" style="left:0;top:0;border-color:#1ca6ff;color:#006baa">Français</p>
+  <div class="abs vr" data-in="3:=I" data-fx="rise" style="left:0;top:110px">« je <b class="vb">boi<u>s</u></b> » <span class="gl">I drink</span></div>
+  <div class="abs vr" data-in="3:you" data-fx="rise" style="left:0;top:230px">« tu <b class="vb">boi<u>s</u></b> » <span class="gl">you drink</span></div>
+  <div class="abs vr" data-in="3:she" data-fx="rise" style="left:0;top:350px">« elle <b class="vb">boi<u>t</u></b> » <span class="gl">she drinks</span></div>
+  <svg class="abs" style="left:540px;top:110px" width="60" height="330"><path id="br1" d="M8 8 C 40 8, 30 165, 50 165 C 30 165, 40 322, 8 322" stroke="#1ca6ff" stroke-width="6" fill="none" stroke-linecap="round"/></svg>
+  <p class="abs drill" id="d1" data-in="4:conjugation" data-fx="pop" style="left:120px;top:500px">🏋️ conjugation drill</p>
+
+  <p class="abs lg zh" data-in="5:Mandarin" data-fx="fade" style="left:820px;top:0;border-color:#ff9037;color:#9f5100">中文</p>
+  <div class="abs vr" data-in="5:Mandarin" data-fx="rise" style="left:820px;top:110px"><span class="zh">我<b class="hz">喝</b></span> <span class="py">wǒ hē</span></div>
+  <div class="abs vr" data-in="5:Mandarin+0.2" data-fx="rise" style="left:820px;top:230px"><span class="zh">你<b class="hz">喝</b></span> <span class="py">nǐ hē</span></div>
+  <div class="abs vr" data-in="5:Mandarin+0.4" data-fx="rise" style="left:820px;top:350px"><span class="zh">她<b class="hz">喝</b></span> <span class="py">tā hē</span></div>
+  <p class="abs drill" id="d2" style="left:880px;top:500px;opacity:0">🏋️ conjugation drill</p>
+  <svg class="abs" id="xx" style="left:870px;top:478px;opacity:0" width="440" height="130"><line x1="10" y1="10" x2="430" y2="120" stroke="#ff9037" stroke-width="10" stroke-linecap="round"/><line x1="10" y1="120" x2="430" y2="10" stroke="#ff9037" stroke-width="10" stroke-linecap="round"/></svg>
+</div>
+
+<!-- scene 3: what Mandarin needs instead -->
+<div id="sc3" class="abs" data-in="6" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <!-- aspect -->
+  <div class="abs pn" id="pA" data-in="6:aspect" data-fx="rise" style="left:128px;width:470px">
+    <p class="ph" id="hA">aspect</p>
+    <p class="zh" style="font-size:84px;font-weight:500;margin-top:30px;white-space:nowrap">买 <span style="color:#9ca3af">→</span> 买<b id="le" style="font-weight:500">了</b></p>
+    <p class="py2">mǎi <span style="color:#9ca3af">→</span> mǎi le</p>
+    <p class="gl" data-in="6:completed" data-fx="fade" style="font-size:32px;margin-top:14px">bought</p>
+    <p class="tg" data-in="6:completed+0.3" data-fx="pop">NPCR · Lesson 13</p>
+  </div>
+  <!-- classifiers -->
+  <div class="abs pn" id="pB" data-in="6:classifiers" data-fx="rise" style="left:622px;width:560px">
+    <p class="ph" id="hB">classifiers</p>
+    <div class="cl" data-in="6:photo" data-fx="left"><span class="zh">一<b class="mw">张</b>照片</span><span class="gl">a photo</span></div>
+    <div class="cl" data-in="6:bottle" data-fx="left"><span class="zh">一<b class="mw">瓶</b>水</span><span class="gl">a bottle of water</span></div>
+    <div class="cl" data-in="6:room" data-fx="left"><span class="zh">一<b class="mw">间</b>房子</span><span class="gl">a room</span></div>
+  </div>
+  <!-- word order -->
+  <div class="abs pn" id="pC" data-in="6:=or" data-fx="rise" style="left:1206px;width:586px">
+    <p class="ph" id="hC">word order</p>
+    <p class="zh wo" style="margin-top:34px">一斤苹果<b class="dq">多少钱</b>？</p>
+    <p class="zh wo" style="margin-top:16px"><b class="dq">多少钱</b>一斤？</p>
+    <p class="gl" style="font-size:28px;margin-top:20px">How much is a jin of apples?</p>
+  </div>
+  <!-- the principle stays -->
+  <div class="abs" id="pr" data-in="7" data-fx="rise" style="left:128px;top:740px;display:flex;align-items:center;gap:0;white-space:nowrap">
+    <span class="gchip">🎯 linguistic goal</span>
+    <svg width="120" height="20"><line x1="6" y1="10" x2="114" y2="10" stroke="#6a7179" stroke-width="7" stroke-linecap="round"/></svg>
+    <span class="gchip" style="background:#fff;border-color:#9ca3af;color:#1f2430">🏋️ targeted practice</span>
+    <span id="ok" style="font-size:56px;color:#00c197;font-weight:700;margin-left:24px">✓</span>
+  </div>
+</div>
+
+<p class="part">What might need to be redesigned?</p>
+<style>
+#n16 .chip{font-size:52px;font-weight:700;padding:30px 50px;border-radius:28px;border:5px solid;white-space:nowrap}
+#n16 .lg{font-size:40px;font-weight:700;padding:8px 28px;border-radius:16px;border:4px solid;background:#fff}
+#n16 .vr{font-size:68px;font-weight:500;white-space:nowrap;line-height:1.2}
+#n16 .vr .gl{font-size:32px;font-weight:400;margin-left:18px}
+#n16 .vr .py{font-size:36px;font-weight:400;color:#6a7179;margin-left:24px}
+#n16 .vb,#n16 .hz{font-weight:500;border-radius:10px;padding:0 6px}
+#n16 .vb u{text-decoration:none}
+#n16 .drill{font-size:38px;font-weight:700;padding:20px 34px;border-radius:22px;background:#eff8ff;border:4px solid #1ca6ff;color:#006baa;white-space:nowrap}
+#n16 .pn{top:250px;height:440px;border-radius:28px;background:#fff;border:4px solid #d7d9de;padding:28px 34px}
+#n16 .ph{display:inline-block;font-size:34px;font-weight:700;color:#006baa;background:#eff8ff;border:3px solid #1ca6ff;border-radius:999px;padding:4px 22px}
+#n16 .py2{font-size:36px;color:#6a7179;margin-top:6px}
+#n16 .tg{display:inline-block;margin-top:24px;font-size:26px;font-weight:700;color:#9f5100;background:#fff4ed;border:3px solid #ff9037;border-radius:999px;padding:4px 16px}
+#n16 .cl{margin-top:24px;display:flex;align-items:baseline;gap:22px;white-space:nowrap}
+#n16 .cl .zh{font-size:56px;font-weight:500}
+#n16 .cl .gl{font-size:30px}
+#n16 .mw,#n16 .dq{font-weight:500;border-radius:8px;padding:0 4px}
+#n16 .wo{font-size:52px;font-weight:500;white-space:nowrap}
+#n16 .gchip{font-size:36px;font-weight:700;padding:18px 30px;border-radius:999px;background:#eff8ff;border:4px solid #1ca6ff;color:#006baa}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
+  const mark = (el, at, bg, col) => A(el, [{background:'rgba(255,255,255,0)', color:'#1f2430'},{background:bg, color:col}], at, 0.4, 'forwards');
+  out($('sc1'), CUE('2')-0.2);
+  out($('sc2'), CUE('6')-0.2);
+
+  // French: each form lights up as it is said, the changing letter in orange
+  const vb = q('#n16 .vb');
+  ['3:=I','3:you','3:she'].forEach((c,i) => {
+    mark(vb[i], CUE(c)+0.3, '#cfe9ff', '#006baa');
+    A(vb[i].querySelector('u'), [{color:'#006baa'},{color:'#ff6a00'}], CUE('3:different'), 0.4, 'forwards');
+  });
+  const b = $('br1'), L = b.getTotalLength(); b.style.strokeDasharray = L;
+  A(b, [{strokeDashoffset:L},{strokeDashoffset:0}], CUE('4:activity'), 0.6, 'both');
+
+  // Mandarin: 喝 lights up, the same each time
+  q('#n16 .hz').forEach((el,i) => mark(el, CUE('5:same')+i*0.15, '#ffe2c8', '#9f5100'));
+  // the drill is copied across, and crossed out
+  A($('d2'), [{opacity:0, transform:'translateX(-760px)'},{opacity:1, transform:'translateX(-760px)', offset:.15},{opacity:1, transform:'none'}], CUE('5:little'), 1.0, 'forwards');
+  A($('xx'), [{opacity:0, transform:'scale(.7)'},{opacity:1, transform:'none'}], CUE('5:reproduce')+0.3, 0.4, 'forwards');
+  A($('d2'), [{opacity:1},{opacity:.4}], CUE('5:reproduce')+0.3, 0.4, 'forwards');
+
+  // scene 3 highlights
+  mark($('le'), CUE('6:marker'), '#cfe9ff', '#006baa');
+  q('#n16 .mw').forEach((el,i) => mark(el, CUE('6:measure')+i*0.15, '#cfe9ff', '#006baa'));
+  q('#n16 .dq').forEach((el,i) => mark(el, CUE('6:order')+i*0.2, '#cfe9ff', '#006baa'));
+  A($('ok'), [{opacity:0, transform:'scale(.5)'},{opacity:1, transform:'none'}], CUE('7:remains'), 0.4, 'both');
+  // the activity is built around each phenomenon: the three panels light up
+  ['pA','pB','pC'].forEach((id,i) => A($(id), [{borderColor:'#d7d9de'},{borderColor:'#1ca6ff', boxShadow:'0 0 0 10px rgba(28,166,255,.18)'}], CUE('7:phenomenon')+i*0.15, 0.6, 'forwards'));
+};
+</script>
+</section>
