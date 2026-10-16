@@ -1,0 +1,237 @@
+<section id="n20">
+<h2 class="hd">A recipe for your language</h2>
+
+<!-- s1: six steps to come, and for whom -->
+<div id="s0" class="abs" style="left:128px;top:250px;width:1412px;height:640px">
+  <div class="abs" style="left:106px;top:60px;display:flex;gap:40px">
+    <div class="dot" data-in="1:recipe" data-fx="pop">1</div><div class="dot" data-in="1:recipe+0.1" data-fx="pop">2</div><div class="dot" data-in="1:recipe+0.2" data-fx="pop">3</div><div class="dot" data-in="1:recipe+0.3" data-fx="pop">4</div><div class="dot" data-in="1:recipe+0.4" data-fx="pop">5</div><div class="dot" data-in="1:recipe+0.5" data-fx="pop">6</div>
+  </div>
+  <span class="abs who" data-in="1:less" data-fx="rise" style="left:150px;top:330px">less commonly taught language</span>
+  <span class="abs who" data-in="1:Indigenous" data-fx="rise" style="left:840px;top:330px">Indigenous language</span>
+</div>
+
+<!-- the steps so far, kept as a compact list on the left -->
+<div id="list" class="abs" style="left:128px;top:240px;width:370px;height:620px">
+  <div class="li" id="i1" data-in="2" data-fx="left" style="top:0"><b>1</b>textbook</div>
+  <div class="li" id="i2" data-in="6" data-fx="left" style="top:104px"><b>2</b>three kinds</div>
+  <div class="li" id="i3" data-in="10" data-fx="left" style="top:208px"><b>3</b>connect</div>
+  <div class="li" id="i4" data-in="14" data-fx="left" style="top:312px"><b>4</b>fit the goal</div>
+  <div class="li" id="i5" data-in="18" data-fx="left" style="top:416px"><b>5</b>stay in the book</div>
+  <div class="li" id="i6" data-in="21" data-fx="left" style="top:520px"><b>6</b>write · check</div>
+</div>
+
+<!-- STEP 1 (s2-5): the textbook, both sides -->
+<div class="st abs" id="st1" data-in="2" data-fx="fade">
+  <div class="abs book" data-in="3:textbook" data-fx="pop" style="left:0;top:20px"><p class="hand">textbook</p></div>
+  <div class="abs bx" id="b1y" data-in="4:able" data-fx="rise" style="left:290px;top:0;background:#faf7e2;border-color:#fcdf00">
+    <p class="bt">🎯 can do</p>
+    <span class="c" data-in="4:able+0.3" data-fx="pop" style="border-color:#fcdf00">purpose</span>
+  </div>
+  <div class="abs bx" id="b1b" data-in="4:grammar" data-fx="rise" style="left:650px;top:0;background:#eff8ff;border-color:#1ca6ff">
+    <p class="bt">🧱 resources</p>
+    <span class="c" data-in="4:grammar+0.2" data-fx="pop">grammar</span>
+    <span class="c" data-in="4:vocabulary" data-fx="pop">vocabulary</span>
+    <span class="c" data-in="4:pronunciation" data-fx="pop">pronunciation</span>
+  </div>
+  <div class="abs fl" data-in="5:purpose" data-fx="draw" style="top:420px"><span class="y">purpose</span><i>→</i><span class="b">resources</span></div>
+  <div class="abs fl" data-in="5:structure" data-fx="draw" style="top:530px"><span class="b">structure</span><i>→</i><span class="y">function</span></div>
+</div>
+
+<!-- STEP 2 (s6-9): three kinds of step -->
+<div class="st abs" id="st2" data-in="6" data-fx="fade">
+  <span class="abs k" data-in="7:linguistic" data-fx="pop" style="left:0;top:0;background:#eff8ff;border-color:#1ca6ff">linguistic goal</span>
+  <span class="abs k" data-in="7:functional" data-fx="pop" style="left:330px;top:0;background:#faf7e2;border-color:#fcdf00">functional goal</span>
+  <span class="abs k" data-in="7:tasks" data-fx="pop" style="left:660px;top:0;background:#fff4ed;border-color:#ff9037">task</span>
+  <svg class="abs" data-in="8:map" data-fx="draw" style="left:0;top:180px" width="990" height="180" viewBox="0 0 990 180">
+    <path d="M160 90 H830" stroke="#d7d9de" stroke-width="8" stroke-dasharray="4 18" stroke-linecap="round"/>
+  </svg>
+  <div class="abs stop" id="p28" data-in="8:negation" data-fx="pop" style="left:85px"><b>28</b></div>
+  <div class="abs stop" id="p29" data-in="8:inviting" data-fx="pop" style="left:420px"><b>29</b></div>
+  <div class="abs stop" id="p30" data-in="8:email" data-fx="pop" style="left:755px"><b>30</b></div>
+  <p class="abs sl" data-in="8:negation" data-fx="fade" style="left:10px">negation<br><span class="fr">« ne … pas »</span></p>
+  <p class="abs sl" data-in="8:inviting" data-fx="fade" style="left:345px">inviting</p>
+  <p class="abs sl" data-in="8:email" data-fx="fade" style="left:680px">an email</p>
+  <p class="abs" id="bb" data-in="9:block" data-fx="rise" style="left:0;top:560px;width:990px;text-align:center;font-size:34px;color:#4a5160">🧱 block <span style="color:#9ca3af">→</span> 🏠 what it builds</p>
+</div>
+
+<!-- STEP 3 (s10-13): connect them -->
+<div class="st abs" id="st3" data-in="10" data-fx="fade">
+  <svg class="abs" style="left:0;top:0" width="990" height="640" viewBox="0 0 990 640">
+    <g id="e1" fill="none" stroke="#9ca3af" stroke-width="5">
+      <path class="ed" d="M150 80 L500 160"/><path class="ed" d="M150 230 L500 160"/><path class="ed" d="M150 230 L500 330"/>
+      <path class="ed" d="M150 380 L500 330"/><path class="ed" d="M150 380 L500 500"/><path class="ed" d="M150 530 L500 500"/><path class="ed" d="M150 230 L500 500"/>
+    </g>
+    <g id="e2" fill="none" stroke="#ff9037" stroke-width="5">
+      <path class="et" d="M500 160 L860 330"/><path class="et" d="M500 330 L860 330"/><path class="et" d="M500 500 L860 330"/>
+    </g>
+    <g id="reuse" fill="none" stroke="#006baa" stroke-width="9" stroke-linecap="round" opacity="0">
+      <path d="M150 230 L500 160"/><path d="M150 230 L500 330"/><path d="M150 230 L500 500"/>
+    </g>
+    <g fill="#eff8ff" stroke="#1ca6ff" stroke-width="6">
+      <circle class="nl" cx="150" cy="80" r="42"/><circle class="nl" id="nr" cx="150" cy="230" r="42"/><circle class="nl" cx="150" cy="380" r="42"/><circle class="nl" cx="150" cy="530" r="42"/>
+    </g>
+    <g fill="#faf7e2" stroke="#e8c900" stroke-width="6">
+      <circle class="nf" cx="500" cy="160" r="50"/><circle class="nf" cx="500" cy="330" r="50"/><circle class="nf" cx="500" cy="500" r="50"/>
+    </g>
+    <rect id="tk" x="800" y="270" width="120" height="120" rx="20" fill="#fff4ed" stroke="#ff9037" stroke-width="6"/>
+  </svg>
+  <p class="abs" id="tkl" style="left:770px;top:410px;width:180px;text-align:center;font-size:30px;font-weight:700;color:#9f5100">task</p>
+</div>
+
+<!-- STEP 4 (s14-17): the activity fits the goal -->
+<div class="st abs" id="st4" data-in="14" data-fx="fade">
+  <div id="g4a" class="abs" style="left:0;top:0;width:990px;height:640px">
+    <div class="abs cd" data-in="15:goal" data-fx="pop" style="left:0;top:20px;border-color:#1ca6ff;background:#eff8ff">🎯 goal</div>
+    <p class="abs ar" data-in="15:goal+0.3" data-fx="draw" style="left:300px;top:46px">→</p>
+    <div class="abs cd" data-in="15:goal+0.5" data-fx="pop" style="left:420px;top:20px;border-color:#00c197">🧩 activity <span style="color:#00c197">✓</span></div>
+    <div id="plat" class="abs cd" data-in="15:platform" data-fx="pop" style="left:0;top:200px;border-color:#d7d9de;color:#9ca3af">🖥️ platform</div>
+    <p class="abs ar" data-in="15:platform+0.2" data-fx="draw" style="left:300px;top:226px;color:#d7d9de">→</p>
+    <div class="abs cd" data-in="15:platform+0.4" data-fx="pop" style="left:420px;top:200px;border-color:#d7d9de;color:#9ca3af">🧩 activity <span style="color:#ff9037">✗</span></div>
+    <span class="abs c" data-in="16:show" data-fx="pop" style="left:0;top:420px;font-size:36px;padding:16px 32px;border-color:#b17eff">🔎 what shows it is reached?</span>
+  </div>
+  <div id="g4b" class="abs" data-in="17" data-fx="fade" style="left:0;top:0;width:990px;height:640px">
+    <div class="abs" style="left:345px;top:0;width:300px;text-align:center">
+      <svg viewBox="0 0 200 120" width="200" height="120"><path class="t3" d="M20 84 Q70 124 100 110 T180 34" fill="none" stroke="#006baa" stroke-width="9" stroke-linecap="round"/></svg>
+      <p style="font-size:52px;font-weight:700">mǎ</p>
+    </div>
+    <div class="abs ev" data-in="17:hearing" data-fx="left" style="left:0"><p style="font-size:84px;line-height:1">👂</p><p class="nm">hearing</p><p class="ac">🎧 activity</p></div>
+    <p class="abs hand" data-in="17:same" data-fx="pop" style="left:395px;top:330px;width:200px;text-align:center;font-size:110px;line-height:1;color:#9f5100">≠</p>
+    <div class="abs ev" data-in="17:saying" data-fx="right" style="left:640px"><p style="font-size:84px;line-height:1">👄</p><p class="nm">saying</p><p class="ac">🎙️ activity</p></div>
+  </div>
+</div>
+
+<!-- STEP 5 (s18-20): stay within the book -->
+<div class="st abs" id="st5" data-in="18" data-fx="fade">
+  <div class="abs" id="inb" data-in="19" data-fx="pop" style="left:0;top:20px;width:600px;height:500px;border-radius:30px;border:6px solid #00715a;background:#eafbf8">
+    <p class="abs hand" style="left:30px;top:16px;font-size:52px;color:#00715a">📘 your textbook</p>
+    <span class="abs c" data-in="19:teaching" data-fx="pop" style="left:40px;top:130px;border-color:#00c197">teaching</span>
+    <span class="abs c" data-in="19:assessment" data-fx="pop" style="left:280px;top:130px;border-color:#00c197">assessment</span>
+    <span class="abs c" data-in="20:answer" data-fx="pop" style="left:40px;top:340px;font-size:40px;padding:16px 34px;background:#00c197;border-color:#00c197;color:#fff">✓ right answer</span>
+  </div>
+  <span class="abs c" id="nw" data-in="20:new" data-fx="right" style="left:660px;top:170px;font-size:34px;border-style:dashed;border-color:#9ca3af;color:#4a5160">👀 new language</span>
+  <p class="abs" data-in="20:never" data-fx="fade" style="left:660px;top:370px;width:330px;font-size:32px;color:#9f5100;font-weight:700">not needed for ✓</p>
+</div>
+
+<!-- STEP 6a (s21-23): write it down, look at the screen -->
+<div class="st abs" id="st6a" data-in="21" data-fx="fade">
+  <div class="abs big" data-in="22:decisions" data-fx="pop" style="left:60px;top:60px;border-color:#b17eff"><p class="ic">📝</p><p class="nm">decisions</p></div>
+  <div class="abs big" data-in="22:screens" data-fx="pop" style="left:520px;top:60px;border-color:#1ca6ff"><p class="ic">👀🖥️</p><p class="nm">the real screen</p></div>
+</div>
+
+<!-- STEP 6b (s24-26): the exercise that was split -->
+<div class="st abs" id="st6b" data-in="24" data-fx="fade">
+  <div class="abs" id="pg" data-in="24:lesson" data-fx="pop" style="left:0;top:20px;width:380px;height:440px;border-radius:24px;background:#fff;border:4px solid #1f2430">
+    <p class="abs" style="left:24px;top:18px;font-size:30px;font-weight:700">lesson page</p>
+    <div class="abs" data-in="24:exercise" data-fx="fade" style="left:24px;top:80px;width:332px;height:330px;border-radius:18px;background:#eff8ff;border:3px solid #1ca6ff">
+      <p class="lv" data-in="24:three" data-fx="pop" style="top:20px">★</p>
+      <p class="lv" data-in="24:three+0.2" data-fx="pop" style="top:120px">★★</p>
+      <p class="lv" data-in="24:three+0.4" data-fx="pop" style="top:220px">★★★</p>
+    </div>
+  </div>
+  <p class="abs" data-in="25:AI" data-fx="pop" style="left:400px;top:150px;font-size:70px;line-height:1">🤖</p>
+  <div class="abs sp" data-in="25:split" data-fx="right" style="left:500px">★<i class="ok" data-in="26:fine" data-fx="pop">✓</i></div>
+  <div class="abs sp" data-in="25:split+0.2" data-fx="right" style="left:670px">★★<i class="ok" data-in="26:fine+0.15" data-fx="pop">✓</i></div>
+  <div class="abs sp" data-in="25:split+0.4" data-fx="right" style="left:840px">★★★<i class="ok" data-in="26:fine+0.3" data-fx="pop">✓</i></div>
+  <div class="abs" id="prog" data-in="26:progression" data-fx="draw" data-dur="1.2" style="left:500px;top:300px;width:490px;height:90px">
+    <svg class="abs" style="left:0;top:0" width="490" height="40" viewBox="0 0 490 40"><path d="M10 20 H460 M440 6 L470 20 L440 34" fill="none" stroke="#006baa" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <p class="abs" style="left:0;top:44px;width:490px;display:flex;justify-content:space-between;font-size:28px;color:#4a5160"><span>recognising</span><span>producing</span></p>
+  </div>
+  <p class="abs" id="gone" data-in="26:gone" data-fx="pop" style="left:690px;top:270px;font-size:80px;font-weight:700;color:#ff9037;line-height:1">✗</p>
+  <p class="abs" data-in="26:teacher" data-fx="rise" style="left:500px;top:430px;font-size:40px;font-weight:700">🧑‍🏫 👀</p>
+</div>
+
+<!-- STEP 6c (s27): what I do now -->
+<div class="st abs" id="st6c" data-in="27" data-fx="fade">
+  <span class="abs c rule" data-in="27:plain" data-fx="left" style="top:30px">📝 plain language</span>
+  <span class="abs c rule" data-in="27:always" data-fx="left" style="top:180px">🤖 always has them</span>
+  <span class="abs c rule" data-in="27:screen" data-fx="left" style="top:330px">👀 I look at the screen</span>
+</div>
+
+<!-- STEP 6d (s28): the teacher remains the author -->
+<div class="st abs" id="st6d" data-in="28" data-fx="fade">
+  <span class="abs c" data-in="28:AI" data-fx="pop" style="left:80px;top:40px;font-size:36px">🤖 AI</span>
+  <span class="abs c" data-in="28:person" data-fx="pop" style="left:330px;top:40px;font-size:36px">🧑 a person</span>
+  <div class="abs" data-in="28:teacher" data-fx="rise" style="left:80px;top:190px;width:780px;height:260px;border-radius:30px;background:#fff;border:5px solid #1f2430;display:flex;align-items:center;justify-content:center;gap:30px">
+    <p style="font-size:120px;line-height:1">🧑‍🏫</p>
+    <p class="hand" style="font-size:100px;line-height:1">author</p>
+  </div>
+</div>
+
+<p class="part">A recipe for your language</p>
+<style>
+#n20 .dot{width:150px;height:150px;border-radius:50%;border:5px dashed #9ca3af;display:flex;align-items:center;justify-content:center;font-family:'Patrick Hand',cursive;font-size:90px;color:#9ca3af}
+#n20 .who{font-size:36px;font-weight:700;padding:14px 30px;border-radius:999px;background:#fff;border:3px solid #d7d9de;white-space:nowrap}
+#n20 .li{position:absolute;left:0;width:370px;height:84px;border-radius:18px;background:#fff;border:3px solid #d7d9de;display:flex;align-items:center;gap:16px;padding:0 18px;font-size:30px;font-weight:700;color:#4a5160;white-space:nowrap}
+#n20 .li b{font-family:'Patrick Hand',cursive;font-size:58px;font-weight:400;line-height:1;color:#1f2430;width:36px;text-align:center}
+#n20 .st{left:560px;top:240px;width:990px;height:640px}
+#n20 .book{width:250px;height:340px;border-radius:10px 22px 22px 10px;background:#eafbf8;border:5px solid #00715a;border-left:30px solid #00715a;box-shadow:6px 8px 0 #d7d9de;display:flex;align-items:center;justify-content:center}
+#n20 .book p{font-size:48px;color:#00715a}
+#n20 .bx{width:330px;height:370px;border-radius:24px;border:4px solid;border-top-width:14px;padding:20px 22px;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+#n20 .bt{font-size:36px;font-weight:700;margin-bottom:6px}
+#n20 .c{font-size:30px;font-weight:700;padding:10px 24px;border-radius:999px;background:#fff;border:3px solid #1ca6ff;white-space:nowrap}
+#n20 .fl{left:290px;display:flex;align-items:center;gap:22px;font-size:34px;font-weight:700}
+#n20 .fl span{padding:10px 26px;border-radius:999px;border:3px solid}
+#n20 .fl .y{background:#faf7e2;border-color:#fcdf00}
+#n20 .fl .b{background:#eff8ff;border-color:#1ca6ff}
+#n20 .fl i{font-style:normal;font-size:48px;color:#6a7179}
+#n20 .k{font-size:34px;font-weight:700;padding:14px 30px;border-radius:999px;border:4px solid;white-space:nowrap}
+#n20 .stop{top:200px;width:150px;height:150px;border-radius:50%;background:#eef0f3;border:6px solid #9ca3af;display:flex;align-items:center;justify-content:center}
+#n20 .stop b{font-family:'Patrick Hand',cursive;font-size:72px;font-weight:400}
+#n20 .sl{top:370px;width:300px;text-align:center;font-size:32px;font-weight:700;line-height:1.3}
+#n20 .fr{font-weight:400;color:#006baa}
+#n20 .cd{width:280px;height:110px;border-radius:22px;background:#fff;border:4px solid;display:flex;align-items:center;justify-content:center;gap:10px;font-size:36px;font-weight:700;white-space:nowrap}
+#n20 .ar{font-size:60px;line-height:1;color:#6a7179;width:100px;text-align:center}
+#n20 .ev{top:180px;width:350px;height:330px;border-radius:26px;background:#fff;border:4px solid #1ca6ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#n20 .nm{font-size:40px;font-weight:700}
+#n20 .ac{font-size:30px;color:#4a5160}
+#n20 .big{width:400px;height:360px;border-radius:28px;background:#fff;border:5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px}
+#n20 .big .ic{font-size:110px;line-height:1}
+#n20 .lv{position:absolute;left:0;width:328px;text-align:center;font-size:56px;line-height:90px;color:#fcdf00;-webkit-text-stroke:1.5px #9f5100}
+#n20 .sp{top:100px;width:150px;height:170px;border-radius:20px;background:#fff;border:4px solid #1ca6ff;display:flex;align-items:center;justify-content:center;font-size:40px;color:#fcdf00;-webkit-text-stroke:1.2px #9f5100;white-space:nowrap}
+#n20 .sp .ok{position:absolute;right:10px;top:4px;font-style:normal;font-size:36px;color:#00c197;-webkit-text-stroke:0;font-weight:700}
+#n20 .rule{left:60px;font-size:44px;padding:20px 40px;border-color:#b17eff}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const out = (id, c) => A($(id), [{opacity:1},{opacity:0}], CUE(c)-0.3, 0.4, 'forwards');
+  out('s0','2');
+  // each step's scene leaves when the next number is said
+  [['st1','6'],['st2','10'],['st3','14'],['st4','18'],['st5','21'],['st6a','24'],['st6b','27'],['st6c','28']].forEach(([id,c]) => out(id,c));
+  // the list: the current step is lit, the others rest
+  const starts = ['2','6','10','14','18','21'];
+  starts.forEach((c,i) => {
+    const el = $('i'+(i+1)), a = CUE(c);
+    A(el, [{borderColor:'#d7d9de',background:'#fff',color:'#4a5160'},{borderColor:'#1f2430',background:'#fff',color:'#1f2430'}], a+0.3, 0.4, 'forwards');
+    if (i < 5) A(el, [{borderColor:'#1f2430',color:'#1f2430'},{borderColor:'#d7d9de',color:'#9ca3af'}], CUE(starts[i+1])-0.2, 0.4, 'forwards');
+  });
+  // end: the whole recipe lights together
+  ['i1','i2','i3','i4','i5','i6'].forEach((id,k) => A($(id), [{borderColor:'#d7d9de',color:'#9ca3af'},{borderColor:'#00c197',color:'#1f2430'}], CUE('28:author')+k*0.08, 0.4, 'forwards'));
+  // step 1: one side dims while the other is worked out
+  A($('b1b'), [{opacity:1},{opacity:.35},{opacity:.35},{opacity:1}], CUE('5:foregrounds'), 2.6, 'none');
+  // step 2: the three stops look the same, then take their colours
+  ['p28','p29','p30'].forEach(id => A($(id), [{transform:'none'},{transform:'scale(1.08)'},{transform:'none'}], CUE('8:same'), 0.8, 'none'));
+  A($('p28'), [{background:'#eef0f3',borderColor:'#9ca3af'},{background:'#eff8ff',borderColor:'#1ca6ff'}], CUE('9:block'), 0.5, 'forwards');
+  A($('p29'), [{background:'#eef0f3',borderColor:'#9ca3af'},{background:'#faf7e2',borderColor:'#fcdf00'}], CUE('9:builds')-0.2, 0.5, 'forwards');
+  A($('p30'), [{background:'#eef0f3',borderColor:'#9ca3af'},{background:'#fff4ed',borderColor:'#ff9037'}], CUE('9:builds'), 0.5, 'forwards');
+  // step 3: nodes, then the lines between them
+  const sec = $('n20');
+  sec.querySelectorAll('.nf').forEach((n,i) => A(n, [{opacity:0},{opacity:1}], CUE('12:functional')+i*0.15, 0.4));
+  sec.querySelectorAll('.nl').forEach((n,i) => A(n, [{opacity:0},{opacity:1}], CUE('12:linguistic')+i*0.15, 0.4));
+  sec.querySelectorAll('.ed').forEach((p,i) => { p.style.strokeDasharray = 420; A(p, [{strokeDashoffset:420},{strokeDashoffset:0}], CUE('12:draws')+i*0.12, 0.6); });
+  A($('tk'), [{opacity:0},{opacity:1}], CUE('13:task')-0.3, 0.4);
+  A($('tkl'), [{opacity:0},{opacity:1}], CUE('13:task')-0.3, 0.4);
+  sec.querySelectorAll('.et').forEach((p,i) => { p.style.strokeDasharray = 420; A(p, [{strokeDashoffset:420},{strokeDashoffset:0}], CUE('13:needs')+i*0.15, 0.6); });
+  A($('reuse'), [{opacity:0},{opacity:.85}], CUE('13:same'), 0.5, 'forwards');
+  A($('nr'), [{transform:'none'},{transform:'scale(1.25)'},{transform:'none'}], CUE('13:same'), 1.0, 'none');
+  $('nr').style.transformOrigin = '150px 230px'; $('nr').style.transformBox = 'view-box';
+  // step 4: the first picture steps back for the tone
+  A($('g4a'), [{opacity:1},{opacity:0}], CUE('17')-0.3, 0.4, 'forwards');
+  const t3 = sec.querySelector('.t3'); t3.style.strokeDasharray = 300;
+  A(t3, [{strokeDashoffset:300},{strokeDashoffset:0}], CUE('17:tone')-0.2, 0.7);
+  // step 6b: the single exercise is split; the progression breaks
+  A($('pg'), [{opacity:1},{opacity:.35}], CUE('25:split'), 0.5, 'forwards');
+  A($('prog'), [{opacity:1},{opacity:.35}], CUE('26:gone'), 0.4, 'forwards');
+};
+</script>
+</section>

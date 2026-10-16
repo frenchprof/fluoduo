@@ -1,0 +1,420 @@
+{
+"real": true,
+"dan": true,
+"dur": 43.14,
+"sent": [
+{
+"start": 0.53,
+"end": 2.27,
+"text": "These goals are interconnected.",
+"words": [
+{
+"w": "These",
+"s": 0.53
+},
+{
+"w": "goals",
+"s": 0.83
+},
+{
+"w": "are",
+"s": 1.15
+},
+{
+"w": "interconnected.",
+"s": 1.49
+}
+]
+},
+{
+"start": 3.01,
+"end": 10.47,
+"text": "A linguistic goal may support several functional goals, while a functional goal may depend on several linguistic resources.",
+"words": [
+{
+"w": "A",
+"s": 3.01
+},
+{
+"w": "linguistic",
+"s": 3.21
+},
+{
+"w": "goal",
+"s": 3.65
+},
+{
+"w": "may",
+"s": 4.15
+},
+{
+"w": "support",
+"s": 4.43
+},
+{
+"w": "several",
+"s": 4.87
+},
+{
+"w": "functional",
+"s": 5.37
+},
+{
+"w": "goals,",
+"s": 5.83
+},
+{
+"w": "while",
+"s": 6.69
+},
+{
+"w": "a",
+"s": 6.93
+},
+{
+"w": "functional",
+"s": 7.11
+},
+{
+"w": "goal",
+"s": 7.49
+},
+{
+"w": "may",
+"s": 7.87
+},
+{
+"w": "depend",
+"s": 8.15
+},
+{
+"w": "on",
+"s": 8.55
+},
+{
+"w": "several",
+"s": 8.81
+},
+{
+"w": "linguistic",
+"s": 9.21
+},
+{
+"w": "resources.",
+"s": 9.77
+}
+]
+},
+{
+"start": 11.49,
+"end": 22.01,
+"text": "Ordering food, for example, involves vocabulary, quantities, question forms and polite expressions, and those same resources are useful in other situations.",
+"words": [
+{
+"w": "Ordering",
+"s": 11.49
+},
+{
+"w": "food,",
+"s": 11.87
+},
+{
+"w": "for",
+"s": 12.33
+},
+{
+"w": "example,",
+"s": 12.53
+},
+{
+"w": "involves",
+"s": 13.51
+},
+{
+"w": "vocabulary,",
+"s": 13.71
+},
+{
+"w": "quantities,",
+"s": 15.01
+},
+{
+"w": "question",
+"s": 16.27
+},
+{
+"w": "forms",
+"s": 16.51
+},
+{
+"w": "and",
+"s": 17.23
+},
+{
+"w": "polite",
+"s": 17.37
+},
+{
+"w": "expressions,",
+"s": 17.73
+},
+{
+"w": "and",
+"s": 19.09
+},
+{
+"w": "those",
+"s": 19.15
+},
+{
+"w": "same",
+"s": 19.31
+},
+{
+"w": "resources",
+"s": 19.69
+},
+{
+"w": "are",
+"s": 20.23
+},
+{
+"w": "useful",
+"s": 20.59
+},
+{
+"w": "in",
+"s": 20.93
+},
+{
+"w": "other",
+"s": 21.15
+},
+{
+"w": "situations.",
+"s": 21.45
+}
+]
+},
+{
+"start": 22.81,
+"end": 27.22,
+"text": "So the relationship between linguistic and functional goals is many-to-many.",
+"words": [
+{
+"w": "So",
+"s": 22.81
+},
+{
+"w": "the",
+"s": 22.99
+},
+{
+"w": "relationship",
+"s": 23.15
+},
+{
+"w": "between",
+"s": 23.65
+},
+{
+"w": "linguistic",
+"s": 24.15
+},
+{
+"w": "and",
+"s": 24.63
+},
+{
+"w": "functional",
+"s": 25.13
+},
+{
+"w": "goals",
+"s": 25.65
+},
+{
+"w": "is",
+"s": 26.05
+},
+{
+"w": "many-to-many.",
+"s": 27.22
+}
+]
+},
+{
+"start": 28.05,
+"end": 33.37,
+"text": "This matters because language learning isn't simply a matter of accumulating grammatical structures.",
+"words": [
+{
+"w": "This",
+"s": 28.05
+},
+{
+"w": "matters",
+"s": 28.41
+},
+{
+"w": "because",
+"s": 28.79
+},
+{
+"w": "language",
+"s": 29.21
+},
+{
+"w": "learning",
+"s": 29.61
+},
+{
+"w": "isn't",
+"s": 30.03
+},
+{
+"w": "simply",
+"s": 30.53
+},
+{
+"w": "a",
+"s": 30.89
+},
+{
+"w": "matter",
+"s": 31.07
+},
+{
+"w": "of",
+"s": 31.25
+},
+{
+"w": "accumulating",
+"s": 31.47
+},
+{
+"w": "grammatical",
+"s": 32.21
+},
+{
+"w": "structures.",
+"s": 32.83
+}
+]
+},
+{
+"start": 33.81,
+"end": 37.05,
+"text": "It's about making those structures available for communication.",
+"words": [
+{
+"w": "It's",
+"s": 33.81
+},
+{
+"w": "about",
+"s": 34.21
+},
+{
+"w": "making",
+"s": 34.41
+},
+{
+"w": "those",
+"s": 34.83
+},
+{
+"w": "structures",
+"s": 35.11
+},
+{
+"w": "available",
+"s": 35.57
+},
+{
+"w": "for",
+"s": 36.11
+},
+{
+"w": "communication.",
+"s": 36.53
+}
+]
+},
+{
+"start": 37.93,
+"end": 42.81,
+"text": "And this network of relationships is one part of the architecture I want to test with Mandarin.",
+"words": [
+{
+"w": "And",
+"s": 37.93
+},
+{
+"w": "this",
+"s": 38.13
+},
+{
+"w": "network",
+"s": 38.35
+},
+{
+"w": "of",
+"s": 38.81
+},
+{
+"w": "relationships",
+"s": 39.07
+},
+{
+"w": "is",
+"s": 39.57
+},
+{
+"w": "one",
+"s": 40.01
+},
+{
+"w": "part",
+"s": 40.35
+},
+{
+"w": "of",
+"s": 40.59
+},
+{
+"w": "the",
+"s": 40.75
+},
+{
+"w": "architecture",
+"s": 40.85
+},
+{
+"w": "I",
+"s": 41.35
+},
+{
+"w": "want",
+"s": 41.63
+},
+{
+"w": "to",
+"s": 41.83
+},
+{
+"w": "test",
+"s": 42.01
+},
+{
+"w": "with",
+"s": 42.21
+},
+{
+"w": "Mandarin.",
+"s": 42.49
+}
+]
+}
+]
+}

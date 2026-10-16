@@ -1,0 +1,500 @@
+{
+"real": true,
+"dan": true,
+"dur": 45.96,
+"sent": [
+{
+"start": 0.08,
+"end": 2.78,
+"text": "Chinese characters raise a similar question.",
+"words": [
+{
+"w": "Chinese",
+"s": 0.08
+},
+{
+"w": "characters",
+"s": 0.74
+},
+{
+"w": "raise",
+"s": 1.4
+},
+{
+"w": "a",
+"s": 1.72
+},
+{
+"w": "similar",
+"s": 1.94
+},
+{
+"w": "question.",
+"s": 2.2
+}
+]
+},
+{
+"start": 3.52,
+"end": 13.58,
+"text": "A learner might recognise a character, understand its meaning, know its pronunciation or be able to write it, and these abilities don't necessarily develop at the same rate.",
+"words": [
+{
+"w": "A",
+"s": 3.52
+},
+{
+"w": "learner",
+"s": 3.52
+},
+{
+"w": "might",
+"s": 3.84
+},
+{
+"w": "recognise",
+"s": 4.37
+},
+{
+"w": "a",
+"s": 4.68
+},
+{
+"w": "character,",
+"s": 4.9
+},
+{
+"w": "understand",
+"s": 5.74
+},
+{
+"w": "its",
+"s": 6.12
+},
+{
+"w": "meaning,",
+"s": 6.36
+},
+{
+"w": "know",
+"s": 7.14
+},
+{
+"w": "its",
+"s": 7.34
+},
+{
+"w": "pronunciation",
+"s": 7.54
+},
+{
+"w": "or",
+"s": 8.64
+},
+{
+"w": "be",
+"s": 8.82
+},
+{
+"w": "able",
+"s": 9.04
+},
+{
+"w": "to",
+"s": 9.22
+},
+{
+"w": "write",
+"s": 9.46
+},
+{
+"w": "it,",
+"s": 9.68
+},
+{
+"w": "and",
+"s": 10.34
+},
+{
+"w": "these",
+"s": 10.5
+},
+{
+"w": "abilities",
+"s": 10.68
+},
+{
+"w": "don't",
+"s": 11.1
+},
+{
+"w": "necessarily",
+"s": 11.54
+},
+{
+"w": "develop",
+"s": 12.02
+},
+{
+"w": "at",
+"s": 12.66
+},
+{
+"w": "the",
+"s": 12.86
+},
+{
+"w": "same",
+"s": 13.02
+},
+{
+"w": "rate.",
+"s": 13.18
+}
+]
+},
+{
+"start": 14.32,
+"end": 16.06,
+"text": "Should they be one goal or several?",
+"words": [
+{
+"w": "Should",
+"s": 14.32
+},
+{
+"w": "they",
+"s": 14.42
+},
+{
+"w": "be",
+"s": 14.56
+},
+{
+"w": "one",
+"s": 14.68
+},
+{
+"w": "goal",
+"s": 14.92
+},
+{
+"w": "or",
+"s": 15.24
+},
+{
+"w": "several?",
+"s": 15.72
+}
+]
+},
+{
+"start": 16.66,
+"end": 21.32,
+"text": "Should recognising a character count as achieving the same objective as producing it?",
+"words": [
+{
+"w": "Should",
+"s": 16.66
+},
+{
+"w": "recognising",
+"s": 17.06
+},
+{
+"w": "a",
+"s": 17.32
+},
+{
+"w": "character",
+"s": 17.68
+},
+{
+"w": "count",
+"s": 18.08
+},
+{
+"w": "as",
+"s": 18.46
+},
+{
+"w": "achieving",
+"s": 18.92
+},
+{
+"w": "the",
+"s": 19.3
+},
+{
+"w": "same",
+"s": 19.58
+},
+{
+"w": "objective",
+"s": 19.9
+},
+{
+"w": "as",
+"s": 20.36
+},
+{
+"w": "producing",
+"s": 20.68
+},
+{
+"w": "it?",
+"s": 21.04
+}
+]
+},
+{
+"start": 21.84,
+"end": 30.77,
+"text": "And how should the platform track progress when a learner understands a spoken word, like the word for student, but can't yet recognise its written form?",
+"words": [
+{
+"w": "And",
+"s": 21.84
+},
+{
+"w": "how",
+"s": 21.94
+},
+{
+"w": "should",
+"s": 22.12
+},
+{
+"w": "the",
+"s": 22.3
+},
+{
+"w": "platform",
+"s": 22.48
+},
+{
+"w": "track",
+"s": 22.96
+},
+{
+"w": "progress",
+"s": 23.36
+},
+{
+"w": "when",
+"s": 23.9
+},
+{
+"w": "a",
+"s": 24.2
+},
+{
+"w": "learner",
+"s": 24.53
+},
+{
+"w": "understands",
+"s": 24.77
+},
+{
+"w": "a",
+"s": 25.37
+},
+{
+"w": "spoken",
+"s": 25.59
+},
+{
+"w": "word,",
+"s": 25.93
+},
+{
+"w": "like",
+"s": 26.85
+},
+{
+"w": "the",
+"s": 26.93
+},
+{
+"w": "word",
+"s": 27.09
+},
+{
+"w": "for",
+"s": 27.37
+},
+{
+"w": "student,",
+"s": 27.61
+},
+{
+"w": "but",
+"s": 28.51
+},
+{
+"w": "can't",
+"s": 28.67
+},
+{
+"w": "yet",
+"s": 29.07
+},
+{
+"w": "recognise",
+"s": 29.52
+},
+{
+"w": "its",
+"s": 29.83
+},
+{
+"w": "written",
+"s": 30.13
+},
+{
+"w": "form?",
+"s": 30.39
+}
+]
+},
+{
+"start": 31.33,
+"end": 36.89,
+"text": "These are pedagogical decisions about what constitutes knowledge and what evidence demonstrates learning.",
+"words": [
+{
+"w": "These",
+"s": 31.33
+},
+{
+"w": "are",
+"s": 31.47
+},
+{
+"w": "pedagogical",
+"s": 31.63
+},
+{
+"w": "decisions",
+"s": 32.35
+},
+{
+"w": "about",
+"s": 32.79
+},
+{
+"w": "what",
+"s": 33.19
+},
+{
+"w": "constitutes",
+"s": 33.49
+},
+{
+"w": "knowledge",
+"s": 34.19
+},
+{
+"w": "and",
+"s": 34.71
+},
+{
+"w": "what",
+"s": 35.25
+},
+{
+"w": "evidence",
+"s": 35.47
+},
+{
+"w": "demonstrates",
+"s": 35.91
+},
+{
+"w": "learning.",
+"s": 36.47
+}
+]
+},
+{
+"start": 37.37,
+"end": 45.67,
+"text": "The architecture must be flexible enough to represent these distinctions without forcing them into categories inherited from French.",
+"words": [
+{
+"w": "The",
+"s": 37.37
+},
+{
+"w": "architecture",
+"s": 37.53
+},
+{
+"w": "must",
+"s": 38.09
+},
+{
+"w": "be",
+"s": 38.65
+},
+{
+"w": "flexible",
+"s": 38.91
+},
+{
+"w": "enough",
+"s": 39.43
+},
+{
+"w": "to",
+"s": 39.85
+},
+{
+"w": "represent",
+"s": 40.15
+},
+{
+"w": "these",
+"s": 40.67
+},
+{
+"w": "distinctions",
+"s": 41.05
+},
+{
+"w": "without",
+"s": 41.69
+},
+{
+"w": "forcing",
+"s": 42.33
+},
+{
+"w": "them",
+"s": 42.87
+},
+{
+"w": "into",
+"s": 43.13
+},
+{
+"w": "categories",
+"s": 43.49
+},
+{
+"w": "inherited",
+"s": 44.19
+},
+{
+"w": "from",
+"s": 44.91
+},
+{
+"w": "French.",
+"s": 45.27
+}
+]
+}
+]
+}

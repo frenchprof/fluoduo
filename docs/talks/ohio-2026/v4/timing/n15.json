@@ -1,0 +1,330 @@
+{
+"real": true,
+"dan": true,
+"dur": 32.98,
+"sent": [
+{
+"start": 0.32,
+"end": 4.4,
+"text": "Other parts must change even if the underlying architecture stays the same.",
+"words": [
+{
+"w": "Other",
+"s": 0.32
+},
+{
+"w": "parts",
+"s": 0.81
+},
+{
+"w": "must",
+"s": 0.94
+},
+{
+"w": "change",
+"s": 1.26
+},
+{
+"w": "even",
+"s": 1.7
+},
+{
+"w": "if",
+"s": 2.06
+},
+{
+"w": "the",
+"s": 2.28
+},
+{
+"w": "underlying",
+"s": 2.42
+},
+{
+"w": "architecture",
+"s": 2.96
+},
+{
+"w": "stays",
+"s": 3.52
+},
+{
+"w": "the",
+"s": 3.94
+},
+{
+"w": "same.",
+"s": 4.16
+}
+]
+},
+{
+"start": 5.1,
+"end": 14.8,
+"text": "First, the goal inventory: French goals involving articles, gender agreement or verb conjugation would be replaced by goals relevant to Mandarin.",
+"words": [
+{
+"w": "First,",
+"s": 5.1
+},
+{
+"w": "the",
+"s": 5.76
+},
+{
+"w": "goal",
+"s": 5.88
+},
+{
+"w": "inventory:",
+"s": 6.16
+},
+{
+"w": "French",
+"s": 7.54
+},
+{
+"w": "goals",
+"s": 7.8
+},
+{
+"w": "involving",
+"s": 8.16
+},
+{
+"w": "articles,",
+"s": 8.76
+},
+{
+"w": "gender",
+"s": 9.86
+},
+{
+"w": "agreement",
+"s": 10.14
+},
+{
+"w": "or",
+"s": 11.04
+},
+{
+"w": "verb",
+"s": 11.12
+},
+{
+"w": "conjugation",
+"s": 11.38
+},
+{
+"w": "would",
+"s": 12.08
+},
+{
+"w": "be",
+"s": 12.6
+},
+{
+"w": "replaced",
+"s": 12.76
+},
+{
+"w": "by",
+"s": 13.18
+},
+{
+"w": "goals",
+"s": 13.54
+},
+{
+"w": "relevant",
+"s": 13.86
+},
+{
+"w": "to",
+"s": 14.3
+},
+{
+"w": "Mandarin.",
+"s": 14.54
+}
+]
+},
+{
+"start": 15.66,
+"end": 22.72,
+"text": "Second, the relationships between goals, since the resources needed to express a given function may differ substantially.",
+"words": [
+{
+"w": "Second,",
+"s": 15.66
+},
+{
+"w": "the",
+"s": 16.42
+},
+{
+"w": "relationships",
+"s": 16.7
+},
+{
+"w": "between",
+"s": 17.26
+},
+{
+"w": "goals,",
+"s": 17.76
+},
+{
+"w": "since",
+"s": 18.5
+},
+{
+"w": "the",
+"s": 18.8
+},
+{
+"w": "resources",
+"s": 19.0
+},
+{
+"w": "needed",
+"s": 19.4
+},
+{
+"w": "to",
+"s": 19.8
+},
+{
+"w": "express",
+"s": 20.08
+},
+{
+"w": "a",
+"s": 20.54
+},
+{
+"w": "given",
+"s": 20.76
+},
+{
+"w": "function",
+"s": 20.98
+},
+{
+"w": "may",
+"s": 21.48
+},
+{
+"w": "differ",
+"s": 21.86
+},
+{
+"w": "substantially.",
+"s": 22.2
+}
+]
+},
+{
+"start": 23.7,
+"end": 29.08,
+"text": "Third, the progression, as Mandarin structures may be introduced in a very different order.",
+"words": [
+{
+"w": "Third,",
+"s": 23.7
+},
+{
+"w": "the",
+"s": 24.44
+},
+{
+"w": "progression,",
+"s": 24.64
+},
+{
+"w": "as",
+"s": 25.5
+},
+{
+"w": "Mandarin",
+"s": 25.74
+},
+{
+"w": "structures",
+"s": 26.14
+},
+{
+"w": "may",
+"s": 26.58
+},
+{
+"w": "be",
+"s": 27.06
+},
+{
+"w": "introduced",
+"s": 27.22
+},
+{
+"w": "in",
+"s": 27.66
+},
+{
+"w": "a",
+"s": 27.94
+},
+{
+"w": "very",
+"s": 28.06
+},
+{
+"w": "different",
+"s": 28.38
+},
+{
+"w": "order.",
+"s": 28.72
+}
+]
+},
+{
+"start": 29.76,
+"end": 32.58,
+"text": "And fourth, the activities attached to each goal.",
+"words": [
+{
+"w": "And",
+"s": 29.76
+},
+{
+"w": "fourth,",
+"s": 29.94
+},
+{
+"w": "the",
+"s": 30.74
+},
+{
+"w": "activities",
+"s": 30.82
+},
+{
+"w": "attached",
+"s": 31.38
+},
+{
+"w": "to",
+"s": 31.86
+},
+{
+"w": "each",
+"s": 32.14
+},
+{
+"w": "goal.",
+"s": 32.3
+}
+]
+}
+]
+}

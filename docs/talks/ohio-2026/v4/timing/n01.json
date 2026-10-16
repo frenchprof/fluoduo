@@ -1,0 +1,761 @@
+{
+"real": true,
+"dan": true,
+"dur": 78.95,
+"sent": [
+{
+"start": 12.82,
+"end": 14.54,
+"text": "Before we start, a quick word.",
+"words": [
+{
+"w": "Before",
+"s": 12.82
+},
+{
+"w": "we",
+"s": 13.08
+},
+{
+"w": "start,",
+"s": 13.26
+},
+{
+"w": "a",
+"s": 13.86
+},
+{
+"w": "quick",
+"s": 13.96
+},
+{
+"w": "word.",
+"s": 14.2
+}
+]
+},
+{
+"start": 15.16,
+"end": 18.24,
+"text": "The person you see in this video is an AI clone of me.",
+"words": [
+{
+"w": "The",
+"s": 15.16
+},
+{
+"w": "person",
+"s": 15.26
+},
+{
+"w": "you",
+"s": 15.58
+},
+{
+"w": "see",
+"s": 15.78
+},
+{
+"w": "in",
+"s": 16.0
+},
+{
+"w": "this",
+"s": 16.14
+},
+{
+"w": "video",
+"s": 16.28
+},
+{
+"w": "is",
+"s": 16.64
+},
+{
+"w": "an",
+"s": 16.96
+},
+{
+"w": "AI",
+"s": 17.12
+},
+{
+"w": "clone",
+"s": 17.58
+},
+{
+"w": "of",
+"s": 17.84
+},
+{
+"w": "me.",
+"s": 18.06
+}
+]
+},
+{
+"start": 18.86,
+"end": 21.4,
+"text": "The ideas and the words, though, are all mine.",
+"words": [
+{
+"w": "The",
+"s": 18.86
+},
+{
+"w": "ideas",
+"s": 19.02
+},
+{
+"w": "and",
+"s": 19.46
+},
+{
+"w": "the",
+"s": 19.76
+},
+{
+"w": "words,",
+"s": 19.88
+},
+{
+"w": "though,",
+"s": 20.18
+},
+{
+"w": "are",
+"s": 20.58
+},
+{
+"w": "all",
+"s": 20.86
+},
+{
+"w": "mine.",
+"s": 21.12
+}
+]
+},
+{
+"start": 22.26,
+"end": 28.6,
+"text": "I'm Daniel Chan from the Centre for Language Studies at NUS, and I've been teaching French for over twenty-five years.",
+"words": [
+{
+"w": "I'm",
+"s": 22.26
+},
+{
+"w": "Daniel",
+"s": 22.52
+},
+{
+"w": "Chan",
+"s": 22.84
+},
+{
+"w": "from",
+"s": 23.16
+},
+{
+"w": "the",
+"s": 23.44
+},
+{
+"w": "Centre",
+"s": 23.69
+},
+{
+"w": "for",
+"s": 23.8
+},
+{
+"w": "Language",
+"s": 24.12
+},
+{
+"w": "Studies",
+"s": 24.36
+},
+{
+"w": "at",
+"s": 24.72
+},
+{
+"w": "NUS,",
+"s": 25.0
+},
+{
+"w": "and",
+"s": 25.88
+},
+{
+"w": "I've",
+"s": 26.1
+},
+{
+"w": "been",
+"s": 26.28
+},
+{
+"w": "teaching",
+"s": 26.4
+},
+{
+"w": "French",
+"s": 26.7
+},
+{
+"w": "for",
+"s": 27.04
+},
+{
+"w": "over",
+"s": 27.3
+},
+{
+"w": "twenty-five",
+"s": 27.89
+},
+{
+"w": "years.",
+"s": 28.2
+}
+]
+},
+{
+"start": 29.54,
+"end": 31.74,
+"text": "Today I want to talk about FluOLinGo.",
+"words": [
+{
+"w": "Today",
+"s": 29.54
+},
+{
+"w": "I",
+"s": 30.02
+},
+{
+"w": "want",
+"s": 30.08
+},
+{
+"w": "to",
+"s": 30.26
+},
+{
+"w": "talk",
+"s": 30.38
+},
+{
+"w": "about",
+"s": 30.58
+},
+{
+"w": "FluOLinGo.",
+"s": 31.0
+}
+]
+},
+{
+"start": 32.46,
+"end": 38.46,
+"text": "That's capital F, O, L and G, and it stands for Fluency On Linguistic Goals.",
+"words": [
+{
+"w": "That's",
+"s": 32.46
+},
+{
+"w": "capital",
+"s": 33.06
+},
+{
+"w": "F,",
+"s": 33.06
+},
+{
+"w": "O,",
+"s": 33.46
+},
+{
+"w": "L",
+"s": 34.02
+},
+{
+"w": "and",
+"s": 34.88
+},
+{
+"w": "G,",
+"s": 35.08
+},
+{
+"w": "and",
+"s": 35.86
+},
+{
+"w": "it",
+"s": 35.98
+},
+{
+"w": "stands",
+"s": 36.1
+},
+{
+"w": "for",
+"s": 36.36
+},
+{
+"w": "Fluency",
+"s": 36.7
+},
+{
+"w": "On",
+"s": 37.34
+},
+{
+"w": "Linguistic",
+"s": 37.66
+},
+{
+"w": "Goals.",
+"s": 38.28
+}
+]
+},
+{
+"start": 39.36,
+"end": 48.8,
+"text": "It's a platform for beginners learning French, and I built it myself, with no coding background and no development team, using AI to help me develop the software.",
+"words": [
+{
+"w": "It's",
+"s": 39.36
+},
+{
+"w": "a",
+"s": 39.56
+},
+{
+"w": "platform",
+"s": 39.74
+},
+{
+"w": "for",
+"s": 39.92
+},
+{
+"w": "beginners",
+"s": 40.34
+},
+{
+"w": "learning",
+"s": 40.76
+},
+{
+"w": "French,",
+"s": 41.16
+},
+{
+"w": "and",
+"s": 41.9
+},
+{
+"w": "I",
+"s": 42.1
+},
+{
+"w": "built",
+"s": 42.24
+},
+{
+"w": "it",
+"s": 42.4
+},
+{
+"w": "myself,",
+"s": 42.58
+},
+{
+"w": "with",
+"s": 43.0
+},
+{
+"w": "no",
+"s": 43.6
+},
+{
+"w": "coding",
+"s": 43.9
+},
+{
+"w": "background",
+"s": 44.22
+},
+{
+"w": "and",
+"s": 44.68
+},
+{
+"w": "no",
+"s": 45.08
+},
+{
+"w": "development",
+"s": 45.32
+},
+{
+"w": "team,",
+"s": 45.72
+},
+{
+"w": "using",
+"s": 46.52
+},
+{
+"w": "AI",
+"s": 46.86
+},
+{
+"w": "to",
+"s": 47.24
+},
+{
+"w": "help",
+"s": 47.6
+},
+{
+"w": "me",
+"s": 47.78
+},
+{
+"w": "develop",
+"s": 47.94
+},
+{
+"w": "the",
+"s": 48.22
+},
+{
+"w": "software.",
+"s": 48.46
+}
+]
+},
+{
+"start": 49.9,
+"end": 56.58,
+"text": "From the start, I wanted to explore whether the organisation of language learning could be separated from the language being learned.",
+"words": [
+{
+"w": "From",
+"s": 49.9
+},
+{
+"w": "the",
+"s": 50.12
+},
+{
+"w": "start,",
+"s": 50.26
+},
+{
+"w": "I",
+"s": 50.7
+},
+{
+"w": "wanted",
+"s": 50.92
+},
+{
+"w": "to",
+"s": 51.18
+},
+{
+"w": "explore",
+"s": 51.4
+},
+{
+"w": "whether",
+"s": 51.84
+},
+{
+"w": "the",
+"s": 52.14
+},
+{
+"w": "organisation",
+"s": 52.68
+},
+{
+"w": "of",
+"s": 52.98
+},
+{
+"w": "language",
+"s": 53.34
+},
+{
+"w": "learning",
+"s": 53.66
+},
+{
+"w": "could",
+"s": 54.06
+},
+{
+"w": "be",
+"s": 54.4
+},
+{
+"w": "separated",
+"s": 54.56
+},
+{
+"w": "from",
+"s": 55.12
+},
+{
+"w": "the",
+"s": 55.48
+},
+{
+"w": "language",
+"s": 55.64
+},
+{
+"w": "being",
+"s": 55.96
+},
+{
+"w": "learned.",
+"s": 56.22
+}
+]
+},
+{
+"start": 57.36,
+"end": 62.16,
+"text": "I'm now testing that idea by adapting FluOLinGo's design for Mandarin Chinese.",
+"words": [
+{
+"w": "I'm",
+"s": 57.36
+},
+{
+"w": "now",
+"s": 57.62
+},
+{
+"w": "testing",
+"s": 57.82
+},
+{
+"w": "that",
+"s": 58.22
+},
+{
+"w": "idea",
+"s": 58.5
+},
+{
+"w": "by",
+"s": 58.88
+},
+{
+"w": "adapting",
+"s": 59.18
+},
+{
+"w": "FluOLinGo's",
+"s": 59.74
+},
+{
+"w": "design",
+"s": 60.56
+},
+{
+"w": "for",
+"s": 60.92
+},
+{
+"w": "Mandarin",
+"s": 61.26
+},
+{
+"w": "Chinese.",
+"s": 61.64
+}
+]
+},
+{
+"start": 63.18,
+"end": 78.44,
+"text": "So today, I'll explain how FluOLinGo works, examine what happens when we try to adapt its architecture from French to Mandarin, and finish with a practical recipe for teachers who might want to try something similar with their own languages.",
+"words": [
+{
+"w": "So",
+"s": 63.18
+},
+{
+"w": "today,",
+"s": 63.46
+},
+{
+"w": "I'll",
+"s": 64.32
+},
+{
+"w": "explain",
+"s": 64.52
+},
+{
+"w": "how",
+"s": 64.96
+},
+{
+"w": "FluOLinGo",
+"s": 65.4
+},
+{
+"w": "works,",
+"s": 66.16
+},
+{
+"w": "examine",
+"s": 67.28
+},
+{
+"w": "what",
+"s": 67.64
+},
+{
+"w": "happens",
+"s": 68.02
+},
+{
+"w": "when",
+"s": 68.46
+},
+{
+"w": "we",
+"s": 68.8
+},
+{
+"w": "try",
+"s": 68.98
+},
+{
+"w": "to",
+"s": 69.18
+},
+{
+"w": "adapt",
+"s": 69.32
+},
+{
+"w": "its",
+"s": 69.72
+},
+{
+"w": "architecture",
+"s": 69.94
+},
+{
+"w": "from",
+"s": 70.5
+},
+{
+"w": "French",
+"s": 70.9
+},
+{
+"w": "to",
+"s": 71.3
+},
+{
+"w": "Mandarin,",
+"s": 71.64
+},
+{
+"w": "and",
+"s": 72.48
+},
+{
+"w": "finish",
+"s": 72.78
+},
+{
+"w": "with",
+"s": 73.12
+},
+{
+"w": "a",
+"s": 73.46
+},
+{
+"w": "practical",
+"s": 73.6
+},
+{
+"w": "recipe",
+"s": 74.1
+},
+{
+"w": "for",
+"s": 74.56
+},
+{
+"w": "teachers",
+"s": 74.88
+},
+{
+"w": "who",
+"s": 75.3
+},
+{
+"w": "might",
+"s": 75.66
+},
+{
+"w": "want",
+"s": 75.86
+},
+{
+"w": "to",
+"s": 76.08
+},
+{
+"w": "try",
+"s": 76.2
+},
+{
+"w": "something",
+"s": 76.38
+},
+{
+"w": "similar",
+"s": 76.74
+},
+{
+"w": "with",
+"s": 77.24
+},
+{
+"w": "their",
+"s": 77.56
+},
+{
+"w": "own",
+"s": 77.72
+},
+{
+"w": "languages.",
+"s": 77.96
+}
+]
+}
+]
+}

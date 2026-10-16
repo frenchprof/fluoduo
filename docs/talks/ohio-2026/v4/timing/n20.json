@@ -1,0 +1,1419 @@
+{
+"real": true,
+"dan": true,
+"dur": 119.87,
+"sent": [
+{
+"start": 0.28,
+"end": 6.18,
+"text": "So here's the recipe, for anyone teaching a less commonly taught language or an Indigenous language.",
+"words": [
+{
+"w": "So",
+"s": 0.28
+},
+{
+"w": "here's",
+"s": 0.46
+},
+{
+"w": "the",
+"s": 0.76
+},
+{
+"w": "recipe,",
+"s": 0.88
+},
+{
+"w": "for",
+"s": 1.32
+},
+{
+"w": "anyone",
+"s": 1.86
+},
+{
+"w": "teaching",
+"s": 2.26
+},
+{
+"w": "a",
+"s": 2.68
+},
+{
+"w": "less",
+"s": 2.9
+},
+{
+"w": "commonly",
+"s": 3.14
+},
+{
+"w": "taught",
+"s": 3.68
+},
+{
+"w": "language",
+"s": 4.0
+},
+{
+"w": "or",
+"s": 4.5
+},
+{
+"w": "an",
+"s": 5.02
+},
+{
+"w": "Indigenous",
+"s": 5.14
+},
+{
+"w": "language.",
+"s": 5.56
+}
+]
+},
+{
+"start": 6.72,
+"end": 7.04,
+"text": "One.",
+"words": [
+{
+"w": "One.",
+"s": 6.72
+}
+]
+},
+{
+"start": 7.52,
+"end": 8.62,
+"text": "Start with your textbook.",
+"words": [
+{
+"w": "Start",
+"s": 7.52
+},
+{
+"w": "with",
+"s": 7.82
+},
+{
+"w": "your",
+"s": 8.0
+},
+{
+"w": "textbook.",
+"s": 8.18
+}
+]
+},
+{
+"start": 9.24,
+"end": 15.62,
+"text": "List what it says learners should be able to do, and the grammar, vocabulary and pronunciation it provides.",
+"words": [
+{
+"w": "List",
+"s": 9.24
+},
+{
+"w": "what",
+"s": 9.4
+},
+{
+"w": "it",
+"s": 9.6
+},
+{
+"w": "says",
+"s": 9.72
+},
+{
+"w": "learners",
+"s": 9.94
+},
+{
+"w": "should",
+"s": 10.4
+},
+{
+"w": "be",
+"s": 10.86
+},
+{
+"w": "able",
+"s": 11.02
+},
+{
+"w": "to",
+"s": 11.26
+},
+{
+"w": "do,",
+"s": 11.46
+},
+{
+"w": "and",
+"s": 11.76
+},
+{
+"w": "the",
+"s": 12.28
+},
+{
+"w": "grammar,",
+"s": 12.4
+},
+{
+"w": "vocabulary",
+"s": 12.92
+},
+{
+"w": "and",
+"s": 14.18
+},
+{
+"w": "pronunciation",
+"s": 14.32
+},
+{
+"w": "it",
+"s": 14.72
+},
+{
+"w": "provides.",
+"s": 15.18
+}
+]
+},
+{
+"start": 16.32,
+"end": 23.8,
+"text": "If it foregrounds only one side, work out the other: from purpose to resources, or from structure to function.",
+"words": [
+{
+"w": "If",
+"s": 16.32
+},
+{
+"w": "it",
+"s": 16.44
+},
+{
+"w": "foregrounds",
+"s": 16.56
+},
+{
+"w": "only",
+"s": 17.44
+},
+{
+"w": "one",
+"s": 17.76
+},
+{
+"w": "side,",
+"s": 18.14
+},
+{
+"w": "work",
+"s": 19.02
+},
+{
+"w": "out",
+"s": 19.3
+},
+{
+"w": "the",
+"s": 19.46
+},
+{
+"w": "other:",
+"s": 19.66
+},
+{
+"w": "from",
+"s": 19.92
+},
+{
+"w": "purpose",
+"s": 20.58
+},
+{
+"w": "to",
+"s": 21.0
+},
+{
+"w": "resources,",
+"s": 21.28
+},
+{
+"w": "or",
+"s": 21.84
+},
+{
+"w": "from",
+"s": 22.56
+},
+{
+"w": "structure",
+"s": 22.76
+},
+{
+"w": "to",
+"s": 23.08
+},
+{
+"w": "function.",
+"s": 23.38
+}
+]
+},
+{
+"start": 24.22,
+"end": 24.52,
+"text": "Two.",
+"words": [
+{
+"w": "Two.",
+"s": 24.22
+}
+]
+},
+{
+"start": 24.98,
+"end": 30.12,
+"text": "Separate three kinds of step: linguistic goals, functional goals and tasks.",
+"words": [
+{
+"w": "Separate",
+"s": 24.98
+},
+{
+"w": "three",
+"s": 25.36
+},
+{
+"w": "kinds",
+"s": 25.82
+},
+{
+"w": "of",
+"s": 26.16
+},
+{
+"w": "step:",
+"s": 26.38
+},
+{
+"w": "linguistic",
+"s": 27.28
+},
+{
+"w": "goals,",
+"s": 27.56
+},
+{
+"w": "functional",
+"s": 28.62
+},
+{
+"w": "goals",
+"s": 28.9
+},
+{
+"w": "and",
+"s": 29.36
+},
+{
+"w": "tasks.",
+"s": 29.66
+}
+]
+},
+{
+"start": 30.74,
+"end": 36.74,
+"text": "On my first map, negation, inviting someone and writing an email all looked the same.",
+"words": [
+{
+"w": "On",
+"s": 30.74
+},
+{
+"w": "my",
+"s": 30.96
+},
+{
+"w": "first",
+"s": 31.12
+},
+{
+"w": "map,",
+"s": 31.46
+},
+{
+"w": "negation,",
+"s": 32.32
+},
+{
+"w": "inviting",
+"s": 33.24
+},
+{
+"w": "someone",
+"s": 33.66
+},
+{
+"w": "and",
+"s": 34.16
+},
+{
+"w": "writing",
+"s": 34.6
+},
+{
+"w": "an",
+"s": 34.96
+},
+{
+"w": "email",
+"s": 35.12
+},
+{
+"w": "all",
+"s": 35.42
+},
+{
+"w": "looked",
+"s": 36.05
+},
+{
+"w": "the",
+"s": 36.2
+},
+{
+"w": "same.",
+"s": 36.38
+}
+]
+},
+{
+"start": 37.22,
+"end": 40.9,
+"text": "Make sure your learners can tell a building block from the thing it builds.",
+"words": [
+{
+"w": "Make",
+"s": 37.22
+},
+{
+"w": "sure",
+"s": 37.4
+},
+{
+"w": "your",
+"s": 37.58
+},
+{
+"w": "learners",
+"s": 37.74
+},
+{
+"w": "can",
+"s": 38.12
+},
+{
+"w": "tell",
+"s": 38.6
+},
+{
+"w": "a",
+"s": 38.82
+},
+{
+"w": "building",
+"s": 39.2
+},
+{
+"w": "block",
+"s": 39.36
+},
+{
+"w": "from",
+"s": 39.68
+},
+{
+"w": "the",
+"s": 39.96
+},
+{
+"w": "thing",
+"s": 40.12
+},
+{
+"w": "it",
+"s": 40.32
+},
+{
+"w": "builds.",
+"s": 40.46
+}
+]
+},
+{
+"start": 41.6,
+"end": 41.74,
+"text": "Three.",
+"words": [
+{
+"w": "Three.",
+"s": 41.6
+}
+]
+},
+{
+"start": 42.3,
+"end": 42.84,
+"text": "Connect them.",
+"words": [
+{
+"w": "Connect",
+"s": 42.3
+},
+{
+"w": "them.",
+"s": 42.5
+}
+]
+},
+{
+"start": 43.24,
+"end": 47.34,
+"text": "For each functional goal, note which linguistic goals it draws on.",
+"words": [
+{
+"w": "For",
+"s": 43.24
+},
+{
+"w": "each",
+"s": 43.44
+},
+{
+"w": "functional",
+"s": 43.7
+},
+{
+"w": "goal,",
+"s": 44.22
+},
+{
+"w": "note",
+"s": 45.08
+},
+{
+"w": "which",
+"s": 45.28
+},
+{
+"w": "linguistic",
+"s": 45.56
+},
+{
+"w": "goals",
+"s": 46.04
+},
+{
+"w": "it",
+"s": 46.5
+},
+{
+"w": "draws",
+"s": 46.7
+},
+{
+"w": "on.",
+"s": 46.96
+}
+]
+},
+{
+"start": 47.76,
+"end": 53.48,
+"text": "That network tells you what a learner needs before each task, and where the same resource comes back.",
+"words": [
+{
+"w": "That",
+"s": 47.76
+},
+{
+"w": "network",
+"s": 47.98
+},
+{
+"w": "tells",
+"s": 48.36
+},
+{
+"w": "you",
+"s": 48.66
+},
+{
+"w": "what",
+"s": 48.88
+},
+{
+"w": "a",
+"s": 49.02
+},
+{
+"w": "learner",
+"s": 49.16
+},
+{
+"w": "needs",
+"s": 49.56
+},
+{
+"w": "before",
+"s": 49.92
+},
+{
+"w": "each",
+"s": 50.4
+},
+{
+"w": "task,",
+"s": 50.68
+},
+{
+"w": "and",
+"s": 51.22
+},
+{
+"w": "where",
+"s": 51.7
+},
+{
+"w": "the",
+"s": 51.82
+},
+{
+"w": "same",
+"s": 51.98
+},
+{
+"w": "resource",
+"s": 52.22
+},
+{
+"w": "comes",
+"s": 52.7
+},
+{
+"w": "back.",
+"s": 53.0
+}
+]
+},
+{
+"start": 54.4,
+"end": 54.8,
+"text": "Four.",
+"words": [
+{
+"w": "Four.",
+"s": 54.4
+}
+]
+},
+{
+"start": 55.32,
+"end": 58.46,
+"text": "Choose the activity for the goal, not for the platform.",
+"words": [
+{
+"w": "Choose",
+"s": 55.32
+},
+{
+"w": "the",
+"s": 55.58
+},
+{
+"w": "activity",
+"s": 55.84
+},
+{
+"w": "for",
+"s": 56.28
+},
+{
+"w": "the",
+"s": 56.62
+},
+{
+"w": "goal,",
+"s": 56.76
+},
+{
+"w": "not",
+"s": 57.42
+},
+{
+"w": "for",
+"s": 57.66
+},
+{
+"w": "the",
+"s": 57.86
+},
+{
+"w": "platform.",
+"s": 57.98
+}
+]
+},
+{
+"start": 59.08,
+"end": 61.3,
+"text": "Ask what would show that the goal has been reached.",
+"words": [
+{
+"w": "Ask",
+"s": 59.08
+},
+{
+"w": "what",
+"s": 59.18
+},
+{
+"w": "would",
+"s": 59.38
+},
+{
+"w": "show",
+"s": 59.52
+},
+{
+"w": "that",
+"s": 59.82
+},
+{
+"w": "the",
+"s": 60.02
+},
+{
+"w": "goal",
+"s": 60.16
+},
+{
+"w": "has",
+"s": 60.42
+},
+{
+"w": "been",
+"s": 60.62
+},
+{
+"w": "reached.",
+"s": 60.82
+}
+]
+},
+{
+"start": 61.7,
+"end": 68.56,
+"text": "For a Mandarin tone, hearing it and saying it are not the same evidence, so they may need different activities.",
+"words": [
+{
+"w": "For",
+"s": 61.7
+},
+{
+"w": "a",
+"s": 62.02
+},
+{
+"w": "Mandarin",
+"s": 62.12
+},
+{
+"w": "tone,",
+"s": 62.44
+},
+{
+"w": "hearing",
+"s": 63.48
+},
+{
+"w": "it",
+"s": 63.76
+},
+{
+"w": "and",
+"s": 64.04
+},
+{
+"w": "saying",
+"s": 64.44
+},
+{
+"w": "it",
+"s": 64.78
+},
+{
+"w": "are",
+"s": 64.98
+},
+{
+"w": "not",
+"s": 65.12
+},
+{
+"w": "the",
+"s": 65.34
+},
+{
+"w": "same",
+"s": 65.52
+},
+{
+"w": "evidence,",
+"s": 65.78
+},
+{
+"w": "so",
+"s": 66.56
+},
+{
+"w": "they",
+"s": 66.84
+},
+{
+"w": "may",
+"s": 67.02
+},
+{
+"w": "need",
+"s": 67.2
+},
+{
+"w": "different",
+"s": 67.5
+},
+{
+"w": "activities.",
+"s": 67.88
+}
+]
+},
+{
+"start": 69.32,
+"end": 69.5,
+"text": "Five.",
+"words": [
+{
+"w": "Five.",
+"s": 69.32
+}
+]
+},
+{
+"start": 70.14,
+"end": 73.9,
+"text": "Keep teaching and assessment within what your textbook actually teaches.",
+"words": [
+{
+"w": "Keep",
+"s": 70.14
+},
+{
+"w": "teaching",
+"s": 70.28
+},
+{
+"w": "and",
+"s": 70.94
+},
+{
+"w": "assessment",
+"s": 71.1
+},
+{
+"w": "within",
+"s": 71.6
+},
+{
+"w": "what",
+"s": 72.14
+},
+{
+"w": "your",
+"s": 72.36
+},
+{
+"w": "textbook",
+"s": 72.5
+},
+{
+"w": "actually",
+"s": 72.96
+},
+{
+"w": "teaches.",
+"s": 73.44
+}
+]
+},
+{
+"start": 74.6,
+"end": 79.84,
+"text": "Learners can meet new language along the way, but they should never need it to get the answer right.",
+"words": [
+{
+"w": "Learners",
+"s": 74.6
+},
+{
+"w": "can",
+"s": 74.94
+},
+{
+"w": "meet",
+"s": 75.14
+},
+{
+"w": "new",
+"s": 75.44
+},
+{
+"w": "language",
+"s": 75.76
+},
+{
+"w": "along",
+"s": 76.22
+},
+{
+"w": "the",
+"s": 76.52
+},
+{
+"w": "way,",
+"s": 76.7
+},
+{
+"w": "but",
+"s": 77.32
+},
+{
+"w": "they",
+"s": 77.56
+},
+{
+"w": "should",
+"s": 77.74
+},
+{
+"w": "never",
+"s": 77.9
+},
+{
+"w": "need",
+"s": 78.3
+},
+{
+"w": "it",
+"s": 78.6
+},
+{
+"w": "to",
+"s": 78.76
+},
+{
+"w": "get",
+"s": 78.9
+},
+{
+"w": "the",
+"s": 79.02
+},
+{
+"w": "answer",
+"s": 79.22
+},
+{
+"w": "right.",
+"s": 79.5
+}
+]
+},
+{
+"start": 80.36,
+"end": 80.58,
+"text": "Six.",
+"words": [
+{
+"w": "Six.",
+"s": 80.36
+}
+]
+},
+{
+"start": 81.28,
+"end": 84.12,
+"text": "Write down your decisions, and check the actual screens.",
+"words": [
+{
+"w": "Write",
+"s": 81.28
+},
+{
+"w": "down",
+"s": 81.44
+},
+{
+"w": "your",
+"s": 81.66
+},
+{
+"w": "decisions,",
+"s": 81.84
+},
+{
+"w": "and",
+"s": 82.26
+},
+{
+"w": "check",
+"s": 82.84
+},
+{
+"w": "the",
+"s": 83.04
+},
+{
+"w": "actual",
+"s": 83.26
+},
+{
+"w": "screens.",
+"s": 83.64
+}
+]
+},
+{
+"start": 84.78,
+"end": 85.76,
+"text": "Here's a real example.",
+"words": [
+{
+"w": "Here's",
+"s": 84.78
+},
+{
+"w": "a",
+"s": 85.0
+},
+{
+"w": "real",
+"s": 85.12
+},
+{
+"w": "example.",
+"s": 85.32
+}
+]
+},
+{
+"start": 86.36,
+"end": 90.74,
+"text": "One of my lesson pages had a single exercise with three levels of support.",
+"words": [
+{
+"w": "One",
+"s": 86.36
+},
+{
+"w": "of",
+"s": 86.48
+},
+{
+"w": "my",
+"s": 86.6
+},
+{
+"w": "lesson",
+"s": 86.76
+},
+{
+"w": "pages",
+"s": 87.06
+},
+{
+"w": "had",
+"s": 87.46
+},
+{
+"w": "a",
+"s": 87.76
+},
+{
+"w": "single",
+"s": 88.02
+},
+{
+"w": "exercise",
+"s": 88.28
+},
+{
+"w": "with",
+"s": 88.94
+},
+{
+"w": "three",
+"s": 89.3
+},
+{
+"w": "levels",
+"s": 89.72
+},
+{
+"w": "of",
+"s": 90.06
+},
+{
+"w": "support.",
+"s": 90.36
+}
+]
+},
+{
+"start": 91.3,
+"end": 94.54,
+"text": "An AI helper split it into several separate activities.",
+"words": [
+{
+"w": "An",
+"s": 91.3
+},
+{
+"w": "AI",
+"s": 91.44
+},
+{
+"w": "helper",
+"s": 91.74
+},
+{
+"w": "split",
+"s": 92.2
+},
+{
+"w": "it",
+"s": 92.58
+},
+{
+"w": "into",
+"s": 92.74
+},
+{
+"w": "several",
+"s": 93.02
+},
+{
+"w": "separate",
+"s": 93.5
+},
+{
+"w": "activities.",
+"s": 93.88
+}
+]
+},
+{
+"start": 95.12,
+"end": 103.2,
+"text": "Each looked fine on its own, but the progression, from recognising to producing, was gone, and only a teacher would notice.",
+"words": [
+{
+"w": "Each",
+"s": 95.12
+},
+{
+"w": "looked",
+"s": 95.36
+},
+{
+"w": "fine",
+"s": 95.66
+},
+{
+"w": "on",
+"s": 96.06
+},
+{
+"w": "its",
+"s": 96.26
+},
+{
+"w": "own,",
+"s": 96.46
+},
+{
+"w": "but",
+"s": 97.14
+},
+{
+"w": "the",
+"s": 97.42
+},
+{
+"w": "progression,",
+"s": 97.56
+},
+{
+"w": "from",
+"s": 98.04
+},
+{
+"w": "recognising",
+"s": 98.99
+},
+{
+"w": "to",
+"s": 99.28
+},
+{
+"w": "producing,",
+"s": 99.62
+},
+{
+"w": "was",
+"s": 100.08
+},
+{
+"w": "gone,",
+"s": 100.74
+},
+{
+"w": "and",
+"s": 101.14
+},
+{
+"w": "only",
+"s": 101.74
+},
+{
+"w": "a",
+"s": 102.08
+},
+{
+"w": "teacher",
+"s": 102.26
+},
+{
+"w": "would",
+"s": 102.58
+},
+{
+"w": "notice.",
+"s": 102.82
+}
+]
+},
+{
+"start": 103.82,
+"end": 113.42,
+"text": "So I now write my teaching decisions in plain language, make sure the AI always has them, and look at the screen myself rather than trusting a description of it.",
+"words": [
+{
+"w": "So",
+"s": 103.82
+},
+{
+"w": "I",
+"s": 104.08
+},
+{
+"w": "now",
+"s": 104.24
+},
+{
+"w": "write",
+"s": 104.46
+},
+{
+"w": "my",
+"s": 104.7
+},
+{
+"w": "teaching",
+"s": 104.9
+},
+{
+"w": "decisions",
+"s": 105.26
+},
+{
+"w": "in",
+"s": 105.72
+},
+{
+"w": "plain",
+"s": 106.0
+},
+{
+"w": "language,",
+"s": 106.26
+},
+{
+"w": "make",
+"s": 107.24
+},
+{
+"w": "sure",
+"s": 107.4
+},
+{
+"w": "the",
+"s": 107.58
+},
+{
+"w": "AI",
+"s": 107.78
+},
+{
+"w": "always",
+"s": 108.22
+},
+{
+"w": "has",
+"s": 108.82
+},
+{
+"w": "them,",
+"s": 109.16
+},
+{
+"w": "and",
+"s": 109.46
+},
+{
+"w": "look",
+"s": 110.02
+},
+{
+"w": "at",
+"s": 110.18
+},
+{
+"w": "the",
+"s": 110.32
+},
+{
+"w": "screen",
+"s": 110.46
+},
+{
+"w": "myself",
+"s": 110.78
+},
+{
+"w": "rather",
+"s": 111.3
+},
+{
+"w": "than",
+"s": 111.64
+},
+{
+"w": "trusting",
+"s": 111.96
+},
+{
+"w": "a",
+"s": 112.32
+},
+{
+"w": "description",
+"s": 112.54
+},
+{
+"w": "of",
+"s": 112.88
+},
+{
+"w": "it.",
+"s": 113.2
+}
+]
+},
+{
+"start": 113.86,
+"end": 118.48,
+"text": "Whether you're working with AI or with a person, the teacher remains the author.",
+"words": [
+{
+"w": "Whether",
+"s": 113.86
+},
+{
+"w": "you're",
+"s": 114.04
+},
+{
+"w": "working",
+"s": 114.32
+},
+{
+"w": "with",
+"s": 114.58
+},
+{
+"w": "AI",
+"s": 114.82
+},
+{
+"w": "or",
+"s": 115.28
+},
+{
+"w": "with",
+"s": 115.7
+},
+{
+"w": "a",
+"s": 115.86
+},
+{
+"w": "person,",
+"s": 116.02
+},
+{
+"w": "the",
+"s": 116.82
+},
+{
+"w": "teacher",
+"s": 117.02
+},
+{
+"w": "remains",
+"s": 117.38
+},
+{
+"w": "the",
+"s": 117.86
+},
+{
+"w": "author.",
+"s": 118.08
+}
+]
+}
+]
+}

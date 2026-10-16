@@ -1,0 +1,99 @@
+<section id="n17">
+<h2 class="hd">The challenge of tones</h2>
+
+<!-- scene A (s1-3): one syllable, four words -->
+<div id="scA" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <p id="ma" class="abs" data-in="1:tone" data-fx="pop" style="left:660px;top:420px;width:600px;text-align:center;font-size:150px;font-weight:700;line-height:1">ma</p>
+  <div id="frma" class="abs" data-in="1:which" data-fx="fade" style="left:1180px;top:470px;font-size:38px;color:#6a7179">« ma » <span style="font-size:30px">· no tone</span></div>
+
+  <!-- four cards: x = 128 + i*360, w 330 -->
+  <div class="tc abs" data-in="2:mother" data-fx="pop" style="left:128px"><svg viewBox="0 0 200 120" width="200" height="120"><path class="tl" d="M20 14 H180"/></svg><p class="py">mā</p><p class="zh hz">妈</p><p class="gl">mother</p></div>
+  <div class="tc abs" data-in="2:hemp" data-fx="pop" style="left:488px"><svg viewBox="0 0 200 120" width="200" height="120"><path class="tl" d="M20 64 L180 14"/></svg><p class="py">má</p><p class="zh hz">麻</p><p class="gl">hemp</p></div>
+  <div class="tc abs" data-in="2:horse" data-fx="pop" style="left:848px"><svg viewBox="0 0 200 120" width="200" height="120"><path class="tl" d="M20 84 Q70 124 100 110 T180 34"/></svg><p class="py">mǎ</p><p class="zh hz">马</p><p class="gl">horse</p></div>
+  <div class="tc abs" data-in="2:scold" data-fx="pop" style="left:1208px"><svg viewBox="0 0 200 120" width="200" height="120"><path class="tl" d="M20 14 L180 106"/></svg><p class="py">mà</p><p class="zh hz">骂</p><p class="gl">scold</p></div>
+
+  <div class="abs" data-in="3:count" data-fx="rise" style="left:128px;top:780px;width:1410px;text-align:center">
+    <span style="display:inline-block;font-size:44px;font-weight:700;padding:16px 40px;border-radius:999px;background:#eff8ff;border:4px solid #1ca6ff">🎯 pronunciation goal reached?</span>
+  </div>
+</div>
+
+<!-- scene B (s4-5): three abilities -->
+<div id="scB" class="abs" data-in="4" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="ab abs" id="ab1" style="left:260px"><p class="ic">👂</p><p class="nm">recognise</p><p class="ex"><span class="zh">马</span> mǎ → <span class="gl">horse</span></p></div>
+  <div class="ab abs" id="ab2" style="left:700px"><p class="ic">👂⇄</p><p class="nm">discriminate</p><p class="ex">mā ≠ mǎ</p></div>
+  <div class="ab abs" id="ab3" style="left:1140px"><p class="ic">👄</p><p class="nm">produce</p><p class="ex">mǎ ↗</p></div>
+
+  <!-- learner 1: knows the meaning, not the tone -->
+  <div id="row1" class="abs" style="left:128px;top:660px;width:1420px;height:100px">
+    <p class="abs lr" data-in="4:recognise" data-fx="fade">🧑‍🎓</p>
+    <p class="abs mk ok" data-in="4:meaning" data-fx="pop" style="left:132px">✓</p>
+    <p class="abs mk no" data-in="4:distinguish" data-fx="pop" style="left:572px">✗</p>
+  </div>
+  <!-- learner 2: hears the tone, cannot say it -->
+  <div id="row2" class="abs" style="left:128px;top:780px;width:1420px;height:100px">
+    <p class="abs lr" data-in="4:identify" data-fx="fade">🧑‍🎓</p>
+    <p class="abs mk ok" data-in="4:correctly" data-fx="pop" style="left:572px">✓</p>
+    <p class="abs mk no" data-in="4:struggle" data-fx="pop" style="left:1012px">✗</p>
+  </div>
+
+  <div id="fb" class="abs" data-in="5:feedback" data-fx="rise" style="left:260px;top:700px;width:1280px;text-align:center">
+    <span style="display:inline-block;font-size:36px;font-weight:700;padding:14px 36px;border-radius:999px;background:#fff4ed;border:4px solid #ff9037;color:#9f5100">🔊 new feedback · <span style="font-weight:400">not in the French activities</span></span>
+  </div>
+</div>
+
+<!-- scene C (s6): the goal itself is in question -->
+<div id="scC" class="abs" data-in="6" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <svg class="abs" style="left:260px;top:645px" width="1280" height="80" viewBox="0 0 1280 80"><path d="M200 6 V30 H1080 V6 M640 30 V74" fill="none" stroke="#9ca3af" stroke-width="5" stroke-linecap="round"/></svg>
+  <div class="abs" style="left:560px;top:728px;width:800px;height:200px;text-align:center">
+    <span style="display:inline-block;font-size:44px;font-weight:700;padding:16px 36px;border-radius:24px;background:#eff8ff;border:4px solid #1ca6ff">🎯 one goal</span>
+    <span class="abs q" data-in="6:way" data-fx="pop" style="left:-60px;top:110px">defined?</span>
+    <span class="abs q" data-in="6:way+0.6" data-fx="pop" style="left:440px;top:110px">assessed?</span>
+  </div>
+</div>
+
+<p class="part">The challenge of tones</p>
+<style>
+#n17 .tc{top:270px;width:330px;height:460px;border-radius:26px;background:#fff;border:4px solid #9fd3ff;display:flex;flex-direction:column;align-items:center;padding-top:26px}
+#n17 .tl{fill:none;stroke:#006baa;stroke-width:9;stroke-linecap:round;stroke-linejoin:round}
+#n17 .tc svg{background:repeating-linear-gradient(#fff 0 23px,#eef0f3 23px 25px)}
+#n17 .py{font-size:56px;font-weight:700;line-height:1.1;margin-top:14px}
+#n17 .hz{font-size:96px;font-weight:500;line-height:1.15}
+#n17 .tc .gl{font-size:34px}
+#n17 .ab{top:270px;width:400px;height:360px;border-radius:26px;background:#fff;border:4px solid #9fd3ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+#n17 .ab .ic{font-size:90px;line-height:1}
+#n17 .ab .nm{font-size:44px;font-weight:700}
+#n17 .ab .ex{font-size:38px}
+#n17 .lr{left:0;top:10px;font-size:64px;line-height:1}
+#n17 .mk{top:0;width:400px;text-align:center;font-size:76px;font-weight:700;line-height:100px}
+#n17 .ok{color:#00c197}
+#n17 .no{color:#ff9037}
+#n17 .q{font-size:40px;font-weight:700;padding:10px 30px;border-radius:999px;background:#fff;border:3px solid #9ca3af;color:#4a5160;white-space:nowrap}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const sec = document.getElementById('n17');
+  // "ma" rises out of the way, the French "ma" leaves as the cards arrive
+  A($('ma'), [{transform:'none',opacity:1},{transform:'translateY(-40px) scale(.5)',opacity:0}], CUE('2:mother')-0.5, 0.5, 'forwards');
+  A($('frma'), [{opacity:1},{opacity:0}], CUE('2:mother')-0.5, 0.4, 'forwards');
+  // each tone contour draws as its card arrives
+  const words = ['mother','hemp','horse','scold'];
+  sec.querySelectorAll('.tl').forEach((p,i) => {
+    p.style.strokeDasharray = 300; A(p, [{strokeDashoffset:300},{strokeDashoffset:0}], CUE('2:'+words[i])+0.2, 0.7);
+  });
+  // "depending on its tone": the four contours light together
+  sec.querySelectorAll('.tc').forEach(c => A(c, [{borderColor:'#9fd3ff'},{borderColor:'#006baa'},{borderColor:'#9fd3ff'}], CUE('2:depending'), 1.4, 'none'));
+  A($('scA'), [{opacity:1},{opacity:0}], CUE('4')-0.3, 0.4, 'forwards');
+  // the boxes arrive as each ability is named in s4
+  A($('ab1'), [{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}], CUE('4:recognise'), 0.5);
+  A($('ab2'), [{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}], CUE('4:distinguish'), 0.5);
+  A($('ab3'), [{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}], CUE('4:produce'), 0.5);
+  // s5: the learners leave, each ability lights as it is named
+  A($('row1'), [{opacity:1},{opacity:0}], CUE('5:related'), 0.5, 'forwards');
+  A($('row2'), [{opacity:1},{opacity:0}], CUE('5:related'), 0.5, 'forwards');
+  [['ab1','5:recognition'],['ab2','5:discrimination'],['ab3','5:production']].forEach(([id,c]) =>
+    A($(id), [{borderColor:'#9fd3ff',transform:'none'},{borderColor:'#006baa',transform:'translateY(-14px)'},{borderColor:'#006baa',transform:'none'}], CUE(c), 0.7, 'forwards'));
+  A($('fb'), [{opacity:1},{opacity:0}], CUE('6')-0.2, 0.4, 'forwards');
+};
+</script>
+</section>

@@ -1,0 +1,67 @@
+<section id="n11">
+<h2 class="hd">The French textbook</h2>
+
+<!-- scene A (s1–2): Unit 3 and its three objectives -->
+<div id="scA" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs" data-in="1:unit" data-fx="left" style="left:128px;top:228px;display:flex;align-items:center;gap:24px">
+    <span style="font-size:32px;font-weight:700;padding:6px 22px;border-radius:999px;background:#1f2430;color:#fbfaf4">Unit 3</span>
+    <span style="font-size:50px;font-weight:700">« On va où cet été ? »</span>
+  </div>
+  <div class="abs slot" id="s1" data-in="1:three" data-fx="left" style="top:330px"><b class="hand">1</b><span id="o1t">☀️ « Parler de la météo »</span></div>
+  <div class="abs slot" id="s2" data-in="1:three+0.2" data-fx="left" style="top:450px"><b class="hand">2</b><span id="o2t">🏙️ « S'informer sur une ville »</span></div>
+  <div class="abs slot" id="s3x" data-in="1:three+0.4" data-fx="left" style="top:570px"><b class="hand">3</b></div>
+  <p class="abs bchip" data-in="2:grammar" data-fx="pop" style="left:128px">grammar</p>
+  <p class="abs bchip" data-in="2:vocabulary" data-fx="pop" style="left:380px">vocabulary</p>
+  <p class="abs bchip" data-in="2:pronunciation" data-fx="pop" style="left:670px">pronunciation</p>
+</div>
+<!-- objective 3 lives outside scene A: it moves up and stays -->
+<div id="o3" class="abs" data-in="2:directions" data-fx="fade" style="left:128px;top:570px;width:960px;height:100px;border-radius:22px;background:#faf7e2;border:5px solid #fcdf00;display:flex;align-items:center;gap:26px;padding:0 30px">
+  <b class="hand" style="font-size:56px;color:#9ca3af">3</b><span style="font-size:42px;font-weight:500;white-space:nowrap">🧭 « Demander et indiquer son chemin »</span>
+</div>
+<p id="tagF" class="abs gtag" data-in="5:functional" data-fx="left" style="left:1470px;top:262px;background:#faf7e2;border-color:#fcdf00">functional goal</p>
+
+<!-- scene B (s3–5): the resources it needs -->
+<svg class="abs" style="left:0;top:0" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <path data-in="5:connected" data-fx="wipe" data-dur="0.7" d="M820 342 L358 518" class="ln"/>
+  <path data-in="5:connected+0.15" data-fx="wipe" data-dur="0.7" d="M960 342 L848 518" class="ln"/>
+  <path data-in="5:connected+0.3" data-fx="wipe" data-dur="0.7" d="M1100 342 L1338 518" class="ln"/>
+</svg>
+<div class="abs res" id="r0" data-in="3:resources" data-fx="pop" style="left:128px"><p class="q hand">?</p><p class="fill" data-in="4:places" data-fx="pop">« les lieux de la ville »</p></div>
+<div class="abs res" id="r1" data-in="3:resources+0.15" data-fx="pop" style="left:618px"><p class="q hand">?</p><p class="fill" data-in="4:location" data-fx="pop">« les prépositions de lieu »</p></div>
+<div class="abs res" id="r2" data-in="3:resources+0.3" data-fx="pop" style="left:1108px"><p class="q hand">?</p><p class="fill" data-in="4:question" data-fx="pop">« est-ce que… ? »</p></div>
+<p class="abs gtag" data-in="5:linguistic" data-fx="rise" style="left:128px;top:700px;background:#eff8ff;border-color:#1ca6ff">linguistic goals</p>
+
+<p class="part">The French textbook</p>
+<style>
+#n11 .slot{left:128px;width:960px;height:100px;border-radius:22px;background:#fff;border:4px dashed #fcdf00;display:flex;align-items:center;gap:26px;padding:0 30px}
+#n11 .slot b{font-size:56px;color:#9ca3af;font-weight:400}
+#n11 .slot span{font-size:42px;font-weight:500;white-space:nowrap;opacity:0}
+#n11 .bchip{top:712px;font-size:32px;font-weight:700;padding:8px 26px;border-radius:999px;background:#eff8ff;border:3px solid #1ca6ff;color:#006baa}
+#n11 .gtag{font-size:30px;font-weight:700;padding:8px 26px;border-radius:999px;border:4px solid;white-space:nowrap}
+#n11 .ln{fill:none;stroke:#6a7179;stroke-width:7;stroke-linecap:round}
+#n11 .res{top:520px;width:460px;height:150px;border-radius:24px;border:4px dashed #9ca3af;background:#fff}
+#n11 .res .q{position:absolute;left:0;top:0;width:100%;text-align:center;font-size:96px;line-height:142px;color:#d7d9de}
+#n11 .res .fill{position:absolute;left:0;top:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 22px;font-size:38px;font-weight:700;line-height:1.15;color:#006baa}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // the objectives are named into their slots
+  [['o1t','2:weather'],['o2t','2:city']].forEach(([id,c]) => A($(id), [{opacity:0, transform:'translateX(-30px)'},{opacity:1, transform:'none'}], CUE(c), 0.6));
+  [['s1','2:weather'],['s2','2:city'],['s3x','2:directions']].forEach(([id,c]) => A($(id), [{borderStyle:'dashed', background:'#fff'},{borderStyle:'solid', background:'#faf7e2'}], CUE(c), 0.5, 'forwards'));
+  // scene change: objective 3 becomes the starting purpose
+  A($('scA'), [{opacity:1},{opacity:0}], CUE('3')-0.2, 0.6, 'forwards');
+  A($('o3'), [{transform:'none'},{transform:'translate(352px,-330px)'}], CUE('3:begin'), 0.9, 'forwards');
+  A($('o3'), [{boxShadow:'0 0 0 0 rgba(252,223,0,0)'},{boxShadow:'0 0 0 12px rgba(252,223,0,.45)'},{boxShadow:'0 0 0 0 rgba(252,223,0,0)'}], CUE('3:purpose'), 1.2, 'none');
+  A($('o3'), [{boxShadow:'0 0 0 0 rgba(252,223,0,0)'},{boxShadow:'0 0 0 12px rgba(252,223,0,.45)'},{boxShadow:'0 0 0 0 rgba(252,223,0,0)'}], CUE('4:directions'), 1.2, 'none');
+  // each resource fills, its "?" gives way
+  [['r0','4:places'],['r1','4:location'],['r2','4:question']].forEach(([id,c]) => {
+    A($(id).querySelector('.q'), [{opacity:1},{opacity:0}], CUE(c)-0.1, 0.3, 'forwards');
+    A($(id), [{borderStyle:'dashed', borderColor:'#9ca3af', background:'#fff'},{borderStyle:'solid', borderColor:'#1ca6ff', background:'#fff'}], CUE(c), 0.5, 'forwards');
+  });
+  // they become linguistic goals
+  ['r0','r1','r2'].forEach((id,i) => A($(id), [{background:'#fff'},{background:'#eff8ff'}], CUE('5:linguistic') + i*0.15, 0.6, 'forwards'));
+  A($('o3'), [{boxShadow:'0 0 0 0 rgba(252,223,0,0)'},{boxShadow:'0 0 0 12px rgba(252,223,0,.45)'},{boxShadow:'0 0 0 0 rgba(252,223,0,0)'}], CUE('5:functional'), 1.2, 'none');
+};
+</script>
+</section>

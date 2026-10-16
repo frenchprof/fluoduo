@@ -1,0 +1,402 @@
+{
+"real": true,
+"dan": true,
+"dur": 40.92,
+"sent": [
+{
+"start": 0.44,
+"end": 5.24,
+"text": "Each numbered unit of the French book identifies three communicative objectives.",
+"words": [
+{
+"w": "Each",
+"s": 0.44
+},
+{
+"w": "numbered",
+"s": 0.82
+},
+{
+"w": "unit",
+"s": 1.2
+},
+{
+"w": "of",
+"s": 1.58
+},
+{
+"w": "the",
+"s": 1.78
+},
+{
+"w": "French",
+"s": 1.94
+},
+{
+"w": "book",
+"s": 2.16
+},
+{
+"w": "identifies",
+"s": 2.46
+},
+{
+"w": "three",
+"s": 3.16
+},
+{
+"w": "communicative",
+"s": 3.76
+},
+{
+"w": "objectives.",
+"s": 4.6
+}
+]
+},
+{
+"start": 6.16,
+"end": 17.36,
+"text": "Unit 3, for example, includes talking about the weather, finding out about a city, and asking for and giving directions, along with the associated grammar, vocabulary and pronunciation.",
+"words": [
+{
+"w": "Unit",
+"s": 6.16
+},
+{
+"w": "3,",
+"s": 6.24
+},
+{
+"w": "for",
+"s": 6.64
+},
+{
+"w": "example,",
+"s": 6.86
+},
+{
+"w": "includes",
+"s": 7.52
+},
+{
+"w": "talking",
+"s": 7.98
+},
+{
+"w": "about",
+"s": 8.46
+},
+{
+"w": "the",
+"s": 8.76
+},
+{
+"w": "weather,",
+"s": 8.92
+},
+{
+"w": "finding",
+"s": 9.68
+},
+{
+"w": "out",
+"s": 9.98
+},
+{
+"w": "about",
+"s": 10.26
+},
+{
+"w": "a",
+"s": 10.5
+},
+{
+"w": "city,",
+"s": 10.68
+},
+{
+"w": "and",
+"s": 11.28
+},
+{
+"w": "asking",
+"s": 11.46
+},
+{
+"w": "for",
+"s": 11.9
+},
+{
+"w": "and",
+"s": 12.24
+},
+{
+"w": "giving",
+"s": 12.48
+},
+{
+"w": "directions,",
+"s": 12.74
+},
+{
+"w": "along",
+"s": 13.66
+},
+{
+"w": "with",
+"s": 14.14
+},
+{
+"w": "the",
+"s": 14.34
+},
+{
+"w": "associated",
+"s": 14.48
+},
+{
+"w": "grammar,",
+"s": 14.98
+},
+{
+"w": "vocabulary",
+"s": 15.84
+},
+{
+"w": "and",
+"s": 16.82
+},
+{
+"w": "pronunciation.",
+"s": 16.96
+}
+]
+},
+{
+"start": 18.4,
+"end": 25.54,
+"text": "So we can begin with a communicative purpose and ask: what linguistic resources does a learner need to achieve it?",
+"words": [
+{
+"w": "So",
+"s": 18.4
+},
+{
+"w": "we",
+"s": 18.62
+},
+{
+"w": "can",
+"s": 18.94
+},
+{
+"w": "begin",
+"s": 19.1
+},
+{
+"w": "with",
+"s": 19.38
+},
+{
+"w": "a",
+"s": 19.6
+},
+{
+"w": "communicative",
+"s": 19.8
+},
+{
+"w": "purpose",
+"s": 20.42
+},
+{
+"w": "and",
+"s": 20.92
+},
+{
+"w": "ask:",
+"s": 21.32
+},
+{
+"w": "what",
+"s": 22.04
+},
+{
+"w": "linguistic",
+"s": 22.34
+},
+{
+"w": "resources",
+"s": 22.94
+},
+{
+"w": "does",
+"s": 23.64
+},
+{
+"w": "a",
+"s": 23.98
+},
+{
+"w": "learner",
+"s": 24.14
+},
+{
+"w": "need",
+"s": 24.42
+},
+{
+"w": "to",
+"s": 24.74
+},
+{
+"w": "achieve",
+"s": 25.0
+},
+{
+"w": "it?",
+"s": 25.3
+}
+]
+},
+{
+"start": 26.1,
+"end": 34.36,
+"text": "To ask for directions, learners need vocabulary for places, expressions for location and movement, and appropriate question forms.",
+"words": [
+{
+"w": "To",
+"s": 26.1
+},
+{
+"w": "ask",
+"s": 26.44
+},
+{
+"w": "for",
+"s": 26.64
+},
+{
+"w": "directions,",
+"s": 26.86
+},
+{
+"w": "learners",
+"s": 27.74
+},
+{
+"w": "need",
+"s": 28.0
+},
+{
+"w": "vocabulary",
+"s": 28.3
+},
+{
+"w": "for",
+"s": 28.92
+},
+{
+"w": "places,",
+"s": 29.36
+},
+{
+"w": "expressions",
+"s": 30.4
+},
+{
+"w": "for",
+"s": 30.76
+},
+{
+"w": "location",
+"s": 31.18
+},
+{
+"w": "and",
+"s": 31.68
+},
+{
+"w": "movement,",
+"s": 31.96
+},
+{
+"w": "and",
+"s": 32.38
+},
+{
+"w": "appropriate",
+"s": 32.88
+},
+{
+"w": "question",
+"s": 33.44
+},
+{
+"w": "forms.",
+"s": 33.94
+}
+]
+},
+{
+"start": 35.08,
+"end": 40.66,
+"text": "In FluOLinGo, these resources become linguistic goals connected to the broader functional goal.",
+"words": [
+{
+"w": "In",
+"s": 35.08
+},
+{
+"w": "FluOLinGo,",
+"s": 35.75
+},
+{
+"w": "these",
+"s": 36.2
+},
+{
+"w": "resources",
+"s": 36.46
+},
+{
+"w": "become",
+"s": 36.94
+},
+{
+"w": "linguistic",
+"s": 37.46
+},
+{
+"w": "goals",
+"s": 38.0
+},
+{
+"w": "connected",
+"s": 38.56
+},
+{
+"w": "to",
+"s": 39.02
+},
+{
+"w": "the",
+"s": 39.34
+},
+{
+"w": "broader",
+"s": 39.48
+},
+{
+"w": "functional",
+"s": 39.84
+},
+{
+"w": "goal.",
+"s": 40.28
+}
+]
+}
+]
+}

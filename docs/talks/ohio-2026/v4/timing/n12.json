@@ -1,0 +1,539 @@
+{
+"real": true,
+"dan": true,
+"dur": 47.3,
+"sent": [
+{
+"start": 0.26,
+"end": 7.56,
+"text": "New Practical Chinese Reader organises its lessons around situations and dialogues, introducing grammatical structures progressively.",
+"words": [
+{
+"w": "New",
+"s": 0.26
+},
+{
+"w": "Practical",
+"s": 0.48
+},
+{
+"w": "Chinese",
+"s": 0.9
+},
+{
+"w": "Reader",
+"s": 1.28
+},
+{
+"w": "organises",
+"s": 1.96
+},
+{
+"w": "its",
+"s": 2.3
+},
+{
+"w": "lessons",
+"s": 2.58
+},
+{
+"w": "around",
+"s": 2.88
+},
+{
+"w": "situations",
+"s": 3.34
+},
+{
+"w": "and",
+"s": 3.82
+},
+{
+"w": "dialogues,",
+"s": 4.3
+},
+{
+"w": "introducing",
+"s": 5.36
+},
+{
+"w": "grammatical",
+"s": 5.78
+},
+{
+"w": "structures",
+"s": 6.4
+},
+{
+"w": "progressively.",
+"s": 6.92
+}
+]
+},
+{
+"start": 8.78,
+"end": 13.74,
+"text": "Lesson 5, Where is the dining room?, for example, introduces questions with question words.",
+"words": [
+{
+"w": "Lesson",
+"s": 8.78
+},
+{
+"w": "5,",
+"s": 8.94
+},
+{
+"w": "Where",
+"s": 9.6
+},
+{
+"w": "is",
+"s": 9.78
+},
+{
+"w": "the",
+"s": 9.92
+},
+{
+"w": "dining",
+"s": 10.12
+},
+{
+"w": "room?,",
+"s": 10.36
+},
+{
+"w": "for",
+"s": 10.86
+},
+{
+"w": "example,",
+"s": 10.9
+},
+{
+"w": "introduces",
+"s": 11.96
+},
+{
+"w": "questions",
+"s": 12.22
+},
+{
+"w": "with",
+"s": 12.64
+},
+{
+"w": "question",
+"s": 13.08
+},
+{
+"w": "words.",
+"s": 13.42
+}
+]
+},
+{
+"start": 14.2,
+"end": 20.31,
+"text": "The question keeps the word order of the answer, and the question word simply takes the place of the missing information.",
+"words": [
+{
+"w": "The",
+"s": 14.2
+},
+{
+"w": "question",
+"s": 14.4
+},
+{
+"w": "keeps",
+"s": 14.64
+},
+{
+"w": "the",
+"s": 15.0
+},
+{
+"w": "word",
+"s": 15.26
+},
+{
+"w": "order",
+"s": 15.48
+},
+{
+"w": "of",
+"s": 15.8
+},
+{
+"w": "the",
+"s": 16.08
+},
+{
+"w": "answer,",
+"s": 16.2
+},
+{
+"w": "and",
+"s": 17.06
+},
+{
+"w": "the",
+"s": 17.26
+},
+{
+"w": "question",
+"s": 17.4
+},
+{
+"w": "word",
+"s": 17.7
+},
+{
+"w": "simply",
+"s": 17.98
+},
+{
+"w": "takes",
+"s": 18.26
+},
+{
+"w": "the",
+"s": 18.6
+},
+{
+"w": "place",
+"s": 18.8
+},
+{
+"w": "of",
+"s": 19.0
+},
+{
+"w": "the",
+"s": 19.35
+},
+{
+"w": "missing",
+"s": 19.43
+},
+{
+"w": "information.",
+"s": 19.65
+}
+]
+},
+{
+"start": 21.13,
+"end": 25.71,
+"text": "Here, we can begin with the linguistic structure and ask: what can learners do with it?",
+"words": [
+{
+"w": "Here,",
+"s": 21.13
+},
+{
+"w": "we",
+"s": 21.45
+},
+{
+"w": "can",
+"s": 21.61
+},
+{
+"w": "begin",
+"s": 21.79
+},
+{
+"w": "with",
+"s": 22.03
+},
+{
+"w": "the",
+"s": 22.27
+},
+{
+"w": "linguistic",
+"s": 22.41
+},
+{
+"w": "structure",
+"s": 22.77
+},
+{
+"w": "and",
+"s": 23.19
+},
+{
+"w": "ask:",
+"s": 23.51
+},
+{
+"w": "what",
+"s": 24.37
+},
+{
+"w": "can",
+"s": 24.59
+},
+{
+"w": "learners",
+"s": 24.81
+},
+{
+"w": "do",
+"s": 25.07
+},
+{
+"w": "with",
+"s": 25.35
+},
+{
+"w": "it?",
+"s": 25.55
+}
+]
+},
+{
+"start": 26.05,
+"end": 31.99,
+"text": "They can ask where something is, request information about locations and take part in simple exchanges.",
+"words": [
+{
+"w": "They",
+"s": 26.05
+},
+{
+"w": "can",
+"s": 26.21
+},
+{
+"w": "ask",
+"s": 26.35
+},
+{
+"w": "where",
+"s": 26.61
+},
+{
+"w": "something",
+"s": 26.81
+},
+{
+"w": "is,",
+"s": 27.09
+},
+{
+"w": "request",
+"s": 27.95
+},
+{
+"w": "information",
+"s": 28.23
+},
+{
+"w": "about",
+"s": 28.85
+},
+{
+"w": "locations",
+"s": 29.27
+},
+{
+"w": "and",
+"s": 30.21
+},
+{
+"w": "take",
+"s": 30.49
+},
+{
+"w": "part",
+"s": 30.69
+},
+{
+"w": "in",
+"s": 30.95
+},
+{
+"w": "simple",
+"s": 31.15
+},
+{
+"w": "exchanges.",
+"s": 31.49
+}
+]
+},
+{
+"start": 32.81,
+"end": 35.05,
+"text": "These are the functional goals the grammar supports.",
+"words": [
+{
+"w": "These",
+"s": 32.81
+},
+{
+"w": "are",
+"s": 33.05
+},
+{
+"w": "the",
+"s": 33.23
+},
+{
+"w": "functional",
+"s": 33.39
+},
+{
+"w": "goals",
+"s": 33.73
+},
+{
+"w": "the",
+"s": 34.07
+},
+{
+"w": "grammar",
+"s": 34.31
+},
+{
+"w": "supports.",
+"s": 34.49
+}
+]
+},
+{
+"start": 35.67,
+"end": 39.55,
+"text": "Both textbooks combine linguistic resources with communicative purposes.",
+"words": [
+{
+"w": "Both",
+"s": 35.67
+},
+{
+"w": "textbooks",
+"s": 35.99
+},
+{
+"w": "combine",
+"s": 36.51
+},
+{
+"w": "linguistic",
+"s": 37.03
+},
+{
+"w": "resources",
+"s": 37.57
+},
+{
+"w": "with",
+"s": 38.05
+},
+{
+"w": "communicative",
+"s": 38.45
+},
+{
+"w": "purposes.",
+"s": 39.05
+}
+]
+},
+{
+"start": 40.37,
+"end": 47.13,
+"text": "What differs is which of the two they foreground, and that's precisely why they're useful for testing a common goal-based architecture.",
+"words": [
+{
+"w": "What",
+"s": 40.37
+},
+{
+"w": "differs",
+"s": 40.55
+},
+{
+"w": "is",
+"s": 40.87
+},
+{
+"w": "which",
+"s": 41.17
+},
+{
+"w": "of",
+"s": 41.43
+},
+{
+"w": "the",
+"s": 41.57
+},
+{
+"w": "two",
+"s": 41.73
+},
+{
+"w": "they",
+"s": 42.0
+},
+{
+"w": "foreground,",
+"s": 42.07
+},
+{
+"w": "and",
+"s": 42.99
+},
+{
+"w": "that's",
+"s": 43.13
+},
+{
+"w": "precisely",
+"s": 43.47
+},
+{
+"w": "why",
+"s": 43.81
+},
+{
+"w": "they're",
+"s": 44.17
+},
+{
+"w": "useful",
+"s": 44.39
+},
+{
+"w": "for",
+"s": 44.65
+},
+{
+"w": "testing",
+"s": 44.99
+},
+{
+"w": "a",
+"s": 45.35
+},
+{
+"w": "common",
+"s": 45.61
+},
+{
+"w": "goal-based",
+"s": 46.15
+},
+{
+"w": "architecture.",
+"s": 46.39
+}
+]
+}
+]
+}

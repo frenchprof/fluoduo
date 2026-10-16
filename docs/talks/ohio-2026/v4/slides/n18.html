@@ -1,0 +1,103 @@
+<section id="n18">
+<h2 class="hd">The challenge of characters</h2>
+
+<!-- scene A (s1-2): one word, four abilities, four rates -->
+<div id="scA" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="word" class="abs" data-in="1:characters" data-fx="pop" style="left:128px;top:270px;width:420px;height:460px;border-radius:28px;background:#fff;border:5px solid #ff9037;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px">
+    <p class="zh" style="font-size:150px;font-weight:500;line-height:1.1">学生</p>
+    <p style="font-size:48px;font-weight:700">xuésheng</p>
+    <p class="gl" style="font-size:38px">student</p>
+  </div>
+  <div class="rw abs" id="w1" data-in="2:recognise" data-fx="left" style="top:270px"><i>👁️</i><b>recognise it</b><span class="tr"><span class="fill" id="f1"></span></span></div>
+  <div class="rw abs" id="w2" data-in="2:meaning" data-fx="left" style="top:390px"><i>💡</i><b>its meaning</b><span class="tr"><span class="fill" id="f2"></span></span></div>
+  <div class="rw abs" id="w3" data-in="2:pronunciation" data-fx="left" style="top:510px"><i>🔊</i><b>its sound</b><span class="tr"><span class="fill" id="f3"></span></span></div>
+  <div class="rw abs" id="w4" data-in="2:write" data-fx="left" style="top:630px"><i>✍️</i><b>write it</b><span class="tr"><span class="fill" id="f4"></span></span></div>
+</div>
+
+<!-- scene B (s3-4): one goal or several? recognising = producing? -->
+<div id="scB" class="abs" data-in="3" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="opt" class="abs" style="left:128px;top:280px;width:1410px;height:380px">
+    <div class="abs" data-in="3:one" data-fx="pop" style="left:60px;top:0;width:520px;height:340px;border-radius:28px;background:#eff8ff;border:4px solid #1ca6ff;text-align:center;padding-top:34px">
+      <p style="font-size:90px;line-height:1">🎯</p>
+      <p style="font-size:60px;margin-top:30px;letter-spacing:10px">👁️💡🔊✍️</p>
+    </div>
+    <p class="abs hand" data-in="3:=or" data-fx="fade" style="left:600px;top:110px;width:200px;text-align:center;font-size:72px;color:#9ca3af">or</p>
+    <div class="abs" data-in="3:or+0.2" data-fx="pop" style="left:820px;top:0;width:540px;height:340px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="g4">🎯<span>👁️</span></div><div class="g4">🎯<span>💡</span></div><div class="g4">🎯<span>🔊</span></div><div class="g4">🎯<span>✍️</span></div>
+    </div>
+  </div>
+  <div id="eq" class="abs" data-in="4:recognising-0.2" data-fx="fade" style="left:128px;top:280px;width:1410px;height:420px">
+    <div class="abs sd" data-in="4:recognising" data-fx="left" style="left:80px"><p style="font-size:80px;line-height:1">👁️</p><p class="zh" style="font-size:110px;font-weight:500">学生</p><p class="nm">recognise</p></div>
+    <p class="abs hand" data-in="4:same" data-fx="pop" style="left:560px;top:120px;width:290px;text-align:center;font-size:110px;line-height:1;color:#9f5100">= ?</p>
+    <div class="abs sd" data-in="4:producing" data-fx="right" style="left:880px"><p style="font-size:80px;line-height:1">✍️</p><p class="zh hw" style="font-size:110px">学生</p><p class="nm">produce</p></div>
+  </div>
+</div>
+
+<!-- scene C (s5): spoken yes, written not yet -->
+<div id="scC" class="abs" data-in="5" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="abs card" data-in="5:understands" data-fx="pop" style="left:228px;top:290px;border-color:#00c197">
+    <p style="font-size:84px;line-height:1">🔊</p>
+    <p style="font-size:64px;font-weight:700">xuésheng</p>
+    <p class="gl" style="font-size:38px">student</p>
+    <p class="abs mk" style="right:28px;top:14px;color:#00c197">✓</p>
+  </div>
+  <div class="abs card" id="wr" data-in="5:but" data-fx="pop" style="left:868px;top:290px;border-color:#ff9037;border-style:dashed">
+    <p style="font-size:84px;line-height:1">👁️</p>
+    <p class="zh" style="font-size:96px;font-weight:500;color:#9ca3af;line-height:1.2">学生</p>
+    <p class="gl" style="font-size:38px">not yet</p>
+    <p class="abs mk" style="right:28px;top:14px;color:#ff9037">✗</p>
+  </div>
+  <p id="track" class="abs" data-in="5:track" data-fx="rise" style="left:128px;top:740px;width:1410px;text-align:center;font-size:40px;color:#4a5160">📈 <b>track progress how?</b></p>
+</div>
+
+<!-- scene D (s6-7): decisions, and an architecture that can hold them -->
+<div id="scD" class="abs" data-in="6" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="dec" class="abs" style="left:128px;top:270px;width:1410px;height:200px">
+    <span class="abs dq" data-in="6:knowledge" data-fx="pop" style="left:40px;top:40px">🧠 what counts as knowing?</span>
+    <span class="abs dq" data-in="6:evidence" data-fx="pop" style="left:740px;top:40px">🧾 what is the evidence?</span>
+  </div>
+  <!-- s7: a frame that holds four goals; the French mould does not fit -->
+  <div id="arch" class="abs" data-in="7:architecture" data-fx="rise" style="left:128px;top:470px;width:900px;height:330px;border-radius:28px;border:5px dashed #00c197;background:#eafbf8">
+    <p class="abs" style="left:30px;top:20px;font-size:36px;font-weight:700;color:#00715a">architecture</p>
+    <div class="abs" style="left:30px;top:100px;display:flex;gap:24px">
+      <div class="sl" data-in="7:represent" data-fx="pop">👁️</div><div class="sl" data-in="7:represent+0.15" data-fx="pop">💡</div><div class="sl" data-in="7:represent+0.3" data-fx="pop">🔊</div><div class="sl" data-in="7:represent+0.45" data-fx="pop">✍️</div>
+    </div>
+  </div>
+  <div id="fr" class="abs" data-in="7:forcing" data-fx="left" style="left:1100px;top:520px;width:420px;height:230px;border-radius:24px;border:5px solid #9ca3af;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+    <p style="font-size:40px;font-weight:700;color:#6a7179">French categories</p>
+    <p style="font-size:84px;line-height:1;color:#ff9037;font-weight:700">✗</p>
+  </div>
+</div>
+
+<p class="part">The challenge of characters</p>
+<style>
+#n18 .rw{left:620px;width:910px;height:96px;border-radius:20px;background:#fff;border:3px solid #d7d9de;display:flex;align-items:center;gap:18px;padding:0 24px}
+#n18 .rw i{font-style:normal;font-size:52px}
+#n18 .rw b{font-size:38px;font-weight:700;width:300px}
+#n18 .tr{flex:1;height:28px;border-radius:14px;background:#eef0f3;overflow:hidden}
+#n18 .fill{display:block;height:100%;width:100%;border-radius:14px;background:#00c197;transform-origin:left center;transform:scaleX(0)}
+#n18 .g4{border-radius:22px;background:#eff8ff;border:4px solid #1ca6ff;display:flex;align-items:center;justify-content:center;gap:18px;font-size:60px}
+#n18 .sd{top:0;width:440px;height:400px;border-radius:28px;background:#fff;border:4px solid #d7d9de;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+#n18 .nm{font-size:40px;font-weight:700}
+#n18 .card{width:560px;height:400px;border-radius:28px;background:#fff;border:5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+#n18 .mk{font-size:84px;font-weight:700;line-height:1}
+#n18 .dq{font-size:40px;font-weight:700;padding:18px 36px;border-radius:22px;background:#fff;border:4px solid #b17eff;white-space:nowrap}
+#n18 .sl{width:190px;height:180px;border-radius:20px;background:#fff;border:4px solid #00c197;display:flex;align-items:center;justify-content:center;font-size:76px}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // "don't develop at the same rate": four bars grow to four different lengths
+  const t = CUE('2:rate')-0.6;
+  [['f1',.85,0],['f2',.6,.15],['f3',.7,.3],['f4',.25,.45]].forEach(([id,x,d]) =>
+    A($(id), [{transform:'scaleX(0)'},{transform:`scaleX(${x})`}], t+d, 1.2));
+  A($('scA'), [{opacity:1},{opacity:0}], CUE('3')-0.3, 0.4, 'forwards');
+  A($('opt'), [{opacity:1},{opacity:0}], CUE('4:recognising')-0.4, 0.4, 'forwards');
+  A($('scB'), [{opacity:1},{opacity:0}], CUE('5')-0.3, 0.4, 'forwards');
+  A($('scC'), [{opacity:1},{opacity:0}], CUE('6')-0.3, 0.4, 'forwards');
+  // s7: decisions step back; the French mould greys out
+  A($('dec'), [{opacity:1},{opacity:.5}], CUE('7'), 0.5, 'forwards');
+  A($('arch'), [{boxShadow:'0 0 0 0 rgba(0,193,151,0)'},{boxShadow:'0 0 0 14px rgba(0,193,151,.3)'},{boxShadow:'0 0 0 0 rgba(0,193,151,0)'}], CUE('7:flexible'), 1.2, 'none');
+};
+</script>
+</section>

@@ -1,0 +1,299 @@
+{
+"real": true,
+"dan": true,
+"dur": 31.95,
+"sent": [
+{
+"start": 0.49,
+"end": 11.59,
+"text": "The other reason is that I'm also comparing two textbooks with different approaches to syllabus organisation: our French coursebook, and New Practical Chinese Reader, Book 1, for Mandarin.",
+"words": [
+{
+"w": "The",
+"s": 0.49
+},
+{
+"w": "other",
+"s": 0.69
+},
+{
+"w": "reason",
+"s": 0.85
+},
+{
+"w": "is",
+"s": 1.21
+},
+{
+"w": "that",
+"s": 1.45
+},
+{
+"w": "I'm",
+"s": 1.59
+},
+{
+"w": "also",
+"s": 1.81
+},
+{
+"w": "comparing",
+"s": 2.13
+},
+{
+"w": "two",
+"s": 2.55
+},
+{
+"w": "textbooks",
+"s": 3.01
+},
+{
+"w": "with",
+"s": 3.53
+},
+{
+"w": "different",
+"s": 3.87
+},
+{
+"w": "approaches",
+"s": 4.29
+},
+{
+"w": "to",
+"s": 4.77
+},
+{
+"w": "syllabus",
+"s": 5.03
+},
+{
+"w": "organisation:",
+"s": 6.05
+},
+{
+"w": "our",
+"s": 6.65
+},
+{
+"w": "French",
+"s": 6.87
+},
+{
+"w": "coursebook,",
+"s": 7.42
+},
+{
+"w": "and",
+"s": 7.67
+},
+{
+"w": "New",
+"s": 8.19
+},
+{
+"w": "Practical",
+"s": 8.57
+},
+{
+"w": "Chinese",
+"s": 9.17
+},
+{
+"w": "Reader,",
+"s": 9.67
+},
+{
+"w": "Book",
+"s": 10.39
+},
+{
+"w": "1,",
+"s": 10.47
+},
+{
+"w": "for",
+"s": 11.04
+},
+{
+"w": "Mandarin.",
+"s": 11.23
+}
+]
+},
+{
+"start": 12.49,
+"end": 15.71,
+"text": "Both introduce language through everyday situations.",
+"words": [
+{
+"w": "Both",
+"s": 12.49
+},
+{
+"w": "introduce",
+"s": 12.71
+},
+{
+"w": "language",
+"s": 13.31
+},
+{
+"w": "through",
+"s": 13.87
+},
+{
+"w": "everyday",
+"s": 14.29
+},
+{
+"w": "situations.",
+"s": 14.85
+}
+]
+},
+{
+"start": 16.11,
+"end": 26.73,
+"text": "But the French book foregrounds communicative objectives, while New Practical Chinese Reader makes grammatical progression more explicit within its situational lessons.",
+"words": [
+{
+"w": "But",
+"s": 16.11
+},
+{
+"w": "the",
+"s": 16.47
+},
+{
+"w": "French",
+"s": 16.67
+},
+{
+"w": "book",
+"s": 16.97
+},
+{
+"w": "foregrounds",
+"s": 17.29
+},
+{
+"w": "communicative",
+"s": 18.25
+},
+{
+"w": "objectives,",
+"s": 18.95
+},
+{
+"w": "while",
+"s": 19.95
+},
+{
+"w": "New",
+"s": 20.19
+},
+{
+"w": "Practical",
+"s": 20.55
+},
+{
+"w": "Chinese",
+"s": 21.11
+},
+{
+"w": "Reader",
+"s": 21.61
+},
+{
+"w": "makes",
+"s": 21.97
+},
+{
+"w": "grammatical",
+"s": 22.43
+},
+{
+"w": "progression",
+"s": 23.15
+},
+{
+"w": "more",
+"s": 23.85
+},
+{
+"w": "explicit",
+"s": 24.31
+},
+{
+"w": "within",
+"s": 24.97
+},
+{
+"w": "its",
+"s": 25.51
+},
+{
+"w": "situational",
+"s": 25.75
+},
+{
+"w": "lessons.",
+"s": 26.29
+}
+]
+},
+{
+"start": 27.57,
+"end": 31.51,
+"text": "This gives us two different starting points for identifying learning goals.",
+"words": [
+{
+"w": "This",
+"s": 27.57
+},
+{
+"w": "gives",
+"s": 27.81
+},
+{
+"w": "us",
+"s": 28.01
+},
+{
+"w": "two",
+"s": 28.25
+},
+{
+"w": "different",
+"s": 28.61
+},
+{
+"w": "starting",
+"s": 29.05
+},
+{
+"w": "points",
+"s": 29.49
+},
+{
+"w": "for",
+"s": 29.91
+},
+{
+"w": "identifying",
+"s": 30.17
+},
+{
+"w": "learning",
+"s": 30.77
+},
+{
+"w": "goals.",
+"s": 31.11
+}
+]
+}
+]
+}

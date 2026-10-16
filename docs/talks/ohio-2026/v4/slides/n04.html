@@ -1,0 +1,91 @@
+<section id="n04">
+<h2 class="hd">A network of goals</h2>
+
+<!-- scene 1: one supports several, one depends on several -->
+<div id="sc1" class="abs" data-out="3" style="left:0;top:0;width:1920px;height:1080px">
+  <svg id="sv1" class="abs" style="left:0;top:0" width="1920" height="1080"></svg>
+  <div class="bq abs" data-in="1:interconnected" data-fx="pop" style="left:200px;top:475px"></div>
+  <div class="yc abs" data-in="1:interconnected+0.1" data-fx="pop" style="left:600px;top:315px"></div>
+  <div class="yc abs" data-in="1:interconnected+0.2" data-fx="pop" style="left:600px;top:475px"></div>
+  <div class="yc abs" data-in="1:interconnected+0.3" data-fx="pop" style="left:600px;top:635px"></div>
+  <div class="bq abs" data-in="1:interconnected+0.4" data-fx="pop" style="left:900px;top:315px"></div>
+  <div class="bq abs" data-in="1:interconnected+0.5" data-fx="pop" style="left:900px;top:475px"></div>
+  <div class="bq abs" data-in="1:interconnected+0.6" data-fx="pop" style="left:900px;top:635px"></div>
+  <div class="yc abs" data-in="1:interconnected+0.7" data-fx="pop" style="left:1300px;top:475px"></div>
+</div>
+
+<!-- scene 2: ordering food, and the same resources elsewhere -->
+<div id="sc2" class="abs" style="left:0;top:0;width:1920px;height:1080px">
+  <svg id="sv2" class="abs" style="left:0;top:0" width="1920" height="1080"></svg>
+  <p class="res abs" data-in="3:vocabulary" data-fx="left" style="top:290px">vocabulary</p>
+  <p class="res abs" data-in="3:quantities" data-fx="left" style="top:410px">quantities</p>
+  <p class="res abs" data-in="3:question" data-fx="left" style="top:530px">question forms</p>
+  <p class="res abs" data-in="3:polite" data-fx="left" style="top:650px">polite expressions</p>
+  <div class="fg abs" id="g1" data-in="3:Ordering" data-fx="pop" style="top:300px">« Commander au restaurant »<span class="gl">order at a restaurant</span></div>
+  <div class="fg abs" id="g2" data-in="3:other" data-fx="pop" style="top:560px">« Faire ses courses »<span class="gl">do the shopping</span></div>
+  <p class="abs hand" data-in="4:many" data-fx="pop" style="left:560px;top:800px;font-size:72px;line-height:1">many-to-many</p>
+  <p class="abs zh" id="zh" style="left:1020px;top:808px;font-size:48px;font-weight:700;padding:6px 24px;border-radius:14px;background:#1f2430;color:#fff">中文 ?</p>
+</div>
+
+<!-- scene 3: piling up structures vs using them -->
+<div id="sc3" class="abs" data-in="5" data-fx="fade" data-out="7" style="left:0;top:0;width:1920px;height:1080px">
+  <div id="pile" class="abs" style="left:260px;top:360px;width:420px;height:380px"></div>
+  <svg class="abs" data-in="6:available" data-fx="draw" style="left:740px;top:490px" width="260" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H230 M205 35 L235 60 L205 85"/></g></svg>
+  <div class="abs" data-in="6:communication" data-fx="pop" style="left:1060px;top:410px;width:280px;height:280px;border-radius:50%;background:#faf7e2;border:5px solid #fcdf00;display:flex;align-items:center;justify-content:center;font-size:130px">💬</div>
+</div>
+
+<p class="part">A network of goals</p>
+<style>
+#n04 .bq{width:100px;height:100px;border-radius:16px;background:#eff8ff;border:5px solid #1ca6ff}
+#n04 .yc{width:100px;height:100px;border-radius:50%;background:#faf7e2;border:5px solid #fcdf00}
+#n04 .res{left:160px;width:420px;height:90px;border-radius:18px;background:#eff8ff;border:4px solid #1ca6ff;display:flex;align-items:center;padding:0 28px;font-size:36px;font-weight:500}
+#n04 .fg{left:960px;width:560px;height:150px;border-radius:75px;background:#faf7e2;border:5px solid #fcdf00;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:38px;font-weight:700;line-height:1.2}
+#n04 .fg .gl{font-size:30px;font-weight:400}
+#n04 .brick{width:120px;height:56px;border-radius:8px;background:#d7d9de;border:3px solid #9ca3af}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const line = (svg, x1, y1, x2, y2, at, col) => {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', `M${x1} ${y1} L${x2} ${y2}`);
+    p.setAttribute('stroke', col || '#9ca3af'); p.setAttribute('stroke-width', '5');
+    p.setAttribute('stroke-linecap', 'round'); p.setAttribute('fill', 'none');
+    p.setAttribute('pathLength', '100'); p.setAttribute('stroke-dasharray', '100');
+    svg.appendChild(p);
+    A(p, [{strokeDashoffset:100},{strokeDashoffset:0}], at, 0.7);
+    return p;
+  };
+  // scene 1
+  const s1 = $('sv1');
+  [365, 525, 685].forEach((y, i) => line(s1, 300, 525, 600, y, CUE('2:support') + i*0.2));
+  [365, 525, 685].forEach((y, i) => line(s1, 1000, y, 1300, 525, CUE('2:depend') + i*0.2));
+  // scene 2 enters as scene 1 leaves
+  A($('sc2'), [{opacity:0},{opacity:1}], CUE('3'), 0.5);
+  const s2 = $('sv2'), ys = [335, 455, 575, 695], words = ['vocabulary','quantities','question','polite'];
+  const L = [];
+  ys.forEach((y, i) => L.push(line(s2, 580, y, 960, 375, CUE('3:'+words[i]) + 0.2)));
+  ys.forEach((y, i) => L.push(line(s2, 580, y, 960, 635, CUE('3:situations') + i*0.15)));
+  // the same resources pulse when they are reused
+  document.querySelectorAll('#n04 .res').forEach(el =>
+    A(el, [{transform:'none'},{transform:'translateX(14px)'},{transform:'none'}], CUE('3:same'), 0.7, 'none'));
+  // many-to-many: every line lights up
+  L.forEach(p => A(p, [{stroke:'#9ca3af'},{stroke:'#1f2430'},{stroke:'#9ca3af'}], CUE('4:many'), 1.2, 'none'));
+  // scene 2 steps aside for scene 3, and returns for Mandarin
+  A($('sc2'), [{opacity:1},{opacity:0}], CUE('5')-0.2, 0.5, 'forwards');
+  A($('sc2'), [{opacity:0},{opacity:1}], CUE('7'), 0.6, 'forwards');
+  A($('zh'), [{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'none'}], CUE('7:Mandarin'), 0.5);
+  // scene 3: structures pile up, then go blue when they are put to use
+  const pile = $('pile'); let k = 0;
+  for (let r = 0; r < 5; r++) for (let c = 0; c < 3 - (r%2); c++){
+    const b = document.createElement('div'); b.className = 'brick abs';
+    b.style.left = (c*132 + (r%2 ? 66 : 0))+'px'; b.style.top = (320 - r*66)+'px';
+    pile.appendChild(b);
+    A(b, [{opacity:0,transform:'translateY(-40px)'},{opacity:1,transform:'none'}], CUE('5:accumulating') + k*0.18, 0.45);
+    A(b, [{background:'#d7d9de',borderColor:'#9ca3af'},{background:'#1ca6ff',borderColor:'#006baa'}], CUE('6:making') + k*0.05, 0.5, 'forwards');
+    k++;
+  }
+};
+</script>
+</section>

@@ -1,0 +1,695 @@
+{
+"real": true,
+"dan": true,
+"dur": 71.23,
+"sent": [
+{
+"start": 0.51,
+"end": 11.17,
+"text": "FluOLinGo takes a communicative approach to language learning, but organises the course around specific learning goals, which are essentially what teachers call learning objectives.",
+"words": [
+{
+"w": "FluOLinGo",
+"s": 0.51
+},
+{
+"w": "takes",
+"s": 1.23
+},
+{
+"w": "a",
+"s": 1.61
+},
+{
+"w": "communicative",
+"s": 1.97
+},
+{
+"w": "approach",
+"s": 2.71
+},
+{
+"w": "to",
+"s": 3.11
+},
+{
+"w": "language",
+"s": 3.41
+},
+{
+"w": "learning,",
+"s": 3.69
+},
+{
+"w": "but",
+"s": 4.47
+},
+{
+"w": "organises",
+"s": 5.04
+},
+{
+"w": "the",
+"s": 5.37
+},
+{
+"w": "course",
+"s": 5.59
+},
+{
+"w": "around",
+"s": 5.85
+},
+{
+"w": "specific",
+"s": 6.29
+},
+{
+"w": "learning",
+"s": 6.95
+},
+{
+"w": "goals,",
+"s": 7.41
+},
+{
+"w": "which",
+"s": 8.17
+},
+{
+"w": "are",
+"s": 8.39
+},
+{
+"w": "essentially",
+"s": 8.67
+},
+{
+"w": "what",
+"s": 9.11
+},
+{
+"w": "teachers",
+"s": 9.45
+},
+{
+"w": "call",
+"s": 9.81
+},
+{
+"w": "learning",
+"s": 10.19
+},
+{
+"w": "objectives.",
+"s": 10.65
+}
+]
+},
+{
+"start": 12.07,
+"end": 16.99,
+"text": "I distinguish between two main types: linguistic goals and functional goals.",
+"words": [
+{
+"w": "I",
+"s": 12.07
+},
+{
+"w": "distinguish",
+"s": 12.19
+},
+{
+"w": "between",
+"s": 12.55
+},
+{
+"w": "two",
+"s": 13.05
+},
+{
+"w": "main",
+"s": 13.47
+},
+{
+"w": "types:",
+"s": 13.87
+},
+{
+"w": "linguistic",
+"s": 14.89
+},
+{
+"w": "goals",
+"s": 15.17
+},
+{
+"w": "and",
+"s": 15.67
+},
+{
+"w": "functional",
+"s": 16.17
+},
+{
+"w": "goals.",
+"s": 16.59
+}
+]
+},
+{
+"start": 17.75,
+"end": 32.53,
+"text": "This distinction draws on an idea developed by the applied linguist David Wilkins in the 1970s: that language teaching should consider not only grammar and vocabulary, but also the meanings and communicative functions learners need to express.",
+"words": [
+{
+"w": "This",
+"s": 17.75
+},
+{
+"w": "distinction",
+"s": 17.97
+},
+{
+"w": "draws",
+"s": 18.39
+},
+{
+"w": "on",
+"s": 18.83
+},
+{
+"w": "an",
+"s": 19.09
+},
+{
+"w": "idea",
+"s": 19.23
+},
+{
+"w": "developed",
+"s": 19.57
+},
+{
+"w": "by",
+"s": 19.99
+},
+{
+"w": "the",
+"s": 20.29
+},
+{
+"w": "applied",
+"s": 20.43
+},
+{
+"w": "linguist",
+"s": 20.85
+},
+{
+"w": "David",
+"s": 21.37
+},
+{
+"w": "Wilkins",
+"s": 21.77
+},
+{
+"w": "in",
+"s": 22.29
+},
+{
+"w": "the",
+"s": 22.59
+},
+{
+"w": "1970s:",
+"s": 22.71
+},
+{
+"w": "that",
+"s": 23.91
+},
+{
+"w": "language",
+"s": 24.23
+},
+{
+"w": "teaching",
+"s": 24.63
+},
+{
+"w": "should",
+"s": 25.01
+},
+{
+"w": "consider",
+"s": 25.31
+},
+{
+"w": "not",
+"s": 25.75
+},
+{
+"w": "only",
+"s": 26.09
+},
+{
+"w": "grammar",
+"s": 26.39
+},
+{
+"w": "and",
+"s": 26.83
+},
+{
+"w": "vocabulary,",
+"s": 27.17
+},
+{
+"w": "but",
+"s": 28.15
+},
+{
+"w": "also",
+"s": 28.49
+},
+{
+"w": "the",
+"s": 28.87
+},
+{
+"w": "meanings",
+"s": 29.05
+},
+{
+"w": "and",
+"s": 29.51
+},
+{
+"w": "communicative",
+"s": 29.87
+},
+{
+"w": "functions",
+"s": 30.55
+},
+{
+"w": "learners",
+"s": 31.13
+},
+{
+"w": "need",
+"s": 31.57
+},
+{
+"w": "to",
+"s": 31.89
+},
+{
+"w": "express.",
+"s": 32.09
+}
+]
+},
+{
+"start": 33.69,
+"end": 42.61,
+"text": "Linguistic goals concern the language resources learners need, while functional goals concern what learners can actually do with those resources.",
+"words": [
+{
+"w": "Linguistic",
+"s": 33.69
+},
+{
+"w": "goals",
+"s": 34.15
+},
+{
+"w": "concern",
+"s": 34.57
+},
+{
+"w": "the",
+"s": 35.09
+},
+{
+"w": "language",
+"s": 35.37
+},
+{
+"w": "resources",
+"s": 35.77
+},
+{
+"w": "learners",
+"s": 36.51
+},
+{
+"w": "need,",
+"s": 36.97
+},
+{
+"w": "while",
+"s": 38.01
+},
+{
+"w": "functional",
+"s": 38.21
+},
+{
+"w": "goals",
+"s": 38.71
+},
+{
+"w": "concern",
+"s": 39.21
+},
+{
+"w": "what",
+"s": 39.75
+},
+{
+"w": "learners",
+"s": 40.05
+},
+{
+"w": "can",
+"s": 40.45
+},
+{
+"w": "actually",
+"s": 40.69
+},
+{
+"w": "do",
+"s": 41.15
+},
+{
+"w": "with",
+"s": 41.53
+},
+{
+"w": "those",
+"s": 41.83
+},
+{
+"w": "resources.",
+"s": 42.01
+}
+]
+},
+{
+"start": 43.41,
+"end": 54.71,
+"text": "The latter are closely related to what Act-furl, the American Council on the Teaching of Foreign Languages, describes as language functions and expresses through its Can-Do Statements.",
+"words": [
+{
+"w": "The",
+"s": 43.41
+},
+{
+"w": "latter",
+"s": 43.81
+},
+{
+"w": "are",
+"s": 44.09
+},
+{
+"w": "closely",
+"s": 44.45
+},
+{
+"w": "related",
+"s": 44.87
+},
+{
+"w": "to",
+"s": 45.33
+},
+{
+"w": "what",
+"s": 45.65
+},
+{
+"w": "Act-furl,",
+"s": 46.32
+},
+{
+"w": "the",
+"s": 46.77
+},
+{
+"w": "American",
+"s": 46.91
+},
+{
+"w": "Council",
+"s": 47.31
+},
+{
+"w": "on",
+"s": 47.71
+},
+{
+"w": "the",
+"s": 48.09
+},
+{
+"w": "Teaching",
+"s": 48.19
+},
+{
+"w": "of",
+"s": 48.45
+},
+{
+"w": "Foreign",
+"s": 48.67
+},
+{
+"w": "Languages,",
+"s": 48.95
+},
+{
+"w": "describes",
+"s": 49.89
+},
+{
+"w": "as",
+"s": 50.41
+},
+{
+"w": "language",
+"s": 50.83
+},
+{
+"w": "functions",
+"s": 51.31
+},
+{
+"w": "and",
+"s": 51.91
+},
+{
+"w": "expresses",
+"s": 52.57
+},
+{
+"w": "through",
+"s": 52.99
+},
+{
+"w": "its",
+"s": 53.47
+},
+{
+"w": "Can-Do",
+"s": 53.98
+},
+{
+"w": "Statements.",
+"s": 54.27
+}
+]
+},
+{
+"start": 55.83,
+"end": 59.63,
+"text": "For example, knowing how to form questions is a linguistic goal.",
+"words": [
+{
+"w": "For",
+"s": 55.83
+},
+{
+"w": "example,",
+"s": 55.99
+},
+{
+"w": "knowing",
+"s": 56.89
+},
+{
+"w": "how",
+"s": 57.03
+},
+{
+"w": "to",
+"s": 57.31
+},
+{
+"w": "form",
+"s": 57.43
+},
+{
+"w": "questions",
+"s": 57.75
+},
+{
+"w": "is",
+"s": 58.25
+},
+{
+"w": "a",
+"s": 58.61
+},
+{
+"w": "linguistic",
+"s": 58.75
+},
+{
+"w": "goal.",
+"s": 59.17
+}
+]
+},
+{
+"start": 60.35,
+"end": 64.29,
+"text": "Using questions to find out about someone's interests is a functional goal.",
+"words": [
+{
+"w": "Using",
+"s": 60.35
+},
+{
+"w": "questions",
+"s": 60.61
+},
+{
+"w": "to",
+"s": 61.05
+},
+{
+"w": "find",
+"s": 61.37
+},
+{
+"w": "out",
+"s": 61.59
+},
+{
+"w": "about",
+"s": 61.83
+},
+{
+"w": "someone's",
+"s": 62.09
+},
+{
+"w": "interests",
+"s": 62.59
+},
+{
+"w": "is",
+"s": 62.95
+},
+{
+"w": "a",
+"s": 63.37
+},
+{
+"w": "functional",
+"s": 63.55
+},
+{
+"w": "goal.",
+"s": 63.91
+}
+]
+},
+{
+"start": 65.37,
+"end": 70.71,
+"text": "A learner may understand how questions are formed without yet being able to conduct a conversation.",
+"words": [
+{
+"w": "A",
+"s": 65.37
+},
+{
+"w": "learner",
+"s": 65.53
+},
+{
+"w": "may",
+"s": 65.85
+},
+{
+"w": "understand",
+"s": 66.07
+},
+{
+"w": "how",
+"s": 66.59
+},
+{
+"w": "questions",
+"s": 66.95
+},
+{
+"w": "are",
+"s": 67.41
+},
+{
+"w": "formed",
+"s": 67.65
+},
+{
+"w": "without",
+"s": 68.07
+},
+{
+"w": "yet",
+"s": 68.73
+},
+{
+"w": "being",
+"s": 68.99
+},
+{
+"w": "able",
+"s": 69.25
+},
+{
+"w": "to",
+"s": 69.49
+},
+{
+"w": "conduct",
+"s": 69.69
+},
+{
+"w": "a",
+"s": 70.03
+},
+{
+"w": "conversation.",
+"s": 70.25
+}
+]
+}
+]
+}

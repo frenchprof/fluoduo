@@ -1,0 +1,822 @@
+{
+"real": true,
+"dan": true,
+"dur": 80.87,
+"sent": [
+{
+"start": 0.52,
+"end": 17.42,
+"text": "The goals that shape the course are derived from the first half of our French coursebook, which contains fifteen explicitly stated communicative objectives, including introducing oneself, expressing preferences, asking for directions, talking about eating habits and making plans.",
+"words": [
+{
+"w": "The",
+"s": 0.52
+},
+{
+"w": "goals",
+"s": 0.84
+},
+{
+"w": "that",
+"s": 1.08
+},
+{
+"w": "shape",
+"s": 1.36
+},
+{
+"w": "the",
+"s": 1.6
+},
+{
+"w": "course",
+"s": 1.84
+},
+{
+"w": "are",
+"s": 2.12
+},
+{
+"w": "derived",
+"s": 2.4
+},
+{
+"w": "from",
+"s": 2.76
+},
+{
+"w": "the",
+"s": 3.04
+},
+{
+"w": "first",
+"s": 3.18
+},
+{
+"w": "half",
+"s": 3.46
+},
+{
+"w": "of",
+"s": 3.78
+},
+{
+"w": "our",
+"s": 3.98
+},
+{
+"w": "French",
+"s": 4.1
+},
+{
+"w": "coursebook,",
+"s": 4.77
+},
+{
+"w": "which",
+"s": 5.16
+},
+{
+"w": "contains",
+"s": 5.56
+},
+{
+"w": "fifteen",
+"s": 6.29
+},
+{
+"w": "explicitly",
+"s": 6.62
+},
+{
+"w": "stated",
+"s": 7.4
+},
+{
+"w": "communicative",
+"s": 7.92
+},
+{
+"w": "objectives,",
+"s": 8.62
+},
+{
+"w": "including",
+"s": 9.6
+},
+{
+"w": "introducing",
+"s": 10.18
+},
+{
+"w": "oneself,",
+"s": 10.72
+},
+{
+"w": "expressing",
+"s": 11.78
+},
+{
+"w": "preferences,",
+"s": 12.2
+},
+{
+"w": "asking",
+"s": 13.38
+},
+{
+"w": "for",
+"s": 13.68
+},
+{
+"w": "directions,",
+"s": 13.88
+},
+{
+"w": "talking",
+"s": 14.94
+},
+{
+"w": "about",
+"s": 15.24
+},
+{
+"w": "eating",
+"s": 15.5
+},
+{
+"w": "habits",
+"s": 15.82
+},
+{
+"w": "and",
+"s": 16.24
+},
+{
+"w": "making",
+"s": 16.64
+},
+{
+"w": "plans.",
+"s": 16.86
+}
+]
+},
+{
+"start": 18.38,
+"end": 24.38,
+"text": "The textbook also identifies the grammar, vocabulary and pronunciation needed to support these objectives.",
+"words": [
+{
+"w": "The",
+"s": 18.38
+},
+{
+"w": "textbook",
+"s": 18.62
+},
+{
+"w": "also",
+"s": 19.02
+},
+{
+"w": "identifies",
+"s": 19.48
+},
+{
+"w": "the",
+"s": 20.02
+},
+{
+"w": "grammar,",
+"s": 20.3
+},
+{
+"w": "vocabulary",
+"s": 20.88
+},
+{
+"w": "and",
+"s": 21.88
+},
+{
+"w": "pronunciation",
+"s": 22.02
+},
+{
+"w": "needed",
+"s": 22.44
+},
+{
+"w": "to",
+"s": 23.04
+},
+{
+"w": "support",
+"s": 23.36
+},
+{
+"w": "these",
+"s": 23.7
+},
+{
+"w": "objectives.",
+"s": 23.94
+}
+]
+},
+{
+"start": 25.32,
+"end": 34.5,
+"text": "In the first version, I reorganised this content into fifty learning goals and laid them out on a map, as numbered stops, Candy Crush style.",
+"words": [
+{
+"w": "In",
+"s": 25.32
+},
+{
+"w": "the",
+"s": 25.48
+},
+{
+"w": "first",
+"s": 25.62
+},
+{
+"w": "version,",
+"s": 25.92
+},
+{
+"w": "I",
+"s": 26.78
+},
+{
+"w": "reorganised",
+"s": 27.21
+},
+{
+"w": "this",
+"s": 27.6
+},
+{
+"w": "content",
+"s": 28.0
+},
+{
+"w": "into",
+"s": 28.48
+},
+{
+"w": "fifty",
+"s": 29.16
+},
+{
+"w": "learning",
+"s": 29.42
+},
+{
+"w": "goals",
+"s": 29.76
+},
+{
+"w": "and",
+"s": 30.14
+},
+{
+"w": "laid",
+"s": 30.56
+},
+{
+"w": "them",
+"s": 30.8
+},
+{
+"w": "out",
+"s": 30.98
+},
+{
+"w": "on",
+"s": 31.18
+},
+{
+"w": "a",
+"s": 31.38
+},
+{
+"w": "map,",
+"s": 31.54
+},
+{
+"w": "as",
+"s": 31.78
+},
+{
+"w": "numbered",
+"s": 32.28
+},
+{
+"w": "stops,",
+"s": 32.72
+},
+{
+"w": "Candy",
+"s": 33.78
+},
+{
+"w": "Crush",
+"s": 33.94
+},
+{
+"w": "style.",
+"s": 34.14
+}
+]
+},
+{
+"start": 35.22,
+"end": 39.94,
+"text": "But all fifty stops looked the same, even though they were different kinds of thing.",
+"words": [
+{
+"w": "But",
+"s": 35.22
+},
+{
+"w": "all",
+"s": 35.48
+},
+{
+"w": "fifty",
+"s": 36.14
+},
+{
+"w": "stops",
+"s": 36.38
+},
+{
+"w": "looked",
+"s": 36.82
+},
+{
+"w": "the",
+"s": 37.12
+},
+{
+"w": "same,",
+"s": 37.34
+},
+{
+"w": "even",
+"s": 37.9
+},
+{
+"w": "though",
+"s": 38.2
+},
+{
+"w": "they",
+"s": 38.38
+},
+{
+"w": "were",
+"s": 38.52
+},
+{
+"w": "different",
+"s": 38.66
+},
+{
+"w": "kinds",
+"s": 39.1
+},
+{
+"w": "of",
+"s": 39.48
+},
+{
+"w": "thing.",
+"s": 39.72
+}
+]
+},
+{
+"start": 41.06,
+"end": 43.52,
+"text": "Number twenty-eight, negation, is linguistic.",
+"words": [
+{
+"w": "Number",
+"s": 41.06
+},
+{
+"w": "twenty-eight,",
+"s": 41.57
+},
+{
+"w": "negation,",
+"s": 42.08
+},
+{
+"w": "is",
+"s": 42.92
+},
+{
+"w": "linguistic.",
+"s": 43.1
+}
+]
+},
+{
+"start": 43.52,
+"end": 49.58,
+"text": "Number twenty-nine, inviting someone and turning down an invitation, is functional.",
+"words": [
+{
+"w": "Number",
+"s": 43.52
+},
+{
+"w": "twenty-nine,",
+"s": 45.33
+},
+{
+"w": "inviting",
+"s": 46.02
+},
+{
+"w": "someone",
+"s": 46.12
+},
+{
+"w": "and",
+"s": 46.76
+},
+{
+"w": "turning",
+"s": 47.1
+},
+{
+"w": "down",
+"s": 47.44
+},
+{
+"w": "an",
+"s": 47.8
+},
+{
+"w": "invitation,",
+"s": 48.0
+},
+{
+"w": "is",
+"s": 48.46
+},
+{
+"w": "functional.",
+"s": 49.04
+}
+]
+},
+{
+"start": 50.38,
+"end": 55.32,
+"text": "And number thirty, writing an email to arrange an outing, is a task that needs both.",
+"words": [
+{
+"w": "And",
+"s": 50.38
+},
+{
+"w": "number",
+"s": 50.44
+},
+{
+"w": "thirty,",
+"s": 51.14
+},
+{
+"w": "writing",
+"s": 51.64
+},
+{
+"w": "an",
+"s": 51.78
+},
+{
+"w": "email",
+"s": 52.06
+},
+{
+"w": "to",
+"s": 52.38
+},
+{
+"w": "arrange",
+"s": 52.66
+},
+{
+"w": "an",
+"s": 53.06
+},
+{
+"w": "outing,",
+"s": 53.26
+},
+{
+"w": "is",
+"s": 53.56
+},
+{
+"w": "a",
+"s": 53.94
+},
+{
+"w": "task",
+"s": 54.08
+},
+{
+"w": "that",
+"s": 54.46
+},
+{
+"w": "needs",
+"s": 54.68
+},
+{
+"w": "both.",
+"s": 54.92
+}
+]
+},
+{
+"start": 56.5,
+"end": 66.88,
+"text": "Planning the Chinese version is what made me see this, because the Chinese textbook doesn't label its situations or its tasks, so I had to decide for myself what each step was.",
+"words": [
+{
+"w": "Planning",
+"s": 56.5
+},
+{
+"w": "the",
+"s": 56.64
+},
+{
+"w": "Chinese",
+"s": 56.88
+},
+{
+"w": "version",
+"s": 57.3
+},
+{
+"w": "is",
+"s": 57.66
+},
+{
+"w": "what",
+"s": 57.98
+},
+{
+"w": "made",
+"s": 58.16
+},
+{
+"w": "me",
+"s": 58.36
+},
+{
+"w": "see",
+"s": 58.54
+},
+{
+"w": "this,",
+"s": 58.74
+},
+{
+"w": "because",
+"s": 59.16
+},
+{
+"w": "the",
+"s": 59.54
+},
+{
+"w": "Chinese",
+"s": 59.76
+},
+{
+"w": "textbook",
+"s": 60.18
+},
+{
+"w": "doesn't",
+"s": 60.66
+},
+{
+"w": "label",
+"s": 61.16
+},
+{
+"w": "its",
+"s": 61.54
+},
+{
+"w": "situations",
+"s": 61.8
+},
+{
+"w": "or",
+"s": 62.44
+},
+{
+"w": "its",
+"s": 62.88
+},
+{
+"w": "tasks,",
+"s": 63.06
+},
+{
+"w": "so",
+"s": 63.74
+},
+{
+"w": "I",
+"s": 64.18
+},
+{
+"w": "had",
+"s": 64.32
+},
+{
+"w": "to",
+"s": 64.48
+},
+{
+"w": "decide",
+"s": 64.62
+},
+{
+"w": "for",
+"s": 64.96
+},
+{
+"w": "myself",
+"s": 65.16
+},
+{
+"w": "what",
+"s": 65.6
+},
+{
+"w": "each",
+"s": 65.94
+},
+{
+"w": "step",
+"s": 66.18
+},
+{
+"w": "was.",
+"s": 66.48
+}
+]
+},
+{
+"start": 67.7,
+"end": 80.34,
+"text": "The revised French course now separates them: around sixty linguistic goals, about three dozen functional goals, and one task at the end of each unit, which the French book calls the Mission.",
+"words": [
+{
+"w": "The",
+"s": 67.7
+},
+{
+"w": "revised",
+"s": 67.98
+},
+{
+"w": "French",
+"s": 68.42
+},
+{
+"w": "course",
+"s": 68.82
+},
+{
+"w": "now",
+"s": 69.2
+},
+{
+"w": "separates",
+"s": 69.58
+},
+{
+"w": "them:",
+"s": 70.14
+},
+{
+"w": "around",
+"s": 71.04
+},
+{
+"w": "sixty",
+"s": 71.62
+},
+{
+"w": "linguistic",
+"s": 71.9
+},
+{
+"w": "goals,",
+"s": 72.46
+},
+{
+"w": "about",
+"s": 73.38
+},
+{
+"w": "three",
+"s": 73.54
+},
+{
+"w": "dozen",
+"s": 73.98
+},
+{
+"w": "functional",
+"s": 74.34
+},
+{
+"w": "goals,",
+"s": 74.86
+},
+{
+"w": "and",
+"s": 75.64
+},
+{
+"w": "one",
+"s": 75.86
+},
+{
+"w": "task",
+"s": 76.22
+},
+{
+"w": "at",
+"s": 76.68
+},
+{
+"w": "the",
+"s": 76.9
+},
+{
+"w": "end",
+"s": 77.04
+},
+{
+"w": "of",
+"s": 77.3
+},
+{
+"w": "each",
+"s": 77.46
+},
+{
+"w": "unit,",
+"s": 77.66
+},
+{
+"w": "which",
+"s": 78.42
+},
+{
+"w": "the",
+"s": 78.58
+},
+{
+"w": "French",
+"s": 78.78
+},
+{
+"w": "book",
+"s": 78.98
+},
+{
+"w": "calls",
+"s": 79.24
+},
+{
+"w": "the",
+"s": 79.66
+},
+{
+"w": "Mission.",
+"s": 79.98
+}
+]
+}
+]
+}

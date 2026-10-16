@@ -1,0 +1,66 @@
+<section id="n05">
+<h2 class="hd">The learning cycle</h2>
+
+<svg id="arcs" class="abs" style="left:0;top:0" width="1920" height="1080"></svg>
+<div id="nodes" class="abs" style="left:0;top:0;width:1920px;height:1080px"></div>
+
+<!-- try first: what they know, what they need -->
+<p class="abs hand" data-in="2:try" data-fx="pop" style="left:1200px;top:310px;font-size:64px;line-height:1;color:#00715a">try first</p>
+<p class="abs tag" data-in="3:know" data-fx="left" style="left:1200px;top:410px;border-color:#00c197">✓ what I know</p>
+<p class="abs tag" data-in="3:need" data-fx="left" style="left:1200px;top:500px;border-color:#9ca3af">? what I need</p>
+
+<p class="part">The learning cycle</p>
+<style>
+#n05 .node{width:170px;height:170px;border-radius:50%;background:#fff;border:5px solid #1f2430;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:54px;line-height:1}
+#n05 .node b{font-size:30px;font-weight:700}
+#n05 .tag{font-size:34px;font-weight:500;padding:10px 26px;border-radius:999px;background:#fff;border:4px solid}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const cx = 820, cy = 610, R = 300, r = 85;
+  const steps = [
+    ['🎯','goal','#fcdf00','#faf7e2','1:select','6:identify'],
+    ['✏️','try','#00c197','#eafbf8','1:attempt','6:=try'],
+    ['💡','learn','#1ca6ff','#eff8ff','4:explanations','6:learn'],
+    ['🔁','practise','#1ca6ff','#eff8ff','4:practise','6:practise'],
+    ['💬','feedback','#ff9037','#fff4ed','5:feedback','6:feedback'],
+    ['↺','revisit','#b17eff','#f8f4ff','5:revisited','6:revisit'],
+  ];
+  const ang = i => (-90 + i*60) * Math.PI/180;
+  const P = i => [cx + R*Math.cos(ang(i)), cy + R*Math.sin(ang(i))];
+  steps.forEach(([ic, lab, col, tint, cin, crec], i) => {
+    const [x, y] = P(i);
+    const d = document.createElement('div');
+    d.className = 'node abs';
+    d.innerHTML = `<span>${ic}</span><b>${lab}</b>`;
+    d.style.left = (x - r)+'px'; d.style.top = (y - r)+'px';
+    d.style.borderColor = col; d.style.background = tint;
+    $('nodes').appendChild(d);
+    A(d, [{opacity:0,transform:'scale(.6)'},{opacity:1,transform:'scale(1.06)',offset:.7},{opacity:1,transform:'none'}], CUE(cin), 0.6);
+    // the recap walks round the cycle
+    A(d, [{transform:'none'},{transform:'scale(1.15)'},{transform:'none'}], CUE(crec), 0.6, 'none');
+    // the arc from the previous step
+    const j = (i + 5) % 6;
+    const g = (r + 14)/R, a0 = ang(j) + g, a1 = ang(i) - g;
+    const ax = cx + R*Math.cos(a0), ay = cy + R*Math.sin(a0), bx = cx + R*Math.cos(a1), by = cy + R*Math.sin(a1);
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', `M${ax} ${ay} A${R} ${R} 0 0 1 ${bx} ${by}`);
+    p.setAttribute('stroke', '#9ca3af'); p.setAttribute('stroke-width', '6'); p.setAttribute('fill', 'none');
+    p.setAttribute('stroke-linecap', 'round'); p.setAttribute('pathLength', '100'); p.setAttribute('stroke-dasharray', '100');
+    // arrow head at the end, pointing along the tangent
+    const t = a1 + Math.PI/2, hx = Math.cos(t), hy = Math.sin(t), nx = Math.cos(a1), ny = Math.sin(a1);
+    const h = document.createElementNS(NS, 'path');
+    h.setAttribute('d', `M${bx - 22*hx + 14*nx} ${by - 22*hy + 14*ny} L${bx} ${by} L${bx - 22*hx - 14*nx} ${by - 22*hy - 14*ny}`);
+    h.setAttribute('stroke', '#9ca3af'); h.setAttribute('stroke-width', '6'); h.setAttribute('fill', 'none');
+    h.setAttribute('stroke-linecap', 'round'); h.setAttribute('stroke-linejoin', 'round');
+    $('arcs').appendChild(p); $('arcs').appendChild(h);
+    // the closing arc (revisit -> goal) is drawn in the recap
+    const at = i === 0 ? CUE('6:revisit') - 0.2 : CUE(cin) - 0.2;
+    A(p, [{strokeDashoffset:100},{strokeDashoffset:0}], at, 0.6);
+    A(h, [{opacity:0},{opacity:1}], at + 0.5, 0.2);
+  });
+};
+</script>
+</section>

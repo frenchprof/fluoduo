@@ -1,0 +1,342 @@
+{
+"real": true,
+"dan": true,
+"dur": 35.34,
+"sent": [
+{
+"start": 0.23,
+"end": 5.49,
+"text": "What matters about the activities is that each one is selected according to the goal.",
+"words": [
+{
+"w": "What",
+"s": 0.23
+},
+{
+"w": "matters",
+"s": 0.63
+},
+{
+"w": "about",
+"s": 1.03
+},
+{
+"w": "the",
+"s": 1.33
+},
+{
+"w": "activities",
+"s": 1.53
+},
+{
+"w": "is",
+"s": 2.11
+},
+{
+"w": "that",
+"s": 2.55
+},
+{
+"w": "each",
+"s": 2.73
+},
+{
+"w": "one",
+"s": 3.05
+},
+{
+"w": "is",
+"s": 3.43
+},
+{
+"w": "selected",
+"s": 3.65
+},
+{
+"w": "according",
+"s": 4.19
+},
+{
+"w": "to",
+"s": 4.73
+},
+{
+"w": "the",
+"s": 5.03
+},
+{
+"w": "goal.",
+"s": 5.15
+}
+]
+},
+{
+"start": 6.41,
+"end": 11.87,
+"text": "A vocabulary goal doesn't necessarily require the same practice as a pronunciation goal.",
+"words": [
+{
+"w": "A",
+"s": 6.41
+},
+{
+"w": "vocabulary",
+"s": 6.45
+},
+{
+"w": "goal",
+"s": 6.91
+},
+{
+"w": "doesn't",
+"s": 7.49
+},
+{
+"w": "necessarily",
+"s": 7.95
+},
+{
+"w": "require",
+"s": 8.45
+},
+{
+"w": "the",
+"s": 9.17
+},
+{
+"w": "same",
+"s": 9.49
+},
+{
+"w": "practice",
+"s": 9.77
+},
+{
+"w": "as",
+"s": 10.25
+},
+{
+"w": "a",
+"s": 10.61
+},
+{
+"w": "pronunciation",
+"s": 10.75
+},
+{
+"w": "goal.",
+"s": 11.19
+}
+]
+},
+{
+"start": 12.69,
+"end": 22.67,
+"text": "For pronunciation, for example, learners say words and sentences aloud and get immediate feedback, while vocabulary is practised through word games.",
+"words": [
+{
+"w": "For",
+"s": 12.69
+},
+{
+"w": "pronunciation,",
+"s": 12.85
+},
+{
+"w": "for",
+"s": 13.93
+},
+{
+"w": "example,",
+"s": 13.95
+},
+{
+"w": "learners",
+"s": 15.03
+},
+{
+"w": "say",
+"s": 15.17
+},
+{
+"w": "words",
+"s": 15.57
+},
+{
+"w": "and",
+"s": 16.01
+},
+{
+"w": "sentences",
+"s": 16.29
+},
+{
+"w": "aloud",
+"s": 16.83
+},
+{
+"w": "and",
+"s": 17.43
+},
+{
+"w": "get",
+"s": 17.97
+},
+{
+"w": "immediate",
+"s": 18.15
+},
+{
+"w": "feedback,",
+"s": 18.73
+},
+{
+"w": "while",
+"s": 19.67
+},
+{
+"w": "vocabulary",
+"s": 20.19
+},
+{
+"w": "is",
+"s": 20.75
+},
+{
+"w": "practised",
+"s": 21.45
+},
+{
+"w": "through",
+"s": 21.65
+},
+{
+"w": "word",
+"s": 22.05
+},
+{
+"w": "games.",
+"s": 22.35
+}
+]
+},
+{
+"start": 23.51,
+"end": 29.85,
+"text": "And a goal involving grammatical accuracy may need different feedback from one involving spoken communication.",
+"words": [
+{
+"w": "And",
+"s": 23.51
+},
+{
+"w": "a",
+"s": 23.67
+},
+{
+"w": "goal",
+"s": 23.79
+},
+{
+"w": "involving",
+"s": 24.05
+},
+{
+"w": "grammatical",
+"s": 24.63
+},
+{
+"w": "accuracy",
+"s": 25.25
+},
+{
+"w": "may",
+"s": 26.01
+},
+{
+"w": "need",
+"s": 26.51
+},
+{
+"w": "different",
+"s": 26.73
+},
+{
+"w": "feedback",
+"s": 27.15
+},
+{
+"w": "from",
+"s": 27.47
+},
+{
+"w": "one",
+"s": 27.93
+},
+{
+"w": "involving",
+"s": 28.19
+},
+{
+"w": "spoken",
+"s": 28.71
+},
+{
+"w": "communication.",
+"s": 29.11
+}
+]
+},
+{
+"start": 30.77,
+"end": 34.75,
+"text": "This becomes particularly important when we move from French to Mandarin.",
+"words": [
+{
+"w": "This",
+"s": 30.77
+},
+{
+"w": "becomes",
+"s": 30.95
+},
+{
+"w": "particularly",
+"s": 31.31
+},
+{
+"w": "important",
+"s": 32.09
+},
+{
+"w": "when",
+"s": 32.65
+},
+{
+"w": "we",
+"s": 32.99
+},
+{
+"w": "move",
+"s": 33.19
+},
+{
+"w": "from",
+"s": 33.35
+},
+{
+"w": "French",
+"s": 33.63
+},
+{
+"w": "to",
+"s": 34.01
+},
+{
+"w": "Mandarin.",
+"s": 34.39
+}
+]
+}
+]
+}

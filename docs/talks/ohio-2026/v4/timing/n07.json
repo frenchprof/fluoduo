@@ -1,0 +1,417 @@
+{
+"real": true,
+"dan": true,
+"dur": 43.12,
+"sent": [
+{
+"start": 0.59,
+"end": 5.21,
+"text": "There's an obvious limitation to practising language through small, individual goals.",
+"words": [
+{
+"w": "There's",
+"s": 0.59
+},
+{
+"w": "an",
+"s": 0.73
+},
+{
+"w": "obvious",
+"s": 0.85
+},
+{
+"w": "limitation",
+"s": 1.25
+},
+{
+"w": "to",
+"s": 1.81
+},
+{
+"w": "practising",
+"s": 2.4
+},
+{
+"w": "language",
+"s": 2.61
+},
+{
+"w": "through",
+"s": 3.09
+},
+{
+"w": "small,",
+"s": 3.41
+},
+{
+"w": "individual",
+"s": 3.97
+},
+{
+"w": "goals.",
+"s": 4.69
+}
+]
+},
+{
+"start": 6.01,
+"end": 13.21,
+"text": "Learners may become good at particular exercises without being able to use the language spontaneously or manage a conversation.",
+"words": [
+{
+"w": "Learners",
+"s": 6.01
+},
+{
+"w": "may",
+"s": 6.29
+},
+{
+"w": "become",
+"s": 6.49
+},
+{
+"w": "good",
+"s": 6.79
+},
+{
+"w": "at",
+"s": 7.05
+},
+{
+"w": "particular",
+"s": 7.23
+},
+{
+"w": "exercises",
+"s": 7.77
+},
+{
+"w": "without",
+"s": 8.53
+},
+{
+"w": "being",
+"s": 9.29
+},
+{
+"w": "able",
+"s": 9.55
+},
+{
+"w": "to",
+"s": 9.79
+},
+{
+"w": "use",
+"s": 9.99
+},
+{
+"w": "the",
+"s": 10.29
+},
+{
+"w": "language",
+"s": 10.49
+},
+{
+"w": "spontaneously",
+"s": 10.85
+},
+{
+"w": "or",
+"s": 11.43
+},
+{
+"w": "manage",
+"s": 12.23
+},
+{
+"w": "a",
+"s": 12.59
+},
+{
+"w": "conversation.",
+"s": 12.77
+}
+]
+},
+{
+"start": 14.13,
+"end": 19.41,
+"text": "That's why the individual goals need to lead towards larger communicative activities.",
+"words": [
+{
+"w": "That's",
+"s": 14.13
+},
+{
+"w": "why",
+"s": 14.55
+},
+{
+"w": "the",
+"s": 14.73
+},
+{
+"w": "individual",
+"s": 14.93
+},
+{
+"w": "goals",
+"s": 15.65
+},
+{
+"w": "need",
+"s": 16.19
+},
+{
+"w": "to",
+"s": 16.59
+},
+{
+"w": "lead",
+"s": 16.83
+},
+{
+"w": "towards",
+"s": 17.07
+},
+{
+"w": "larger",
+"s": 17.47
+},
+{
+"w": "communicative",
+"s": 18.05
+},
+{
+"w": "activities.",
+"s": 18.77
+}
+]
+},
+{
+"start": 20.13,
+"end": 29.19,
+"text": "In the French book, these include expression workshops and missions, where learners combine several linguistic resources to accomplish a task.",
+"words": [
+{
+"w": "In",
+"s": 20.13
+},
+{
+"w": "the",
+"s": 20.37
+},
+{
+"w": "French",
+"s": 20.51
+},
+{
+"w": "book,",
+"s": 20.73
+},
+{
+"w": "these",
+"s": 21.29
+},
+{
+"w": "include",
+"s": 21.59
+},
+{
+"w": "expression",
+"s": 21.97
+},
+{
+"w": "workshops",
+"s": 22.71
+},
+{
+"w": "and",
+"s": 23.31
+},
+{
+"w": "missions,",
+"s": 23.85
+},
+{
+"w": "where",
+"s": 24.89
+},
+{
+"w": "learners",
+"s": 25.07
+},
+{
+"w": "combine",
+"s": 25.43
+},
+{
+"w": "several",
+"s": 25.91
+},
+{
+"w": "linguistic",
+"s": 26.47
+},
+{
+"w": "resources",
+"s": 27.01
+},
+{
+"w": "to",
+"s": 27.71
+},
+{
+"w": "accomplish",
+"s": 28.09
+},
+{
+"w": "a",
+"s": 28.53
+},
+{
+"w": "task.",
+"s": 28.77
+}
+]
+},
+{
+"start": 30.0,
+"end": 35.65,
+"text": "FluOLinGo provides focused practice that builds the resources learners need for these tasks.",
+"words": [
+{
+"w": "FluOLinGo",
+"s": 30.0
+},
+{
+"w": "provides",
+"s": 30.81
+},
+{
+"w": "focused",
+"s": 31.29
+},
+{
+"w": "practice",
+"s": 31.85
+},
+{
+"w": "that",
+"s": 32.41
+},
+{
+"w": "builds",
+"s": 32.75
+},
+{
+"w": "the",
+"s": 33.09
+},
+{
+"w": "resources",
+"s": 33.37
+},
+{
+"w": "learners",
+"s": 33.89
+},
+{
+"w": "need",
+"s": 34.33
+},
+{
+"w": "for",
+"s": 34.79
+},
+{
+"w": "these",
+"s": 35.03
+},
+{
+"w": "tasks.",
+"s": 35.21
+}
+]
+},
+{
+"start": 36.35,
+"end": 42.63,
+"text": "Whether they can then bring those resources together successfully needs to be assessed through more integrated tasks.",
+"words": [
+{
+"w": "Whether",
+"s": 36.35
+},
+{
+"w": "they",
+"s": 36.67
+},
+{
+"w": "can",
+"s": 36.91
+},
+{
+"w": "then",
+"s": 37.09
+},
+{
+"w": "bring",
+"s": 37.27
+},
+{
+"w": "those",
+"s": 37.59
+},
+{
+"w": "resources",
+"s": 37.81
+},
+{
+"w": "together",
+"s": 38.39
+},
+{
+"w": "successfully",
+"s": 38.95
+},
+{
+"w": "needs",
+"s": 39.71
+},
+{
+"w": "to",
+"s": 40.27
+},
+{
+"w": "be",
+"s": 40.47
+},
+{
+"w": "assessed",
+"s": 40.59
+},
+{
+"w": "through",
+"s": 40.95
+},
+{
+"w": "more",
+"s": 41.27
+},
+{
+"w": "integrated",
+"s": 41.55
+},
+{
+"w": "tasks.",
+"s": 42.15
+}
+]
+}
+]
+}

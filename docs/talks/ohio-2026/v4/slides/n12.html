@@ -1,0 +1,139 @@
+<section id="n12">
+<h2 class="hd">The Mandarin textbook</h2>
+
+<!-- scene A: the book: situations, dialogues, grammar step by step -->
+<div id="scA" class="abs" style="left:128px;top:240px;width:1400px;height:640px">
+  <img data-in="1" data-fx="pop" class="abs cov" src="../img/npcr-cover.png" style="left:0;top:0;width:300px">
+  <p class="abs chip" data-in="1:situations" data-fx="left" style="left:420px;top:20px">🎭 situations</p>
+  <p class="abs chip" data-in="1:dialogues" data-fx="left" style="left:420px;top:140px">💬 dialogues</p>
+  <!-- grammar, introduced progressively: a staircase -->
+  <div class="abs" data-in="1:grammatical" data-fx="fade" style="left:420px;top:290px;width:900px;height:300px">
+    <p class="abs" style="left:0;top:0;font-size:36px;font-weight:700;color:#006baa">⚙️ grammar</p>
+    <i class="abs st" id="st1" style="left:0;top:210px;height:70px"></i>
+    <i class="abs st" id="st2" style="left:200px;top:160px;height:120px"></i>
+    <i class="abs st" id="st3" style="left:400px;top:110px;height:170px"></i>
+    <i class="abs st" id="st4" style="left:600px;top:60px;height:220px"></i>
+  </div>
+</div>
+
+<!-- scene B: Lesson 5, the question word sits where the answer goes -->
+<div id="scB" class="abs" data-in="2" data-fx="fade" style="left:128px;top:240px;width:1400px;height:640px">
+  <img class="abs cov" src="../img/npcr-cover.png" style="left:0;top:0;width:200px">
+  <div class="abs" style="left:250px;top:10px;display:flex;align-items:baseline;gap:22px;white-space:nowrap">
+    <span class="tag" data-in="2:Lesson" data-fx="pop">Lesson 5</span>
+    <span class="zh" data-in="2:Where" data-fx="fade" style="font-size:60px;font-weight:700">餐厅在哪儿？</span>
+    <span class="gl" data-in="2:dining" data-fx="fade" style="font-size:32px">Where is the dining hall?</span>
+  </div>
+  <!-- pair 1 -->
+  <div class="abs pr" data-in="2:questions" data-fx="rise" style="left:250px;top:140px">
+    <span class="c zh">那</span><span class="c zh">是</span><span class="c zh s" id="q1">谁</span><span class="c zh">？</span><span class="g gl">Who is that?</span>
+    <span class="c zh ar">那</span><span class="c zh ar">是</span><span class="c zh s ar" id="a1">我们老师</span><span class="c zh ar">。</span><span class="g gl ar">That's our teacher.</span>
+  </div>
+  <!-- pair 2 -->
+  <div class="abs pr" data-in="2:question+0.2" data-fx="rise" style="left:250px;top:420px">
+    <span class="c zh">餐厅</span><span class="c zh">在</span><span class="c zh s" id="q2">哪儿</span><span class="c zh">？</span><span class="g"></span>
+    <span class="c ar"></span><span class="c zh ar">在</span><span class="c zh s ar" id="a2">二层</span><span class="c zh ar">。</span><span class="g gl ar">On the second floor.</span>
+  </div>
+</div>
+
+<!-- scene C: from the structure to what learners can do with it -->
+<div id="scC" class="abs" data-in="4" data-fx="fade" style="left:128px;top:240px;width:1400px;height:640px">
+  <p class="abs tag" data-in="6:grammar" data-fx="pop" style="left:0;top:90px">linguistic</p>
+  <div class="abs" id="lbox" style="left:0;top:160px;width:520px;height:200px;border-radius:28px;background:#eff8ff;border:5px solid #1ca6ff;display:flex;align-items:center;justify-content:center">
+    <span class="zh" style="font-size:72px;font-weight:700">……在<b style="color:#006baa">哪儿</b>？</span>
+  </div>
+  <p class="abs" data-in="4:what" data-fx="left" style="left:560px;top:190px;font-size:110px;line-height:1;color:#9ca3af">→</p>
+  <p class="abs" id="qm" data-in="4:what" data-fx="pop" style="left:600px;top:70px;font-size:80px;font-weight:700;color:#ff9037">?</p>
+  <p class="abs ytag" data-in="6:functional" data-fx="pop" style="left:740px;top:0">functional goals</p>
+  <p class="abs fc" data-in="5:where" data-fx="right" style="top:90px">📍 ask where something is</p>
+  <p class="abs fc" data-in="5:locations" data-fx="right" style="top:230px">🗺️ ask about locations</p>
+  <p class="abs fc" data-in="5:simple" data-fx="right" style="top:370px">💬 simple exchanges</p>
+</div>
+
+<!-- scene D: both books hold both kinds of goal; they foreground a different one -->
+<div id="scD" class="abs" data-in="7" data-fx="fade" style="left:128px;top:240px;width:1400px;height:640px">
+  <img class="abs cov" src="../img/atelier-cover.png" style="left:110px;top:0;width:200px">
+  <img class="abs cov" src="../img/npcr-cover.png" style="left:1030px;top:0;width:210px">
+  <div class="abs bars" style="left:20px">
+    <p class="bar b-l" id="fL" data-in="7:linguistic" data-fx="left">linguistic</p>
+    <p class="bar b-f" id="fF" data-in="7:communicative" data-fx="left">functional</p>
+  </div>
+  <div class="abs bars" style="left:950px">
+    <p class="bar b-l" id="cL" data-in="7:linguistic" data-fx="right">linguistic</p>
+    <p class="bar b-f" id="cF" data-in="7:communicative" data-fx="right">functional</p>
+  </div>
+  <!-- the common architecture -->
+  <svg id="net" class="abs" style="left:500px;top:40px" width="400" height="340" viewBox="0 0 400 340">
+    <g stroke="#9ca3af" stroke-width="5" stroke-linecap="round">
+      <line x1="90" y1="80" x2="300" y2="110"/><line x1="90" y1="80" x2="120" y2="250"/>
+      <line x1="300" y1="110" x2="120" y2="250"/><line x1="300" y1="110" x2="310" y2="270"/>
+      <line x1="120" y1="250" x2="310" y2="270"/><line x1="200" y1="30" x2="90" y2="80"/><line x1="200" y1="30" x2="300" y2="110"/>
+    </g>
+    <g stroke-width="5">
+      <circle cx="90" cy="80" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+      <circle cx="120" cy="250" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+      <circle cx="310" cy="270" r="30" fill="#eff8ff" stroke="#1ca6ff"/>
+      <circle cx="300" cy="110" r="34" fill="#faf7e2" stroke="#fcdf00"/>
+      <circle cx="200" cy="30" r="24" fill="#faf7e2" stroke="#fcdf00"/>
+    </g>
+  </svg>
+  <svg id="arr" class="abs" style="left:0;top:0" width="1400" height="640">
+    <path id="aw1" d="M380 470 C 470 420, 500 330, 560 260" stroke="#6a7179" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="4 14"/>
+    <path id="aw2" d="M1010 470 C 920 420, 890 330, 840 260" stroke="#6a7179" stroke-width="5" fill="none" stroke-linecap="round" stroke-dasharray="4 14"/>
+  </svg>
+</div>
+
+<p class="part">The Mandarin textbook</p>
+<style>
+#n12 .cov{border-radius:8px;box-shadow:0 8px 24px rgba(31,36,48,.2)}
+#n12 .chip{font-size:40px;font-weight:700;padding:18px 34px;border-radius:999px;background:#faf7e2;border:4px solid #fcdf00;white-space:nowrap}
+#n12 .st{width:190px;border-radius:12px 12px 0 0;background:#1ca6ff}
+#n12 .tag{font-size:30px;font-weight:700;color:#006baa;background:#fff;border:3px solid #1ca6ff;border-radius:999px;padding:6px 20px;white-space:nowrap}
+#n12 .ytag{font-size:30px;font-weight:700;color:#1f2430;background:#fcdf00;border-radius:999px;padding:8px 22px;white-space:nowrap}
+#n12 .pr{display:grid;grid-template-columns:repeat(4,auto) 1fr;column-gap:6px;row-gap:22px;align-items:center;width:1150px}
+#n12 .pr .c{font-size:72px;font-weight:500;line-height:1.1;text-align:center;padding:4px 10px;border-radius:14px;border:4px solid transparent}
+#n12 .pr .s{border:4px dashed #9ca3af}
+#n12 .pr .g{font-size:30px;padding-left:40px;white-space:nowrap}
+#n12 .fc{left:740px;width:660px;font-size:40px;font-weight:700;padding:26px 34px;border-radius:24px;background:#faf7e2;border:4px solid #fcdf00;white-space:nowrap}
+#n12 .bars{top:340px;width:420px;display:flex;flex-direction:column;gap:18px}
+#n12 .bar{height:72px;border-radius:18px;font-size:34px;font-weight:700;display:flex;align-items:center;justify-content:center;transform-origin:center}
+#n12 .b-l{background:#eff8ff;border:4px solid #1ca6ff;color:#006baa}
+#n12 .b-f{background:#faf7e2;border:4px solid #fcdf00;color:#1f2430}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  const q = s => Array.from(document.querySelectorAll(s));
+  const out = (el, at) => A(el, [{opacity:1},{opacity:0}], at, 0.5, 'forwards');
+  out($('scA'), CUE('2')-0.2);
+  out($('scB'), CUE('4')-0.2);
+  out($('scC'), CUE('7')-0.2);
+
+  // scene A: the steps rise one after another, "progressively"
+  ['st1','st2','st3','st4'].forEach((id,i) =>
+    A($(id), [{opacity:0, transform:'scaleY(0)', transformOrigin:'bottom'},{opacity:1, transform:'none', transformOrigin:'bottom'}], CUE('1:structures')+i*0.35, 0.5, 'both'));
+
+  // scene B: the answer lines come in on "word order of the answer"
+  q('#n12 .ar').forEach(el => A(el, [{opacity:0, transform:'translateY(24px)'},{opacity:1, transform:'none'}], CUE('3:answer')-0.3, 0.6, 'both'));
+  // the shared frame of each pair lights up grey on "word order"
+  q('#n12 .pr .c:not(.s)').forEach(el => { if(!el.textContent.trim() || '？。'.includes(el.textContent)) return;
+    A(el, [{background:'rgba(215,217,222,0)'},{background:'#eceef1'}], CUE('3:order'), 0.5, 'forwards'); });
+  // the question word and the missing information light up together
+  [['q1','a1'],['q2','a2']].forEach(([a,b],i) => [a,b].forEach(id =>
+    A($(id), [{background:'rgba(207,233,255,0)', borderColor:'#9ca3af', borderStyle:'dashed', color:'#1f2430'},
+              {background:'#cfe9ff', borderColor:'#1ca6ff', borderStyle:'solid', color:'#006baa'}], CUE('3:place')+i*0.3, 0.5, 'forwards')));
+
+  // scene C: the question mark gives way to the answers
+  A($('qm'), [{opacity:1},{opacity:0}], CUE('5:where'), 0.4, 'forwards');
+  A($('lbox'), [{boxShadow:'0 0 0 0 rgba(28,166,255,0)'},{boxShadow:'0 0 0 12px rgba(28,166,255,.3)'},{boxShadow:'0 0 0 0 rgba(28,166,255,0)'}], CUE('4:structure'), 1.0, 'none');
+
+  // scene D: each book foregrounds one kind
+  const up = (el, at) => A(el, [{transform:'none'},{transform:'scale(1.12)', boxShadow:'0 8px 22px rgba(31,36,48,.18)'}], at, 0.6, 'forwards');
+  const dim = (el, at) => A(el, [{opacity:1},{opacity:.35}], at, 0.6, 'forwards');
+  up($('fF'), CUE('8:foreground')); dim($('fL'), CUE('8:foreground'));
+  up($('cL'), CUE('8:foreground')+0.3); dim($('cF'), CUE('8:foreground')+0.3);
+  A($('net'), [{opacity:0, transform:'scale(.6)'},{opacity:1, transform:'none'}], CUE('8:common'), 0.7, 'both');
+  ['aw1','aw2'].forEach((id,i) => A($(id), [{opacity:0},{opacity:1}], CUE('8:testing')+i*0.2, 0.6, 'both'));
+};
+</script>
+</section>

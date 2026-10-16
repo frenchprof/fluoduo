@@ -1,0 +1,941 @@
+{
+"real": true,
+"dan": true,
+"dur": 74.34,
+"sent": [
+{
+"start": 0.08,
+"end": 1.22,
+"text": "So where are things now?",
+"words": [
+{
+"w": "So",
+"s": 0.08
+},
+{
+"w": "where",
+"s": 0.2
+},
+{
+"w": "are",
+"s": 0.42
+},
+{
+"w": "things",
+"s": 0.58
+},
+{
+"w": "now?",
+"s": 0.76
+}
+]
+},
+{
+"start": 1.66,
+"end": 12.08,
+"text": "The French version is live, and planning the Chinese version has already changed it: the fifty identical stops have become linguistic goals, functional goals and tasks.",
+"words": [
+{
+"w": "The",
+"s": 1.66
+},
+{
+"w": "French",
+"s": 1.84
+},
+{
+"w": "version",
+"s": 2.1
+},
+{
+"w": "is",
+"s": 2.38
+},
+{
+"w": "live,",
+"s": 2.7
+},
+{
+"w": "and",
+"s": 3.06
+},
+{
+"w": "planning",
+"s": 3.6
+},
+{
+"w": "the",
+"s": 3.92
+},
+{
+"w": "Chinese",
+"s": 4.16
+},
+{
+"w": "version",
+"s": 4.54
+},
+{
+"w": "has",
+"s": 4.94
+},
+{
+"w": "already",
+"s": 5.18
+},
+{
+"w": "changed",
+"s": 5.7
+},
+{
+"w": "it:",
+"s": 6.18
+},
+{
+"w": "the",
+"s": 6.82
+},
+{
+"w": "fifty",
+"s": 7.1
+},
+{
+"w": "identical",
+"s": 7.28
+},
+{
+"w": "stops",
+"s": 7.74
+},
+{
+"w": "have",
+"s": 8.18
+},
+{
+"w": "become",
+"s": 8.64
+},
+{
+"w": "linguistic",
+"s": 8.98
+},
+{
+"w": "goals,",
+"s": 9.56
+},
+{
+"w": "functional",
+"s": 10.6
+},
+{
+"w": "goals",
+"s": 10.86
+},
+{
+"w": "and",
+"s": 11.32
+},
+{
+"w": "tasks.",
+"s": 11.58
+}
+]
+},
+{
+"start": 12.66,
+"end": 19.08,
+"text": "As for the Chinese course, I am still working out its design, including its units, goals and activities.",
+"words": [
+{
+"w": "As",
+"s": 12.66
+},
+{
+"w": "for",
+"s": 12.92
+},
+{
+"w": "the",
+"s": 13.08
+},
+{
+"w": "Chinese",
+"s": 13.22
+},
+{
+"w": "course,",
+"s": 13.58
+},
+{
+"w": "I",
+"s": 14.34
+},
+{
+"w": "am",
+"s": 14.48
+},
+{
+"w": "still",
+"s": 14.58
+},
+{
+"w": "working",
+"s": 14.88
+},
+{
+"w": "out",
+"s": 15.2
+},
+{
+"w": "its",
+"s": 15.44
+},
+{
+"w": "design,",
+"s": 15.62
+},
+{
+"w": "including",
+"s": 16.48
+},
+{
+"w": "its",
+"s": 16.86
+},
+{
+"w": "units,",
+"s": 17.14
+},
+{
+"w": "goals",
+"s": 18.16
+},
+{
+"w": "and",
+"s": 18.3
+},
+{
+"w": "activities.",
+"s": 18.54
+}
+]
+},
+{
+"start": 19.64,
+"end": 24.08,
+"text": "The build starts after this conference, so I can't show you a Chinese screen today.",
+"words": [
+{
+"w": "The",
+"s": 19.64
+},
+{
+"w": "build",
+"s": 19.92
+},
+{
+"w": "starts",
+"s": 20.18
+},
+{
+"w": "after",
+"s": 20.5
+},
+{
+"w": "this",
+"s": 20.86
+},
+{
+"w": "conference,",
+"s": 21.1
+},
+{
+"w": "so",
+"s": 21.7
+},
+{
+"w": "I",
+"s": 22.12
+},
+{
+"w": "can't",
+"s": 22.26
+},
+{
+"w": "show",
+"s": 22.58
+},
+{
+"w": "you",
+"s": 22.78
+},
+{
+"w": "a",
+"s": 22.92
+},
+{
+"w": "Chinese",
+"s": 23.08
+},
+{
+"w": "screen",
+"s": 23.36
+},
+{
+"w": "today.",
+"s": 23.7
+}
+]
+},
+{
+"start": 24.48,
+"end": 28.14,
+"text": "If you are interested, let me know, and I will share it when it is done.",
+"words": [
+{
+"w": "If",
+"s": 24.48
+},
+{
+"w": "you",
+"s": 24.68
+},
+{
+"w": "are",
+"s": 24.82
+},
+{
+"w": "interested,",
+"s": 24.92
+},
+{
+"w": "let",
+"s": 25.74
+},
+{
+"w": "me",
+"s": 25.92
+},
+{
+"w": "know,",
+"s": 26.06
+},
+{
+"w": "and",
+"s": 26.34
+},
+{
+"w": "I",
+"s": 26.82
+},
+{
+"w": "will",
+"s": 26.92
+},
+{
+"w": "share",
+"s": 27.06
+},
+{
+"w": "it",
+"s": 27.36
+},
+{
+"w": "when",
+"s": 27.52
+},
+{
+"w": "it",
+"s": 27.62
+},
+{
+"w": "is",
+"s": 27.72
+},
+{
+"w": "done.",
+"s": 27.88
+}
+]
+},
+{
+"start": 28.68,
+"end": 30.18,
+"text": "Let's go back to my question, then.",
+"words": [
+{
+"w": "Let's",
+"s": 28.68
+},
+{
+"w": "go",
+"s": 28.84
+},
+{
+"w": "back",
+"s": 28.94
+},
+{
+"w": "to",
+"s": 29.16
+},
+{
+"w": "my",
+"s": 29.3
+},
+{
+"w": "question,",
+"s": 29.46
+},
+{
+"w": "then.",
+"s": 29.84
+}
+]
+},
+{
+"start": 30.68,
+"end": 35.14,
+"text": "Can the organisation of language learning be separated from the language being learned?",
+"words": [
+{
+"w": "Can",
+"s": 30.68
+},
+{
+"w": "the",
+"s": 30.76
+},
+{
+"w": "organisation",
+"s": 31.19
+},
+{
+"w": "of",
+"s": 31.48
+},
+{
+"w": "language",
+"s": 31.86
+},
+{
+"w": "learning",
+"s": 32.22
+},
+{
+"w": "be",
+"s": 32.7
+},
+{
+"w": "separated",
+"s": 33.06
+},
+{
+"w": "from",
+"s": 33.58
+},
+{
+"w": "the",
+"s": 33.96
+},
+{
+"w": "language",
+"s": 34.1
+},
+{
+"w": "being",
+"s": 34.44
+},
+{
+"w": "learned?",
+"s": 34.7
+}
+]
+},
+{
+"start": 35.64,
+"end": 38.18,
+"text": "From what I've designed so far, much of it can.",
+"words": [
+{
+"w": "From",
+"s": 35.64
+},
+{
+"w": "what",
+"s": 35.8
+},
+{
+"w": "I've",
+"s": 35.94
+},
+{
+"w": "designed",
+"s": 36.14
+},
+{
+"w": "so",
+"s": 36.48
+},
+{
+"w": "far,",
+"s": 36.76
+},
+{
+"w": "much",
+"s": 37.46
+},
+{
+"w": "of",
+"s": 37.6
+},
+{
+"w": "it",
+"s": 37.74
+},
+{
+"w": "can.",
+"s": 37.88
+}
+]
+},
+{
+"start": 38.64,
+"end": 43.28,
+"text": "The goals, the links between them and the learning cycle carry over to Mandarin.",
+"words": [
+{
+"w": "The",
+"s": 38.64
+},
+{
+"w": "goals,",
+"s": 38.82
+},
+{
+"w": "the",
+"s": 39.62
+},
+{
+"w": "links",
+"s": 39.74
+},
+{
+"w": "between",
+"s": 39.96
+},
+{
+"w": "them",
+"s": 40.44
+},
+{
+"w": "and",
+"s": 40.78
+},
+{
+"w": "the",
+"s": 41.14
+},
+{
+"w": "learning",
+"s": 41.28
+},
+{
+"w": "cycle",
+"s": 41.56
+},
+{
+"w": "carry",
+"s": 41.96
+},
+{
+"w": "over",
+"s": 42.38
+},
+{
+"w": "to",
+"s": 42.8
+},
+{
+"w": "Mandarin.",
+"s": 42.94
+}
+]
+},
+{
+"start": 43.8,
+"end": 52.99,
+"text": "The goal inventory, the progression and several activities do not, and tones and characters force me to rethink what counts as achieving a goal.",
+"words": [
+{
+"w": "The",
+"s": 43.8
+},
+{
+"w": "goal",
+"s": 44.06
+},
+{
+"w": "inventory,",
+"s": 44.3
+},
+{
+"w": "the",
+"s": 45.38
+},
+{
+"w": "progression",
+"s": 45.5
+},
+{
+"w": "and",
+"s": 45.96
+},
+{
+"w": "several",
+"s": 46.4
+},
+{
+"w": "activities",
+"s": 46.88
+},
+{
+"w": "do",
+"s": 47.42
+},
+{
+"w": "not,",
+"s": 47.74
+},
+{
+"w": "and",
+"s": 48.1
+},
+{
+"w": "tones",
+"s": 48.66
+},
+{
+"w": "and",
+"s": 49.0
+},
+{
+"w": "characters",
+"s": 49.31
+},
+{
+"w": "force",
+"s": 49.75
+},
+{
+"w": "me",
+"s": 50.11
+},
+{
+"w": "to",
+"s": 50.37
+},
+{
+"w": "rethink",
+"s": 50.55
+},
+{
+"w": "what",
+"s": 51.05
+},
+{
+"w": "counts",
+"s": 51.47
+},
+{
+"w": "as",
+"s": 51.89
+},
+{
+"w": "achieving",
+"s": 52.17
+},
+{
+"w": "a",
+"s": 52.55
+},
+{
+"w": "goal.",
+"s": 52.77
+}
+]
+},
+{
+"start": 53.53,
+"end": 60.67,
+"text": "Whether the result works as well for Chinese learners is the next question, and only the build and testing will answer it.",
+"words": [
+{
+"w": "Whether",
+"s": 53.53
+},
+{
+"w": "the",
+"s": 53.71
+},
+{
+"w": "result",
+"s": 53.93
+},
+{
+"w": "works",
+"s": 54.27
+},
+{
+"w": "as",
+"s": 54.63
+},
+{
+"w": "well",
+"s": 54.93
+},
+{
+"w": "for",
+"s": 55.19
+},
+{
+"w": "Chinese",
+"s": 55.43
+},
+{
+"w": "learners",
+"s": 55.87
+},
+{
+"w": "is",
+"s": 56.27
+},
+{
+"w": "the",
+"s": 56.83
+},
+{
+"w": "next",
+"s": 56.99
+},
+{
+"w": "question,",
+"s": 57.25
+},
+{
+"w": "and",
+"s": 57.75
+},
+{
+"w": "only",
+"s": 58.33
+},
+{
+"w": "the",
+"s": 58.63
+},
+{
+"w": "build",
+"s": 58.85
+},
+{
+"w": "and",
+"s": 59.19
+},
+{
+"w": "testing",
+"s": 59.43
+},
+{
+"w": "will",
+"s": 59.85
+},
+{
+"w": "answer",
+"s": 60.05
+},
+{
+"w": "it.",
+"s": 60.35
+}
+]
+},
+{
+"start": 61.31,
+"end": 70.19,
+"text": "In the meantime, if you teach a language that you think can fit into this goal-based vision for a language learning platform, I'd love to hear from you.",
+"words": [
+{
+"w": "In",
+"s": 61.31
+},
+{
+"w": "the",
+"s": 61.47
+},
+{
+"w": "meantime,",
+"s": 61.59
+},
+{
+"w": "if",
+"s": 62.43
+},
+{
+"w": "you",
+"s": 62.63
+},
+{
+"w": "teach",
+"s": 62.85
+},
+{
+"w": "a",
+"s": 63.05
+},
+{
+"w": "language",
+"s": 63.23
+},
+{
+"w": "that",
+"s": 63.61
+},
+{
+"w": "you",
+"s": 63.93
+},
+{
+"w": "think",
+"s": 64.21
+},
+{
+"w": "can",
+"s": 64.43
+},
+{
+"w": "fit",
+"s": 64.65
+},
+{
+"w": "into",
+"s": 64.93
+},
+{
+"w": "this",
+"s": 65.25
+},
+{
+"w": "goal-based",
+"s": 65.89
+},
+{
+"w": "vision",
+"s": 66.29
+},
+{
+"w": "for",
+"s": 66.79
+},
+{
+"w": "a",
+"s": 67.09
+},
+{
+"w": "language",
+"s": 67.25
+},
+{
+"w": "learning",
+"s": 67.51
+},
+{
+"w": "platform,",
+"s": 67.89
+},
+{
+"w": "I'd",
+"s": 68.87
+},
+{
+"w": "love",
+"s": 69.13
+},
+{
+"w": "to",
+"s": 69.39
+},
+{
+"w": "hear",
+"s": 69.61
+},
+{
+"w": "from",
+"s": 69.77
+},
+{
+"w": "you.",
+"s": 69.97
+}
+]
+},
+{
+"start": 70.67,
+"end": 72.43,
+"text": "My contact details are on the screen.",
+"words": [
+{
+"w": "My",
+"s": 70.67
+},
+{
+"w": "contact",
+"s": 70.79
+},
+{
+"w": "details",
+"s": 71.17
+},
+{
+"w": "are",
+"s": 71.61
+},
+{
+"w": "on",
+"s": 71.87
+},
+{
+"w": "the",
+"s": 72.05
+},
+{
+"w": "screen.",
+"s": 72.17
+}
+]
+},
+{
+"start": 73.05,
+"end": 73.77,
+"text": "Thank you for watching.",
+"words": [
+{
+"w": "Thank",
+"s": 73.05
+},
+{
+"w": "you",
+"s": 73.21
+},
+{
+"w": "for",
+"s": 73.35
+},
+{
+"w": "watching.",
+"s": 73.51
+}
+]
+}
+]
+}

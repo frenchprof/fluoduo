@@ -1,0 +1,770 @@
+{
+"real": true,
+"dan": true,
+"dur": 74.4,
+"sent": [
+{
+"start": 0.17,
+"end": 14.41,
+"text": "Working in either direction, from communicative purpose to linguistic resources or from grammatical structure to communicative function, we can represent the curriculum as the same kind of network of linguistic and functional goals.",
+"words": [
+{
+"w": "Working",
+"s": 0.17
+},
+{
+"w": "in",
+"s": 0.41
+},
+{
+"w": "either",
+"s": 0.69
+},
+{
+"w": "direction,",
+"s": 1.05
+},
+{
+"w": "from",
+"s": 1.95
+},
+{
+"w": "communicative",
+"s": 2.01
+},
+{
+"w": "purpose",
+"s": 2.87
+},
+{
+"w": "to",
+"s": 3.37
+},
+{
+"w": "linguistic",
+"s": 3.83
+},
+{
+"w": "resources",
+"s": 4.31
+},
+{
+"w": "or",
+"s": 5.55
+},
+{
+"w": "from",
+"s": 5.73
+},
+{
+"w": "grammatical",
+"s": 5.93
+},
+{
+"w": "structure",
+"s": 6.51
+},
+{
+"w": "to",
+"s": 7.03
+},
+{
+"w": "communicative",
+"s": 7.43
+},
+{
+"w": "function,",
+"s": 8.17
+},
+{
+"w": "we",
+"s": 8.81
+},
+{
+"w": "can",
+"s": 9.31
+},
+{
+"w": "represent",
+"s": 9.47
+},
+{
+"w": "the",
+"s": 9.95
+},
+{
+"w": "curriculum",
+"s": 10.15
+},
+{
+"w": "as",
+"s": 10.59
+},
+{
+"w": "the",
+"s": 10.97
+},
+{
+"w": "same",
+"s": 11.15
+},
+{
+"w": "kind",
+"s": 11.43
+},
+{
+"w": "of",
+"s": 11.67
+},
+{
+"w": "network",
+"s": 11.89
+},
+{
+"w": "of",
+"s": 12.27
+},
+{
+"w": "linguistic",
+"s": 12.69
+},
+{
+"w": "and",
+"s": 13.15
+},
+{
+"w": "functional",
+"s": 13.55
+},
+{
+"w": "goals.",
+"s": 14.05
+}
+]
+},
+{
+"start": 15.11,
+"end": 17.21,
+"text": "Let's take the Mandarin example further.",
+"words": [
+{
+"w": "Let's",
+"s": 15.11
+},
+{
+"w": "take",
+"s": 15.47
+},
+{
+"w": "the",
+"s": 15.65
+},
+{
+"w": "Mandarin",
+"s": 15.85
+},
+{
+"w": "example",
+"s": 16.17
+},
+{
+"w": "further.",
+"s": 16.65
+}
+]
+},
+{
+"start": 17.65,
+"end": 23.67,
+"text": "The structure for asking where something is becomes a linguistic goal: forming a question about location.",
+"words": [
+{
+"w": "The",
+"s": 17.65
+},
+{
+"w": "structure",
+"s": 17.79
+},
+{
+"w": "for",
+"s": 18.09
+},
+{
+"w": "asking",
+"s": 18.45
+},
+{
+"w": "where",
+"s": 18.81
+},
+{
+"w": "something",
+"s": 19.03
+},
+{
+"w": "is",
+"s": 19.31
+},
+{
+"w": "becomes",
+"s": 19.71
+},
+{
+"w": "a",
+"s": 20.13
+},
+{
+"w": "linguistic",
+"s": 20.35
+},
+{
+"w": "goal:",
+"s": 20.79
+},
+{
+"w": "forming",
+"s": 21.65
+},
+{
+"w": "a",
+"s": 22.11
+},
+{
+"w": "question",
+"s": 22.39
+},
+{
+"w": "about",
+"s": 22.71
+},
+{
+"w": "location.",
+"s": 23.15
+}
+]
+},
+{
+"start": 24.39,
+"end": 29.73,
+"text": "I would connect it to a functional goal: asking where a place is and understanding the answer.",
+"words": [
+{
+"w": "I",
+"s": 24.39
+},
+{
+"w": "would",
+"s": 24.61
+},
+{
+"w": "connect",
+"s": 24.77
+},
+{
+"w": "it",
+"s": 25.13
+},
+{
+"w": "to",
+"s": 25.35
+},
+{
+"w": "a",
+"s": 25.53
+},
+{
+"w": "functional",
+"s": 25.67
+},
+{
+"w": "goal:",
+"s": 26.05
+},
+{
+"w": "asking",
+"s": 26.81
+},
+{
+"w": "where",
+"s": 27.15
+},
+{
+"w": "a",
+"s": 27.41
+},
+{
+"w": "place",
+"s": 27.61
+},
+{
+"w": "is",
+"s": 27.79
+},
+{
+"w": "and",
+"s": 28.17
+},
+{
+"w": "understanding",
+"s": 28.47
+},
+{
+"w": "the",
+"s": 28.99
+},
+{
+"w": "answer.",
+"s": 29.33
+}
+]
+},
+{
+"start": 30.53,
+"end": 39.45,
+"text": "But in Mandarin, learners also need to attend to pronunciation, including tones, and potentially to recognising the relevant Chinese characters.",
+"words": [
+{
+"w": "But",
+"s": 30.53
+},
+{
+"w": "in",
+"s": 30.73
+},
+{
+"w": "Mandarin,",
+"s": 30.93
+},
+{
+"w": "learners",
+"s": 31.89
+},
+{
+"w": "also",
+"s": 32.19
+},
+{
+"w": "need",
+"s": 32.69
+},
+{
+"w": "to",
+"s": 32.99
+},
+{
+"w": "attend",
+"s": 33.13
+},
+{
+"w": "to",
+"s": 33.45
+},
+{
+"w": "pronunciation,",
+"s": 33.67
+},
+{
+"w": "including",
+"s": 34.87
+},
+{
+"w": "tones,",
+"s": 35.37
+},
+{
+"w": "and",
+"s": 36.35
+},
+{
+"w": "potentially",
+"s": 36.43
+},
+{
+"w": "to",
+"s": 36.91
+},
+{
+"w": "recognising",
+"s": 37.47
+},
+{
+"w": "the",
+"s": 37.75
+},
+{
+"w": "relevant",
+"s": 38.07
+},
+{
+"w": "Chinese",
+"s": 38.37
+},
+{
+"w": "characters.",
+"s": 38.89
+}
+]
+},
+{
+"start": 40.17,
+"end": 52.21,
+"text": "So the basic relationship between linguistic and functional goals remains recognisable, but the competencies associated with those goals, and the activities needed to practise them, have to be reconsidered.",
+"words": [
+{
+"w": "So",
+"s": 40.17
+},
+{
+"w": "the",
+"s": 40.37
+},
+{
+"w": "basic",
+"s": 40.51
+},
+{
+"w": "relationship",
+"s": 40.89
+},
+{
+"w": "between",
+"s": 41.57
+},
+{
+"w": "linguistic",
+"s": 41.99
+},
+{
+"w": "and",
+"s": 42.41
+},
+{
+"w": "functional",
+"s": 42.79
+},
+{
+"w": "goals",
+"s": 43.19
+},
+{
+"w": "remains",
+"s": 43.57
+},
+{
+"w": "recognisable,",
+"s": 44.69
+},
+{
+"w": "but",
+"s": 45.39
+},
+{
+"w": "the",
+"s": 45.65
+},
+{
+"w": "competencies",
+"s": 45.83
+},
+{
+"w": "associated",
+"s": 46.43
+},
+{
+"w": "with",
+"s": 47.15
+},
+{
+"w": "those",
+"s": 47.45
+},
+{
+"w": "goals,",
+"s": 47.67
+},
+{
+"w": "and",
+"s": 47.99
+},
+{
+"w": "the",
+"s": 48.61
+},
+{
+"w": "activities",
+"s": 48.73
+},
+{
+"w": "needed",
+"s": 49.25
+},
+{
+"w": "to",
+"s": 49.63
+},
+{
+"w": "practise",
+"s": 50.08
+},
+{
+"w": "them,",
+"s": 50.27
+},
+{
+"w": "have",
+"s": 50.63
+},
+{
+"w": "to",
+"s": 51.11
+},
+{
+"w": "be",
+"s": 51.31
+},
+{
+"w": "reconsidered.",
+"s": 51.45
+}
+]
+},
+{
+"start": 52.83,
+"end": 55.77,
+"text": "That's a concrete example of what I mean by re-specification.",
+"words": [
+{
+"w": "That's",
+"s": 52.83
+},
+{
+"w": "a",
+"s": 53.13
+},
+{
+"w": "concrete",
+"s": 53.27
+},
+{
+"w": "example",
+"s": 53.63
+},
+{
+"w": "of",
+"s": 54.03
+},
+{
+"w": "what",
+"s": 54.35
+},
+{
+"w": "I",
+"s": 54.51
+},
+{
+"w": "mean",
+"s": 54.69
+},
+{
+"w": "by",
+"s": 54.87
+},
+{
+"w": "re-specification.",
+"s": 55.77
+}
+]
+},
+{
+"start": 56.45,
+"end": 65.94,
+"text": "If this works, the architecture might be independent not only of the language, but also, to some extent, of the textbook's syllabus organisation.",
+"words": [
+{
+"w": "If",
+"s": 56.45
+},
+{
+"w": "this",
+"s": 56.65
+},
+{
+"w": "works,",
+"s": 56.77
+},
+{
+"w": "the",
+"s": 57.95
+},
+{
+"w": "architecture",
+"s": 57.99
+},
+{
+"w": "might",
+"s": 58.49
+},
+{
+"w": "be",
+"s": 58.75
+},
+{
+"w": "independent",
+"s": 58.97
+},
+{
+"w": "not",
+"s": 59.51
+},
+{
+"w": "only",
+"s": 59.85
+},
+{
+"w": "of",
+"s": 60.21
+},
+{
+"w": "the",
+"s": 60.39
+},
+{
+"w": "language,",
+"s": 60.53
+},
+{
+"w": "but",
+"s": 61.29
+},
+{
+"w": "also,",
+"s": 61.61
+},
+{
+"w": "to",
+"s": 62.51
+},
+{
+"w": "some",
+"s": 62.67
+},
+{
+"w": "extent,",
+"s": 62.89
+},
+{
+"w": "of",
+"s": 63.65
+},
+{
+"w": "the",
+"s": 63.87
+},
+{
+"w": "textbook's",
+"s": 64.35
+},
+{
+"w": "syllabus",
+"s": 64.55
+},
+{
+"w": "organisation.",
+"s": 65.94
+}
+]
+},
+{
+"start": 66.73,
+"end": 74.09,
+"text": "That's a more demanding proposition than simply making a Chinese version of FluOLinGo, and it gives us something concrete to investigate.",
+"words": [
+{
+"w": "That's",
+"s": 66.73
+},
+{
+"w": "a",
+"s": 67.03
+},
+{
+"w": "more",
+"s": 67.13
+},
+{
+"w": "demanding",
+"s": 67.29
+},
+{
+"w": "proposition",
+"s": 67.81
+},
+{
+"w": "than",
+"s": 68.39
+},
+{
+"w": "simply",
+"s": 68.85
+},
+{
+"w": "making",
+"s": 69.15
+},
+{
+"w": "a",
+"s": 69.47
+},
+{
+"w": "Chinese",
+"s": 69.73
+},
+{
+"w": "version",
+"s": 70.07
+},
+{
+"w": "of",
+"s": 70.49
+},
+{
+"w": "FluOLinGo,",
+"s": 70.69
+},
+{
+"w": "and",
+"s": 71.79
+},
+{
+"w": "it",
+"s": 71.99
+},
+{
+"w": "gives",
+"s": 72.09
+},
+{
+"w": "us",
+"s": 72.27
+},
+{
+"w": "something",
+"s": 72.45
+},
+{
+"w": "concrete",
+"s": 72.81
+},
+{
+"w": "to",
+"s": 73.27
+},
+{
+"w": "investigate.",
+"s": 73.51
+}
+]
+}
+]
+}

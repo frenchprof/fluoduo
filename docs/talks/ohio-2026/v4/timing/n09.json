@@ -1,0 +1,412 @@
+{
+"real": true,
+"dan": true,
+"dur": 47.84,
+"sent": [
+{
+"start": 0.49,
+"end": 1.93,
+"text": "Why Mandarin Chinese?",
+"words": [
+{
+"w": "Why",
+"s": 0.49
+},
+{
+"w": "Mandarin",
+"s": 0.79
+},
+{
+"w": "Chinese?",
+"s": 1.31
+}
+]
+},
+{
+"start": 2.67,
+"end": 6.33,
+"text": "One reason is that it's typologically distant from French.",
+"words": [
+{
+"w": "One",
+"s": 2.67
+},
+{
+"w": "reason",
+"s": 3.03
+},
+{
+"w": "is",
+"s": 3.43
+},
+{
+"w": "that",
+"s": 3.73
+},
+{
+"w": "it's",
+"s": 3.91
+},
+{
+"w": "typologically",
+"s": 4.23
+},
+{
+"w": "distant",
+"s": 5.03
+},
+{
+"w": "from",
+"s": 5.67
+},
+{
+"w": "French.",
+"s": 6.03
+}
+]
+},
+{
+"start": 7.21,
+"end": 13.47,
+"text": "French has grammatical gender, articles, adjective agreement and extensive verb conjugation.",
+"words": [
+{
+"w": "French",
+"s": 7.21
+},
+{
+"w": "has",
+"s": 7.35
+},
+{
+"w": "grammatical",
+"s": 7.67
+},
+{
+"w": "gender,",
+"s": 8.29
+},
+{
+"w": "articles,",
+"s": 9.23
+},
+{
+"w": "adjective",
+"s": 10.35
+},
+{
+"w": "agreement",
+"s": 10.63
+},
+{
+"w": "and",
+"s": 11.57
+},
+{
+"w": "extensive",
+"s": 11.65
+},
+{
+"w": "verb",
+"s": 12.25
+},
+{
+"w": "conjugation.",
+"s": 12.67
+}
+]
+},
+{
+"start": 14.39,
+"end": 24.99,
+"text": "Mandarin doesn't organise these areas in the same way, and presents other challenges instead: lexical tones, classifiers, aspect markers and Chinese characters.",
+"words": [
+{
+"w": "Mandarin",
+"s": 14.39
+},
+{
+"w": "doesn't",
+"s": 14.55
+},
+{
+"w": "organise",
+"s": 15.29
+},
+{
+"w": "these",
+"s": 15.53
+},
+{
+"w": "areas",
+"s": 15.85
+},
+{
+"w": "in",
+"s": 16.29
+},
+{
+"w": "the",
+"s": 16.51
+},
+{
+"w": "same",
+"s": 16.65
+},
+{
+"w": "way,",
+"s": 16.87
+},
+{
+"w": "and",
+"s": 17.25
+},
+{
+"w": "presents",
+"s": 17.77
+},
+{
+"w": "other",
+"s": 18.11
+},
+{
+"w": "challenges",
+"s": 18.49
+},
+{
+"w": "instead:",
+"s": 19.01
+},
+{
+"w": "lexical",
+"s": 20.27
+},
+{
+"w": "tones,",
+"s": 20.65
+},
+{
+"w": "classifiers,",
+"s": 21.57
+},
+{
+"w": "aspect",
+"s": 22.73
+},
+{
+"w": "markers",
+"s": 23.11
+},
+{
+"w": "and",
+"s": 23.73
+},
+{
+"w": "Chinese",
+"s": 24.01
+},
+{
+"w": "characters.",
+"s": 24.45
+}
+]
+},
+{
+"start": 25.81,
+"end": 32.45,
+"text": "So if the FluOLinGo architecture contains assumptions specific to French, Mandarin should expose them.",
+"words": [
+{
+"w": "So",
+"s": 25.81
+},
+{
+"w": "if",
+"s": 26.03
+},
+{
+"w": "the",
+"s": 26.29
+},
+{
+"w": "FluOLinGo",
+"s": 26.81
+},
+{
+"w": "architecture",
+"s": 27.17
+},
+{
+"w": "contains",
+"s": 27.69
+},
+{
+"w": "assumptions",
+"s": 28.39
+},
+{
+"w": "specific",
+"s": 29.03
+},
+{
+"w": "to",
+"s": 29.65
+},
+{
+"w": "French,",
+"s": 30.01
+},
+{
+"w": "Mandarin",
+"s": 31.17
+},
+{
+"w": "should",
+"s": 31.35
+},
+{
+"w": "expose",
+"s": 31.69
+},
+{
+"w": "them.",
+"s": 32.09
+}
+]
+},
+{
+"start": 33.15,
+"end": 44.75,
+"text": "A system built around identifying a linguistic goal, selecting appropriate practice and measuring progress might transfer; activities built around French-specific features probably won't.",
+"words": [
+{
+"w": "A",
+"s": 33.15
+},
+{
+"w": "system",
+"s": 33.17
+},
+{
+"w": "built",
+"s": 33.49
+},
+{
+"w": "around",
+"s": 33.81
+},
+{
+"w": "identifying",
+"s": 34.15
+},
+{
+"w": "a",
+"s": 34.95
+},
+{
+"w": "linguistic",
+"s": 35.19
+},
+{
+"w": "goal,",
+"s": 35.63
+},
+{
+"w": "selecting",
+"s": 36.47
+},
+{
+"w": "appropriate",
+"s": 36.93
+},
+{
+"w": "practice",
+"s": 37.33
+},
+{
+"w": "and",
+"s": 38.35
+},
+{
+"w": "measuring",
+"s": 38.41
+},
+{
+"w": "progress",
+"s": 38.83
+},
+{
+"w": "might",
+"s": 39.45
+},
+{
+"w": "transfer;",
+"s": 39.91
+},
+{
+"w": "activities",
+"s": 41.61
+},
+{
+"w": "built",
+"s": 41.61
+},
+{
+"w": "around",
+"s": 41.91
+},
+{
+"w": "French-specific",
+"s": 42.64
+},
+{
+"w": "features",
+"s": 43.01
+},
+{
+"w": "probably",
+"s": 43.59
+},
+{
+"w": "won't.",
+"s": 44.17
+}
+]
+},
+{
+"start": 45.29,
+"end": 47.35,
+"text": "That's the distinction I want to investigate.",
+"words": [
+{
+"w": "That's",
+"s": 45.29
+},
+{
+"w": "the",
+"s": 45.65
+},
+{
+"w": "distinction",
+"s": 45.79
+},
+{
+"w": "I",
+"s": 46.19
+},
+{
+"w": "want",
+"s": 46.45
+},
+{
+"w": "to",
+"s": 46.65
+},
+{
+"w": "investigate.",
+"s": 46.83
+}
+]
+}
+]
+}

@@ -1,0 +1,50 @@
+<section id="n06">
+<h2 class="hd">Different goals, different activities</h2>
+
+<!-- scene 1: the goal chooses the activity -->
+<div id="sc1" class="abs" data-out="2" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="g abs" data-in="1:selected" data-fx="pop" style="left:300px;top:450px;width:200px;height:200px;border-radius:50%;background:#faf7e2;border-color:#fcdf00;font-size:100px;justify-content:center">🎯</div>
+  <svg class="abs" data-in="1:according" data-fx="draw" style="left:540px;top:490px" width="260" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H230 M205 35 L235 60 L205 85"/></g></svg>
+  <div class="act abs" data-in="1:activities" data-fx="pop" style="left:840px;top:380px">🎮</div>
+  <div class="act abs" data-in="1:activities+0.15" data-fx="pop" style="left:1040px;top:380px">🎤</div>
+  <div class="act abs" data-in="1:activities+0.3" data-fx="pop" style="left:840px;top:560px">📝</div>
+  <div class="act abs" data-in="1:activities+0.45" data-fx="pop" style="left:1040px;top:560px">🗣️</div>
+</div>
+
+<!-- scene 2: vocabulary and pronunciation -->
+<div id="sc2" class="abs" data-in="2" data-fx="fade" data-out="4" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="g abs" data-in="2:vocabulary" data-fx="pop" style="top:320px">📖 <b>vocabulary</b></div>
+  <div class="g abs" data-in="2:pronunciation" data-fx="pop" style="top:580px">🔊 <b>pronunciation</b></div>
+  <svg class="abs" data-in="3:games" data-fx="draw" style="left:620px;top:340px" width="200" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H170 M145 35 L175 60 L145 85"/></g></svg>
+  <div class="a abs" data-in="3:games" data-fx="right" style="left:860px;top:320px">🎮 <b>word games</b></div>
+  <svg class="abs" data-in="3:aloud" data-fx="draw" style="left:620px;top:600px" width="200" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H170 M145 35 L175 60 L145 85"/></g></svg>
+  <div class="a abs" data-in="3:aloud" data-fx="right" style="left:860px;top:580px">🎤 <b>say it aloud</b></div>
+  <p class="abs fb" data-in="3:immediate" data-fx="pop" style="left:880px;top:770px">⚡ instant feedback</p>
+</div>
+
+<!-- scene 3: accuracy and spoken communication want different feedback -->
+<div id="sc3" class="abs" data-in="4" data-fx="fade" style="left:0;top:0;width:1920px;height:1080px">
+  <div class="g abs" data-in="4:accuracy" data-fx="pop" style="top:300px">📝 <b>grammatical accuracy</b></div>
+  <div class="g abs" data-in="4:spoken" data-fx="pop" style="top:540px">🗣️ <b>spoken communication</b></div>
+  <svg class="abs" data-in="4:feedback" data-fx="draw" style="left:640px;top:320px" width="200" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H170 M145 35 L175 60 L145 85"/></g></svg>
+  <p class="abs fb" data-in="4:feedback" data-fx="right" style="left:880px;top:340px">✔︎✘ feedback</p>
+  <svg class="abs" data-in="4:spoken+0.3" data-fx="draw" style="left:640px;top:560px" width="200" height="120"><g stroke="#9ca3af" stroke-width="6" fill="none" stroke-linecap="round"><path d="M10 60 H170 M145 35 L175 60 L145 85"/></g></svg>
+  <p class="abs fb" data-in="4:spoken+0.3" data-fx="right" style="left:880px;top:580px">💬 feedback</p>
+  <p class="abs hand" data-in="4:different" data-fx="pop" style="left:960px;top:440px;font-size:100px;line-height:1;color:#9ca3af">≠</p>
+  <div class="abs" data-in="5:French" data-fx="rise" style="left:128px;top:790px;display:flex;align-items:center;gap:28px;font-size:44px;font-weight:700">
+    <span style="padding:10px 28px;border-radius:14px;background:#eff8ff;border:4px solid #1ca6ff">Français</span>
+    <span style="color:#9ca3af">→</span>
+    <span class="zh" style="padding:10px 28px;border-radius:14px;background:#fff4ed;border:4px solid #ff9037">中文</span>
+  </div>
+</div>
+
+<p class="part">Different goals, different activities</p>
+<style>
+#n06 .g{left:128px;width:480px;height:160px;border-radius:24px;background:#eff8ff;border:5px solid #1ca6ff;display:flex;align-items:center;gap:18px;padding:0 30px;font-size:56px}
+#n06 .g b{font-size:38px;font-weight:700;line-height:1.15}
+#n06 .a{width:380px;height:160px;border-radius:24px;background:#fff;border:5px solid #1f2430;display:flex;align-items:center;gap:18px;padding:0 30px;font-size:56px}
+#n06 .a b{font-size:38px;font-weight:700}
+#n06 .act{width:160px;height:160px;border-radius:24px;background:#fff;border:5px solid #1f2430;display:flex;align-items:center;justify-content:center;font-size:76px}
+#n06 .fb{font-size:36px;font-weight:700;padding:16px 30px;border-radius:999px;background:#fff4ed;border:4px solid #ff9037}
+</style>
+</section>

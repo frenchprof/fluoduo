@@ -1,0 +1,302 @@
+{
+"real": true,
+"dan": true,
+"dur": 27.7,
+"sent": [
+{
+"start": 0.49,
+"end": 2.43,
+"text": "I should clarify the role of AI.",
+"words": [
+{
+"w": "I",
+"s": 0.49
+},
+{
+"w": "should",
+"s": 0.75
+},
+{
+"w": "clarify",
+"s": 0.93
+},
+{
+"w": "the",
+"s": 1.37
+},
+{
+"w": "role",
+"s": 1.67
+},
+{
+"w": "of",
+"s": 1.87
+},
+{
+"w": "AI.",
+"s": 2.13
+}
+]
+},
+{
+"start": 3.19,
+"end": 6.77,
+"text": "It helped me turn pedagogical ideas into working software.",
+"words": [
+{
+"w": "It",
+"s": 3.19
+},
+{
+"w": "helped",
+"s": 3.39
+},
+{
+"w": "me",
+"s": 3.63
+},
+{
+"w": "turn",
+"s": 3.87
+},
+{
+"w": "pedagogical",
+"s": 4.17
+},
+{
+"w": "ideas",
+"s": 4.89
+},
+{
+"w": "into",
+"s": 5.37
+},
+{
+"w": "working",
+"s": 5.83
+},
+{
+"w": "software.",
+"s": 6.21
+}
+]
+},
+{
+"start": 7.17,
+"end": 15.22,
+"text": "But the pedagogical decisions remain mine: what the goals are, how they relate to one another, and what learners should practise.",
+"words": [
+{
+"w": "But",
+"s": 7.17
+},
+{
+"w": "the",
+"s": 7.61
+},
+{
+"w": "pedagogical",
+"s": 7.75
+},
+{
+"w": "decisions",
+"s": 8.45
+},
+{
+"w": "remain",
+"s": 8.99
+},
+{
+"w": "mine:",
+"s": 10.01
+},
+{
+"w": "what",
+"s": 10.51
+},
+{
+"w": "the",
+"s": 10.67
+},
+{
+"w": "goals",
+"s": 10.83
+},
+{
+"w": "are,",
+"s": 11.09
+},
+{
+"w": "how",
+"s": 11.69
+},
+{
+"w": "they",
+"s": 11.95
+},
+{
+"w": "relate",
+"s": 12.11
+},
+{
+"w": "to",
+"s": 12.41
+},
+{
+"w": "one",
+"s": 12.63
+},
+{
+"w": "another,",
+"s": 12.77
+},
+{
+"w": "and",
+"s": 13.33
+},
+{
+"w": "what",
+"s": 13.67
+},
+{
+"w": "learners",
+"s": 13.95
+},
+{
+"w": "should",
+"s": 14.23
+},
+{
+"w": "practise.",
+"s": 15.22
+}
+]
+},
+{
+"start": 15.93,
+"end": 23.45,
+"text": "What AI-assisted development has made possible is a system that can be revised and extended as pedagogical requirements change.",
+"words": [
+{
+"w": "What",
+"s": 15.93
+},
+{
+"w": "AI-assisted",
+"s": 16.54
+},
+{
+"w": "development",
+"s": 16.95
+},
+{
+"w": "has",
+"s": 17.51
+},
+{
+"w": "made",
+"s": 17.89
+},
+{
+"w": "possible",
+"s": 18.13
+},
+{
+"w": "is",
+"s": 18.61
+},
+{
+"w": "a",
+"s": 18.99
+},
+{
+"w": "system",
+"s": 19.21
+},
+{
+"w": "that",
+"s": 19.47
+},
+{
+"w": "can",
+"s": 19.67
+},
+{
+"w": "be",
+"s": 19.85
+},
+{
+"w": "revised",
+"s": 19.97
+},
+{
+"w": "and",
+"s": 20.57
+},
+{
+"w": "extended",
+"s": 20.83
+},
+{
+"w": "as",
+"s": 21.35
+},
+{
+"w": "pedagogical",
+"s": 21.69
+},
+{
+"w": "requirements",
+"s": 22.35
+},
+{
+"w": "change.",
+"s": 22.95
+}
+]
+},
+{
+"start": 24.03,
+"end": 27.21,
+"text": "And Mandarin presents a demanding set of new requirements.",
+"words": [
+{
+"w": "And",
+"s": 24.03
+},
+{
+"w": "Mandarin",
+"s": 24.41
+},
+{
+"w": "presents",
+"s": 24.73
+},
+{
+"w": "a",
+"s": 25.23
+},
+{
+"w": "demanding",
+"s": 25.51
+},
+{
+"w": "set",
+"s": 25.97
+},
+{
+"w": "of",
+"s": 26.33
+},
+{
+"w": "new",
+"s": 26.47
+},
+{
+"w": "requirements.",
+"s": 26.63
+}
+]
+}
+]
+}
