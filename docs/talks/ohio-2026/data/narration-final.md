@@ -53,7 +53,7 @@ I’ll start with the French course, then look at what makes Chinese different. 
 
 This is where FluOLinGo began.
 
-It teaches beginner French using our course book, L’Atelier plus A1.
+It teaches beginner French using our course book, L’Atelier.
 
 In the first version, I cut the course into fifty small goals across five units and laid them out on a map.
 
