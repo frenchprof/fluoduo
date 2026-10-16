@@ -1,0 +1,191 @@
+Building Fluency on Linguistic Goals
+How an objective-driven AI platform for beginners is being re-specified for a typologically distant language, Mandarin Chinese
+
+1. Opening
+
+Before we start, a quick word. The person you see in this video is an AI clone of me. The ideas and the words, though, are all mine.
+
+I'm Daniel Chan from the Centre for Language Studies at NUS, and I've been teaching French for over twenty-five years.
+
+Today I want to talk about FluOLinGo. That's capital F, O, L and G, and it stands for Fluency On Linguistic Goals. It's a platform for beginners learning French, and I built it myself, with no coding background and no development team, using AI to help me develop the software.
+
+From the start, I wanted to explore whether the organisation of language learning could be separated from the language being learned. I'm now testing that idea by adapting FluOLinGo's design for Mandarin Chinese.
+
+So today, I'll explain how FluOLinGo works, examine what happens when we try to adapt its architecture from French to Mandarin, and finish with a practical recipe for teachers who might want to try something similar with their own languages.
+
+2. Two kinds of goals
+
+FluOLinGo takes a communicative approach to language learning, but organises the course around specific learning goals, which are essentially what teachers call learning objectives.
+
+I distinguish between two main types: linguistic goals and functional goals. This distinction draws on an idea developed by the applied linguist David Wilkins in the 1970s: that language teaching should consider not only grammar and vocabulary, but also the meanings and communicative functions learners need to express.
+
+Linguistic goals concern the language resources learners need, while functional goals concern what learners can actually do with those resources. The latter are closely related to what ACTFL describes as language functions and expresses through its Can-Do Statements.
+
+For example, knowing how to form questions is a linguistic goal. Using questions to find out about someone's interests is a functional goal. A learner may understand how questions are formed without yet being able to conduct a conversation.
+
+3. Where the goals come from
+
+The goals that shape the course are derived from the first half of our French coursebook, which contains fifteen explicitly stated communicative objectives, including introducing oneself, expressing preferences, asking for directions, talking about eating habits and making plans. The textbook also identifies the grammar, vocabulary and pronunciation needed to support these objectives.
+
+In the first version, I reorganised this content into fifty learning goals and laid them out on a map, as numbered stops, Candy Crush style. But all fifty stops looked the same, even though they were different kinds of thing. Number twenty-eight, negation, is linguistic. Number twenty-nine, inviting someone and turning down an invitation, is functional. And number thirty, writing an email to arrange an outing, is a task that needs both.
+
+Planning the Chinese version is what made me see this, because the Chinese textbook doesn't label its situations or its tasks, so I had to decide for myself what each step was. The revised French course now separates them: around sixty linguistic goals, about three dozen functional goals, and one task at the end of each unit, which the French book calls the Mission.
+
+4. A network of goals
+
+These goals are interconnected. A linguistic goal may support several functional goals, while a functional goal may depend on several linguistic resources. Ordering food, for example, involves vocabulary, quantities, question forms and polite expressions, and those same resources are useful in other situations. So the relationship between linguistic and functional goals is many-to-many.
+
+This matters because language learning isn't simply a matter of accumulating grammatical structures. It's about making those structures available for communication. And this network of relationships is one part of the architecture I want to test with Mandarin.
+
+5. The learning cycle
+
+When learners first select a goal on the map, they start by guessing, before receiving any instruction. In an activity called SpecuLearn, they see a picture and choose the French word for it, or see the word and choose the picture, and the correct answer appears straight away. I call this the try-first approach. It draws on what researchers call the pretesting effect: guessing first and then seeing the correct answer helps learners remember it better than simply reading it. A recent study by Chua and Pan, at NUS, found this effect with exactly this kind of word-and-picture guessing, even when learners knew none of the language beforehand. They then receive explanations and practise through activities suited to that goal. Their responses generate feedback, and areas of difficulty can be revisited later.
+
+So the sequence is: identify a goal, guess, learn, practise, receive feedback and revisit.
+
+6. Different goals, different activities
+
+What matters about the activities is that each one is selected according to the goal. A vocabulary goal doesn't necessarily require the same practice as a pronunciation goal. For pronunciation, for example, learners say words and sentences aloud and get immediate feedback, while vocabulary is practised through word games. And a goal involving grammatical accuracy may need different feedback from one involving spoken communication. This becomes particularly important when we move from French to Mandarin.
+
+7. From individual goals to communication
+
+There's an obvious limitation to practising language through small, individual goals. Learners may become good at particular exercises without being able to use the language spontaneously or manage a conversation.
+
+That's why the individual goals need to lead towards larger communicative activities. In the French book, these include expression workshops and missions, where learners combine several linguistic resources to accomplish a task. FluOLinGo provides focused practice that builds the resources learners need for these tasks. Whether they can then bring those resources together successfully needs to be assessed through more integrated tasks.
+
+8. Where AI fits in
+
+I should clarify the role of AI. It helped me turn pedagogical ideas into working software. But the pedagogical decisions remain mine: what the goals are, how they relate to one another, and what learners should practise.
+
+What AI-assisted development has made possible is a system that can be revised and extended as pedagogical requirements change. And Mandarin presents a demanding set of new requirements.
+
+9. Why Mandarin?
+
+Why Mandarin Chinese? One reason is that it's typologically distant from French. French has grammatical gender, articles, adjective agreement and extensive verb conjugation. Mandarin doesn't organise these areas in the same way, and presents other challenges instead: lexical tones, classifiers, aspect markers and Chinese characters.
+
+So if the FluOLinGo architecture contains assumptions specific to French, Mandarin should expose them. A system built around identifying a linguistic goal, selecting appropriate practice and measuring progress might transfer; activities built around French-specific features probably won't. That's the distinction I want to investigate.
+
+10. Two textbooks, two ways of organising learning
+
+The other reason is that I'm also comparing two textbooks with different approaches to syllabus organisation: our French coursebook, and New Practical Chinese Reader, Book 1, for Mandarin.
+
+Both introduce language through everyday situations. But the French book foregrounds communicative objectives, while New Practical Chinese Reader makes grammatical progression more explicit within its situational lessons. This gives us two different starting points for identifying learning goals.
+
+11. The French textbook
+
+Each numbered unit of the French book identifies three communicative objectives. Unit 3, for example, includes talking about the weather, finding out about a city, and asking for and giving directions, along with the associated grammar, vocabulary and pronunciation.
+
+So we can begin with a communicative purpose and ask: what linguistic resources does a learner need to achieve it? To ask for directions, learners need vocabulary for places, expressions for location and movement, and appropriate question forms. In FluOLinGo, these resources become linguistic goals connected to the broader functional goal.
+
+12. The Mandarin textbook
+
+New Practical Chinese Reader organises its lessons around situations and dialogues, introducing grammatical structures progressively. Lesson 5, Where is the dining hall?, for example, introduces questions with interrogative pronouns. The question keeps the word order of the answer, and the question word simply takes the place of the missing information.
+
+Here, we can begin with the linguistic structure and ask: what can learners do with it? They can ask where something is, request information about locations and take part in simple exchanges. These are the functional goals the grammar supports.
+
+Both textbooks combine linguistic resources with communicative purposes. What differs is which of the two they foreground, and that's precisely why they're useful for testing a common goal-based architecture.
+
+13. A common representation
+
+Working in either direction, from communicative purpose to linguistic resources or from grammatical structure to communicative function, we can represent the curriculum as the same kind of network of linguistic and functional goals.
+
+Let's take the Mandarin example further. The structure for asking where something is becomes a linguistic goal: forming a question about location. I would connect it to a functional goal: asking where a place is and understanding the answer.
+
+But in Mandarin, learners also need to attend to pronunciation, including tones, and potentially to recognising the relevant Chinese characters. So the basic relationship between linguistic and functional goals remains recognisable, but the competencies associated with those goals, and the activities needed to practise them, have to be reconsidered. That's a concrete example of what I mean by re-specification.
+
+If this works, the architecture might be independent not only of the language, but also, to some extent, of the textbook's syllabus organisation. That's a more demanding proposition than simply making a Chinese version of FluOLinGo, and it gives us something concrete to investigate.
+
+14. What can remain unchanged?
+
+Several elements are candidates for transfer. First, the organisation around explicit learning goals: learners still need to know what they're expected to achieve. Second, the relationship between linguistic and functional goals. Third, the learning cycle of guessing first, explanation, practice, feedback and revision. And fourth, the distinction between practising individual resources and using them in integrated communicative activities.
+
+Their usefulness in Mandarin still needs to be tested.
+
+15. What needs to be reconfigured?
+
+Other parts must change even if the underlying architecture stays the same.
+
+First, the goal inventory: French goals involving articles, gender agreement or verb conjugation would be replaced by goals relevant to Mandarin. Second, the relationships between goals, since the resources needed to express a given function may differ substantially. Third, the progression, as Mandarin structures may be introduced in a very different order. And fourth, the activities attached to each goal.
+
+16. What might need to be redesigned?
+
+Some differences go beyond reconfiguration and expose limitations in the existing activity design.
+
+Take verb conjugation. In French, the verb "to drink" changes with the subject: I drink, you drink and she drinks each take a different form. A conjugation activity is designed around that relationship. In Mandarin, the verb stays exactly the same for every person, so it would make little sense to reproduce that activity simply because it already exists.
+
+The platform might instead need activities focusing on aspect, such as the marker added after a verb to show that an action is completed; on classifiers, since a photo, a bottle of water and a room each take a different measure word; or on word order. The principle of targeted practice for a linguistic goal remains; the activity itself has to be designed around the phenomenon being learned.
+
+17. The challenge of tones
+
+In Mandarin, a change of tone can change the identity of a word, which isn't the case in French. The same syllable, ma, can mean mother, hemp, horse or scold, depending on its tone. So what should count as achieving a pronunciation goal?
+
+A learner might recognise a word's meaning but fail to distinguish its tone, or identify the tone correctly in a listening exercise but struggle to produce it. These are related but different abilities, so a Mandarin implementation may need to distinguish between tone recognition, tone discrimination and tone production, with feedback the French pronunciation activities weren't designed to provide.
+
+Here, the language challenges the way a goal is defined and assessed.
+
+18. The challenge of characters
+
+Chinese characters raise a similar question. A learner might recognise a character, understand its meaning, know its pronunciation or be able to write it, and these abilities don't necessarily develop at the same rate.
+
+Should they be one goal or several? Should recognising a character count as achieving the same objective as producing it? And how should the platform track progress when a learner understands a spoken word, like the word for student, but can't yet recognise its written form?
+
+These are pedagogical decisions about what constitutes knowledge and what evidence demonstrates learning. The architecture must be flexible enough to represent these distinctions without forcing them into categories inherited from French.
+
+19. Three levels of re-specification
+
+This comparison suggests that re-specifying FluOLinGo for Mandarin involves three levels of change.
+
+The first is the pedagogical architecture, the four elements I hope can transfer. The second is the language-specific configuration, which will change for Mandarin. The third is the technical implementation: some activity components may be reusable; others, particularly for tones and characters, will need modification or replacement.
+
+Keeping these levels separate helps me distinguish what is genuinely language-independent from what was designed specifically for French. And that distinction matters beyond Mandarin: if the architecture is flexible enough, teachers of other languages could use the same approach without reproducing the French implementation.
+
+Which brings me to the practical question: how might another language teacher get started?
+
+20. A recipe for your language
+
+So here's the recipe, for anyone teaching a less commonly taught language or an Indigenous language.
+
+One. Start with your textbook. List what it says learners should be able to do, and the grammar, vocabulary and pronunciation it provides. If it foregrounds only one side, work out the other: from purpose to resources, or from structure to function.
+
+Two. Separate three kinds of step: linguistic goals, functional goals and tasks. On my first map, negation, inviting someone and writing an email all looked the same. Make sure your learners can tell a building block from the thing it builds.
+
+Three. Connect them. For each functional goal, note which linguistic goals it draws on. That network tells you what a learner needs before each task, and where the same resource comes back.
+
+Four. Choose the activity for the goal, not for the platform. Ask what would show that the goal has been reached. For a Mandarin tone, hearing it and saying it are not the same evidence, so they may need different activities.
+
+Five. Keep teaching and assessment within what your textbook actually teaches. Learners can meet new language along the way, but they should never need it to get the answer right.
+
+Six. Write down your decisions, and check the actual screens. Here's a real example. One of my lesson pages had a single exercise with three levels of support. An AI helper split it into several separate activities. Each looked fine on its own, but the progression, from recognising to producing, was gone, and only a teacher would notice. So I now write my teaching decisions in plain language, make sure the AI always has them, and look at the screen myself rather than trusting a description of it. Whether you're working with AI or with a person, the teacher remains the author.
+
+21. Where it stands
+
+So where are things now? The French version is live, and planning the Chinese version has already changed it: the fifty identical stops have become linguistic goals, functional goals and tasks.
+
+As for the Chinese course, I am still working out its design, including its units, goals and activities. The build starts after this conference, so I can't show you a Chinese screen today. If you are interested, let me know, and I will share it when it is done.
+
+Let's go back to my question, then. Can the organisation of language learning be separated from the language being learned? From what I've designed so far, much of it can. The goals, the links between them and the learning cycle carry over to Mandarin. The goal inventory, the progression and several activities do not, and tones and characters force me to rethink what counts as achieving a goal. Whether the result works as well for Chinese learners is the next question, and only the build and testing will answer it.
+
+In the meantime, if you teach a language that you think can fit into this goal-based vision for a language learning platform, I'd love to hear from you. My contact details are on the screen. Thank you for watching.
+
+References
+
+Bruner, J. S. (1960). The process of education. Harvard University Press.
+
+Chua, T. J. E., & Pan, S. C. (2026). Duolingo-inspired pretesting with words and pictures improves vocabulary learning. Cognitive Research: Principles and Implications, 11, 20. https://doi.org/10.1186/s41235-026-00708-y
+
+Cocton, M.-N., et al. (2022). L'Atelier+ A1: Méthode de français. Didier.
+
+Council of Europe. (2001). Common European Framework of Reference for Languages: Learning, teaching, assessment. Cambridge University Press.
+
+Liu, X. (Ed.). (2015). New practical Chinese reader: Textbook 1 (3rd ed.). Beijing Language and Culture University Press.
+
+NCSSFL-ACTFL. (2017). NCSSFL-ACTFL Can-Do Statements. American Council on the Teaching of Foreign Languages.
+
+Wilkins, D. A. (1972). The linguistic and situational content of the common core in a unit/credit system. Council of Europe.
+
+Wilkins, D. A. (1976). Notional syllabuses. Oxford University Press.
+
+Yalden, J. (1983). The communicative syllabus: Evolution, design and implementation. Pergamon.
+
+Yalden, J. (1987). Principles of course design for language teaching. Cambridge University Press.
+
