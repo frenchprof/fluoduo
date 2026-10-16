@@ -290,7 +290,7 @@ Since then, I’ve found two things that help prevent that. First, I write down 
 
 As a result, those written rules help stop the AI from making teaching decisions on its own. And because every rule comes from a specific source, I can check whether the AI has followed it. In the same way, you can check my decisions.
 
-In short, the teacher has to stay the author.
+In short, it is absolutely necessary that the teacher remains actively in the loop throughout this process.
 
 ## 22. A recipe for your language
 
