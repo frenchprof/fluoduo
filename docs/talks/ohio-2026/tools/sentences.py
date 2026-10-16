@@ -4,7 +4,7 @@ import re, json, os
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAY = {"L’Atelier": "La-tuh-li-eh", "L'Atelier": "La-tuh-li-eh", "ÉcouTexte": "Eh-ku-tekst", "G-Compris": "Zhay-kom-pree"}
 PARTS = {**{i: "" for i in range(1, 6)}, **{i: "Part 1 · The French course" for i in range(6, 11)},
-         11: "Part 2 · Two languages that are far apart", 12: "Part 3 · Moving the template to Chinese",
+         11: "Part 2 · Two typologically distant languages", 12: "Part 3 · Moving the template to Chinese",
          **{i: "Part 3 · Keep the frame" for i in (13, 14, 15)}, **{i: "Part 3 · Change the settings" for i in (16, 17)},
          **{i: "Part 3 · Fill the slots" for i in (18, 19, 20)}, **{i: "Part 4 · Closing" for i in (21, 22, 23)}}
 def voice(s):

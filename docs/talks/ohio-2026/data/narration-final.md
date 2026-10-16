@@ -131,7 +131,7 @@ Learners do most of this on their phones, on the bus, between classes. So every 
 
 As you can see, on the left is the path with its numbered goals. In the middle, G-Compris, with learners reading a postcard. And on the right, ComposeIt.
 
-# Part 2. Two languages that are far apart
+# Part 2. Two typologically distant languages
 
 ## 11. Where French and Chinese put the weight
 
