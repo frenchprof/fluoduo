@@ -20,7 +20,7 @@ def scene(s):
         fc = (f"[1:v]scale=1280:720,{CROP},scale={D-2*RING}:{D-2*RING},format=rgba[cv];[cv][2:v]alphamerge[c];"
               f"[0:v]scale=1920:1080,fps=25,format=yuv420p[bg];[bg][3:v]overlay={x}:{y}[b1];[b1][c]overlay={x+RING}:{y+RING}:eof_action=repeat,format=yuv420p[v];"
               f"[1:a]aresample=48000,apad[a]")
-        cmd = ["ffmpeg","-loglevel","error","-y","-i",clip,"-i",f"{V4}/av/{s}.mp4","-loop","1","-i",f"{V4}/lib/mask{D}.png","-loop","1","-i",f"{V4}/lib/ring{D}.png",
+        cmd = ["ffmpeg","-loglevel","error","-y","-i",clip,"-ss",str(T.get("trim",0)),"-i",f"{V4}/av/{s}.mp4","-loop","1","-i",f"{V4}/lib/mask{D}.png","-loop","1","-i",f"{V4}/lib/ring{D}.png",
                "-filter_complex",fc,"-map","[v]","-map","[a]","-t",f"{t:.3f}","-c:v","libx264","-preset","veryfast","-crf","20","-r","25",
                "-c:a","aac","-b:a","160k","-ac","2",out]
     subprocess.run(cmd, check=True); return s
