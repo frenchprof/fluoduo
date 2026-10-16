@@ -63,7 +63,7 @@ Every exercise belonged to a goal. In other words, I started with the goal, then
 
 But look at three of those goals.
 
-Number twenty-four, “to do some of an activity,” is linguistic.
+Number twenty-eight, negation, is linguistic.
 
 Number twenty-nine, inviting someone and turning down an invitation, is communicative.
 

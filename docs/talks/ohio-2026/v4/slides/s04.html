@@ -1,0 +1,55 @@
+<section id="s04">
+<h2 class="hd">Two kinds of goals</h2>
+
+<!-- phase A: Wilkins puts two things on the syllabus -->
+<div id="wil" class="abs" style="left:128px;top:250px;width:1500px;height:460px">
+  <p class="abs" data-in="1" data-fx="fade" style="left:0;top:0;font-size:30px;color:#6a7179">David Wilkins · 1970s</p>
+  <div class="abs" data-in="1:grammar" data-fx="pop" style="left:120px;top:140px;width:560px;height:200px;border-radius:28px;background:#eff8ff;border:4px solid #1ca6ff;display:flex;align-items:center;justify-content:center;font-size:52px;font-weight:700">grammar</div>
+  <div class="abs" data-in="1:meanings" data-fx="pop" style="left:820px;top:140px;width:560px;height:200px;border-radius:28px;background:#faf7e2;border:4px solid #fcdf00;display:flex;align-items:center;justify-content:center;text-align:center;font-size:48px;font-weight:700;line-height:1.15">meanings &amp;<br>functions</div>
+  <p class="abs" data-in="1:grammar+0.3" data-fx="pop" style="left:690px;top:180px;width:120px;text-align:center;font-size:96px;color:#9ca3af">+</p>
+</div>
+
+<!-- phase B: they become FluOLinGo's two kinds of goal -->
+<div id="ling" class="abs" data-in="2" data-fx="fade" style="left:128px;top:230px;width:1664px;height:440px;border-radius:28px;background:#eff8ff;border-top:14px solid #1ca6ff">
+  <p class="abs" style="left:40px;top:24px;font-size:44px;font-weight:700">Linguistic goals <span class="gl" style="font-size:32px;font-weight:400">· the language itself</span></p>
+  <!-- five slots: x = 40 + i*316, w 292 -->
+  <div class="tile abs" id="t1" data-in="5:sounds" data-fx="pop" style="left:40px">🔊<b>sounds</b></div>
+  <div class="tile abs" id="t2" data-in="5:vocabulary" data-fx="pop" style="left:356px">📖<b>vocabulary</b></div>
+  <div class="tile abs" id="tg" data-in="5:grammar" data-fx="pop" style="left:672px;width:608px">⚙️<b>grammar</b></div>
+  <div class="tile abs" id="t3" data-in="6:word" data-fx="left" style="left:672px">🔤<b>word forms</b><i>aime · aimes</i></div>
+  <div class="tile abs" id="t4" data-in="6:sentence" data-fx="right" style="left:988px">↔️<b>sentence structure</b><i>word order</i></div>
+  <div class="tile abs" id="tw" data-in="5:writing" data-fx="pop" style="left:1304px">✍️<b>writing</b></div>
+  <div class="tile abs" id="t5" data-in="7:script" data-fx="pop" style="left:1304px">✍️<b>script</b><i>汉字 · é è ê</i></div>
+  <p class="abs" data-in="5:CEFR" data-fx="fade" style="right:40px;top:34px;font-size:28px;color:#006baa;font-weight:700">CEFR</p>
+</div>
+
+<div id="comm" class="abs" data-in="4" data-fx="rise" style="left:128px;top:700px;width:1400px;height:240px;border-radius:28px;background:#faf7e2;border-top:14px solid #fcdf00">
+  <p class="abs" style="left:40px;top:24px;font-size:44px;font-weight:700">Communicative goals <span class="gl" style="font-size:32px;font-weight:400">· what you do with it</span></p>
+  <p class="abs chip" data-in="4:saying" data-fx="pop" style="left:40px;top:120px">💬 say what you like</p>
+  <p class="abs chip" data-in="4:inviting" data-fx="pop" style="left:480px;top:120px">✉️ invite a friend out</p>
+</div>
+
+<p class="part">Opening</p>
+<style>
+.tile{top:110px;width:292px;height:290px;border-radius:22px;background:#fff;border:3px solid #9fd3ff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-size:64px;text-align:center}
+.tile b{font-size:36px;font-weight:700;line-height:1.15;padding:0 12px}
+.tile i{font-size:28px;color:#6a7179}
+.chip{font-size:36px;padding:14px 30px;border-radius:999px;background:#fff;border:3px solid #fcdf00}
+</style>
+<script>
+window.SLIDE = function(){
+  const $ = id => document.getElementById(id);
+  // phase A leaves when FluOLinGo takes both
+  A($('wil'), [{opacity:1},{opacity:0}], CUE('2')-0.1, 0.5, 'forwards');
+  // linguistic band lights up on sentence 3, communicative on 4
+  A($('ling'), [{boxShadow:'0 0 0 0 rgba(28,166,255,0)'},{boxShadow:'0 0 0 10px rgba(28,166,255,.35)'},{boxShadow:'0 0 0 0 rgba(28,166,255,0)'}], CUE('3'), 1.4, 'none');
+  // grammar splits in two
+  A($('tg'), [{opacity:1},{opacity:0}], CUE('6:split'), 0.4, 'forwards');
+  // writing becomes script
+  A($('tw'), [{opacity:1},{opacity:0}], CUE('7:script')-0.05, 0.3, 'forwards');
+  // the five are counted as they are named
+  [['t1','sounds'],['t2','vocabulary'],['t3','forms'],['t4','structure'],['t5','script']].forEach(([id,w]) =>
+    A($(id), [{transform:'none',borderColor:'#9fd3ff'},{transform:'translateY(-14px)',borderColor:'#006baa'},{transform:'none',borderColor:'#006baa'}], CUE('7:'+w), 0.6, 'forwards'));
+};
+</script>
+</section>
