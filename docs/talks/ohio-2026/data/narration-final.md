@@ -69,29 +69,39 @@ Number twenty-nine, inviting someone and turning down an invitation, is communic
 
 Number thirty, writing an email, is a whole task.
 
-On the map, they all looked the same.
+On the map, though, all three looked exactly the same: one stop each.
 
-It was planning the Chinese version that made me notice this.
+And that was a problem, because they are not the same kind of thing.
 
-On the right is the revised structure. Each unit now has three kinds of step: linguistic goals, the situations that use them, and one task at the end.
+Negation is one small building block. Writing an email is a whole piece of work that needs many of those blocks.
 
-Only the first two are goals.
+So a learner moving along the map could not tell a small step from a big one, or see which goals the email depended on.
+
+At first, I didn’t notice this, because I was simply following the French book, which already sorts its content into situations and tasks.
+
+But when I started planning the Chinese version, that support was gone. The Chinese book has no situations and no tasks at all.
+
+That meant I had to decide, for every step, what kind of step it was. And that is when I saw that the map was mixing three different kinds.
+
+On the right is the revised structure. Each unit now has two kinds of goal, linguistic and communicative, and one task at the end, where learners use both together.
 
 And you’ll see that same structure in both languages.
 
 ## 7. One lesson page per linguistic goal
 
-This is the core of it: the lesson page.
+Each linguistic goal gets its own lesson page.
 
-Every linguistic goal gets its own page. If two goals are easier to learn side by side, they share a page.
+Communicative goals get something different: four activities, one each for listening, reading, speaking and writing. I’ll show you those shortly.
 
-On my original page, “to like the” sits next to “to do some.”
+Some goals share a page. In Unit 0, for example, greetings sit beside the two words for “you”.
 
-Look at these two sentences: “I like yoga” and “I do yoga,” both in French.
+Beginners need both from the very first lesson, and they overlap: choosing between a casual “hi” and a polite “good morning, madam” is the same choice as choosing between the casual and the polite “you”.
 
 There are six tabs. Learners start with the course path, then move through explanations, forms and exercises, with bonus material and a word list at the end.
 
-The exercise tab is a single sentence generator with three levels.
+Here is the exercise tab of another page, for “to like”.
+
+It is a single sentence generator with three levels.
 
 At one star, you pick the verb form: “I like,” spelled correctly. You can see the common misspelling next to it.
 
