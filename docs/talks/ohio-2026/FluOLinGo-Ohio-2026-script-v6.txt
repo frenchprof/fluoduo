@@ -69,7 +69,7 @@ Starting from opposite ends, both books can be represented as the same kind of n
 
 The second challenge is the language itself. In French, the verb "to drink" changes with the subject: I drink, you drink and she drinks each take a different form, and FluOLinGo has a conjugation activity built around that. In Mandarin, the verb stays exactly the same for every person, so reproducing that activity would make little sense.
 
-Mandarin needs activities French never did: for aspect, such as the marker added after a verb to show that an action is completed; for classifiers, since a photo, a bottle of water and a room each take a different measure word; and for word order. So the goal inventory, the order of goals and the activities attached to them all have to be rebuilt. The principle of targeted practice survives; the practice itself does not.
+Mandarin needs activities French never did: for aspect, such as the marker added after a verb to show that an action is completed; for classifiers, since a photo, a bottle of water and a room each take a different measure word; and for word order. So the goal inventory, the order of goals and the activities attached to them all have to be rebuilt. The principle of targeted practice survives; much of the practice itself does not. Not everything has to be rebuilt, though. The same sentence exercise that asks a French learner to choose between « le » and « du » can ask a Mandarin learner to choose the verb that goes with « coffee » or « ball ».
 
 9. Challenge three: a different definition of achievement
 
@@ -78,6 +78,8 @@ The third challenge goes deepest. It is not about content or activities, but abo
 In Mandarin, a change of tone changes the word. The same syllable, ma, can mean mother, hemp, horse or scold. A learner might recognise a word's meaning but miss its tone, or hear the tone correctly but fail to produce it. So is a pronunciation goal reached when the learner can recognise a tone, tell two tones apart, or say it? Those are three different abilities, and the French pronunciation activities were never designed to tell them apart.
 
 Chinese characters raise the same question in another form. A learner might recognise a character, know its meaning, know its pronunciation or be able to write it, and these abilities don't develop at the same rate. A learner may understand the spoken word for student, but not yet recognise its written form. Should these be one goal or several?
+
+There is one tool I already use to look for that evidence, and it works the same way in both languages. I call it the transfer test. At the end of a run, learners meet a word the course never taught. In French, the course teaches the masculine and feminine words for a Chinese person, and then asks for a woman from Luxembourg. Nobody taught that word, but a learner who knows the rule, that a word ending in -s adds an -e, can work it out. In Chinese the rule is simpler still: a country plus the word for person gives the nationality, so Luxembourg gives a Luxembourger. The answer isn't marked, because you can't mark someone wrong on something you never taught them; the feedback simply gives the rule. What it tells me is whether a learner has understood the rule, or only memorised the examples.
 
 These are pedagogical decisions about what counts as knowing something, and what evidence shows it has been learned. The architecture must be able to represent them without forcing them into categories inherited from French. That, to me, is the real test: not whether the platform can hold different content, but whether its model of learning can hold different kinds of linguistic knowledge.
 
@@ -105,7 +107,7 @@ Three. For each functional goal, list the linguistic goals it draws on.
 
 Four. For each goal, decide what evidence would show it has been reached, and only then choose the activity.
 
-Five. Keep teaching and scoring within what your textbook actually teaches. Learners can meet new language along the way, but they should never need it to get the answer right.
+Five. Keep teaching and scoring within what your textbook actually teaches. Learners can meet new language along the way, but they should never need it to get the answer right. For example, my French course never teaches "quarter past", because the book doesn't; the Chinese book does, so the Chinese course will.
 
 Six. Write your decisions down, and check the real screens. Here's why. One of my lesson pages had a single exercise with three levels of support. An AI helper split it into several separate activities. Each looked fine on its own, but the progression from recognising to producing was gone, and only a teacher would notice. So I now write my teaching decisions in plain language, make sure the AI always has them, and look at the screen myself. Whether you work with AI or with a person, the teacher remains the author.
 
