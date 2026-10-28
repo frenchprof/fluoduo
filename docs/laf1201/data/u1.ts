@@ -42,7 +42,7 @@ export const u1: Sheet = {
           variant: "error",
           title: "⚠️ Common mistakes",
           lines: [
-            "~~Ils s'appelent Paul et Léa.~~ → **Ils s'appellent Paul et Léa.** : *-ll-* in *je, tu, il, ils*; one *l* in *nous, vous*.",
+            "~~Ils s'appelle Paul et Léa.~~ → **Ils s'appellent Paul et Léa.** : *-ll-* in *je, tu, il, ils*; one *l* in *nous, vous*.",
           ],
         },
       ],

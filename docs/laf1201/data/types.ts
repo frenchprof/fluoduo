@@ -8,7 +8,12 @@ export type Block =
   | { type: "table"; headers?: string[]; rows: string[][]; firstColHeader?: boolean }
   | { type: "callout"; variant: "error" | "tip"; title?: string; lines: string[] };
 
-export type ExerciseItem = { label?: string; text: string };
+export type ExerciseItem = {
+  label?: string;
+  text: string;
+  /** Wrong tiles added to the word bank: the rival forms this item trains the learner to reject. */
+  distractors?: string[];
+};
 
 export type Exercise = {
   title: string;
@@ -28,7 +33,13 @@ export type ThemeId =
   | "meteo"
   | "ville"
   | "repas"
-  | "projets";
+  | "projets"
+  | "verbes"
+  | "partitifs"
+  | "lieux"
+  | "adjectifs"
+  | "phrases"
+  | "conseils";
 
 export type Section = {
   id: string;

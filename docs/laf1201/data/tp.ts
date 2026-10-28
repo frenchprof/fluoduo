@@ -1,0 +1,445 @@
+import type { Sheet } from "./types";
+
+export const tp: Sheet = {
+  id: "tp",
+  label: "Grammar",
+  title: "Grammar",
+  subtitle: "LAF1201 French 1 · verbs, articles, à and en, y, agreement, word order, advice",
+  sections: [
+    {
+      id: "tp-1",
+      number: 1,
+      title: "Regular verbs: -er, -ir, -re",
+      theme: "verbes",
+      blocks: [
+        {
+          type: "table",
+          headers: ["", "visiter (-er)", "finir (-ir)", "attendre (-re)"],
+          rows: [
+            ["je", "visite", "finis", "attends"],
+            ["tu", "visites", "finis", "attends"],
+            ["il / elle", "visite", "finit", "attend"],
+            ["nous", "**visitons**", "**finissons**", "**attendons**"],
+            ["vous", "**visitez**", "**finissez**", "**attendez**"],
+            ["ils / elles", "visitent", "finissent", "attendent"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Nous finis.~~ → **Nous finissons.** : -ir verbs add *-iss-* in *nous, vous, ils*.",
+            "~~Ils visite.~~ → **Ils visitent.** : *ils* takes the silent *-ent* ending.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "We visit the museum. → _____", distractors: ["visitez", "visitent"] },
+          { label: "b", text: "You (vous) finish at six o'clock. → _____", distractors: ["finissent", "finissons"] },
+          { label: "c", text: "They wait for the bus. → _____", distractors: ["attends", "attendez"] },
+          { label: "d", text: "We finish the exercise. → _____", distractors: ["finit", "finissez"] },
+          { label: "e", text: "Do you (vous) visit Paris? → _____", distractors: ["visitons", "visites"] },
+          { label: "f", text: "She waits for her friend. → _____", distractors: ["attendent", "attends"] },
+        ],
+        answers: [
+          "a. Nous visitons le musée.",
+          "b. Vous finissez à six heures.",
+          "c. Ils attendent le bus.",
+          "d. Nous finissons l'exercice.",
+          "e. Vous visitez Paris ?",
+          "f. Elle attend son amie.",
+        ],
+      },
+    },
+    {
+      id: "tp-2",
+      number: 2,
+      title: "Irregular verbs: être, avoir, aller, faire",
+      theme: "verbes",
+      blocks: [
+        {
+          type: "table",
+          headers: ["", "être", "avoir", "aller", "faire"],
+          rows: [
+            ["je / j'", "suis", "ai", "vais", "fais"],
+            ["tu", "es", "as", "vas", "fais"],
+            ["il / elle", "est", "a", "va", "fait"],
+            ["nous", "**sommes**", "**avons**", "**allons**", "**faisons**"],
+            ["vous", "**êtes**", "**avez**", "**allez**", "**faites**"],
+            ["ils / elles", "sont", "ont", "vont", "font"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Vous faisons.~~ → **Vous faites.** : *faire* is irregular; like *vous êtes*, *vous faites* has no *-ez*.",
+            "~~Ils va.~~ → **Ils vont.**",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "Do you (vous) do sport? → _____", distractors: ["faisons", "font"] },
+          { label: "b", text: "We are students. → _____", distractors: ["êtes", "sont"] },
+          { label: "c", text: "They are going to the cinema. → _____", distractors: ["va", "allez"] },
+          { label: "d", text: "We have a car. → _____", distractors: ["avez", "ont"] },
+          { label: "e", text: "Are you tired? (vous, to several people) → _____", distractors: ["sont", "sommes"] },
+          { label: "f", text: "They do their shopping. → _____", distractors: ["faites", "fait"] },
+        ],
+        answers: [
+          "a. Vous faites du sport ?",
+          "b. Nous sommes étudiants.",
+          "c. Ils vont au cinéma.",
+          "d. Nous avons une voiture.",
+          "e. Vous êtes fatigués ?",
+          "f. Ils font leurs courses.",
+        ],
+      },
+    },
+    {
+      id: "tp-3",
+      number: 3,
+      title: "Irregular verbs: prendre, partir, venir, vouloir, boire",
+      theme: "verbes",
+      blocks: [
+        {
+          type: "table",
+          headers: ["", "prendre", "partir", "venir", "vouloir", "boire"],
+          rows: [
+            ["je", "prends", "pars", "viens", "veux", "bois"],
+            ["tu", "prends", "pars", "viens", "veux", "bois"],
+            ["il / elle", "prend", "part", "vient", "veut", "boit"],
+            ["nous", "**prenons**", "**partons**", "**venons**", "**voulons**", "**buvons**"],
+            ["vous", "**prenez**", "**partez**", "**venez**", "**voulez**", "**buvez**"],
+            ["ils / elles", "prennent", "partent", "viennent", "veulent", "boivent"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Nous prennent.~~ → **Nous prenons.** : no *d* and a single *n* in *nous prenons* and *vous prenez*.",
+            "~~Vous boivent.~~ → **Vous buvez.** : *boire* changes its stem in *nous buvons, vous buvez*.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "We take the metro. → _____", distractors: ["prenez", "prennent"] },
+          { label: "b", text: "Are you (vous) coming with us? → _____", distractors: ["viennent", "venons"] },
+          { label: "c", text: "They want to leave. → _____", distractors: ["veut", "partent"] },
+          { label: "d", text: "We drink water. → _____", distractors: ["boivent", "buvez"] },
+          { label: "e", text: "I leave at eight o'clock. → _____", distractors: ["part", "partir"] },
+          { label: "f", text: "Do you (vous) take the train? → _____", distractors: ["prennent", "prenons"] },
+        ],
+        answers: [
+          "a. Nous prenons le métro.",
+          "b. Vous venez avec nous ?",
+          "c. Ils veulent partir.",
+          "d. Nous buvons de l'eau.",
+          "e. Je pars à huit heures.",
+          "f. Vous prenez le train ?",
+        ],
+      },
+    },
+    {
+      id: "tp-4",
+      number: 4,
+      title: "Partitive articles: du, de la, de l', des",
+      theme: "partitifs",
+      blocks: [
+        {
+          type: "table",
+          headers: ["", "Article", "Example"],
+          rows: [
+            ["masculine", "**du**", "*du pain, du fromage*"],
+            ["feminine", "**de la**", "*de la viande, de la salade*"],
+            ["before a vowel", "**de l'**", "*de l'eau, de l'huile*"],
+            ["plural", "**des**", "*des légumes, des fruits*"],
+            ["after a negative", "**de / d'**", "*Je ne mange **pas de** viande. · Je ne bois **pas d'**eau.*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Je ne bois pas du café.~~ → **Je ne bois pas de café.** : after a negative, *du, de la, de l', des* become *de*.",
+            "~~Je mange de le fromage.~~ → **Je mange du fromage.**",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "I eat cheese. → _____", distractors: ["de", "le"] },
+          { label: "b", text: "I don't drink coffee. → _____", distractors: ["du"] },
+          { label: "c", text: "She drinks water. → _____", distractors: ["de la", "du"] },
+          { label: "d", text: "We eat vegetables. → _____", distractors: ["du", "de"] },
+          { label: "e", text: "He doesn't eat meat. → _____", distractors: ["de la"] },
+          { label: "f", text: "I buy salad. → _____", distractors: ["du", "des"] },
+        ],
+        answers: [
+          "a. Je mange du fromage.",
+          "b. Je ne bois pas de café.",
+          "c. Elle boit de l'eau.",
+          "d. Nous mangeons des légumes.",
+          "e. Il ne mange pas de viande.",
+          "f. J'achète de la salade.",
+        ],
+      },
+    },
+    {
+      id: "tp-5",
+      number: 5,
+      title: "À and en: places and transport",
+      theme: "lieux",
+      blocks: [
+        {
+          type: "table",
+          headers: ["Where", "Preposition", "Example"],
+          rows: [
+            ["a city", "**à**", "*à Paris, à Singapour*"],
+            ["a place", "**à la / au / à l'**", "*à la bibliothèque, au cinéma, à l'école*"],
+            ["feminine country", "**en**", "*en France, en Belgique, en Chine*"],
+            ["masculine country + vowel", "**en**", "*en Iran*"],
+            ["masculine country", "**au**", "*au Japon, au Canada*"],
+            ["plural country", "**aux**", "*aux États-Unis*"],
+          ],
+        },
+        {
+          type: "table",
+          headers: ["Transport", "Example"],
+          rows: [
+            ["**en** (you are inside)", "*en avion, en train, en métro, en voiture, en bus*"],
+            ["**à** (you are on it)", "*à pied, à vélo*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Je vais à France.~~ → **Je vais en France.** : feminine country → *en*.",
+            "~~en pied~~ → **à pied** : feet and bikes take *à*.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "She lives in Belgium. → _____", distractors: ["à", "au"] },
+          { label: "b", text: "We are going to Japan. → _____", distractors: ["en", "à"] },
+          { label: "c", text: "I go to school on foot. → _____", distractors: ["en"] },
+          { label: "d", text: "He goes to the library by bike. → _____", distractors: ["en"] },
+          { label: "e", text: "They travel to China by plane. → _____", distractors: ["à", "au"] },
+          { label: "f", text: "I'm going to Paris by train. → _____", distractors: ["au", "dans"] },
+        ],
+        answers: [
+          "a. Elle habite en Belgique.",
+          "b. Nous allons au Japon.",
+          "c. Je vais à l'école à pied.",
+          "d. Il va à la bibliothèque à vélo.",
+          "e. Ils voyagent en Chine en avion.",
+          "f. Je vais à Paris en train.",
+        ],
+      },
+    },
+    {
+      id: "tp-6",
+      number: 6,
+      title: "The pronoun y",
+      theme: "lieux",
+      blocks: [
+        {
+          type: "table",
+          firstColHeader: true,
+          rows: [
+            ["What y replaces", "a place after *à, au, en, dans, chez*: *Tu vas **à la piscine** ? → Oui, j'**y** vais.*"],
+            ["Position", "before the verb: *J'**y** vais.*"],
+            ["Negative", "*ne* + *y* + verb + *pas*: *Je **n'y** vais **pas**.*"],
+            ["With aller + infinitive", "before the infinitive: *Je vais **y** aller.*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Je vais y.~~ → **J'y vais.** : *y* goes before the verb.",
+            "~~Je ne vais pas y.~~ → **Je n'y vais pas.**",
+            "~~J'y vais aller.~~ → **Je vais y aller.** : *y* goes before the infinitive.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Answer with *y*.",
+        items: [
+          { label: "a", text: "Tu vas à la piscine ? Oui, → _____", distractors: ["le", "en"] },
+          { label: "b", text: "Tu vas au cinéma ? Non, → _____", distractors: ["le", "en"] },
+          { label: "c", text: "Tu vas aller à Paris ? Oui, → _____", distractors: ["en", "le"] },
+          { label: "d", text: "Elle habite en France ? Oui, → _____", distractors: ["la", "en"] },
+          { label: "e", text: "Vous allez au marché ? Non, nous → _____", distractors: ["le", "en"] },
+        ],
+        answers: [
+          "a. j'y vais.",
+          "b. je n'y vais pas.",
+          "c. je vais y aller.",
+          "d. elle y habite.",
+          "e. n'y allons pas.",
+        ],
+      },
+    },
+    {
+      id: "tp-7",
+      number: 7,
+      title: "Adjective agreement",
+      theme: "adjectifs",
+      blocks: [
+        {
+          type: "table",
+          headers: ["Pattern", "Masculine", "Feminine"],
+          rows: [
+            ["+ e", "*grand, amusant*", "*grande, amusante*"],
+            ["-eux → -euse", "*sérieux, heureux*", "*sérieuse, heureuse*"],
+            ["-if → -ive", "*sportif, actif*", "*sportive, active*"],
+            ["-ien → -ienne", "*italien, canadien*", "*italienne, canadienne*"],
+            ["-eur → -euse", "*travailleur*", "*travailleuse*"],
+            ["irregular", "*beau, vieux, gentil, blanc*", "*belle, vieille, gentille, blanche*"],
+            ["plural", "+ *s* (not after -s or -x)", "*grands, grandes · sérieux, sérieuses*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Elle est sportif.~~ → **Elle est sportive.** : the adjective agrees with *elle*.",
+            "~~Les filles sont amusants.~~ → **Les filles sont amusantes.** : feminine plural → *-es*.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "She is serious. → _____", distractors: ["sérieux", "sérieuses"] },
+          { label: "b", text: "They (m.) are sporty. → _____", distractors: ["sportif", "sportives"] },
+          { label: "c", text: "My mother is hard-working. → _____", distractors: ["travailleur", "travailleurs"] },
+          { label: "d", text: "The girls are funny. → _____", distractors: ["amusants", "amusante"] },
+          { label: "e", text: "She is Canadian. → _____", distractors: ["canadiens", "canadien"] },
+          { label: "f", text: "It's an old house. → _____", distractors: ["vieux", "vieil"] },
+        ],
+        answers: [
+          "a. Elle est sérieuse.",
+          "b. Ils sont sportifs.",
+          "c. Ma mère est travailleuse.",
+          "d. Les filles sont amusantes.",
+          "e. Elle est canadienne.",
+          "f. C'est une vieille maison.",
+        ],
+      },
+    },
+    {
+      id: "tp-8",
+      number: 8,
+      title: "Word order: questions, negation and adverbs",
+      theme: "phrases",
+      blocks: [
+        {
+          type: "table",
+          firstColHeader: true,
+          rows: [
+            ["Statement", "subject + verb + object: *Paul aime le café.*"],
+            ["Yes/no question", "***Est-ce que** Paul aime le café ?* · ***Est-ce qu'**il aime le café ?*"],
+            ["Negation", "*ne* before the verb, *pas* after it: *Il **ne** prend **pas** le bus.*"],
+            ["Adverbs of frequency", "after the verb: *Je vais **souvent** au cinéma.*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Est-ce que il travaille ?~~ → **Est-ce qu'il travaille ?** : *que* becomes *qu'* before a vowel.",
+            "~~Je ne pas aime~~ → **Je n'aime pas** : *pas* comes after the verb.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Build the sentence.",
+        items: [
+          { label: "a", text: "Ask: do you (tu) like coffee? → _____", distractors: ["qu'est-ce"] },
+          { label: "b", text: "Ask: does he work on Saturdays? → _____", distractors: ["que"] },
+          { label: "c", text: "I often go to the cinema. → _____", distractors: ["toujours"] },
+          { label: "d", text: "We don't take the bus. → _____", distractors: ["rien"] },
+          { label: "e", text: "Ask: do you (vous) speak English? → _____", distractors: ["qu'est-ce"] },
+          { label: "f", text: "She always eats at noon. → _____", distractors: ["souvent"] },
+        ],
+        answers: [
+          "a. Est-ce que tu aimes le café ?",
+          "b. Est-ce qu'il travaille le samedi ?",
+          "c. Je vais souvent au cinéma.",
+          "d. Nous ne prenons pas le bus.",
+          "e. Est-ce que vous parlez anglais ?",
+          "f. Elle mange toujours à midi.",
+        ],
+      },
+    },
+    {
+      id: "tp-9",
+      number: 9,
+      title: "Giving advice",
+      theme: "conseils",
+      blocks: [
+        {
+          type: "table",
+          firstColHeader: true,
+          headers: ["Expression", "+", "Example"],
+          rows: [
+            ["il faut", "infinitive", "*Il faut **prendre** le métro.*"],
+            ["il est important de", "infinitive", "*Il est important de **boire** de l'eau.*"],
+            ["je te conseille de", "infinitive", "*Je te conseille de **visiter** le marché.*"],
+            ["tu devrais", "infinitive", "*Tu devrais **réserver** un hôtel.*"],
+            ["the imperative", "tu / vous form, no subject", "*Visite le musée ! · Prends le train ! · Allez au marché !*"],
+          ],
+        },
+        {
+          type: "callout",
+          variant: "error",
+          title: "⚠️ Common mistakes",
+          lines: [
+            "~~Il faut prends le métro.~~ → **Il faut prendre le métro.** : after these expressions, use the infinitive.",
+            "~~Visites le musée !~~ → **Visite le musée !** : -er verbs drop the *s* in the *tu* imperative.",
+          ],
+        },
+      ],
+      exercise: {
+        title: "Give the advice.",
+        items: [
+          { label: "a", text: "You must take the metro (il faut). → _____", distractors: ["prends", "prend"] },
+          { label: "b", text: "It is important to drink water. → _____", distractors: ["à", "du"] },
+          { label: "c", text: "I advise you to visit the market. → _____", distractors: ["à", "visites"] },
+          { label: "d", text: "You should book a hotel. → _____", distractors: ["réserves", "réservez"] },
+          { label: "e", text: "Visit the museum! (tu) → _____", distractors: ["Visites"] },
+          { label: "f", text: "Take the train! (tu) → _____", distractors: ["Prend", "Prendre"] },
+        ],
+        answers: [
+          "a. Il faut prendre le métro.",
+          "b. Il est important de boire de l'eau.",
+          "c. Je te conseille de visiter le marché.",
+          "d. Tu devrais réserver un hôtel.",
+          "e. Visite le musée !",
+          "f. Prends le train !",
+        ],
+      },
+    },
+  ],
+};
