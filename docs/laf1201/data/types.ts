@@ -6,7 +6,11 @@ export type Block =
   | { type: "p"; text: string }
   | { type: "heading"; text: string }
   | { type: "table"; headers?: string[]; rows: string[][]; firstColHeader?: boolean }
-  | { type: "callout"; variant: "error" | "tip"; title?: string; lines: string[] };
+  | { type: "callout"; variant: "error" | "tip"; title?: string; lines: string[] }
+  /** A text the learner reads: stays visible above every question of the section. */
+  | { type: "document"; title?: string; lines: string[] }
+  /** A dialogue the learner listens to (French speech synthesis): play button above every question; transcript only after checking. */
+  | { type: "audio"; title?: string; lines: string[] };
 
 export type ExerciseItem = {
   label?: string;
@@ -39,7 +43,22 @@ export type ThemeId =
   | "lieux"
   | "adjectifs"
   | "phrases"
-  | "conseils";
+  | "conseils"
+  | "lecture"
+  | "ecoute"
+  | "ecriture";
+
+export type WritingTask = {
+  /** The task, in French. */
+  task: string;
+  minWords: number;
+  maxWords: number;
+  outline: { label: string; example: string }[];
+  phrases: string[];
+  checklist: string[];
+  /** A model answer, one string per paragraph, shown only on request after writing. */
+  model: string[];
+};
 
 export type Section = {
   id: string;
@@ -48,6 +67,7 @@ export type Section = {
   theme: ThemeId;
   blocks: Block[];
   exercise?: Exercise;
+  writing?: WritingTask;
 };
 
 export type Sheet = {

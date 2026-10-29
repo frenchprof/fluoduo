@@ -4,9 +4,12 @@ import { u2 } from "./u2";
 import { u3 } from "./u3";
 import { u4 } from "./u4";
 import { tp } from "./tp";
+import { rd } from "./rd";
+import { ls } from "./ls";
+import { wr } from "./wr";
 import type { Section, Sheet, ThemeId } from "./types";
 
-export const sheets: Sheet[] = [u0, u1, u2, u3, u4, tp];
+export const sheets: Sheet[] = [u0, u1, u2, u3, u4, tp, rd, ls, wr];
 
 export const themes: { id: ThemeId; label: string; detail: string }[] = [
   { id: "saluer", label: "1. Greetings and names", detail: "bonjour, s'appeler, tu or vous" },
@@ -26,6 +29,9 @@ export const themes: { id: ThemeId; label: string; detail: string }[] = [
   { id: "adjectifs", label: "15. Adjective agreement", detail: "" },
   { id: "phrases", label: "16. Word order", detail: "est-ce que, ne… pas, adverbs" },
   { id: "conseils", label: "17. Giving advice", detail: "il faut, je te conseille de, tu devrais, the imperative" },
+  { id: "lecture", label: "18. Reading", detail: "a menu, a postcard" },
+  { id: "ecoute", label: "19. Listening", detail: "prepositions of place, directions, a phone call" },
+  { id: "ecriture", label: "20. Writing", detail: "an informal email giving advice" },
 ];
 
 export type SourcedSection = { sheet: Sheet; section: Section };
