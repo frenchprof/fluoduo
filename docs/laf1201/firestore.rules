@@ -1,0 +1,64 @@
+rules_version = '2';
+
+// LAF1201 revision app — Firestore security rules.
+// Paste into Firebase console → Firestore Database → Rules → Publish.
+//
+// Data layout:
+//   users/{uid}                    profile + progress (one document per student)
+//   users/{uid}/results/{id}       one document per finished/abandoned lesson
+//   users/{uid}/events/{id}        research log, append-only
+//
+// A student can create and read only their own data; events can never be changed by a student.
+// The single teacher account can read and delete everything (for the class page, exports and deletions).
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isTeacher() {
+      return signedIn()
+        && request.auth.token.email == 'monsieur.chan@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isTeacher();
+      allow create, update: if isOwner(uid)
+        && request.resource.data.email == request.auth.token.email;
+      allow delete: if isTeacher();
+
+      match /results/{id} {
+        allow read: if isOwner(uid) || isTeacher();
+        allow create, update: if isOwner(uid);
+        allow delete: if isTeacher();
+      }
+
+      match /events/{id} {
+        allow read: if isOwner(uid) || isTeacher();
+        allow create: if isOwner(uid);
+        allow update: if false;
+        allow delete: if isTeacher();
+      }
+    }
+
+    // Teacher-only collection-group reads (class page and exports across all students).
+    match /{path=**}/results/{id} {
+      allow read: if isTeacher();
+    }
+    match /{path=**}/events/{id} {
+      allow read: if isTeacher();
+    }
+
+    // Everything else is closed.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
