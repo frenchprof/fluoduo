@@ -44,11 +44,11 @@ export const u4: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "At breakfast, I eat bread. → _____" },
-          { label: "b", text: "I often drink tea. → _____" },
-          { label: "c", text: "I don't eat meat. → _____" },
-          { label: "d", text: "We always drink water. → _____" },
-          { label: "e", text: "At dinner, she sometimes eats salad. → _____" },
+          { label: "a", text: "— Qu'est-ce que tu manges au petit-déjeuner ? (🍞) → _____" },
+          { label: "b", text: "— Tu bois du thé ? (souvent) → _____" },
+          { label: "c", text: "— Tu manges de la viande ? (✖️) → _____" },
+          { label: "d", text: "— Vous buvez de l'eau ? (nous · toujours) → _____" },
+          { label: "e", text: "— Et elle, au dîner ? (🥗 · parfois) → _____" },
         ],
         answers: [
           "a. Au petit-déjeuner, je mange du pain.",
@@ -93,11 +93,11 @@ export const u4: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "I do my shopping at the supermarket. → _____" },
-          { label: "b", text: "I buy bread at the bakery. → _____" },
-          { label: "c", text: "I buy meat at the butcher's. → _____" },
-          { label: "d", text: "I buy fruit at the market. → _____" },
-          { label: "e", text: "Ask a friend where they do their shopping. → _____" },
+          { label: "a", text: "— Tu fais tes courses où ? (🛒 le supermarché) → _____" },
+          { label: "b", text: "— Où est-ce que tu achètes le pain ? (🥖 la boulangerie) → _____" },
+          { label: "c", text: "— Et la viande ? (🥩 la boucherie) → _____" },
+          { label: "d", text: "— Et les fruits ? (🍎 le marché) → _____" },
+          { label: "e", text: "— _____ — Au supermarché. (à un ami)" },
         ],
         answers: [
           "a. Je fais mes courses au supermarché.",
@@ -144,11 +144,11 @@ export const u4: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "I'm going to eat better. → _____" },
-          { label: "b", text: "We are going to do sport. → _____" },
-          { label: "c", text: "She is going to cook tonight. → _____" },
-          { label: "d", text: "I'm not going to eat chocolate. → _____" },
-          { label: "e", text: "They are going to drink more water. → _____" },
+          { label: "a", text: "— Qu'est-ce que tu vas faire ? (manger · mieux) → _____" },
+          { label: "b", text: "— Et vous ? (nous · faire du sport) → _____" },
+          { label: "c", text: "— Et elle, ce soir ? (cuisiner) → _____" },
+          { label: "d", text: "— Tu vas manger du chocolat ? (✖️) → _____" },
+          { label: "e", text: "— Et eux ? (boire · plus d'eau) → _____" },
         ],
         answers: [
           "a. Je vais manger mieux.",

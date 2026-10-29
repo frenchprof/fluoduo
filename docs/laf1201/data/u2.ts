@@ -34,12 +34,12 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "It's a bag. → _____" },
-          { label: "b", text: "It's my key. → _____" },
-          { label: "c", text: "They are books. → _____" },
-          { label: "d", text: "They are my pens. → _____" },
-          { label: "e", text: "It's my phone. → _____" },
-          { label: "f", text: "It's a watch. → _____" },
+          { label: "a", text: "— C'est quoi ? (👜) → _____" },
+          { label: "b", text: "— C'est quoi ? (🔑 · moi) → _____" },
+          { label: "c", text: "— C'est quoi ? (📚) → _____" },
+          { label: "d", text: "— C'est quoi ? (🖊️🖊️ · moi) → _____" },
+          { label: "e", text: "— C'est quoi ? (📱 · moi) → _____" },
+          { label: "f", text: "— C'est quoi ? (⌚) → _____" },
         ],
         answers: [
           "a. C'est un sac.",
@@ -81,12 +81,12 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "I love cinema. → _____" },
-          { label: "b", text: "I like music. → _____" },
-          { label: "c", text: "I don't like football. → _____" },
-          { label: "d", text: "I hate video games. → _____" },
-          { label: "e", text: "She likes dancing. → _____" },
-          { label: "f", text: "Ask a friend: do you like sport? → _____" },
+          { label: "a", text: "— Tu aimes le cinéma ? (❤️❤️) → _____" },
+          { label: "b", text: "— Tu aimes la musique ? (❤️) → _____" },
+          { label: "c", text: "— Tu aimes le football ? (✖️) → _____" },
+          { label: "d", text: "— Et les jeux vidéo ? (✖️✖️) → _____" },
+          { label: "e", text: "— Et elle, elle aime danser ? (❤️) → _____" },
+          { label: "f", text: "— _____ — Oui, j'aime le sport. (à un ami)" },
         ],
         answers: [
           "a. J'adore le cinéma.",
@@ -124,11 +124,11 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "I like cinema because it's fun. → _____" },
-          { label: "b", text: "I don't like football because it's boring. → _____" },
-          { label: "c", text: "I love music because it's great. → _____" },
-          { label: "d", text: "I hate dancing because it's difficult. → _____" },
-          { label: "e", text: "Ask a friend why. → _____" },
+          { label: "a", text: "— Tu aimes le cinéma ? Pourquoi ? (❤️ · amusant) → _____" },
+          { label: "b", text: "— Et le football ? (✖️ · ennuyeux) → _____" },
+          { label: "c", text: "— Et la musique ? (❤️❤️ · génial) → _____" },
+          { label: "d", text: "— Et la danse ? (✖️✖️ · difficile) → _____" },
+          { label: "e", text: "— Je n'aime pas le football. — _____ — Parce que c'est ennuyeux." },
         ],
         answers: [
           "a. J'aime le cinéma parce que c'est amusant.",
@@ -173,11 +173,11 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Invite a friend to the cinema. → _____" },
-          { label: "b", text: "Invite a friend to the swimming pool. → _____" },
-          { label: "c", text: "Accept with pleasure. → _____" },
-          { label: "d", text: "Refuse: sorry, you are not free (you are a man). → _____" },
-          { label: "e", text: "Invite a friend to the restaurant. → _____" },
+          { label: "a", text: "(à un ami · 🎬 le cinéma) → _____" },
+          { label: "b", text: "(à un ami · 🏊 la piscine) → _____" },
+          { label: "c", text: "— Tu veux aller au concert ? (😀 · plaisir) → _____" },
+          { label: "d", text: "— Tu veux aller au cinéma ce soir ? (😕 · pas libre · un garçon) → _____" },
+          { label: "e", text: "(à un ami · 🍽️ le restaurant) → _____" },
         ],
         answers: [
           "a. Tu veux aller au cinéma ?",
@@ -213,11 +213,11 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask where you are meeting. → _____" },
-          { label: "b", text: "Ask at what time. → _____" },
-          { label: "c", text: "Suggest: at the café, on Saturday. → _____" },
-          { label: "d", text: "Suggest: on Friday, at eight o'clock. → _____" },
-          { label: "e", text: "Suggest: on Sunday, at noon. → _____" },
+          { label: "a", text: "— _____ — Au café. (à un ami)" },
+          { label: "b", text: "— _____ — À huit heures." },
+          { label: "c", text: "— On se retrouve où et quand ? (☕ le café · samedi) → _____" },
+          { label: "d", text: "— On se retrouve quand ? (vendredi · 8 h) → _____" },
+          { label: "e", text: "— On se retrouve quand ? (dimanche · 12 h) → _____" },
         ],
         answers: [
           "a. On se retrouve où ?",

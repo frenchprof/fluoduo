@@ -37,12 +37,12 @@ export const u0: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Say hello in the evening and give your name (Paul). → _____" },
-          { label: "b", text: "Give your name, stressing *you* (Léa). → _____" },
-          { label: "c", text: "Ask your teacher the same question back. → _____" },
-          { label: "d", text: "Say that you are a student (you are a woman). → _____" },
-          { label: "e", text: "Who is it? (Mr Dupont) → _____" },
-          { label: "f", text: "Greet a friend and ask the question back. → _____" },
+          { label: "a", text: "(20 h · Paul) — Bonsoir ! Moi, c'est Marie. Et vous ? → _____" },
+          { label: "b", text: "— Toi, tu t'appelles comment ? (moi · Léa) → _____" },
+          { label: "c", text: "Bonjour, je m'appelle Léa. _____ (au professeur)" },
+          { label: "d", text: "— Vous êtes étudiante ? — Oui. _____" },
+          { label: "e", text: "— C'est qui ? (M. Dupont) → _____" },
+          { label: "f", text: "Salut ! Je m'appelle Léa. _____ (à un ami)" },
         ],
         answers: [
           "a. Bonsoir, je m'appelle Paul.",
@@ -50,7 +50,7 @@ export const u0: Sheet = {
           "c. Et vous ?",
           "d. Je suis étudiante.",
           "e. C'est Monsieur Dupont.",
-          "f. Salut ! Et toi ?",
+          "f. Et toi ?",
         ],
       },
     },
@@ -80,11 +80,11 @@ export const u0: Sheet = {
       exercise: {
         title: "Choose *tu* or *vous*.",
         items: [
-          { label: "a", text: "To your classmate Paul: _____ t'appelles comment ?" },
-          { label: "b", text: "To your teacher: _____ vous appelez comment ?" },
-          { label: "c", text: "To three friends: _____ êtes étudiants ?" },
-          { label: "d", text: "To a child: _____ es français ?" },
-          { label: "e", text: "To a shop assistant: _____ êtes français ?" },
+          { label: "a", text: "À Paul, ton camarade : _____ t'appelles comment ?" },
+          { label: "b", text: "À ton professeur : _____ vous appelez comment ?" },
+          { label: "c", text: "À trois amis : _____ êtes étudiants ?" },
+          { label: "d", text: "À un enfant : _____ es français ?" },
+          { label: "e", text: "À un vendeur : _____ êtes français ?" },
         ],
         answers: ["a. tu", "b. vous", "c. vous", "d. tu", "e. vous"],
       },
@@ -117,11 +117,11 @@ export const u0: Sheet = {
       exercise: {
         title: "Answer the question *C'est quand ?*",
         items: [
-          { label: "a", text: "The French class (Monday morning) → _____" },
-          { label: "b", text: "The party (Saturday evening) → _____" },
-          { label: "c", text: "The test (Wednesday afternoon) → _____" },
-          { label: "d", text: "The film (Friday evening) → _____" },
-          { label: "e", text: "The market (Sunday morning) → _____" },
+          { label: "a", text: "— Le cours de français ? (lundi · matin) → _____" },
+          { label: "b", text: "— La fête ? (samedi · soir) → _____" },
+          { label: "c", text: "— L'examen ? (mercredi · après-midi) → _____" },
+          { label: "d", text: "— Le film ? (vendredi · soir) → _____" },
+          { label: "e", text: "— Le marché ? (dimanche · matin) → _____" },
         ],
         answers: [
           "a. C'est lundi matin.",
@@ -160,11 +160,11 @@ export const u0: Sheet = {
       exercise: {
         title: "Answer with *Il y a…*",
         items: [
-          { label: "a", text: "How many students? (15) → _____" },
-          { label: "b", text: "How many books? (12) → _____" },
-          { label: "c", text: "How many chairs? (20) → _____" },
-          { label: "d", text: "How many pens? (17) → _____" },
-          { label: "e", text: "How many tables? (6) → _____" },
+          { label: "a", text: "— Il y a combien d'étudiants ? (15) → _____" },
+          { label: "b", text: "— Il y a combien de livres ? (12) → _____" },
+          { label: "c", text: "— Il y a combien de chaises ? (20) → _____" },
+          { label: "d", text: "— Il y a combien de stylos ? (17) → _____" },
+          { label: "e", text: "— Il y a combien de tables ? (6) → _____" },
         ],
         answers: [
           "a. Il y a quinze étudiants.",
@@ -202,11 +202,11 @@ export const u0: Sheet = {
       exercise: {
         title: "Give the instruction.",
         items: [
-          { label: "a", text: "Tell one classmate to listen. → _____" },
-          { label: "b", text: "Tell the group to read the text. → _____" },
-          { label: "c", text: "Tell the group to write the sentence. → _____" },
-          { label: "d", text: "Tell one classmate to repeat. → _____" },
-          { label: "e", text: "Ask what you are doing. → _____" },
+          { label: "a", text: "(à un camarade · 👂) → _____" },
+          { label: "b", text: "(au groupe · 📖 le texte) → _____" },
+          { label: "c", text: "(au groupe · ✍️ la phrase) → _____" },
+          { label: "d", text: "(à un camarade · 🔁) → _____" },
+          { label: "e", text: "— _____ — Vous lisez le texte. (au professeur · 🤷)" },
         ],
         answers: [
           "a. Écoute !",

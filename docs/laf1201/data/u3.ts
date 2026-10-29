@@ -36,12 +36,12 @@ export const u3: Sheet = {
       exercise: {
         title: "Describe the weather.",
         items: [
-          { label: "a", text: "☀️ It's nice weather. → _____" },
-          { label: "b", text: "🌧️ It's raining. → _____" },
-          { label: "c", text: "🥶 It's cold and it's snowing. → _____" },
-          { label: "d", text: "💨 It's windy. → _____" },
-          { label: "e", text: "🌡️ It's 30 degrees. → _____" },
-          { label: "f", text: "Ask what the weather is like. → _____" },
+          { label: "a", text: "— Quel temps fait-il ? (☀️) → _____" },
+          { label: "b", text: "— Quel temps fait-il ? (🌧️) → _____" },
+          { label: "c", text: "— Quel temps fait-il ? (🥶 · ❄️) → _____" },
+          { label: "d", text: "— Quel temps fait-il ? (💨) → _____" },
+          { label: "e", text: "— Quel temps fait-il ? (🌡️ 30°) → _____" },
+          { label: "f", text: "— _____ — Il fait beau." },
         ],
         answers: [
           "a. Il fait beau.",
@@ -88,11 +88,11 @@ export const u3: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask where the station is. → _____" },
-          { label: "b", text: "Ask if there is a pharmacy. → _____" },
-          { label: "c", text: "The station is next to the post office. → _____" },
-          { label: "d", text: "The bank is opposite the museum. → _____" },
-          { label: "e", text: "The hotel is between the station and the park. → _____" },
+          { label: "a", text: "— _____ — Elle est à côté de la poste. (🚉)" },
+          { label: "b", text: "— _____ — Oui, il y a une pharmacie rue Victor-Hugo." },
+          { label: "c", text: "— Où est la gare ? (à côté · la poste) → _____" },
+          { label: "d", text: "— Où est la banque ? (en face · le musée) → _____" },
+          { label: "e", text: "— Où est l'hôtel ? (entre · la gare · le parc) → _____" },
         ],
         answers: [
           "a. Où est la gare ?",
@@ -132,11 +132,11 @@ export const u3: Sheet = {
       exercise: {
         title: "Give the directions.",
         items: [
-          { label: "a", text: "Go straight on. → _____" },
-          { label: "b", text: "Take the first street on the left. → _____" },
-          { label: "c", text: "Take the second street on the right. → _____" },
-          { label: "d", text: "The museum is opposite the bank. → _____" },
-          { label: "e", text: "Ask politely where the museum is. → _____" },
+          { label: "a", text: "— Pardon, où est le musée ? (⬆️) → _____" },
+          { label: "b", text: "— Et après ? (1ʳᵉ rue · ⬅️) → _____" },
+          { label: "c", text: "— Et après ? (2ᵉ rue · ➡️) → _____" },
+          { label: "d", text: "— Et le musée ? (en face · la banque) → _____" },
+          { label: "e", text: "— _____ — Le musée ? Vous allez tout droit. (poliment)" },
         ],
         answers: [
           "a. Vous allez tout droit.",

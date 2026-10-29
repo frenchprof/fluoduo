@@ -37,12 +37,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "We visit the museum. → _____", distractors: ["visitez", "visitent"] },
-          { label: "b", text: "You (vous) finish at six o'clock. → _____", distractors: ["finissent", "finissons"] },
-          { label: "c", text: "They wait for the bus. → _____", distractors: ["attends", "attendez"] },
-          { label: "d", text: "We finish the exercise. → _____", distractors: ["finit", "finissez"] },
-          { label: "e", text: "Do you (vous) visit Paris? → _____", distractors: ["visitons", "visites"] },
-          { label: "f", text: "She waits for her friend. → _____", distractors: ["attendent", "attends"] },
+          { label: "a", text: "(nous · visiter · le musée) → _____", distractors: ["visitez", "visitent"] },
+          { label: "b", text: "(vous · finir · 6 h) → _____", distractors: ["finissent", "finissons"] },
+          { label: "c", text: "(ils · attendre · le bus) → _____", distractors: ["attends", "attendez"] },
+          { label: "d", text: "(nous · finir · l'exercice) → _____", distractors: ["finit", "finissez"] },
+          { label: "e", text: "(vous · visiter · Paris · ?) → _____", distractors: ["visitons", "visites"] },
+          { label: "f", text: "(elle · attendre · son amie) → _____", distractors: ["attendent", "attends"] },
         ],
         answers: [
           "a. Nous visitons le musée.",
@@ -85,12 +85,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Do you (vous) do sport? → _____", distractors: ["faisons", "font"] },
-          { label: "b", text: "We are students. → _____", distractors: ["êtes", "sont"] },
-          { label: "c", text: "They are going to the cinema. → _____", distractors: ["va", "allez"] },
-          { label: "d", text: "We have a car. → _____", distractors: ["avez", "ont"] },
-          { label: "e", text: "Are you tired? (vous, to several people) → _____", distractors: ["sont", "sommes"] },
-          { label: "f", text: "They do their shopping. → _____", distractors: ["faites", "fait"] },
+          { label: "a", text: "(vous · faire · du sport · ?) → _____", distractors: ["faisons", "font"] },
+          { label: "b", text: "(nous · être · étudiants) → _____", distractors: ["êtes", "sont"] },
+          { label: "c", text: "(ils · aller · au cinéma) → _____", distractors: ["va", "allez"] },
+          { label: "d", text: "(nous · avoir · une voiture) → _____", distractors: ["avez", "ont"] },
+          { label: "e", text: "(vous · être · fatigués · ?) → _____", distractors: ["sont", "sommes"] },
+          { label: "f", text: "(ils · faire · leurs courses) → _____", distractors: ["faites", "fait"] },
         ],
         answers: [
           "a. Vous faites du sport ?",
@@ -133,12 +133,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "We take the metro. → _____", distractors: ["prenez", "prennent"] },
-          { label: "b", text: "Are you (vous) coming with us? → _____", distractors: ["viennent", "venons"] },
-          { label: "c", text: "They want to leave. → _____", distractors: ["veut", "partent"] },
-          { label: "d", text: "We drink water. → _____", distractors: ["boivent", "buvez"] },
-          { label: "e", text: "I leave at eight o'clock. → _____", distractors: ["part", "partir"] },
-          { label: "f", text: "Do you (vous) take the train? → _____", distractors: ["prennent", "prenons"] },
+          { label: "a", text: "(nous · prendre · le métro) → _____", distractors: ["prenez", "prennent"] },
+          { label: "b", text: "(vous · venir · avec nous · ?) → _____", distractors: ["viennent", "venons"] },
+          { label: "c", text: "(ils · vouloir · partir) → _____", distractors: ["veut", "partent"] },
+          { label: "d", text: "(nous · boire · de l'eau) → _____", distractors: ["boivent", "buvez"] },
+          { label: "e", text: "(je · partir · 8 h) → _____", distractors: ["part", "partir"] },
+          { label: "f", text: "(vous · prendre · le train · ?) → _____", distractors: ["prennent", "prenons"] },
         ],
         answers: [
           "a. Nous prenons le métro.",
@@ -180,12 +180,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "I eat cheese. → _____", distractors: ["de", "le"] },
-          { label: "b", text: "I don't drink coffee. → _____", distractors: ["du"] },
-          { label: "c", text: "She drinks water. → _____", distractors: ["de la", "du"] },
-          { label: "d", text: "We eat vegetables. → _____", distractors: ["du", "de"] },
-          { label: "e", text: "He doesn't eat meat. → _____", distractors: ["de la"] },
-          { label: "f", text: "I buy salad. → _____", distractors: ["du", "des"] },
+          { label: "a", text: "— Qu'est-ce que tu manges ? (🧀 fromage) → _____", distractors: ["de", "le"] },
+          { label: "b", text: "— Tu bois du café ? (✖️) → _____", distractors: ["du"] },
+          { label: "c", text: "— Qu'est-ce qu'elle boit ? (💧 eau) → _____", distractors: ["de la", "du"] },
+          { label: "d", text: "— Qu'est-ce que vous mangez ? (nous · 🥕 légumes) → _____", distractors: ["du", "de"] },
+          { label: "e", text: "— Il mange de la viande ? (✖️) → _____", distractors: ["de la"] },
+          { label: "f", text: "— Qu'est-ce que tu achètes ? (🥗 salade) → _____", distractors: ["du", "des"] },
         ],
         answers: [
           "a. Je mange du fromage.",
@@ -236,12 +236,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "She lives in Belgium. → _____", distractors: ["à", "au"] },
-          { label: "b", text: "We are going to Japan. → _____", distractors: ["en", "à"] },
-          { label: "c", text: "I go to school on foot. → _____", distractors: ["en"] },
-          { label: "d", text: "He goes to the library by bike. → _____", distractors: ["en"] },
-          { label: "e", text: "They travel to China by plane. → _____", distractors: ["à", "au"] },
-          { label: "f", text: "I'm going to Paris by train. → _____", distractors: ["au", "dans"] },
+          { label: "a", text: "— Elle habite où ? (🇧🇪 Belgique) → _____", distractors: ["à", "au"] },
+          { label: "b", text: "— Vous allez où ? (nous · 🇯🇵 Japon) → _____", distractors: ["en", "à"] },
+          { label: "c", text: "— Tu vas où, et comment ? (🏫 l'école · 🚶) → _____", distractors: ["en"] },
+          { label: "d", text: "— Il va où, et comment ? (📚 la bibliothèque · 🚲) → _____", distractors: ["en"] },
+          { label: "e", text: "— Ils voyagent où, et comment ? (🇨🇳 Chine · ✈️) → _____", distractors: ["à", "au"] },
+          { label: "f", text: "— Tu vas où, et comment ? (Paris · 🚆) → _____", distractors: ["au", "dans"] },
         ],
         answers: [
           "a. Elle habite en Belgique.",
@@ -330,12 +330,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "She is serious. → _____", distractors: ["sérieux", "sérieuses"] },
-          { label: "b", text: "They (m.) are sporty. → _____", distractors: ["sportif", "sportives"] },
-          { label: "c", text: "My mother is hard-working. → _____", distractors: ["travailleur", "travailleurs"] },
-          { label: "d", text: "The girls are funny. → _____", distractors: ["amusants", "amusante"] },
-          { label: "e", text: "She is Canadian. → _____", distractors: ["canadiens", "canadien"] },
-          { label: "f", text: "It's an old house. → _____", distractors: ["vieux", "vieil"] },
+          { label: "a", text: "— Elle est comment ? (sérieux) → _____", distractors: ["sérieux", "sérieuses"] },
+          { label: "b", text: "— Ils sont comment ? (sportif) → _____", distractors: ["sportif", "sportives"] },
+          { label: "c", text: "— Ta mère est comment ? (travailleur) → _____", distractors: ["travailleur", "travailleurs"] },
+          { label: "d", text: "— Les filles sont comment ? (amusant) → _____", distractors: ["amusants", "amusante"] },
+          { label: "e", text: "— Elle est de quelle nationalité ? (canadien) → _____", distractors: ["canadiens", "canadien"] },
+          { label: "f", text: "— C'est quoi ? (🏚️ · une maison · vieux) → _____", distractors: ["vieux", "vieil"] },
         ],
         answers: [
           "a. Elle est sérieuse.",
@@ -376,12 +376,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask: do you (tu) like coffee? → _____", distractors: ["qu'est-ce"] },
-          { label: "b", text: "Ask: does he work on Saturdays? → _____", distractors: ["que"] },
-          { label: "c", text: "I often go to the cinema. → _____", distractors: ["toujours"] },
-          { label: "d", text: "We don't take the bus. → _____", distractors: ["rien"] },
-          { label: "e", text: "Ask: do you (vous) speak English? → _____", distractors: ["qu'est-ce"] },
-          { label: "f", text: "She always eats at noon. → _____", distractors: ["souvent"] },
+          { label: "a", text: "(à un ami · est-ce que · aimer · le café) → _____", distractors: ["qu'est-ce"] },
+          { label: "b", text: "(est-ce que · il · travailler · le samedi) → _____", distractors: ["que"] },
+          { label: "c", text: "— Tu vas au cinéma ? (oui · souvent) → _____", distractors: ["toujours"] },
+          { label: "d", text: "— Vous prenez le bus ? (non · nous) → _____", distractors: ["rien"] },
+          { label: "e", text: "(au professeur · est-ce que · parler · anglais) → _____", distractors: ["qu'est-ce"] },
+          { label: "f", text: "— Elle mange à quelle heure ? (toujours · 12 h) → _____", distractors: ["souvent"] },
         ],
         answers: [
           "a. Est-ce que tu aimes le café ?",
@@ -424,12 +424,12 @@ export const tp: Sheet = {
       exercise: {
         title: "Give the advice.",
         items: [
-          { label: "a", text: "You must take the metro (il faut). → _____", distractors: ["prends", "prend"] },
-          { label: "b", text: "It is important to drink water. → _____", distractors: ["à", "du"] },
-          { label: "c", text: "I advise you to visit the market. → _____", distractors: ["à", "visites"] },
-          { label: "d", text: "You should book a hotel. → _____", distractors: ["réserves", "réservez"] },
-          { label: "e", text: "Visit the museum! (tu) → _____", distractors: ["Visites"] },
-          { label: "f", text: "Take the train! (tu) → _____", distractors: ["Prend", "Prendre"] },
+          { label: "a", text: "Conseil (il faut) : 🚇 prendre le métro → _____", distractors: ["prends", "prend"] },
+          { label: "b", text: "Conseil (il est important de) : 💧 boire de l'eau → _____", distractors: ["à", "du"] },
+          { label: "c", text: "Conseil (je te conseille de) : 🧺 visiter le marché → _____", distractors: ["à", "visites"] },
+          { label: "d", text: "Conseil (tu devrais) : 🏨 réserver un hôtel → _____", distractors: ["réserves", "réservez"] },
+          { label: "e", text: "Conseil (impératif, tu) : 🏛️ visiter le musée → _____", distractors: ["Visites"] },
+          { label: "f", text: "Conseil (impératif, tu) : 🚆 prendre le train → _____", distractors: ["Prend", "Prendre"] },
         ],
         answers: [
           "a. Il faut prendre le métro.",

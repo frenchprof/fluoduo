@@ -49,12 +49,12 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask a classmate for their first name. → _____" },
-          { label: "b", text: "Ask your teacher for their surname. → _____" },
-          { label: "c", text: "Give your first name (Léa). → _____" },
-          { label: "d", text: "And him? (Paul) → _____" },
-          { label: "e", text: "And them? (Paul and Léa) → _____" },
-          { label: "f", text: "Ask how it is spelt. → _____" },
+          { label: "a", text: "— _____ — Mon prénom est Léa. (à un camarade)" },
+          { label: "b", text: "— _____ — Mon nom est Martin. (au professeur)" },
+          { label: "c", text: "— Quel est ton prénom ? (Léa) → _____" },
+          { label: "d", text: "— Et lui ? (Paul) → _____" },
+          { label: "e", text: "— Et eux ? (Paul et Léa) → _____" },
+          { label: "f", text: "— _____ — M-A-R-T-I-N." },
         ],
         answers: [
           "a. Quel est ton prénom ?",
@@ -99,12 +99,12 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask a friend which country they like. → _____" },
-          { label: "b", text: "Say you like France. → _____" },
-          { label: "c", text: "Say you like Japan. → _____" },
-          { label: "d", text: "Say you like Italy. → _____" },
-          { label: "e", text: "Say you like the United States. → _____" },
-          { label: "f", text: "Ask your teacher which country they like. → _____" },
+          { label: "a", text: "— _____ — J'aime la France. (à un ami)" },
+          { label: "b", text: "— Tu aimes quel pays ? (🇫🇷) → _____" },
+          { label: "c", text: "— Tu aimes quel pays ? (🇯🇵) → _____" },
+          { label: "d", text: "— Tu aimes quel pays ? (🇮🇹) → _____" },
+          { label: "e", text: "— Tu aimes quel pays ? (🇺🇸) → _____" },
+          { label: "f", text: "— _____ — J'aime le Japon. (au professeur)" },
         ],
         answers: [
           "a. Tu aimes quel pays ?",
@@ -154,12 +154,12 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask a friend their nationality. → _____" },
-          { label: "b", text: "She is Chinese. → _____" },
-          { label: "c", text: "He is Italian and he is a doctor. → _____" },
-          { label: "d", text: "Ask your teacher their profession. → _____" },
-          { label: "e", text: "I am not French (you are a man). → _____" },
-          { label: "f", text: "We are students. → _____" },
+          { label: "a", text: "— _____ — Je suis chinoise. (à une amie)" },
+          { label: "b", text: "— Et elle ? (🇨🇳) → _____" },
+          { label: "c", text: "— Et lui ? (🇮🇹 · médecin) → _____" },
+          { label: "d", text: "— _____ — Je suis professeur. (au professeur)" },
+          { label: "e", text: "— Vous êtes français ? (non · un homme) → _____" },
+          { label: "f", text: "— Vous êtes étudiants ? (oui · nous) → _____" },
         ],
         answers: [
           "a. Quelle est ta nationalité ?",
@@ -206,11 +206,11 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "Ask a friend their age. → _____" },
-          { label: "b", text: "I am 19. → _____" },
-          { label: "c", text: "She is 21. → _____" },
-          { label: "d", text: "Ask your teacher their age. → _____" },
-          { label: "e", text: "We are 20. → _____" },
+          { label: "a", text: "— _____ — J'ai dix-neuf ans. (à un ami)" },
+          { label: "b", text: "— Quel est ton âge ? (19) → _____" },
+          { label: "c", text: "— Et elle ? (21) → _____" },
+          { label: "d", text: "— _____ — J'ai quarante ans. (au professeur)" },
+          { label: "e", text: "— Vous avez quel âge ? (nous · 20) → _____" },
         ],
         answers: [
           "a. Quel est ton âge ?",
@@ -253,11 +253,11 @@ export const u1: Sheet = {
       exercise: {
         title: "Ask the question.",
         items: [
-          { label: "a", text: "Ask a friend for their address. → _____" },
-          { label: "b", text: "Ask your teacher for their email address. → _____" },
-          { label: "c", text: "Ask a friend for their phone number. → _____" },
-          { label: "d", text: "Ask a stranger for their phone number. → _____" },
-          { label: "e", text: "Ask a friend for their email address. → _____" },
+          { label: "a", text: "— _____ — C'est 12, rue de la Paix. (à un ami)" },
+          { label: "b", text: "— _____ — C'est marie.dupont@nus.edu.sg. (au professeur)" },
+          { label: "c", text: "— _____ — C'est le 06 12 34 56 78. (à un ami)" },
+          { label: "d", text: "— _____ — C'est le 06 98 76 54 32. (à un inconnu)" },
+          { label: "e", text: "— _____ — C'est lea@gmail.com. (à une amie)" },
         ],
         answers: [
           "a. Quelle est ton adresse ?",
