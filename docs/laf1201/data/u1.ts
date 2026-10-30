@@ -233,14 +233,14 @@ export const u1: Sheet = {
           headers: ["", "Informal", "Formal"],
           rows: [
             ["Address", "*Quelle est ton adresse ?*", "*Quelle est votre adresse ?*"],
-            ["Email", "*Quelle est ton adresse e-mail ?*", "*Quelle est votre adresse e-mail ?*"],
+            ["Email (courriel)", "*Quelle est ton adresse courriel ?*", "*Quelle est votre adresse courriel ?*"],
             ["Phone", "*Quel est ton numéro de téléphone ?*", "*Quel est votre numéro de téléphone ?*"],
           ],
         },
         {
           type: "callout",
           variant: "tip",
-          title: "Saying an email address",
+          title: "Saying a courriel address",
           lines: ["@ = *arobase* · . = *point* → *lea point martin arobase gmail point com*"],
         },
         {
@@ -261,10 +261,10 @@ export const u1: Sheet = {
         ],
         answers: [
           "a. Quelle est ton adresse ?",
-          "b. Quelle est votre adresse e-mail ?",
+          "b. Quelle est votre adresse courriel ?",
           "c. Quel est ton numéro de téléphone ?",
           "d. Quel est votre numéro de téléphone ?",
-          "e. Quelle est ton adresse e-mail ?",
+          "e. Quelle est ton adresse courriel ?",
         ],
       },
     },
