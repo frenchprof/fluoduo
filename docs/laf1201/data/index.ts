@@ -28,7 +28,7 @@ export const themes: { id: ThemeId; label: string; detail: string }[] = [
   { id: "lieux", label: "14. Places and transport", detail: "à and en · the pronoun y" },
   { id: "adjectifs", label: "15. Adjective agreement", detail: "" },
   { id: "phrases", label: "16. Word order", detail: "est-ce que, ne… pas, adverbs" },
-  { id: "conseils", label: "17. Giving advice", detail: "il faut, je te conseille de, tu devrais, the imperative" },
+  { id: "conseils", label: "17. Giving advice", detail: "il faut, tu dois, tu peux + infinitive" },
   { id: "lecture", label: "18. Reading", detail: "a menu, a postcard" },
   { id: "ecoute", label: "19. Listening", detail: "prepositions of place, directions, a phone call" },
   { id: "ecriture", label: "20. Writing", detail: "an informal email giving advice" },
