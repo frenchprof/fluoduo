@@ -720,8 +720,11 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     addressQ("Addressing a woman", "Madame", "Madame (Mme) — how to address a woman."),
   ],
   "SIO-007": [
-    // 0–16 + 20 (17–19 excluded, per Dan 2026-07-02). Distractors are the
-    // easily-confused numbers (six/seize, deux/douze, trois/treize…).
+    // 0–10 (30 Oct): Unit 0 teaches one to ten, and Dan ruled on 29 Aug that
+    // "Stop 7 should stop at number 10". 11–16 and 20 were scored here until
+    // then; they are taught and scored at SIO-018 (Unit 1). Distractors stay the
+    // easily-confused numbers (six/seize, deux/douze, trois/treize…) — a wrong
+    // option may be a word the learner has not met yet.
     glossQ("0", "zéro", ["quatorze", "huit", "seize"], NUMBER),
     glossQ("1", "un", ["treize", "trois", "onze"], NUMBER),
     glossQ("2", "deux", ["douze", "quatorze", "quatre"], NUMBER),
@@ -733,13 +736,6 @@ export const UNIT0_QUESTIONS: Record<string, Unit0Question[]> = {
     glossQ("8", "huit", ["dix", "deux", "six"], NUMBER),
     glossQ("9", "neuf", ["dix", "quatre", "deux"], NUMBER),
     glossQ("10", "dix", ["deux", "six", "seize"], NUMBER),
-    glossQ("11", "onze", ["un", "douze", "treize"], NUMBER),
-    glossQ("12", "douze", ["deux", "treize", "onze"], NUMBER),
-    glossQ("13", "treize", ["trois", "douze", "quatorze"], NUMBER),
-    glossQ("14", "quatorze", ["quatre", "quinze", "treize"], NUMBER),
-    glossQ("15", "quinze", ["cinq", "quatorze", "seize"], NUMBER),
-    glossQ("16", "seize", ["six", "quinze", "dix"], NUMBER),
-    glossQ("20", "vingt", ["deux", "dix", "quatre"], NUMBER),
   ],
   "SIO-008": [
     // Classroom instructions — emoji + (English) prompt, pick the French

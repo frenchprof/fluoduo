@@ -211,10 +211,10 @@
     },
     {
       "id": "directions-matching-R-arrive",
-      "fr": "arrivé(e)",
-      "syllables": ["ar", "ri", "vé"],
-      "en": "arrived",
-      "emoji": "🎯",
+      "fr": "ici",
+      "syllables": ["i", "ci"],
+      "en": "here",
+      "emoji": "📍",
       "tags": [
         "role:right"
       ]
@@ -305,8 +305,8 @@
     },
     {
       "id": "directions-full-15",
-      "fr": "Vous êtes arrivé(e).",
-      "en": "You have arrived.",
+      "fr": "C'est ici.",
+      "en": "It's here.",
       "tags": []
     },
     {

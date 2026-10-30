@@ -13,7 +13,8 @@ const ITEMS = [
   { aff: "J'ai seize ans.", en: "I am sixteen.", s: "Je", ne: "n'", v: "ai", tail: "seize ans." },
   { aff: "Je m'appelle Thomas.", en: "My name is Thomas.", s: "Je", ne: "ne", v: "m'appelle", tail: "Thomas." },
   { aff: "Je m'appelle Emma.", en: "My name is Emma.", s: "Je", ne: "ne", v: "m'appelle", tail: "Emma." },
-  { aff: "Il y a un chat dans ma famille.", en: "There is a cat in my family.", s: "Il", ne: "n'", v: "y a", tail: "de chat dans ma famille." },
+  // « Il n'y a pas de chat dans ma famille » left on 30 Oct: « pas de » and
+  // « ma » are Unit 2, scored there.
   { aff: "Tu es anglais.", en: "You are English. (m.)", s: "Tu", ne: "n'", v: "es", tail: "anglais." },
   { aff: "Tu es anglaise.", en: "You are English. (f.)", s: "Tu", ne: "n'", v: "es", tail: "anglaise." },
   { aff: "Elle a seize ans.", en: "She is sixteen.", s: "Elle", ne: "n'", v: "a", tail: "seize ans." },
@@ -111,10 +112,7 @@ export const negationLesson: NativeLesson = {
       const it = pick(ITEMS);
       const correct = `${it.s} ${join(it.ne, it.v)} pas ${it.tail}`;
       const swapNe = `${it.s} ${join(it.ne === "n'" ? "ne" : "n'", it.v)} pas ${it.tail}`;
-      const wrongs =
-        it.v === "y a"
-          ? [swapNe, correct.replace(" pas de ", " pas un "), `${it.s} y a pas ${it.tail}`]
-          : [swapNe, `${merge(it.s, it.v)} pas ${it.tail}`, `${it.s} ${join(it.ne, it.v)} ${it.tail.slice(0, -1)} pas.`];
+      const wrongs = [swapNe, `${merge(it.s, it.v)} pas ${it.tail}`, `${it.s} ${join(it.ne, it.v)} ${it.tail.slice(0, -1)} pas.`];
       return {
         meta: "Mettez à la forme négative",
         big: it.aff,
@@ -132,7 +130,6 @@ export const negationLesson: NativeLesson = {
     { en: "She is not English.", fr: "Elle n'est pas anglaise." },
     { en: "He is not Japanese.", fr: "Il n'est pas japonais." },
     { en: "You are not Spanish. (boy)", fr: "Tu n'es pas espagnol." },
-    { en: "There is no cat in my family.", fr: "Il n'y a pas de chat dans ma famille." },
     { en: "We are not German.", fr: "Nous ne sommes pas allemands." },
     { en: "Her name is not Chloé.", fr: "Elle ne s'appelle pas Chloé." },
     { en: "He is not fourteen years old.", fr: "Il n'a pas quatorze ans." },

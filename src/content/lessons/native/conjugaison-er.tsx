@@ -48,15 +48,17 @@ export const conjugaisonErLesson: NativeLesson = {
     newQuestion: conjugaisonErQuestion,
     axes: CONJUGAISON_ER_AXES,
   },
+  // 30 Oct: « venir » (Unit 3) and « en France » (en + country, Unit 3) left
+  // the bonus; pouvoir stays (counted as taught everywhere).
   bonus: [
     { en: "I want to go to the cinema.", fr: "Je veux aller au cinéma." },
-    { en: "She can come at 8.", fr: "Elle peut venir à 8 heures." },
+    { en: "She can speak French.", fr: "Elle peut parler français." },
     { en: "We speak French.", fr: "Nous parlons français." },
-    { en: "They live in France.", fr: "Ils habitent en France." },
-    { en: "You (pl.) can come tomorrow.", fr: "Vous pouvez venir demain." },
+    { en: "They live in Paris.", fr: "Ils habitent à Paris." },
+    { en: "You (pl.) can dance tomorrow.", fr: "Vous pouvez danser demain." },
     { en: "He wants to read.", fr: "Il veut lire." },
     { en: "I like dancing.", fr: "J'aime danser." },
-    { en: "They can't come this evening.", fr: "Ils ne peuvent pas venir ce soir." },
+    { en: "They can't dance this evening.", fr: "Ils ne peuvent pas danser ce soir." },
     { en: "You (sg.) speak English.", fr: "Tu parles anglais." },
     { en: "We want to go to the park.", fr: "Nous voulons aller au parc." },
   ],

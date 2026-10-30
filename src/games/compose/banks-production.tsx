@@ -239,7 +239,7 @@ export const EMAIL_BANK: ComposeBank = {
     { label: "Où je suis", phrases: ["Je suis à", "Paris", "Nice", "Singapour"] },
     { label: "Raconter", phrases: ["J'aime", "je fais du sport", "je vais à la plage", "C'est super"] },
     { label: "Proposer", phrases: ["On peut", "Tu veux", "si tu veux", "ce week-end"] },
-    { label: "Finir", phrases: ["À bientôt", "Bises", "Amitiés", "Écris-moi"] },
+    { label: "Finir", phrases: ["À bientôt", "Bises", "Amitiés", "Au revoir"] },
   ]),
   newScenario() {
     const o = pick(OCCASIONS, Math.floor(Date.now() / 60000));
@@ -330,7 +330,7 @@ export const POSTCARD_BANK: ComposeBank = {
        out of a bank whose chip says « je visite ». « le musée » stays lower-case:
        it is a complement, never a first word. */
     { label: "Activités", phrases: ["Je visite", "On peut visiter", "Je vais à la plage", "On prend le métro", "le musée", "C'est magnifique"] },
-    { label: "Finir", phrases: ["À bientôt", "Bises", "Écris-moi", "Au revoir"] },
+    { label: "Finir", phrases: ["À bientôt", "Bises", "Salut !", "Au revoir"] },
   ]),
   newScenario() {
     /* THE BOOK'S FIVE PARTS, ASKED ONE AT A TIME. The atelier is a five-part
@@ -436,7 +436,7 @@ export const RESTAURANT_SCENE_BANK: ComposeBank = {
     contextEn: "You're arriving at a restaurant for dinner. Get a table, order a full meal, ask for the bill, pay, and leave politely.",
   },
   categories: withPalette([
-    { label: "Arriver", phrases: ["Bonsoir", "une table pour deux", "J'ai réservé", "au nom de", "près de la fenêtre"] },
+    { label: "Arriver", phrases: ["Bonsoir", "une table pour deux", "Je voudrais une table", "au nom de", "près de la fenêtre"] },
     { label: "Commander", phrases: ["Je voudrais", "Comme entrée", "Comme plat", "Comme dessert", "Et pour boire"] },
     { label: "Demander", phrases: ["Qu'est-ce que vous recommandez ?", "C'est quoi", "Il y a", "sans", "avec"] },
     { label: "Pendant le repas", phrases: ["C'est délicieux", "encore un peu", "de l'eau, s'il vous plaît", "Tout va bien"] },

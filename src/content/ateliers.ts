@@ -39,7 +39,8 @@ export const ATELIER_DIALOGUES: Record<string, DialogueLine[]> = {
     { who: "A", fr: "Bonjour ! Voici le Japon.", en: "Hello! Here is Japan." },
     { who: "A", fr: "C'est un pays asiatique.", en: "It's an Asian country." },
     { who: "A", fr: "Ici, il y a des Japonais.", en: "Here, there are Japanese people." },
-    { who: "A", fr: "Beaucoup de Japonais parlent japonais.", en: "Many Japanese people speak Japanese." },
+    // « Beaucoup de Japonais… » until 30 Oct — beaucoup de is Unit 4.
+    { who: "A", fr: "Les Japonais parlent japonais.", en: "Japanese people speak Japanese." },
     { who: "A", fr: "Le drapeau a deux couleurs : le rouge et le blanc.", en: "The flag has two colours: red and white." },
     { who: "A", fr: "Il y a un rond rouge sur un fond blanc.", en: "There is a red circle on a white background." },
   ],

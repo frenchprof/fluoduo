@@ -10,8 +10,8 @@
  *
  * ONE verb, because the objective is one thing (Dan, 2026-08-27: "the original
  * intention … is to have the objectives broken down into bitesized
- * objectives"). vouloir belongs to SIO-029, devoir to SIO-048; neither appears
- * here. What varies instead is what the learner DOES with pouvoir — state a
+ * objectives"). vouloir belongs to SIO-029 and does not appear here (devoir,
+ * Atelier A1 Unit 6, appears nowhere scored). What varies instead is what the learner DOES with pouvoir — state a
  * possibility, ask permission, say something is not allowed — which is the
  * three-part shape of the SIO's own can-do.
  *
@@ -106,9 +106,9 @@ export const pouvoirLesson: NativeLesson = {
   bonus: [
     { en: "Can I eat here?", fr: "Je peux manger ici ?", alt: ["Est-ce que je peux manger ici ?"] },
     { en: "We can visit the museum.", fr: "On peut visiter le musée." },
-    { en: "You can park there.", fr: "Tu peux te garer là." },
+    { en: "You can speak French here.", fr: "Tu peux parler français ici." },
     { en: "You (formal) can buy the tickets here.", fr: "Vous pouvez acheter les billets ici." },
-    { en: "We can walk around.", fr: "On peut se promener." },
+    { en: "We can go to the park.", fr: "On peut aller au parc." },
     { en: "She can come with us.", fr: "Elle peut venir avec nous." },
     { en: "They can wait here.", fr: "Ils peuvent attendre ici." },
     { en: "You can't smoke here.", fr: "On ne peut pas fumer ici." },

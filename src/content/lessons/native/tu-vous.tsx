@@ -27,9 +27,10 @@ const PEOPLE = [
 /** Question frames (Atelier U0 wording — « Vous vous appelez comment ? »);
  *  near* = the wrong-ending near-miss for each register. */
 const FRAMES = [
+  // « Tu parles / Vous parlez » and « Tu habites / Vous habitez » left the
+  // SCORED frames on 30 Oct: -er conjugation is Unit 1. The two kept are the
+  // set phrases Unit 0 itself uses. (The Mémo still shows all four.)
   { before: "", after: "comment ?", tu: "Tu t'appelles", vous: "Vous vous appelez", nearTu: "Tu t'appelez", nearVous: "Vous vous appelles", en: "What's your name?" },
-  { before: "", after: "français ?", tu: "Tu parles", vous: "Vous parlez", nearTu: "Tu parlez", nearVous: "Vous parles", en: "Do you speak French?" },
-  { before: "", after: "où ?", tu: "Tu habites", vous: "Vous habitez", nearTu: "Tu habitez", nearVous: "Vous habites", en: "Where do you live?" },
   { before: "", after: "bien ?", tu: "Tu vas", vous: "Vous allez", nearTu: "Tu allez", nearVous: "Vous vas", en: "Are you well?" },
 ] as const;
 
@@ -179,15 +180,10 @@ export const tuVousLesson: NativeLesson = {
     },
   },
   bonus: [
-    { en: "Ask a buddy: do you speak French?", fr: "Tu parles français ?" },
-    { en: "Ask the teacher: do you speak French?", fr: "Vous parlez français ?" },
     { en: "Ask your little sister: are you well?", fr: "Tu vas bien ?" },
     { en: "Ask the headmaster: what's your name?", fr: "Vous vous appelez comment ?", alt: ["Comment vous vous appelez ?"] },
-    { en: "Ask your parents: where do you live?", fr: "Vous habitez où ?" },
     { en: "Ask a child: what's your name?", fr: "Tu t'appelles comment ?", alt: ["Comment tu t'appelles ?"] },
     { en: "Ask an elderly person: are you well?", fr: "Vous allez bien ?" },
-    { en: "Ask your best friend: where do you live?", fr: "Tu habites où ?" },
     { en: "Ask the saleswoman: what's your name?", fr: "Vous vous appelez comment ?", alt: ["Comment vous vous appelez ?"] },
-    { en: "Ask two buddies: do you speak French?", fr: "Vous parlez français ?" },
   ],
 };

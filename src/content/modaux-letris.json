@@ -1,6 +1,6 @@
 {
  "id": "modaux-letris",
- "title": "aller, pouvoir ou devoir ?",
+ "title": "aller ou pouvoir ?",
  "subtitle": "sort each conjugated form under its infinitive",
  "language": "fr",
  "categories": [
@@ -12,11 +12,6 @@
   {
    "key": "pouvoir",
    "label": "POUVOIR",
-   "prefix": ""
-  },
-  {
-   "key": "devoir",
-   "label": "DEVOIR",
    "prefix": ""
   }
  ],
@@ -74,31 +69,6 @@
   {
    "text": "PEUVENT",
    "category": "pouvoir",
-   "meaning": "ils/elles …"
-  },
-  {
-   "text": "DOIS",
-   "category": "devoir",
-   "meaning": "je/tu …"
-  },
-  {
-   "text": "DOIT",
-   "category": "devoir",
-   "meaning": "il/elle …"
-  },
-  {
-   "text": "DEVONS",
-   "category": "devoir",
-   "meaning": "nous …"
-  },
-  {
-   "text": "DEVEZ",
-   "category": "devoir",
-   "meaning": "vous …"
-  },
-  {
-   "text": "DOIVENT",
-   "category": "devoir",
    "meaning": "ils/elles …"
   }
  ]

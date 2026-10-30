@@ -93,30 +93,6 @@
       ]
     },
     {
-      "id": "avoir-etats-05",
-      "fr": "envie",
-      "en": "feel like (avoir envie de)",
-      "syllables": [
-        "en",
-        "vie"
-      ],
-      "tags": [
-        "col:ils_ont"
-      ]
-    },
-    {
-      "id": "avoir-etats-06",
-      "fr": "besoin",
-      "en": "need (avoir besoin de)",
-      "syllables": [
-        "be",
-        "soin"
-      ],
-      "tags": [
-        "col:ils_ont"
-      ]
-    },
-    {
       "id": "avoir-etats-07",
       "fr": "fatigué",
       "en": "tired",

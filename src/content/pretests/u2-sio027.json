@@ -117,18 +117,18 @@
       "id": "u2-sio027-07",
       "sentenceBefore": "Il est deux heures ",
       "sentenceAfter": ".",
-      "answer": "et demie",
+      "answer": "trente",
       "distractors": [
-        "et demi",
         "et trente",
-        "demie"
+        "trois",
+        "treize"
       ],
-      "fullSentence": "Il est deux heures et demie.",
-      "sentenceTrans": "It's half past two.",
+      "fullSentence": "Il est deux heures trente.",
+      "sentenceTrans": "It's two thirty.",
       "whyWrong": {
-        "et demi": "heure is feminine — demie takes -e.",
-        "et trente": "Say deux heures trente (no et) or deux heures et demie — not et trente.",
-        "demie": "Half past needs et: et demie."
+        "et trente": "The minutes follow heures directly — no et: deux heures trente.",
+        "trois": "trois is 3 — half past is thirty minutes: trente.",
+        "treize": "treize is 13 — half past is thirty minutes: trente."
       }
     },
     {

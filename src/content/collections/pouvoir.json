@@ -27,8 +27,8 @@
     },
     {
       "id": "pouvoir-03",
-      "fr": "Tu peux te garer là.",
-      "en": "You can park there.",
+      "fr": "Tu peux parler français ici.",
+      "en": "You can speak French here.",
       "tags": [],
       "gap": "peux"
     },
@@ -41,8 +41,8 @@
     },
     {
       "id": "pouvoir-05",
-      "fr": "On peut se promener.",
-      "en": "We can walk around.",
+      "fr": "On peut aller au parc.",
+      "en": "We can go to the park.",
       "tags": [],
       "gap": "peut"
     },

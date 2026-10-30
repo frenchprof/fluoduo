@@ -32,6 +32,6 @@
     { "id": "pont",           "text": "le pont",                "meaning": "the bridge",                   "emoji": "🌉", "validLefts": ["traversez"] },
     { "id": "place",          "text": "la place",               "meaning": "the square / plaza",           "emoji": "🏛️", "validLefts": ["traversez"] },
 
-    { "id": "arrive",         "text": "arrivé(e)",              "meaning": "arrived",                      "emoji": "🎯", "validLefts": ["etes"] }
+    { "id": "arrive",         "text": "ici",                    "meaning": "here",                         "emoji": "📍", "validLefts": ["etes"] }
   ]
 }

@@ -10,7 +10,6 @@ import type { NativeLesson } from "./types";
 import { sePresenterLesson } from "./se-presenter";
 import { negationLesson } from "./negation";
 import { conjugaisonU1Lesson } from "./conjugaison-u1";
-import { questionsOuiNonLesson } from "./questions-oui-non";
 import { motsInterrogatifsLesson } from "./mots-interrogatifs";
 import { articlesPaysLesson } from "./articles-pays";
 import { allerLesson } from "./aller";
@@ -56,12 +55,12 @@ function mixLesson(slug: string, title: string, sources: { lesson: NativeLesson;
   };
 }
 
+// Unit 1 only. « Questions oui/non » and « Mots interrogatifs » are Unit 3
+// lessons and left this mix on 30 Oct; they are revised in Unités 3 & 4.
 export const revisionU1Lesson = mixLesson("revision-u1", "Révision — Unité 1, tout mélangé", [
   { lesson: sePresenterLesson, label: "Se présenter" },
   { lesson: conjugaisonU1Lesson, label: "s'appeler · être · avoir" },
   { lesson: negationLesson, label: "La négation" },
-  { lesson: questionsOuiNonLesson, label: "Questions oui/non" },
-  { lesson: motsInterrogatifsLesson, label: "Mots interrogatifs" },
   { lesson: articlesPaysLesson, label: "Articles des pays" },
 ]);
 

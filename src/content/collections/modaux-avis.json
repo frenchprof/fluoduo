@@ -1,6 +1,6 @@
 {
  "id": "modaux-avis",
- "title": "Devoir · pouvoir · falloir",
+ "title": "Pouvoir · falloir",
  "subtitle": "advice and possibility",
  "langPair": "fr-en",
  "owner": "curated",
@@ -37,27 +37,27 @@
   },
   {
    "id": "modaux-avis-07",
-   "fr": "Tu dois manger des légumes.",
-   "en": "You must eat vegetables.",
+   "fr": "Il faut manger des légumes.",
+   "en": "One must eat vegetables.",
    "tags": [],
-   "gap": "dois",
-   "lemma": "devoir"
+   "gap": "faut",
+   "lemma": "falloir"
   },
   {
    "id": "modaux-avis-08",
-   "fr": "Je dois boire de l'eau.",
-   "en": "I must drink water.",
+   "fr": "Tu peux boire de l'eau.",
+   "en": "You can drink water.",
    "tags": [],
-   "gap": "dois",
-   "lemma": "devoir"
+   "gap": "peux",
+   "lemma": "pouvoir"
   },
   {
    "id": "modaux-avis-09",
-   "fr": "Vous devez réserver une table.",
-   "en": "You must book a table.",
+   "fr": "Vous pouvez réserver une table.",
+   "en": "You can book a table.",
    "tags": [],
-   "gap": "devez",
-   "lemma": "devoir"
+   "gap": "pouvez",
+   "lemma": "pouvoir"
   },
   {
    "id": "modaux-avis-10",

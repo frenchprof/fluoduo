@@ -5,19 +5,29 @@
 import type { NativeLesson } from "./types";
 import { sample } from "@/lib/shuffle";
 
+// INTONATION FIRST (2026-10-30): Atelier A1 Units 0–4 teach the question
+// word at the end or at the front with no inversion — « Tu as quel âge ? »,
+// « Tu viens de quel pays ? ». The inverted forms (« Quel âge as-tu ? ») are
+// still ACCEPTED through `alternates`, never required. `before` is what
+// precedes the question word in the cloze; when it is not empty the word is
+// set lower-case. « Qui est-ce ? » and « Quel est ton prénom ? » are fixed
+// formulas the course teaches as wholes, so they stay.
 const ITEMS = [
-  { answer: "Je m'appelle Thomas.", en: "My name is Thomas.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], qword: "Comment", rest: "tu t'appelles ?" },
-  { answer: "Je m'appelle Emma.", en: "My name is Emma.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], qword: "Comment", rest: "tu t'appelles ?" },
-  { answer: "J'ai 15 ans.", en: "I am 15 years old.", question: "Quel âge as-tu ?", alternates: ["Tu as quel âge ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"], qword: "Quel âge", rest: "as-tu ?" },
-  { answer: "J'ai 16 ans.", en: "I am 16 years old.", question: "Quel âge as-tu ?", alternates: ["Tu as quel âge ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"], qword: "Quel âge", rest: "as-tu ?" },
-  { answer: "Je suis français.", en: "I am French (m.).", question: "De quelle nationalité es-tu ?", alternates: ["Tu es de quelle nationalité ?", "De quelle nationalité tu es ?"], qword: "De quelle nationalité", rest: "es-tu ?" },
-  { answer: "Je suis française.", en: "I am French (f.).", question: "De quelle nationalité es-tu ?", alternates: ["Tu es de quelle nationalité ?", "De quelle nationalité tu es ?"], qword: "De quelle nationalité", rest: "es-tu ?" },
-  { answer: "Il y a 4 personnes dans ma famille.", en: "There are 4 people in my family.", question: "Combien de personnes y a-t-il dans ta famille ?", alternates: ["Il y a combien de personnes dans ta famille ?", "Combien de personnes il y a dans ta famille ?"], qword: "Combien de", rest: "personnes y a-t-il dans ta famille ?" },
-  { answer: "C'est Marie.", en: "It's Marie.", question: "Qui est-ce ?", alternates: ["C'est qui ?"], qword: "Qui", rest: "est-ce ?" },
-  { answer: "Je parle français.", en: "I speak French.", question: "Quelle langue parles-tu ?", alternates: ["Tu parles quelle langue ?", "Quelle langue tu parles ?"], qword: "Quelle langue", rest: "parles-tu ?" },
-  { answer: "Je viens de France.", en: "I come from France.", question: "De quel pays viens-tu ?", alternates: ["Tu viens de quel pays ?", "De quel pays tu viens ?"], qword: "De quel pays", rest: "viens-tu ?" },
-  { answer: "Mon prénom est Lucas.", en: "My first name is Lucas.", question: "Quel est ton prénom ?", alternates: ["C'est quoi ton prénom ?", "Ton prénom, c'est quoi ?"], qword: "Quel", rest: "est ton prénom ?" },
+  { answer: "Je m'appelle Thomas.", en: "My name is Thomas.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], before: "", qword: "Comment", rest: "tu t'appelles ?" },
+  { answer: "Je m'appelle Emma.", en: "My name is Emma.", question: "Comment tu t'appelles ?", alternates: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"], before: "", qword: "Comment", rest: "tu t'appelles ?" },
+  { answer: "J'ai 15 ans.", en: "I am 15 years old.", question: "Tu as quel âge ?", alternates: ["Quel âge as-tu ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"], before: "Tu as", qword: "quel âge", rest: "?" },
+  { answer: "J'ai 16 ans.", en: "I am 16 years old.", question: "Tu as quel âge ?", alternates: ["Quel âge as-tu ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"], before: "Tu as", qword: "quel âge", rest: "?" },
+  { answer: "Je suis français.", en: "I am French (m.).", question: "Tu es de quelle nationalité ?", alternates: ["De quelle nationalité es-tu ?", "De quelle nationalité tu es ?"], before: "Tu es", qword: "de quelle nationalité", rest: "?" },
+  { answer: "Je suis française.", en: "I am French (f.).", question: "Tu es de quelle nationalité ?", alternates: ["De quelle nationalité es-tu ?", "De quelle nationalité tu es ?"], before: "Tu es", qword: "de quelle nationalité", rest: "?" },
+  { answer: "Il y a 10 personnes dans la classe.", en: "There are 10 people in the class.", question: "Il y a combien de personnes dans la classe ?", alternates: ["Combien de personnes il y a dans la classe ?", "Combien de personnes y a-t-il dans la classe ?"], before: "Il y a", qword: "combien de", rest: "personnes dans la classe ?" },
+  { answer: "C'est Marie.", en: "It's Marie.", question: "Qui est-ce ?", alternates: ["C'est qui ?"], before: "", qword: "Qui", rest: "est-ce ?" },
+  { answer: "Je parle français.", en: "I speak French.", question: "Tu parles quelle langue ?", alternates: ["Quelle langue parles-tu ?", "Quelle langue tu parles ?"], before: "Tu parles", qword: "quelle langue", rest: "?" },
+  { answer: "Je viens de France.", en: "I come from France.", question: "Tu viens de quel pays ?", alternates: ["De quel pays viens-tu ?", "De quel pays tu viens ?"], before: "Tu viens", qword: "de quel pays", rest: "?" },
+  { answer: "Mon prénom est Lucas.", en: "My first name is Lucas.", question: "Quel est ton prénom ?", alternates: ["C'est quoi ton prénom ?", "Ton prénom, c'est quoi ?"], before: "", qword: "Quel", rest: "est ton prénom ?" },
 ] as const;
+
+const low = (w: string) => w.charAt(0).toLowerCase() + w.slice(1);
+const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
 
@@ -31,8 +41,8 @@ export const motsInterrogatifsLesson: NativeLesson = {
       </h2>
       <ul className="space-y-1 text-[15px] text-[color:var(--cahier-ink)]">
         <li><b className="text-[color:var(--gram-neutral)]">Comment</b> — name — <i lang="fr">Comment tu t&rsquo;appelles ?</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">Quel(le)</b> + nom — which/what — <i lang="fr">Quel âge as-tu ? · Quelle langue parles-tu ?</i></li>
-        <li><b className="text-[color:var(--gram-neutral)]">Combien de</b> — how many — <i lang="fr">Combien de personnes y a-t-il dans ta famille ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Quel(le)</b> + nom — which/what — <i lang="fr">Tu as quel âge ? · Tu parles quelle langue ?</i></li>
+        <li><b className="text-[color:var(--gram-neutral)]">Combien de</b> — how many — <i lang="fr">Il y a combien de personnes dans la classe ?</i></li>
         <li><b className="text-[color:var(--gram-neutral)]">Qui</b> — who — <i lang="fr">Qui est-ce ?</i></li>
         <li><b className="text-[color:var(--gram-neutral)]">Est-ce que</b> — yes/no — <i lang="fr">Est-ce que tu es français ?</i></li>
       </ul>
@@ -56,8 +66,8 @@ export const motsInterrogatifsLesson: NativeLesson = {
     ),
     question: (
       <>
-        <i lang="fr">Quel &acirc;ge as-tu&nbsp;?</i> but{" "}
-        <i lang="fr">Quelle langue parles-tu&nbsp;?</i> What decides the ending?
+        <i lang="fr">Tu as quel &acirc;ge&nbsp;?</i> but{" "}
+        <i lang="fr">Tu parles quelle langue&nbsp;?</i> What decides the ending?
       </>
     ),
     answer: (
@@ -92,8 +102,9 @@ export const motsInterrogatifsLesson: NativeLesson = {
     newQuestion() {
       const it = pick(ITEMS);
       const otherQs = [...new Set(ITEMS.filter((x) => x.question !== it.question).map((x) => x.question))];
-      const qwords = [...new Set(ITEMS.map((x) => x.qword))];
-      const otherWords = sample(qwords.filter((w) => w !== it.qword), 4);
+      const qwords = [...new Set(ITEMS.map((x) => low(x.qword)))];
+      const otherWords = sample(qwords.filter((w) => w !== low(it.qword)), 4);
+      const fit = (w: string) => (it.before ? low(w) : cap(w));
       return {
         meta: "Réponse :",
         big: it.answer,
@@ -101,20 +112,20 @@ export const motsInterrogatifsLesson: NativeLesson = {
         correct: it.question,
         alternates: [...(it.alternates ?? [])],
         easyOptions: [it.question, ...sample(otherQs, 3)],
-        med: { before: "", choices: [it.qword, ...otherWords], correct: it.qword, after: it.rest },
+        med: { before: it.before, choices: [it.qword, ...otherWords].map(fit), correct: fit(it.qword), after: it.rest },
       };
     },
   },
   bonus: [
     { en: "What is your name? (informal)", fr: "Comment tu t'appelles ?", alt: ["Tu t'appelles comment ?", "Comment t'appelles-tu ?", "Comment est-ce que tu t'appelles ?"] },
-    { en: "How old are you? (informal)", fr: "Quel âge as-tu ?", alt: ["Tu as quel âge ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"] },
-    { en: "What is your nationality? (informal)", fr: "De quelle nationalité es-tu ?", alt: ["Tu es de quelle nationalité ?", "De quelle nationalité tu es ?"] },
-    { en: "How many people are there in your family?", fr: "Combien de personnes y a-t-il dans ta famille ?", alt: ["Il y a combien de personnes dans ta famille ?", "Combien de personnes il y a dans ta famille ?"] },
+    { en: "How old are you? (informal)", fr: "Tu as quel âge ?", alt: ["Quel âge as-tu ?", "Quel âge tu as ?", "Quel âge est-ce que tu as ?"] },
+    { en: "What is your nationality? (informal)", fr: "Tu es de quelle nationalité ?", alt: ["De quelle nationalité es-tu ?", "De quelle nationalité tu es ?"] },
+    { en: "How many people are there in the class?", fr: "Il y a combien de personnes dans la classe ?", alt: ["Combien de personnes il y a dans la classe ?", "Combien de personnes y a-t-il dans la classe ?"] },
     { en: "Who is it?", fr: "Qui est-ce ?", alt: ["C'est qui ?"] },
-    { en: "What language do you speak? (informal)", fr: "Quelle langue parles-tu ?", alt: ["Tu parles quelle langue ?", "Quelle langue tu parles ?"] },
+    { en: "What language do you speak? (informal)", fr: "Tu parles quelle langue ?", alt: ["Quelle langue parles-tu ?", "Quelle langue tu parles ?"] },
     { en: "What is your first name? (informal)", fr: "Quel est ton prénom ?", alt: ["C'est quoi ton prénom ?", "Ton prénom, c'est quoi ?"] },
-    { en: "What country do you come from? (informal)", fr: "De quel pays viens-tu ?", alt: ["Tu viens de quel pays ?", "De quel pays tu viens ?"] },
+    { en: "What country do you come from? (informal)", fr: "Tu viens de quel pays ?", alt: ["De quel pays viens-tu ?", "De quel pays tu viens ?"] },
     { en: "Are you French? (m., informal, with est-ce que)", fr: "Est-ce que tu es français ?" },
-    { en: "What languages do you speak? (informal)", fr: "Quelles langues parles-tu ?" },
+    { en: "What languages do you speak? (informal)", fr: "Tu parles quelles langues ?", alt: ["Quelles langues parles-tu ?", "Quelles langues tu parles ?"] },
   ],
 };

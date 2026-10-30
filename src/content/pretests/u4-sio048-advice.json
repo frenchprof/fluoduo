@@ -3,44 +3,44 @@
   "unit": 4,
   "lessonNo": 8,
   "lessonSlug": "modaux",
-  "title": "Giving advice — devoir / falloir / pouvoir",
+  "title": "Giving advice — il faut / pouvoir",
   "items": [
     {
       "id": "u4-sio048-advice-01",
-      "sentenceBefore": "Tu ",
+      "sentenceBefore": "Il ",
       "sentenceAfter": " manger des légumes.",
-      "answer": "dois",
+      "answer": "faut",
       "distractors": [
-        "vas",
-        "peux",
-        "veux"
+        "va",
+        "peut",
+        "veut"
       ],
-      "fullSentence": "Tu dois manger des légumes.",
-      "sentenceTrans": "You must eat vegetables.",
+      "fullSentence": "Il faut manger des légumes.",
+      "sentenceTrans": "One must eat vegetables.",
       "transFirst": true,
       "whyWrong": {
-        "vas": "'tu vas manger' means 'you're going to eat', not 'you must'.",
-        "peux": "'tu peux' means 'you can', not 'you must'.",
-        "veux": "'tu veux' means 'you want', not 'you must'."
+        "va": "'il va manger' means 'he's going to eat' — advice for everyone is il faut.",
+        "peut": "'il peut' means 'he can' — a general necessity is il faut.",
+        "veut": "'il veut' means 'he wants' — a general necessity is il faut."
       }
     },
     {
       "id": "u4-sio048-advice-02",
-      "sentenceBefore": "Nous ",
+      "sentenceBefore": "Vous ",
       "sentenceAfter": " boire de l'eau.",
-      "answer": "devons",
+      "answer": "pouvez",
       "distractors": [
         "faut",
-        "devez",
-        "pouvons"
+        "pouvons",
+        "peut"
       ],
-      "fullSentence": "Nous devons boire de l'eau.",
-      "sentenceTrans": "We must drink water.",
+      "fullSentence": "Vous pouvez boire de l'eau.",
+      "sentenceTrans": "You can drink water.",
       "transFirst": true,
       "whyWrong": {
-        "faut": "faut is impersonal — it only ever takes il ('il faut'); with nous it's devons.",
-        "devez": "That's the vous form — nous devons.",
-        "pouvons": "'nous pouvons' means 'we can', not 'we must'."
+        "faut": "faut is impersonal — it only ever takes il ('il faut'); with vous it's pouvez.",
+        "pouvons": "That's the nous form — vous pouvez.",
+        "peut": "That's the il/elle/on form — vous pouvez."
       }
     },
     {
@@ -50,7 +50,7 @@
       "answer": "peut",
       "distractors": [
         "va",
-        "doit",
+        "veut",
         "faut"
       ],
       "fullSentence": "Elle peut cuisiner ce soir.",
@@ -58,7 +58,7 @@
       "transFirst": true,
       "whyWrong": {
         "va": "'elle va cuisiner' means 'she's going to cook', not 'she can'.",
-        "doit": "'elle doit' means 'she must', not 'she can'.",
+        "veut": "'elle veut' means 'she wants', not 'she can'.",
         "faut": "faut is impersonal ('il faut'); it can't take 'elle' as its subject."
       }
     },
@@ -87,7 +87,7 @@
       "sentenceAfter": " faire du sport.",
       "answer": "faut",
       "distractors": [
-        "dois",
+        "veut",
         "peut",
         "va"
       ],
@@ -95,7 +95,7 @@
       "sentenceTrans": "To be in shape, one must do sport.",
       "transFirst": true,
       "whyWrong": {
-        "dois": "dois goes with tu — here it's the impersonal il faut.",
+        "veut": "'il veut' means 'he wants' — the general necessity is il faut.",
         "peut": "pouvoir says it's possible, not necessary — il faut.",
         "va": "That would be a plan (going to), not a necessity — il faut."
       }
@@ -104,18 +104,18 @@
       "id": "u4-sio048-advice-06",
       "sentenceBefore": "Vous ",
       "sentenceAfter": " étudier pour le quiz.",
-      "answer": "devez",
+      "answer": "pouvez",
       "distractors": [
-        "devons",
-        "doivent",
-        "dois"
+        "pouvons",
+        "peuvent",
+        "peux"
       ],
-      "fullSentence": "Vous devez étudier pour le quiz.",
-      "sentenceTrans": "You must study for the quiz.",
+      "fullSentence": "Vous pouvez étudier pour le quiz.",
+      "sentenceTrans": "You can study for the quiz.",
       "whyWrong": {
-        "devons": "That's the nous form — vous devez.",
-        "doivent": "That's the ils form — vous devez.",
-        "dois": "That's the je/tu form — vous devez."
+        "pouvons": "That's the nous form — vous pouvez.",
+        "peuvent": "That's the ils form — vous pouvez.",
+        "peux": "That's the je/tu form — vous pouvez."
       }
     },
     {
@@ -141,18 +141,18 @@
       "id": "u4-sio048-advice-08",
       "sentenceBefore": "Elles ",
       "sentenceAfter": " boire plus d'eau.",
-      "answer": "doivent",
+      "answer": "peuvent",
       "distractors": [
-        "doit",
-        "devez",
-        "devons"
+        "peut",
+        "pouvez",
+        "pouvons"
       ],
-      "fullSentence": "Elles doivent boire plus d'eau.",
-      "sentenceTrans": "They must drink more water.",
+      "fullSentence": "Elles peuvent boire plus d'eau.",
+      "sentenceTrans": "They can drink more water.",
       "whyWrong": {
-        "doit": "That's the singular elle form — elles doivent.",
-        "devez": "That's the vous form — elles doivent.",
-        "devons": "That's the nous form — elles doivent."
+        "peut": "That's the singular elle form — elles peuvent.",
+        "pouvez": "That's the vous form — elles peuvent.",
+        "pouvons": "That's the nous form — elles peuvent."
       }
     },
     {
@@ -163,14 +163,14 @@
       "distractors": [
         "faux",
         "peux",
-        "dois"
+        "peut"
       ],
       "fullSentence": "Il ne faut pas manger trop de sucre.",
       "sentenceTrans": "One mustn't eat too much sugar.",
       "whyWrong": {
         "faux": "faux means 'false' — the verb is falloir: il ne faut pas.",
         "peux": "peux is the je/tu form — with il the necessity verb is faut.",
-        "dois": "dois is the je/tu form — with impersonal il the verb is faut."
+        "peut": "pouvoir says it's possible — the advice 'one mustn't' is il ne faut pas."
       }
     },
     {
@@ -193,20 +193,20 @@
     },
     {
       "id": "u4-sio048-advice-11",
-      "sentenceBefore": "Pour bien dormir, vous ne ",
+      "sentenceBefore": "Pour bien dormir, il ne ",
       "sentenceAfter": " pas boire de café le soir.",
-      "answer": "devez",
+      "answer": "faut",
       "distractors": [
-        "devons",
-        "doivent",
-        "dois"
+        "peux",
+        "veut",
+        "va"
       ],
-      "fullSentence": "Pour bien dormir, vous ne devez pas boire de café le soir.",
+      "fullSentence": "Pour bien dormir, il ne faut pas boire de café le soir.",
       "sentenceTrans": "To sleep well, you mustn't drink coffee in the evening.",
       "whyWrong": {
-        "devons": "devons is the nous form — vous devez.",
-        "doivent": "doivent is the ils/elles form — vous devez.",
-        "dois": "dois is the je/tu form — vous devez."
+        "peux": "peux is the je/tu form — after impersonal il the necessity verb is faut.",
+        "veut": "'il ne veut pas' means 'he doesn't want' — the advice is il ne faut pas.",
+        "va": "'il ne va pas' is a plan — the advice is il ne faut pas."
       }
     }
   ]

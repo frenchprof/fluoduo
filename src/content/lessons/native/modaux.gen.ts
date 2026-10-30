@@ -25,12 +25,8 @@ const MODALS = [
     inf: "pouvoir", en: "can",
     forms: { je: "peux", tu: "peux", il: "peut", nous: "pouvons", vous: "pouvez", ils: "peuvent" } as Record<string, string>,
   },
-  // devoir joins the family (Dan, 2026-07-08: SIO-047 drills aller · pouvoir ·
-  // devoir · falloir, but the lesson stopped at vouloir/pouvoir).
-  {
-    inf: "devoir", en: "must / have to",
-    forms: { je: "dois", tu: "dois", il: "doit", nous: "devons", vous: "devez", ils: "doivent" } as Record<string, string>,
-  },
+  // devoir joined the family on 2026-07-08 and left it on 2026-10-30: Atelier
+  // A1 teaches it in Unit 6, and nothing scored may go past Unit 4 (Dan).
 ] as const;
 const ACTIVITIES = [
   { fr: "aller au cinéma", en: "go to the cinema" },

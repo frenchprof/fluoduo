@@ -54,7 +54,17 @@ placed = [v for vs in by_stop.values() for v in vs]
 twice = sorted({v for v in placed if placed.count(v) > 1})
 if twice:
     fails.append(f"drilled in more than one lesson: {', '.join(twice)}")
-homeless = sorted(set(verbs) - set(placed))
+# Verbs left out of every lesson BY DECISION — Atelier A1 teaches them after
+# Unit 4, so no lesson may drill them (Dan, 2026-10-30). Read from the table's
+# own `PICKER_ONLY`, never copied here; a name in it must still be a real verb
+# and must not ALSO be placed, or the exemption is hiding a contradiction.
+_po = re.search(r'PICKER_ONLY[^=]*=\s*\[([^\]]*)\]', text)
+picker_only = set(re.findall(r'"([a-zà-ÿ-]+)"', _po.group(1))) if _po else set()
+for v in sorted(picker_only - set(verbs)):
+    fails.append(f"PICKER_ONLY names {v!r}, which the registry does not have")
+for v in sorted(picker_only & set(placed)):
+    fails.append(f"{v!r} is both PICKER_ONLY and drilled by a lesson")
+homeless = sorted(set(verbs) - set(placed) - picker_only)
 if homeless:
     fails.append(
         f"{len(homeless)} verb(s) belong to no lesson: {', '.join(homeless[:8])}"

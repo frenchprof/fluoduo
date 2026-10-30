@@ -97,8 +97,7 @@ export const avoirEtatsLesson: NativeLesson = {
     { en: "She is 20 years old.", fr: "Elle a 20 ans." },
     { en: "We are thirsty.", fr: "Nous avons soif." },
     { en: "You (sg.) are sick.", fr: "Tu es malade." },
-    { en: "I need a coffee.", fr: "J'ai besoin d'un café." },
-    { en: "I feel like dancing.", fr: "J'ai envie de danser." },
+    // « J'ai besoin de… / J'ai envie de… » left on 30 Oct: a Unit 3 box.
     { en: "He is calm.", fr: "Il est calme." },
     { en: "They are cold.", fr: "Ils ont froid." },
     { en: "I am 19 years old.", fr: "J'ai 19 ans." },

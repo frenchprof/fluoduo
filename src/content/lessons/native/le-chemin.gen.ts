@@ -9,7 +9,7 @@
  *     Vous sortez     ->  du parc · de la station de métro
  *     Vous tournez    ->  à gauche · à droite
  *     Vous prenez     ->  la Xᵉ rue à gauche · le passage piéton
- *     Vous êtes       ->  arrivé(e)
+ *     Vous êtes       ->  ici
  *
  * All present tense, no imperatives — exactly the "without using commands"
  * half. What no card carries is the ASKING. « Quel est le chemin pour … ? »
