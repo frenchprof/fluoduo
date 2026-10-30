@@ -56,6 +56,13 @@ service cloud.firestore {
       allow read: if isTeacher();
     }
 
+    // Permanent research codes (P001, P002…): written once by the teacher page,
+    // never changed or removed, so deleting a student never renumbers the others.
+    match /researchCodes/{uid} {
+      allow read, create: if isTeacher();
+      allow update, delete: if false;
+    }
+
     // Everything else is closed.
     match /{document=**} {
       allow read, write: if false;
