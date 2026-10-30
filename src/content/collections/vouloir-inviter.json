@@ -54,8 +54,8 @@
     },
     {
       "id": "vouloir-inviter-07",
-      "fr": "On peut se voir samedi ?",
-      "en": "Can we meet on Saturday? (propose)",
+      "fr": "On peut aller au cinéma samedi ?",
+      "en": "Can we go to the cinema on Saturday? (propose)",
       "tags": [],
       "gap": "peut"
     },
@@ -68,25 +68,23 @@
     },
     {
       "id": "vouloir-inviter-09",
-      "fr": "On se retrouve samedi ?",
-      "en": "Shall we meet up on Saturday?",
-      "gap": "se retrouve",
+      "fr": "Rendez-vous à 19 h au cinéma !",
+      "en": "Let's meet at 7 p.m. at the cinema!",
+      "gap": "Rendez-vous",
       "tags": []
     },
     {
       "id": "vouloir-inviter-10",
-      "fr": "Plutôt dimanche ?",
-      "syllables": ["Plu", "tôt", "di", "man", "che?"],
-      "en": "Rather Sunday? (counter-propose)",
-      "gap": "Plutôt",
+      "fr": "À quelle heure ?",
+      "en": "At what time?",
+      "gap": "heure",
       "tags": []
     },
     {
       "id": "vouloir-inviter-11",
-      "fr": "Ça me convient.",
-      "en": "That works for me.",
-      "gap": "convient",
-      "lemma": "convenir",
+      "fr": "D'accord. À samedi.",
+      "en": "OK. See you on Saturday.",
+      "gap": "samedi",
       "tags": []
     },
     {

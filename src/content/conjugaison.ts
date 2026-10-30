@@ -118,7 +118,7 @@ export const CONJ_BY_SIO: Record<string, string[]> = {
   "SIO-042": ["manger", "boire"],
   "SIO-044": ["acheter", "payer", "vouloir"],
   "SIO-047": ["aller"],
-  "SIO-048": ["devoir", "pouvoir", "falloir"],
+  "SIO-048": ["pouvoir", "falloir"],
 };
 
 /** The spoken phrase for a cell — subject + form with je→j' elision

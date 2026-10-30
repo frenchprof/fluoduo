@@ -18,13 +18,16 @@ const SUBJECTS = [
   { disp: "Vous", aller: "allez" }, { disp: "Ils", aller: "vont" }, { disp: "Elles", aller: "vont" },
 ] as const;
 const ALLER = ["vais", "vas", "va", "allons", "allez", "vont"];
-const INFS = [
-  { fr: "faire du sport", en: "do sport" }, { fr: "manger équilibré", en: "eat healthily" },
+// `neg` is the phrase after « ne … pas »: the partitive becomes « de »
+// (« Je ne vais pas faire DE sport », never « pas du sport »). Any partitive
+// added here needs its own `neg`.
+const INFS: readonly { fr: string; en: string; neg?: string }[] = [
+  { fr: "faire du sport", en: "do sport", neg: "faire de sport" }, { fr: "manger équilibré", en: "eat healthily" },
   { fr: "sortir ce soir", en: "go out tonight" }, { fr: "partir en vacances", en: "go on holiday" },
   { fr: "dormir plus", en: "sleep more" }, { fr: "courir demain", en: "run tomorrow" },
   { fr: "arrêter le café", en: "quit coffee" }, { fr: "étudier le français", en: "study French" },
   { fr: "préparer le dîner", en: "make dinner" }, { fr: "regarder un film", en: "watch a film" },
-] as const;
+];
 export const MEMO_ROWS = [
   ["je", "vais"], ["tu", "vas"], ["il / elle / on", "va"],
   ["nous", "allons"], ["vous", "allez"], ["ils / elles", "vont"],
@@ -47,18 +50,19 @@ export const FUTUR_PROCHE_AXES: DiceAxis[] = [
 export function futurProcheQuestion(pinned?: Record<string, string>): DiceQuestion {
   const s = pinned1(SUBJECTS, pinned?.subject, (x) => x.disp), inf = pick(INFS);
   const neg = pinnedNeg(pinned?.polarity, 0.4);
+  const tail = neg ? inf.neg ?? inf.fr : inf.fr;
       const others = sample(ALLER.filter((f) => f !== s.aller), 3);
       return {
         meta: `${s.disp} … (${neg ? "🚫 négatif" : "✅ affirmatif"})`,
         big: inf.fr,
         en: inf.en,
-        correct: `${phrase(s.disp, s.aller, neg)} ${inf.fr}.`,
-        easyOptions: [s.aller, ...others].map((f) => `${phrase(s.disp, f, neg)} ${inf.fr}.`),
+        correct: `${phrase(s.disp, s.aller, neg)} ${tail}.`,
+        easyOptions: [s.aller, ...others].map((f) => `${phrase(s.disp, f, neg)} ${tail}.`),
         med: {
           before: neg ? `${s.disp} ${ne(s.aller).trim()}` : s.disp,
           choices: ALLER,
           correct: s.aller,
-          after: neg ? `pas ${inf.fr}.` : `${inf.fr}.`,
+          after: neg ? `pas ${tail}.` : `${tail}.`,
         },
       };
     }

@@ -151,18 +151,18 @@
     },
     {
       "id": "u3-sio038-09",
-      "sentenceBefore": "On va ",
-      "sentenceAfter": " aller la semaine prochaine.",
+      "sentenceBefore": "On ",
+      "sentenceAfter": " va la semaine prochaine.",
       "answer": "y",
       "distractors": [
         "là",
         "le",
         "en"
       ],
-      "fullSentence": "On va y aller la semaine prochaine.",
-      "sentenceTrans": "We're going to go there next week.",
+      "fullSentence": "On y va la semaine prochaine.",
+      "sentenceTrans": "We're going there next week.",
       "whyWrong": {
-        "là": "là can't sit between va and aller — the pronoun y goes before the infinitive.",
+        "là": "là can't sit between on and va — the pronoun y goes before the verb: on y va.",
         "le": "le replaces a thing — a place with à takes y.",
         "en": "en replaces de + noun — going TO a place is y."
       }

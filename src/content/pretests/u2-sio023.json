@@ -97,20 +97,20 @@
     },
     {
       "id": "u2-sio023-06",
-      "sentenceBefore": "Je préfère le cinéma ",
-      "sentenceAfter": " théâtre.",
-      "answer": "au",
+      "sentenceBefore": "Je préfère ",
+      "sentenceAfter": " cinéma.",
+      "answer": "le",
       "distractors": [
-        "à le",
-        "à la",
-        "que le"
+        "au",
+        "du",
+        "un"
       ],
-      "fullSentence": "Je préfère le cinéma au théâtre.",
-      "sentenceTrans": "I prefer cinema to theatre.",
+      "fullSentence": "Je préfère le cinéma.",
+      "sentenceTrans": "I prefer cinema.",
       "whyWrong": {
-        "à le": "à + le contracts to au — au théâtre, never 'à le'.",
-        "à la": "théâtre is masculine — à + le = au, not à la.",
-        "que le": "préférer X à Y uses à for 'to', not que."
+        "au": "au is à + le — préférer takes the thing directly: le cinéma.",
+        "du": "du is partitive — likes and preferences take le.",
+        "un": "un means one cinema — a preference is general: le cinéma."
       }
     },
     {

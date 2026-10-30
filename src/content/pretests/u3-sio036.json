@@ -25,20 +25,20 @@
     },
     {
       "id": "u3-sio036-02",
-      "sentenceBefore": "Au feu rouge, il faut ",
+      "sentenceBefore": "Au feu rouge, vous ",
       "sentenceAfter": " à gauche.",
-      "answer": "tourner",
+      "answer": "tournez",
       "distractors": [
-        "tournez",
+        "tourner",
         "tourne",
         "tourné"
       ],
-      "fullSentence": "Au feu rouge, il faut tourner à gauche.",
-      "sentenceTrans": "At the red light, you have to turn left.",
+      "fullSentence": "Au feu rouge, vous tournez à gauche.",
+      "sentenceTrans": "At the red light, you turn left.",
       "whyWrong": {
-        "tournez": "tournez is the vous imperative — after il faut you need the infinitive: tourner.",
-        "tourne": "tourne is a present-tense form — after il faut use the infinitive: tourner.",
-        "tourné": "tourné is the past participle — after il faut use the infinitive: tourner."
+        "tourner": "tourner is the infinitive — with vous the verb takes -ez: vous tournez.",
+        "tourne": "tourne goes with je / il / elle — with vous the verb takes -ez: vous tournez.",
+        "tourné": "tourné is the past participle — directions use the present: vous tournez."
       }
     },
     {
@@ -97,20 +97,20 @@
     },
     {
       "id": "u3-sio036-06",
-      "sentenceBefore": "Il faut ",
+      "sentenceBefore": "Vous ",
       "sentenceAfter": " à Châtelet.",
-      "answer": "descendre",
+      "answer": "descendez",
       "distractors": [
-        "descendez",
+        "descendre",
         "descend",
         "descendu"
       ],
-      "fullSentence": "Il faut descendre à Châtelet.",
-      "sentenceTrans": "You have to get off at Châtelet.",
+      "fullSentence": "Vous descendez à Châtelet.",
+      "sentenceTrans": "You get off at Châtelet.",
       "whyWrong": {
-        "descendez": "descendez is the vous imperative — after il faut use the infinitive: descendre.",
-        "descend": "descend is a present-tense form (il descend) — after il faut use the infinitive: descendre.",
-        "descendu": "descendu is the past participle — after il faut use the infinitive: descendre."
+        "descendre": "descendre is the infinitive — with vous the verb takes -ez: vous descendez.",
+        "descend": "descend goes with il / elle — with vous the verb takes -ez: vous descendez.",
+        "descendu": "descendu is the past participle — directions use the present: vous descendez."
       }
     },
     {

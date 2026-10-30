@@ -32,9 +32,9 @@ const FORMS = ["peux", "peut", "pouvons", "pouvez", "peuvent"];
 const ACTIONS = [
   { fr: "manger ici", en: "eat here" },
   { fr: "visiter le musée", en: "visit the museum" },
-  { fr: "se garer là", en: "park there" },
+  { fr: "parler français ici", en: "speak French here" },
   { fr: "acheter les billets ici", en: "buy the tickets here" },
-  { fr: "se promener", en: "walk around" },
+  { fr: "aller au parc", en: "go to the park" },
   // Third parties only: « Nous pouvons venir avec nous » is nonsense, and a
   // generator that pairs every subject with every action will produce it.
   { fr: "venir avec nous", en: "come with us", not: ["je", "nous"] },
@@ -55,7 +55,9 @@ function others<T>(a: readonly T[], not: T, n: number): T[] {
   return out;
 }
 /** A reflexive infinitive changes its pronoun with the subject: on peut SE
- *  promener, but je peux ME promener. Kept honest rather than quietly wrong. */
+ *  promener, but je peux ME promener. Kept honest rather than quietly wrong.
+ *  No action uses one today — pronominal verbs other than s'appeler are Atelier
+ *  A1 Unit 6, so « se garer » and « se promener » left on 2026-10-30. */
 const REFLEXIVE: Record<string, string> = { je: "me", tu: "te", il: "se", nous: "nous", vous: "vous", ils: "se" };
 const infFor = (slot: string, fr: string) =>
   fr.startsWith("se ") ? `${REFLEXIVE[slot]} ${fr.slice(3)}` : fr;

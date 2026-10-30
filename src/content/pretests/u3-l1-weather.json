@@ -189,21 +189,21 @@
       "contextLabel": "[Checking forecast] Overcast sky",
       "icon": "🌥️",
       "meta": "il y a des + plural",
-      "sentenceBefore": "Il y a beaucoup",
+      "sentenceBefore": "Il y a",
       "sentenceAfter": " nuages aujourd'hui.",
-      "answer": "de",
+      "answer": "des",
       "distractors": [
-        "des",
+        "de",
         "du",
         "de la"
       ],
-      "fullSentence": "Il y a beaucoup de nuages aujourd'hui.",
-      "sentenceTrans": "There are a lot of clouds today.",
-      "why": "<strong>beaucoup de nuages</strong> — after a quantity expression (<em>beaucoup, peu, trop, assez, plein</em>), the partitive article is always replaced by plain <em>de</em> (no article). So NOT <em>beaucoup des nuages</em>. This is a general rule: <em>beaucoup de + noun</em> regardless of gender. Without a quantity word you would say <em>il y a des nuages</em>.",
+      "fullSentence": "Il y a des nuages aujourd'hui.",
+      "sentenceTrans": "There are clouds today.",
+      "why": "<strong>il y a des nuages</strong> — <em>nuages</em> is plural, so the article is <em>des</em>, whatever the gender. <em>du</em> and <em>de la</em> are singular.",
       "whyWrong": {
-        "des": "after beaucoup the article drops: beaucoup de, never beaucoup des.",
-        "du": "after a quantity word like beaucoup you use plain de, not du.",
-        "de la": "after beaucoup it's plain de, whatever the noun's gender."
+        "de": "plain de needs a quantity word in front (beaucoup de) — with none, a plural takes des.",
+        "du": "du is singular masculine — nuages is plural: des.",
+        "de la": "de la is singular feminine — nuages is plural: des."
       }
     },
     {
@@ -301,8 +301,8 @@
     },
     {
       "form": "il y a des nuages",
-      "example": "Il y a beaucoup de nuages.",
-      "note": "plural; beaucoup → beaucoup de (no article)"
+      "example": "Il y a des nuages.",
+      "note": "plural → des, whatever the gender"
     },
     {
       "form": "il pleut",

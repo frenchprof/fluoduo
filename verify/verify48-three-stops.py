@@ -52,8 +52,9 @@ What this asserts:
   4  The country->language data stays inside what the course teaches: every
      language is one of SIO-017's own 19 cards, and every country is one of
      SIO-016's 25. Filling a gap with a second gap is not filling it.
-  5  The prepositions are right (en / au / aux / à), which the sentence cannot
-     avoid choosing.
+  5  The prepositions in the data are right (en / au / aux / à). Since 30 Oct
+     they are not SCORED at SIO-017 — en + country is Unit 3 — but the table
+     still feeds the lesson's prose and must not teach a wrong one.
   6  SIO-011's « aussi / non plus » follows the polarity of the sentence it
      answers, and no preposition has crept back in (Dan, 29 Aug).
   7  The five stops filled on 29 Aug — 4, 7, 8, 21, 34 — each hold the rule
@@ -164,16 +165,14 @@ for (const n of NAMES) {
   if (/^Comment ça s'écrit/.test(a.correct)) asked.ask++;
 }
 for (const p of PLACES) {
-  const q = languesPaysQuestion({ country: p.country, mode: "lang" });
-  if (!q.correct.includes(p.country)) bad.push(`langues pin ignored: ${p.country}`);
+  const q = languesPaysQuestion({ country: p.country });
+  if (q.big !== p.country) bad.push(`langues pin ignored: ${p.country}`);
   if (!q.correct.includes(bareLang(p.langs[0]))) bad.push(`wrong language for ${p.country}: ${q.correct}`);
-  // The preposition is not optional in this sentence and must be the right one.
-  const head = `${p.prep.charAt(0).toUpperCase()}${p.prep.slice(1)} ${p.country},`;
-  if (!q.correct.startsWith(head)) bad.push(`wrong preposition for ${p.country} (want "${p.prep}"): ${q.correct}`);
+  // SCOPE (30 Oct): en / au / aux + country is Unit 3 (SIO-032). At this Unit 1
+  // stop the country is the CUE and the scored sentence carries no preposition.
+  if (!/^On parle [^ ]/.test(q.correct) || q.correct.includes(p.country))
+    bad.push(`a country phrase is back in SIO-017's scored answer: ${q.correct}`);
   asked.lang++;
-  const r = languesPaysQuestion({ country: p.country, mode: "prep" });
-  if (!r.correct.includes(` ${p.prep} ${p.country}`)) bad.push(`prep mode wrong for ${p.country}: ${r.correct}`);
-  asked.prep++;
 }
 for (const n of NUMBER_KEYS) {
   const a = nombresQuestion({ number: String(n), usage: "age" });
@@ -214,7 +213,7 @@ if r.returncode == 0:
           f"SIO-003's lesson both ASKS and ANSWERS the spelling question "
           f"({a['ask']} ask, {a['spell']} answer)",
           f"the spelling lesson does not cover both halves of the promise: {a}")
-    check(a["lang"] > 0 and a["prep"] > 0,
+    check(a["lang"] > 0 and a["prep"] == 0,
           f"SIO-017's lesson links country to language in {a['lang']} places",
           f"the languages lesson does not link country to language: {a}")
     check(a["age"] > 0 and a["prix"] > 0 and a["qty"] > 0,

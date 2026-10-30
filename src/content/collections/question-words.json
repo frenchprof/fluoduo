@@ -151,15 +151,15 @@
   },
   {
    "id": "question-words-10",
-   "fr": "Parles-tu français ?",
-   "en": "Do you speak French? (inversion)",
-   "example": "Parles-tu français ?",
+   "fr": "Tu parles français ?",
+   "en": "Do you speak French? (intonation)",
+   "example": "Tu parles français ?",
    "exampleEn": "Do you speak French?",
    "tags": [],
    "syllables": [
-    "Par",
-    "les-",
-    "tu",
+    "Tu",
+    "par",
+    "les",
     "fran",
     "çais?"
    ]

@@ -336,8 +336,8 @@
   },
   {
    "id": "commerces-26",
-   "fr": "Je vous en mets combien ?",
-   "en": "How much shall I give you?",
+   "fr": "Vous voulez combien de pommes ?",
+   "en": "How many apples would you like?",
    "emoji": "🤲",
    "tags": [
     "col:marchand"

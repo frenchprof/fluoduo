@@ -4,8 +4,8 @@
  * Dan, 2026-09-08: *"ConjugaZone page would land on the same single conjugazone
  * page but land on the particular verbs that we have assigned for that
  * lesson"*, then *"Split the current verbs into the 50 lessons"*. Approved
- * 2026-09-11. Every one of ConjugaZone's 67 verbs belongs to exactly one
- * lesson, so `/conjugaison?deck=<lesson>` opens on that lesson's own drill
+ * 2026-09-11. Every one of ConjugaZone's 67 verbs belongs to at most one
+ * lesson (see PICKER_ONLY for the two that belong to none), so `/conjugaison?deck=<lesson>` opens on that lesson's own drill
  * instead of the default être / avoir / aller.
  *
  * HOW THEY WERE PLACED, in the order Dan gave the rules:
@@ -21,9 +21,15 @@
  *     verb that conjugates the same way, and can this verb actually be used in
  *     that lesson\'s subject. Where those disagreed, the subject won.
  *
- * TEN LESSONS HAVE NO VERBS, and that is a decision rather than a gap: the
+ * ELEVEN LESSONS HAVE NO VERBS, and that is a decision rather than a gap: the
  * rail SKIPS the ConjugaZone column for them (`has` in lib/swipeRail.ts), so a
  * learner swiping left off ÉcouTexte on SIO-003 is not shown an empty drill.
+ *
+ * TWO VERBS BELONG TO NO LESSON, ON PURPOSE (2026-10-30). `devoir` (Atelier
+ * A1 Unit 6) and `mettre` (Unit 5) are past the course's Units 0–4, and no
+ * lesson may drill what the book has not taught. They stay in ConjugaZone's
+ * free picker. `PICKER_ONLY` below names them, so verify173 can tell a verb
+ * left out by decision from one that was simply forgotten.
  *
  * THE TIER IS NOT USED BY THE DRILL YET. Dan asked which verbs in a lesson are
  * essential and which only good to know; it is recorded here because that is
@@ -151,19 +157,22 @@ export const LESSON_VERBS: Record<string, LessonVerb[]> = {
     { id: "payer", tier: "essential" }, // payer — Je paie à la caisse.
   ],
   "SIO-045": [{ id: "rendre", tier: "good" }],                              // Numbers 70–99
-  "SIO-046": [{ id: "mettre", tier: "essential" }],                         // Demonstratives
+  "SIO-046": [],  // Demonstratives — mettre left 2026-10-30: Atelier A1 Unit 5, past the course
   "SIO-047": [  // Making plans — aller + infinitif
     { id: "voir", tier: "essential" },  // voir — On va voir un film samedi.
     { id: "rencontrer", tier: "good" }, // rencontrer — On va rencontrer des amis — aller + infinitif.
   ],
-  "SIO-048": [  // Giving advice — devoir / falloir /
+  "SIO-048": [  // Giving advice — il faut / tu peux (devoir is Unit 6: left 2026-10-30)
     { id: "falloir", tier: "essential" },// falloir — Il faut… — the lesson IS this verb.
-    { id: "devoir", tier: "essential" },// devoir — Tu dois… — advice, the other modal.
     { id: "vivre", tier: "good" },      // vivre — Il faut bien vivre — advice about living, and a 
   ],
   "SIO-049": [{ id: "trouver", tier: "essential" }],                        // Reviewing a restaurant
   "SIO-050": [{ id: "choisir", tier: "essential" }],                        // Role-play: restaurant scene
 };
+
+/** Verbs ConjugaZone's free picker offers that NO lesson drills, because
+ *  Atelier A1 teaches them after Unit 4 (Dan, 2026-10-30). */
+export const PICKER_ONLY: readonly string[] = ["devoir", "mettre"];
 
 /** The verbs a lesson drills, or an empty list where it drills none. */
 export function lessonVerbs(sioId: string): LessonVerb[] {

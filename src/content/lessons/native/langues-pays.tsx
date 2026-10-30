@@ -134,14 +134,16 @@ export const languesPaysLesson: NativeLesson = {
     newQuestion: languesPaysQuestion,
   },
   bonus: [
-    { en: "In France, they speak French.", fr: "En France, on parle français." },
-    { en: "In Portugal, they speak Portuguese.", fr: "Au Portugal, on parle portugais." },
-    { en: "In the United States, they speak English.", fr: "Aux États-Unis, on parle anglais." },
-    { en: "In Singapore, they speak English and Malay.", fr: "À Singapour, on parle anglais et malais." },
-    { en: "In Morocco, they speak Arabic.", fr: "Au Maroc, on parle arabe." },
-    { en: "In Germany, they speak German.", fr: "En Allemagne, on parle allemand." },
-    { en: "What language do they speak in Thailand?", fr: "On parle quelle langue en Thaïlande ?" },
-    { en: "In Switzerland, they speak French and German.", fr: "En Suisse, on parle français et allemand." },
+    // en / au / aux + country is Unit 3 (SIO-032): here the country is the cue
+    // and the French answer names only the language.
+    { en: "France — they speak French.", fr: "On parle français." },
+    { en: "Portugal — they speak Portuguese.", fr: "On parle portugais." },
+    { en: "The United States — they speak English.", fr: "On parle anglais." },
+    { en: "Singapore — they speak English and Malay.", fr: "On parle anglais et malais." },
+    { en: "Morocco — they speak Arabic.", fr: "On parle arabe." },
+    { en: "Germany — they speak German.", fr: "On parle allemand." },
+    { en: "Thailand — what language do they speak?", fr: "On parle quelle langue ?" },
+    { en: "Switzerland — they speak French and German.", fr: "On parle français et allemand." },
     { en: "I speak English and a little French.", fr: "Je parle anglais et un peu français." },
   ],
 };

@@ -496,12 +496,12 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
              "do the same for all the other MneMemos"). */
           <>
             {question.meta && (
-              <p className="text-center text-xs uppercase leading-tight tracking-wider text-white/75">
+              <p className="text-center text-sm font-black uppercase leading-tight tracking-wider text-white">
                 {question.meta}
               </p>
             )}
             {question.en && (
-              <p className="mt-1 text-center text-sm italic leading-tight text-white/85" lang="en">
+              <p className="mx-auto mt-2 w-fit max-w-full rounded-md bg-white px-2.5 py-1 text-center text-base font-bold italic leading-tight text-[color:var(--cahier-ink)] shadow-sm" lang="en">
                 {question.en}
               </p>
             )}
@@ -578,7 +578,7 @@ export default function ExerciseSlotCascade({ lesson, activityKey, onFinish }: P
             first, reference under it, both inside the answer box. Slotless
             lessons carry their English inside the fallback above. */}
         {difficulty !== 4 && frameBuilt && question.en && (
-          <p className="mt-2 text-center text-sm italic leading-tight text-white/80" lang="en">
+          <p className="mx-auto mt-2 w-fit max-w-full rounded-md bg-white px-2.5 py-1 text-center text-base font-bold italic leading-tight text-[color:var(--cahier-ink)] shadow-sm" lang="en">
             {question.en}
           </p>
         )}

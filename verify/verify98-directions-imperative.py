@@ -5,7 +5,7 @@ Stops 36 and 40 give directions WITHOUT the imperative — and the frames obey t
 The guard-rail is Dan's, recorded in FINISH_BACKLOG item 10 and traceable to the
 v9 CSV, which spells it out for SIO-036: *"Ask for and give directions **without
 the imperative**, producing vous + present and c'est + preposition."* The stop
-teaches « Vous tournez à gauche », « il faut continuer », « on prend la rue » —
+teaches « Vous tournez à gauche », « on prend la rue » —
 never « Tournez ! ». SIO-040 chains those same steps with connectors.
 
 WHY A CHECK AND NOT A NOTE. The rail was already honoured where anyone thought
@@ -91,8 +91,13 @@ ok(not leaks,
 PRE = "src/content/pretests/u3-sio036.json"
 pre = json.loads(read(PRE) or "{}")
 items = pre.get("items") or pre.get("questions") or []
+# The answer is read WITH the frame in front of it: « Vous ___ à Châtelet. »
+# keying « descendez » is the vous + present this stop teaches, not an
+# imperative — the same « vous in front » test BARE applies everywhere else.
+# (30 Oct: « il faut + infinitive » is Unit 4, so items 02 and 06 moved to the
+# book's own « Vous tournez… » shape.)
 keyed = [(i.get("id"), i.get("answer")) for i in items
-         if bare_imperatives(i.get("answer", ""))]
+         if bare_imperatives(i.get("sentenceBefore", "")[-5:] + i.get("answer", ""))]
 ok(bool(items), f"{PRE} has items to check",
    f"{PRE} is missing or empty — the stop-36 answer keys cannot be verified")
 ok(not keyed,
@@ -103,12 +108,20 @@ ok(not keyed,
 # Distractors are explicitly ALLOWED, and their presence is the evidence the
 # stop is teaching the contrast rather than dodging it. Assert they survive, so
 # a later tidy-up cannot "fix" this check by deleting the wrong answers.
-distr = sorted({d for i in items for d in i.get("distractors", [])
-                if bare_imperatives(d)})
-ok(bool(distr),
-   f"and the imperative still appears as a distractor ({', '.join(distr)})",
-   f"{PRE} offers no imperative distractor any more — the -ez form after "
-   "« il faut » is the mistake this stop trains out; removing it removes the "
+#
+# 30 Oct: the contrast this stop trains is now the other way round. With
+# « il faut » gone (Unit 4), the keyed form is « vous + -ez » and the mistake
+# on offer is the INFINITIVE in its place (« Vous tourner à gauche »). So the
+# check asks for that pairing to survive: a vous-present answer with its own
+# infinitive among the distractors.
+contrast = sorted({i.get("answer") for i in items
+                   if i.get("answer", "") in VERBS
+                   and any(d.endswith(("er", "re", "ir")) and d[:3] == i["answer"][:3]
+                           for d in i.get("distractors", []))})
+ok(bool(contrast),
+   f"and the infinitive still appears as a distractor beside the vous-present ({', '.join(contrast)})",
+   f"{PRE} offers no infinitive-vs-vous-present contrast any more — choosing "
+   "the infinitive is the mistake this stop trains out; removing it removes the "
    "error the card exists for (Dan, 1 Sep)")
 
 # ---- 3 · and the frames around the blank obey it too ----------------------
@@ -125,7 +138,12 @@ for row in rows:
     rid = re.search(r"finale:(SIO-0(?:36|40):\d+)", row).group(1)
     # Only the strings a learner reads: pre, post, and the accepted answers.
     seen = re.findall(r"(?:pre|post):\s*\"((?:[^\"\\]|\\.)*)\"", row)
-    seen += re.findall(r"\"((?:[^\"\\]|\\.)*)\"", re.search(r"a:\s*\[([^\]]*)\]", row).group(1)) \
+    # Each accepted answer is read WITH the frame in front of it, as clause 2
+    # does: « Pour la gare, vous ___ tout droit. » keying « continuez » is the
+    # vous + present this stop teaches, not an imperative (30 Oct).
+    _pre = re.search(r"pre:\s*\"((?:[^\"\\]|\\.)*)\"", row)
+    _lead = _pre.group(1)[-5:] if _pre else ""
+    seen += [_lead + v for v in re.findall(r"\"((?:[^\"\\]|\\.)*)\"", re.search(r"a:\s*\[([^\]]*)\]", row).group(1))] \
         if re.search(r"a:\s*\[([^\]]*)\]", row) else []
     hit = sorted({v for s in seen for v in bare_imperatives(s)})
     if hit:

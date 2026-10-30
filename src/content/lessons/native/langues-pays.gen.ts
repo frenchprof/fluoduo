@@ -65,18 +65,14 @@ export function bareLang(l: string): string {
   return l.replace(/^(le |la |l')/, "");
 }
 
-type Mode = "lang" | "prep";
-
+// SCOPE (Atelier A1, 2026-10-30). en / au / aux + country is Unit 3 (SIO-032).
+// This stop is Unit 1, so the SCORED sentence names no country: the country is
+// the cue on the card, and the answer is « On parle français. » The preposition
+// still lives in PLACES and in the lesson's prose — it is reference here, and it
+// is scored at SIO-032, where the book teaches it. (Dan: "Move them to the later
+// unit but do not focus too much attention on them.")
 export const LANGUES_AXES: DiceAxis[] = [
   { key: "country", label: "Country", options: PLACES.map((p) => ({ value: p.country, label: p.country })) },
-  {
-    key: "mode",
-    label: "Question",
-    options: [
-      { value: "lang", label: "quelle langue ?" },
-      { value: "prep", label: "en / au / aux ?" },
-    ],
-  },
 ];
 
 const pick = <T,>(a: readonly T[]): T => a[Math.floor(Math.random() * a.length)];
@@ -90,31 +86,7 @@ function others<T>(a: readonly T[], not: T, n: number): T[] {
 
 export function languesPaysQuestion(pinned?: Record<string, string>): DiceQuestion {
   const p = PLACES.find((x) => x.country === pinned?.country) ?? pick(PLACES);
-  const mode: Mode = pinned?.mode === "lang" || pinned?.mode === "prep"
-    ? pinned.mode
-    : pick(["lang", "prep"] as const);
-  const where = placePhrase(p);
   const bare = bareLang(p.langs[0]);
-
-  if (mode === "prep") {
-    // The preposition, with the country fixed — the three wrong forms are the
-    // three the learner must choose between, never a random word.
-    const correct = `On parle ${bare} ${where}.`;
-    const wrongPreps = (["en", "au", "aux", "à"] as const).filter((x) => x !== p.prep).slice(0, 3);
-    return {
-      meta: "en / au / aux 🗺️",
-      big: `${p.country} → ${bare}`,
-      en: `They speak ${bare} in ${p.country}.`,
-      correct,
-      easyOptions: [correct, ...wrongPreps.map((w) => `On parle ${bare} ${w} ${p.country}.`)],
-      med: {
-        before: `On parle ${bare}`,
-        choices: [p.prep, ...wrongPreps],
-        correct: p.prep,
-        after: `${p.country}.`,
-      },
-    };
-  }
 
   // Which language — the stop's own promise.
   //
@@ -123,7 +95,7 @@ export function languesPaysQuestion(pinned?: Record<string, string>): DiceQuesti
   // language is shared — Mexique / Cuba / Argentine all answer "espagnol", and
   // Tunisie / Maroc / Algérie all answer "arabe", so a four-option question
   // could offer "espagnol" twice. Caught by executing the generator 3000 times.
-  const head = `${where.charAt(0).toUpperCase()}${where.slice(1)}`;
+  const head = "On parle";
   const mine = new Set(p.langs.map(bareLang));
   const pool = [...new Set(PLACES.flatMap((x) => x.langs.map(bareLang)))].filter((l) => !mine.has(l));
   const wrongLangs = others(pool, "", 3);
@@ -133,13 +105,13 @@ export function languesPaysQuestion(pinned?: Record<string, string>): DiceQuesti
     en: p.langs.length > 1
       ? `In ${p.country} they speak ${p.langs.map(bareLang).join(", ")} — give one.`
       : `Which language is spoken in ${p.country}?`,
-    correct: `${head}, on parle ${bare}.`,
+    correct: `${head} ${bare}.`,
     // A multilingual country has more than one right answer, and the learner
     // must not be marked wrong for giving the second one.
-    alternates: p.langs.slice(1).map((l) => `${head}, on parle ${bareLang(l)}.`),
-    easyOptions: [`${head}, on parle ${bare}.`, ...wrongLangs.map((l) => `${head}, on parle ${l}.`)],
+    alternates: p.langs.slice(1).map((l) => `${head} ${bareLang(l)}.`),
+    easyOptions: [`${head} ${bare}.`, ...wrongLangs.map((l) => `${head} ${l}.`)],
     med: {
-      before: `${head}, on parle`,
+      before: head,
       choices: [bare, ...wrongLangs],
       correct: bare,
       after: ".",

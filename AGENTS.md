@@ -1028,6 +1028,27 @@ file AND into a check in the same patch, and the check takes a list or a count
 rather than a single hard-coded name, because the next ruling will not be about
 this tile.
 
+# The prompt that points to the answer stands out — permanent (2026-10-30)
+
+**Dan, on the LAF1201 revision app and then for every surface: *"for the
+exercise questions in the lessons can you make the prompts (e.g. English
+words that help to point to the intended answer in French) more salient
+(e.g. bold or something)"*, then: *"that is the general rule … it should be
+everywhere like that"*.**
+
+The cue a learner reads to know WHICH French answer is wanted — the English
+line under a gapped sentence, « TU → UNE SUGGESTION », « (à Julie) » — was
+set small, pale and italic on a coloured card, and a learner skimmed past
+it. So on every exercise, in every app:
+
+    the cue      bold, dark ink, on a white highlight chip
+    its size     never larger than the French on the same card
+
+The second line is the 1 Sep rule (*English is never bigger than French*)
+and it still holds: salience comes from WEIGHT and CONTRAST, never from
+size. In `ExerciseSlotCascade.tsx` the chip is `text-base`; the French frame
+beside it is `text-xl`.
+
 # A curated path is DATA, and it is walked in the app — permanent (2026-09-14)
 
 **Dan: *"what i would really need now is a 'curated path' automatically driving

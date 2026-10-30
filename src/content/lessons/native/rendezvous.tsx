@@ -14,15 +14,18 @@ const MOMENTS = [
   { fr: "matin", en: "morning" }, { fr: "après-midi", en: "afternoon" }, { fr: "soir", en: "evening" },
 ] as const;
 
+// Only the invitation language Atelier A1 teaches in Unit 2 — no pronominal
+// verb (« on se retrouve », « se voir » are Unit 6) and no « plutôt »
+// (Dan, 2026-10-30).
 const PROPOSERS = [
-  { pre: "On se retrouve", post: "?", en: (w: string) => `Shall we meet up ${w}?` },
   { pre: "Tu es libre", post: "?", en: (w: string) => `Are you free ${w}?` },
-  { pre: "On peut se voir", post: "?", en: (w: string) => `Can we see each other ${w}?` },
+  { pre: "Tu veux venir au cinéma", post: "?", en: (w: string) => `Do you want to come to the cinema ${w}?` },
+  { pre: "On peut aller au cinéma", post: "?", en: (w: string) => `Can we go to the cinema ${w}?` },
 ] as const;
 const NEGOS = [
   { pre: "Et", post: "alors ?", en: (w: string) => `What about ${w} then?` },
-  { pre: "Plutôt", post: "?", en: (w: string) => `${w} instead?` },
-  { pre: "On peut se retrouver", post: "?", en: (w: string) => `Can we meet ${w}?` },
+  { pre: "Et", post: "? Tu es libre ?", en: (w: string) => `What about ${w}? Are you free?` },
+  { pre: "Tu veux venir", post: "alors ?", en: (w: string) => `Do you want to come ${w} then?` },
 ] as const;
 const REFUSALS = [
   { fr: "Désolé, je suis occupé.", en: "Sorry, I'm busy.",
@@ -37,8 +40,8 @@ const REFUSALS = [
 const ACCEPTS = [
   { fr: "Oui, avec plaisir !", en: "Yes, with pleasure!",
     med: { before: "Oui, avec", choices: ["plaisir", "possible", "moment"], correct: "plaisir", after: "!" } },
-  { fr: "Ça me convient.", en: "That suits me.",
-    med: { before: "Ça me", choices: ["convient", "retrouve", "regrette"], correct: "convient", after: "." } },
+  { fr: "Je veux bien !", en: "I'd love to!",
+    med: { before: "Je veux", choices: ["bien", "bon", "libre"], correct: "bien", after: "!" } },
   { fr: "Oui, je suis libre !", en: "Yes, I'm free!",
     med: { before: "Oui, je suis", choices: ["libre", "occupé", "désolé"], correct: "libre", after: "!" } },
   { fr: "C'est une bonne idée !", en: "That's a good idea!",
@@ -60,7 +63,7 @@ export const rendezvousLesson: NativeLesson = {
         <tbody>
           <tr>
             <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">① proposer</td>
-            <td className="p-1" lang="fr"><i>On se retrouve samedi soir ? · Tu es libre… ? · On peut se voir… ?</i></td>
+            <td className="p-1" lang="fr"><i>Tu es libre samedi soir ? · Tu veux venir ? · On peut aller au cinéma… ?</i></td>
           </tr>
           <tr>
             <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">② refuser</td>
@@ -68,18 +71,18 @@ export const rendezvousLesson: NativeLesson = {
           </tr>
           <tr>
             <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">③ négocier</td>
-            <td className="p-1" lang="fr"><i>Et dimanche alors ? · Plutôt samedi matin ? · On peut se retrouver plus tard ?</i></td>
+            <td className="p-1" lang="fr"><i>Et dimanche alors ? · Et samedi matin ? Tu es libre ?</i></td>
           </tr>
           <tr>
             <td className="p-1 align-top font-bold text-[color:var(--gram-neutral)]">④ accepter</td>
-            <td className="p-1" lang="fr"><i>Oui, avec plaisir ! · D&rsquo;accord ! · Ça me convient. · C&rsquo;est une bonne idée !</i></td>
+            <td className="p-1" lang="fr"><i>Oui, avec plaisir ! · D&rsquo;accord ! · Je veux bien, oui ! · C&rsquo;est une bonne idée !</i></td>
           </tr>
         </tbody>
       </table>
       <p className="mt-3 rounded-lg border-l-4 border-[color:var(--cahier-hl-edge)] bg-[color:var(--cahier-hl)]/25 p-2.5 text-sm text-[color:var(--cahier-ink)]">
         ⚠️ <b>Négocier comes after a refusal</b> (a new day/time:{" "}
-        <i lang="fr">Et… alors ? / Plutôt… ?</i>); once agreed, ask for details:{" "}
-        <i lang="fr">On se retrouve à quelle heure ?</i>
+        <i lang="fr">Et… alors ?</i>); once agreed, ask for details:{" "}
+        <i lang="fr">À quelle heure ? · Rendez-vous où ?</i>
       </p>
     </div>
   ),
@@ -104,28 +107,28 @@ export const rendezvousLesson: NativeLesson = {
     ),
     answer: (
       <>
-        <i lang="fr">Et dimanche alors&nbsp;?</i> or <i lang="fr">Plut&ocirc;t samedi
-        matin&nbsp;?</i> &mdash; a <b>new day or time</b>. Opening with that would be strange,
-        because nothing has been turned down yet. And once you agree, the exchange is not
-        over: <i lang="fr">On se retrouve &agrave; quelle heure&nbsp;?</i>
+        <i lang="fr">Et dimanche alors&nbsp;?</i> or <i lang="fr">Et samedi
+        matin&nbsp;? Tu es libre&nbsp;?</i> &mdash; a <b>new day or time</b>. Opening with that
+        would be strange, because nothing has been turned down yet. And once you agree, the
+        exchange is not over: <i lang="fr">&Agrave; quelle heure&nbsp;?</i>
       </>
     ),
     pitfallHeads: ["what the list suggests", "what the exchange does"],
     pitfall: [
-      { label: <>opening move</>, wrong: <><i lang="fr">Et dimanche alors&nbsp;?</i></>, right: <><i lang="fr">On se retrouve samedi soir&nbsp;?</i></> },
+      { label: <>opening move</>, wrong: <><i lang="fr">Et dimanche alors&nbsp;?</i></>, right: <><i lang="fr">Tu es libre samedi soir&nbsp;?</i></> },
       { label: <>after a yes</>, wrong: <>stop there</>, right: <><i lang="fr">&Agrave; quelle heure&nbsp;?</i></> },
     ],
     flow: [
-      { depth: 0, text: "① propose — On se retrouve samedi ?" },
+      { depth: 0, text: "① propose — Tu es libre samedi ?" },
       { depth: 1, text: "yes → ④ accept, then ask the time" },
       { depth: 1, text: "no → ② refuse" },
       { depth: 2, text: "③ negotiate — a NEW day or time" },
     ],
     check: [
       { q: <>They accept. Are you finished?</>,
-        a: <>No &mdash; agree the details: <i lang="fr">On se retrouve &agrave; quelle heure&nbsp;?</i></> },
-      { q: <>Why does <i lang="fr">Plut&ocirc;t samedi matin&nbsp;?</i> not work as an opener?</>,
-        a: <><i lang="fr">Plut&ocirc;t</i> offers an alternative, and nothing has been proposed yet to be an alternative to.</> },
+        a: <>No &mdash; agree the details: <i lang="fr">&Agrave; quelle heure&nbsp;?</i></> },
+      { q: <>Why does <i lang="fr">Et samedi matin alors&nbsp;?</i> not work as an opener?</>,
+        a: <><i lang="fr">Et&hellip; alors</i> offers an alternative, and nothing has been proposed yet to be an alternative to.</> },
     ],
     remember: (
       <>
@@ -197,14 +200,14 @@ export const rendezvousLesson: NativeLesson = {
     },
   },
   bonus: [
-    { en: "Shall we meet up Saturday afternoon?", fr: "On se retrouve samedi après-midi ?" },
+    { en: "Are you free Saturday afternoon?", fr: "Tu es libre samedi après-midi ?" },
     { en: "Yes, with pleasure!", fr: "Oui, avec plaisir !" },
     { en: "Sorry, I'm busy.", fr: "Désolé, je suis occupé." },
-    { en: "Sunday instead?", fr: "Plutôt dimanche ?" },
-    { en: "What time shall we meet?", fr: "On se retrouve à quelle heure ?" },
-    { en: "That suits me.", fr: "Ça me convient." },
+    { en: "What about Sunday then?", fr: "Et dimanche alors ?" },
+    { en: "At what time?", fr: "À quelle heure ?" },
+    { en: "OK. See you on Saturday.", fr: "D'accord. À samedi." },
     { en: "It's not possible.", fr: "Ce n'est pas possible." },
-    { en: "Can we meet later?", fr: "On peut se retrouver plus tard ?" },
+    { en: "Where shall we meet?", fr: "Rendez-vous où ?" },
     { en: "Are you (pl.) free Friday evening?", fr: "Vous êtes libres vendredi soir ?" },
     { en: "We are free on Sunday.", fr: "Nous sommes libres dimanche." },
   ],

@@ -239,8 +239,7 @@ export const quelPrefereLesson: NativeLesson = {
     { en: "Which countries do you know?", fr: "Vous connaissez quels pays ?", alt: ["Tu connais quels pays ?", "Quels pays connaissez-vous ?"] },
     { en: "Which cities do you know?", fr: "Vous connaissez quelles villes ?", alt: ["Tu connais quelles villes ?", "Quelles villes connaissez-vous ?"] },
     { en: "Which colours do you like?", fr: "Vous aimez quelles couleurs ?", alt: ["Tu aimes quelles couleurs ?", "Vous préférez quelles couleurs ?"] },
-    { en: "My favourite country is Japan.", fr: "Mon pays préféré est le Japon." },
-    { en: "My favourite city is Singapore.", fr: "Ma ville préférée est Singapour." },
-    { en: "My favourite colours are red and blue.", fr: "Mes couleurs préférées sont le rouge et le bleu." },
+    // « Mon pays préféré est… » / « Ma ville… » / « Mes couleurs… » left this
+    // list on 30 Oct: mon/ma/mes are Unit 2, scored there.
   ],
 };

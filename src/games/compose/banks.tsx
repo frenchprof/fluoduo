@@ -206,7 +206,7 @@ const DIRECTIONS_BANK: ComposeBank = {
         "le passage piéton",
         "le pont",
         "la place",
-        "arrivé(e)",
+        "C'est ici",
       ],
     },
     {
@@ -463,7 +463,7 @@ const RENDEZVOUS_BANK: ComposeBank = {
   categories: withPalette([
     { label: "Accepter", phrases: ["Oui, je veux bien", "Bonne idée", "D'accord", "Avec plaisir"] },
     { label: "Refuser", phrases: ["Désolé, je ne peux pas", "Je ne suis pas libre", "Une autre fois"] },
-    { label: "Proposer", phrases: ["On peut se voir samedi", "Tu es libre dimanche", "à quelle heure ?", "On se retrouve où ?"] },
+    { label: "Proposer", phrases: ["On peut aller au cinéma samedi", "Tu es libre dimanche", "à quelle heure ?", "Rendez-vous où ?"] },
     { label: "Politesse", phrases: ["merci", "s'il te plaît", "à bientôt"] },
   ]),
   newScenario() {

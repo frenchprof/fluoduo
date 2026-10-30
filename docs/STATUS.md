@@ -6,6 +6,26 @@ Every agent (Claude Code `main`, Peers, Cursor, Claude Chat, Cowork PM) reads
 wrong about the *what's left*. If they disagree with this file, this file wins.
 Only ONE agent edits this file at a time; say so in your commit.
 
+## 30 Oct — scored content held to what Atelier A1 teaches (branch claude/atelier-scope-fix)
+
+**Two independent audits** checked every scored item (answers, must-use tiles,
+pre-test keys, Finale, ConjugaZone lists) against the Atelier A1 teacher's guide.
+Dan's rulings: anything a learner is SCORED on must be taught in Units 0–4;
+texts may carry ~20% beyond as context. **Taught by Dan's ruling even where the
+book is later:** pouvoir in all persons, notre/nos/leur(s), stressed pronouns
+after prepositions, « né(e) » with years, pourquoi.
+
+- **devoir is gone from scored answers** (stop 48): « Tu dois… » → « Il faut… /
+  Tu peux… », matching the book's Unit 4 advice box. SIO-048 rewritten.
+- **pronominal verbs other than s'appeler are gone** (stops 29, 37): « On se
+  retrouve où ? » → « Rendez-vous où ? », « Ça me convient » → « D'accord. À samedi. ».
+- **a French error in a correct answer fixed**: « Je ne vais pas faire du sport »
+  → « …de sport » (deck and generator).
+- **too-early items moved, light touch** (Dan: *"move them to the later unit but
+  do not focus too much attention on them"*): e.g. « En France, on parle… » out
+  of stop 17, « J'ai besoin de… » out of stop 19, Finale items retagged.
+- **the exercise cue stands out** — new permanent rule in AGENTS.md.
+
 ## 20 Sep — the ✕ finds its level, the rocket's key is gone, and the curated path retires whole (glm-lane, ZCode/GLM)
 
 **THE ✕ GOES UP ONE NAVIGATIONAL LEVEL** (*"not so much to the page one came
