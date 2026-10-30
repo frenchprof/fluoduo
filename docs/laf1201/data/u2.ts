@@ -86,7 +86,7 @@ export const u2: Sheet = {
           { label: "c", text: "— Tu aimes le football ? (✖️) → _____" },
           { label: "d", text: "— Et les jeux vidéo ? (✖️✖️) → _____" },
           { label: "e", text: "— Et elle, elle aime danser ? (❤️) → _____" },
-          { label: "f", text: "— _____ — Oui, j'aime le sport. (à un ami)" },
+          { label: "f", text: "— _____ — Oui, j'aime le sport. (to a friend)" },
         ],
         answers: [
           "a. J'adore le cinéma.",
@@ -173,11 +173,11 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "(à un ami · 🎬 le cinéma) → _____" },
-          { label: "b", text: "(à un ami · 🏊 la piscine) → _____" },
+          { label: "a", text: "(to a friend · 🎬 le cinéma) → _____" },
+          { label: "b", text: "(to a friend · 🏊 la piscine) → _____" },
           { label: "c", text: "— Tu veux aller au concert ? (😀) → _____" },
           { label: "d", text: "— Tu veux aller au cinéma ce soir ? (😕 · pas libre · un garçon) → _____" },
-          { label: "e", text: "(à un ami · 🍽️ le restaurant) → _____" },
+          { label: "e", text: "(to a friend · 🍽️ le restaurant) → _____" },
         ],
         answers: [
           "a. Tu veux aller au cinéma ?",
@@ -216,11 +216,11 @@ export const u2: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— _____ — Oui, je suis libre ! (à un ami · samedi soir)", distractors: ["libres", "est"] },
-          { label: "b", text: "— Je vais à la piscine vendredi. _____ (à un ami)", distractors: ["veut", "viens"] },
+          { label: "a", text: "— _____ — Oui, je suis libre ! (to a friend · samedi soir)", distractors: ["libres", "est"] },
+          { label: "b", text: "— Je vais à la piscine vendredi. _____ (to a friend)", distractors: ["veut", "viens"] },
           { label: "c", text: "(🎬 le cinéma · 19 h) → _____", distractors: ["le", "heure"] },
           { label: "d", text: "(☕ le café · samedi) → _____", distractors: ["le", "à"] },
-          { label: "e", text: "(🏊 la piscine · vendredi · 15 h) → _____", distractors: ["au", "heure"] },
+          { label: "e", text: "(🏊 la piscine · vendredi · 15 h) → _____", distractors: ["au", "heure"], alternates: ["Rendez-vous vendredi à quinze heures à la piscine.", "Rendez-vous vendredi à la piscine à quinze heures."] },
         ],
         answers: [
           "a. Tu es libre samedi soir ?",

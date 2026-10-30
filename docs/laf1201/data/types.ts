@@ -17,6 +17,8 @@ export type ExerciseItem = {
   text: string;
   /** Wrong tiles added to the word bank: the rival forms this item trains the learner to reject. */
   distractors?: string[];
+  /** Other word orders that are equally correct French. Exact match only, never "contains". */
+  alternates?: string[];
 };
 
 export type Exercise = {

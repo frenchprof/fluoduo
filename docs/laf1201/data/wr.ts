@@ -33,8 +33,8 @@ export const wr: Sheet = {
       exercise: {
         title: "Build the line.",
         items: [
-          { label: "a", text: "1. Greeting (à Julie) → _____", distractors: ["Cher"] },
-          { label: "b", text: "1. Greeting (à Paul) → _____", distractors: ["Chère"] },
+          { label: "a", text: "1. Greeting (to Julie) → _____", distractors: ["Cher"] },
+          { label: "b", text: "1. Greeting (to Paul) → _____", distractors: ["Chère"] },
           { label: "c", text: "2. Opening (Lucas vient à Singapour) → _____", distractors: ["vient", "en"] },
           { label: "d", text: "4. Closing (un voyage) → _____", distractors: ["Bonne"] },
           { label: "e", text: "4. Closing (une visite) → _____", distractors: ["Bon"] },

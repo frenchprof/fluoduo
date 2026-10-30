@@ -29,7 +29,6 @@ export const u0: Sheet = {
           variant: "error",
           title: "⚠️ Common mistakes",
           lines: [
-            "~~Je suis Léa.~~ → **Je m'appelle Léa.** : to give your name, use *s'appeler*.",
             "~~Je suis un étudiant.~~ → **Je suis étudiant.** : no *un / une* before a profession after *être*.",
           ],
         },
@@ -39,10 +38,10 @@ export const u0: Sheet = {
         items: [
           { label: "a", text: "(20 h · Paul) — Bonsoir ! Moi, c'est Marie. Et vous ? → _____" },
           { label: "b", text: "— Toi, tu t'appelles comment ? (moi · Léa) → _____" },
-          { label: "c", text: "Bonjour, je m'appelle Léa. _____ (au professeur)" },
+          { label: "c", text: "Bonjour, je m'appelle Léa. _____ (to the teacher)" },
           { label: "d", text: "— Vous êtes étudiante ? — Oui. _____" },
           { label: "e", text: "— C'est qui ? (M. Dupont) → _____" },
-          { label: "f", text: "Salut ! Je m'appelle Léa. _____ (à un ami)" },
+          { label: "f", text: "Salut ! Je m'appelle Léa. _____ (to a friend)" },
         ],
         answers: [
           "a. Bonsoir, je m'appelle Paul.",
@@ -183,13 +182,13 @@ export const u0: Sheet = {
       blocks: [
         {
           type: "table",
-          headers: ["To one classmate (tu)", "To the group (vous)", "Meaning"],
+          headers: ["Instruction (to the group)", "Meaning"],
           rows: [
-            ["*Écoute !*", "*Écoutez !*", "listen"],
-            ["*Lis !*", "*Lisez !*", "read"],
-            ["*Écris !*", "*Écrivez !*", "write"],
-            ["*Répète !*", "*Répétez !*", "repeat"],
-            ["*Regarde !*", "*Regardez !*", "look"],
+            ["*Écoutez !*", "listen"],
+            ["*Lisez !*", "read"],
+            ["*Écrivez !*", "write"],
+            ["*Répétez !*", "repeat"],
+            ["*Regardez !*", "look"],
           ],
         },
         {
@@ -202,17 +201,17 @@ export const u0: Sheet = {
       exercise: {
         title: "Give the instruction.",
         items: [
-          { label: "a", text: "(à un camarade · 👂) → _____" },
-          { label: "b", text: "(au groupe · 📖 le texte) → _____" },
-          { label: "c", text: "(au groupe · ✍️ la phrase) → _____" },
-          { label: "d", text: "(à un camarade · 🔁) → _____" },
-          { label: "e", text: "— _____ — Vous lisez le texte. (au professeur · 🤷)" },
+          { label: "a", text: "(to the group · 👂) → _____" },
+          { label: "b", text: "(to the group · 📖 le texte) → _____" },
+          { label: "c", text: "(to the group · ✍️ la phrase) → _____" },
+          { label: "d", text: "(to the group · 🔁) → _____" },
+          { label: "e", text: "— _____ — Vous lisez le texte. (to the teacher · 🤷)" },
         ],
         answers: [
-          "a. Écoute !",
+          "a. Écoutez !",
           "b. Lisez le texte !",
           "c. Écrivez la phrase !",
-          "d. Répète !",
+          "d. Répétez !",
           "e. On fait quoi ?",
         ],
       },

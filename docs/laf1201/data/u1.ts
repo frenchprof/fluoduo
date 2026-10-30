@@ -49,8 +49,8 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— _____ — Mon prénom est Léa. (à un camarade)" },
-          { label: "b", text: "— _____ — Mon nom est Martin. (au professeur)" },
+          { label: "a", text: "— _____ — Mon prénom est Léa. (to a classmate)" },
+          { label: "b", text: "— _____ — Mon nom est Martin. (to the teacher)" },
           { label: "c", text: "— Quel est ton prénom ? (Léa) → _____" },
           { label: "d", text: "— Et lui ? (Paul) → _____" },
           { label: "e", text: "— Et eux ? (Paul et Léa) → _____" },
@@ -99,12 +99,12 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— _____ — J'aime la France. (à un ami)" },
+          { label: "a", text: "— _____ — J'aime la France. (to a friend)" },
           { label: "b", text: "— Tu aimes quel pays ? (🇫🇷) → _____" },
           { label: "c", text: "— Tu aimes quel pays ? (🇯🇵) → _____" },
           { label: "d", text: "— Tu aimes quel pays ? (🇮🇹) → _____" },
           { label: "e", text: "— Tu aimes quel pays ? (🇺🇸) → _____" },
-          { label: "f", text: "— _____ — J'aime le Japon. (au professeur)" },
+          { label: "f", text: "— _____ — J'aime le Japon. (to the teacher)" },
         ],
         answers: [
           "a. Tu aimes quel pays ?",
@@ -154,10 +154,10 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— _____ — Je suis chinoise. (à une amie)" },
+          { label: "a", text: "— _____ — Je suis chinoise. (to a friend)" },
           { label: "b", text: "— Et elle ? (🇨🇳) → _____" },
-          { label: "c", text: "— Et lui ? (🇮🇹 · médecin) → _____" },
-          { label: "d", text: "— _____ — Je suis professeur. (au professeur)" },
+          { label: "c", text: "— Et lui ? (🇮🇹 · médecin) → _____", alternates: ["Il est médecin et il est italien."] },
+          { label: "d", text: "— _____ — Je suis professeur. (to the teacher)" },
           { label: "e", text: "— Vous êtes français ? (non · un homme) → _____" },
           { label: "f", text: "— Vous êtes étudiants ? (oui · nous) → _____" },
         ],
@@ -206,10 +206,10 @@ export const u1: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— _____ — J'ai dix-neuf ans. (à un ami)" },
+          { label: "a", text: "— _____ — J'ai dix-neuf ans. (to a friend)" },
           { label: "b", text: "— Quel est ton âge ? (19) → _____" },
           { label: "c", text: "— Et elle ? (21) → _____" },
-          { label: "d", text: "— _____ — J'ai quarante ans. (au professeur)" },
+          { label: "d", text: "— _____ — J'ai quarante ans. (to the teacher)" },
           { label: "e", text: "— Vous avez quel âge ? (nous · 20) → _____" },
         ],
         answers: [
@@ -253,11 +253,11 @@ export const u1: Sheet = {
       exercise: {
         title: "Ask the question.",
         items: [
-          { label: "a", text: "— _____ — C'est 12, rue de la Paix. (à un ami)" },
-          { label: "b", text: "— _____ — C'est marie.dupont@nus.edu.sg. (au professeur)" },
-          { label: "c", text: "— _____ — C'est le 06 12 34 56 78. (à un ami)" },
-          { label: "d", text: "— _____ — C'est le 06 98 76 54 32. (à un inconnu)" },
-          { label: "e", text: "— _____ — C'est lea@gmail.com. (à une amie)" },
+          { label: "a", text: "— _____ — C'est 12, rue de la Paix. (to a friend)" },
+          { label: "b", text: "— _____ — C'est marie.dupont@nus.edu.sg. (to the teacher)" },
+          { label: "c", text: "— _____ — C'est le 06 12 34 56 78. (to a friend)" },
+          { label: "d", text: "— _____ — C'est le 06 98 76 54 32. (to a stranger)" },
+          { label: "e", text: "— _____ — C'est lea@gmail.com. (to a friend)" },
         ],
         answers: [
           "a. Quelle est ton adresse ?",

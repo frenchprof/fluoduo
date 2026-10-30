@@ -16,7 +16,7 @@ export const tp: Sheet = {
           type: "table",
           headers: ["", "visiter (-er)", "finir (-ir)", "attendre (-re)"],
           rows: [
-            ["je", "visite", "finis", "attends"],
+            ["je / j'", "visite", "finis", "attends (j'attends)"],
             ["tu", "visites", "finis", "attends"],
             ["il / elle", "visite", "finit", "attend"],
             ["nous", "**visitons**", "**finissons**", "**attendons**"],
@@ -238,10 +238,10 @@ export const tp: Sheet = {
         items: [
           { label: "a", text: "— Elle habite où ? (🇧🇪 Belgique) → _____", distractors: ["à", "au"] },
           { label: "b", text: "— Vous allez où ? (nous · 🇯🇵 Japon) → _____", distractors: ["en", "à"] },
-          { label: "c", text: "— Tu vas où, et comment ? (🏫 l'école · 🚶) → _____", distractors: ["en"] },
-          { label: "d", text: "— Il va où, et comment ? (📚 la bibliothèque · 🚲) → _____", distractors: ["en"] },
-          { label: "e", text: "— Ils voyagent où, et comment ? (🇨🇳 Chine · ✈️) → _____", distractors: ["à", "au"] },
-          { label: "f", text: "— Tu vas où, et comment ? (Paris · 🚆) → _____", distractors: ["au", "dans"] },
+          { label: "c", text: "— Tu vas où, et comment ? (🏫 l'école · 🚶) → _____", distractors: ["en"], alternates: ["Je vais à pied à l'école."] },
+          { label: "d", text: "— Il va où, et comment ? (📚 la bibliothèque · 🚲) → _____", distractors: ["en"], alternates: ["Il va à vélo à la bibliothèque."] },
+          { label: "e", text: "— Ils voyagent où, et comment ? (🇨🇳 Chine · ✈️) → _____", distractors: ["à", "au"], alternates: ["Ils voyagent en avion en Chine."] },
+          { label: "f", text: "— Tu vas où, et comment ? (Paris · 🚆) → _____", distractors: ["au", "dans"], alternates: ["Je vais en train à Paris."] },
         ],
         answers: [
           "a. Elle habite en Belgique.",
@@ -376,11 +376,11 @@ export const tp: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "(à un ami · est-ce que · aimer · le café) → _____", distractors: ["qu'est-ce"] },
+          { label: "a", text: "(to a friend · est-ce que · aimer · le café) → _____", distractors: ["quoi"] },
           { label: "b", text: "(est-ce que · il · travailler · le samedi) → _____", distractors: ["que"] },
           { label: "c", text: "— Tu vas au cinéma ? (oui · souvent) → _____", distractors: ["toujours"] },
           { label: "d", text: "— Vous prenez le bus ? (non · nous) → _____", distractors: ["rien"] },
-          { label: "e", text: "(au professeur · est-ce que · parler · anglais) → _____", distractors: ["qu'est-ce"] },
+          { label: "e", text: "(to the teacher · est-ce que · parler · anglais) → _____", distractors: ["quoi"] },
           { label: "f", text: "— Elle mange à quelle heure ? (toujours · 12 h) → _____", distractors: ["souvent"] },
         ],
         answers: [

@@ -10,7 +10,7 @@ const MENU = {
     "**Plats**",
     "Poulet frites · 14 €",
     "Poisson et riz · 16 €",
-    "Omelette au fromage (végétarien) · 11 €",
+    "Omelette au fromage (végétarienne) · 11 €",
     "**Desserts**",
     "Tarte aux pommes · 6 €",
     "Salade de fruits · 5 €",

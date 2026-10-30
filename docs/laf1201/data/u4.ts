@@ -44,11 +44,11 @@ export const u4: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— Qu'est-ce que tu manges au petit-déjeuner ? (🍞) → _____" },
+          { label: "a", text: "— Qu'est-ce que tu manges au petit-déjeuner ? (🍞) → _____", alternates: ["Je mange du pain au petit-déjeuner."] },
           { label: "b", text: "— Tu bois du thé ? (souvent) → _____" },
           { label: "c", text: "— Tu manges de la viande ? (✖️) → _____" },
           { label: "d", text: "— Vous buvez de l'eau ? (nous · toujours) → _____" },
-          { label: "e", text: "— Et elle, au dîner ? (🥗 · parfois) → _____" },
+          { label: "e", text: "— Et elle, au dîner ? (🥗 · parfois) → _____", alternates: ["Elle mange parfois de la salade au dîner."] },
         ],
         answers: [
           "a. Au petit-déjeuner, je mange du pain.",
@@ -97,7 +97,7 @@ export const u4: Sheet = {
           { label: "b", text: "— Où est-ce que tu achètes le pain ? (🥖 la boulangerie) → _____" },
           { label: "c", text: "— Et la viande ? (🥩 la boucherie) → _____" },
           { label: "d", text: "— Et les fruits ? (🍎 le marché) → _____" },
-          { label: "e", text: "— _____ — Au supermarché. (à un ami)" },
+          { label: "e", text: "— _____ — Au supermarché. (to a friend)" },
         ],
         answers: [
           "a. Je fais mes courses au supermarché.",
@@ -144,18 +144,18 @@ export const u4: Sheet = {
       exercise: {
         title: "Build the sentence.",
         items: [
-          { label: "a", text: "— Qu'est-ce que tu vas faire ? (manger · mieux) → _____" },
+          { label: "a", text: "— Qu'est-ce que tu vas faire ? (manger · des légumes) → _____" },
           { label: "b", text: "— Et vous ? (nous · faire du sport) → _____" },
-          { label: "c", text: "— Et elle, ce soir ? (cuisiner) → _____" },
+          { label: "c", text: "— Et elle, ce soir ? (cuisiner) → _____", alternates: ["Ce soir, elle va cuisiner."] },
           { label: "d", text: "— Tu vas manger du chocolat ? (✖️) → _____" },
-          { label: "e", text: "— Et eux ? (boire · plus d'eau) → _____" },
+          { label: "e", text: "— Et eux ? (boire · beaucoup d'eau) → _____" },
         ],
         answers: [
-          "a. Je vais manger mieux.",
+          "a. Je vais manger des légumes.",
           "b. Nous allons faire du sport.",
           "c. Elle va cuisiner ce soir.",
           "d. Je ne vais pas manger de chocolat.",
-          "e. Ils vont boire plus d'eau.",
+          "e. Ils vont boire beaucoup d'eau.",
         ],
       },
     },

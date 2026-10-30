@@ -58,7 +58,7 @@ export const ls: Sheet = {
           type: "callout",
           variant: "error",
           title: "⚠️ Common mistakes",
-          lines: ["~~à gauche de le musée~~ → **à gauche du musée** : *de + le* becomes *du* after every one of these prepositions."],
+          lines: ["~~à gauche de le musée~~ → **à gauche du musée** : *de + le* becomes *du* after each of these prepositions that ends in *de*."],
         },
       ],
       exercise: {

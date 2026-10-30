@@ -38,7 +38,7 @@ export const u3: Sheet = {
         items: [
           { label: "a", text: "— Quel temps fait-il ? (☀️) → _____" },
           { label: "b", text: "— Quel temps fait-il ? (🌧️) → _____" },
-          { label: "c", text: "— Quel temps fait-il ? (🥶 · ❄️) → _____" },
+          { label: "c", text: "— Quel temps fait-il ? (🥶 · ❄️) → _____", alternates: ["Il neige et il fait froid."] },
           { label: "d", text: "— Quel temps fait-il ? (💨) → _____" },
           { label: "e", text: "— Quel temps fait-il ? (🌡️ 30°) → _____" },
           { label: "f", text: "— _____ — Il fait beau." },
