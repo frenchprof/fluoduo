@@ -182,9 +182,11 @@ export function quelPrefereQuestion(pinned?: Record<string, string>): DiceQuesti
           .map((x) => `${cap(x)} ${rest}`),
       ],
       med: {
+        // Sentence-initial gap: the choices wear a capital, like the full
+        // answer above (« Quels sont vos… », never « quels sont vos… »).
         before: "",
-        choices: ["quel", "quelle", "quels", "quelles"],
-        correct: quel,
+        choices: ["quel", "quelle", "quels", "quelles"].map(cap),
+        correct: cap(quel),
         after: rest,
       },
     };
