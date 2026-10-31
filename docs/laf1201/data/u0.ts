@@ -79,11 +79,11 @@ export const u0: Sheet = {
       exercise: {
         title: "Choose *tu* or *vous*.",
         items: [
-          { label: "a", text: "À Paul, ton camarade : _____ t'appelles comment ?" },
-          { label: "b", text: "À ton professeur : _____ vous appelez comment ?" },
-          { label: "c", text: "À trois amis : _____ êtes étudiants ?" },
-          { label: "d", text: "À un enfant : _____ es français ?" },
-          { label: "e", text: "À un vendeur : _____ êtes français ?" },
+          { label: "a", text: "To Paul, your classmate: _____ t'appelles comment ?" },
+          { label: "b", text: "To your teacher: _____ vous appelez comment ?" },
+          { label: "c", text: "To three friends: _____ êtes étudiants ?" },
+          { label: "d", text: "To a child: _____ es français ?" },
+          { label: "e", text: "To a shop assistant: _____ êtes français ?" },
         ],
         answers: ["a. tu", "b. vous", "c. vous", "d. tu", "e. vous"],
       },

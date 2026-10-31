@@ -158,7 +158,7 @@ export const u1: Sheet = {
           { label: "b", text: "— Et elle ? (🇨🇳) → _____" },
           { label: "c", text: "— Et lui ? (🇮🇹 · médecin) → _____", alternates: ["Il est médecin et il est italien."] },
           { label: "d", text: "— _____ — Je suis professeur. (to the teacher)" },
-          { label: "e", text: "— Vous êtes français ? (non · un homme) → _____" },
+          { label: "e", text: "— Vous êtes français ? (non · you are a man) → _____" },
           { label: "f", text: "— Vous êtes étudiants ? (oui · nous) → _____" },
         ],
         answers: [

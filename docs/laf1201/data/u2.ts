@@ -176,7 +176,7 @@ export const u2: Sheet = {
           { label: "a", text: "(to a friend · 🎬 le cinéma) → _____" },
           { label: "b", text: "(to a friend · 🏊 la piscine) → _____" },
           { label: "c", text: "— Tu veux aller au concert ? (😀) → _____" },
-          { label: "d", text: "— Tu veux aller au cinéma ce soir ? (😕 · pas libre · un garçon) → _____" },
+          { label: "d", text: "— Tu veux aller au cinéma ce soir ? (😕 · pas libre · you are a boy) → _____" },
           { label: "e", text: "(to a friend · 🍽️ le restaurant) → _____" },
         ],
         answers: [
