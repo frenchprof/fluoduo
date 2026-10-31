@@ -1,0 +1,4106 @@
+[
+{
+"t": "Bonjour !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bonsoir !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Salut !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bonjour ! Bonsoir ! Salut !",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je m'appelle Léa.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": ", je m'appelle Léa.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je m'appelle Léa. Moi, je m'appelle Léa.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Moi, je m'appelle Léa.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et toi ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et vous ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et toi ? Et vous ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est qui ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Dupont.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Martin.",
+"src": "italic",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "C'est qui ? C'est Monsieur Dupont. C'est Madame Martin.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est qui ? C'est Monsieur Dupont.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est Madame Martin.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je suis étudiant. Je suis étudiante.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je suis étudiant.",
+"src": "ex",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Je suis étudiante.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu t'appelles comment ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous vous appelez comment ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous êtes étudiants ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le matin, l'après-midi, le soir",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quand ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quand ? C'est lundi matin. C'est samedi soir.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quand ? C'est lundi matin.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est samedi soir.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est lundi.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est lundi matin.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "zéro, un, deux, trois, quatre, cinq, six, sept, huit, neuf, dix",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "onze, douze, treize, quatorze, quinze, seize, dix-sept, dix-huit, dix-neuf, vingt",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien d'étudiants ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "étudiants.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien d'étudiants ? Il y a douze étudiants.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "dix-sept",
+"src": "right",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Écoutez !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Lisez !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Écrivez !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Répétez !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Regardez !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "prénom ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton prénom ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre prénom ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "nom ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton nom ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre nom ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Mon prénom est Léa. Mon nom est Martin.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et lui ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il s'appelle Paul.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle s'appelle Léa.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et lui ? Il s'appelle Paul. Et elle ? Elle s'appelle Léa.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et lui ? Il s'appelle Paul.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle ? Elle s'appelle Léa.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Comment ça s'écrit ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Comment ça s'écrit ? M-A-R-T-I-N.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils s'appellent Paul et Léa.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le Japon, le Canada, le Portugal",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la France, la Chine, la Suisse",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "l'Italie, l'Allemagne, l'Espagne",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "les États-Unis",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous aimez quel pays ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "France.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ? Vous aimez quel pays ? J'aime la France.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous aimez quel pays ? J'aime la France.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime la France.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est chinois. Il est italien.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est chinois.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est italien.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est chinoise. Elle est italienne.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est chinoise.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est italienne.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est médecin.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est étudiante.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ta nationalité ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est votre profession ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ta nationalité ? Quelle est votre profession ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "français.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne suis pas français.",
+"src": "line",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Elle est médecin.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton âge ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre âge ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu as quel âge ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton âge ? Quel est votre âge ? Tu as quel âge ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'ai dix-neuf ans.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle a vingt ans.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'ai dix-neuf ans. Elle a vingt ans.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ton adresse ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est votre adresse ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ton adresse courriel ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est votre adresse courriel ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton numéro de téléphone ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre numéro de téléphone ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "lea point martin arobase gmail point com",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sac.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est un sac.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "clé.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est une clé.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "livres.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ce sont des livres.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est mon sac.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est ma clé.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ce sont mes livres.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "mon amie",
+"src": "right",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le cinéma.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'adore le cinéma.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la musique.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime la musique.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le football.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je n'aime pas le football.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "les jeux vidéo.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je déteste les jeux vidéo.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime danser. Je déteste cuisiner.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime danser.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je déteste cuisiner.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime le sport.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je n'aime pas",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Pourquoi ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Pourquoi ? Parce que c'est…",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "amusant, intéressant, génial, sympa",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "amusant",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "intéressant",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "génial",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sympa",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "ennuyeux, difficile, nul",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "ennuyeux",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "difficile",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "nul",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime le cinéma",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parce que c'est",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "amusant.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime le cinéma parce que c'est amusant.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parce que c'est amusant",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu es libre samedi soir ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux venir ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux aller",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "cinéma ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu es libre samedi soir ? Tu veux venir ? Tu veux aller au cinéma ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux aller au cinéma ?",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Oui, je veux bien !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "D'accord !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Oui, je veux bien ! D'accord !",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Désolé, je ne suis pas libre.",
+"src": "italic",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Non merci, je n'aime pas le cinéma.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Désolé, je ne suis pas libre. Non merci, je n'aime pas le cinéma.",
+"src": "line",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "au cinéma, au restaurant, au concert",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à la piscine, à la plage",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à l'opéra",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais à la piscine vendredi. Tu veux venir ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "dix-neuf heures.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Rendez-vous au cinéma à dix-neuf heures.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Rendez-vous au cinéma.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à dix-neuf heures",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait beau. Il fait chaud. Il fait froid. Il fait mauvais.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait beau.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait chaud.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait froid.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait mauvais.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il pleut. Il neige.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il pleut.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il neige.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a du soleil. Il y a du vent. Il y a des nuages.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a du soleil.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a du vent.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a des nuages.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait vingt-cinq degrés.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la gare, la poste, la banque, le musée, le parc, la pharmacie, l'hôtel",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il y a une pharmacie ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Oui, il y a une pharmacie.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il y a une pharmacie ? Oui, il y a une pharmacie.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est la gare ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La gare est",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à côté de",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la poste.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est la gare ? La gare est à côté de la poste.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à côté de la banque",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "en face de la poste",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "entre la gare et le parc",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "musée, en face",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à côté du musée, en face du parc",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à côté du musée",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Pardon, où est le musée, s'il vous plaît ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous allez tout droit.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez la",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez la première rue à gauche. la deuxième rue à droite.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez la première rue à gauche.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la deuxième rue à droite.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le musée est",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "en face de",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la banque.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le musée est en face de la banque.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "la première rue",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le petit-déjeuner, le déjeuner, le dîner",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du pain, du café, de la viande, de la salade, de l'eau, des fruits",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du pain, du café",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "de la viande, de la salade",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "de l'eau",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "des fruits",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "pain. Je bois",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "café.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je mange du pain. Je bois du café.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je mange du pain.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je bois du café.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "toujours, souvent, parfois",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du thé.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "toujours, souvent, parfois, Je bois souvent du thé.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "toujours",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "souvent",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parfois, Je bois souvent du thé.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne mange pas de pain.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je bois souvent du thé.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du pain, des croissants",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "de la viande",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du fromage",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "des fruits, des légumes",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "un peu de tout",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je fais mes courses",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "supermarché.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'achète du pain",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "boulangerie.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je fais mes courses au supermarché. J'achète du pain à la boulangerie.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je fais mes courses au supermarché.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'achète du pain à la boulangerie.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je fais mes courses au marché.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du sport. Elle",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais manger mieux. Nous allons faire du sport. Elle va cuisiner.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais manger mieux.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous allons faire du sport.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle va cuisiner.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "manger de chocolat.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne vais pas manger de chocolat.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais manger.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne vais pas manger.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous finissons.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils visitent.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous faites.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils vont.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous prenons.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous buvez.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du pain, du fromage",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "de l'eau, de l'huile",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "des légumes, des fruits",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne mange",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "viande. Je ne bois",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "eau.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne mange pas de viande. Je ne bois pas d'eau.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne mange pas de viande.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne bois pas d'eau.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je ne bois pas de café.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je mange du fromage.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à Paris, à Singapour",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à la bibliothèque, au cinéma, à l'école",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "en France, en Belgique, en Chine",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "en Iran",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "au Japon, au Canada",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aux États-Unis",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "en avion, en train, en métro, en voiture, en bus",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à pied, à vélo",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais en France.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à pied",
+"src": "right",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à, au, en, dans, chez",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à la piscine",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vais.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'y vais.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je n'y vais pas.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais y aller.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "grand, amusant",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "grande, amusante",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sérieux, heureux",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sérieuse, heureuse",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sportif, actif",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sportive, active",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "italien, canadien",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "italienne, canadienne",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "travailleur",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "travailleuse",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "beau, vieux, gentil, blanc",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "belle, vieille, gentille, blanche",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "grands, grandes, sérieux, sérieuses",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "grands, grandes",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "sérieux, sérieuses",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est sportive.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Les filles sont amusantes.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Paul aime le café.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Paul aime le café ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "il aime le café ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce que Paul aime le café ? Est-ce qu'il aime le café ?",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce que Paul aime le café ?",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il aime le café ?",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "le bus.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "au cinéma.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il travaille ?",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "boire beaucoup d'eau.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut boire beaucoup d'eau.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "faire du sport.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux faire du sport.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut dormir plus.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut manger.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "entre la banque et la poste",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à gauche du musée",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "au bout de la rue",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "près d'ici, loin de la gare",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "près d'ici",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "loin de la gare",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Salut Lucas, Chère Julie, Cher Paul,",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Salut Lucas,",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Chère Julie,",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Cher Paul,",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Super, tu viens à Singapour !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Merci pour ton message !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Super, tu viens à Singapour ! Merci pour ton message !",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bon voyage !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "À bientôt !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bonne visite !",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bon voyage ! À bientôt ! Bonne visite !",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bises,",
+"src": "cell",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut prendre le métro…",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "…parce que c'est rapide.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut boire de l'eau…",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "…parce qu'il fait chaud.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux visiter Chinatown…",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "…parce que c'est intéressant.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parce qu'il fait chaud",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux visiter Chinatown.",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "du, de la, des, pas de",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à, en, au",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "une ville intéressante",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "prendre le métro",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le musée",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au musée",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à + le = au",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le musée, aller au musée.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au musée.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "manger dans un hawker centre",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le hawker centre",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le hawker centre.",
+"src": "cell",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au Jardin botanique",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le Jardin botanique",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au Jardin botanique, visiter le Jardin botanique.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le Jardin botanique.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller à la plage",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au marché",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le marché",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au marché, visiter le marché.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le marché.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller à Chinatown",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "il ne faut pas",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "pas de gâteaux",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "faire de + le = faire du sport",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "faire de + le = faire du sport.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au travail",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au travail.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller à la piscine",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "pas de coca",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il ne faut pas",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au cours",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au cours.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller en France",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "écouter la radio",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "à l'Alliance française",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "de la musique",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parler à + le = parler au professeur",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "parler à + le = parler au professeur.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter la tour Eiffel",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller à la tour Eiffel",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller à la tour Eiffel.",
+"src": "cell",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au parc",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le parc",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "aller au parc, visiter le parc.",
+"src": "line",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "visiter le parc.",
+"src": "ex",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "prendre un vélo",
+"src": "italic",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bonsoir ! Moi, c'est Marie. Et vous ? Bonsoir, je m'appelle Paul.",
+"src": "answer",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Bonsoir, je m'appelle Paul.",
+"src": "answer2",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Toi, tu t'appelles comment ? Moi, je m'appelle Léa.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Bonjour, je m'appelle Léa. Et vous ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous êtes étudiante ? Oui. Je suis étudiante.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est Monsieur Dupont.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Salut ! Je m'appelle Léa. Et toi ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "tu t'appelles comment ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "tu",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vous vous appelez comment ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vous",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vous êtes étudiants ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "tu es français ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vous êtes français ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours de français ? C'est lundi matin.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La fête ? C'est samedi soir.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'examen ? C'est mercredi après-midi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est mercredi après-midi.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le film ? C'est vendredi soir.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est vendredi soir.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le marché ? C'est dimanche matin.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est dimanche matin.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien d'étudiants ? Il y a quinze étudiants.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a quinze étudiants.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien de livres ? Il y a douze livres.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a douze livres.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien de chaises ? Il y a vingt chaises.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a vingt chaises.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien de stylos ? Il y a dix-sept stylos.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a dix-sept stylos.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien de tables ? Il y a six tables.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a six tables.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Lisez le texte !",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Écrivez la phrase !",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "On fait quoi ? Vous lisez le texte.",
+"src": "answer",
+"english": true,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton prénom ? Mon prénom est Léa.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre nom ? Mon nom est Martin.",
+"src": "answer",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Mon prénom est Léa.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et eux ? Ils s'appellent Paul et Léa.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ? J'aime la France.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ? J'aime le Japon.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime le Japon.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ? J'aime l'Italie.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime l'Italie.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes quel pays ? J'aime les États-Unis.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'aime les États-Unis.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous aimez quel pays ? J'aime le Japon.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ta nationalité ? Je suis chinoise.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle ? Elle est chinoise.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et lui ? Il est italien et il est médecin.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est italien et il est médecin.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est votre profession ? Je suis professeur.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous êtes français ? Je ne suis pas français.",
+"src": "answer",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Vous êtes étudiants ? Nous sommes étudiants.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous sommes étudiants.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton âge ? J'ai dix-neuf ans.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle ? Elle a vingt et un ans.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle a vingt et un ans.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre âge ? J'ai quarante ans.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous avez quel âge ? Nous avons vingt ans.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous avons vingt ans.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ton adresse ? C'est 12, rue de la Paix.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est votre adresse courriel ? C'est marie.dupont@nus.edu.sg.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est ton numéro de téléphone ? C'est le 06 12 34 56 78.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel est votre numéro de téléphone ? C'est le 06 98 76 54 32.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quelle est ton adresse courriel ? C'est lea@gmail.com.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? C'est un sac.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? C'est ma clé.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? Ce sont des livres.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? Ce sont mes stylos.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ce sont mes stylos.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? C'est mon téléphone.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est mon téléphone.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? C'est une montre.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est une montre.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes le cinéma ? J'adore le cinéma.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes la musique ? J'aime la musique.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes le football ? Je n'aime pas le football.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et les jeux vidéo ? Je déteste les jeux vidéo.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle, elle aime danser ? Elle aime danser.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle aime danser.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes le sport ? Oui, j'aime le sport.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes le sport ?",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu aimes le cinéma ? Pourquoi ? J'aime le cinéma parce que c'est amusant.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et le football ? Je n'aime pas le football parce que c'est ennuyeux.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je n'aime pas le football parce que c'est ennuyeux.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et la musique ? J'adore la musique parce que c'est génial.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'adore la musique parce que c'est génial.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et la danse ? Je déteste la danse parce que c'est difficile.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je déteste la danse parce que c'est difficile.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je n'aime pas le football. Pourquoi ? Parce que c'est ennuyeux.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux aller à la piscine ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux aller au concert ? Oui, je veux bien !",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu veux aller au cinéma ce soir ? Désolé, je ne suis pas libre.",
+"src": "answer",
+"english": false,
+"voice": "fr-m"
+},
+{
+"t": "Tu veux aller au restaurant ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu es libre samedi soir ? Oui, je suis libre !",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Rendez-vous au café samedi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Rendez-vous à la piscine vendredi à quinze heures.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ? Il fait beau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ? Il pleut.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ? Il fait froid et il neige.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait froid et il neige.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ? Il y a du vent.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il ? Il fait trente degrés.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il fait trente degrés.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est la gare ? Elle est à côté de la poste.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il y a une pharmacie ? Oui, il y a une pharmacie rue Victor-Hugo.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La gare est à côté de la poste.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est la banque ? La banque est en face du musée.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La banque est en face du musée.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est l'hôtel ? L'hôtel est entre la gare et le parc.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'hôtel est entre la gare et le parc.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Pardon, où est le musée ? Vous allez tout droit.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et après ? Vous prenez la première rue à gauche.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et après ? Vous prenez la deuxième rue à droite.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez la deuxième rue à droite.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et le musée ? Le musée est en face de la banque.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est le musée, s'il vous plaît ? Le musée ? Vous allez tout droit.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est le musée, s'il vous plaît ?",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que tu manges au petit-déjeuner ? Au petit-déjeuner, je mange du pain.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Au petit-déjeuner, je mange du pain.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu bois du thé ? Je bois souvent du thé.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu manges de la viande ? Je ne mange pas de viande.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous buvez de l'eau ? Nous buvons toujours de l'eau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous buvons toujours de l'eau.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle, au dîner ? Au dîner, elle mange parfois de la salade.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Au dîner, elle mange parfois de la salade.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu fais tes courses où ? Je fais mes courses au supermarché.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est-ce que tu achètes le pain ? J'achète du pain à la boulangerie.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et la viande ? J'achète de la viande à la boucherie.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'achète de la viande à la boucherie.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et les fruits ? J'achète des fruits au marché.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'achète des fruits au marché.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu fais tes courses où ? Au supermarché.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu fais tes courses où ?",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que tu vas faire ? Je vais manger des légumes.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais manger des légumes.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et vous ? Nous allons faire du sport.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et elle, ce soir ? Elle va cuisiner ce soir.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle va cuisiner ce soir.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas manger du chocolat ? Je ne vais pas manger de chocolat.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et eux ? Ils vont boire beaucoup d'eau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils vont boire beaucoup d'eau.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous visitons le musée.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous finissez à six heures.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils attendent le bus.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous finissons l'exercice.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous visitez Paris ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle attend son amie.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous faites du sport ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils vont au cinéma.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous avons une voiture.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous êtes fatigués ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils font leurs courses.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous prenons le métro.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous venez avec nous ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils veulent partir.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous buvons de l'eau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je pars à huit heures.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez le train ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que tu manges ? Je mange du fromage.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu bois du café ? Je ne bois pas de café.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce qu'elle boit ? Elle boit de l'eau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle boit de l'eau.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que vous mangez ? Nous mangeons des légumes.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous mangeons des légumes.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il mange de la viande ? Il ne mange pas de viande.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il ne mange pas de viande.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que tu achètes ? J'achète de la salade.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "J'achète de la salade.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle habite où ? Elle habite en Belgique.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle habite en Belgique.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous allez où ? Nous allons au Japon.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous allons au Japon.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas où, et comment ? Je vais à l'école à pied.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais à l'école à pied.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il va où, et comment ? Il va à la bibliothèque à vélo.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il va à la bibliothèque à vélo.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils voyagent où, et comment ? Ils voyagent en Chine en avion.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils voyagent en Chine en avion.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas où, et comment ? Je vais à Paris en train.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais à Paris en train.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas à la piscine ? Oui, j'y vais.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "j'y vais.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas au cinéma ? Non, je n'y vais pas.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "je n'y vais pas.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas aller à Paris ? Oui, je vais y aller.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "je vais y aller.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle habite en France ? Oui, elle y habite.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "elle y habite.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous allez au marché ? Non, nous, n'y allons pas.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "n'y allons pas.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est comment ? Elle est sérieuse.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est sérieuse.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils sont comment ? Ils sont sportifs.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils sont sportifs.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ta mère est comment ? Ma mère est travailleuse.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ma mère est travailleuse.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Les filles sont comment ? Les filles sont amusantes.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est de quelle nationalité ? Elle est canadienne.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle est canadienne.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est quoi ? C'est une vieille maison.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "C'est une vieille maison.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce que tu aimes le café ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce qu'il travaille le samedi ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu vas au cinéma ? Je vais souvent au cinéma.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je vais souvent au cinéma.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Vous prenez le bus ? Nous ne prenons pas le bus.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Nous ne prenons pas le bus.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Est-ce que vous parlez anglais ?",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle mange à quelle heure ? Elle mange toujours à midi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle mange toujours à midi.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : dormir plus, Il faut dormir plus.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : boire beaucoup d'eau, Il faut boire beaucoup d'eau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : faire des pauses, Il faut faire des pauses.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut faire des pauses.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : faire du sport, Tu peux faire du sport.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : prendre le bus, Tu peux prendre le bus.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux prendre le bus.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Conseil : aller au marché, Tu peux aller au marché.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux aller au marché.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le restaurant est ouvert le lundi. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "faux",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'omelette est un plat végétarien. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "vrai",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La soupe est un dessert. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La glace coûte quatre euros. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le soir, le restaurant ferme à 22 heures. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La formule midi existe le samedi. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a combien d'entrées ? Il y a deux entrées.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a deux entrées.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le poisson coûte combien ? Il coûte seize euros.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il coûte seize euros.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le soir, le restaurant ouvre à quelle heure ? Il ouvre à dix-neuf heures.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il ouvre à dix-neuf heures.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le restaurant est fermé quel jour ? Il est fermé le lundi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il est fermé le lundi.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La formule midi coûte combien ? Elle coûte quinze euros.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Elle coûte quinze euros.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Thomas est à Paris. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'hôtel est en face de la plage. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "À Nice, il fait froid. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'après-midi, ils vont à la plage. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quand il pleut, ils vont au cinéma. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Demain, ils vont aller à Monaco en voiture. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quel temps fait-il à Nice ? Il fait beau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce que Thomas mange tous les jours ? Il mange du poisson.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il mange du poisson.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce qu'ils font le matin ? Ils vont à la plage.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils vont à la plage.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Qu'est-ce qu'ils vont faire demain ? Ils vont visiter Monaco.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Ils vont visiter Monaco.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Samedi, Thomas va dans quelle ville ? À Paris.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "À Paris.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est la pharmacie ? La pharmacie est entre la banque et la poste.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La pharmacie est entre la banque et la poste.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est le parc ? Le parc est au bout de la rue.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le parc est au bout de la rue.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est le café ? Le café est à gauche du musée.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le café est à gauche du musée.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La gare, c'est loin ? Non, c'est près d'ici.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Non, c'est près d'ici.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Où est l'hôtel ? L'hôtel est en face de la gare.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "L'hôtel est en face de la gare.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La pharmacie est loin. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut prendre la première rue à droite. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La pharmacie est entre la banque et la boulangerie. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La pharmacie est à côté de la poste. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le parc est au bout de la rue. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le parc est à droite du musée. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il y a deux cours. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours du samedi est l'après-midi. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La personne choisit le cours du mercredi. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours commence le quatre novembre. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours coûte cent euros par mois. faux",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut payer avant le vingt-huit octobre. vrai",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours du samedi, c'est à quelle heure ? De neuf heures à midi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "De neuf heures à midi.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours coûte combien ? Quatre-vingt-dix euros par mois.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quatre-vingt-dix euros par mois.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours commence quand ? Le quatre novembre.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le quatre novembre.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut payer avant quelle date ? Avant le vingt-huit octobre.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Avant le vingt-huit octobre.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le cours du soir, c'est quels jours ? Le lundi et le mercredi.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le lundi et le mercredi.",
+"src": "answer2",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut prendre le métro parce que c'est rapide.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut boire de l'eau parce qu'il fait chaud.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux visiter Chinatown parce que c'est intéressant.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Tu peux manger au marché parce que ce n'est pas cher.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut aller au parc parce que c'est beau.",
+"src": "answer",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Pardon, madame. La pharmacie, c'est loin ?",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Non, c'est près d'ici. Vous allez tout droit et vous prenez la deuxième rue à droite.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La deuxième rue à droite. D'accord.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "La pharmacie est entre la banque et la boulangerie, en face de la poste.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Et le parc, s'il vous plaît ?",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le parc est au bout de la rue, à gauche du musée.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Merci beaucoup, madame !",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Allô, bonjour ! C'est bien l'école de langues Bonjour Paris ?",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Oui, bonjour !",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Je voudrais un cours de français, s'il vous plaît.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Très bien. Il y a deux cours : le lundi et le mercredi soir, de dix-huit heures à vingt heures, ou le samedi matin, de neuf heures à midi.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Le samedi matin, c'est parfait.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "D'accord. Le cours commence le quatre novembre. Il coûte quatre-vingt-dix euros par mois.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Quatre-vingt-dix euros. Je paie quand ?",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Il faut payer avant le vingt-huit octobre.",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+},
+{
+"t": "Merci beaucoup. Au revoir !",
+"src": "dialogue",
+"english": false,
+"voice": "fr-f"
+}
+]
